@@ -1,0 +1,45 @@
+.heroScene,.lessonScene{position:relative;height:158px;min-width:0;color:var(--ink);--gate:52%}
+.scope{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.scope code{padding:3px 7px;border-radius:5px;background:var(--tint);color:var(--accent-text);font:600 12px ui-monospace,SFMono-Regular,monospace}
+.caller{position:absolute;left:2%;top:56px;display:grid;justify-items:center;gap:4px;font-size:12px;color:var(--muted)}
+.caller svg{width:42px;height:42px;fill:var(--tint);stroke:var(--accent-text);stroke-width:1.7;stroke-linecap:round}
+.boundaryWall{position:absolute;left:var(--gate);top:32px;bottom:2px;border-left:2px dashed color-mix(in srgb,var(--accent-text) 36%,transparent)}
+.boundaryWall span{position:absolute;left:-26px;top:-5px;padding:2px 4px;background:var(--surface);white-space:nowrap;font-size:11px;color:var(--muted)}
+.drawer{position:absolute;right:0;top:38px;width:98px;height:46px}
+.drawer[data-resource="salary"]{top:105px}
+.drawerLabel{position:absolute;left:0;top:-17px;font-size:12px;line-height:1.2;color:var(--ink)}
+.drawerInside{position:absolute;inset:0 8px 2px 0;display:flex;flex-direction:column;gap:4px;padding:8px 10px;border-radius:7px;background:var(--tint);border:1px solid color-mix(in srgb,var(--accent-text) 32%,transparent)}
+.drawerInside i{display:block;width:53%;height:3px;background:color-mix(in srgb,var(--accent-text) 42%,transparent);border-radius:2px}
+.drawerInside i:nth-child(2){width:72%}.drawerInside i:nth-child(3){width:62%}
+.drawerFront{position:absolute;inset:0 8px 2px 0;display:flex;align-items:center;justify-content:center;gap:13px;border:1px solid color-mix(in srgb,var(--ink) 27%,transparent);border-radius:7px;background:var(--surface);box-shadow:0 3px 5px color-mix(in srgb,var(--ink) 7%,transparent);transition:transform .25s ease}
+.drawerHandle{display:block;width:20px;height:5px;border:1.5px solid var(--muted);border-radius:5px}
+.lock{width:16px;height:18px;stroke:var(--muted);stroke-width:1.5;fill:var(--surface)}
+.drawerVerdict{position:absolute;right:1px;bottom:1px;padding:2px 5px;border-radius:4px;background:var(--surface);font-size:11px;font-weight:500;color:var(--muted)}
+.drawer[data-open="true"] .drawerFront{transform:translate(13px,9px)}
+.drawer[data-open="true"] .lock{opacity:0}.drawer[data-open="true"] .drawerVerdict{color:var(--accent-text)}
+.drawer[data-animated="true"] .drawerFront{animation:openSalesDrawer 3s .1s both}.drawer[data-animated="true"] .lock{animation:unlockSales 3s .1s both}.drawer[data-animated="true"] .drawerVerdict{animation:readSales 3s .1s both}
+.salesKey,.salaryKey,.allowedKey,.blockedKey{position:absolute;z-index:2;display:block;width:34px;height:24px}
+.salesKey svg,.salaryKey svg,.allowedKey svg,.blockedKey svg{width:100%;height:100%;fill:var(--surface);stroke:var(--accent-text);stroke-width:2.7;stroke-linecap:round}
+.salesKey{left:68%;top:51px;opacity:0;animation:unlockSalesKey 3s .1s both}
+.salaryKey{left:38%;top:117px;animation:rejectSalaryKey 3s .45s both}.salaryKey svg,.blockedKey svg{stroke:#a43f34}
+.deniedMark{position:absolute;left:calc(var(--gate) - 12px);top:116px;font:600 22px/1 ui-monospace,monospace;color:#a43f34;animation:showDenial 3s .45s both}
+@keyframes unlockSalesKey{0%,12%{left:16%;opacity:1;transform:rotate(0)}43%{left:68%;opacity:1;transform:rotate(0)}58%{left:68%;opacity:1;transform:rotate(-32deg)}75%,100%{left:68%;opacity:0;transform:rotate(-32deg)}}
+@keyframes rejectSalaryKey{0%,12%{left:16%;transform:none}45%{left:38%;transform:none}56%{left:38%;transform:translateX(6px)}64%{left:38%;transform:translateX(-5px)}72%,100%{left:38%;transform:none}}
+@keyframes openSalesDrawer{0%,57%{transform:none}78%,100%{transform:translate(13px,9px)}}
+@keyframes unlockSales{0%,57%{opacity:1}78%,100%{opacity:0}}
+@keyframes readSales{0%,77%{opacity:0}90%,100%{opacity:1}}
+@keyframes showDenial{0%,44%{opacity:0;transform:scale(.5)}64%{opacity:1;transform:scale(1.25)}80%,100%{opacity:1;transform:none}}
+.lesson{margin:30px 0 22px;padding:19px;border:1px solid var(--hairline);border-radius:16px;background:var(--surface);color:var(--ink)}
+.lessonHeader{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}.lessonHeader strong{font-size:17px;font-weight:550}.lessonHeader code{font:12px ui-monospace,SFMono-Regular,monospace;color:var(--accent-text)}
+.controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:16px 0 6px}
+.controls button{padding:7px 11px;border:1px solid var(--hairline);border-radius:999px;background:var(--bg);color:var(--ink);font:inherit;font-size:13px;cursor:pointer;min-height:34px}.controls button[aria-pressed="true"]{background:var(--tint);border-color:var(--accent-text);color:var(--accent-text)}.controls button:disabled,.controls input:disabled{opacity:.5;cursor:default}.controls .readButton{background:var(--accent-text);color:var(--accent-ink);border-color:var(--accent-text)}
+.controls label{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}.controls input{accent-color:var(--accent-text)}.controls label code{font-size:12px}
+.lessonScene{height:138px;max-width:440px;margin:12px auto 8px;--gate:50%}.lessonScene .caller{top:50px;left:6%}.lessonScene .boundaryWall{top:20px;bottom:8px}.lessonScene .drawer{top:52px;right:5%;width:124px}.lessonScene .drawerLabel{top:-22px;font-size:14px}.lessonScene .drawer[data-resource="salary"]{top:52px}.lessonScene .drawerInside,.lessonScene .drawerFront{height:50px}.lessonScene .drawerVerdict{bottom:-7px;font-size:12px}
+.allowedKey,.blockedKey{top:66px;animation-duration:1.6s;animation-fill-mode:both;animation-timing-function:ease-in-out}.allowedKey{left:70%;opacity:0;animation-name:unlockRequest}.blockedKey{left:37%;animation-name:rejectRequest}.lessonScene .deniedMark{top:66px;animation:none}
+@keyframes unlockRequest{0%,8%{left:19%;opacity:1;transform:none}55%{left:70%;opacity:1;transform:none}75%{left:70%;opacity:1;transform:rotate(-32deg)}100%{left:70%;opacity:0;transform:rotate(-32deg)}}
+@keyframes rejectRequest{0%,8%{left:19%;transform:none}55%{left:37%;transform:none}70%{left:37%;transform:translateX(6px)}80%{left:37%;transform:translateX(-5px)}100%{left:37%;transform:none}}
+.result{font-size:14px;line-height:1.65;color:var(--accent-text);min-height:24px}.result[data-denied="true"]{color:#a43f34}
+.audit{display:grid;gap:7px;list-style:none;margin:15px 0 0;padding:13px 0 0;border-top:1px solid var(--hairline);font-size:12px;max-height:220px;overflow:auto}.audit li{display:grid;grid-template-columns:105px 1fr auto;gap:9px;align-items:baseline}.audit code{color:var(--muted);font-size:11px}.audit strong{font:600 12px ui-monospace,monospace;color:var(--accent-text)}.audit strong[data-denied="true"]{color:#a43f34}
+.controls button:focus-visible,.controls input:focus-visible{outline:2px solid var(--accent-text);outline-offset:3px}
+@media(max-width:500px){.heroScene{--gate:50%;height:158px}.drawer{width:90px}.lesson{padding:15px}.lessonScene .drawer{width:107px;right:1%}.lessonScene .caller{left:2%}.audit li{grid-template-columns:1fr auto}.audit code{grid-column:1/-1;grid-row:2}.audit strong{grid-column:2;grid-row:1}}
+@media(prefers-reduced-motion:reduce){.salesKey,.salaryKey,.deniedMark,.drawer[data-animated="true"] .drawerFront,.drawer[data-animated="true"] .lock,.drawer[data-animated="true"] .drawerVerdict{animation:none}.allowedKey,.blockedKey{animation-duration:.01ms;animation-delay:0s}.drawerFront{transition:none}}
