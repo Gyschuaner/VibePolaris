@@ -1,6 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
-import { GitArticle, Cite, GitHero } from "../GitConceptPageShared";
-import { RollbackLesson } from "../git-workflow-lessons/rollback";
+import { GitArticle, Cite } from "../GitConceptPageShared";
+import { RollbackHero } from "./rollback-hero";
 import { rollbackSources } from "@/lib/git-concept-sources/rollback";
 
 const sections: [string, string][] = [
@@ -16,14 +16,13 @@ export function RollbackTermPage() {
     subtitle="Rollback · 把运行中的服务恢复到已知可用版本"
     sources={rollbackSources}
     sections={sections}
-    hero={<GitHero contextLabel="先确认目标" contextTitle="production · v42" trigger="新版本上线后核心页面报错，先继续修还是恢复旧版本？" change="发现故障 → 切回 v41 → 健康检查" proof="流量回到稳定制品；数据副作用单独补偿" />}
+    hero={<RollbackHero />}
     intro={<>回滚是在故障处理中把生产服务、工作负载或流量指针切回一个已经保留并知道如何运行的版本。它的价值是缩短用户受影响的时间；它不会把数据库写入、已发出的消息或外部 API 调用自动变成从未发生过。</>}
   >
     <ArticleSection id="rollback-trigger" title="先确认故障和可回退目标">
       <p id="rollback-incident" className="vp-citation-target">看到错误率升高或核心流程失败时，先确认当前生产部署确实异常，记录版本、时间和影响范围，再选择回退目标。回滚不是在事故现场重新构建旧源码，而是使用部署系统已经保存的、可以识别的版本或制品。<Cite id="rollback-incident" sources={rollbackSources} /></p>
       <p id="rollback-target" className="vp-citation-target">目标版本应来自部署历史，并且曾经在这个生产边界中可用。平台可能只允许回到曾绑定过生产域名的部署；Kubernetes 通过 rollout history 管理可回到的 revision，GitLab 则保留每个环境的部署记录。<Cite id="rollback-target" sources={rollbackSources} /></p>
       <p id="rollback-history" className="vp-citation-target">“上一版”是一个需要证据的说法：要确认提交、制品摘要、配置和数据模式是否彼此匹配。Kubernetes 的 <code>rollout undo</code> 可以回到上一版本或指定 revision，但回到历史版本仍要经过当前系统的健康检查。<Cite id="rollback-history" sources={rollbackSources} /></p>
-      <RollbackLesson />
     </ArticleSection>
 
     <ArticleSection id="rollback-route" title="把流量切回已知可用制品">
