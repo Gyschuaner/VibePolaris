@@ -7,8 +7,8 @@ import styles from "./ConceptArticle.module.css";
 
 type Scene = ReturnType<typeof useScene>;
 
-function FrameCopy({ scene, labels, title, text }: { scene: Scene; labels: string[]; title: string[]; text: string[] }) {
-  return <><div className={styles.controlsWrap}><SceneControls scene={scene} labels={labels} /></div><div className={styles.layers} aria-live="polite">{title.map((item, index) => <div className={styles.layer} data-current={scene.step === index} key={item}><h3>{item}</h3><p>{text[index]}</p></div>)}</div></>;
+function FrameCopy({ scene, labels, title, text, onReplay }: { scene: Scene; labels: string[]; title: string[]; text: string[]; onReplay?: () => void }) {
+  return <><div className={styles.controlsWrap}><SceneControls scene={scene} labels={labels} onReplay={onReplay} /></div><div className={styles.layers} aria-live="polite">{title.map((item, index) => <div className={styles.layer} data-current={scene.step === index} key={item}><h3>{item}</h3><p>{text[index]}</p></div>)}</div></>;
 }
 
 function OfflineFirstLesson() {
@@ -77,7 +77,7 @@ function AppLifecycleLesson() {
     <div className={styles.choices} role="group" aria-label="模拟保存时机"><button type="button" aria-pressed={saved} onClick={() => setSaved(true)}><Check size={16} />编辑时持久化（重启后可读）</button><button type="button" aria-pressed={!saved} onClick={() => setSaved(false)}>只等退出时保存</button></div>
     <div className={styles.contract}><div><FileText size={27} /><h3>当前草稿</h3><p>{draft}</p></div><div><Gear size={27} /><h3>{scene.step === 0 ? "前台 · 可编辑" : scene.step === 1 ? "后台 · 可能暂停" : scene.step === 2 ? "Android 回收 · Web 丢弃" : "重新创建"}</h3><p>{scene.step < 2 ? "页面仍可能有机会保存，但不能假设一定会继续运行。" : "回来时只能从已经持久化的状态尝试恢复。"}</p></div></div>
     <div className={styles.resultFlow}><User size={28} /><span>编辑</span><ArrowRight size={19} /><Stack size={28} /><span>{saved ? "持久化草稿" : "内存中的草稿"}</span><ArrowRight size={19} /><Browser size={28} /></div>
-    <FrameCopy scene={scene} labels={labels} title={["变化发生在前台", "后台不是永久运行", "Android 与 Web 的回收方式不同", "恢复要读取已保存数据"]} text={["用户输入时就保存重要状态，比把全部希望放在最后一次退出更可靠。", "切到后台后，系统或浏览器可以暂停、冻结甚至回收页面。", "Android 进程可能被系统回收；Web 标签页可能被冻结或被浏览器丢弃，二者都不保证最后回调。", "本例从已持久化状态读取草稿；没有保存的内存状态不能凭空回来。"]} />
+    <FrameCopy scene={scene} labels={labels} onReplay={() => setSaved(false)} title={["变化发生在前台", "后台不是永久运行", "Android 与 Web 的回收方式不同", "恢复要读取已保存数据"]} text={["用户输入时就保存重要状态，比把全部希望放在最后一次退出更可靠。", "切到后台后，系统或浏览器可以暂停、冻结甚至回收页面。", "Android 进程可能被系统回收；Web 标签页可能被冻结或被浏览器丢弃，二者都不保证最后回调。", "本例从已持久化状态读取草稿；没有保存的内存状态不能凭空回来。"]} />
   </div>;
 }
 
@@ -91,7 +91,7 @@ function AppPermissionLesson() {
     <div className={styles.choices} role="group" aria-label="模拟系统返回结果（仅演示，不改变设备权限）"><button type="button" aria-pressed={manualOutcome === "allow" && scene.step === 2} onClick={() => { setManualOutcome("allow"); scene.seek(2); }}>模拟允许</button><button type="button" aria-pressed={manualOutcome === "deny" && scene.step === 2} onClick={() => { setManualOutcome("deny"); scene.seek(2); }}>模拟这次拒绝</button><button type="button" aria-pressed={scene.step === 4} onClick={() => { setManualOutcome("blocked"); scene.seek(4); }}>模拟不再直接弹窗</button></div>
     <p className={styles.inputExample}>上面的按钮只改变教学演示；真实应用仍要调用系统权限 API。</p>
     <div className={styles.contract}><div><CameraIcon /><h3>拍照上传</h3><p>用户先点了需要相机的任务，应用说明用途后才提出请求。</p></div><div><Key size={27} /><h3>系统状态：{state}</h3><p>{outcome === "allow" ? "可以打开相机。" : outcome === "deny" ? "仍可选择文件上传。" : outcome === "blocked" ? "引导用户到系统设置修改。" : "先完成用途说明，再等待系统决定。"}</p></div></div>
-    <FrameCopy scene={scene} labels={labels} title={["能力在任务中才出现", "先说明为什么需要", "权限由系统决定", "拒绝也要能完成任务", "系统不再直接弹窗时走设置"]} text={["启动应用时不必先收集所有权限；先让用户看到自己的目标。", "用途说明应和当前动作相连，用户知道允许后会发生什么。", "应用只能发起请求，不能把自己的按钮当成系统授权。", "拒绝相机不应让整个上传任务无路可走，可以提供文件选择。", "Android 的这个分支不会继续直接弹窗，应给出设置入口和清楚的替代方案；iOS 与 Web 规则不同。"]} />
+    <FrameCopy scene={scene} labels={labels} onReplay={() => setManualOutcome(null)} title={["能力在任务中才出现", "先说明为什么需要", "权限由系统决定", "拒绝也要能完成任务", "系统不再直接弹窗时走设置"]} text={["启动应用时不必先收集所有权限；先让用户看到自己的目标。", "用途说明应和当前动作相连，用户知道允许后会发生什么。", "应用只能发起请求，不能把自己的按钮当成系统授权。", "拒绝相机不应让整个上传任务无路可走，可以提供文件选择。", "Android 的这个分支不会继续直接弹窗，应给出设置入口和清楚的替代方案；iOS 与 Web 规则不同。"]} />
   </div>;
 }
 
