@@ -13,7 +13,17 @@ export type ControlHeroKind =
   | "microservices"
   | "distributed"
   | "events"
-  | "serverless";
+  | "serverless"
+  | "container"
+  | "image"
+  | "discovery"
+  | "observability"
+  | "sast"
+  | "secret"
+  | "dependency"
+  | "threat"
+  | "approval"
+  | "dataset";
 
 export function ControlRedesignRuntime({ kind, label, children }: { kind: ControlHeroKind; label: string; children: ReactNode }) {
   const heroRef = useRef<HTMLElement | null>(null);

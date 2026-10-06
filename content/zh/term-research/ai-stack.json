@@ -1295,7 +1295,7 @@
     "slug": "container",
     "mechanism": "容器是带有应用文件和所需其他程序的隔离进程；它有自己的文件、网络和资源视图，通常共享宿主机内核。",
     "misconception": "容器不是完整虚拟机，也不是默认安全沙箱；共享宿主机内核、权限、挂载和资源配置共同决定隔离效果。",
-    "demoSignature": "输入：两个容器共享宿主机内核；中间：A、B看到不同文件视图，CPU配额示例为70%/30%，A读取未挂载文件被拒；输出：视图和资源被隔离，但不是两套完整内核。可视化：建议4帧的共享内核、文件视图、资源配额、越界读取；交互：推进帧观察隔离边界。",
+    "demoSignature": "两扇文件视图悬在同一条宿主机内核带上：切换权限或挂载时，越界路径从允许变为拒绝，CPU 配额同时标出 70/30；终点保留“共享内核、隔离视图”的关系。",
     "sourceUrls": [
       "https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-a-container/",
       "https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-an-image/",
@@ -1313,7 +1313,7 @@
     "slug": "container-image",
     "mechanism": "容器镜像是不可变文件系统层、配置和内容摘要组成的可分发模板，运行时在其上创建带独立可写层的实例。",
     "misconception": "镜像不是正在运行的容器；实例内写入不会回写镜像，删除实例只会删除它的临时写层。",
-    "demoSignature": "输入：base 80MB + app 12MB；中间：启动 A/B/C 共享 92MB 只读层，B 写入 /tmp/note 后仅 B 增加 2MB；输出：删除 B 后以同一摘要启动 B2。可视化：4 帧分层复制；交互：写入、删除和重启 B。",
+    "demoSignature": "三座实例从同一摘要的只读层取文件，只有 B 的写入落进自己的可写层；删除 B 后以同一摘要启动 B2，读者能看见模板没有被回写。",
     "sourceUrls": [
       "https://github.com/opencontainers/image-spec",
       "https://docs.docker.com/get-started/docker-concepts/building-images/understanding-image-layers/",
@@ -1330,7 +1330,7 @@
     "slug": "service-discovery",
     "mechanism": "服务发现维护服务名到可用实例地址的映射，让调用方在实例增减或更换地址后仍能找到目标。",
     "misconception": "它不是负载均衡本身；发现负责提供候选地址，负载策略再决定选哪一个。",
-    "demoSignature": "输入：orders 服务有 10.0.0.2 和 .3 两个实例；中间：.4 上线后列表变成 3 个，.2 心跳超时后注册表保留 .3/.4，但 TTL 内旧缓存仍可能返回 .2；输出：缓存到期后只解析到 .3/.4。可视化：4 帧注册表与缓存地址卡变化；交互：上线、失效和 TTL 到期观察解析列表。",
+    "demoSignature": "注册表像一枚会更新的环，端点卡随上线与心跳超时改变；TTL 没到时缓存仍保留旧地址，按下到期后才收敛到当前列表。",
     "sourceUrls": [
       "https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/",
       "https://kubernetes.io/docs/concepts/services-networking/service/",
@@ -1348,7 +1348,7 @@
     "slug": "observability",
     "mechanism": "可观测性通过日志、指标和追踪等外部信号，帮助人从系统输出推断内部状态并定位问题。",
     "misconception": "收集很多监控数据不等于可观测；信号必须能关联到具体请求、组件和时间。",
-    "demoSignature": "输入：结账请求耗时2.4秒；中间：追踪拆为前端0.2、订单0.4、支付1.8秒，日志trace_id命中3条；输出：瓶颈定位到支付。可视化：建议5帧的瀑布追踪与日志联动；交互：点击慢跨度筛出对应日志。",
+    "demoSignature": "指标带先圈出 p95 异常，trace-7 的 payment 跨度从请求瀑布里被拎起，日志带随后扣上同一 trace；选中任一信号会改变当前证据焦点。",
     "sourceUrls": [
       "https://opentelemetry.io/docs/concepts/signals/",
       "https://opentelemetry.io/docs/concepts/observability-primer/",
@@ -1363,10 +1363,10 @@
     "slug": "sast",
     "mechanism": "静态应用安全测试在不运行程序的情况下分析源码、字节码或数据流，寻找符合规则的安全缺陷路径。",
     "misconception": "SAST报告的是潜在问题，不等于漏洞已可利用；也看不到只在真实运行环境出现的全部风险。",
-    "demoSignature": "输入：用户输入流向SQL拼接；中间：数据流跨3个函数，source→sink路径1条且无净化节点；输出：行42产生高风险告警。可视化：建议5帧的代码数据流染色；交互：插入参数化查询看告警消失。",
+    "demoSignature": "一条带污点的代码路径从 request.query 穿过函数节点抵达 db.query；打开参数化查询时，路径在净化节点处断开，行 42 的风险卡随之撤下。",
     "sourceUrls": [
-      "https://owasp.org/www-community/Source_Code_Analysis_Tools",
-      "https://owasp.org/www-project-code-review-guide/",
+      "https://community.owasp.org/Source_Code_Analysis_Tools",
+      "https://owasp.org/projects/code-review-guide",
       "https://codeql.github.com/docs/codeql-overview/about-codeql/",
       "https://csrc.nist.gov/pubs/sp/800/218/final",
       "https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html"
@@ -1381,7 +1381,7 @@
     "slug": "secret-scanning",
     "mechanism": "密钥扫描用已知格式、熵或供应商校验在代码和提交历史中识别可能泄露的凭据。",
     "misconception": "删掉当前文件里的密钥不代表风险结束；历史提交、日志和已泄露凭据仍需处理与轮换。",
-    "demoSignature": "输入：提交中出现1个API密钥；中间：格式规则命中，扫描范围当前树1处+历史2处，密钥状态active→revoked；输出：阻止提交并生成轮换记录。可视化：建议5帧的Git时间轴扫描；交互：切换“当前/历史”范围看命中数。",
+    "demoSignature": "提交时间轴上的当前树与两条历史提交分别亮出命中，切换扫描范围改变命中数；撤销并轮换后，状态卡保留处置证据而不回显秘密。",
     "sourceUrls": [
       "https://docs.github.com/en/code-security/secret-scanning/introduction/about-secret-scanning",
       "https://docs.github.com/en/code-security/concepts/secret-security/push-protection",
@@ -1398,7 +1398,7 @@
     "slug": "dependency-scanning",
     "mechanism": "依赖扫描读取清单和锁文件，识别实际解析版本，再与漏洞公告或策略库匹配并给出受影响路径。",
     "misconception": "包名命中不等于当前版本可利用；还需核对版本范围、调用路径和修复版本。",
-    "demoSignature": "输入：应用依赖A→B@2.1.0；中间：公告影响B<2.3.0，路径数0→1，升级A后B变2.3.2；输出：告警从高风险变已修复。可视化：建议5帧的依赖树红点沿升级消退；交互：选择版本查看路径和修复状态。",
+    "demoSignature": "锁文件依赖树把红点落在 B@2.1.0，切换到 2.3.2 时红点熄灭、路径状态变为待回归；树形关系本身保持可读。",
     "sourceUrls": [
       "https://cheatsheetseries.owasp.org/cheatsheets/Software_Supply_Chain_Security_Cheat_Sheet.html",
       "https://docs.github.com/en/code-security/concepts/supply-chain-security/dependabot-alerts",
@@ -1416,10 +1416,10 @@
     "slug": "threat-modeling",
     "mechanism": "威胁建模先画出资产、数据流和信任边界，再系统识别攻击路径、影响与缓解措施，并随设计变化更新。",
     "misconception": "它不是上线前填一次安全表，也不等于漏洞扫描；重点是设计阶段推演系统如何被滥用。",
-    "demoSignature": "输入：登录服务含浏览器、API、数据库3节点；中间：加入短信供应商后画出2条信任边界和4条数据流，识别3个威胁（其中2项高风险），加入回执签名校验后高风险2→1；输出：保留供应商泄露等残余风险及负责人。可视化：建议6帧的数据流图上逐项加威胁标记；交互：新增外部节点自动提示重审边界。",
+    "demoSignature": "登录系统的边界线先包住浏览器、API 和用户库；加入短信供应商后，外部节点跨过边界并拉出新数据流，签名校验会收窄高风险但留下残余项。",
     "sourceUrls": [
       "https://cheatsheetseries.owasp.org/cheatsheets/Threat_Modeling_Cheat_Sheet.html",
-      "https://owasp.org/www-community/Threat_Modeling",
+      "https://community.owasp.org/Threat_Modeling",
       "https://csrc.nist.gov/pubs/sp/800/154/ipd",
       "https://learn.microsoft.com/en-us/azure/security/develop/threat-modeling-tool",
       "https://www.cisa.gov/securebydesign"
@@ -1434,7 +1434,7 @@
     "slug": "tool-approval",
     "mechanism": "工具审批在高影响工具真正执行前暂停调用，展示具体工具、参数、范围和调用身份，再把一次批准或拒绝绑定到这次调用。",
     "misconception": "“确认”按钮不等于有效审批；参数不可见、范围过宽或把决定复用到下一次调用都会失去可审查性。",
-    "demoSignature": "删除 A/B/C 的拟调用先停在审批卡；授权人只批准 A/B，执行数为 2，C 没有副作用。证据：调用编号、完整路径和执行计数。",
+    "demoSignature": "三张删除卡在执行器前停成审批栅栏；授权人勾选 A/B、拒绝 C 后，只有两条带调用编号的路径越过栅栏，C 保持未执行。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/human_in_the_loop/",
       "https://openai.github.io/openai-agents-python/tools/",
@@ -1453,12 +1453,13 @@
     "slug": "evaluation-dataset",
     "mechanism": "评测数据集是一组带输入、期望行为、参考答案或元数据的样本，供评测过程重复运行。",
     "misconception": "它不是评分器，也不是分数；数据泄漏、分布偏差和标注错误会让评测结论失真。",
-    "demoSignature": "输入：三个虚构工单 A/B/C，每单两条关联问题；中间：逐行交替把同一工单拆到开发/留出，按工单分组则整组留出 C；输出：分组模式没有重叠但留出只覆盖关键类，仍需检查覆盖。可视化：工单卡片在开发与留出篮之间移动，重叠工单亮警告；交互：切换逐行/按组并勾选工单，观察泄漏与覆盖提示。",
+    "demoSignature": "两只样本篮分别承载开发与留出；逐行拖动会让同一工单跨篮并亮重叠警告，切到按组模式后整组落入留出，再显示覆盖检查。",
     "sourceUrls": [
       "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
-      "https://arxiv.org/pdf/1803.09010",
       "https://developers.google.com/machine-learning/crash-course/overfitting/dividing-datasets",
-      "https://scikit-learn.org/stable/modules/cross_validation.html"
+      "https://scikit-learn.org/stable/modules/cross_validation.html",
+      "https://platform.openai.com/docs/guides/evals",
+      "https://www.nist.gov/itl/ai-risk-management-framework"
     ],
     "rewriteRisk": "不要把训练数据和评测数据混用；后续正文需写版本、来源和污染风险。",
     "nearDuplicates": [
