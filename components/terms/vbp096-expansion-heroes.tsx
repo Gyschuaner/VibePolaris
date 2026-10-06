@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowCounterClockwise, ArrowRight, Check, CheckCircle, Circuitry, Clock, Database, Keyboard, Lightning, Timer, WarningCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowRight, Check, CheckCircle, Circuitry, Clock, Database, FileCode, Keyboard, Lightning, Package, ShieldCheck, Timer, WarningCircle } from "@phosphor-icons/react";
 import { useState } from "react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./Vbp096ExpansionHeroes.module.css";
@@ -51,5 +51,19 @@ export function CircuitBreakerSignatureHero() {
     <div className={styles.breakerBoard}><div className={styles.breakerRequests}><span>请求</span>{["A", "B", "C", "D"].map((item, index) => <b key={item} data-muted={down && scene.step >= 2} data-active={scene.step === 0 || scene.step === 3 && index === 0}>{item}<small>{down && scene.step >= 1 ? index < 2 ? "失败" : "拒绝" : "通过"}</small></b>)}</div><div className={styles.breakerSwitch} data-state={state}><Circuitry size={24} /><strong>{state}</strong><small>{state === "CLOSED" ? "请求可以到达下游" : state === "OPEN" ? "快速失败，保护下游" : "只放一个探针"}</small></div><div className={styles.downstream} data-danger={down}><Database size={21} /><span>支付服务</span><strong>{down ? "503" : "200"}</strong><small>{down ? "连接失败" : "可响应"}</small></div></div>
     <div className={styles.status} role="status"><strong>{scene.step === 0 ? "正常路径" : scene.step === 1 ? "失败计数开始累积" : scene.step === 2 ? "熔断器把失败变成快速拒绝" : down ? "探针成功才允许半开回收" : "服务健康，保持闭合"}</strong><span>{down ? "熔断器保护的是依赖和调用方的恢复空间，不会修好下游。" : "恢复后仍需用探针确认，而不是靠时间猜测。"}</span></div>
     <figcaption>熔断器把反复失败后的等待、拒绝和探测分开，避免每个调用方各自重试把故障放大。</figcaption>
+  </figure>;
+}
+
+export function DataContractSignatureHero() {
+  const scene = useScene(4);
+  const [change, setChange] = useState<"add" | "rename">("add");
+  const breaking = change === "rename";
+  return <figure ref={scene.ref} className={styles.frame} data-kind="contract" data-step={scene.step} aria-label="数据契约检查生产者和消费者之间的字段兼容性">
+    <Header eyebrow="字段改变前，先问谁在依赖它" meta={breaking ? "breaking change" : "compatible add"} />
+    <SceneControls scene={scene} labels={["发布 v1", "消费者读取", "提出 v2", "契约裁决"]} />
+    <div className={styles.controls} role="group" aria-label="切换字段变化"><button type="button" aria-pressed={!breaking} onClick={() => { setChange("add"); scene.seek(0); }}><Check size={15} />新增可选字段</button><button type="button" aria-pressed={breaking} onClick={() => { setChange("rename"); scene.seek(0); }}><WarningCircle size={15} />直接改名</button></div>
+    <div className={styles.contractBoard}><div className={styles.schemaCard}><FileCode size={20} /><span>生产者 · v{scene.step >= 2 ? "2" : "1"}</span><strong>{scene.step >= 2 ? breaking ? "user_id" : "email + locale" : "email"}</strong><small>{scene.step >= 2 ? breaking ? "email 被移除" : "旧字段仍保留" : "契约已发布"}</small></div><ArrowRight size={20} className={styles.boardArrow} /><div className={styles.consumerCard}><Package size={20} /><span>消费者</span><strong>{scene.step >= 1 ? "读取 email" : "等待数据"}</strong><small>{scene.step >= 3 && breaking ? "读取失败" : "字段仍可用"}</small></div><div className={styles.contractGate} data-danger={breaking && scene.step === 3}>{breaking && scene.step === 3 ? <WarningCircle size={20} /> : <ShieldCheck size={20} />}<strong>{scene.step < 3 ? "检查中" : breaking ? "BLOCK" : "PASS"}</strong><small>{scene.step === 3 ? breaking ? "必须迁移或双写" : "允许兼容发布" : "对照生产契约"}</small></div></div>
+    <div className={styles.status} role="status"><strong>{scene.step === 0 ? "先冻结双方共同语言" : scene.step === 1 ? "消费者依赖旧字段" : scene.step === 2 ? "新版本正在提出变化" : breaking ? "改名不是无害重构" : "新增可选字段可向后兼容"}</strong><span>{breaking ? "契约让破坏性变化在发布前暴露。" : "兼容性来自保留旧语义和明确默认值。"}</span></div>
+    <figcaption>数据契约把“生产者能发什么”和“消费者能读什么”写成可检查的约定，变化先经过兼容性闸门。</figcaption>
   </figure>;
 }

@@ -1845,5 +1845,54 @@
       "timeout",
       "api-gateway"
     ]
+  },
+  {
+    "zh": "数据契约",
+    "en": "Data Contract",
+    "slug": "data-contract",
+    "cat": "技术栈",
+    "say": "生产者和消费者共同遵守的数据形状、语义和兼容性约定。",
+    "aliases": [
+      "Data Contract",
+      "数据接口契约",
+      "数据协议"
+    ],
+    "question": "上游改了字段，为什么下游会在发布后才崩？",
+    "definition": "数据契约把数据生产者提供的字段、类型、语义、质量和兼容规则写成可检查的约定，让消费者在运行前或读取时知道自己依赖什么。",
+    "boundary": "它不是一份静态字段表，也不能替代数据质量监控和业务沟通。契约范围、版本、默认值、兼容策略和所有者都要明确。",
+    "demoType": "contract",
+    "demoTitle": "字段变化先经过兼容性闸门",
+    "demoSteps": [
+      {
+        "label": "发布 v1",
+        "value": "email:string",
+        "note": "生产者和消费者共享第一版契约。"
+      },
+      {
+        "label": "提出 v2",
+        "value": "新增 locale / 直接改名",
+        "note": "同样看似小改动，对消费者的风险不同。"
+      },
+      {
+        "label": "契约裁决",
+        "value": "PASS 或 BLOCK",
+        "note": "兼容变化可以渐进发布，破坏变化先迁移或双写。"
+      }
+    ],
+    "quizQuestion": "数据契约最直接解决什么？",
+    "quizOptions": [
+      "让生产者和消费者对字段语义及兼容性有共同约定",
+      "保证所有数据一定没有业务错误",
+      "让下游不需要任何版本迁移"
+    ],
+    "correctText": "契约把依赖和变化规则提前写成可检查约定。",
+    "wrongText": "契约不能替代质量检查、迁移和业务语义。",
+    "promptTitle": "写一份可演进的数据契约",
+    "prompt": "请列出字段类型、语义、质量约束、所有者、版本、兼容策略、默认值和破坏性变化的迁移方案。",
+    "relatedSlugs": [
+      "data-pipeline",
+      "data-validation",
+      "database-schema"
+    ]
   }
 ]

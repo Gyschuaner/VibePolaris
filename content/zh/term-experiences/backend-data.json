@@ -20359,5 +20359,194 @@
         "note": "半开探针与策略边界"
       }
     ]
+  },
+  {
+    "slug": "data-contract",
+    "lead": "上游改了字段，为什么下游会在发布后才崩？",
+    "definition": "数据契约把生产者与消费者共同依赖的字段形状、语义、质量和兼容规则写成可检查的版本约定。",
+    "boundary": "它不等于字段清单，也不自动保证业务值正确；版本、所有者、兼容窗口和迁移动作仍要写清楚。",
+    "sceneKind": "contract",
+    "sceneTitle": "生产者变化怎样通过契约闸门",
+    "actionLabel": "推进一个阶段",
+    "actors": [
+      {
+        "id": "producer",
+        "label": "生产者",
+        "detail": "订单事件 v1",
+        "icon": "server",
+        "group": "上游"
+      },
+      {
+        "id": "contract",
+        "label": "数据契约",
+        "detail": "email:string · required",
+        "icon": "shield",
+        "group": "约定"
+      },
+      {
+        "id": "consumer",
+        "label": "消费者",
+        "detail": "读取 email",
+        "icon": "database",
+        "group": "下游"
+      },
+      {
+        "id": "gate",
+        "label": "兼容性闸门",
+        "detail": "等待 v2 评估",
+        "icon": "check",
+        "group": "发布"
+      }
+    ],
+    "edges": [
+      {
+        "id": "producer-contract",
+        "from": "producer",
+        "to": "contract",
+        "label": "声明版本"
+      },
+      {
+        "id": "contract-consumer",
+        "from": "contract",
+        "to": "consumer",
+        "label": "提供约定"
+      },
+      {
+        "id": "contract-gate",
+        "from": "contract",
+        "to": "gate",
+        "label": "检查变化"
+      }
+    ],
+    "frames": [
+      {
+        "label": "发布 v1",
+        "note": "生产者给出 email 字段，消费者按契约读取。",
+        "activeIds": [
+          "producer",
+          "contract"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "consumer",
+          "gate"
+        ],
+        "values": {
+          "producer": "v1 · email:string"
+        },
+        "activeEdgeIds": [
+          "producer-contract"
+        ]
+      },
+      {
+        "label": "消费者读取",
+        "note": "消费者的依赖是可见的：字段名、类型和必填语义都有来源。",
+        "activeIds": [
+          "consumer",
+          "contract"
+        ],
+        "doneIds": [
+          "producer"
+        ],
+        "mutedIds": [
+          "gate"
+        ],
+        "values": {
+          "consumer": "email required"
+        },
+        "activeEdgeIds": [
+          "contract-consumer"
+        ]
+      },
+      {
+        "label": "提出 v2",
+        "note": "新增可选字段与直接改名看似都改了一处，兼容风险并不相同。",
+        "activeIds": [
+          "producer",
+          "gate"
+        ],
+        "doneIds": [
+          "contract"
+        ],
+        "mutedIds": [
+          "consumer"
+        ],
+        "values": {
+          "producer": "v2 · email + locale"
+        },
+        "activeEdgeIds": [
+          "producer-contract"
+        ]
+      },
+      {
+        "label": "契约裁决",
+        "note": "兼容变化放行；直接移除或改名先阻断并要求迁移或双写。",
+        "activeIds": [
+          "gate"
+        ],
+        "doneIds": [
+          "producer",
+          "contract",
+          "consumer"
+        ],
+        "mutedIds": [],
+        "values": {
+          "gate": "PASS / BLOCK"
+        },
+        "activeEdgeIds": [
+          "contract-gate"
+        ],
+        "metric": {
+          "label": "破坏性变化",
+          "value": "先停在发布前"
+        }
+      }
+    ],
+    "insight": "数据契约让变化在发布边界被看见，减少下游靠运行时猜字段。",
+    "quiz": {
+      "question": "生产者把 email 改成 user_id 且不保留旧字段时，契约应该怎样处理？",
+      "options": [
+        {
+          "label": "标成破坏性变化，先迁移或双写",
+          "correct": true
+        },
+        {
+          "label": "因为都是字符串所以自动兼容",
+          "correct": false
+        },
+        {
+          "label": "等下游报错后再决定",
+          "correct": false
+        }
+      ],
+      "success": "类型相同不代表语义和依赖相同。",
+      "retry": "先看字段语义、消费者依赖和兼容窗口。"
+    },
+    "prompt": {
+      "title": "审查一次数据契约变更",
+      "text": "请列出生产者、消费者、字段语义、版本、兼容性、迁移窗口和发布前的阻断条件。"
+    },
+    "sources": [
+      {
+        "url": "https://docs.getdbt.com/docs/mesh/govern/model-contracts",
+        "label": "dbt · Model contracts",
+        "note": "模型列与契约检查"
+      },
+      {
+        "url": "https://bitol-io.github.io/open-data-contract-standard/latest/",
+        "label": "Open Data Contract Standard",
+        "note": "契约字段、质量与所有者"
+      },
+      {
+        "url": "https://avro.apache.org/docs/1.12.0/specification/#schema-evolution",
+        "label": "Apache Avro · Schema Evolution",
+        "note": "模式演进与兼容性"
+      },
+      {
+        "url": "https://www.snowflake.com/en/developers/guides/data-contracts/",
+        "label": "Snowflake · Data contracts",
+        "note": "生产者消费者协作边界"
+      }
+    ]
   }
 ]
