@@ -13,20 +13,21 @@ function Result({ icon: Icon, title, detail }: { icon: typeof CheckCircle; title
   return <div className={styles.result} role="status"><Icon size={19} aria-hidden="true" /><span><strong>{title}</strong> · {detail}</span></div>;
 }
 
-function Frame({ ariaLabel, className, eyebrow, meta, labels, scene, children, result, caption }: {
+function Frame({ ariaLabel, className, eyebrow, meta, labels, scene, onReplay, children, result, caption }: {
   ariaLabel: string;
   className?: string;
   eyebrow: string;
   meta: string;
   labels: string[];
   scene: ReturnType<typeof useScene>;
+  onReplay?: () => void;
   children: ReactNode;
   result: { icon: typeof CheckCircle; title: string; detail: string };
   caption: string;
 }) {
   return <figure ref={scene.ref} className={`${styles.frame} ${className ?? ""}`} aria-label={ariaLabel} data-step={scene.step}>
     <Header eyebrow={eyebrow} meta={meta} />
-    <SceneControls scene={scene} labels={labels} />
+    <SceneControls scene={scene} labels={labels} onReplay={onReplay} />
     {children}
     <Result {...result} />
     <figcaption>{caption}</figcaption>
@@ -44,7 +45,7 @@ export function RuntimeSignatureHero() {
     { title: environment === "browser" ? "换 API 就会撞边界" : "换 API 就会撞边界", detail: environment === "browser" ? "fs 不在浏览器运行时" : "document 不在 Node 默认环境", icon: WarningCircle },
   ][scene.step];
 
-  return <Frame ariaLabel="运行时决定一段代码能够使用哪些环境能力" className={styles.runtime} eyebrow="代码带着环境一起运行" meta="same code · different runtime" labels={labels} scene={scene} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="运行时不是把代码重新写一遍，而是决定这次执行能拿到哪些宿主能力；换环境时，先找能力边界。">
+  return <Frame ariaLabel="运行时决定一段代码能够使用哪些环境能力" className={styles.runtime} eyebrow="代码带着环境一起运行" meta="same code · different runtime" labels={labels} scene={scene} onReplay={() => setEnvironment("browser")} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="运行时不是把代码重新写一遍，而是决定这次执行能拿到哪些宿主能力；换环境时，先找能力边界。">
     <div className={styles.runtimeControls} role="group" aria-label="选择运行环境">
       <button type="button" aria-pressed={environment === "browser"} onClick={() => { setEnvironment("browser"); scene.seek(1); }}><Browser size={15} />浏览器</button>
       <button type="button" aria-pressed={environment === "node"} onClick={() => { setEnvironment("node"); scene.seek(1); }}><HardDrives size={15} />Node.js</button>
@@ -68,7 +69,7 @@ export function PackageSignatureHero() {
     { title: resolution === "lock" ? "同一棵树可重现" : "范围相同也可能换版本", detail: resolution === "lock" ? "color-utils 1.4.2" : "color-utils 1.5.0", icon: resolution === "lock" ? CheckCircle : WarningCircle },
   ][scene.step];
 
-  return <Frame ariaLabel="包管理把版本范围解析成可复现的依赖树" className={styles.package} eyebrow="范围不是一棵树，锁文件才是一次安装的快照" meta="range → tree → lock" labels={labels} scene={scene} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="package.json 说允许哪些版本，锁文件记录这次究竟装了哪些版本；它让安装可复现，却不替你判断依赖是否安全。">
+  return <Frame ariaLabel="包管理把版本范围解析成可复现的依赖树" className={styles.package} eyebrow="范围不是一棵树，锁文件才是一次安装的快照" meta="range → tree → lock" labels={labels} scene={scene} onReplay={() => setResolution("lock")} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="package.json 说允许哪些版本，锁文件记录这次究竟装了哪些版本；它让安装可复现，却不替你判断依赖是否安全。">
     <div className={styles.packageControls} role="group" aria-label="选择安装是否使用锁文件">
       <button type="button" aria-pressed={resolution === "lock"} onClick={() => { setResolution("lock"); scene.seek(3); }}><LockKey size={15} />按锁文件</button>
       <button type="button" aria-pressed={resolution === "range"} onClick={() => { setResolution("range"); scene.seek(3); }}><Package size={15} />只按范围</button>
@@ -92,7 +93,7 @@ export function TypeScriptSignatureHero() {
     { title: payload === "valid" ? "运行时形状匹配" : "运行时仍可能撞墙", detail: payload === "valid" ? "name 是字符串" : "name 实际是数字", icon: payload === "valid" ? CheckCircle : WarningCircle },
   ][scene.step];
 
-  return <Frame ariaLabel="TypeScript 的静态类型检查与运行时输入校验是两道不同的门" className={styles.typescript} eyebrow="类型尺能提前看见一部分错误" meta="static check ≠ runtime proof" labels={labels} scene={scene} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="TypeScript 的类型在编译检查里发挥作用；来自网络、文件或用户的值仍要在运行时验证，类型通过不等于数据已经可信。">
+  return <Frame ariaLabel="TypeScript 的静态类型检查与运行时输入校验是两道不同的门" className={styles.typescript} eyebrow="类型尺能提前看见一部分错误" meta="static check ≠ runtime proof" labels={labels} scene={scene} onReplay={() => setPayload("unknown")} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="TypeScript 的类型在编译检查里发挥作用；来自网络、文件或用户的值仍要在运行时验证，类型通过不等于数据已经可信。">
     <div className={styles.typescriptControls} role="group" aria-label="选择运行时输入形状">
       <button type="button" aria-pressed={payload === "unknown"} onClick={() => { setPayload("unknown"); scene.seek(3); }}><WarningCircle size={15} />未校验 JSON</button>
       <button type="button" aria-pressed={payload === "valid"} onClick={() => { setPayload("valid"); scene.seek(3); }}><CheckCircle size={15} />通过运行时校验</button>
@@ -117,7 +118,7 @@ export function MvpSignatureHero() {
     { title: scope === "minimum" ? "任务留下可观察证据" : "还没学到关键答案", detail: scope === "minimum" ? "3/3 找到邀请码" : "完成 ≠ 验证假设", icon: scope === "minimum" ? CheckCircle : WarningCircle },
   ][scene.step];
 
-  return <Frame ariaLabel="MVP 通过缩小范围验证一个关键产品假设" className={styles.mvp} eyebrow="少做一点，是为了更快知道什么是真的" meta="hypothesis · task · evidence" labels={labels} scene={scene} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="MVP 的最小指的是验证范围，不是粗糙程度；留下关键任务和证据，才能知道下一轮该保留、修改还是放弃。">
+  return <Frame ariaLabel="MVP 通过缩小范围验证一个关键产品假设" className={styles.mvp} eyebrow="少做一点，是为了更快知道什么是真的" meta="hypothesis · task · evidence" labels={labels} scene={scene} onReplay={() => setScope("minimum")} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="MVP 的最小指的是验证范围，不是粗糙程度；留下关键任务和证据，才能知道下一轮该保留、修改还是放弃。">
     <div className={styles.mvpControls} role="group" aria-label="选择产品范围"><button type="button" aria-pressed={scope === "minimum"} onClick={() => { setScope("minimum"); scene.seek(3); }}><Target size={15} />一个假设</button><button type="button" aria-pressed={scope === "full"} onClick={() => { setScope("full"); scene.seek(3); }}><Gauge size={15} />完整愿望单</button></div>
     <div className={styles.mvpBoard} data-scope={scope} data-step={scene.step}>
       <div className={styles.mvpTarget}><Target size={22} /><span>本轮假设</span><strong>邀请码能找到</strong><small>判断：用户是否完成关键任务</small></div>
@@ -138,7 +139,7 @@ export function UserFlowSignatureHero() {
     { title: branch === "expired" ? "恢复点保留了原任务" : "成功也要落到明确结果", detail: branch === "expired" ? "邮箱字段仍在" : "账号已恢复", icon: branch === "expired" ? ArrowCounterClockwise : CheckCircle },
   ][scene.step];
 
-  return <Frame ariaLabel="用户流程把入口、分支和恢复点接成一条可回来的任务" className={styles.userFlow} eyebrow="画的是任务怎样回来，不是页面怎样排队" meta="entry · branch · recovery" labels={labels} scene={scene} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="用户流程要把失败也接回目标；过期链接是一次分支，重新发送后仍应回到原来的任务，而不是回到无关首页。">
+  return <Frame ariaLabel="用户流程把入口、分支和恢复点接成一条可回来的任务" className={styles.userFlow} eyebrow="画的是任务怎样回来，不是页面怎样排队" meta="entry · branch · recovery" labels={labels} scene={scene} onReplay={() => setBranch("expired")} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="用户流程要把失败也接回目标；过期链接是一次分支，重新发送后仍应回到原来的任务，而不是回到无关首页。">
     <div className={styles.userFlowControls} role="group" aria-label="选择用户流程分支"><button type="button" aria-pressed={branch === "expired"} onClick={() => { setBranch("expired"); scene.seek(2); }}><Clock size={15} />链接过期</button><button type="button" aria-pressed={branch === "success"} onClick={() => { setBranch("success"); scene.seek(2); }}><CheckCircle size={15} />链接有效</button></div>
     <div className={styles.userFlowBoard} data-branch={branch} data-step={scene.step}>
       <div className={styles.flowTicket}><Envelope size={20} /><span>入口票据</span><strong>找回账号</strong><small>邮件链接</small></div>
@@ -159,7 +160,7 @@ export function WireframeSignatureHero() {
     { title: visual ? "颜色抢回了讨论" : "结构证据足够，先停在低保真", detail: visual ? "视觉稿不能替结构验收" : "尚未承诺动效与响应式", icon: visual ? WarningCircle : CheckCircle },
   ][scene.step];
 
-  return <Frame ariaLabel="线框图用低细节骨架验证内容层级和操作位置" className={styles.wireframe} eyebrow="先让页面站得住，再决定它长什么样" meta="content · hierarchy · action" labels={labels} scene={scene} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="线框图的低保真是一个讨论工具：它暴露内容、分组和操作的位置，却不替真实文案、响应式和动效做承诺。">
+  return <Frame ariaLabel="线框图用低细节骨架验证内容层级和操作位置" className={styles.wireframe} eyebrow="先让页面站得住，再决定它长什么样" meta="content · hierarchy · action" labels={labels} scene={scene} onReplay={() => setVisual(false)} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="线框图的低保真是一个讨论工具：它暴露内容、分组和操作的位置，却不替真实文案、响应式和动效做承诺。">
     <div className={styles.wireframeControls} role="group" aria-label="切换是否显示视觉装饰"><button type="button" aria-pressed={!visual} onClick={() => { setVisual(false); scene.seek(3); }}><Layout size={15} />只看结构</button><button type="button" aria-pressed={visual} onClick={() => { setVisual(true); scene.seek(3); }}><Eye size={15} />打开视觉稿</button></div>
     <div className={styles.wireframeBoard} data-visual={visual} data-step={scene.step}>
       <div className={styles.wireCanvas}><span className={styles.wireGrid} aria-hidden="true" /><div className={styles.wireBlock} data-slot="title"><small>标题</small><strong>订单详情</strong></div><div className={styles.wireBlock} data-slot="body"><small>内容</small><span>金额 · 条件 · 状态</span></div><div className={styles.wireBlock} data-slot="action"><small>操作</small><b>确认退款</b></div><div className={styles.wirePaint} aria-hidden="true" /></div>
@@ -179,7 +180,7 @@ export function PrototypeSignatureHero() {
     { title: observation === "pause" ? "改入口，再测一轮" : "还要决定下一步证据", detail: observation === "pause" ? "把疑问带回设计" : "性能与真实后端尚未验证", icon: observation === "pause" ? WarningCircle : CheckCircle },
   ][scene.step];
 
-  return <Frame ariaLabel="原型把一个假设交给真实任务，再把停顿变成下一轮证据" className={styles.prototype} eyebrow="原型不是成品缩小版，是一台观察机器" meta="hypothesis · task · evidence" labels={labels} scene={scene} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="原型只需要实现本轮要观察的行为；完成任务不等于上线，停顿、回看和错误路径才会告诉下一轮该改哪里。">
+  return <Frame ariaLabel="原型把一个假设交给真实任务，再把停顿变成下一轮证据" className={styles.prototype} eyebrow="原型不是成品缩小版，是一台观察机器" meta="hypothesis · task · evidence" labels={labels} scene={scene} onReplay={() => setObservation("pause")} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="原型只需要实现本轮要观察的行为；完成任务不等于上线，停顿、回看和错误路径才会告诉下一轮该改哪里。">
     <div className={styles.prototypeControls} role="group" aria-label="选择测试观察结果"><button type="button" aria-pressed={observation === "pause"} onClick={() => { setObservation("pause"); scene.seek(3); }}><Pause size={15} />记录停顿</button><button type="button" aria-pressed={observation === "smooth"} onClick={() => { setObservation("smooth"); scene.seek(3); }}><CheckCircle size={15} />顺利完成</button></div>
     <div className={styles.prototypeBoard} data-observation={observation} data-step={scene.step}>
       <div className={styles.prototypeHypothesis}><Target size={21} /><span>假设卡</span><strong>邀请码找得到吗？</strong><small>这轮只验证入口理解</small></div>
@@ -200,7 +201,7 @@ export function IaSignatureHero() {
     { title: "多入口指向同一份正文", detail: "不复制、不分叉", icon: ShareNetwork },
   ][scene.step];
 
-  return <Frame ariaLabel="信息架构把内容卡和用户任务词连接成可预测入口" className={styles.ia} eyebrow="先听用户怎么找，再决定内容放哪" meta="task words · labels · one source" labels={labels} scene={scene} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="信息架构组织的是用户要完成的任务；同一篇内容可以有多个入口，但正文只维护一份，避免不同菜单说出不同结论。">
+  return <Frame ariaLabel="信息架构把内容卡和用户任务词连接成可预测入口" className={styles.ia} eyebrow="先听用户怎么找，再决定内容放哪" meta="task words · labels · one source" labels={labels} scene={scene} onReplay={() => setEntry("task")} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="信息架构组织的是用户要完成的任务；同一篇内容可以有多个入口，但正文只维护一份，避免不同菜单说出不同结论。">
     <div className={styles.iaControls} role="group" aria-label="选择入口语言"><button type="button" aria-pressed={entry === "task"} onClick={() => { setEntry("task"); scene.seek(2); }}><Tag size={15} />用户任务词</button><button type="button" aria-pressed={entry === "team"} onClick={() => { setEntry("team"); scene.seek(2); }}><ShareNetwork size={15} />团队目录词</button></div>
     <div className={styles.iaBoard} data-entry={entry} data-step={scene.step}>
       <div className={styles.iaCard}><FileText size={20} /><span>一份正文</span><strong>API 密钥</strong><small>只维护这一张卡</small></div>
@@ -221,7 +222,7 @@ export function DesignSystemSignatureHero() {
     { title: "治理让改变可追踪", detail: "token v2 · migration note", icon: GitBranch },
   ][scene.step];
 
-  return <Frame ariaLabel="设计系统把设计决定织成可复用组件并留下治理记录" className={styles.designSystem} eyebrow="组件只是织片，系统还要记住为什么这样织" meta="tokens · components · governance" labels={labels} scene={scene} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="设计系统把原则、token、组件、模式和治理放在同一套约定里；它让一致性可维护，也让迁移和例外有记录。">
+  return <Frame ariaLabel="设计系统把设计决定织成可复用组件并留下治理记录" className={styles.designSystem} eyebrow="组件只是织片，系统还要记住为什么这样织" meta="tokens · components · governance" labels={labels} scene={scene} onReplay={() => setToken("brand")} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="设计系统把原则、token、组件、模式和治理放在同一套约定里；它让一致性可维护，也让迁移和例外有记录。">
     <div className={styles.designSystemControls} role="group" aria-label="选择设计 token"><button type="button" aria-pressed={token === "brand"} onClick={() => { setToken("brand"); scene.seek(2); }}><Layout size={15} />品牌 token</button><button type="button" aria-pressed={token === "contrast"} onClick={() => { setToken("contrast"); scene.seek(2); }}><CheckCircle size={15} />高对比 token</button></div>
     <div className={styles.designSystemBoard} data-token={token} data-step={scene.step}>
       <div className={styles.dsToken}><span>token</span><code>--action-color</code><strong>{token === "brand" ? "苔绿" : "深蓝"}</strong><small>一个决定，多个使用处</small></div>
@@ -242,7 +243,7 @@ export function A11ySignatureHero() {
     { title: outcome === "error" ? "焦点回到问题处" : "焦点落到确认结果", detail: outcome === "error" ? "提示与字段相邻" : "状态被读到", icon: CheckCircle },
   ][scene.step];
 
-  return <Frame ariaLabel="无障碍让焦点、名称、错误和结果沿同一条可操作路径保持可见" className={styles.a11y} eyebrow="无障碍是一条能被走完、读懂、修正的路" meta="focus · name · recovery" labels={labels} scene={scene} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="ARIA 只是语义工具之一；真正的无障碍还要让结构、键盘顺序、可见焦点、文字错误和恢复位置彼此接得上。">
+  return <Frame ariaLabel="无障碍让焦点、名称、错误和结果沿同一条可操作路径保持可见" className={styles.a11y} eyebrow="无障碍是一条能被走完、读懂、修正的路" meta="focus · name · recovery" labels={labels} scene={scene} onReplay={() => setOutcome("error")} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="ARIA 只是语义工具之一；真正的无障碍还要让结构、键盘顺序、可见焦点、文字错误和恢复位置彼此接得上。">
     <div className={styles.a11yControls} role="group" aria-label="选择表单结果"><button type="button" aria-pressed={outcome === "error"} onClick={() => { setOutcome("error"); scene.seek(2); }}><WarningCircle size={15} />出现错误</button><button type="button" aria-pressed={outcome === "success"} onClick={() => { setOutcome("success"); scene.seek(2); }}><CheckCircle size={15} />提交成功</button></div>
     <div className={styles.a11yBoard} data-outcome={outcome} data-step={scene.step}>
       <div className={styles.a11yKeyring}><Key size={20} /><span>Tab 顺序</span><b>{scene.step === 0 ? "跳过" : scene.step === 1 ? "邮箱 → 密码" : scene.step >= 2 ? "提交 → 结果" : "—"}</b><small>焦点可见，名称可读</small></div>
