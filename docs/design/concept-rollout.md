@@ -60,8 +60,9 @@
 | 061 | 安全区域、应用生命周期、应用权限、推送通知、跨平台开发、WebView、CSS 选择器、盒模型、层叠、CSS 优先级 | VBP-091 · [平台与 CSS 机制差异表](VBP-091-mechanism-matrix.md) · 十条逐条重做，唯一 reviewer 已 PASS，生产已发布 |
 | 062 | 弹性布局、网格布局、定位、断点、媒体查询、模块、代码分割、懒加载、水合、客户端渲染 | VBP-092 · [渲染与布局机制差异表](VBP-092-mechanism-matrix.md) · 十条逐条重做特色演示，生产已发布 |
 | 063 | 使用场景、验收标准、范围、路线图、优先级、迭代、转化率、漏斗、可用性测试、视觉稿 | VBP-094 · [产品设计机制差异表](VBP-094-mechanism-matrix.md) · 十条逐条重做，唯一 reviewer PASS，生产已发布 |
+| 064 | 站点地图、设计令牌、视觉层级、反馈、加载状态、微交互、减少动态效果、关系型数据库、NoSQL、行 | VBP-095 · [下一批十条词条机制差异表](VBP-095-mechanism-matrix.md) · 十条逐条重做，唯一 reviewer PASS，生产已发布 |
 
-后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 185 页，另有 9 页历史基准；其余 107 页待处理，新增候选不计入完成数。
+后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 195 页，另有 9 页历史基准；其余 97 页待处理，新增候选不计入完成数。
 
 升级期间只公开下表中“基准”或“本地验收及 review 通过”的词条。公开清单维护在 `content/zh/published-terms.json`；待处理词条保留源码与研究底稿，但不进入星图、搜索、站点地图、词条导航或直接路由。每批完成并合入 dev 后同步更新本表和公开清单。
 
@@ -213,13 +214,13 @@
 | funnel | 漏斗 | 产品与设计 | VBP-094 · 生产已发布 |
 | usability-testing | 可用性测试 | 产品与设计 | VBP-094 · 生产已发布 |
 | mockup | 视觉稿 | 产品与设计 | VBP-094 · 生产已发布 |
-| sitemap | 站点地图 | 产品与设计 | 待处理 |
-| design-token | 设计令牌 | 产品与设计 | 待处理 |
-| visual-hierarchy | 视觉层级 | 产品与设计 | 待处理 |
-| feedback | 反馈 | 产品与设计 | 待处理 |
-| loading-state | 加载状态 | 产品与设计 | 待处理 |
-| microinteraction | 微交互 | 产品与设计 | 待处理 |
-| reduced-motion | 减少动态效果 | 产品与设计 | 待处理 |
+| sitemap | 站点地图 | 产品与设计 | VBP-095 · 十条逐条 review 通过，生产已发布 |
+| design-token | 设计令牌 | 产品与设计 | VBP-095 · 十条逐条 review 通过，生产已发布 |
+| visual-hierarchy | 视觉层级 | 产品与设计 | VBP-095 · 十条逐条 review 通过，生产已发布 |
+| feedback | 反馈 | 产品与设计 | VBP-095 · 十条逐条 review 通过，生产已发布 |
+| loading-state | 加载状态 | 产品与设计 | VBP-095 · 十条逐条 review 通过，生产已发布 |
+| microinteraction | 微交互 | 产品与设计 | VBP-095 · 十条逐条 review 通过，生产已发布 |
+| reduced-motion | 减少动态效果 | 产品与设计 | VBP-095 · 十条逐条 review 通过，生产已发布 |
 | server | 服务器 | 后端 | 027 · 本地验收及 review 通过 |
 | request | 请求 | 后端 | 005 · 本地验收及 review 通过 |
 | response | 响应 | 后端 | 005 · 本地验收及 review 通过 |
@@ -245,11 +246,11 @@
 | pagination | 分页 | 后端 | 007 · 本地验收及 review 通过 |
 | retry | 重试 | 后端 | 008 · 本地验收及 review 通过 |
 | timeout | 超时 | 后端 | 008 · 本地验收及 review 通过 |
-| relational-database | 关系型数据库 | 后端 | 待处理 |
+| relational-database | 关系型数据库 | 后端 | VBP-095 · 十条逐条 review 通过，生产已发布 |
 | sql | SQL | 后端 | 012 · 本地验收及 review 通过 |
-| nosql | NoSQL | 后端 | 待处理 |
+| nosql | NoSQL | 后端 | VBP-095 · 十条逐条 review 通过，生产已发布 |
 | table | 表 | 后端 | 010 · 本地验收及 review 通过 |
-| row | 行 | 后端 | 待处理 |
+| row | 行 | 后端 | VBP-095 · 十条逐条 review 通过，生产已发布 |
 | column | 列 | 后端 | 待处理 |
 | database-schema | 数据库模式 | 后端 | 本地验收及 review 通过 · VBP-026 |
 | primary-key | 主键 | 后端 | 010 · 本地验收及 review 通过 |
