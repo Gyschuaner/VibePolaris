@@ -14165,8 +14165,8 @@
     "edges": [],
     "frames": [
       {
-        "label": "先放入真实使用条件",
-        "note": "三组人按任务和环境进入矩阵，不补写年龄、性格等无证据背景。",
+        "label": "所有用户还是散点",
+        "note": "访客先以散点出现；没有共同任务，团队还不知道该先研究谁。",
         "activeIds": [
           "operators",
           "managers",
@@ -14178,13 +14178,13 @@
           "release"
         ],
         "values": {
-          "matrix": "3 组 × 4 个条件"
+          "matrix": "所有用户 · 尚未分组"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "当前版本要求离线扫码",
-        "note": "把离线扫码列为必要任务后，仓库操作员列被高亮，经理与访客没有该任务。",
+        "label": "按任务聚成一组",
+        "note": "把每月批量导出的财务人员与临时查账、偶尔查看的人分开，先看任务而不是人口标签。",
         "activeIds": [
           "operators",
           "matrix"
@@ -14197,31 +14197,32 @@
           "release"
         ],
         "values": {
-          "operators": "高频 · 必须离线"
+          "operators": "财务人员 · 每月批量导出"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "权限约束再次筛选",
-        "note": "本版需要编辑库存，访客因只读退出范围，经理保留为次要查看者。",
+        "label": "补上频率与限制",
+        "note": "补充核对字段、编辑权限、设备和网络环境；这些条件会改变默认值、入口和支持方式。",
         "activeIds": [
           "operators",
-          "managers",
-          "visitors",
           "matrix"
         ],
-        "doneIds": [],
+        "doneIds": [
+          "managers",
+          "visitors"
+        ],
         "mutedIds": [
           "release"
         ],
         "values": {
-          "visitors": "只读 · 非本期重点"
+          "matrix": "任务 · 频率 · 权限 · 环境"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "形成可解释的范围",
-        "note": "本期优先服务仓库操作员，同时记录经理只读复盘和访客查询暂不优化。",
+        "label": "圈定本期服务范围",
+        "note": "本期先让财务人员完成批量导出，其他用户的任务和未覆盖原因留到下一轮研究。",
         "activeIds": [
           "matrix",
           "release"
@@ -14233,7 +14234,7 @@
         ],
         "mutedIds": [],
         "values": {
-          "release": "主：操作员 · 次：经理 · 非范围：访客"
+          "release": "主：财务批量导出 · 下一轮：其他组"
         },
         "activeEdgeIds": []
       }
