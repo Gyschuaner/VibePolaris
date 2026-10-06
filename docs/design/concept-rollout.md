@@ -53,6 +53,9 @@
 | 054 | 防火墙、IP 地址、网络端口、数据包、URL、主机名、DNS 记录、DNS 解析器、缓存控制、MIME 类型 | VBP-074 · [网络基础与 HTTP 边界词条更新及生产发布记录](VBP-074-content-refresh-20261004.md) · 十条逐条验收、dev 集成及生产统一发布 |
 | 055 | TCP、UDP、TLS 握手、响应体、响应头、Cookie、CORS、WebSocket、API 密钥、基于角色的访问控制 | VBP-075 · [传输与 HTTP 应用边界词条更新及生产发布记录](VBP-075-content-refresh-20261004.md) · 十条逐条验收、dev 集成及生产统一发布 |
 | 056 | Harness、提示词、上下文、工具调用、记忆、MCP、上下文窗口、智能体循环、智能体记忆、工作记忆 | VBP-076 · [AI Agent 核心词条一致性复核与补正记录](VBP-076-content-refresh-20261005.md) · 十条逐条复核、来源台账对齐、dev 集成及生产统一发布 |
+| 057 | 数据接入、数据管道、数据转换、数据验证、数据血缘、流处理、单元测试、集成测试、端到端测试、冒烟测试 | VBP-087 · [数据流与测试边界机制矩阵](VBP-087-mechanism-matrix.md) · 十条逐条重做、review、dev 集成及生产统一发布 |
+| 058 | 回归测试、测试用例、模拟对象、断言、测试覆盖率、API 测试、最小权限、哈希、输入校验、静态加密 | VBP-088 · [测试证据与安全边界机制矩阵](VBP-088-mechanism-matrix.md) · 十条逐条重做、review、dev 集成及生产统一发布 |
+| 059 | 运行时、包管理、TypeScript、MVP、用户流程、线框图、信息架构、原型、设计系统、无障碍 | VBP-089 · [产品与技术基础词条机制差异表](VBP-089-mechanism-matrix.md) · 十条逐条重做、唯一 reviewer 已 PASS，待 dev/main/生产统一发布 |
 
 后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 175 页，另有 9 页历史基准；其余 117 页待处理，新增候选不计入完成数。
 
@@ -114,18 +117,18 @@
 | ssg-ssr | 静态站点与服务端渲染 | 技术栈 | 036 · 生产已发布 |
 | deploy | 部署与托管 | 技术栈 | 036 · 生产已发布 |
 | library | 库 | 技术栈 | 036 · 生产已发布 |
-| runtime | 运行时 | 技术栈 | 待处理 |
-| package | 包管理 | 技术栈 | 待处理 |
-| typescript | TypeScript | 技术栈 | 待处理 |
+| runtime | 运行时 | 技术栈 | VBP-089 · 本地实现及唯一 reviewer 通过，待批次发布 |
+| package | 包管理 | 技术栈 | VBP-089 · 本地实现及唯一 reviewer 通过，待批次发布 |
+| typescript | TypeScript | 技术栈 | VBP-089 · 本地实现及唯一 reviewer 通过，待批次发布 |
 | repo-commit | 仓库与提交 | Git | 044 · 生产已发布 |
 | branch | 分支 | Git | 044 · 生产已发布 |
-| mvp | MVP | 产品与设计 | 待处理 |
-| user-flow | 用户流程 | 产品与设计 | 待处理 |
-| wireframe | 线框图 | 产品与设计 | 待处理 |
-| ia | 信息架构 | 产品与设计 | 待处理 |
-| prototype | 原型 | 产品与设计 | 待处理 |
-| design-system | 设计系统 | 产品与设计 | 待处理 |
-| a11y | 无障碍 | 产品与设计 | 待处理 |
+| mvp | MVP | 产品与设计 | VBP-089 · 本地实现及唯一 reviewer 通过，待批次发布 |
+| user-flow | 用户流程 | 产品与设计 | VBP-089 · 本地实现及唯一 reviewer 通过，待批次发布 |
+| wireframe | 线框图 | 产品与设计 | VBP-089 · 本地实现及唯一 reviewer 通过，待批次发布 |
+| ia | 信息架构 | 产品与设计 | VBP-089 · 本地实现及唯一 reviewer 通过，待批次发布 |
+| prototype | 原型 | 产品与设计 | VBP-089 · 本地实现及唯一 reviewer 通过，待批次发布 |
+| design-system | 设计系统 | 产品与设计 | VBP-089 · 本地实现及唯一 reviewer 通过，待批次发布 |
+| a11y | 无障碍 | 产品与设计 | VBP-089 · 本地实现及唯一 reviewer 通过，待批次发布 |
 | semantic-html | 语义化 HTML | 前端 | 待处理 |
 | deep-link | 深度链接 | 前端 | 待处理 |
 | app-manifest | 应用清单 | 前端 | 待处理 |
@@ -278,27 +281,27 @@
 | dataframe | 数据帧 | 技术栈 | 019 · 本地验收及 review 通过 |
 | dataset-data | 数据集 | 技术栈 | 018 · 本地验收及 review 通过 |
 | batch-processing | 批处理 | 技术栈 | 015 · 本地验收及 review 通过 |
-| data-ingestion | 数据接入 | 技术栈 | 017 · 本地验收及 review 通过 |
-| data-pipeline | 数据管道 | 技术栈 | 016 · 本地验收及 review 通过 |
+| data-ingestion | 数据接入 | 技术栈 | VBP-087 · 生产已发布 |
+| data-pipeline | 数据管道 | 技术栈 | VBP-087 · 生产已发布 |
 | data-quality | 数据质量 | 技术栈 | 018 · 本地验收及 review 通过 |
-| data-transformation | 数据转换 | 技术栈 | 017 · 本地验收及 review 通过 |
-| data-validation | 数据验证 | 技术栈 | 017 · 本地验收及 review 通过 |
-| stream-processing | 流处理 | 技术栈 | 015 · 本地验收及 review 通过 |
-| data-lineage | 数据血缘 | 技术栈 | 018 · 本地验收及 review 通过 |
-| unit-test | 单元测试 | 技术栈 | 待处理 |
-| integration-test | 集成测试 | 技术栈 | 待处理 |
-| e2e-test | 端到端测试 | 技术栈 | 待处理 |
-| smoke-test | 冒烟测试 | 技术栈 | 待处理 |
-| regression-test | 回归测试 | 技术栈 | 待处理 |
-| test-case | 测试用例 | 技术栈 | 待处理 |
-| mock | 模拟对象 | 技术栈 | 待处理 |
-| assertion | 断言 | 技术栈 | 待处理 |
-| code-coverage | 测试覆盖率 | 技术栈 | 待处理 |
-| api-testing | API 测试 | 技术栈 | 待处理 |
-| least-privilege | 最小权限 | 技术栈 | 待处理 |
-| hashing | 哈希 | 技术栈 | 待处理 |
-| input-validation | 输入校验 | 技术栈 | 待处理 |
-| encryption-at-rest | 静态加密 | 技术栈 | 待处理 |
+| data-transformation | 数据转换 | 技术栈 | VBP-087 · 生产已发布 |
+| data-validation | 数据验证 | 技术栈 | VBP-087 · 生产已发布 |
+| stream-processing | 流处理 | 技术栈 | VBP-087 · 生产已发布 |
+| data-lineage | 数据血缘 | 技术栈 | VBP-087 · 生产已发布 |
+| unit-test | 单元测试 | 技术栈 | VBP-087 · 生产已发布 |
+| integration-test | 集成测试 | 技术栈 | VBP-087 · 生产已发布 |
+| e2e-test | 端到端测试 | 技术栈 | VBP-087 · 生产已发布 |
+| smoke-test | 冒烟测试 | 技术栈 | VBP-087 · 生产已发布 |
+| regression-test | 回归测试 | 技术栈 | VBP-088 · 生产已发布 |
+| test-case | 测试用例 | 技术栈 | VBP-088 · 生产已发布 |
+| mock | 模拟对象 | 技术栈 | VBP-088 · 生产已发布 |
+| assertion | 断言 | 技术栈 | VBP-088 · 生产已发布 |
+| code-coverage | 测试覆盖率 | 技术栈 | VBP-088 · 生产已发布 |
+| api-testing | API 测试 | 技术栈 | VBP-088 · 生产已发布 |
+| least-privilege | 最小权限 | 技术栈 | VBP-088 · 生产已发布 |
+| hashing | 哈希 | 技术栈 | VBP-088 · 生产已发布 |
+| input-validation | 输入校验 | 技术栈 | VBP-088 · 生产已发布 |
+| encryption-at-rest | 静态加密 | 技术栈 | VBP-088 · 生产已发布 |
 | encryption-in-transit | 传输加密 | 技术栈 | 待处理 |
 | generative-ai | 生成式 AI | AI·Agent | 043 · 生产已发布 |
 | multimodal | 多模态 | AI·Agent | 043 · 生产已发布 |

@@ -34,7 +34,7 @@ export function useScene(length: number) {
   }, [playing, step, length]);
   function seek(next: number) { setPlaying(false); setStep(next); }
   function toggle() {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { seek(length - 1); return; }
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { seek(step === length - 1 ? 0 : length - 1); return; }
     if (step === length - 1) setStep(0);
     setPlaying(!playing);
   }
@@ -50,14 +50,22 @@ const requestSteps = [
   { title: "模型根据日志继续判断", caption: "模型看到日志，决定接着查看 app.py。", active: "model", path: "M 480 200 Q 235 260 170 95", code: 'read_file("app.py")' },
 ];
 
-export function SceneControls({ scene, labels, compact = false }: { scene: ReturnType<typeof useScene>; labels: string[]; compact?: boolean }) {
+export function SceneControls({ scene, labels, compact = false, onReplay }: { scene: ReturnType<typeof useScene>; labels: string[]; compact?: boolean; onReplay?: () => void }) {
+  const replay = () => {
+    onReplay?.();
+    scene.toggle();
+  };
+  const seek = (index: number) => {
+    if (index === 0) onReplay?.();
+    scene.seek(index);
+  };
   return <div className={`${styles.sceneControls} ${compact ? styles.sceneControlsCompact : ""}`}>
-    <button type="button" className={styles.play} aria-pressed={scene.playing} onClick={scene.toggle} aria-label={scene.playing ? "暂停原理演示" : scene.step === labels.length - 1 ? "重播原理演示" : "播放原理演示"}>
+    <button type="button" className={styles.play} aria-pressed={scene.playing} onClick={scene.step === labels.length - 1 ? replay : scene.toggle} aria-label={scene.playing ? "暂停原理演示" : scene.step === labels.length - 1 ? "重播原理演示" : "播放原理演示"}>
       {scene.playing ? <Pause size={17} weight="fill" /> : scene.step === labels.length - 1 ? <ArrowCounterClockwise size={17} /> : <Play size={17} weight="fill" />}
       {scene.playing ? "暂停" : scene.step === labels.length - 1 ? "再看一次" : "看它运转"}
     </button>
-    <div className={styles.steps} aria-label="演示步骤">{labels.map((label, index) => <button key={label} type="button" title={label} aria-label={label} aria-pressed={scene.step === index} onClick={() => scene.seek(index)}><span /></button>)}</div>
-    <button type="button" className={styles.next} onClick={() => scene.seek((scene.step + 1) % labels.length)} aria-label="原理演示下一步"><ArrowRight size={20} /></button>
+    <div className={styles.steps} aria-label="演示步骤">{labels.map((label, index) => <button key={label} type="button" title={label} aria-label={label} aria-pressed={scene.step === index} onClick={() => seek(index)}><span /></button>)}</div>
+    <button type="button" className={styles.next} onClick={() => scene.step === labels.length - 1 ? replay() : scene.seek(scene.step + 1)} aria-label="原理演示下一步"><ArrowRight size={20} /></button>
   </div>;
 }
 

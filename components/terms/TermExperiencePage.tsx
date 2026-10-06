@@ -38,6 +38,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import type { Term } from "@/lib/content";
 import type { TermActorIcon, TermExperience, TermSceneKind } from "@/lib/term-experiences";
+import { DesignSystemSignatureHero, MvpSignatureHero, PackageSignatureHero, RuntimeSignatureHero, TypeScriptSignatureHero } from "./ProductCoreSignatureHeroes";
 
 type TermExperiencePageProps = {
   term: Term;
@@ -370,7 +371,7 @@ export function TermExperiencePage({ term, experience, previous, next, related }
 
         <section className="term-explainer term-experience-explainer" aria-labelledby={`${term.slug}-scene-heading`}>
           <div className="term-section-heading"><span>01</span><h2 id={`${term.slug}-scene-heading`}>{copy.heading}</h2></div>
-          <TermScene experience={experience} />
+          {term.slug === "runtime" ? <RuntimeSignatureHero /> : term.slug === "package" ? <PackageSignatureHero /> : term.slug === "typescript" ? <TypeScriptSignatureHero /> : term.slug === "mvp" ? <MvpSignatureHero /> : term.slug === "design-system" ? <DesignSystemSignatureHero /> : <TermScene experience={experience} />}
           <p className="term-experience-insight"><span>{copy.insight}</span>{experience.insight}</p>
         </section>
 
