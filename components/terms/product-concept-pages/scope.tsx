@@ -1,6 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
-import { GitArticle, Cite, GitHero } from "../GitConceptPageShared";
-import { ScopeLesson } from "../product-concept-lessons/scope";
+import { GitArticle, Cite } from "../GitConceptPageShared";
+import { ScopeHero } from "./mechanism-heroes";
 import { scopeSources } from "@/lib/product-concept-sources/scope";
 
 const sections: [string, string][] = [
@@ -16,14 +16,13 @@ export function ScopeTermPage() {
     subtitle="Scope · 把本期目标、包含项和排除项说清楚"
     sources={scopeSources}
     sections={sections}
-    hero={<GitHero contextLabel="先固定本期目标" contextTitle="导出当前筛选结果" trigger="需求讨论为什么总会从一个导出按钮扩展到完整报表平台？" change="目标 → 包含/排除 → 依赖与变更" proof="新增想法先判断影响，再决定是否改范围" />}
+    hero={<ScopeHero />}
     intro={<>范围说明一次交付要解决的用户任务、包含哪些工作、明确不包含什么，以及依赖和约束在哪里。它让团队在新增想法出现时有共同的判断边界：先看是否仍服务当前目标，再决定记录为后续、替换现有工作，还是重新确认本期承诺。</>}
   >
     <ArticleSection id="scope-goal" title="先从用户任务和版本目标开始">
       <p id="scope-goal-detail" className="vp-citation-target">范围应从一个可以复述的用户任务和清楚的目标开始，而不是从一串功能名开始。比如“导出当前筛选结果为 CSV”说明谁要完成什么结果；“做一个报表平台”既没有限定任务，也无法判断本期做到哪里。<Cite id="scope-goal-detail" sources={scopeSources} /></p>
       <p id="scope-journey-detail" className="vp-citation-target">这个任务仍要放回更大的用户旅程里检查：用户怎样得到筛选条件，导出的文件接下来要在哪里使用，是否还有人工或其他服务参与。范围既不能窄到只做一个按钮，也不能宽到把整条报表旅程未经评估地都装进来。<Cite id="scope-journey-detail" sources={scopeSources} /></p>
       <p id="scope-validation-detail" className="vp-citation-target">目标还要有验证方式，例如确认用户能下载包含当前筛选结果的 CSV，并观察失败率或完成率。发现阶段的目标是减少对问题、约束和可行性的未知；如果证据改变，范围也应允许重新判断，而不是为了守住旧清单忽略结果。<Cite id="scope-validation-detail" sources={scopeSources} /></p>
-      <ScopeLesson />
     </ArticleSection>
 
     <ArticleSection id="scope-boundary" title="把包含、排除和依赖分开">
