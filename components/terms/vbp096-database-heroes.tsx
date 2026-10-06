@@ -38,3 +38,28 @@ export function ColumnMechanismHero() {
   </figure>;
 }
 
+
+const acidSteps = ["全成或全败", "互不偷看", "提交可恢复", "业务仍要定义"];
+
+export function AcidMechanismHero() {
+  const scene = useScene(acidSteps.length);
+  const [failure, setFailure] = useState<"power" | "rule">("power");
+  const powerCut = failure === "power";
+  const committed = scene.step >= 2 && !powerCut;
+  return <figure ref={scene.ref} className={styles.frame} data-kind="acid" data-step={scene.step} aria-label="ACID 四项属性分别如何约束转账事务">
+    <div className={styles.header}><span>一笔转账，四个不同问题</span><strong>{powerCut ? "断电演练" : "规则演练"}</strong></div>
+    <SceneControls scene={scene} labels={acidSteps} />
+    <div className={styles.controls} role="group" aria-label="选择故障条件">
+      <button type="button" aria-pressed={powerCut} onClick={() => { setFailure("power"); scene.seek(0); }}><Lightning size={15} />提交时断电</button>
+      <button type="button" aria-pressed={!powerCut} onClick={() => { setFailure("rule"); scene.seek(0); }}><ShieldCheck size={15} />业务规则缺失</button>
+    </div>
+    <div className={styles.acidBoard}>
+      <div className={styles.transfer}><div><span>账户 A</span><strong>{scene.step >= 0 && committed ? "¥0" : "¥100"}</strong><small>{scene.step >= 1 ? "已锁定 / 可见性受控" : "余额 100"}</small></div><Lightning size={20} aria-hidden="true" /><div><span>账户 B</span><strong>{scene.step >= 0 && committed ? "¥180" : "¥80"}</strong><small>{scene.step >= 1 ? "等待提交" : "余额 80"}</small></div></div>
+      <div className={styles.acidBadges}>{["A · 原子性", "C · 一致性", "I · 隔离性", "D · 持久性"].map((label, index) => <span key={label} data-on={scene.step >= index} data-danger={index === 1 && !powerCut && scene.step === 3}>{label}</span>)}</div>
+      <div className={styles.log} data-danger={scene.step >= 2 && powerCut}><span>恢复日志</span><strong>{scene.step < 2 ? "等待 COMMIT" : powerCut ? "ROLLBACK · 两边恢复" : "WAL · 可重放提交"}</strong><small>{powerCut ? "没有半笔转账留在库里" : "提交之后重启仍能找回变化"}</small></div>
+      <div className={styles.business} data-danger={!powerCut && scene.step === 3}>{!powerCut && scene.step === 3 ? <WarningCircle size={18} /> : <CheckCircle size={18} />}<span>{!powerCut && scene.step === 3 ? "四项属性不会替你补上风控规则" : scene.step === 3 ? "数据库承诺完成，业务规则仍要写下" : "先分清这一步正在回答哪个问题"}</span></div>
+    </div>
+    <div className={styles.status} role="status"><strong>{scene.step === 0 ? "事务开始" : scene.step === 1 ? "并发读取被隔离" : scene.step === 2 ? "提交进入恢复边界" : "ACID 不是万能正确开关"}</strong><span>{powerCut ? "断电演练检查原子性与持久性。" : "规则演练提醒一致性还依赖明确的约束。"}</span></div>
+    <figcaption>ACID 把全成全败、约束、并发可见性和故障恢复拆成四类承诺；每一项都有自己的失败问题。</figcaption>
+  </figure>;
+}
