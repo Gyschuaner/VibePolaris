@@ -1,7 +1,8 @@
 "use client";
 
-import { ArrowRight, CheckCircle, Code, Eye, GitBranch } from "@phosphor-icons/react";
+import { ArrowRight, Browser, CheckCircle, Code, Eye, Gear, GitBranch, Key } from "@phosphor-icons/react";
 import { useScene, SceneControls } from "./HarnessStoryScenes";
+import { useState } from "react";
 import type { ReactNode } from "react";
 import styles from "./FrontendInteractionSignatureHeroes.module.css";
 
@@ -29,6 +30,27 @@ export function SemanticHtmlSignatureHero() {
         <div className={styles.treeRoot}>DOM</div>
         <div className={styles.treeBranches}><i /><i /><i /></div>
         <div className={`${styles.semanticAssistive} ${scene.step === 0 ? styles.isMuted : ""}`}><Eye size={19} /><div><span>无障碍树</span><strong>{tree}</strong></div>{scene.step === 2 ? <CheckCircle size={18} /> : null}</div>
+      </div>
+    </div>
+  </HeroShell>;
+}
+
+const deepLinkLabels = ["系统先匹配", "已登录直达", "登录后续走", "网页回退"];
+type DeepLinkBranch = "direct" | "login" | "fallback";
+export function DeepLinkSignatureHero() {
+  const scene = useScene(deepLinkLabels.length);
+  const [branch, setBranch] = useState<DeepLinkBranch>("direct");
+  const labels: Record<DeepLinkBranch, string> = { direct: "已登录", login: "未登录", fallback: "未安装" };
+  const reset = () => setBranch("direct");
+  return <HeroShell scene={scene} title="一条链接如何决定应用入口" labels={deepLinkLabels} onReplay={reset} className={styles.routeHero}>
+    <div className={styles.branchTabs} role="group" aria-label="选择链接环境">{(Object.keys(labels) as DeepLinkBranch[]).map((key) => <button key={key} type="button" aria-pressed={branch === key} onClick={() => { setBranch(key); scene.seek(0); }}>{labels[key]}</button>)}</div>
+    <div className={styles.deepLinkBoard} data-step={scene.step} data-branch={branch}>
+      <div className={styles.linkTicket}><Browser size={23} /><span>活动链接</span><code>/orders/42</code></div>
+      <div className={styles.routeGate}><Gear size={24} /><strong>系统匹配</strong><small>域名 · 路径 · 会话</small><span className={styles.routePulse} /></div>
+      <div className={styles.routeTargets}>
+        <div data-active={branch === "direct" && scene.step > 0}><CheckCircle size={19} /><span>订单 42</span><small>应用内目标</small></div>
+        <div data-active={branch === "login" && scene.step > 1}><Key size={19} /><span>登录页</span><small>保留 returnTo</small></div>
+        <div data-active={branch === "fallback" && scene.step > 2}><ArrowRight size={19} /><span>网页回退</span><small>应用未安装</small></div>
       </div>
     </div>
   </HeroShell>;

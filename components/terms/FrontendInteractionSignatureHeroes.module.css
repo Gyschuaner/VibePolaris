@@ -21,6 +21,24 @@
 .semanticAssistive strong { display: block; margin-top: 3px; color: var(--accent-text); font-size: 11px; }
 .semanticAssistive.isMuted { opacity: .48; transform: translateY(3px); }
 
+.branchTabs { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+.branchTabs button { padding: 5px 8px; border: 1px solid color-mix(in srgb, var(--ink) 17%, transparent); border-radius: 999px; background: transparent; color: var(--muted); font-size: 10px; cursor: pointer; }
+.branchTabs button[aria-pressed="true"] { border-color: var(--accent-text); background: var(--tint); color: var(--accent-text); }
+.deepLinkBoard { display: grid; grid-template-columns: 1fr .9fr 1.2fr; align-items: center; min-height: 166px; gap: 9px; }
+.linkTicket, .routeGate, .routeTargets > div { display: grid; align-content: center; gap: 6px; min-height: 116px; padding: 12px; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 15px; background: color-mix(in srgb, var(--paper) 75%, transparent); transition: transform .35s, border-color .35s, background .35s, opacity .35s; }
+.linkTicket svg, .routeGate svg { color: var(--accent-text); }
+.linkTicket span, .routeGate small, .routeTargets small { color: var(--muted); font-size: 9px; }
+.linkTicket code { color: var(--accent-text); font: 700 12px ui-monospace, SFMono-Regular, monospace; }
+.routeGate { position: relative; background: color-mix(in srgb, var(--accent-text) 6%, var(--surface)); }
+.routeGate strong { font-size: 12px; }
+.routePulse { position: absolute; right: 10px; bottom: 10px; width: 7px; height: 7px; border-radius: 50%; background: var(--brand-star); box-shadow: 0 0 0 6px color-mix(in srgb, var(--brand-star) 15%, transparent); }
+.routeTargets { display: grid; gap: 6px; }
+.routeTargets > div { grid-template-columns: auto 1fr; align-items: center; min-height: 0; padding: 8px 10px; opacity: .42; }
+.routeTargets > div svg { color: var(--accent-text); }
+.routeTargets > div span { font-weight: 700; font-size: 11px; }
+.routeTargets > div small { grid-column: 2; }
+.routeTargets > div[data-active="true"] { opacity: 1; border-color: var(--accent-text); background: var(--tint); transform: translateX(-4px); }
+
 @media (max-width: 760px) {
   .hero { padding: 12px; border-radius: 17px; }
   .canvas { min-height: 0; }
@@ -28,6 +46,9 @@
   .semanticArrow { transform: rotate(90deg); justify-self: center; }
   .semanticSource, .semanticTree { min-height: 82px; }
   .treeBranches { display: none; }
+  .deepLinkBoard { grid-template-columns: 1fr; min-height: 0; }
+  .routeTargets { grid-template-columns: repeat(3, 1fr); }
+  .routeTargets > div { min-height: 72px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero *, .hero *::before, .hero *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
