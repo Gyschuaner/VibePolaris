@@ -60,13 +60,13 @@ export function ModelGraderSignatureHero() {
           <Envelope size={25} aria-hidden="true" /><strong>{order === "blind" ? `信封 ${index + 1}` : `模型-${label}`}</strong><small>{index === 0 ? "退款条件" : "退款条件"}</small>
         </div>)}
       </div>
-      <div className={styles.ruler} data-active={scene.step === 1 || scene.step === 2}>
+      <div className={styles.ruler} data-active={scene.step === 1 || scene.step === 2} data-unscored={scene.step >= 3}>
         <div className={styles.rulerHead}><Scales size={18} /><strong>rubric v3</strong><span>0—2</span></div>
-        {["事实准确", "条件完整", "越界承诺"].map((item, index) => <div key={item} className={styles.rulerRow}><span>{item}</span><i><b style={{ width: `${[78, 62, 34][index]}%` }} /></i><em>{scene.step >= 1 ? [2, 1, 0][index] : "—"}</em></div>)}
+        {["事实准确", "条件完整", "越界承诺"].map((item, index) => <div key={item} className={styles.rulerRow}><span>{item}</span><i><b style={{ width: `${[78, 62, 34][index]}%` }} /></i><em>{scene.step >= 1 && scene.step < 3 ? [2, 1, 0][index] : "—"}</em></div>)}
       </div>
-      <div className={styles.calibration} data-active={scene.step >= 2}>
-        <div className={styles.calibrationRing}><strong>{scene.step >= 2 ? "3/5" : "?"}</strong><small>人工参考</small></div>
-        <div><span>偏差方向</span><strong>{scene.step >= 2 ? "高估" : "等待样本"}</strong><small>{scene.step >= 2 ? "不能只看单条高分" : "先跑一组代表性样本"}</small></div>
+      <div className={styles.calibration} data-active={scene.step === 2} data-unscored={scene.step >= 3}>
+        <div className={styles.calibrationRing}><strong>{scene.step >= 3 ? "—" : scene.step === 2 ? "3/5" : "?"}</strong><small>人工参考</small></div>
+        <div><span>偏差方向</span><strong>{scene.step >= 3 ? "待补证据" : scene.step === 2 ? "高估" : "等待样本"}</strong><small>{scene.step >= 3 ? "不进入通过率统计" : scene.step === 2 ? "不能只看单条高分" : "先跑一组代表性样本"}</small></div>
       </div>
     </div>
     <Result icon={current.Icon} title={current.title} detail={current.detail} />
