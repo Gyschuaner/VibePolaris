@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { Archive, ArrowDown, ArrowRight, ArrowsClockwise, Broadcast, CheckCircle, Clock, Cube, CurrencyCircleDollar, Database, FileText, FlowArrow, Funnel, GitBranch, ListChecks, MagnifyingGlass, MapPin, Pulse, Scales, ShieldCheck, TreeStructure, WarningCircle } from "@phosphor-icons/react";
+import { Archive, ArrowDown, ArrowRight, ArrowsClockwise, Broadcast, CheckCircle, Clock, Code, Cube, CurrencyCircleDollar, Database, FileText, FlowArrow, Flask, Funnel, GitBranch, ListChecks, LockSimple, MagnifyingGlass, MapPin, Pulse, Scales, ShieldCheck, TreeStructure, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./DataTestSignatureHeroes.module.css";
 
@@ -180,6 +180,38 @@ export function StreamProcessingSignatureHero() {
       <div className={styles.streamArrivals}><div className={styles.streamArrivalHeader}><Broadcast size={17} /><span>到达顺序</span></div>{[{ id: "t2", time: 2 }, { id: "t12", time: 12 }, { id: "t4", time: 4 }].map((event, index) => <div key={event.id} data-arrived={index === 0 ? step >= 0 : index === 1 ? step >= 1 : t4Arrived} data-late={event.id === "t4" && t4Arrived}><code>{event.id}</code><span>发生时刻 {event.time}</span><small>{event.id === "t4" && t4Arrived ? "晚到" : index === 1 && step < 1 ? "等待" : "已到"}</small></div>)}</div>
       <div className={styles.streamMeter}><span>watermark</span><strong>{watermark}</strong><div className={styles.streamTicks}><i data-on={step >= 1} /><i data-on={step >= 3} /></div><small>{step >= 1 ? "第一窗口可结算" : "还在等事件"}</small></div>
       <div className={styles.streamWindows}><div data-closed={step >= 1}><span>[0, 10)</span><strong>{revised ? "2 次" : step >= 1 ? "1 次" : "—"}</strong><small>{revised ? "修订版" : step >= 1 ? "已输出" : "开放"}</small></div><div data-closed={step >= 3}><span>[10, 20)</span><strong>{step >= 3 ? "1 次" : "—"}</strong><small>{step >= 3 ? "已输出" : "等待水位"}</small></div><div className={styles.streamLate} data-visible={t4Arrived}><WarningCircle size={15} /><span>{latePolicy === "side" ? "late side · t4" : "reopen · t4"}</span></div></div>
+    </div>
+  </Frame>;
+}
+
+const unitSteps = ["摆边界样本", "锁住时钟", "穿过规则", "核对契约"];
+const unitCases = [
+  { input: "−1", output: "RangeError" },
+  { input: "0", output: "0" },
+  { input: "100", output: "90" },
+  { input: "101", output: "90.9" },
+];
+
+export function UnitTestSignatureHero() {
+  const scene = useScene(unitSteps.length);
+  const [fixedClock, setFixedClock] = useState(false);
+  const step = scene.step;
+  const ran = step >= 2;
+  const asserted = step >= 3;
+  const result = step === 0
+    ? { icon: Flask, title: "把边界样本摆上实验台", detail: "−1、0、100、101 各自有可观察预期" }
+    : step === 1
+      ? { icon: fixedClock ? LockSimple : Clock, title: fixedClock ? "依赖被锁住" : "时钟还会漂移", detail: fixedClock ? "clock=2026-08-31，结果不跟今天走" : "同一用例可能在不同日期得到不同结果", danger: !fixedClock }
+      : !fixedClock
+        ? { icon: WarningCircle, title: "规则跑了，但环境不稳定", detail: "断言还不能说明行为可重复", danger: true }
+        : asserted
+          ? { icon: CheckCircle, title: "契约可以被重复核对", detail: "3 个数值结果通过，1 个预期错误通过" }
+          : { icon: Code, title: "只让这一小段规则接受调用", detail: "不把数据库、网络和别的模块拉进来" };
+  return <Frame label="单元测试在隔离实验台上固定样本和依赖，只核对一小段代码的可观察行为" eyebrow="小单元，短反馈，固定实验条件" meta="arrange → act → assert" scene={scene} steps={unitSteps} result={result} caption="单元测试的边界来自可控性：样本、时钟和依赖先摆平，再让一段规则运行，最后只断言外部能观察到的结果。内部怎么改，只要契约没变，实验仍应成立。" controls={<div className={styles.inlineControls} role="group" aria-label="单元测试时钟依赖"><button type="button" aria-pressed={fixedClock} onClick={() => { setFixedClock(value => !value); scene.seek(1); }}><LockSimple size={15} />{fixedClock ? "解锁系统时钟" : "固定测试时钟"}</button></div>}>
+    <div className={styles.unitBoard} data-fixed={fixedClock} data-step={step}>
+      <div className={styles.unitSpecimen}><div><Flask size={17} /><span>测试样本</span></div><strong>priceAfterDiscount()</strong>{unitCases.map((item, index) => <div key={item.input} data-active={step === 0 && index === 2} data-done={asserted}><code>{item.input}</code><small>{ran ? item.output : "预期：" + item.output}</small></div>)}</div>
+      <div className={styles.unitPrism}><div><Code size={17} /><span>被测规则</span></div><strong>{ran ? "输入 → 规则 → 返回" : "等待调用"}</strong><pre>{"if price < 0\n  throw RangeError\nelse\n  return price × .9"}</pre><div className={styles.unitClock}><Clock size={14} /><span>{fixedClock ? "clock = 2026-08-31" : "clock = system today"}</span></div></div>
+      <div className={styles.unitOracle}><div><CheckCircle size={17} /><span>断言账本</span></div><strong>{asserted ? "3 pass · 1 expected error" : "尚无结果"}</strong><div className={styles.unitAssertions}><span data-ok={asserted}>return value</span><span data-ok={asserted}>error type</span><span data-ok={step >= 3}>boundary −1</span></div><small>{asserted ? "只看行为，不窥探私有实现" : "运行后才填写"}</small></div>
     </div>
   </Frame>;
 }
