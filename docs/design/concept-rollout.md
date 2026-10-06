@@ -57,6 +57,7 @@
 | 058 | 回归测试、测试用例、模拟对象、断言、测试覆盖率、API 测试、最小权限、哈希、输入校验、静态加密 | VBP-088 · [测试证据与安全边界机制矩阵](VBP-088-mechanism-matrix.md) · 十条逐条重做、review、dev 集成及生产统一发布 |
 | 059 | 运行时、包管理、TypeScript、MVP、用户流程、线框图、信息架构、原型、设计系统、无障碍 | VBP-089 · [产品与技术基础词条机制差异表](VBP-089-mechanism-matrix.md) · 十条逐条重做、唯一 reviewer 已 PASS，生产已发布 |
 | 060 | 语义化 HTML、深度链接、应用清单、仿真器、代码签名、手势、触觉反馈、触控目标、离线优先、自适应布局 | VBP-090 · [前端与交互机制差异表](VBP-090-mechanism-matrix.md) · 十条逐条重做、唯一 reviewer 已 PASS，生产已发布 |
+| 061 | 安全区域、应用生命周期、应用权限、推送通知、跨平台开发、WebView、CSS 选择器、盒模型、层叠、CSS 优先级 | VBP-091 · [平台与 CSS 机制差异表](VBP-091-mechanism-matrix.md) · 十条逐条重做，待唯一 reviewer 复核与统一发布 |
 
 后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 175 页，另有 9 页历史基准；其余 117 页待处理，新增候选不计入完成数。
 
@@ -140,16 +141,16 @@
 | touch-target | 触控目标 | 前端 | VBP-090 · 十条逐条 review 通过，生产已发布 |
 | offline-first | 离线优先 | 前端 | VBP-090 · 十条逐条 review 通过，生产已发布 |
 | adaptive-layout | 自适应布局 | 前端 | VBP-090 · 十条逐条 review 通过，生产已发布 |
-| safe-area | 安全区域 | 前端 | 待处理 |
-| app-lifecycle | 应用生命周期 | 前端 | 待处理 |
-| app-permission | 应用权限 | 前端 | 待处理 |
-| push-notification | 推送通知 | 前端 | 待处理 |
-| cross-platform-development | 跨平台开发 | 前端 | 待处理 |
-| webview | WebView | 前端 | 待处理 |
-| css-selector | CSS 选择器 | 前端 | 待处理 |
-| box-model | 盒模型 | 前端 | 待处理 |
-| cascade | 层叠 | 前端 | 待处理 |
-| specificity | CSS 优先级 | 前端 | 待处理 |
+| safe-area | 安全区域 | 前端 | VBP-091 · 本地实现，待 reviewer 与统一发布 |
+| app-lifecycle | 应用生命周期 | 前端 | VBP-091 · 本地实现，待 reviewer 与统一发布 |
+| app-permission | 应用权限 | 前端 | VBP-091 · 本地实现，待 reviewer 与统一发布 |
+| push-notification | 推送通知 | 前端 | VBP-091 · 本地实现，待 reviewer 与统一发布 |
+| cross-platform-development | 跨平台开发 | 前端 | VBP-091 · 本地实现，待 reviewer 与统一发布 |
+| webview | WebView | 前端 | VBP-091 · 本地实现，待 reviewer 与统一发布 |
+| css-selector | CSS 选择器 | 前端 | VBP-091 · 本地实现，待 reviewer 与统一发布 |
+| box-model | 盒模型 | 前端 | VBP-091 · 本地实现，待 reviewer 与统一发布 |
+| cascade | 层叠 | 前端 | VBP-091 · 本地实现，待 reviewer 与统一发布 |
+| specificity | CSS 优先级 | 前端 | VBP-091 · 本地实现，待 reviewer 与统一发布 |
 | flexbox | 弹性布局 | 前端 | 待处理 |
 | css-grid | 网格布局 | 前端 | 待处理 |
 | positioning | 定位 | 前端 | 待处理 |
