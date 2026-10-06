@@ -1,6 +1,6 @@
 "use client";
 
-import { Archive, ArrowRight, ArrowsOutCardinal, ArrowCounterClockwise, Bell, Browser, Camera, CheckCircle, Clock, Cloud, Code, Database, DeviceMobile, FileArrowUp, Gear, GitBranch, Key, LockSimple, MapPinLine, ShieldCheck, Target, TreeStructure, WarningCircle } from "@phosphor-icons/react";
+import { Archive, ArrowRight, ArrowsOutCardinal, ArrowCounterClockwise, Bell, Browser, Camera, CheckCircle, Clock, Cloud, Code, Database, DeviceMobile, FileArrowUp, Gear, GitBranch, Key, LockSimple, MapPinLine, Ruler, ShieldCheck, Stack, Target, TreeStructure, WarningCircle } from "@phosphor-icons/react";
 import type { CSSProperties } from "react";
 import { useState } from "react";
 import { HeroShell } from "./FrontendInteractionSignatureHeroes";
@@ -163,6 +163,24 @@ export function CssSelectorSignatureHero() {
       <div className={styles.selectorLens}><Target size={20} /><span>匹配条件</span><strong>{matches.length} 个节点</strong><i /></div>
       <div className={styles.selectorNodes} role="img" aria-label={`当前选择器命中 ${matches.length} 个节点`}><div className={styles.selectorNodeTitle}><TreeStructure size={18} /><span>DOM 节点墙</span></div>{selectorNodes.map(node => <div key={node.id} className={styles.selectorNode} data-match={matches.includes(node.id)}><span>{node.label}</span><small>{node.kind}</small>{matches.includes(node.id) ? <CheckCircle size={16} /> : null}</div>)}</div>
       <div className={styles.selectorProof} role="status"><span>观察匹配结果</span><strong>{scene.step === 3 ? "只找到实时错误这一项" : `从五个节点收窄到 ${matches.length} 个`}</strong><small>{scene.step === 3 ? "颜色最终由层叠决定，不是选择器直接上色" : "改变一个条件，匹配集合就会改变"}</small></div>
+    </div>
+  </HeroShell>;
+}
+
+const boxModelLabels = ["只有内容区", "加上 padding", "包住 border", "切换尺寸起点"];
+type BoxSizingMode = "content-box" | "border-box";
+
+export function BoxModelSignatureHero() {
+  const scene = useScene(boxModelLabels.length);
+  const [sizing, setSizing] = useState<BoxSizingMode>("content-box");
+  const resetSizing = (next: BoxSizingMode) => { setSizing(next); scene.seek(0); };
+  const outside = sizing === "content-box" && scene.step >= 2 ? "234px" : sizing === "border-box" && scene.step >= 2 ? "200px" : "200px";
+  return <HeroShell scene={scene} title="盒模型怎样把 width 拆成几层空间" labels={boxModelLabels} className={styles.platformHero}>
+    <div className={styles.boxBoard} data-step={scene.step} data-sizing={sizing}>
+      <div className={styles.boxChoice} role="group" aria-label="选择 box sizing"><span>尺寸起点</span><button type="button" aria-pressed={sizing === "content-box"} onClick={() => resetSizing("content-box")}>content-box</button><button type="button" aria-pressed={sizing === "border-box"} onClick={() => resetSizing("border-box")}>border-box</button></div>
+      <div className={styles.boxStack}><div className={styles.boxMargin}><span>margin</span><div className={styles.boxBorder}><span>border</span><div className={styles.boxPadding}><span>padding</span><div className={styles.boxContent}><strong>内容</strong><small>width: 200px</small></div></div></div></div></div>
+      <div className={styles.boxMeasure}><Ruler size={20} /><span>外框账单</span><strong>{outside}</strong><small>{scene.step === 0 ? "只有 content" : scene.step === 1 ? "padding 加在外面" : scene.step === 2 ? "border 也占空间" : sizing === "border-box" ? "width 已包含 padding + border" : "width 只指 content"}</small></div>
+      <div className={styles.boxProof} role="status"><Stack size={18} /><div><strong>{scene.step < 3 ? "每一层都负责不同的空间" : sizing === "border-box" ? "总尺寸固定，内容区分配剩余空间" : "内容尺寸固定，外框继续向外长"}</strong><span>{scene.step === 3 ? "margin 仍在整个盒子之外，另算相邻间距" : "先分辨盒子内部和盒子外部"}</span></div></div>
     </div>
   </HeroShell>;
 }

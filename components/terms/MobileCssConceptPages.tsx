@@ -2,7 +2,7 @@ import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptT
 import { MechanismHero } from "./ConceptHero";
 import { MobileConceptLesson } from "./MobileConceptLessons";
 import { AdaptiveLayoutSignatureHero, OfflineFirstSignatureHero } from "./FrontendInteractionSignatureHeroes";
-import { AppLifecycleSignatureHero, AppPermissionSignatureHero, CrossPlatformSignatureHero, CssSelectorSignatureHero, PushNotificationSignatureHero, SafeAreaSignatureHero, WebviewSignatureHero } from "./PlatformCssSignatureHeroes";
+import { AppLifecycleSignatureHero, AppPermissionSignatureHero, BoxModelSignatureHero, CrossPlatformSignatureHero, CssSelectorSignatureHero, PushNotificationSignatureHero, SafeAreaSignatureHero, WebviewSignatureHero } from "./PlatformCssSignatureHeroes";
 import { adaptiveLayoutSources, appLifecycleSources, appPermissionSources, boxModelSources, crossPlatformSources, cssSelectorSources, offlineFirstSources, pushNotificationSources, safeAreaSources, webviewSources } from "@/lib/mobile-css-concept-sources";
 import styles from "./ConceptArticle.module.css";
 import { ArrowRight, Bell, Browser, CheckCircle, Cloud, Code, Database, FileText, GitBranch, Layout, ShieldCheck, Stack, TreeStructure, User } from "@phosphor-icons/react/dist/ssr";
@@ -290,7 +290,7 @@ export function CssSelectorTermPage() {
 }
 
 export function BoxModelTermPage() {
-  return <ConceptArticle slug="box-model" title="CSS box model" subtitle="CSS 盒模型" hero={<MobileHero trigger="卡片比 width 更宽" change="content → padding → border" proof="margin 在盒子外，box-sizing 改变尺寸起点" />} sections={boxSections} sources={boxModelSources} intro={<>CSS 盒模型把元素的空间拆成 content、padding、border 和 margin。<strong>理解它，就能解释为什么一个写着 width: 200px 的卡片最后占了更宽的空间。</strong></>}>
+  return <ConceptArticle slug="box-model" title="CSS box model" subtitle="CSS 盒模型" hero={<BoxModelSignatureHero />} sections={boxSections} sources={boxModelSources} intro={<>CSS 盒模型把元素的空间拆成 content、padding、border 和 margin。<strong>理解它，就能解释为什么一个写着 width: 200px 的卡片最后占了更宽的空间。</strong></>}>
     <ArticleSection id="box-task" title="卡片为什么比 width 更宽">
       <p>你给一张卡片写了 <code>width: 200px</code>，又加了左右各 12px 的内边距和 5px 的边框。测量时发现外框接近 234px。代码没有偷偷改数字，浏览器只是把 width 和盒子模型的其他区域一起计算了。</p>
       <p id="box-definition" className="vp-citation-target">CSS 盒模型把每个元素表示为内容区、内边距、边框和外边距的层。MDN 的介绍用这四个区域解释元素在布局中占据的空间；W3C 的 Box Model 规范定义了这些盒子之间的关系。<Cite id="box-definition" sources={boxModelSources} /></p>
