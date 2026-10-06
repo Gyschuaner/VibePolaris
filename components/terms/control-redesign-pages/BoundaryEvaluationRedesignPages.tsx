@@ -14,7 +14,6 @@ import {
 } from "@/lib/boundary-evaluation-redesign-sources";
 import {
   HumanGraderLesson,
-  PassFailLesson,
   RubricLesson,
 } from "./BoundaryEvaluationLessons";
 import { BoundaryLesson, BoundaryHero } from "./PermissionBoundaryAnimation";
@@ -24,9 +23,9 @@ import { EvaluationRunHero, EvaluationRunLesson } from "./EvaluationRunAnimation
 import { SafetyEvaluationHero, SafetyEvaluationLesson } from "./SafetyEvaluationAnimation";
 import { CostEvaluationHero, CostEvaluationLesson } from "./CostEvaluationAnimation";
 import { LatencyEvaluationHero, LatencyEvaluationLesson } from "./LatencyEvaluationAnimation";
+import { PassFailHero, PassFailLesson } from "./PassFailAnimation";
 import {
   HumanGraderHero,
-  PassFailHero,
   RubricHero,
 } from "./BoundaryEvaluationDistinctiveHeroes";
 

@@ -75,12 +75,6 @@ export function BoundaryLesson() {
   </LessonShell>;
 }
 
-export function PassFailLesson() {
-  const [result, setResult] = useState<"pass" | "fail" | "unscored">("pass");
-  const values = { pass: ["answer.json + amount=120", "pass", "允许进入门槛"], fail: ["answer.json + amount=90", "fail", "进入修复"], unscored: ["环境不可读", "unscored", "暂停并重跑"] } as const;
-  return <LessonShell eyebrow="先写成功证据，再把缺证据和失败分开" title="三态判定器"><div className={styles.lessonControls}><button type="button" aria-pressed={result === "pass"} onClick={() => setResult("pass")}>证据正确</button><button type="button" aria-pressed={result === "fail"} onClick={() => setResult("fail")}>字段错误</button><button type="button" aria-pressed={result === "unscored"} onClick={() => setResult("unscored")}>环境不可读</button><button type="button" onClick={() => setResult("pass")}>重置</button></div><div className={styles.labGrid}><div className={styles.labRow}><span>检查</span><code>{values[result][0]}</code><em>可观察证据</em></div><div className={styles.labRow}><span>结果</span><code>{values[result][1]}</code><em>{result === "unscored" ? "暂时无结论" : "判据有结论"}</em></div><div className={styles.labRow}><span>门槛</span><code>{values[result][2]}</code><em>动作已写明</em></div></div></LessonShell>;
-}
-
 export function RubricLesson() {
   const [sample, setSample] = useState<"complete" | "missing" | "overclaim">("complete");
   const values = { complete: ["事实 ✓ · 条件 ✓ · 风险 ✓", "3 / 3", "可复核"], missing: ["事实 ✓ · 条件 ✕ · 风险 ✓", "2 / 3", "回到缺失条件"], overclaim: ["事实 ? · 条件 ✕ · 风险 ✕", "0 / 3", "没有支持证据"] } as const;

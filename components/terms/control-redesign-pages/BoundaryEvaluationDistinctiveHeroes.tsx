@@ -8,22 +8,6 @@ function HeroShell({ kind, label, children }: { kind: Parameters<typeof ControlR
 
 const textStyle = { fontFamily: "ui-monospace, SFMono-Regular, monospace" };
 
-export function PassFailHero() {
-  return <HeroShell kind="passFail" label="三个证据卡沿着判定轨道进入不同的桶：正确进入通过，错误进入失败，环境未知停在未评分">
-    <svg className={styles.mechanismSvg} viewBox="0 0 340 150" role="img" aria-hidden="true">
-      <path className={styles.passRail} d="M24 75 H163 M163 75 C185 75 185 42 211 42 H239 M163 75 H239 M163 75 C185 75 185 108 211 108 H239" />
-      <circle className={styles.passGate} cx="163" cy="75" r="12" />
-      <path className={styles.passGateMark} d="M157 75 l5 5 8-10" />
-      <g className={styles.passEvidenceFile}><rect x="32" y="35" width="65" height="24" rx="5"/><text x="64" y="51" textAnchor="middle" style={textStyle}>file ✓</text></g>
-      <g className={styles.passEvidenceField}><rect x="32" y="63" width="65" height="24" rx="5"/><text x="64" y="79" textAnchor="middle" style={textStyle}>amount ✓</text></g>
-      <g className={styles.passEvidenceUnknown}><rect x="32" y="91" width="65" height="24" rx="5"/><text x="64" y="107" textAnchor="middle" style={textStyle}>env ?</text></g>
-      <g className={styles.passBin}><rect x="239" y="28" width="78" height="28" rx="7"/><text x="278" y="46" textAnchor="middle" style={textStyle}>PASS</text></g>
-      <g className={styles.failBin}><rect x="239" y="61" width="78" height="28" rx="7"/><text x="278" y="79" textAnchor="middle" style={textStyle}>FAIL</text></g>
-      <g className={styles.unknownBin}><rect x="239" y="94" width="78" height="28" rx="7"/><text x="278" y="112" textAnchor="middle" style={textStyle}>UNSCORED</text></g>
-    </svg>
-  </HeroShell>;
-}
-
 export function RubricHero() {
   return <HeroShell kind="rubric" label="同一个回答被量表的三把尺子逐格照亮，事实和风险通过，条件缺失留下二分之一的证据">
     <svg className={styles.mechanismSvg} viewBox="0 0 340 150" role="img" aria-hidden="true">
