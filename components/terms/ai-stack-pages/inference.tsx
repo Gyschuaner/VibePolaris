@@ -1,7 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { inferenceSources } from "@/lib/ai-stack-concept-sources/inference";
-import { InferenceHero } from "../ai-stack-lessons/inference-hero";
+import { InferenceSignatureHero } from "../AiStackSignatureHeroes";
 import { InferenceLesson } from "../ai-stack-lessons/inference-hero";
 
 const sections: [string, string][] = [
@@ -12,7 +12,7 @@ const sections: [string, string][] = [
 ];
 
 export function InferenceTermPage() {
-  return <Article slug="inference" title="推理" subtitle="Inference · 用已经学到的参数处理一次输入并交付结果" sources={inferenceSources} sections={sections} hero={<InferenceHero />} intro={<>“推理”听起来像模型在想一个答案，工程上却更像一次有起点、有中间阶段、有停止条件的运行：输入先被整理，已经训练好的权重负责计算，生成模型再把输出一个 token 一个 token 地交出来。读懂这条路径，才分得清首字延迟、持续输出和真正的结果。</>}>
+  return <Article slug="inference" title="推理" subtitle="Inference · 用已经学到的参数处理一次输入并交付结果" sources={inferenceSources} sections={sections} hero={<InferenceSignatureHero />} intro={<>“推理”听起来像模型在想一个答案，工程上却更像一次有起点、有中间阶段、有停止条件的运行：输入先被整理，已经训练好的权重负责计算，生成模型再把输出一个 token 一个 token 地交出来。读懂这条路径，才分得清首字延迟、持续输出和真正的结果。</>}>
     <ArticleSection id="inference-request" title="先把一次请求送进模型">
       <p>你在客服页面输入“请说明订单 A17 的退款条件”，浏览器发出去的不是一团魔法，而是一份带任务和输入的请求。模型服务要先找到对应的模型和预处理器，把文字变成模型能接收的表示；结果出来后，还要经过后处理，才变回页面能展示的文本或标签。</p>
       <p id="inference-pipeline" className="vp-citation-target">Hugging Face 把 Pipeline 描述成一层推理 API：它把任务、预处理器、模型和后处理串在一起，外部只需交给它输入并接收输出。这个便利层不会改变模型已经学到的参数，也不会替应用替输入补上缺失事实。<Cite id="inference-pipeline" sources={inferenceSources} /></p>
