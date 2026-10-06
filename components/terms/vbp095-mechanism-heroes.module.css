@@ -18,6 +18,7 @@
 .relationalTable[data-on="true"] { border-color: var(--accent-text); background: color-mix(in srgb, var(--accent-text) 10%, var(--paper)); transform: translateY(-3px); }
 .relationalTableHead { display: flex; justify-content: space-between; font: 9px ui-monospace, SFMono-Regular, monospace; }
 .relationalTable small { color: var(--muted); font-size: 8px; }
+.relationalTable small[data-match="true"] { color: var(--accent-text); background: color-mix(in srgb, var(--brand-star) 19%, transparent); border-radius: 4px; padding-inline: 3px; }
 .relationalTable span { display: flex; justify-content: space-between; gap: 5px; padding: 5px; border-radius: 5px; background: color-mix(in srgb, var(--accent-text) 7%, transparent); font: 8px ui-monospace, SFMono-Regular, monospace; }
 .relationalJoin { display: grid; justify-items: center; gap: 3px; color: var(--accent-text); font-size: 9px; opacity: .28; transition: opacity .4s, transform .4s; }
 .relationalJoin[data-on="true"] { opacity: 1; transform: scale(1.07); }
@@ -102,6 +103,8 @@
 .hierarchyItem[data-level="quiet"] { opacity: .47; }
 .hierarchyItem[data-level="hero"] { color: var(--ink); background: color-mix(in srgb, var(--brand-star) 19%, transparent); transform: translateX(4px); }
 .hierarchyItem[data-level="hero"] strong { font-size: 14px; }
+.hierarchyCard[data-mode="narrow"] { width: min(100%, 210px); margin-inline: auto; }
+.hierarchyCard[data-mode="narrow"] .hierarchyItem { align-items: flex-start; flex-direction: column; gap: 2px; }
 .hierarchySpotlight { position: absolute; top: 7px; left: 7px; width: 78px; height: 42px; border: 2px solid color-mix(in srgb, var(--brand-star) 72%, transparent); border-radius: 50%; pointer-events: none; opacity: .8; transition: transform .55s, width .45s, height .45s; }
 .hierarchyScene[data-step="1"] .hierarchySpotlight { transform: translate(0, 45px); }
 .hierarchyScene[data-step="2"] .hierarchySpotlight { transform: translate(0, 5px); width: 150px; height: 56px; }
@@ -192,5 +195,5 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sitemapScene *, .tokenScene *, .hierarchyScene *, .feedbackScene *, .loadingScene *, .microScene *, .motionScene * { transition-duration: .001ms !important; animation-duration: .001ms !important; }
+  .sitemapScene *, .tokenScene *, .hierarchyScene *, .feedbackScene *, .loadingScene *, .microScene *, .motionScene *, .relationalScene *, .nosqlScene *, .rowScene * { transition-duration: .001ms !important; animation-duration: .001ms !important; }
 }

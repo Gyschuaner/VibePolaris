@@ -61,7 +61,7 @@ export function VisualHierarchyMechanismHero() {
   const step = scene.step;
   return <MechanismFrame scene={scene} title="注意力怎样从一团噪音收成一条路" labels={hierarchyLabels} caption={hierarchyCaptions[step]}>
     <div className={styles.hierarchyScene} data-step={step}>
-      <div className={styles.hierarchyCard}>
+      <div className={styles.hierarchyCard} data-mode={step === 3 ? "narrow" : "desktop"}>
         <div className={styles.hierarchyCardHead}><span>申请资料</span><span>{step === 3 ? "窄屏" : "桌面"}</span></div>
         <div className={styles.hierarchyItem} data-level={step === 0 ? "primary" : step >= 2 ? "hero" : "primary"}><small>标题</small><strong>提交报销申请</strong></div>
         <div className={styles.hierarchyItem} data-level={step === 0 ? "primary" : step >= 2 ? "primary" : "primary"}><small>内容</small><strong>本月差旅 · ¥1,280</strong></div>
@@ -89,7 +89,7 @@ export function FeedbackMechanismHero() {
   const failure = step === 3;
   return <MechanismFrame scene={scene} title="一次保存怎样把结果留在原位置" labels={feedbackLabels} caption={feedbackCaptions[step]}>
     <div className={styles.feedbackScene} data-step={step}>
-      <div className={styles.feedbackForm}><div className={styles.feedbackField}><small>邮箱</small><strong>hello@example.com</strong><span>未保存的修改</span></div><button className={styles.feedbackButton} type="button">{step === 0 ? "保存" : step === 1 ? "保存中…" : step === 2 ? "已保存" : "重试保存"}</button></div>
+      <div className={styles.feedbackForm}><div className={styles.feedbackField}><small>邮箱</small><strong>hello@example.com</strong><span>未保存的修改</span></div><span className={styles.feedbackButton} aria-hidden="true">{step === 0 ? "保存" : step === 1 ? "保存中…" : step === 2 ? "已保存" : "重试保存"}</span></div>
       <div className={styles.feedbackStatus} data-state={failure ? "failure" : "ok"} role="status"><small>{failure ? "请求结果" : "系统状态"}</small><strong>{failure ? "保存失败" : step === 2 ? "已保存 · 14:32" : step === 1 ? "系统已接收" : step === 4 ? "再次尝试" : "还有修改"}</strong><p>{failure ? "内容仍在，下一步是重试。" : step === 1 ? "正在把修改送出。" : step === 2 ? "结果贴着输入留下。" : "状态和动作在同一块区域。"}</p></div>
     </div>
   </MechanismFrame>;
@@ -163,9 +163,9 @@ export function RelationalDatabaseMechanismHero() {
   return <MechanismFrame scene={scene} title="两张表怎样只合出相关的事实" labels={relationalLabels} caption={relationalCaptions[step]}>
     <div className={styles.relationalScene} data-step={step}>
       <div className={styles.relationalTables}>
-        <div className={styles.relationalTable} data-on={step >= 0}><div className={styles.relationalTableHead}><strong>customers</strong><span>id</span></div><small>7 · 阿青</small><small>8 · 小周</small></div>
+        <div className={styles.relationalTable} data-on={step >= 0}><div className={styles.relationalTableHead}><strong>customers</strong><span>id</span></div><small>7 · 阿青</small><small>8 · 小周</small><small>9 · 叶子</small></div>
         <div className={styles.relationalJoin} data-on={step >= 1}><strong>id = customer_id</strong><span>JOIN</span></div>
-        <div className={styles.relationalTable} data-on={step >= 0}><div className={styles.relationalTableHead}><strong>orders</strong><span>customer_id</span></div><small>o-19 · 7 · ¥180</small><small>o-22 · 8 · ¥40</small></div>
+        <div className={styles.relationalTable} data-on={step >= 0}><div className={styles.relationalTableHead}><strong>orders</strong><span>customer_id</span></div><small data-match={step >= 2 ? "true" : "false"}>o-19 · 7 · ¥180</small><small data-match="false">o-22 · 8 · ¥40</small><small data-match={step >= 2 ? "true" : "false"}>o-23 · 7 · ¥220</small><small data-match="false">o-24 · 9 · ¥210</small><small data-match={step >= 2 ? "true" : "false"}>o-31 · 7 · ¥160</small></div>
       </div>
       <div className={styles.relationalResult} data-on={step >= 2}><span>customer_id=7 · amount&gt;100</span><strong>{step >= 2 ? "3 rows" : "待过滤"}</strong></div>
     </div>
@@ -189,19 +189,20 @@ export function NosqlMechanismHero() {
   </MechanismFrame>;
 }
 
-const rowLabels = ["旧版本", "未提交更新", "提交后读取"];
+const rowLabels = ["创建未提交", "B 看旧快照", "A 提交", "C 看新快照"];
 const rowCaptions = [
-  "事务 B 先看到 id=7 的已提交余额 100，逻辑行有明确身份。",
-  "事务 A 改成 80 但尚未提交，B 仍按快照看到 100。",
-  "A 提交后，事务 C 在新的读取时点看到 80；变化来自可见版本。",
+  "A 为 id=7 创建 balance=80 的新版本，但它还没有对其他事务开放。",
+  "B 在 A 提交前建立快照，所以仍然读到已提交的 100。",
+  "A 提交 v2；B 的既有快照不自动改写，仍然看见 100。",
+  "提交后开始的事务 C 看到 80；变化来自可见版本，不是换了第三行。",
 ];
 export function RowMechanismHero() {
   const scene = useScene(rowLabels.length);
   const step = scene.step;
   return <MechanismFrame scene={scene} title="同一逻辑行怎样保留不同事务的可见版本" labels={rowLabels} caption={rowCaptions[step]}>
     <div className={styles.rowScene} data-step={step}>
-      <div className={styles.rowRecord}><div className={styles.rowRecordHead}><strong>orders · id=7</strong><span>逻辑身份不变</span></div><div className={styles.rowVersion} data-on={step >= 0}><small>B</small><strong>balance = 100</strong><span>已提交</span></div><div className={styles.rowVersion} data-on={step === 1}><small>A</small><strong>balance = 80</strong><span>{step >= 2 ? "已提交" : "未提交"}</span></div></div>
-      <div className={styles.rowReadout}><small>读取者看到</small><strong>{step === 0 ? "100" : step === 1 ? "B 仍看 100" : "C 看 80"}</strong><p>{step === 2 ? "提交边界改变可见版本，不是把‘第三行’换了。" : "位置不是身份，快照才解释读到了什么。"}</p></div>
+      <div className={styles.rowRecord}><div className={styles.rowRecordHead}><strong>orders · id=7</strong><span>逻辑身份不变</span></div><div className={styles.rowVersion} data-on={step >= 0}><small>B</small><strong>balance = 100</strong><span>已提交</span></div><div className={styles.rowVersion} data-on={step >= 1}><small>A</small><strong>balance = 80</strong><span>{step >= 2 ? "已提交" : "未提交"}</span></div></div>
+      <div className={styles.rowReadout}><small>{step >= 3 ? "事务 C 新快照" : "读取者看到"}</small><strong>{step === 0 ? "100" : step === 1 ? "B 仍看 100" : step === 2 ? "B 仍看 100" : "C 看 80"}</strong><p>{step >= 2 ? "提交边界改变可见版本，不是把‘第三行’换了。" : "位置不是身份，快照才解释读到了什么。"}</p></div>
     </div>
   </MechanismFrame>;
 }
