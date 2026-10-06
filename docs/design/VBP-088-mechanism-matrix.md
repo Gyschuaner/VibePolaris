@@ -25,3 +25,5 @@
 - 内置浏览器当前没有可用的 390px viewport 能力，窄屏只完成 CSS 结构审查，未把未执行的窄屏实测写成通过；DP 测试计划已如实保留这个限制。
 - 唯一 reviewer `/root/ai_stack_review` 已完成两轮复核并 PASS，无 P0/P1 阻塞；最后一轮确认十条机制首图、来源映射、路由注册和桌面行为均符合批次要求。
 - dev PR [#375](https://github.com/Gyschuaner/VibePolaris/pull/375) 已合入，合并提交为 `d5042c8526b77c9e798421b2e7573adefef57c74`；合并提交的本地生产预览逐条打开十条路由均为 HTTP 200、单一 h1，安全边界演示推进后状态可见变化。DP deployment 记录待平台网络恢复后补写。
+- main PR [#376](https://github.com/Gyschuaner/VibePolaris/pull/376) 已合入，生产源提交为 `0720cb214cd4d4ab8c0af3ff3f327dfc3716a0dc`。生产镜像为 `vibepolaris:0720cb214cd4d4ab8c0af3ff3f327dfc3716a0dc`，发布目录为 `/opt/vibepolaris/releases/20261006T181221Z-0720cb21`，`vibepolaris-web-1` 已 `healthy`；切换前 release、镜像和回滚脚本保存在 `/opt/vibepolaris/backups/20261006T181221Z-from-890d0ccd` 与新 release 的 `rollback.sh`。
+- 生产 HTTPS 的 `/`、`/news`、`/about`、`/sitemap.xml` 及十条 VBP-088 词条均返回 200；线上真实浏览器推进 `regression-test` 首图后状态从“看差异”更新为“展开引用”。Developer Platform 在记录 deployment 时连续返回 TLS `UNEXPECTED_EOF_WHILE_READING`，DP deployment ID 与需求状态转换待服务恢复后补写，未将未登记的状态写成完成。
