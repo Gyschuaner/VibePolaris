@@ -127,10 +127,10 @@ export function HapticFeedbackSignatureHero() {
   const scene = useScene(hapticLabels.length);
   const modes = ["selection", "success", "warning", "fallback"];
   return <HeroShell scene={scene} title="语义事件如何变成触觉并保留可见回退" labels={hapticLabels} className={styles.hapticHero}>
-    <div className={styles.hapticBoard} data-step={scene.step} data-mode={modes[scene.step]}>
+    <div className={styles.hapticBoard} data-step={scene.step} data-mode={modes[scene.step]} data-playing={scene.playing}>
       <div className={styles.hapticEvent}><span>语义事件</span><strong>{hapticLabels[scene.step]}</strong><small>{scene.step === 0 ? "选中一项" : scene.step === 1 ? "保存成功" : scene.step === 2 ? "操作被拒绝" : "执行器无响应"}</small></div>
       <div className={styles.hapticMode}><Lightning size={23} /><span>平台模式</span><b>{scene.step === 0 ? "selection" : scene.step === 1 ? "notification.success" : scene.step === 2 ? "notification.warning" : "无可用模式"}</b></div>
-      <div className={styles.hapticActuator}><div className={styles.pulseRings}><i /><i /><i /></div><DeviceMobile size={26} /><span>设备执行器</span><b>{scene.step === 3 ? "不播放" : "短促触感"}</b></div>
+      <div className={styles.hapticActuator}><div className={styles.pulseRings} key={scene.step} aria-hidden="true">{scene.step < 3 ? Array.from({ length: scene.step + 1 }, (_, index) => <i key={index} style={{ animationDelay: `${index * .16}s` }} />) : null}</div><DeviceMobile size={26} /><span>设备执行器</span><b>{scene.step === 3 ? "不播放" : "触感示意"}</b></div>
       <div className={styles.hapticFallback}><Eye size={19} /><SpeakerHigh size={19} /><div><span>同时保留</span><strong>{scene.step === 3 ? "文字 + 视觉" : "文字 + 视觉 + 可选声音"}</strong></div></div>
     </div>
   </HeroShell>;
