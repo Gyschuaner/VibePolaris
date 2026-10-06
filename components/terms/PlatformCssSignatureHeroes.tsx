@@ -1,6 +1,6 @@
 "use client";
 
-import { Archive, ArrowsOutCardinal, ArrowCounterClockwise, Camera, CheckCircle, Clock, Database, DeviceMobile, FileArrowUp, Gear, MapPinLine, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
+import { Archive, ArrowRight, ArrowsOutCardinal, ArrowCounterClockwise, Bell, Camera, CheckCircle, Clock, Cloud, Database, DeviceMobile, FileArrowUp, Gear, Key, MapPinLine, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
 import type { CSSProperties } from "react";
 import { useState } from "react";
 import { HeroShell } from "./FrontendInteractionSignatureHeroes";
@@ -81,6 +81,26 @@ export function AppPermissionSignatureHero() {
         <div className={styles.permissionOutcome} data-visible={scene.step === 3} data-decision={decision}><span>{decision === "allow" ? "相机" : "文件选择"}</span>{decision === "allow" ? <Camera size={22} /> : <FileArrowUp size={22} />}<strong>{scene.step === 3 ? (decision === "allow" ? "打开相机" : "改用文件上传") : "等待结果"}</strong>{scene.step === 3 ? <CheckCircle size={17} /> : null}</div>
       </div>
       <div className={styles.permissionProof} role="status"><span>结果证据</span><strong>{scene.step < 3 ? "尚未代表用户访问设备" : decision === "allow" ? "相机已获得本次所需访问" : "拒绝相机，任务仍有可用后路"}</strong><small>{scene.step === 0 ? "先解释当前动作需要什么" : scene.step === 1 ? "解释不是替系统做决定" : scene.step === 2 ? "允许与拒绝都会进入应用分支" : "拒绝不能被画成成功"}</small></div>
+    </div>
+  </HeroShell>;
+}
+
+const pushLabels = ["设备注册令牌", "服务器记住去处", "变化交给推送服务", "展示或清理失效令牌"];
+type PushTokenState = "valid" | "stale";
+
+export function PushNotificationSignatureHero() {
+  const scene = useScene(pushLabels.length);
+  const [tokenState, setTokenState] = useState<PushTokenState>("valid");
+  const resetToken = (next: PushTokenState) => { setTokenState(next); scene.seek(0); };
+  const stale = tokenState === "stale";
+  return <HeroShell scene={scene} title="推送通知怎样把服务器变化送到正确设备" labels={pushLabels} className={styles.platformHero}>
+    <div className={styles.pushBoard} data-step={scene.step} data-token={tokenState}>
+      <div className={styles.pushChoice} role="group" aria-label="选择令牌状态"><span>令牌状态</span><button type="button" aria-pressed={!stale} onClick={() => resetToken("valid")}>有效</button><button type="button" aria-pressed={stale} onClick={() => resetToken("stale")}>已过期</button></div>
+      <div className={styles.pushDevice}><DeviceMobile size={22} /><span>用户设备</span><strong>订单 42</strong><small>{scene.step < 3 ? "等待变化" : stale ? "没有可展示的通知" : "通知已到达"}</small><div className={styles.pushToken}><Key size={14} /><code>{stale ? "token_old…" : "token_42…"}</code></div></div>
+      <div className={styles.pushCloud}><Cloud size={22} /><span>推送服务</span><strong>{scene.step < 2 ? "等待事件" : stale ? "返回失效" : "转发中"}</strong><small>{scene.step === 2 ? "FCM / APNs" : "只负责投递，不保证展示"}</small><ArrowRight className={styles.pushArrow} size={18} aria-hidden="true" /></div>
+      <div className={styles.pushEvent}><Bell size={21} /><span>服务器事件</span><strong>{scene.step < 2 ? "订单状态变化" : "已发送：已发货"}</strong><small>{scene.step === 0 ? "还没有注册去处" : scene.step === 1 ? "服务器保存令牌" : "服务按令牌尝试投递"}</small></div>
+      <div className={styles.pushProof} role="status"><span>最后一跳</span><strong>{scene.step < 3 ? "尚无展示证据" : stale ? "失效令牌应被清理并重新注册" : "系统权限允许后，通知才出现在设备上"}</strong><small>{scene.step === 3 && stale ? "服务器收到失败回执，不应继续重试旧令牌" : scene.step === 3 ? "点击通知后仍应回服务器核对最新订单" : "投递成功与用户看见是两件事"}</small></div>
+      {scene.step === 3 ? <div className={styles.pushBadge} aria-hidden="true">{stale ? <WarningCircle size={17} /> : <CheckCircle size={17} />}</div> : null}
     </div>
   </HeroShell>;
 }
