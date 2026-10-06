@@ -54,7 +54,11 @@
 ## 发布记录
 
 - 当前分支：`feat/VBP-090-interaction-mechanisms`，从最新 `origin/main` (`0dbb7371`) 创建。
+- dev PR [#383](https://github.com/Gyschuaner/VibePolaris/pull/383) 已合入，合并提交为 `dfc0ec67cda9b2906c46e99f5f87479c400fda9e`；main PR [#384](https://github.com/Gyschuaner/VibePolaris/pull/384) 已合入，生产源提交为 `99d17dc1c860f88f4ab0d8b7a87ba4162d0e2763`。
+- 生产镜像为 `vibepolaris:99d17dc1c860f88f4ab0d8b7a87ba4162d0e2763`，发布目录为 `/opt/vibepolaris/releases/20261006T194026Z-99d17dc1`，`vibepolaris-web-1` 为 `running/healthy`。
+- 切换前备份位于 `/opt/vibepolaris/backups/20261006T194026Z-from-22d8e217`；旧生产 release 为 `/opt/vibepolaris/releases/20261006T190052Z-22d8e217`，新 release 的 `rollback.sh` 已写入旧 release 和旧镜像引用；`vibepolaris_xiaobei_data` 数据卷未改动。
+- 生产 HTTPS 冒烟：`/`、`/news`、`/about`、`/sitemap.xml` 与十条 VBP-090 词条均返回 200；另外抽查五条路由的首图标题文本已出现在生产 HTML 中。
 - 本批十个 slug 在 `content/zh/published-terms.json` 中已有公开记录；本批不重复改动公开清单，统一发布页面实现。
 - DP requirement/deployment 查询在本轮仍因 CLI TLS `UNEXPECTED_EOF_WHILE_READING` 无法连接，未创建或伪造 DP 对象；平台恢复后只用 `dp.exe` 补录真实需求、测试和部署记录。
-- 生产发布沿用 [VBP-047 发布说明](../development/VBP-047-production.md)：本机构建 `linux/amd64` 镜像，原子切换 release，保留旧镜像、Compose 和 `vibepolaris_xiaobei_data` 数据卷，完成健康检查、HTTPS、根路径、新闻和十条词条冒烟后补写精确 release、镜像和回滚路径。
+- 生产发布沿用 [VBP-047 发布说明](../development/VBP-047-production.md)：本机构建 `linux/amd64` 镜像，原子切换 release，保留旧镜像、Compose 和数据卷；本次健康检查、HTTPS 和词条冒烟均已完成。
 - `D:/Obsidian/gysnote` 在当前 Mac 环境不存在，本批未写入 Obsidian。
