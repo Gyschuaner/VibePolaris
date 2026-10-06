@@ -12,7 +12,7 @@ const sections: [string, string][] = [
 ];
 
 export function EncryptionInTransitTermPage() {
-  return <Article slug="encryption-in-transit" title="传输中加密" subtitle="Encryption in Transit · 让路上的内容和对端身份一起可验证" sources={encryptionInTransitSources} sections={sections} hero={<EncryptionInTransitHero />} intro={<>登录请求从浏览器经过 CDN、负载均衡器，再到应用。<strong>传输中加密保护的是某一对端点之间的通道；通道在哪终止、下一跳有没有重新建立 TLS、证书到底指向谁，决定了那把锁实际覆盖到哪里。</strong></>}>
+  return <Article slug="encryption-in-transit" title="传输中加密" subtitle="Encryption in Transit · 让路上的内容和对端身份一起可验证" sources={encryptionInTransitSources} sections={sections} hero={<EncryptionInTransitHero />} intro={<>登录请求从浏览器经过 CDN、负载均衡器，再到应用。<strong>传输中加密保护的是某一对端点之间的通道；地址栏里的小锁只说明当前这一跳通过了验证，通道在哪终止、下一跳有没有重新建立 TLS、证书到底指向谁，才决定那把锁实际覆盖到哪里。</strong></>}>
     <ArticleSection id="encryption-in-transit-definition-section" title="传输中到底保护哪一段">
       <p id="eit-goal" className="vp-citation-target">TLS 的目标是让两个通信端点在可能被攻击者完全控制的网络上建立安全通道，提供机密性、完整性和服务器身份验证。它保护的是通道里的内容，不能让网络流量的时间、方向和大致大小消失。<Cite id="eit-goal" sources={encryptionInTransitSources} /></p>
       <p id="eit-mitm" className="vp-citation-target">浏览器使用 HTTPS，是为了抵抗中间人把自己插到用户和服务器之间、读取或改写请求的场景。抓包者可以知道“这里有一条连接”，但正确配置的 TLS 记录不应让他直接读到 Authorization、订单内容或响应正文。<Cite id="eit-mitm" sources={encryptionInTransitSources} /></p>
