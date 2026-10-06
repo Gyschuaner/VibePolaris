@@ -1,6 +1,7 @@
 import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptTerm } from "./ConceptArticle";
 import { MechanismHero } from "./ConceptHero";
 import { MobileConceptLesson } from "./MobileConceptLessons";
+import { OfflineFirstSignatureHero } from "./FrontendInteractionSignatureHeroes";
 import { adaptiveLayoutSources, appLifecycleSources, appPermissionSources, boxModelSources, crossPlatformSources, cssSelectorSources, offlineFirstSources, pushNotificationSources, safeAreaSources, webviewSources } from "@/lib/mobile-css-concept-sources";
 import styles from "./ConceptArticle.module.css";
 import { ArrowRight, Bell, Browser, CheckCircle, Cloud, Code, Database, FileText, GitBranch, Layout, ShieldCheck, Stack, TreeStructure, User } from "@phosphor-icons/react/dist/ssr";
@@ -23,7 +24,7 @@ function MobileHero({ trigger, change, proof }: { trigger: string; change: strin
 }
 
 export function OfflineFirstTermPage() {
-  return <ConceptArticle slug="offline-first" title="Offline-first" subtitle="离线优先" hero={<MobileHero trigger="网络断开" change="本地保存 → 待同步队列" proof="重新连接后出现服务器结果和冲突选择" />} sections={offlineSections} sources={offlineFirstSources} intro={<>离线优先让应用先用设备上已经保存的数据完成眼前任务，网络恢复后再把变更同步到服务器。<strong>它不是“加一层缓存”，而是一套在断网时仍能工作、重新连接后能处理结果的读写安排。</strong></>}>
+  return <ConceptArticle slug="offline-first" title="Offline-first" subtitle="离线优先" hero={<OfflineFirstSignatureHero />} sections={offlineSections} sources={offlineFirstSources} intro={<>离线优先让应用先用设备上已经保存的数据完成眼前任务，网络恢复后再把变更同步到服务器。<strong>它不是“加一层缓存”，而是一套在断网时仍能工作、重新连接后能处理结果的读写安排。</strong></>}>
     <ArticleSection id="offline-task" title="断网时仍要完成的任务">
       <p>你在地铁里修改一条出行笔记，网络图标突然变灰。应用如果只把输入直接发给服务器，保存按钮就只能一直转圈，重新打开页面还可能看不到刚写的内容。离线优先先问的是：这项任务能不能在本地完成，哪些结果必须等服务器确认。</p>
       <p id="offline-layer" className="vp-citation-target">对可以离线完成的任务，应用把本地数据源放在优先位置。它先从本地读出笔记，也先把本次编辑保存到本地；网络可用时，再由同步层把本地变更送到远端。Android 的离线优先资料把本地数据源、网络数据源和同步职责分开描述。<Cite id="offline-layer" sources={offlineFirstSources} /></p>

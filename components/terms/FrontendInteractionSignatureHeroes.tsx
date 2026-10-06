@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, ArrowsClockwise, Browser, Check, CheckCircle, Code, Cube, Cursor, DeviceMobile, Eye, FileCode, Fingerprint, Gear, Gauge, GitBranch, Key, Lightning, MapPinLine, Monitor, Package, Ruler, ShieldCheck, SpeakerHigh, Target, WarningCircle } from "@phosphor-icons/react";
+import { ArrowRight, ArrowsClockwise, Browser, Check, CheckCircle, Cloud, Code, Cube, Cursor, Database, DeviceMobile, Eye, FileCode, Fingerprint, Gear, Gauge, GitBranch, Key, Lightning, MapPinLine, Monitor, Package, Ruler, ShieldCheck, SpeakerHigh, Stack, Target, WarningCircle } from "@phosphor-icons/react";
 import { useScene, SceneControls } from "./HarnessStoryScenes";
 import { useState } from "react";
 import type { ReactNode } from "react";
@@ -140,6 +140,20 @@ export function TouchTargetSignatureHero() {
     <div className={styles.touchBoard} data-step={scene.step}>
       <div className={styles.touchStage}><div className={styles.touchTarget}><span className={styles.touchHitbox} /><Cube size={18} /><b>图标</b></div><div className={styles.touchNeighbor}><Cube size={16} /><span>邻居</span></div>{touchPoints.map(([left, top], index) => <i className={styles.touchPoint} style={{ left, top }} key={`${left}-${top}`} data-hit={scene.step === 0 ? index < 3 : scene.step < 3 ? index < 9 : index === 2 || index === 6} />)}</div>
       <div className={styles.touchReadout}><Target size={23} /><span>同一组十个落点</span><strong>{scene.step === 0 ? "命中 3 / 10" : scene.step < 3 ? "命中 9 / 10" : "两块热区相撞"}</strong><small>{scene.step === 0 ? "可见像素决定命中" : scene.step === 1 ? "容器内边距扩大热区" : scene.step === 2 ? "重放输入检查漏点" : "间距不足会误触"}</small></div>
+    </div>
+  </HeroShell>;
+}
+
+const offlineLabels = ["断网仍可编辑", "操作进入队列", "恢复网络上传", "选择字段结果"];
+export function OfflineFirstSignatureHero() {
+  const scene = useScene(offlineLabels.length);
+  return <HeroShell scene={scene} title="离线编辑怎样先落本地再处理同步冲突" labels={offlineLabels} className={styles.offlineHero}>
+    <div className={styles.offlineBoard} data-step={scene.step}>
+      <div className={styles.noteCard}><span>编辑器</span><strong>周报</strong><small>{scene.step === 0 ? "断网 · 本地已保存" : "标题改动已追踪"}</small><Code size={18} /></div>
+      <div className={styles.localStack}><Database size={21} /><span>本地数据</span><b>{scene.step > 0 ? "已持久化" : "写入中"}</b><i /></div>
+      <div className={styles.outboxTile}><Stack size={21} /><span>待同步队列</span><b>{scene.step === 0 ? "尚未入队" : scene.step === 1 ? "操作 7 · 待上传" : scene.step === 2 ? "上传中" : "0 条待同步"}</b></div>
+      <div className={styles.serverTile}><Cloud size={22} /><span>服务器</span><b>{scene.step < 2 ? "v12" : scene.step === 2 ? "v13 · 冲突" : "v14 · 已确认"}</b></div>
+      <div className={styles.conflictTile} data-visible={scene.step === 3}><GitBranch size={20} /><span>冲突选择</span><b>{scene.step === 3 ? "保留本地标题" : "等待比较"}</b></div>
     </div>
   </HeroShell>;
 }
