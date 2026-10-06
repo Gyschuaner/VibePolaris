@@ -1,7 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { backpressureSources } from "@/lib/ai-stack-concept-sources/backpressure";
-import { BackpressureHero } from "../ai-stack-lessons/backpressure-hero";
+import { BackpressureSignatureHero } from "../AiStackSignatureHeroes";
 import { BackpressureLesson } from "../ai-stack-lessons/backpressure";
 
 const sections: [string, string][] = [
@@ -12,7 +12,7 @@ const sections: [string, string][] = [
 ];
 
 export function BackpressureTermPage() {
-  return <Article slug="backpressure" title="背压" subtitle="Backpressure · 让下游容量反过来约束上游生产速度" sources={backpressureSources} sections={sections} hero={<BackpressureHero />} intro={<>数据流最危险的时候，不是完全没有请求，而是上游一直很勤快，下游已经接不住了。背压把下游的容量变成一条回传信号：先把缓冲区控制在有界范围，再让生产者暂停、变慢或按明确策略处理超额工作。</>}>
+  return <Article slug="backpressure" title="背压" subtitle="Backpressure · 让下游容量反过来约束上游生产速度" sources={backpressureSources} sections={sections} hero={<BackpressureSignatureHero />} intro={<>数据流最危险的时候，不是完全没有请求，而是上游一直很勤快，下游已经接不住了。背压把下游的容量变成一条回传信号：先把缓冲区控制在有界范围，再让生产者暂停、变慢或按明确策略处理超额工作。</>}>
     <ArticleSection id="backpressure-flow" title="先看谁跟不上谁">
       <p>把一条推理数据管线想成传送带：读取器每秒送来 6 个 chunk，模型后处理每秒只能接住 2 个。中间如果没有限制，暂存区会越堆越高，最后耗尽内存；如果暂存区有上限，系统就必须在“继续生产”之前回答一个更实际的问题：下游现在还能接几个？</p>
       <p id="backpressure-streams" className="vp-citation-target">Reactive Streams 把背压放在异步数据流的核心位置：快速的数据源不应该迫使接收方无限缓冲，队列应当保持有界，接收侧的能力要参与调节元素交换。它描述的是一套跨异步边界的协议语义，不是某个固定的队列产品。<Cite id="backpressure-streams" sources={backpressureSources} /></p>
