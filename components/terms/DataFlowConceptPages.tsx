@@ -1,17 +1,18 @@
-import { Archive, FileText, CurrencyCircleDollar, Funnel } from '@phosphor-icons/react/dist/ssr';
+import { CurrencyCircleDollar, Funnel } from '@phosphor-icons/react/dist/ssr';
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
 import { ConceptHero } from './ConceptHero';
 import { IngestionLesson, TransformationLesson, ValidationLesson } from './DataFlowConceptLessons';
 import { ingestionSources, transformationSources, validationSources } from '@/lib/dataflow-sources';
 import base from './EventConcepts.module.css';
 import s from './DataFlowConcepts.module.css';
+import { DataIngestionSignatureHero } from './DataTestSignatureHeroes';
 function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{names.map(name => <span key={name} id={`${slug}-${name}`} className={base.anchor} aria-hidden="true"/>)}</>; }
 
 export function IngestionTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={ingestionSources}/>;
   return <ConceptArticle slug="data-ingestion" title="数据接入" sources={ingestionSources} sections={[["entry", "把来源数据接进来"], ["position", "读到哪里，保存到哪里"], ["restart", "重启后可能再次读取"], ["reconcile", "接进来以后，还要核对"]]}
     intro={<>图书馆的借阅记录不断增加，报表系统要把新增记录接进原始层。原始层是接入后先保存来源记录和原始值的地方。接入要回答两个问题：哪些记录已经写入，下一次从哪里继续。读到一条记录，与确认它已经可靠保存，是不同的进度；接入完成也不等于后面的验证、转换和汇总都已完成。</>}
-    hero={<ConceptHero slug="data-ingestion" label="读到记录并写入原始层，确认位置才可前移"><div className={s.ingestionHero}><div className={s.heroLog}><FileText size={25}/><code>1 · loan-1</code><code>2 · loan-2</code></div><div className={s.heroDestination}><Archive size={25}/><strong>原始层</strong><span>等待接入</span></div><div className={s.heroCursor}>写入完成之后，还要保存确认位置</div></div></ConceptHero>}>
+    hero={<DataIngestionSignatureHero />}>
     <ArticleSection id="entry" title="把来源数据接进来"><Legacy slug="data-ingestion" names={["question", "definition"]}/>
       <p id="ingestion-entry" className="vp-citation-target"><strong>数据接入把数据库、文件、API 或事件流中的数据收集到目标系统，供后续存储与处理。</strong>AWS 将它描述为数据进入处理流程的入口，也区分批量、流式与微批方式。有的接入系统会附带基础检查或预处理；本文只讲来源读取与目标保存这两步，清洗、汇总、发布属于数据管道里的其他环节，这里不展开。这里把原始层当作数据接入后的第一个去处：先保留来源记录和原始值，后面的转换、验证与汇总再从这里读取。<Cite id="ingestion-entry"/></p>
       <div className={base.contrast}><div><h3>数据接入</h3><p>从借阅来源拿到记录，保存事件身份（用来认出同一条记录的标识）与原始值，并记录读取位置。</p></div><div><h3>数据管道</h3><p>把接入、验证、转换、统计和发布连接成完整流程。接入做完，只代表整个流程里的一步结束。</p></div></div>

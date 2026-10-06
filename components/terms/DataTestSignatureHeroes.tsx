@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Archive, ArrowDown, ArrowRight, ArrowsClockwise, CheckCircle, FileText, GitBranch, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./DataTestSignatureHeroes.module.css";
@@ -16,7 +16,7 @@ function Result({ icon: IconComponent, title, detail, danger = false }: { icon: 
   return <div className={styles.result} data-danger={danger} role="status"><IconComponent size={19} aria-hidden="true" /><span><strong>{title}</strong> · {detail}</span></div>;
 }
 
-function Frame({ label, eyebrow, meta, scene, steps, children, result, caption, controls }: { label: string; eyebrow: string; meta: string; scene: Scene; steps: string[]; children: React.ReactNode; result: { icon: Icon; title: string; detail: string; danger?: boolean }; caption: string; controls?: React.ReactNode }) {
+function Frame({ label, eyebrow, meta, scene, steps, children, result, caption, controls }: { label: string; eyebrow: string; meta: string; scene: Scene; steps: string[]; children: ReactNode; result: { icon: Icon; title: string; detail: string; danger?: boolean }; caption: string; controls?: ReactNode }) {
   return <figure ref={scene.ref} className={styles.frame} data-step={scene.step} aria-label={label}>
     <Header eyebrow={eyebrow} meta={meta} />
     {controls}
