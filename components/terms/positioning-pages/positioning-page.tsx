@@ -1,8 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { positioningSources } from "@/lib/positioning-sources";
-import { PositioningHero } from "./positioning-hero";
-import { PositioningLesson } from "./positioning";
+import { PositioningSignatureHero as PositioningHero } from "../RenderingLayoutSignatureHeroes";
 
 const sections: [string, string][] = [
   ["positioning-definition-section", "先问：这个盒子相对谁"],
@@ -16,8 +15,7 @@ export function PositioningTermPage() {
     <ArticleSection id="positioning-definition-section" title="先问：这个盒子相对谁">
       <p id="position-scheme" className="vp-citation-target"><code>position</code> 属性选择定位方案。<code>static</code> 是默认的普通流；<code>relative</code> 从自己的原位置偏移；<code>absolute</code> 脱离普通流并寻找包含块；<code>fixed</code> 通常相对视口；<code>sticky</code> 则在普通流和贴住边界之间切换。<Cite id="position-scheme" sources={positioningSources} /></p>
       <p id="position-flow" className="vp-citation-target">定位的两个问题要分开：坐标从哪里算，以及元素是否还为自己留下空间。relative 会保留占位，absolute 和 fixed 通常不再占普通流位置；因此只改 <code>top</code> 可能同时改变视觉位置和后面内容的排布。<Cite id="position-flow" sources={positioningSources} /></p>
-      <p>下面的小演示固定一个容器和一张提醒卡，只切换定位方式。读者要观察的不是卡片“看起来顺眼不顺眼”，而是它的参照标签和占位状态怎样一起变化。</p>
-      <PositioningLesson />
+      <p>首图演示固定一个容器和一张提醒卡，只切换定位方式。读者要观察的不是卡片“看起来顺眼不顺眼”，而是它的参照标签和占位状态怎样一起变化。</p>
     </ArticleSection>
     <ArticleSection id="positioning-containing-section" title="absolute 要找包含块">
       <p id="position-containing-block" className="vp-citation-target">绝对定位元素会寻找最近的、建立了定位上下文的祖先作为 containing block（包含块）。通常给卡片的父容器加 <code>position: relative</code>，再让卡片 <code>position: absolute</code>，卡片的 <code>top</code> 和 <code>right</code> 就会以这个容器为参照。<Cite id="position-containing-block" sources={positioningSources} /></p>
