@@ -1,6 +1,7 @@
 import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptTerm } from "./ConceptArticle";
 import { MechanismHero } from "./ConceptHero";
 import { MobileConceptLesson } from "./MobileConceptLessons";
+import { AdaptiveLayoutSignatureHero, OfflineFirstSignatureHero } from "./FrontendInteractionSignatureHeroes";
 import { adaptiveLayoutSources, appLifecycleSources, appPermissionSources, boxModelSources, crossPlatformSources, cssSelectorSources, offlineFirstSources, pushNotificationSources, safeAreaSources, webviewSources } from "@/lib/mobile-css-concept-sources";
 import styles from "./ConceptArticle.module.css";
 import { ArrowRight, Bell, Browser, CheckCircle, Cloud, Code, Database, FileText, GitBranch, Layout, ShieldCheck, Stack, TreeStructure, User } from "@phosphor-icons/react/dist/ssr";
@@ -23,7 +24,7 @@ function MobileHero({ trigger, change, proof }: { trigger: string; change: strin
 }
 
 export function OfflineFirstTermPage() {
-  return <ConceptArticle slug="offline-first" title="Offline-first" subtitle="离线优先" hero={<MobileHero trigger="网络断开" change="本地保存 → 待同步队列" proof="重新连接后出现服务器结果和冲突选择" />} sections={offlineSections} sources={offlineFirstSources} intro={<>离线优先让应用先用设备上已经保存的数据完成眼前任务，网络恢复后再把变更同步到服务器。<strong>它不是“加一层缓存”，而是一套在断网时仍能工作、重新连接后能处理结果的读写安排。</strong></>}>
+  return <ConceptArticle slug="offline-first" title="Offline-first" subtitle="离线优先" hero={<OfflineFirstSignatureHero />} sections={offlineSections} sources={offlineFirstSources} intro={<>离线优先让应用先用设备上已经保存的数据完成眼前任务，网络恢复后再把变更同步到服务器。<strong>它不是“加一层缓存”，而是一套在断网时仍能工作、重新连接后能处理结果的读写安排。</strong></>}>
     <ArticleSection id="offline-task" title="断网时仍要完成的任务">
       <p>你在地铁里修改一条出行笔记，网络图标突然变灰。应用如果只把输入直接发给服务器，保存按钮就只能一直转圈，重新打开页面还可能看不到刚写的内容。离线优先先问的是：这项任务能不能在本地完成，哪些结果必须等服务器确认。</p>
       <p id="offline-layer" className="vp-citation-target">对可以离线完成的任务，应用把本地数据源放在优先位置。它先从本地读出笔记，也先把本次编辑保存到本地；网络可用时，再由同步层把本地变更送到远端。Android 的离线优先资料把本地数据源、网络数据源和同步职责分开描述。<Cite id="offline-layer" sources={offlineFirstSources} /></p>
@@ -54,7 +55,7 @@ export function OfflineFirstTermPage() {
 }
 
 export function AdaptiveLayoutTermPage() {
-  return <ConceptArticle slug="adaptive-layout" title="Adaptive layout" subtitle="自适应布局" hero={<MobileHero trigger="窗口宽度改变" change="单列 → 并列 → 侧栏" proof="订单和键盘焦点仍指向原任务" />} sections={adaptiveSections} sources={adaptiveLayoutSources} intro={<>自适应布局根据窗口当前可用的空间和姿态重新安排内容关系。<strong>它改变的是导航、列表和详情怎样共存，不是把一张固定页面按比例拉伸。</strong></>}>
+  return <ConceptArticle slug="adaptive-layout" title="Adaptive layout" subtitle="自适应布局" hero={<AdaptiveLayoutSignatureHero />} sections={adaptiveSections} sources={adaptiveLayoutSources} intro={<>自适应布局根据窗口当前可用的空间和姿态重新安排内容关系。<strong>它改变的是导航、列表和详情怎样共存，不是把一张固定页面按比例拉伸。</strong></>}>
     <ArticleSection id="adaptive-task" title="窗口变了，任务不能丢">
       <p>你在平板上打开一个订单：窄窗口时先看订单列表，点开后进入详情；把窗口拖宽，列表和详情可以并排。用户期待的是同一张订单仍然被选中，而不是布局一变就回到第一条。</p>
       <p id="adaptive-window" className="vp-citation-target">Android 的自适应布局资料把窗口大小和折叠姿态当作运行时输入，建议根据可用空间决定布局关系。窗口可以在运行中变化，应用要重新计算能否并列显示，而不是只在启动时选择一个设备档位。<Cite id="adaptive-window" sources={adaptiveLayoutSources} /></p>

@@ -1,0 +1,142 @@
+.hero { position: relative; overflow: hidden; display: grid; gap: 10px; max-width: 760px; margin: 0 auto; padding: 14px 16px 15px; border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent); border-radius: 21px; background: color-mix(in srgb, var(--surface) 72%, transparent); box-shadow: 0 14px 38px color-mix(in srgb, var(--ink) 7%, transparent); }
+.hero::before { position: absolute; inset: -60px auto auto 12%; width: 180px; height: 150px; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--brand-star) 20%, transparent), transparent 68%); content: ""; pointer-events: none; }
+.canvas { position: relative; min-height: 190px; }
+.caption { display: grid; grid-template-columns: 26px 1fr; gap: 9px; align-items: start; min-height: 43px; }
+.caption > span { color: var(--accent-text); font: 700 10px ui-monospace, SFMono-Regular, monospace; letter-spacing: .08em; }
+.caption > div { color: var(--muted); font-size: 11px; line-height: 1.5; }
+
+.semanticBoard { display: grid; grid-template-columns: 1fr 28px 1.25fr; align-items: center; min-height: 185px; gap: 8px; }
+.semanticSource, .semanticAssistive { display: grid; align-content: center; gap: 7px; min-height: 132px; padding: 14px; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 15px; background: color-mix(in srgb, var(--paper) 75%, transparent); }
+.semanticSource span, .semanticAssistive span, .treeHeader span { color: var(--muted); font: 9px ui-monospace, SFMono-Regular, monospace; }
+.semanticSource code { color: var(--accent-text); font: 700 17px ui-monospace, SFMono-Regular, monospace; }
+.semanticSource small { color: var(--muted); font-size: 10px; }
+.semanticSource svg, .semanticAssistive svg { color: var(--accent-text); }
+.semanticArrow { color: var(--brand-star); justify-self: center; }
+.semanticTree { display: grid; align-content: center; gap: 7px; min-height: 170px; padding: 11px; border-radius: 16px; background: color-mix(in srgb, var(--accent-text) 5%, var(--surface)); }
+.treeHeader { display: flex; align-items: center; gap: 7px; color: var(--accent-text); }
+.treeRoot { justify-self: center; padding: 6px 13px; border: 1px solid color-mix(in srgb, var(--accent-text) 28%, transparent); border-radius: 9px; background: var(--tint); color: var(--accent-text); font: 700 10px ui-monospace, SFMono-Regular, monospace; }
+.treeBranches { display: flex; justify-content: space-around; height: 14px; padding: 0 28px; border-top: 1px solid color-mix(in srgb, var(--accent-text) 35%, transparent); }
+.treeBranches i { width: 1px; height: 14px; background: color-mix(in srgb, var(--accent-text) 35%, transparent); }
+.semanticAssistive { min-height: 54px; grid-template-columns: auto 1fr auto; align-items: center; padding: 9px 11px; background: color-mix(in srgb, #e6efdf 66%, var(--surface)); transition: opacity .35s, transform .35s, border-color .35s; }
+.semanticAssistive strong { display: block; margin-top: 3px; color: var(--accent-text); font-size: 11px; }
+.semanticAssistive.isMuted { opacity: .48; transform: translateY(3px); }
+
+.branchTabs { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+.branchTabs button { padding: 5px 8px; border: 1px solid color-mix(in srgb, var(--ink) 17%, transparent); border-radius: 999px; background: transparent; color: var(--muted); font-size: 10px; cursor: pointer; }
+.branchTabs button[aria-pressed="true"] { border-color: var(--accent-text); background: var(--tint); color: var(--accent-text); }
+.deepLinkBoard { display: grid; grid-template-columns: 1fr .9fr 1.2fr; align-items: center; min-height: 166px; gap: 9px; }
+.linkTicket, .routeGate, .routeTargets > div { display: grid; align-content: center; gap: 6px; min-height: 116px; padding: 12px; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 15px; background: color-mix(in srgb, var(--paper) 75%, transparent); transition: transform .35s, border-color .35s, background .35s, opacity .35s; }
+.linkTicket svg, .routeGate svg { color: var(--accent-text); }
+.linkTicket span, .routeGate small, .routeTargets small { color: var(--muted); font-size: 9px; }
+.linkTicket code { color: var(--accent-text); font: 700 12px ui-monospace, SFMono-Regular, monospace; }
+.routeGate { position: relative; background: color-mix(in srgb, var(--accent-text) 6%, var(--surface)); }
+.routeGate strong { font-size: 12px; }
+.routePulse { position: absolute; right: 10px; bottom: 10px; width: 7px; height: 7px; border-radius: 50%; background: var(--brand-star); box-shadow: 0 0 0 6px color-mix(in srgb, var(--brand-star) 15%, transparent); }
+.routeTargets { display: grid; gap: 6px; }
+.routeTargets > div { grid-template-columns: auto 1fr; align-items: center; min-height: 0; padding: 8px 10px; opacity: .42; }
+.routeTargets > div svg { color: var(--accent-text); }
+.routeTargets > div span { font-weight: 700; font-size: 11px; }
+.routeTargets > div small { grid-column: 2; }
+.routeTargets button { grid-column: 2; justify-self: start; padding: 4px 6px; border: 1px solid var(--accent-text); border-radius: 6px; background: var(--surface); color: var(--accent-text); font-size: 10px; cursor: pointer; }
+.routeTargets > div[data-active="true"] { opacity: 1; border-color: var(--accent-text); background: var(--tint); transform: translateX(-4px); }
+
+.manifestToggles { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+.manifestToggles button { padding: 5px 8px; border: 1px solid color-mix(in srgb, var(--ink) 17%, transparent); border-radius: 999px; background: transparent; color: var(--muted); font-size: 10px; cursor: pointer; }
+.manifestToggles button[aria-pressed="true"] { border-color: var(--accent-text); background: var(--tint); color: var(--accent-text); }
+.manifestBoard { display: grid; grid-template-columns: 1fr 1.45fr .85fr; align-items: center; min-height: 166px; gap: 8px; }
+.manifestFile, .manifestSystem { display: grid; align-content: center; gap: 6px; min-height: 130px; padding: 12px; border-radius: 15px; background: color-mix(in srgb, var(--paper) 76%, transparent); border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); }
+.manifestFile svg, .manifestSystem svg { color: var(--accent-text); }
+.manifestFile strong { font-size: 14px; }
+.manifestFile span, .manifestFile b, .manifestSystem span { color: var(--muted); font-size: 9px; }
+.manifestFile b { color: var(--accent-text); font: 9px ui-monospace, SFMono-Regular, monospace; }
+.manifestPorts { display: grid; gap: 6px; }
+.manifestPorts > div { display: grid; grid-template-columns: .7fr 1fr auto; gap: 7px; align-items: center; padding: 8px 10px; border: 1px solid color-mix(in srgb, var(--ink) 13%, transparent); border-radius: 9px; background: color-mix(in srgb, var(--surface) 72%, transparent); transition: .35s; }
+.manifestPorts span, .manifestPorts i { color: var(--muted); font-size: 9px; }
+.manifestPorts strong { font-size: 10px; }
+.manifestPorts i { font-style: normal; color: var(--accent-text); }
+.manifestPorts > div[data-missing="true"] { border-color: #a55c54; background: #f3d8d0; }
+.manifestPorts > div[data-missing="true"] i { color: #a55c54; }
+.manifestSystem { background: color-mix(in srgb, #e6efdf 68%, var(--surface)); }
+.manifestSystem strong { color: var(--accent-text); font-size: 11px; line-height: 1.35; }
+
+.emulatorBuild { display: flex; align-items: center; gap: 7px; width: fit-content; margin: 0 auto 9px; padding: 6px 10px; border: 1px solid color-mix(in srgb, var(--accent-text) 24%, transparent); border-radius: 999px; background: var(--tint); color: var(--accent-text); font-size: 10px; }
+.emulatorBuild code { font: 700 10px ui-monospace, SFMono-Regular, monospace; }
+.emulatorBoard { display: grid; grid-template-columns: 1fr 58px 1fr; align-items: center; min-height: 150px; gap: 8px; }
+.deviceCard { display: grid; align-content: center; gap: 7px; min-height: 135px; padding: 12px; border: 1px solid color-mix(in srgb, var(--accent-text) 24%, transparent); border-radius: 18px; background: color-mix(in srgb, var(--surface) 62%, transparent); transition: transform .4s, border-color .35s; }
+.deviceCard.physicalDevice { border-color: color-mix(in srgb, var(--brand-star) 43%, transparent); background: color-mix(in srgb, #f3eadc 65%, var(--surface)); }
+.deviceTop { display: flex; align-items: center; gap: 7px; color: var(--accent-text); font-size: 12px; font-weight: 700; }
+.deviceScreen { display: grid; gap: 5px; padding: 8px; border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent); border-radius: 10px; background: var(--paper); }
+.signal { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 9px; }.signal svg { color: var(--accent-text); }
+.deviceCard small { color: var(--muted); font-size: 9px; }
+.checkSpine { display: grid; justify-items: center; gap: 5px; }.checkSpine span { width: 9px; height: 9px; border-radius: 50%; border: 1px solid color-mix(in srgb, var(--accent-text) 52%, transparent); background: var(--tint); transition: transform .3s, background .3s; }
+.emulatorBoard[data-step="1"] .deviceCard:first-child, .emulatorBoard[data-step="2"] .deviceCard:first-child { transform: translateY(-4px); border-color: var(--accent-text); }
+.emulatorBoard[data-step="2"] .physicalDevice { transform: translateY(-4px); border-color: var(--accent-text); }
+.emulatorBoard[data-step="1"] .checkSpine span:nth-child(-n+2), .emulatorBoard[data-step="2"] .checkSpine span { background: var(--accent-text); transform: scale(1.18); }
+
+.signingBoard { display: grid; grid-template-columns: 1.1fr 22px .85fr 22px .85fr; align-items: center; min-height: 160px; gap: 8px; }
+.packageCard, .digest, .keySeal, .verifyCard { display: grid; align-content: center; gap: 6px; min-height: 122px; padding: 11px; border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); border-radius: 15px; background: color-mix(in srgb, var(--paper) 75%, transparent); }
+.packageCard svg, .digest svg, .keySeal svg, .verifyCard svg { color: var(--accent-text); }
+.packageCard strong { font-size: 14px; }
+.packageCard span, .digest span, .keySeal span, .verifyCard span { color: var(--muted); font-size: 9px; }
+.byteStrip { display: flex; gap: 3px; flex-wrap: wrap; }.byteStrip b { padding: 4px 5px; border-radius: 5px; background: color-mix(in srgb, var(--accent-text) 9%, transparent); color: var(--accent-text); font: 9px ui-monospace, SFMono-Regular, monospace; }.byteStrip b[data-changed="true"] { background: #f3d8d0; color: #a55c54; }
+.signingArrow { color: var(--brand-star); justify-self: center; }.signatureColumn { display: grid; gap: 6px; }.digest, .keySeal { min-height: 58px; grid-template-columns: auto 1fr; align-items: center; }.digest code { grid-column: 2; color: var(--accent-text); font: 9px ui-monospace, SFMono-Regular, monospace; }.keySeal b { grid-column: 2; color: var(--accent-text); font-size: 10px; }.verifyCard { background: color-mix(in srgb, #e6efdf 66%, var(--surface)); }.verifyCard strong { color: var(--accent-text); font-size: 11px; }.verifyCard.isRejected { border-color: #a55c54; background: #f3d8d0; }.verifyCard.isRejected svg, .verifyCard.isRejected strong { color: #a55c54; }
+
+.gestureBoard { display: grid; grid-template-columns: 1.3fr .9fr; align-items: center; min-height: 180px; gap: 10px; }
+.gestureTrack { position: relative; min-height: 150px; padding: 10px; border: 1px solid color-mix(in srgb, var(--ink) 13%, transparent); border-radius: 17px; background: radial-gradient(circle at 30% 70%, color-mix(in srgb, var(--brand-star) 12%, transparent), transparent 35%), color-mix(in srgb, var(--surface) 68%, transparent); }
+.gestureTrack svg { width: 100%; height: 135px; }.gesturePath { fill: none; stroke: var(--accent-text); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 8 7; transition: d .45s; }.gesturePointer { fill: var(--brand-star); stroke: var(--paper); stroke-width: 3; filter: drop-shadow(0 3px 4px color-mix(in srgb, var(--brand-star) 38%, transparent)); transition: cx .45s, cy .45s; }
+.gestureOrigin { position: absolute; left: 14px; bottom: 10px; display: flex; align-items: center; gap: 5px; color: var(--muted); font-size: 9px; }.gestureReadout { display: grid; align-content: center; gap: 8px; min-height: 135px; padding: 13px; border-radius: 16px; background: color-mix(in srgb, #e6efdf 63%, var(--surface)); }.gestureReadout > span, .gestureResult span { color: var(--muted); font-size: 9px; }.gestureMeasure { display: flex; align-items: center; gap: 7px; color: var(--accent-text); }.gestureMeasure strong { font-size: 11px; line-height: 1.35; }.gestureResult { display: flex; align-items: baseline; justify-content: space-between; gap: 7px; }.gestureResult b { color: var(--accent-text); font: 800 18px ui-monospace, SFMono-Regular, monospace; }.gestureReadout small { color: var(--muted); font-size: 9px; line-height: 1.35; }
+
+.hapticBoard { display: grid; grid-template-columns: 1fr 1fr; grid-template-areas: "event mode" "actuator fallback"; align-items: stretch; min-height: 170px; gap: 8px; }
+.hapticEvent, .hapticMode, .hapticActuator, .hapticFallback { display: grid; align-content: center; gap: 6px; min-height: 76px; padding: 11px; border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); border-radius: 15px; background: color-mix(in srgb, var(--paper) 72%, transparent); transition: .35s; }
+.hapticEvent { grid-area: event; }.hapticMode { grid-area: mode; }.hapticActuator { grid-area: actuator; position: relative; overflow: hidden; }.hapticFallback { grid-area: fallback; grid-template-columns: auto auto 1fr; align-items: center; }.hapticEvent span, .hapticMode span, .hapticActuator span, .hapticFallback span { color: var(--muted); font-size: 9px; }.hapticEvent strong, .hapticMode b, .hapticActuator b, .hapticFallback strong { color: var(--accent-text); font-size: 11px; }.hapticMode svg, .hapticActuator > svg, .hapticFallback svg { color: var(--accent-text); }
+.pulseRings { position: absolute; right: 15px; top: 12px; width: 42px; height: 42px; }.pulseRings i { position: absolute; inset: 0; border: 1px solid color-mix(in srgb, var(--brand-star) 68%, transparent); border-radius: 50%; opacity: .6; transform: scale(.45); }.pulseRings i:nth-child(2) { transform: scale(.7); }.pulseRings i:nth-child(3) { transform: scale(1); }.hero[data-visible="true"] .hapticBoard[data-playing="true"] .pulseRings i { animation: pulse .8s ease-out 1 both; }.hapticBoard[data-step="3"] .hapticActuator { border-color: #a55c54; background: #f3d8d0; }.hapticBoard[data-step="3"] .hapticActuator > svg, .hapticBoard[data-step="3"] .hapticActuator b { color: #a55c54; }
+@keyframes pulse { 0% { opacity: .7; transform: scale(.3); } 75%, 100% { opacity: 0; transform: scale(1); } }
+
+.touchBoard { display: grid; grid-template-columns: 1.3fr .8fr; align-items: center; min-height: 180px; gap: 10px; }
+.touchStage { position: relative; min-height: 166px; border: 1px solid color-mix(in srgb, var(--ink) 13%, transparent); border-radius: 18px; background: linear-gradient(135deg, color-mix(in srgb, var(--surface) 76%, transparent), color-mix(in srgb, var(--tint) 44%, transparent)); }.touchTarget, .touchNeighbor { position: absolute; display: grid; place-items: center; gap: 2px; z-index: 2; color: var(--accent-text); font-size: 8px; }.touchTarget { left: 43%; top: 43%; width: 34px; height: 34px; transform: translate(-50%, -50%); }.touchNeighbor { left: 69%; top: 49%; width: 28px; height: 28px; color: var(--muted); transform: translate(-50%, -50%); transition: left .45s, top .45s, transform .45s; }.touchHitbox { position: absolute; inset: 8px; border: 1px dashed color-mix(in srgb, var(--accent-text) 55%, transparent); border-radius: 11px; transition: inset .45s, box-shadow .45s, background .45s; }.touchBoard[data-step="1"] .touchHitbox, .touchBoard[data-step="2"] .touchHitbox { inset: -10px; background: color-mix(in srgb, var(--accent-text) 10%, transparent); box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-text) 30%, transparent); }.touchBoard[data-step="3"] .touchHitbox { inset: -10px; background: color-mix(in srgb, #a55c54 12%, transparent); border-color: #a55c54; }.touchPoint { position: absolute; z-index: 1; width: 7px; height: 7px; border: 2px solid var(--paper); border-radius: 50%; background: color-mix(in srgb, var(--muted) 44%, transparent); transform: translate(-50%, -50%); transition: background .35s, transform .35s; }.touchPoint[data-hit="true"] { background: var(--accent-text); transform: translate(-50%, -50%) scale(1.35); }.touchReadout { display: grid; align-content: center; gap: 7px; min-height: 135px; padding: 13px; border-radius: 16px; background: color-mix(in srgb, #e6efdf 63%, var(--surface)); }.touchReadout svg { color: var(--accent-text); }.touchReadout span, .touchReadout small { color: var(--muted); font-size: 9px; }.touchReadout strong { color: var(--accent-text); font: 800 16px ui-monospace, SFMono-Regular, monospace; line-height: 1.25; }.touchReadout small { line-height: 1.35; }
+
+.offlineBoard { position: relative; display: grid; grid-template-columns: 1.1fr .95fr .95fr; grid-template-rows: 1fr 1fr; align-items: center; min-height: 180px; gap: 8px; }
+.noteCard, .localStack, .outboxTile, .serverTile, .conflictTile { display: grid; align-content: center; gap: 5px; min-height: 72px; padding: 10px; border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); border-radius: 14px; background: color-mix(in srgb, var(--paper) 74%, transparent); transition: transform .4s, opacity .35s, border-color .35s, background .35s; }
+.noteCard { grid-row: 1 / 3; min-height: 145px; }.noteCard svg, .localStack svg, .outboxTile svg, .serverTile svg, .conflictTile svg { color: var(--accent-text); }.noteCard span, .localStack span, .outboxTile span, .serverTile span, .conflictTile span { color: var(--muted); font-size: 9px; }.noteCard strong { font-size: 16px; }.noteCard small, .localStack b, .outboxTile b, .serverTile b, .conflictTile b { color: var(--accent-text); font-size: 10px; line-height: 1.3; }
+.localStack { background: color-mix(in srgb, var(--tint) 58%, var(--surface)); }.outboxTile { background: color-mix(in srgb, #f3eadc 62%, var(--surface)); }.serverTile { background: color-mix(in srgb, #e6efdf 60%, var(--surface)); }.conflictTile { opacity: .45; }.conflictTile[data-visible="true"] { opacity: 1; border-color: #a55c54; background: #f3d8d0; }.conflictTile[data-visible="true"] svg, .conflictTile[data-visible="true"] b { color: #a55c54; }
+.offlineBoard[data-step="1"] .outboxTile, .offlineBoard[data-step="2"] .outboxTile { transform: translateY(-4px); border-color: var(--accent-text); }.offlineBoard[data-step="2"] .serverTile { transform: translateY(-4px); border-color: var(--accent-text); }.offlineBoard[data-step="3"] .serverTile { border-color: var(--accent-text); }
+
+
+.adaptiveBoard { display: grid; gap: 8px; min-height: 180px; }
+.windowBar { display: grid; grid-template-columns: auto auto auto 1fr; align-items: center; gap: 7px; padding: 7px 9px; border-radius: 12px; background: color-mix(in srgb, var(--ink) 6%, transparent); color: var(--muted); font-size: 9px; }.windowBar svg { color: var(--accent-text); }.windowBar strong { color: var(--accent-text); font: 700 9px ui-monospace, SFMono-Regular, monospace; }.windowBar input { width: 100%; accent-color: var(--accent-text); }
+.adaptiveWindow { display: grid; grid-template-columns: 62px 1fr 1.2fr; min-height: 124px; gap: 6px; padding: 8px; border: 1px solid color-mix(in srgb, var(--ink) 13%, transparent); border-radius: 16px; background: color-mix(in srgb, var(--surface) 72%, transparent); transition: grid-template-columns .45s; }
+.adaptiveNav, .adaptiveList, .adaptiveDetail { display: grid; align-content: start; gap: 6px; padding: 9px; border-radius: 11px; background: color-mix(in srgb, var(--paper) 76%, transparent); transition: opacity .35s, transform .45s; }.adaptiveNav span, .adaptiveList span, .adaptiveDetail span { color: var(--muted); font-size: 9px; }.adaptiveNav i { width: 24px; height: 5px; border-radius: 999px; background: color-mix(in srgb, var(--muted) 28%, transparent); }.adaptiveList b, .adaptiveList i { padding: 5px; border-radius: 6px; color: var(--muted); background: color-mix(in srgb, var(--accent-text) 8%, transparent); font-size: 9px; font-style: normal; }.adaptiveList b { color: var(--accent-text); }.adaptiveDetail strong { color: var(--accent-text); font-size: 12px; }.adaptiveDetail p { margin: 0; color: var(--muted); font-size: 9px; }.adaptiveDetail button { display: inline-flex; align-items: center; gap: 4px; width: fit-content; padding: 5px 7px; border: 1px solid color-mix(in srgb, var(--accent-text) 22%, transparent); border-radius: 7px; background: transparent; color: var(--accent-text); font-size: 9px; }.adaptiveDetail button[data-focused="true"] { box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-star) 22%, transparent); background: var(--tint); }.adaptiveBoard[data-step="0"] .adaptiveNav { opacity: .45; transform: translateX(-3px); }.adaptiveBoard[data-step="0"] .adaptiveList { display: none; }.adaptiveBoard[data-step="0"] .adaptiveWindow { grid-template-columns: 0 1fr; }.adaptiveBoard[data-step="1"] .adaptiveNav { opacity: .55; }.adaptiveBoard[data-step="1"] .adaptiveWindow { grid-template-columns: 0 1fr .95fr; }.adaptiveBoard[data-step="2"] .adaptiveWindow, .adaptiveBoard[data-step="3"] .adaptiveWindow { grid-template-columns: 62px .9fr 1.2fr; }.adaptiveProof { display: flex; align-items: center; justify-content: center; gap: 7px; min-height: 27px; color: var(--accent-text); font-size: 10px; }.adaptiveProof svg { color: var(--accent-text); }
+
+
+@media (max-width: 760px) {
+  .hero { padding: 12px; border-radius: 17px; }
+  .canvas { min-height: 0; }
+  .semanticBoard { grid-template-columns: 1fr; min-height: 0; }
+  .semanticArrow { transform: rotate(90deg); justify-self: center; }
+  .semanticSource, .semanticTree { min-height: 82px; }
+  .treeBranches { display: none; }
+  .deepLinkBoard { grid-template-columns: 1fr; min-height: 0; }
+  .routeTargets { grid-template-columns: repeat(3, 1fr); }
+  .routeTargets > div { min-height: 72px; }
+  .manifestBoard { grid-template-columns: 1fr; min-height: 0; }
+  .manifestFile, .manifestSystem { min-height: 82px; }
+  .manifestToggles { justify-content: flex-start; }
+  .emulatorBoard { grid-template-columns: 1fr; min-height: 0; }
+  .checkSpine { grid-template-columns: repeat(3, 1fr); grid-auto-flow: column; min-height: 14px; }
+  .deviceCard { min-height: 82px; }
+  .signingBoard { grid-template-columns: 1fr; gap: 6px; }
+  .signingArrow { transform: rotate(90deg); }
+  .signatureColumn { grid-template-columns: 1fr 1fr; }
+  .packageCard, .verifyCard { min-height: 82px; }
+  .gestureBoard { grid-template-columns: 1fr; min-height: 0; }
+  .gestureTrack { min-height: 125px; }.gestureReadout { min-height: 100px; }
+  .hapticBoard { grid-template-areas: "event" "mode" "actuator" "fallback"; grid-template-columns: 1fr; }
+  .touchBoard { grid-template-columns: 1fr; min-height: 0; }
+  .touchStage { min-height: 145px; }
+  .offlineBoard { grid-template-columns: 1fr 1fr; grid-template-rows: auto; min-height: 0; }.noteCard { grid-row: auto; grid-column: 1 / 3; min-height: 84px; }.localStack, .outboxTile, .serverTile, .conflictTile { min-height: 68px; }
+  .windowBar { grid-template-columns: auto auto 1fr; }.windowBar strong { grid-column: 2 / 4; }.windowBar input { grid-column: 1 / 4; }
+  .adaptiveWindow { min-height: 150px; grid-template-columns: 42px .9fr 1.1fr; }.adaptiveBoard[data-step="0"] .adaptiveWindow { grid-template-columns: 1fr; }.adaptiveBoard[data-step="0"] .adaptiveNav, .adaptiveBoard[data-step="0"] .adaptiveList { display: none; }.adaptiveBoard[data-step="1"] .adaptiveWindow { grid-template-columns: .9fr 1.1fr; }.adaptiveBoard[data-step="1"] .adaptiveNav { display: none; }.adaptiveNav, .adaptiveList, .adaptiveDetail { padding: 6px; gap: 4px; }.adaptiveNav i { width: 17px; }.adaptiveList b, .adaptiveList i { padding: 4px; }.adaptiveDetail strong { font-size: 10px; }.adaptiveDetail p { font-size: 8px; }.adaptiveDetail button { padding: 4px 5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero *, .hero *::before, .hero *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+}
