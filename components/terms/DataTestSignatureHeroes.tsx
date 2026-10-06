@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { Archive, ArrowDown, ArrowRight, ArrowsClockwise, CheckCircle, Cube, CurrencyCircleDollar, Database, FileText, Funnel, GitBranch, MapPin, Scales, ShieldCheck, TreeStructure, WarningCircle } from "@phosphor-icons/react";
+import { Archive, ArrowDown, ArrowRight, ArrowsClockwise, CheckCircle, Cube, CurrencyCircleDollar, Database, FileText, Funnel, GitBranch, ListChecks, MapPin, Scales, ShieldCheck, TreeStructure, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./DataTestSignatureHeroes.module.css";
 
@@ -102,6 +102,35 @@ export function DataTransformationSignatureHero() {
       <div className={styles.transformInputs}><span>来源原值</span>{[{ id: "A", raw: "¥12.30", unit: "CNY 元" }, { id: "B", raw: "CNY 12.30", unit: "CNY 元" }, { id: "C", raw: "1230", unit: "CNY 分" }, { id: "D", raw: "1230", unit: resolveUnknown ? "CNY 分" : "未知单位" }].map(row => <div key={row.id} data-unknown={row.id === "D" && !resolveUnknown}><code>{row.id}</code><strong>{row.raw}</strong><small>{step >= 1 ? row.unit : "待识别"}</small></div>)}</div>
       <div className={styles.transformRule}><div><Scales size={18} /><span>规则 v2</span></div><strong>元 × 100 → 分</strong><small>{step >= 2 ? "保留 2 位小数" : "等待单位"}</small></div>
       <div className={styles.transformOutputs}><span>统一输出</span><div className={styles.transformTotal}><strong>{converted ? resolveUnknown ? "4920" : "3690" : "—"}</strong><small>CNY cents</small></div><div className={styles.transformProof}><span>A/B/C</span><code>{converted ? "1230 + 1230 + 1230" : "未计算"}</code></div><div className={styles.transformProof} data-unknown={!resolveUnknown}><span>D</span><code>{resolveUnknown ? "1230 · 已确认" : "? · 暂不合计"}</code></div></div>
+    </div>
+  </Frame>;
+}
+
+const validationSteps = ["看字段类型", "卡住范围", "对照字段关系", "查重复身份"];
+const validationRows = [
+  { id: "r1", value: "age 24 · city 杭州", failures: [] },
+  { id: "r2", value: "age −2 · city 杭州", failures: ["范围"] },
+  { id: "r3", value: 'age "24" · city 杭州', failures: ["类型"] },
+  { id: "r4", value: "age 31 · loan-07 ×2", failures: ["唯一"] },
+] as const;
+
+export function DataValidationSignatureHero() {
+  const scene = useScene(validationSteps.length);
+  const step = scene.step;
+  const checks = ["类型", "范围", "关系", "唯一"];
+  const visibleFailures = validationRows.filter(row => row.failures.some(failure => checks.indexOf(failure) <= step));
+  const result = step === 0
+    ? { icon: ListChecks, title: "先辨认数据长什么样", detail: "字符串 24 不能冒充整数 24" }
+    : step === 1
+      ? { icon: WarningCircle, title: "范围规则留下 r2", detail: "age=-2 说明字段合法不等于值合理", danger: true }
+      : step === 2
+        ? { icon: WarningCircle, title: "关系规则继续筛", detail: "跨字段条件和单字段类型各自留下原因", danger: true }
+        : { icon: CheckCircle, title: "报告每条失败的原因", detail: `${visibleFailures.length} 条待处理，r1 通过` };
+  return <Frame label="数据验证让记录逐层经过类型、范围、跨字段和唯一性检查，并保留具体失败原因" eyebrow="通过哪一关，失败在哪一关" meta="schema → range → relation → unique" scene={scene} steps={validationSteps} result={result} caption="验证结果不是一盏模糊的红灯。每条记录要知道在哪条规则上停下，修复者才知道该改数据、改规则，还是补齐去重身份。" >
+    <div className={styles.validationBoard} data-step={step}>
+      <div className={styles.validationRecords}><span>待检查记录</span>{validationRows.map(row => { const failed = row.failures.some(failure => checks.indexOf(failure) <= step); return <div key={row.id} data-failed={failed} data-passed={step === 3 && !failed}><code>{row.id}</code><strong>{row.value}</strong><small>{failed ? row.failures.join(" · ") : step === 3 ? "通过" : "等待"}</small></div>; })}</div>
+      <div className={styles.validationSieve}>{checks.map((label, index) => <div key={label} data-active={step === index} data-done={step > index}><span>{index + 1}</span><strong>{label}</strong><small>{step > index ? "已检查" : step === index ? "当前规则" : "排队"}</small></div>)}</div>
+      <div className={styles.validationReport}><div><Funnel size={17} /><span>报告</span></div><strong>{step === 3 ? "1 pass · 3 hold" : `${Math.max(0, 4 - visibleFailures.length)} 条暂通过`}</strong><div className={styles.validationReasons}>{visibleFailures.length ? visibleFailures.map(row => <code key={row.id}>{row.id}: {row.failures.join(" + ")}</code>) : <code>尚无失败原因</code>}</div></div>
     </div>
   </Frame>;
 }

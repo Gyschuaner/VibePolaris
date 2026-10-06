@@ -1,11 +1,10 @@
-import { Funnel } from '@phosphor-icons/react/dist/ssr';
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
 import { ConceptHero } from './ConceptHero';
 import { IngestionLesson, TransformationLesson, ValidationLesson } from './DataFlowConceptLessons';
 import { ingestionSources, transformationSources, validationSources } from '@/lib/dataflow-sources';
 import base from './EventConcepts.module.css';
 import s from './DataFlowConcepts.module.css';
-import { DataIngestionSignatureHero, DataTransformationSignatureHero } from './DataTestSignatureHeroes';
+import { DataIngestionSignatureHero, DataTransformationSignatureHero, DataValidationSignatureHero } from './DataTestSignatureHeroes';
 function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{names.map(name => <span key={name} id={`${slug}-${name}`} className={base.anchor} aria-hidden="true"/>)}</>; }
 
 export function IngestionTermPage() {
@@ -73,7 +72,7 @@ export function ValidationTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={validationSources}/>;
   return <ConceptArticle slug="data-validation" title="数据验证" sources={validationSources} sections={[["contract", "把要求写成可检查的规则"], ["check", "逐条解释验证结果"], ["report", "报告要指向具体字段"], ["boundary", "通过规则，不代表全部真实"]]}
     intro={<>一份导入资料里，年龄是 −2、城市写成 ??，或者年龄看起来是 24，却以字符串保存。数据验证按约定逐项检查，把符合要求的记录与需要处理的记录分开，也让失败有一个能追查的理由。</>}
-    hero={<ConceptHero slug="data-validation" label="整数年龄和字符串年龄会得到不同的检查，失败的字段会留下可读的原因"><div className={s.validationHero}><div className={s.heroGrid}><div><code>age: 24</code><span>整数 ✓</span></div><div><code>age: −2</code><span>范围 ×</span></div><div><code>city: ??</code><span>城市 ×</span></div><div><code>age: &quot;24&quot;</code><span>类型 ×</span></div></div><div className={s.heroBeam}/><div className={s.heroReport}><Funnel size={16}/> 1 条通过 · 3 条待处理</div></div></ConceptHero>}>
+    hero={<DataValidationSignatureHero />}>
     <ArticleSection id="contract" title="把要求写成可检查的规则"><Legacy slug="data-validation" names={["question", "definition"]}/>
       <p id="validation-contract" className="vp-citation-target"><strong>数据验证按约定检查输入，给出通过或失败的结果与原因。</strong>这里的“输入”可以是一条记录，也可以是一批记录。规则可以约束类型、必填、范围、格式及字段关系。JSON Schema 是一种把规则写成配置的格式：`properties` 列出字段及各自的检查方式，`required` 列出必须出现的字段；配置里写了一个字段，不等于它一定要出现。例如 `nickname` 可以列在 `properties` 里但不列入 `required`，没有 nickname 时不一定失败；`required` 里的字段缺失，才按这条规则失败。字段缺失是输入里没有这个字段，`null` 则是字段存在但没有值，二者要按业务约定分别处理。本页的 `??` 是实际写入的字符串值，不是缺失字段或 `null`；固定演示没有放入缺失或 `null` 记录。要求必须明确，验证器才能检查。<Cite id="validation-contract"/></p>
       <p id="validation-levels" className="vp-citation-target">OWASP 把验证分成语法和语义两层：语法层检查单个字段是否符合可接受的格式，语义层检查它在业务关系中是否合理，例如开始日期是否早于结束日期。<strong>数字写得合法、字段关系合理，是两种检查。</strong>它们都依赖业务要求；正则表达式最多检查一段文字的形状，不能代替范围或字段关系判断。<Cite id="validation-levels"/></p>
