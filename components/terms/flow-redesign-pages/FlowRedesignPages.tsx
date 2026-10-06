@@ -28,6 +28,7 @@ import {
 } from "./FlowRedesignLessons";
 import { SignatureHeroRuntime } from "./SignatureHeroRuntime";
 import { A11ySignatureHero, IaSignatureHero, PrototypeSignatureHero, UserFlowSignatureHero, WireframeSignatureHero } from "../ProductCoreSignatureHeroes";
+import { LoadingStateMechanismHero, MicrointeractionMechanismHero, ReducedMotionMechanismHero } from "../vbp095-mechanism-heroes";
 import styles from "./FlowRedesignConcepts.module.css";
 
 type HeroKind = "loading" | "micro" | "motion" | "client" | "deploy" | "flow" | "wireframe" | "prototype" | "ia" | "a11y";
@@ -94,7 +95,7 @@ function SignatureHero({ kind }: { kind: HeroKind }) {
 
 const loadingSections: [string, string][] = [["loading-definition-section", "先量等待，再选提示"], ["loading-feedback-section", "进度、占位和错误各自负责什么"], ["loading-boundary-section", "停止等待也是结果"]];
 export function LoadingStateTermPage() {
-  return <Article slug="loading-state" title="加载状态" subtitle="Loading State · 给等待一个可理解的形状" sources={loadingStateSources} sections={loadingSections} hero={<SignatureHero kind="loading" />} intro={<>接口没有立刻回答时，用户会盯着刚才按下的地方猜：是没有点到，还是系统正在工作？<strong>加载状态把等待长度、可估计程度和失败出口翻译成界面证据</strong>，所以短请求不必闪过 spinner，长任务也不能无限转圈。</>}>
+  return <Article slug="loading-state" title="加载状态" subtitle="Loading State · 给等待一个可理解的形状" sources={loadingStateSources} sections={loadingSections} hero={<LoadingStateMechanismHero />} intro={<>接口没有立刻回答时，用户会盯着刚才按下的地方猜：是没有点到，还是系统正在工作？<strong>加载状态把等待长度、可估计程度和失败出口翻译成界面证据</strong>，所以短请求不必闪过 spinner，长任务也不能无限转圈。</>}>
     <ArticleSection id="loading-definition-section" title="先量等待，再选提示"><p id="loading-definition" className="vp-citation-target">100 毫秒左右的局部操作通常可以直接完成；当等待变得明显，才需要让用户看到结构仍在、任务仍在进行。<Cite id="loading-definition" sources={loadingStateSources} />这不是一张固定的组件清单，而是把提示和任务的时间、范围、可预测性对应起来。</p><p id="loading-timing" className="vp-citation-target">内容结构已知时，骨架能守住列表行和标题的位置；知道总量或完成比例时，进度条才有意义。<Cite id="loading-timing" sources={loadingStateSources} />下面把同一个请求从 100ms 拉到超时，读者只改一个条件，就能看见表现为什么换挡。</p><LoadingStateLesson /></ArticleSection>
     <ArticleSection id="loading-feedback-section" title="进度、占位和错误各自负责什么"><p id="loading-progress" className="vp-citation-target">占位是在说“内容会在这里出现”，进度是在说“任务已经走到这里”；两者都不能替结果本身。<Cite id="loading-progress" sources={loadingStateSources} />如果用户能取消长任务，取消应该和进度同处一个上下文，而不是藏在页面另一角。</p><p id="loading-failure" className="vp-citation-target">请求结束后必须落到内容、空结果或失败。<Cite id="loading-failure" sources={loadingStateSources} />失败时停止指示、保留可重试入口，远比让一个旋转图标替系统撒谎可靠。</p></ArticleSection>
     <ArticleSection id="loading-boundary-section" title="停止等待也是结果"><ArticleAside title="检查一次等待边界"><p>把网络调慢，分别观察按钮、局部内容和整页任务：哪一个状态在多少时间后出现？超过上限后，用户能否看见错误、保留输入并重新开始？如果答案只能从开发者工具里找，页面还没有完成等待设计。</p></ArticleAside></ArticleSection>
@@ -103,7 +104,7 @@ export function LoadingStateTermPage() {
 
 const microSections: [string, string][] = [["micro-definition-section", "微交互不是一段装饰动画"], ["micro-states-section", "按下、请求中、成功和失败"], ["micro-feedback-section", "反馈留在动作旁边"]];
 export function MicrointeractionTermPage() {
-  return <Article slug="microinteraction" title="微交互" subtitle="Microinteraction · 让一个小动作有来有回" sources={microinteractionSources} sections={microSections} hero={<SignatureHero kind="micro" />} intro={<>收藏、复制、开关这些动作很小，用户的疑问却很具体：刚才那一下有没有生效？<strong>微交互把触发、规则、局部反馈和持续状态绑在一起</strong>，让结果留在动作附近，不用靠一条突然出现的全局提示来猜。</>}>
+  return <Article slug="microinteraction" title="微交互" subtitle="Microinteraction · 让一个小动作有来有回" sources={microinteractionSources} sections={microSections} hero={<MicrointeractionMechanismHero />} intro={<>收藏、复制、开关这些动作很小，用户的疑问却很具体：刚才那一下有没有生效？<strong>微交互把触发、规则、局部反馈和持续状态绑在一起</strong>，让结果留在动作附近，不用靠一条突然出现的全局提示来猜。</>}>
     <ArticleSection id="micro-definition-section" title="微交互不是一段装饰动画"><p id="micro-definition" className="vp-citation-target">微交互围绕一个明确任务：用户触发某件事，系统按规则改变状态，并把反馈放回原位置。<Cite id="micro-definition" sources={microinteractionSources} />如果去掉运动后只剩一个无意义的闪烁，它本来就没有解释作用。</p><p id="micro-states" className="vp-citation-target">收藏按钮的按下、请求中、已收藏和失败撤回不是四个视觉皮肤，而是四个不同的事实。<Cite id="micro-states" sources={microinteractionSources} />演示里把失败拨回去，能看见“看起来成功”和“服务端确认”之间的距离。</p><MicrointeractionLesson /></ArticleSection>
     <ArticleSection id="micro-feedback-section" title="反馈留在动作旁边"><p id="micro-feedback" className="vp-citation-target">成功可以短暂强调图标并更新计数，失败则要回到可信数据并告诉用户怎样重试。<Cite id="micro-feedback" sources={microinteractionSources} />触觉、声音或动效都是附加通道，不能独自承担状态消息。</p><p id="micro-boundary" className="vp-citation-target">当动画被关闭或用户使用辅助技术时，按钮名称、计数和状态消息仍应完整。<Cite id="micro-boundary" sources={microinteractionSources} />“有动效”不是完成标准，“用户知道发生了什么”才是。</p><ArticleAside title="先写状态表，再决定动效"><p>先列出空闲、按下、处理中、成功、失败和撤销；每格写清可操作性、文案和可访问名称，最后才决定是否需要回弹、填充或轻微缩放。</p></ArticleAside></ArticleSection>
   </Article>;
@@ -111,7 +112,7 @@ export function MicrointeractionTermPage() {
 
 const motionSections: [string, string][] = [["motion-definition-section", "减少的是不必要的运动"], ["motion-preference-section", "同一任务，两套运动预算"], ["motion-boundary-section", "状态和焦点不能一起消失"]];
 export function ReducedMotionTermPage() {
-  return <Article slug="reduced-motion" title="减少动态效果" subtitle="Reduced Motion · 换一种方式表达变化" sources={reducedMotionSources} sections={motionSections} hero={<SignatureHero kind="motion" />} intro={<>页面可以用星点、缩放和视差制造空间感，但不是每个人都能舒适地承受这段运动。<strong>减少动态效果把用户偏好变成另一套表现预算</strong>：状态、焦点和完成反馈留下，大幅移动和不必要的连续运动退场。</>}>
+  return <Article slug="reduced-motion" title="减少动态效果" subtitle="Reduced Motion · 换一种方式表达变化" sources={reducedMotionSources} sections={motionSections} hero={<ReducedMotionMechanismHero />} intro={<>页面可以用星点、缩放和视差制造空间感，但不是每个人都能舒适地承受这段运动。<strong>减少动态效果把用户偏好变成另一套表现预算</strong>：状态、焦点和完成反馈留下，大幅移动和不必要的连续运动退场。</>}>
     <ArticleSection id="motion-definition-section" title="减少的是不必要的运动"><p id="motion-definition" className="vp-citation-target">`prefers-reduced-motion` 让页面读取操作系统偏好；它表达的是“减少非必要运动”，不是“所有像素都不许变化”。<Cite id="motion-definition" sources={reducedMotionSources} />焦点移动、错误出现和完成状态仍要被看见，只是可以用原位淡入或稳定的颜色变化表达。</p><p id="motion-preference" className="vp-citation-target">同一页面切换在完整模式和减少动态模式下，最终标题、URL 和焦点应一致。<Cite id="motion-preference" sources={reducedMotionSources} />真正改变的是从起点到终点的路径：一条短轨迹变成原位出现。</p><ReducedMotionLesson /></ArticleSection>
     <ArticleSection id="motion-boundary-section" title="状态和焦点不能一起消失"><p id="motion-code" className="vp-citation-target">媒体查询可以关闭大幅位移、缩放、视差和循环，同时把过渡缩短或改成淡入。<Cite id="motion-code" sources={reducedMotionSources} />这应当落在组件的表现规则里，而不是只在说明文档里承诺。</p><p id="motion-boundary" className="vp-citation-target">如果“减少动态”让用户不知道页面是否切换成功，设计就删错了东西。<Cite id="motion-boundary" sources={reducedMotionSources} />稳定的文字、焦点和结果仍然是必要反馈。</p><ArticleAside title="用两种偏好走同一条任务"><p>关闭动画后重新完成一次页面切换、保存和错误恢复；检查标题、URL、焦点和状态文字是否仍按同样顺序出现。只要需要凭运动才能判断结果，就要补静态证据。</p></ArticleAside></ArticleSection>
   </Article>;

@@ -1,4 +1,5 @@
 import { ArrowRight, ShieldCheck } from "@phosphor-icons/react/dist/ssr";
+import type { ReactNode } from "react";
 
 import { ArticleCitation, ArticleSection, ConceptArticle } from "./ConceptArticle";
 import { ConceptHero } from "./ConceptHero";
@@ -6,6 +7,7 @@ import { BackendNetworkLesson, type BackendNetworkLessonSpec } from "./backend-n
 import styles from "./BackendNetworkConcepts.module.css";
 import type { Source } from "@/lib/backend-network-sources";
 import { acidSources, apiKeySources, columnSources, nosqlSources, rbacSources, relationalDatabaseSources, rowSources, tcpSources, tlsHandshakeSources, udpSources } from "@/lib/backend-network-sources";
+import { NosqlMechanismHero, RelationalDatabaseMechanismHero, RowMechanismHero } from "./vbp095-mechanism-heroes";
 
 type Block = { id: string; text: string };
 type Section = { id: string; title: string; blocks: Block[]; lesson?: BackendNetworkLessonSpec };
@@ -15,6 +17,7 @@ type PageSpec = {
   subtitle: string;
   intro: string;
   hero: { question: string; nodes: [string, string][]; proof: string };
+  mechanismHero?: ReactNode;
   sections: Section[];
   sources: Source[];
   relatedIntro: string;
@@ -44,7 +47,7 @@ function renderBackendNetworkPage(spec: PageSpec) {
     sections={spec.sections.map(({ id, title }) => [id, title])}
     relatedIntro={spec.relatedIntro}
     intro={spec.intro}
-    hero={<BackendNetworkHero slug={spec.slug} hero={spec.hero} />}
+    hero={spec.mechanismHero ?? <BackendNetworkHero slug={spec.slug} hero={spec.hero} />}
   >
     {spec.sections.map(section => <ArticleSection id={section.id} title={section.title} key={section.id}>
       {section.blocks.map(block => <p id={block.id} className="vp-citation-target" key={block.id}>{block.text}<Cite id={block.id} /></p>)}
@@ -171,6 +174,7 @@ const relationalDatabaseSpec: PageSpec = {
     nodes: [["customers", "id = 7"], ["orders", "customer_id = 7"], ["结果", "订单号 + 金额"]],
     proof: "连接条件把两张关系组合起来；约束帮助拒绝不存在的客户。",
   },
+  mechanismHero: <RelationalDatabaseMechanismHero />,
   sections: [
     {
       id: "relational-definition-section",
@@ -225,6 +229,7 @@ const nosqlSpec: PageSpec = {
     nodes: [["访问模式", "最近订单"], ["数据模型", "文档 / 键值"], ["取舍", "读写与一致性"]],
     proof: "模型围绕查询路径设计；NoSQL 不等于没有结构。",
   },
+  mechanismHero: <NosqlMechanismHero />,
   sections: [
     {
       id: "nosql-models-section",
@@ -279,6 +284,7 @@ const rowSpec: PageSpec = {
     nodes: [["订单行", "id = 7"], ["事务版本", "已提交 / 未提交"], ["读取", "按隔离规则可见"]],
     proof: "行是记录与版本的组合；结果位置不能代替稳定身份。",
   },
+  mechanismHero: <RowMechanismHero />,
   sections: [
     {
       id: "row-definition-section",
@@ -291,9 +297,10 @@ const rowSpec: PageSpec = {
         title: "同一行的两个事务版本",
         ariaLabel: "数据库行在事务提交前后如何对不同读取者可见",
         steps: [
-          { label: "旧版本", actors: ["id=7", "balance=100", "事务 B"], evidence: "B 开始读取时看到已提交的 100，位置和版本都被明确记录。" },
-          { label: "未提交更新", actors: ["事务 A", "balance=80", "事务 B"], evidence: "A 的修改尚未提交，B 按自己的隔离规则仍看见 100，不会把半成品当成事实。" },
-          { label: "提交后读取", actors: ["COMMIT", "id=7 · 80", "事务 C"], evidence: "C 在合适的读取时点看到已提交版本 80；这是可见性变化，不是把行号换了。" },
+          { label: "创建未提交", actors: ["事务 A", "id=7 · balance=80", "未提交"], evidence: "A 创建 v2，但提交前它只对自己可见，其他读取者仍有旧版本可读。" },
+          { label: "B 看旧快照", actors: ["事务 B", "快照 v1", "balance=100"], evidence: "B 在 A 提交前建立快照，所以仍看见已提交的 100。" },
+          { label: "A 提交", actors: ["COMMIT", "v2=80", "B 仍为 100"], evidence: "提交让 v2 进入已提交状态，但 B 的既有快照不自动改写。" },
+          { label: "C 看新快照", actors: ["事务 C", "快照 v2", "balance=80"], evidence: "C 在提交后开始读取，看到 80；这是可见性变化，不是把行号换了。" },
         ],
         failure: { label: "把结果位置当身份", text: "不加 ORDER BY 时，数据库没有承诺行的返回顺序；用‘第三行’更新记录会在计划或数据变化后指向另一条。" },
       },

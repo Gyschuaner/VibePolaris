@@ -5485,8 +5485,8 @@
       },
       {
         "id": "selection-op",
-        "label": "选择",
-        "detail": "amount > 100",
+        "label": "过滤",
+        "detail": "customer_id = 7 AND amount > 100",
         "icon": "search",
         "group": "关系操作"
       },
@@ -5499,8 +5499,8 @@
       },
       {
         "id": "projection-op",
-        "label": "投影",
-        "detail": "name, amount",
+        "label": "保留列",
+        "detail": "customer_id, name, amount",
         "icon": "layout",
         "group": "关系操作"
       },
@@ -5516,14 +5516,14 @@
       {
         "id": "orders-selection",
         "from": "orders-rel",
-        "to": "selection-op",
-        "label": "筛选订单"
+        "to": "projection-op",
+        "label": "保留列"
       },
       {
         "id": "selection-join",
-        "from": "selection-op",
+        "from": "projection-op",
         "to": "join-op",
-        "label": "3 rows"
+        "label": "5 rows"
       },
       {
         "id": "customers-join",
@@ -5532,53 +5532,60 @@
         "label": "按键匹配"
       },
       {
+        "id": "customers-projection",
+        "from": "customers-rel",
+        "to": "projection-op",
+        "label": "保留列"
+      },
+      {
         "id": "join-projection",
         "from": "join-op",
-        "to": "projection-op",
-        "label": "组合行"
+        "to": "selection-op",
+        "label": "连接后 5 rows"
       },
       {
         "id": "projection-report",
-        "from": "projection-op",
+        "from": "selection-op",
         "to": "report-rel",
-        "label": "保留列"
+        "label": "3 rows"
       }
     ],
     "frames": [
       {
-        "label": "选择高金额订单",
-        "note": "5 条订单中有 3 条满足 amount > 100，客户关系暂不参与。",
+        "label": "保留列",
+        "note": "先留下报表真正需要的客户、订单和金额字段，输入关系仍保持分开。",
         "activeIds": [
+          "customers-rel",
           "orders-rel",
-          "selection-op"
+          "projection-op"
         ],
         "doneIds": [
-          "selection-op"
+          "projection-op"
         ],
         "mutedIds": [
-          "customers-rel",
           "join-op",
-          "projection-op",
+          "selection-op",
           "report-rel"
         ],
         "values": {
           "orders-rel": "5 rows",
-          "selection-op": "3 rows"
+          "projection-op": "customer_id, name, amount"
         },
         "activeEdgeIds": [
-          "orders-selection"
+          "orders-selection",
+          "customers-projection"
         ],
         "metric": {
-          "label": "保留行",
-          "value": "3 / 5"
+          "label": "先定列",
+          "value": "3 fields"
         }
       },
       {
-        "label": "按键连接客户",
-        "note": "customer_id 与客户 id 匹配后，每条订单获得对应姓名。",
+        "label": "连接匹配",
+        "note": "customer_id 与客户 id 匹配后，5 条订单各自获得对应姓名。",
         "activeIds": [
           "customers-rel",
-          "selection-op",
+          "projection-op",
           "join-op"
         ],
         "doneIds": [
@@ -5586,11 +5593,11 @@
         ],
         "mutedIds": [
           "orders-rel",
-          "projection-op",
+          "selection-op",
           "report-rel"
         ],
         "values": {
-          "join-op": "3 matched rows",
+          "join-op": "5 matched rows",
           "customers-rel": "name attached"
         },
         "activeEdgeIds": [
@@ -5599,11 +5606,11 @@
         ]
       },
       {
-        "label": "投影形成结果关系",
-        "note": "最终只保留 name 与 amount，两张输入关系仍保持原状。",
+        "label": "过滤结果",
+        "note": "连接后的 5 条订单再按 customer_id=7 与 amount>100 过滤，结果留下 3 行。",
         "activeIds": [
           "join-op",
-          "projection-op",
+          "selection-op",
           "report-rel"
         ],
         "doneIds": [
@@ -5612,11 +5619,11 @@
         "mutedIds": [
           "customers-rel",
           "orders-rel",
-          "selection-op"
+          "projection-op"
         ],
         "values": {
           "report-rel": "3 rows · 2 columns",
-          "projection-op": "name, amount"
+          "selection-op": "customer_id=7 · amount>100"
         },
         "activeEdgeIds": [
           "join-projection",
@@ -5650,14 +5657,24 @@
     },
     "sources": [
       {
-        "url": "https://www.postgresql.org/docs/current/tutorial.html",
-        "label": "PostgreSQL · Tutorial",
-        "note": "数据库行为与约束"
+        "url": "https://www.postgresql.org/docs/current/tutorial-sql.html",
+        "label": "PostgreSQL · The SQL Language",
+        "note": "表、行、查询与表连接"
       },
       {
         "url": "https://www.postgresql.org/docs/current/ddl.html",
         "label": "PostgreSQL · Data Definition",
-        "note": "数据库行为与约束"
+        "note": "表结构、主键、外键与约束"
+      },
+      {
+        "url": "https://www.sqlite.org/lang.html",
+        "label": "SQLite · SQL Language",
+        "note": "查询、连接与修改语句的范围"
+      },
+      {
+        "url": "https://www.ibm.com/think/topics/relational-databases",
+        "label": "IBM · Relational databases",
+        "note": "关系表、键、SQL 与事务边界"
       }
     ]
   },
@@ -6093,14 +6110,24 @@
     },
     "sources": [
       {
-        "url": "https://www.mongodb.com/docs/manual/core/document/",
-        "label": "MongoDB · Documents",
-        "note": "分布式数据行为与配置"
+        "url": "https://www.mongodb.com/resources/basics/databases/document-databases",
+        "label": "MongoDB · Document Database",
+        "note": "文档模型、灵活结构与聚合读取"
       },
       {
         "url": "https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf",
-        "label": "Dynamo Paper",
-        "note": "原始规范与实现说明"
+        "label": "Amazon Dynamo · SOSP 2007 paper",
+        "note": "高可用、键值访问、复制与一致性取舍"
+      },
+      {
+        "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html",
+        "label": "AWS · What is Amazon DynamoDB?",
+        "note": "键值/文档 API 与分布式存储特征"
+      },
+      {
+        "url": "https://cassandra.apache.org/doc/stable/cassandra/developing/data-modeling/intro.html",
+        "label": "Apache Cassandra · Data Modeling",
+        "note": "围绕查询路径组织表与复制数据"
       }
     ]
   },
@@ -6537,13 +6564,23 @@
     "sources": [
       {
         "url": "https://www.postgresql.org/docs/current/ddl-basics.html",
-        "label": "PostgreSQL · Rows",
-        "note": "数据库行为与约束"
+        "label": "PostgreSQL · Table Basics",
+        "note": "行列定义与未指定排序的边界"
       },
       {
         "url": "https://www.postgresql.org/docs/current/mvcc-intro.html",
-        "label": "PostgreSQL · MVCC Introduction",
-        "note": "数据库行为与约束"
+        "label": "PostgreSQL · Introduction to MVCC",
+        "note": "快照、已提交版本与并发读取"
+      },
+      {
+        "url": "https://www.postgresql.org/docs/current/queries-order.html",
+        "label": "PostgreSQL · Sorting Rows",
+        "note": "ORDER BY 才能保证结果顺序"
+      },
+      {
+        "url": "https://www.sqlite.org/withoutrowid.html",
+        "label": "SQLite · WITHOUT ROWID",
+        "note": "rowid、主键与物理存储实现的区别"
       }
     ]
   },
