@@ -43,7 +43,7 @@ export function ConversionRateHero() {
   const percent = fixedWindow ? 9 : submitted ? 18 : step >= 2 ? 12 : 0;
   return <MechanismFrame scene={scene} title="转化率怎样让分母、事件和窗口现形" labels={conversionLabels} caption={conversionCaptions[step]}>
     <div className={styles.conversionScene}>
-      <div className={styles.conversionRingsLarge} data-submitted={submitted}><i /><i /><strong>{recorded ? numerator : "—"}</strong><small>/ 1000 · {recorded ? `${percent}%` : "待记录"}</small></div>
+      <div className={styles.conversionRingsLarge} data-submitted={submitted} data-window={fixedWindow}><i /><i /><strong>{recorded ? numerator : "—"}</strong><small>/ 1000 · {recorded ? `${percent}%` : "待记录"}</small></div>
       <div className={styles.conversionLedger}><div className={styles.conversionLedgerHead}><ClipboardText size={15} /><span>MEASUREMENT LEDGER</span></div><div><small>起点</small><strong>首次到达注册页</strong></div><div><small>完成</small><strong>{step >= 2 ? "验证邮箱" : step >= 1 ? "提交表单" : "待记录"}</strong></div><div><small>窗口 / 单位</small><strong>{step >= 3 ? "1h · 独立用户" : "待固定"}</strong></div></div>
       <div className={styles.conversionProof} role="status"><Target size={15} /><span>{step === 1 ? "先把提交定义成完成事件" : step === 2 ? "换成更严格的验证事件，内圈缩小" : step >= 3 ? "口径固定后才可比较版本" : "百分比先别脱离上下文"}</span></div>
     </div>
