@@ -1,8 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { cssGridSources } from "@/lib/css-grid-sources";
-import { CssGridHero } from "./css-grid-hero";
-import { CssGridLesson } from "./css-grid";
+import { CssGridSignatureHero as CssGridHero } from "../RenderingLayoutSignatureHeroes";
 
 const sections: [string, string][] = [
   ["css-grid-definition-section", "先把两条轴同时放进视野"],
@@ -26,7 +25,6 @@ export function CssGridTermPage() {
       <p id="grid-sparse" className="vp-citation-target">普通放置使用 sparse 思路：一旦向前走，就不会回头填之前留下的洞。这样视觉顺序通常和文档顺序更接近，但卡片墙可能出现一个看起来“明明能放却没放”的空格。<Cite id="grid-sparse" sources={cssGridSources} /></p>
       <p id="grid-dense" className="vp-citation-target">把 <code>grid-auto-flow</code> 改为 <code>dense</code> 后，后出现的小项目可以回头填洞。首图第四帧让空格真正消失，同时保留一条提醒：视觉位置变了，DOM 和读屏顺序没有跟着重排；它适合相册、商品墙一类可交换顺序的内容，不适合依赖阅读顺序的导航。<Cite id="grid-dense" sources={cssGridSources} /></p>
       <p id="grid-document-order" className="vp-citation-target">因此，写 Grid 时先把 HTML 顺序当成真实阅读顺序，再考虑 dense 或视觉跨度。CSS 可以重排画面，却不会替你修复键盘焦点、读屏朗读和内容语义。<Cite id="grid-document-order" sources={cssGridSources} /></p>
-      <CssGridLesson />
     </ArticleSection>
 
     <ArticleSection id="css-grid-track-section" title="轨道不够时，网格会悄悄长出来">
