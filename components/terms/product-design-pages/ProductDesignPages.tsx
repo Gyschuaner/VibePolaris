@@ -2,7 +2,7 @@ import { Article, Cite } from "../AiStackConceptPageShared";
 import { ArticleAside, ArticleSection } from "../ConceptArticle";
 import { conversionRateSources, designTokenSources, feedbackSources, focusManagementSources, funnelSources, iterationSources, mockupSources, sitemapSources, usabilityTestingSources, visualHierarchySources } from "@/lib/product-design-sources";
 import { ConversionRateLesson, DesignTokenLesson, FeedbackLesson, FunnelLesson, IterationLesson, MockupLesson, SitemapLesson, UsabilityTestingLesson, VisualHierarchyLesson } from "./ProductDesignLessons";
-import { ConversionRateHero, FunnelHero, IterationHero } from "./mechanism-heroes";
+import { ConversionRateHero, FunnelHero, IterationHero, UsabilityTestingHero } from "./mechanism-heroes";
 import { FocusManagementHero } from "./focus-management-hero";
 import styles from "./ProductDesignConcepts.module.css";
 
@@ -111,16 +111,11 @@ const usabilityTestingSections: [string, string][] = [
   ["usability-testing-boundary", "一次测试发现问题，不替全体用户下结论"],
 ];
 
-function UsabilityTestingHero() {
-  return <figure className={styles.miniHero} aria-label="热区和视线轨迹显示参与者在任务中哪里停顿"><div className={styles.miniTop}><span>让视线留下热区</span><strong>TEST · 05</strong></div><div className={styles.usabilitySignature}><div className={styles.usabilityViewport}><span data-hot="low">订单</span><span data-hot="high">退货</span><span data-hot="mid">筛选</span><i aria-hidden="true" /></div><small>主持人记录停顿，不把答案塞进任务卡。</small></div></figure>;
-}
-
 export function UsabilityTestingTermPage() {
   return <Article slug="usability-testing" title="可用性测试" subtitle="Usability Testing · 看用户怎样完成真实任务" sources={usabilityTestingSources} sections={usabilityTestingSections} hero={<UsabilityTestingHero />} intro={<>可用性测试不是请用户评价“喜不喜欢”，而是给一个可信的目标，看他能不能靠自己的理解完成。<strong>研究者要记录用户做了什么、在哪里停顿、何时需要帮助</strong>；测试的是服务，不是把参与者判对错。</>}>
     <ArticleSection id="usability-testing-definition" title="任务给目标，不给操作答案">
       <p id="usability-task" className="vp-citation-target">好的任务像真实生活中的一句请求：说明想达成什么，不透露按钮名称、菜单位置或正确路径。<Cite id="usability-task" sources={usabilityTestingSources} />“退回一件尺码不合适的商品”让参与者自己寻找入口，“点击订单详情里的售后按钮”则提前教了答案。</p>
       <p id="usability-plan" className="vp-citation-target">开始测试前，先写研究问题、目标用户、任务和完成标准，再决定每轮要观察哪一段服务。<Cite id="usability-plan" sources={usabilityTestingSources} />这样主持人记录的是能帮助决策的证据，而不是一堆没有上下文的意见。</p>
-      <UsabilityTestingLesson />
     </ArticleSection>
     <ArticleSection id="usability-testing-observation" title="主持人把停顿和提示都留下">
       <p id="usability-observe" className="vp-citation-target">主持人应该让参与者边做边说，自己主要观察、倾听和记下发生了什么。<Cite id="usability-observe" sources={usabilityTestingSources} />参与者回看订单两次、在筛选器停住、说“我不知道从哪开始”，都比一句“这里不好用”更接近可修复的问题。</p>
