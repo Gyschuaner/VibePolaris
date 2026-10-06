@@ -3,18 +3,17 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { getNewsArticle, getPublishedTerm, newsArticles, publishedTerms } from "@/lib/content";
 import { XiaobeiError } from "./store.ts";
+import { retrievalChunk } from "./retrieval.ts";
 
 export const platformGuide = `VibePolaris（Vibe指北）是技术概念词典与概念星图。首页可搜索、按分类探索和打开词条。
 词条支持关联阅读及互动演示，HTML/CSS/JavaScript词条可进入对应教程。导航“我的笔记”按钮打开抽屉，管理当前浏览器本地笔记（没有独立的笔记网址），选中文字可划线或批注；笔记不会上传，不跨设备同步。
 主题入口可调整背景及主题色。新闻星历只包含已发布并经过人工确认的站内新闻，草稿和外部实时内容不在小北的知识范围内。小北是内部邀请码激活的全站悬浮星星，每码每天100积分，每日北京时间零点恢复。
 小北右上角可以新建对话或打开历史，切回旧对话可继续聊。历史按邀请码与当前浏览器隔离，刷新后可恢复；换浏览器或清除网站Cookie不能找回原历史，同码不同使用者不共享对话。`;
-export const catalog = publishedTerms.map(t => `${t.slug}：${t.zh} ${t.en}`).join("\n");
-export const newsCatalog = newsArticles.map(article => `${article.eventDate} ${article.title}（来源发布 ${article.publishedAt}）：${article.summary}`).join("\n");
 export const toolDefinitions = [
   { type: "function", function: { name: "search_terms", description: "搜索已发布的技术词条，返回摘要及可读取的slug。可换用词名、同义词或短关键词。", parameters: { type: "object", properties: { query: { type: "string" } }, required: ["query"], additionalProperties: false } } },
-  { type: "function", function: { name: "read_term", description: "读取已发布词条的实际正文。按字符offset分页；truncated时可用nextOffset继续。", parameters: { type: "object", properties: { slug: { type: "string" }, offset: { type: "integer", minimum: 0 } }, required: ["slug"], additionalProperties: false } } },
+  { type: "function", function: { name: "read_term", description: "读取已发布词条的实际正文。每次返回约8K token以内，按字符offset分页；truncated时用nextOffset继续。", parameters: { type: "object", properties: { slug: { type: "string" }, offset: { type: "integer", minimum: 0 } }, required: ["slug"], additionalProperties: false } } },
   { type: "function", function: { name: "search_news", description: "搜索已发布的站内新闻，按标题、摘要、来源、日期或关联词条查找，返回可读取的slug和站内链接。", parameters: { type: "object", properties: { query: { type: "string" } }, required: ["query"], additionalProperties: false } } },
-  { type: "function", function: { name: "read_news", description: "读取已发布站内新闻的正文、来源、日期和关联词条。按字符offset分页；truncated时可用nextOffset继续。", parameters: { type: "object", properties: { slug: { type: "string" }, offset: { type: "integer", minimum: 0 } }, required: ["slug"], additionalProperties: false } } },
+  { type: "function", function: { name: "read_news", description: "读取已发布站内新闻的正文、来源、日期和关联词条。每次返回约8K token以内，按字符offset分页；truncated时用nextOffset继续。", parameters: { type: "object", properties: { slug: { type: "string" }, offset: { type: "integer", minimum: 0 } }, required: ["slug"], additionalProperties: false } } },
 ];
 export function pageContext(path: string) {
   const url = new URL(path, "http://local");
@@ -68,7 +67,7 @@ export function readNews(slug: string, offset = 0) {
   const article = getNewsArticle(slug);
   if (!article) return { error: "找不到已发布的新闻，请先搜索。" };
   const text = article.body;
-  const end = Math.min(text.length, offset + 12_000);
+  const chunk = retrievalChunk(text, offset);
   return {
     title: article.title,
     summary: article.summary,
@@ -79,9 +78,9 @@ export function readNews(slug: string, offset = 0) {
     relatedSlugs: article.relatedSlugs,
     relatedArticleSlugs: article.relatedArticleSlugs,
     isExample: article.isExample,
-    text: text.slice(offset, end),
-    truncated: end < text.length,
-    nextOffset: end < text.length ? end : null,
+    text: chunk.text,
+    truncated: chunk.nextOffset !== null,
+    nextOffset: chunk.nextOffset,
   };
 }
 
@@ -112,6 +111,6 @@ export async function readTerm(slug: string, offset: number, signal?: AbortSigna
     html = await response.text();
   }
   const text = articleText(html);
-  const end = Math.min(text.length, offset + 12_000);
-  return { title: term.zh, url: `/terms/${slug}`, text: text.slice(offset, end), truncated: end < text.length, nextOffset: end < text.length ? end : null, related: term.relatedSlugs.filter(s => getPublishedTerm(s)) };
+  const chunk = retrievalChunk(text, offset);
+  return { title: term.zh, url: `/terms/${slug}`, text: chunk.text, truncated: chunk.nextOffset !== null, nextOffset: chunk.nextOffset, related: term.relatedSlugs.filter(s => getPublishedTerm(s)) };
 }
