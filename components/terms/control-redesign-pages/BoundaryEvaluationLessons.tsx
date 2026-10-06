@@ -75,12 +75,6 @@ export function BoundaryLesson() {
   </LessonShell>;
 }
 
-export function XssLesson() {
-  const [safe, setSafe] = useState(false);
-  const [trusted, setTrusted] = useState(false);
-  return <LessonShell eyebrow="浏览器会按插入位置解释字符串" title="评论进入 DOM"><div className={styles.lessonControls}><button type="button" aria-pressed={!safe} onClick={() => setSafe(false)}>用 innerHTML</button><button type="button" aria-pressed={safe} onClick={() => setSafe(true)}>用 textContent</button><button type="button" aria-pressed={trusted} onClick={() => setTrusted(value => !value)}>{trusted ? "关闭 Trusted Types" : "启用 Trusted Types"}</button><button type="button" onClick={() => { setSafe(false); setTrusted(false); }}>重置</button></div><div className={styles.labGrid}><div className={styles.labRow}><span>输入</span><code>&lt;img onerror=…&gt;</code><em>不可信字符串</em></div><div className={styles.labRow}><span>DOM</span><code>{safe ? "0 个可执行节点" : trusted ? "策略拒绝危险 sink" : "1 个事件属性"}</code><em>{safe || trusted ? "按文本处理" : "被浏览器解析"}</em></div><div className={styles.labRow}><span>页面</span><code>{safe ? "字符原样可见" : trusted ? "写入被阻断" : "脚本可能执行"}</code><em>{safe || trusted ? "风险下降" : "需修复"}</em></div></div></LessonShell>;
-}
-
 export function SkillLesson() {
   const [stage, setStage] = useState<"meta" | "body" | "resource">("meta");
   const labels = { meta: "任务匹配", body: "读取 SKILL.md", resource: "调用脚本" };

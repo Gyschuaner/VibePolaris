@@ -8,29 +8,6 @@ function HeroShell({ kind, label, children }: { kind: Parameters<typeof ControlR
 
 const textStyle = { fontFamily: "ui-monospace, SFMono-Regular, monospace" };
 
-export function XssHero() {
-  return <HeroShell kind="xss" label="同一段不可信字符串经过两个不同的 DOM 入口，一个被解析成节点，一个停留在文字层">
-    <svg className={styles.mechanismSvg} viewBox="0 0 340 150" role="img" aria-hidden="true">
-      <rect className={styles.xssInput} x="12" y="61" width="80" height="28" rx="8" />
-      <text className={styles.mechanismText} x="52" y="79" textAnchor="middle" style={textStyle}>&lt;img …&gt;</text>
-      <path className={styles.xssPipe} d="M92 75 H142 M142 75 C165 75 165 39 190 39 H218 M142 75 C165 75 165 111 190 111 H218" />
-      <circle className={styles.xssParser} cx="142" cy="75" r="13" />
-      <path className={styles.xssParserMark} d="M136 75 h12 M142 69 v12" />
-      <g className={styles.xssExecutable}>
-        <rect x="218" y="22" width="106" height="35" rx="8" />
-        <text x="271" y="38" textAnchor="middle" style={textStyle}>innerHTML</text>
-        <path className={styles.xssLightning} d="M244 48 l7-11 4 7 8-11" />
-        <text x="271" y="72" textAnchor="middle" style={textStyle}>节点 + 事件</text>
-      </g>
-      <g className={styles.xssLiteral}>
-        <rect x="218" y="94" width="106" height="35" rx="8" />
-        <text x="271" y="110" textAnchor="middle" style={textStyle}>textContent</text>
-        <text x="271" y="132" textAnchor="middle" style={textStyle}>可见文字</text>
-      </g>
-    </svg>
-  </HeroShell>;
-}
-
 export function SkillHero() {
   return <HeroShell kind="skill" label="技能像折叠工具箱：先用元数据匹配任务，再展开说明，最后只取当前需要的资源">
     <svg className={styles.mechanismSvg} viewBox="0 0 340 150" role="img" aria-hidden="true">

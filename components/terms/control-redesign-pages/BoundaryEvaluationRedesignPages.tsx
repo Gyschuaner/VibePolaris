@@ -21,9 +21,9 @@ import {
   RubricLesson,
   SafetyEvaluationLesson,
   SkillLesson,
-  XssLesson,
 } from "./BoundaryEvaluationLessons";
 import { BoundaryLesson, BoundaryHero } from "./PermissionBoundaryAnimation";
+import { XssHero, XssLesson } from "./XssAnimation";
 import {
   CostEvaluationHero,
   EvaluationRunHero,
@@ -33,7 +33,6 @@ import {
   RubricHero,
   SafetyEvaluationHero,
   SkillHero,
-  XssHero,
 } from "./BoundaryEvaluationDistinctiveHeroes";
 
 function PermissionCite({ id }: { id: string }) { return <Cite id={id} sources={permissionBoundarySources}/>; }
