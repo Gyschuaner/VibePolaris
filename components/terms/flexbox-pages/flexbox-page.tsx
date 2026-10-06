@@ -1,8 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { flexboxSources } from "@/lib/flexbox-sources";
-import { FlexboxHero } from "./flexbox-hero";
-import { FlexboxLesson } from "./flexbox";
+import { FlexboxSignatureHero as FlexboxHero } from "../RenderingLayoutSignatureHeroes";
 
 const sections: [string, string][] = [
   ["flexbox-definition-section", "先把一维说清楚"],
@@ -27,7 +26,6 @@ export function FlexboxTermPage() {
       <p id="flex-grow-ratio" className="vp-citation-target">正空间由 <code>flex-grow</code> 参与分配。A、B、C 写成 1:2:1，不是说 B 固定宽 2px，而是把 120px 的余量切成四份：A 得一份、B 得两份、C 得一份。首图第二、三帧把“比例写在桌面上”和“余量真正落到项目上”分开，避免把 grow 看成一个神奇的宽度按钮。<Cite id="flex-grow-ratio" sources={flexboxSources} /> <Cite id="flex-grow-algorithm" sources={flexboxSources} /></p>
       <p id="flex-shrink-ratio" className="vp-citation-target">负空间则交给 <code>flex-shrink</code>。它会根据项目的 shrink factor 和基准尺寸参与收缩，目标是让项目尽量留在容器里；但 min-content、长单词、最小宽度等限制仍可能让项目溢出。所谓“Flex 会自动变小”是有条件的，不能替代对内容最小尺寸的检查。<Cite id="flex-shrink-ratio" sources={flexboxSources} /> <Cite id="flex-shrink-algorithm" sources={flexboxSources} /></p>
       <p id="flex-algorithm" className="vp-citation-target">常见的 <code>flex: 1</code> 实际上是一个 shorthand：grow、shrink 和 basis 一起改变了起算方式；<code>flex: initial</code>、<code>auto</code>、<code>none</code> 也分别代表不同的可伸缩程度。真正排查时，先把 shorthand 展开，再问“基准是多少、余量是什么、谁可以吃掉它”。<Cite id="flex-algorithm" sources={flexboxSources} /> <Cite id="flex-initial" sources={flexboxSources} /> <Cite id="flex-auto" sources={flexboxSources} /> <Cite id="flex-none" sources={flexboxSources} /></p>
-      <FlexboxLesson />
     </ArticleSection>
 
     <ArticleSection id="flexbox-wrap-section" title="挤压、换行和对齐不是一回事">

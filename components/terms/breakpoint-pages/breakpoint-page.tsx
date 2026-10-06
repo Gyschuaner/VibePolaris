@@ -1,8 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { breakpointSources } from "@/lib/breakpoint-sources";
-import { BreakpointHero } from "./breakpoint-hero";
-import { BreakpointLesson } from "./breakpoint";
+import { BreakpointSignatureHero as BreakpointHero } from "../RenderingLayoutSignatureHeroes";
 
 const sections: [string, string][] = [
   ["breakpoint-definition-section", "断点不是设备标签"],
@@ -24,7 +23,6 @@ export function BreakpointTermPage() {
       <p id="breakpoint-content" className="vp-citation-target">挑一组真实内容，从小屏开始往宽处放，或从宽处慢慢缩窄。web.dev 建议让内容决定断点：当导航、行长、按钮间距或侧栏第一次需要改变时，记录那个位置，而不是先抄一张设备宽度表。<Cite id="breakpoint-content" sources={breakpointSources} /></p>
       <p id="breakpoint-mobile-first" className="vp-citation-target">从小屏出发不是为了“移动端永远优先”，而是先把最少的空间分给必要内容，再随着空间增加逐步添加列、间距和辅助操作。这样每一个断点都有一件具体的事要做，断点数量也更容易保持少。<Cite id="breakpoint-mobile-first" sources={breakpointSources} /></p>
       <p id="breakpoint-failure" className="vp-citation-target">候选断点应该落在内容开始坏掉之前：文字行过长、侧栏被挤薄、按钮点击区互相靠太近，都是证据。MDN 的建议很朴素——把 viewport 拉窄，看到内容需要改善的地方，再在那里加媒体查询。<Cite id="breakpoint-failure" sources={breakpointSources} /></p>
-      <BreakpointLesson />
     </ArticleSection>
 
     <ArticleSection id="breakpoint-rule-section" title="断点改变的是规则，不是内容">

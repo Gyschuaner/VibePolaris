@@ -1,8 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { lazyLoadingSources } from "@/lib/lazy-loading-sources";
-import { LazyLoadingHero } from "./lazy-loading-hero";
-import { LazyLoadingLesson } from "./lazy-loading";
+import { LazyLoadingSignatureHero as LazyLoadingHero } from "../RenderingLayoutSignatureHeroes";
 
 const sections: [string, string][] = [
   ["lazy-loading-definition-section", "先保住位置，再推迟资源"],
@@ -17,7 +16,6 @@ export function LazyLoadingTermPage() {
       <p id="lazy-strategy" className="vp-citation-target">懒加载是一种延迟获取资源的策略：初始页面先加载必要内容，低优先级或暂时不可见的资源等到接近使用时再取。它可以作用于图片、视频、脚本、组件或路由，但每一种资源的触发和失败成本都不同。<Cite id="lazy-strategy" sources={lazyLoadingSources} /></p>
       <p id="lazy-resource" className="vp-citation-target">懒加载不是把 <code>loading</code> 文字塞进页面就结束。资源需要一个稳定的盒子、明确的 loading、成功替换和失败回退；否则延迟会变成空白、布局跳动或用户不知道该等什么。<Cite id="lazy-resource" sources={lazyLoadingSources} /></p>
       <p id="lazy-component" className="vp-citation-target">组件级懒加载通常借助动态导入和 loading UI 把重型功能推迟，但页面仍要定义客户端/服务端边界、错误状态和可重试入口。延迟的是功能代码，不能延迟用户对当前任务的反馈。<Cite id="lazy-component" sources={lazyLoadingSources} /></p>
-      <LazyLoadingLesson />
     </ArticleSection>
 
     <ArticleSection id="lazy-loading-trigger-section" title="可见性是门，资源状态是路">
