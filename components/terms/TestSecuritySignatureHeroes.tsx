@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { ArrowCounterClockwise, ArrowRight, Bug, ChartLineUp, Check, CheckCircle, ClipboardText, Clock, Code, Database, Eye, Gear, GitCommit, GitBranch, Graph, GridFour, Handshake, ListMagnifyingGlass, MagnifyingGlass, PaperPlaneTilt, Robot, Scales, ShieldWarning, TestTube, Timer, UserCircle, WarningCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowRight, ArrowsClockwise, Bug, ChartLineUp, Check, CheckCircle, ClipboardText, Clock, Code, Database, Eye, Gear, GitCommit, GitBranch, Globe, Graph, GridFour, Handshake, ListMagnifyingGlass, MagnifyingGlass, PaperPlaneTilt, Robot, Scales, ShieldCheck, ShieldWarning, TestTube, Timer, UserCircle, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./TestSecuritySignatureHeroes.module.css";
 
@@ -201,6 +201,31 @@ export function CodeCoverageSignatureHero() {
       </div>
       <div className={styles.coverageReport} data-danger={failed}>
         <span className={styles.label}><ChartLineUp size={16} aria-hidden="true" />报告</span><div className={styles.coverageMetric}><span>行</span><strong>{scene.step >= 1 ? "100%" : "—"}</strong></div><div className={styles.coverageMetric}><span>分支</span><strong>{scene.step < 1 ? "—" : branchFound ? "100%" : "50%"}</strong></div><div className={styles.coverageProof}>{failed ? "行为断言：应拒绝，却被放行" : branchFound ? "下一步：断言结果和副作用" : "空白本身就是下一道题"}</div></div>
+    </div>
+  </SignatureFrame>;
+}
+
+const apiSteps = ["印下请求", "核对回执", "重试同意图", "换身份"];
+
+export function ApiTestingSignatureHero() {
+  const scene = useScene(apiSteps.length);
+  const [sameKey, setSameKey] = useState(true);
+  const duplicate = scene.step >= 2 && !sameKey;
+  const forbidden = scene.step === 3;
+  const choose = (next: boolean) => { setSameKey(next); scene.seek(0); };
+  const status = forbidden
+    ? { icon: ShieldWarning, title: "对象权限被挡住", detail: "用户 B 读不到用户 A 的 order-42，状态仍没有被改写" }
+    : duplicate
+      ? { icon: WarningCircle, title: "意图换了，订单变两行", detail: "新幂等键创建了 order-43；这不是一次安全重试", danger: true }
+      : scene.step === 2
+        ? { icon: CheckCircle, title: "同一个意图回到原订单", detail: "200 + order-42，服务端仍然只有一行" }
+        : { icon: scene.step === 0 ? Globe : scene.step === 1 ? Check : ArrowsClockwise, title: apiSteps[scene.step], detail: scene.step === 0 ? "方法、身份、body 和幂等键先留下" : "响应和后置状态要说同一件事" };
+  return <SignatureFrame scene={scene} label="API 测试同时检查 HTTP 回执、服务端状态、幂等重试和对象授权" eyebrow="回执是第一本账，状态才是第二本账" meta="request · response · state" steps={apiSteps} status={status} caption="API 测试直接撞协议边界，也要把服务器真正留下的资源、事件或拒绝结果放进同一条证据链。" controls={<div className={styles.choiceRow} role="group" aria-label="选择重试的幂等键"><button type="button" aria-pressed={sameKey} onClick={() => choose(true)}>同键重试</button><button type="button" aria-pressed={!sameKey} onClick={() => choose(false)}>换新键再发</button></div>}>
+    <div className={styles.apiBoard} data-duplicate={duplicate} data-forbidden={forbidden}>
+      <div className={styles.apiRequest} data-active={scene.step === 0} data-done={scene.step > 0}><span className={styles.label}><Globe size={16} aria-hidden="true" />请求印模</span><strong>POST /orders</strong><code>user=A<br />key={sameKey ? "intent-7" : "intent-8"}</code><small>{scene.step >= 3 ? "token=B · 同一对象" : "token=A"}</small></div>
+      <div className={styles.apiLedger} data-active={scene.step >= 1}><div className={styles.ledgerHeader}><span className={styles.label}><Check size={16} aria-hidden="true" />响应账</span><code>{scene.step < 1 ? "—" : forbidden ? "403" : duplicate ? "201" : scene.step >= 2 ? "200" : "201"}</code></div><div className={styles.apiResponseRows}><span>status <b>{scene.step < 1 ? "等待" : forbidden ? "403" : duplicate ? "Created" : "Created / Replayed"}</b></span><span>orderId <b>{scene.step < 1 ? "—" : forbidden ? "hidden" : duplicate ? "order-43" : "order-42"}</b></span></div></div>
+      <div className={styles.apiLedger} data-active={scene.step >= 1} data-danger={duplicate}><div className={styles.ledgerHeader}><span className={styles.label}><Database size={16} aria-hidden="true" />状态账</span><code>{forbidden ? "unchanged" : duplicate ? "2 rows" : scene.step >= 1 ? "1 row" : "—"}</code></div><div className={styles.apiRows}>{["order-42", "order-43"].map((id, index) => <span key={id} data-hidden={index === 1 && !duplicate}>{id}<b>{index === 0 ? "A · paid" : "A · paid"}</b></span>)}</div><small>{forbidden ? "越权读取没有改变订单" : duplicate ? "第二次写入暴露新意图" : "后置条件跟着响应核对"}</small></div>
+      <div className={styles.apiIdentity} data-active={forbidden} data-danger={forbidden}><span className={styles.label}>{forbidden ? <ShieldWarning size={16} aria-hidden="true" /> : <ShieldCheck size={16} aria-hidden="true" />}身份</span><strong>{forbidden ? "B → A · 403" : "A → 自己的订单"}</strong><small>{forbidden ? "合法订单号不等于有权读取" : "换身份才知道门有没有锁"}</small></div>
     </div>
   </SignatureFrame>;
 }

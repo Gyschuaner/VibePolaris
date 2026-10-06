@@ -1,7 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { apiTestingSources } from "@/lib/api-testing-sources";
-import { ApiTestingHero } from "./api-testing-hero";
+import { ApiTestingSignatureHero as ApiTestingHero } from "../TestSecuritySignatureHeroes";
 import { ApiTestingLesson } from "./api-testing";
 
 const sections: [string, string][] = [
