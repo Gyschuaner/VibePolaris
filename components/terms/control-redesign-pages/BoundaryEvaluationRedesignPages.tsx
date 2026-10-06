@@ -18,19 +18,18 @@ import {
   LatencyEvaluationLesson,
   PassFailLesson,
   RubricLesson,
-  SafetyEvaluationLesson,
 } from "./BoundaryEvaluationLessons";
 import { BoundaryLesson, BoundaryHero } from "./PermissionBoundaryAnimation";
 import { XssHero, XssLesson } from "./XssAnimation";
 import { SkillHero, SkillLesson } from "./SkillAnimation";
 import { EvaluationRunHero, EvaluationRunLesson } from "./EvaluationRunAnimation";
+import { SafetyEvaluationHero, SafetyEvaluationLesson } from "./SafetyEvaluationAnimation";
 import {
   CostEvaluationHero,
   HumanGraderHero,
   LatencyEvaluationHero,
   PassFailHero,
   RubricHero,
-  SafetyEvaluationHero,
 } from "./BoundaryEvaluationDistinctiveHeroes";
 
 function PermissionCite({ id }: { id: string }) { return <Cite id={id} sources={permissionBoundarySources}/>; }

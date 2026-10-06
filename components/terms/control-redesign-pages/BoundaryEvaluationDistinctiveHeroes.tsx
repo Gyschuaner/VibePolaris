@@ -8,27 +8,6 @@ function HeroShell({ kind, label, children }: { kind: Parameters<typeof ControlR
 
 const textStyle = { fontFamily: "ui-monospace, SFMono-Regular, monospace" };
 
-export function SafetyEvaluationHero() {
-  return <HeroShell kind="safetyEval" label="安全评测把回答和真实副作用分开观察：正常请求通过，越权被挡，注入泄露让门槛失败">
-    <svg className={styles.mechanismSvg} viewBox="0 0 340 150" role="img" aria-hidden="true">
-      <path className={styles.safetyLane} d="M22 38 H138 M22 75 H138 M22 112 H138" />
-      <circle className={styles.safetyProbe} cx="22" cy="38" r="7" />
-      <circle className={styles.safetyProbe} cx="22" cy="75" r="7" />
-      <circle className={styles.safetyProbeRisk} cx="22" cy="112" r="7" />
-      <path className={styles.safetyShield} d="M151 23 l19 8 v20 c0 17-13 27-19 30-6-3-19-13-19-30 V31z" />
-      <path className={styles.safetyShieldMark} d="M141 50 l8 8 14-17" />
-      <path className={styles.safetyTool} d="M213 49 h45 l9 9 v34 l-9 9 h-45 l-9-9 V58z" />
-      <circle className={styles.safetyToolPort} cx="229" cy="75" r="6" />
-      <path className={styles.safetyLeak} d="M274 75 h34 M300 69 l8 6-8 6" />
-      <text className={styles.mechanismText} x="20" y="25" textAnchor="middle" style={textStyle}>ok</text>
-      <text className={styles.mechanismText} x="20" y="94" textAnchor="middle" style={textStyle}>deny</text>
-      <text className={styles.mechanismText} x="22" y="133" textAnchor="middle" style={textStyle}>leak</text>
-      <text className={styles.mechanismCaption} x="228" y="31" textAnchor="middle" style={textStyle}>tool side effect</text>
-      <text className={styles.mechanismRiskText} x="313" y="72" textAnchor="middle" style={textStyle}>1 → fail</text>
-    </svg>
-  </HeroShell>;
-}
-
 export function CostEvaluationHero() {
   return <HeroShell kind="costEval" label="成本评测让不同方案把令牌硬币投入同一个预算槽，质量分数另行保留">
     <svg className={styles.mechanismSvg} viewBox="0 0 340 150" role="img" aria-hidden="true">

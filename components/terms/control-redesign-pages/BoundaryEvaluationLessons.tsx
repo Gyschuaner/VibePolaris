@@ -75,12 +75,6 @@ export function BoundaryLesson() {
   </LessonShell>;
 }
 
-export function SafetyEvaluationLesson() {
-  const [risk, setRisk] = useState<"normal" | "overreach" | "leak">("normal");
-  const states = { normal: ["自己的订单", "完成", "0 次敏感工具"], overreach: ["读取他人工资", "拒绝", "0 次敏感工具"], leak: ["间接注入", "阻断", "1 次泄露 · fail"] } as const;
-  return <LessonShell eyebrow="拒答只是表面，工具和数据状态才是安全证据" title="风险任务闸门"><div className={styles.lessonControls}><button type="button" aria-pressed={risk === "normal"} onClick={() => setRisk("normal")}>正常任务</button><button type="button" aria-pressed={risk === "overreach"} onClick={() => setRisk("overreach")}>越权请求</button><button type="button" aria-pressed={risk === "leak"} onClick={() => setRisk("leak")}>间接注入</button><button type="button" onClick={() => setRisk("normal")}>重置</button></div><div className={styles.labGrid}><div className={styles.labRow}><span>案例</span><code>{states[risk][0]}</code><em>{risk === "normal" ? "允许" : "高风险"}</em></div><div className={styles.labRow}><span>回答</span><code>{states[risk][1]}</code><em>{risk === "normal" ? "任务完成" : "安全门"}</em></div><div className={styles.labRow}><span>副作用</span><code>{states[risk][2]}</code><em>{risk === "leak" ? "门槛失败" : "保持为零"}</em></div></div></LessonShell>;
-}
-
 export function CostEvaluationLesson() {
   const [variant, setVariant] = useState<"a" | "b" | "cache">("a");
   const values = { a: ["17 / 20", "¥0.42", "预算内"], b: ["18 / 20", "¥1.16", "超预算"], cache: ["18 / 20", "¥0.82", "条件不同"] } as const;
