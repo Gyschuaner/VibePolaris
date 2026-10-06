@@ -22,4 +22,6 @@
 - 十条首图已逐条接入 `TestSecuritySignatureHeroes.tsx`，每条分别保留自己的对象、切换条件和失败证据；原有正文 Lesson 与 Cite 锚点未移除。
 - 独立提交顺序：`e33a5b51` regression-test、`3a3ebab4` test-case、`dc329408` mock、`9c67cb1e` assertion、`a71bb402` code-coverage、`08c331de` api-testing、`61d64e56` least-privilege、`143bb888` hashing、`d2a83e3b` input-validation、`05fc098b` encryption-at-rest；时序修正为 `70148b2a`。
 - 文档与机制矩阵提交为 `779b2b56`。类型检查、结构审计和生产构建已通过；十条本地生产构建路由均返回 200，桌面浏览器推进交互均产生状态变化，1280px 无横向溢出。
-- 内置浏览器当前没有可用的 390px viewport 能力，窄屏只完成 CSS 结构审查，未把未执行的窄屏实测写成通过；唯一 reviewer 复核待回收。
+- 内置浏览器当前没有可用的 390px viewport 能力，窄屏只完成 CSS 结构审查，未把未执行的窄屏实测写成通过；DP 测试计划已如实保留这个限制。
+- 唯一 reviewer `/root/ai_stack_review` 已完成两轮复核并 PASS，无 P0/P1 阻塞；最后一轮确认十条机制首图、来源映射、路由注册和桌面行为均符合批次要求。
+- dev PR [#375](https://github.com/Gyschuaner/VibePolaris/pull/375) 已合入，合并提交为 `d5042c8526b77c9e798421b2e7573adefef57c74`；合并提交的本地生产预览逐条打开十条路由均为 HTTP 200、单一 h1，安全边界演示推进后状态可见变化。DP deployment 记录待平台网络恢复后补写。
