@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { Archive, ArrowDown, ArrowRight, ArrowsClockwise, Broadcast, CheckCircle, Clock, Code, Cube, CurrencyCircleDollar, Database, FileText, FlowArrow, Flask, Funnel, Gear, GitBranch, Globe, ListChecks, LockSimple, MagnifyingGlass, MapPin, Pulse, Scales, ShieldCheck, TreeStructure, WarningCircle } from "@phosphor-icons/react";
+import { Archive, ArrowDown, ArrowRight, ArrowsClockwise, Browser, Broadcast, CheckCircle, Clock, Code, Cube, CurrencyCircleDollar, Database, EnvelopeSimple, Eye, FileText, FlowArrow, Flask, Funnel, Gear, GitBranch, Globe, ListChecks, LockSimple, MagnifyingGlass, MapPin, Package, Pulse, Scales, ShieldCheck, TreeStructure, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./DataTestSignatureHeroes.module.css";
 
@@ -239,6 +239,32 @@ export function IntegrationTestSignatureHero() {
       <div className={styles.integrationRequest}><div><Globe size={17} /><span>接口入口</span></div><strong>POST /orders</strong><code>{sent ? "order-42 · ¥128" : "等待请求"}</code><small>真实路由与请求格式</small></div>
       <div className={styles.integrationBridge}><div className={styles.integrationBridgeTop}><span>事务边界</span><strong>{failed ? "rollback" : verified ? "commit" : "open"}</strong></div><div className={styles.integrationRails}><div><Database size={16} /><span>PostgreSQL</span><small>{failed ? "0 rows" : verified ? "orders=1" : "真实 schema"}</small></div><div data-danger={failed}><Gear size={16} /><span>Payment</span><small>{failed ? "500 injected" : "201 ok"}</small></div></div><div className={styles.integrationSeal} data-danger={failed}>{failed ? "边界失败，回到起点" : verified ? "事务状态已确认" : "等待外部结果"}</div></div>
       <div className={styles.integrationEvidence}><div><CheckCircle size={17} /><span>证据账本</span></div><div><code>response</code><strong>{verified ? paymentFails ? "502" : "201" : "—"}</strong></div><div><code>orders / outbox</code><strong>{verified ? paymentFails ? "0 / 0" : "1 / 1" : "—"}</strong></div><small>{verified ? "协议结果与真实状态同时核对" : "还不能下结论"}</small></div>
+    </div>
+  </Frame>;
+}
+
+const e2eSteps = ["开一条干净旅程", "真实点击", "回调改状态", "对齐三层证据"];
+
+export function E2eTestSignatureHero() {
+  const scene = useScene(e2eSteps.length);
+  const [mailLost, setMailLost] = useState(false);
+  const step = scene.step;
+  const paid = step >= 2;
+  const complete = step >= 3 && !mailLost;
+  const result = step === 0
+    ? { icon: Browser, title: "先隔离一条用户旅程", detail: "u-42、空数据库和独立会话从同一起点出发" }
+    : step === 1
+      ? { icon: Eye, title: "从真实入口发起动作", detail: "点击确认订单，页面才会发出 POST /orders" }
+      : step === 2
+        ? { icon: Package, title: "回调把事实推进", detail: "payment.paid 让 UI 和数据库都转成 paid" }
+        : complete
+          ? { icon: CheckCircle, title: "三层证据对齐", detail: "UI=paid · DB=paid · mail=1" }
+          : { icon: WarningCircle, title: "首个不变量被破坏", detail: "页面显示 paid，但邮件=0，旅程必须失败", danger: true };
+  return <Frame label="端到端测试让浏览器旅程穿过 API、数据库和回调，再核对用户界面、系统状态与邮件" eyebrow="一条关键旅程，三层事实" meta="browser → callback → invariant" scene={scene} steps={e2eSteps} result={result} caption="端到端测试验收的是用户真正走过的路径。页面亮绿灯只是其中一层；页面、数据库、回调和邮件必须共同满足同一个不变量，缺一层就停在失败位置。" controls={<div className={styles.inlineControls} role="group" aria-label="端到端邮件结果"><button type="button" aria-pressed={mailLost} onClick={() => { setMailLost(value => !value); scene.seek(3); }}><EnvelopeSimple size={15} />{mailLost ? "恢复邮件投递" : "模拟邮件丢失"}</button></div>}>
+    <div className={styles.e2eBoard} data-mail-lost={mailLost} data-complete={complete}>
+      <div className={styles.e2eJourney}><div><Browser size={17} /><span>浏览器旅程</span></div><strong>确认订单</strong><code>{step >= 1 ? "click → POST /orders" : "等待用户动作"}</code><small>{step === 0 ? "fresh session · u-42" : "真实可见入口"}</small></div>
+      <div className={styles.e2eStack}><span>跨层事实</span><div data-done={step >= 1}><Package size={16} /><strong>API</strong><code>{step >= 1 ? "201 · pending" : "—"}</code></div><div data-done={paid}><Database size={16} /><strong>数据库</strong><code>{paid ? "status=paid" : "status=—"}</code></div><div data-done={step >= 3 && !mailLost} data-danger={mailLost && step >= 3}><EnvelopeSimple size={16} /><strong>邮件沙箱</strong><code>{step >= 3 ? mailLost ? "0 封" : "1 封" : "—"}</code></div></div>
+      <div className={styles.e2eInvariant}><div><CheckCircle size={17} /><span>验收不变量</span></div><strong>{complete ? "PASS" : mailLost && step >= 3 ? "STOP" : "等待"}</strong><div className={styles.e2eProof}><span>用户看到</span><code>{paid ? "订单已支付" : "等待结果"}</code></div><div className={styles.e2eProof}><span>系统留下</span><code>{step >= 3 ? mailLost ? "mail=0 · fail" : "DB=paid · mail=1" : "尚未核对"}</code></div></div>
     </div>
   </Frame>;
 }
