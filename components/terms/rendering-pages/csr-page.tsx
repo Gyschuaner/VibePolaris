@@ -1,8 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { csrSources } from "@/lib/csr-sources";
-import { CsrHero } from "./csr-hero";
-import { CsrLesson } from "./csr";
+import { CsrSignatureHero as CsrHero } from "../RenderingLayoutSignatureHeroes";
 
 const sections: [string, string][] = [
   ["csr-definition-section", "先收到的是壳，不是内容"],
@@ -15,7 +14,6 @@ export function CsrTermPage() {
     <ArticleSection id="csr-definition-section" title="先收到的是壳，不是内容">
       <p id="csr-shell" className="vp-citation-target">客户端渲染常从一份很薄的 HTML 开始：里面有应用挂载点和脚本地址，真正的界面由 JavaScript 在浏览器中创建。<Cite id="csr-shell" sources={csrSources} />因此“HTML 已返回”不等于主要内容已经可见。</p>
       <p id="csr-runtime" className="vp-citation-target">脚本下载后还要解析、执行并建立应用运行时。<Cite id="csr-runtime" sources={csrSources} />设备性能和脚本体积会改变这段等待，页面壳可能已经出现，按钮却还没有内容或事件。</p>
-      <CsrLesson />
     </ArticleSection>
     <ArticleSection id="csr-chain-section" title="浏览器要走完下载、执行和取数">
       <p id="csr-data" className="vp-citation-target">如果内容依赖接口，应用代码还要发请求，等数据回来后才能生成列表或详情。<Cite id="csr-data" sources={csrSources} />把“脚本执行”和“数据返回”合成一个模糊的加载状态，会让真正的瓶颈消失。</p>
