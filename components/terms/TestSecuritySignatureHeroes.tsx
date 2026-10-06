@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { ArrowCounterClockwise, ArrowRight, ArrowsClockwise, Bug, ChartLineUp, Check, CheckCircle, ClipboardText, Clock, Code, Database, Eye, Gear, GitCommit, GitBranch, Globe, Graph, GridFour, Handshake, ListMagnifyingGlass, MagnifyingGlass, PaperPlaneTilt, Robot, Scales, ShieldCheck, ShieldWarning, TestTube, Timer, UserCircle, WarningCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowRight, ArrowsClockwise, Bug, ChartLineUp, Check, CheckCircle, ClipboardText, Clock, Code, Database, Eye, FileCode, Gear, GitCommit, GitBranch, Globe, Graph, GridFour, Handshake, Hash, ListMagnifyingGlass, LockKey, MagnifyingGlass, PaperPlaneTilt, Robot, Scales, ShieldCheck, ShieldWarning, TestTube, Timer, UserCircle, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./TestSecuritySignatureHeroes.module.css";
 
@@ -252,6 +252,32 @@ export function LeastPrivilegeSignatureHero() {
       <div className={styles.permissionDoor} data-active={scene.step === 1} data-done={scene.step > 1}><span className={styles.label}><GitBranch size={16} aria-hidden="true" />发布门</span><strong>release/v1.4</strong><code>{scene.step >= 1 ? "write · allowed" : "waiting"}</code><small>完成发布确实需要写入这一条分支。</small></div>
       <div className={styles.permissionWall} data-active={scene.step >= 2} data-danger={overreach} data-blocked={denied}><span className={styles.label}>{denied ? <ShieldCheck size={16} aria-hidden="true" /> : <WarningCircle size={16} aria-hidden="true" />}越界门</span><strong>delete production</strong><div className={styles.wallResult}>{scene.step < 2 ? "尚未尝试" : overreach ? "ALLOWED · too wide" : "DENIED · default"}</div><small>{scene.step < 2 ? "发布成功也不会自动打开这里" : overreach ? "能做不等于任务需要" : "没有规则就不放行"}</small></div>
       <div className={styles.leaseMeter} data-active={expired}><span className={styles.label}><Clock size={16} aria-hidden="true" />租约</span><div className={styles.leaseBar}><i data-on={scene.step < 3} /><i data-on={scene.step < 3} /><i data-on={scene.step < 3} /><i data-on={scene.step < 3} /></div><strong>{expired ? "expired" : scene.step >= 1 ? "18 min left" : "30 min"}</strong><small>{expired ? "重新申请，不继承旧钥匙" : "时间也是权限的一部分"}</small></div>
+    </div>
+  </SignatureFrame>;
+}
+
+const hashSteps = ["留下原文", "改一个字", "重算摘要"];
+const digestA = ["3a1c", "8f02", "b911", "7e4d"];
+const digestB = ["3a1c", "8f02", "b911", "d0aa"];
+
+export function HashingSignatureHero() {
+  const scene = useScene(hashSteps.length);
+  const [tampered, setTampered] = useState(true);
+  const changed = scene.step >= 1 && tampered;
+  const mismatch = scene.step === 2 && changed;
+  const choose = (next: boolean) => { setTampered(next); scene.seek(0); };
+  const digest = changed ? digestB : digestA;
+  const status = mismatch
+    ? { icon: WarningCircle, title: "摘要不匹配", detail: "只改了一个字符，继续使用前应回到可信来源", danger: true }
+    : scene.step === 2
+      ? { icon: CheckCircle, title: "重新计算完成", detail: "同一份输入得到同一组摘要，未观察到变化" }
+      : { icon: scene.step < 2 ? FileCode : Hash, title: hashSteps[scene.step], detail: scene.step === 0 ? "摘要不是原文备份，也没有解压回程" : "固定长度的指纹会把输入变化放大成可见差异" };
+  return <SignatureFrame scene={scene} label="哈希把发布文件压成固定长度摘要并显示单字节变化" eyebrow="指纹可比较，不能拿来还原原文" meta="input → digest → compare" steps={hashSteps} status={status} caption="文件完整性检查只需要比较摘要；密码存储还要用带盐、可调成本的专用 KDF，不能把快速摘要直接当密码方案。" controls={<div className={styles.choiceRow} role="group" aria-label="选择文件是否被改动"><button type="button" aria-pressed={tampered} onClick={() => choose(true)}>改动一个字符</button><button type="button" aria-pressed={!tampered} onClick={() => choose(false)}>保持原文件</button></div>}>
+    <div className={styles.hashBoard} data-changed={changed} data-mismatch={mismatch}>
+      <div className={styles.hashInput} data-active={scene.step === 0} data-done={scene.step > 0}><span className={styles.label}><FileCode size={16} aria-hidden="true" />输入</span><strong>release.tar</strong><div className={styles.byteStrip}><span>app</span><span>config</span><span data-change={changed}>.{changed ? "x" : "js"}</span></div><small>{changed ? "一个字节从 .js 变成 .x" : "可信清单里的原始文件"}</small></div>
+      <div className={styles.hashArrow} aria-hidden="true"><ArrowRight size={20} /><span>SHA-256</span></div>
+      <div className={styles.hashDigest} data-active={scene.step >= 1} data-danger={mismatch}><span className={styles.label}><Hash size={16} aria-hidden="true" />固定长度摘要</span><div className={styles.digestStrip}>{digest.map((part, index) => <code key={`${part}-${index}`} data-shift={changed && index === digest.length - 1}>{part}</code>)}</div><div className={styles.hashCompare}>{scene.step < 2 ? "尚未比较" : mismatch ? "manifest ≠ local" : "manifest = local"}</div><small>{mismatch ? "摘要只能告诉你不同，不能把原文变回来" : "输入再长，摘要长度仍固定"}</small></div>
+      <div className={styles.hashBoundary}><span className={styles.label}><LockKey size={16} aria-hidden="true" />另一个边界</span><strong>password KDF</strong><small>盐、成本和算法版本要随记录保存；需要原文时才使用加密。</small></div>
     </div>
   </SignatureFrame>;
 }
