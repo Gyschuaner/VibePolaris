@@ -19,7 +19,7 @@ export function RollbackHero() {
   const step = scene.step;
   const liveV41 = rolledBack || step >= 2;
   const healthy = rolledBack || step >= 2;
-  return <MechanismFrame scene={scene} title="流量转盘怎样切回已知可用制品" labels={labels} caption={captions[step]}>
+  return <MechanismFrame scene={scene} title="流量转盘怎样切回已知可用制品" labels={labels} caption={captions[step]} onReplay={() => setRolledBack(false)}>
     <div className={styles.rollbackScene}>
       <div className={styles.rollbackTraffic}>
         <div className={styles.rollbackHead}><Gauge size={15} />TRAFFIC POINTER</div>

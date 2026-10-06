@@ -20,7 +20,7 @@ export function PreviewDeploymentHero() {
   const step = scene.step;
   const previewGone = closed || step === 3;
   const previewCommit = commit === "F5" || step >= 2 ? "F5" : "F4";
-  return <MechanismFrame scene={scene} title="一次提交怎样停靠在预览码头" labels={labels} caption={captions[step]}>
+  return <MechanismFrame scene={scene} title="一次提交怎样停靠在预览码头" labels={labels} caption={captions[step]} onReplay={() => { setClosed(false); setCommit("F4"); }}>
     <div className={styles.previewScene}>
       <div className={styles.previewTrack}>
         <div className={styles.previewDock} data-active={step === 0} data-prod={false}><div className={styles.previewDockHead}><GitPullRequest size={15} />PR #18</div><div className={styles.previewToken}><span>{commit}</span><ArrowRight size={13} /></div><small>分支事件触发构建</small></div>

@@ -21,7 +21,7 @@ export function LocalStorageHero() {
   const step = scene.step;
   const isolated = otherOrigin || step === 2;
   const asString = serialized || step >= 3;
-  return <MechanismFrame scene={scene} title="两个标签页共用哪一只钥匙罐" labels={labels} caption={captions[step]}>
+  return <MechanismFrame scene={scene} title="两个标签页共用哪一只钥匙罐" labels={labels} caption={captions[step]} onReplay={() => { setOtherOrigin(false); setSerialized(false); }}>
     <div className={styles.storageScene}>
       <div className={styles.storageTab}><div className={styles.storageTabHead}><Browser size={15} />TAB A</div><div className={styles.storageTabCard}><strong>shop.example</strong><div className={styles.storageKey}><Key size={13} />theme = dark</div><small>setItem()</small></div></div>
       <div className={styles.storageJar}><div className={styles.storageJarHead}><Database size={15} />ORIGIN JAR</div><div className={styles.storageJarBody}><strong>{isolated ? "admin.example" : "shop.example"}</strong><div className={styles.storageKey} data-value={asString ? "string" : "object"}>{asString ? 'prefs = "{…}"' : "prefs = {…}"}</div><small>{asString ? "字符串 · JSON" : "按 origin 隔离"}</small></div></div>

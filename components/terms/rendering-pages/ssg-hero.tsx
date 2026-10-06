@@ -20,7 +20,7 @@ export function SsgHero() {
   const step = scene.step;
   const version = built || step >= 3 ? "v2" : "v1";
   const stamped = built || step >= 2;
-  return <MechanismFrame scene={scene} title="静态页面怎样等一枚构建印章" labels={labels} caption={captions[step]}>
+  return <MechanismFrame scene={scene} title="静态页面怎样等一枚构建印章" labels={labels} caption={captions[step]} onReplay={() => setBuilt(false)}>
     <div className={styles.ssgScene}>
       <div className={styles.ssgSource}><div className={styles.ssgLabel}><FileText size={15} />SOURCE</div><div className={styles.ssgSourceCard}><strong>docs/pricing.md · {step >= 1 ? "v2" : "v1"}</strong><span /><span /><small>{step >= 1 ? "改动尚未成为页面" : "当前源稿"}</small></div></div>
       <div className={styles.ssgBuild}><div className={styles.ssgLabel}><Gear size={15} />BUILD</div><div className={styles.ssgStamp}><Stamp size={20} /><strong>{stamped ? "build-84" : "等待构建"}</strong><small>{stamped ? "读源稿 · 产出 HTML" : "访问不会触发"}</small></div></div>

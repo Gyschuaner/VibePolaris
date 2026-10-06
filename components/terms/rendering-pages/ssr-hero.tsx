@@ -21,7 +21,7 @@ export function SsrHero() {
   const shellReady = step >= 3 || (streaming && step >= 2);
   const dataReady = step >= 3;
   const interactive = step === 4;
-  return <MechanismFrame scene={scene} title="服务器怎样把页面逐段印出来" labels={labels} caption={captions[step]}>
+  return <MechanismFrame scene={scene} title="服务器怎样把页面逐段印出来" labels={labels} caption={captions[step]} onReplay={() => setStreaming(true)}>
     <div className={styles.ssrScene}>
       <div className={styles.ssrPrinter}>
         <div className={styles.ssrPrinterHead}><Printer size={16} /><span>SERVER · 请求时生成</span></div>

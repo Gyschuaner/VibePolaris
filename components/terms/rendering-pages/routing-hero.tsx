@@ -20,7 +20,7 @@ export function RoutingHero() {
   const step = scene.step;
   const denied = step === 3 || (!loggedIn && step >= 2 && step < 4);
   const notFound = step === 4;
-  return <MechanismFrame scene={scene} title="URL 车厢怎样驶入正确分支" labels={labels} caption={captions[step]}>
+  return <MechanismFrame scene={scene} title="URL 车厢怎样驶入正确分支" labels={labels} caption={captions[step]} onReplay={() => setLoggedIn(true)}>
     <div className={styles.routingScene}>
       <div className={styles.routingAddress}>
         <div className={styles.routingAddressHead}><Browser size={15} />ADDRESS BAR</div>
