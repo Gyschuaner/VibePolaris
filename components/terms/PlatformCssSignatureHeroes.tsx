@@ -1,6 +1,6 @@
 "use client";
 
-import { Archive, ArrowRight, ArrowsOutCardinal, ArrowCounterClockwise, Bell, Camera, CheckCircle, Clock, Cloud, Database, DeviceMobile, FileArrowUp, Gear, Key, MapPinLine, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
+import { Archive, ArrowRight, ArrowsOutCardinal, ArrowCounterClockwise, Bell, Camera, CheckCircle, Clock, Cloud, Code, Database, DeviceMobile, FileArrowUp, Gear, GitBranch, Key, MapPinLine, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
 import type { CSSProperties } from "react";
 import { useState } from "react";
 import { HeroShell } from "./FrontendInteractionSignatureHeroes";
@@ -101,6 +101,26 @@ export function PushNotificationSignatureHero() {
       <div className={styles.pushEvent}><Bell size={21} /><span>服务器事件</span><strong>{scene.step < 2 ? "订单状态变化" : "已发送：已发货"}</strong><small>{scene.step === 0 ? "还没有注册去处" : scene.step === 1 ? "服务器保存令牌" : "服务按令牌尝试投递"}</small></div>
       <div className={styles.pushProof} role="status"><span>最后一跳</span><strong>{scene.step < 3 ? "尚无展示证据" : stale ? "失效令牌应被清理并重新注册" : "系统权限允许后，通知才出现在设备上"}</strong><small>{scene.step === 3 && stale ? "服务器收到失败回执，不应继续重试旧令牌" : scene.step === 3 ? "点击通知后仍应回服务器核对最新订单" : "投递成功与用户看见是两件事"}</small></div>
       {scene.step === 3 ? <div className={styles.pushBadge} aria-hidden="true">{stale ? <WarningCircle size={17} /> : <CheckCircle size={17} />}</div> : null}
+    </div>
+  </HeroShell>;
+}
+
+const crossPlatformLabels = ["写一次业务规则", "分到平台边界", "各自调用能力", "检查共享是否越界"];
+type CrossBoundary = "clean" | "leaky";
+
+export function CrossPlatformSignatureHero() {
+  const scene = useScene(crossPlatformLabels.length);
+  const [boundary, setBoundary] = useState<CrossBoundary>("clean");
+  const leaky = boundary === "leaky";
+  const resetBoundary = (next: CrossBoundary) => { setBoundary(next); scene.seek(0); };
+  return <HeroShell scene={scene} title="跨平台开发怎样共享规则而保留平台差异" labels={crossPlatformLabels} className={styles.platformHero}>
+    <div className={styles.crossBoard} data-step={scene.step} data-boundary={boundary}>
+      <div className={styles.crossChoice} role="group" aria-label="选择共享边界"><span>共享边界</span><button type="button" aria-pressed={!leaky} onClick={() => resetBoundary("clean")}>清楚</button><button type="button" aria-pressed={leaky} onClick={() => resetBoundary("leaky")}>越界</button></div>
+      <div className={styles.crossCore}><Code size={21} /><span>共享核心</span><strong>{leaky ? "订单 + 相机权限" : "订单计算规则"}</strong><small>{leaky ? "把平台细节带进来" : "输入相同，规则相同"}</small></div>
+      <div className={styles.crossSplit}><GitBranch size={18} /><span>{scene.step < 1 ? "等待分工" : "适配器分开"}</span><i /><i /></div>
+      <div className={styles.crossPlatform}><DeviceMobile size={21} /><span>iOS 适配器</span><strong>{leaky ? "权限写死" : "相机 · 通知"}</strong><small>{scene.step < 2 ? "等待规则" : "调用系统能力"}</small></div>
+      <div className={styles.crossPlatform}><DeviceMobile size={21} /><span>Android 适配器</span><strong>{leaky ? "权限写死" : "相机 · 通知"}</strong><small>{scene.step < 2 ? "等待规则" : "调用系统能力"}</small></div>
+      <div className={styles.crossProof} role="status"><span>观察共享结果</span><strong>{scene.step < 3 ? "两端还没有完成一次动作" : leaky ? "改一个平台权限，可能牵动共享核心" : "业务规则保持一致，平台能力各自负责"}</strong><small>{scene.step === 0 ? "先把能共用的部分留在中心" : scene.step === 1 ? "差异在边界处分流" : scene.step === 2 ? "两端可以有不同系统 API" : "共享代码量不是唯一目标，边界更重要"}</small></div>
     </div>
   </HeroShell>;
 }

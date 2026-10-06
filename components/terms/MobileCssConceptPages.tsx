@@ -2,7 +2,7 @@ import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptT
 import { MechanismHero } from "./ConceptHero";
 import { MobileConceptLesson } from "./MobileConceptLessons";
 import { AdaptiveLayoutSignatureHero, OfflineFirstSignatureHero } from "./FrontendInteractionSignatureHeroes";
-import { AppLifecycleSignatureHero, AppPermissionSignatureHero, PushNotificationSignatureHero, SafeAreaSignatureHero } from "./PlatformCssSignatureHeroes";
+import { AppLifecycleSignatureHero, AppPermissionSignatureHero, CrossPlatformSignatureHero, PushNotificationSignatureHero, SafeAreaSignatureHero } from "./PlatformCssSignatureHeroes";
 import { adaptiveLayoutSources, appLifecycleSources, appPermissionSources, boxModelSources, crossPlatformSources, cssSelectorSources, offlineFirstSources, pushNotificationSources, safeAreaSources, webviewSources } from "@/lib/mobile-css-concept-sources";
 import styles from "./ConceptArticle.module.css";
 import { ArrowRight, Bell, Browser, CheckCircle, Cloud, Code, Database, FileText, GitBranch, Layout, ShieldCheck, Stack, TreeStructure, User } from "@phosphor-icons/react/dist/ssr";
@@ -203,7 +203,7 @@ export function PushNotificationTermPage() {
 }
 
 export function CrossPlatformDevelopmentTermPage() {
-  return <ConceptArticle slug="cross-platform-development" title="Cross-platform development" subtitle="跨平台开发" hero={<MobileHero trigger="同一订单要跑在两个平台" change="共享规则 → 平台适配器" proof="业务一致，权限和相机由各平台处理" />} sections={crossSections} sources={crossPlatformSources} intro={<>跨平台开发把能共用的业务规则、数据和部分界面放在共享核心，再用平台实现接上 iOS 和 Android 的差异。<strong>共享的是清楚的边界，不是承诺所有行为完全相同。</strong></>}>
+  return <ConceptArticle slug="cross-platform-development" title="Cross-platform development" subtitle="跨平台开发" hero={<CrossPlatformSignatureHero />} sections={crossSections} sources={crossPlatformSources} intro={<>跨平台开发把能共用的业务规则、数据和部分界面放在共享核心，再用平台实现接上 iOS 和 Android 的差异。<strong>共享的是清楚的边界，不是承诺所有行为完全相同。</strong></>}>
     <ArticleSection id="cross-task" title="一套规则，两个平台">
       <p>你要做一个订单应用：总价计算、优惠规则和订单状态在 iOS 与 Android 应该一致，但相机、通知、文件选择和生命周期由各自系统管理。真正的问题不是“代码能不能复制”，而是哪些决策应该保持一致、哪些能力必须面对平台差异。</p>
       <p id="cross-core-source" className="vp-citation-target">Flutter 的架构说明把框架层、引擎和平台嵌入区分开；Kotlin Multiplatform 也把共享业务逻辑和平台代码分开组织。共同的做法是先找到可验证的共享核心，再把平台 API 留在边界。<Cite id="cross-core-source" sources={crossPlatformSources} /></p>
