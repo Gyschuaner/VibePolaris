@@ -209,3 +209,26 @@ export function CascadeSignatureHero() {
     </div>
   </HeroShell>;
 }
+
+const specificityLabels = ["类列先胜", "ID 列先胜", ":where() 归零", ":is() 取最高"];
+const specificityFrames = [
+  { left: ".card", leftScore: "0-1-0", right: "button", rightScore: "0-0-1", winner: "左边", column: 1 },
+  { left: "#settings .card", leftScore: "1-1-0", right: ".panel .card", rightScore: "0-2-0", winner: "左边", column: 0 },
+  { left: ":where(#settings) .card", leftScore: "0-1-0", right: "#settings .card", rightScore: "1-1-0", winner: "右边", column: 0 },
+  { left: ":is(#settings, .panel) .card", leftScore: "1-1-0", right: ".panel .card", rightScore: "0-2-0", winner: "左边", column: 0 },
+] as const;
+
+export function SpecificitySignatureHero() {
+  const scene = useScene(specificityLabels.length);
+  const frame = specificityFrames[scene.step];
+  const columns = ["ID", "类", "元素"];
+  const scoreCells = (score: string, side: "left" | "right") => score.split("-").map((value, index) => <span key={`${side}-${index}`} data-winner={(side === "left" && frame.winner === "左边" || side === "right" && frame.winner === "右边") && index === frame.column}><b>{value}</b><small>{columns[index]}</small></span>);
+  return <HeroShell scene={scene} title="CSS 优先级怎样按三列决定哪条规则先赢" labels={specificityLabels} className={styles.platformHero}>
+    <div className={styles.specificityBoard} data-step={scene.step}>
+      <div className={styles.specificitySelector} data-side="left"><Code size={18} /><span>选择器 A</span><code>{frame.left}</code><div className={styles.specificityScore}>{scoreCells(frame.leftScore, "left")}</div></div>
+      <div className={styles.specificityScale}><Scales size={22} /><span>从左到右</span><strong>{frame.winner}先赢</strong></div>
+      <div className={styles.specificitySelector} data-side="right"><Code size={18} /><span>选择器 B</span><code>{frame.right}</code><div className={styles.specificityScore}>{scoreCells(frame.rightScore, "right")}</div></div>
+      <div className={styles.specificityProof} role="status"><span>当前观察</span><strong>{scene.step === 2 ? ":where() 里的 ID 不计入分数" : scene.step === 3 ? ":is() 只取参数里最高的一项" : `先比较 ${columns[frame.column]} 列，后面的列暂不出场`}</strong><small>两条规则要先处于相同来源、重要性和层，优先级才有机会比较</small></div>
+    </div>
+  </HeroShell>;
+}
