@@ -1,7 +1,8 @@
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { ArticleAside, ArticleSection } from "../ConceptArticle";
 import { conversionRateSources, designTokenSources, feedbackSources, focusManagementSources, funnelSources, iterationSources, mockupSources, sitemapSources, usabilityTestingSources, visualHierarchySources } from "@/lib/product-design-sources";
-import { ConversionRateLesson, DesignTokenLesson, FeedbackLesson, FocusManagementLesson, FunnelLesson, IterationLesson, MockupLesson, SitemapLesson, UsabilityTestingLesson, VisualHierarchyLesson } from "./ProductDesignLessons";
+import { ConversionRateLesson, DesignTokenLesson, FeedbackLesson, FunnelLesson, IterationLesson, MockupLesson, SitemapLesson, UsabilityTestingLesson, VisualHierarchyLesson } from "./ProductDesignLessons";
+import { FocusManagementHero } from "./focus-management-hero";
 import styles from "./ProductDesignConcepts.module.css";
 
 const focusSections: [string, string][] = [
@@ -10,16 +11,11 @@ const focusSections: [string, string][] = [
   ["focus-management-order", "顺序和可见提示要一起成立"],
 ];
 
-function FocusManagementHero() {
-  return <figure className={styles.miniHero} aria-label="焦点环在打开设置与保存之间移动，关闭后回到触发按钮"><div className={styles.miniTop}><span>焦点环绕当前任务</span><strong>FOCUS · 01</strong></div><div className={styles.focusSignature}><div className={styles.focusSignatureSurface}><span className={styles.focusSignatureTrigger}>打开设置</span><span className={styles.focusSignatureDialog}>保存</span><i aria-hidden="true" /></div><small>进入对话框 → 完成 → 回到触发点</small></div></figure>;
-}
-
 export function FocusManagementTermPage() {
   return <Article slug="focus-management" title="焦点管理" subtitle="Focus Management · 键盘现在落在哪里" sources={focusManagementSources} sections={focusSections} hero={<FocusManagementHero />} intro={<>键盘用户按下 Tab 时，浏览器必须知道下一个控件是谁。<strong>焦点管理把“当前正在操作的地方”跟界面状态连起来</strong>：打开对话框就进入对话框，关闭后还能回到刚才发起操作的位置。</>}>
     <ArticleSection id="focus-management-definition" title="先分清：谁正在接收键盘输入">
       <p id="focus-sequence" className="vp-citation-target">焦点是键盘输入当前落到的元素。浏览器通常按照 DOM 中的可聚焦顺序移动它，所以按钮、链接和表单控件的排列，决定了用户按 Tab 时会经过什么。<Cite id="focus-sequence" sources={focusManagementSources} />如果视觉顺序和 DOM 顺序相反，读者会看着一处，却操作另一处。</p>
       <p id="focus-order" className="vp-citation-target">一个真实的入口是“打开设置”：点击后任务已经从背景页面切换到对话框，焦点也应同步进入。<Cite id="focus-order" sources={focusManagementSources} />只给容器画一圈 outline，不能让键盘用户知道下一次 Tab 会去哪。</p>
-      <FocusManagementLesson />
     </ArticleSection>
     <ArticleSection id="focus-management-dialog" title="对话框打开后，焦点要有去处">
       <p id="focus-dialog" className="vp-citation-target">模态对话框打开时，初始焦点应落在对话框内合适的标题、说明或第一个可操作控件上。<Cite id="focus-dialog" sources={focusManagementSources} />接着按 Tab，焦点应在对话框的控件之间循环，背景内容暂时不能插入这段任务。</p>

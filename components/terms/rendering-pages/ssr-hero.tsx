@@ -1,30 +1,43 @@
 "use client";
 
-import { ArrowRight, Browser, CheckCircle, Clock, Database, Gear, Package, WarningCircle } from "@phosphor-icons/react";
-import { SceneControls, useScene } from "../HarnessStoryScenes";
-import styles from "./RenderingConcept.module.css";
+import { Browser, CheckCircle, Clock, Printer, WarningCircle } from "@phosphor-icons/react";
+import { useState, type CSSProperties } from "react";
+import { useScene } from "../HarnessStoryScenes";
+import { MechanismFrame, mechanismStyles as styles } from "../ConceptMechanismHeroRuntime";
 
-const frames = [
-  { label: "请求带上下文", tone: "request", rows: [["浏览器请求", "路径 + 会话"], ["服务端数据", "等待"], ["HTML 流", "尚未发送"]], result: "收到请求", note: "服务器知道当前路径、用户和请求上下文，开始准备页面。" },
-  { label: "慢数据拖住", tone: "data", rows: [["浏览器请求", "已到达"], ["服务端数据", "1200 ms"], ["HTML 流", "等待"]], result: "未出首字节", note: "完整页面依赖慢数据时，服务端要先等它，响应也会后移。" },
-  { label: "外壳先流出", tone: "stream", rows: [["浏览器请求", "已到达"], ["服务端数据", "慢内容"], ["HTML 流", "外壳已可见"]], result: "先看外壳", note: "流式边界可以先送出可用外壳，再把慢内容补进来。" },
-  { label: "客户端接管", tone: "hydrate", rows: [["浏览器请求", "已完成"], ["服务端数据", "已填充"], ["HTML 流", "节点可复用"]], result: "可交互", note: "HTML 已经可见，客户端代码随后完成水合和事件连接。" },
-  { label: "两条时间线", tone: "ready", rows: [["内容可见", "HTML 到达"], ["服务端数据", "按依赖计时"], ["可交互", "hydrate 完成"]], result: "分开测量", note: "SSR 让内容和交互可以在不同时间点到达，不能只看一个总时长。" },
+const labels = ["接到请求", "等慢数据", "先吐出外壳", "补齐内容", "接通交互"];
+const captions = [
+  "服务器收到当前请求，才开始把这一位用户的数据写成 HTML。",
+  "整页依赖慢数据时，打印头停住，浏览器还没收到页面。",
+  "流式边界让已准备好的外壳先离开打印头；慢内容继续等。",
+  "数据到达，剩下的 HTML 补进同一页。内容现在已经可读。",
+  "客户端脚本接通事件，按钮才有行为；可读和可交互是两个时刻。",
 ];
 
 export function SsrHero() {
-  const scene = useScene(frames.length);
-  const current = frames[scene.step];
-  const ResultIcon = current.tone === "data" ? WarningCircle : current.tone === "ready" || current.tone === "hydrate" ? CheckCircle : Clock;
-  return <figure ref={scene.ref} className={styles.hero} data-scene={current.tone} aria-label="服务端渲染从请求到水合的时间线">
-    <div className={styles.heroTop}><span>服务端先做一段，浏览器再接手</span><strong>SSR · {String(scene.step + 1).padStart(2, "0")}</strong></div>
-    <SceneControls scene={scene} labels={frames.map(frame => frame.label)} compact />
-    <div className={styles.heroBoard}>
-      <div className={styles.renderStage}><div className={styles.renderStageHeader}><span>一次页面请求</span><span>server → browser</span></div><div className={styles.renderRows}>{current.rows.map(([label, value], index) => { const Icon = label === "浏览器请求" ? Browser : label === "服务端数据" ? Database : Package; return <div className={styles.renderRow} data-active={index <= scene.step ? "true" : "false"} key={label}><Icon size={13} aria-hidden="true" /><span>{label}</span><small>{value}</small></div>; })}</div></div>
-      <div className={styles.renderArrow} aria-hidden="true"><ArrowRight size={18} /></div>
-      <div className={styles.heroResult}><ResultIcon size={17} aria-hidden="true" /><span>当前结果</span><strong>{current.result}</strong><small>{current.note}</small></div>
+  const scene = useScene(labels.length);
+  const [streaming, setStreaming] = useState(true);
+  const step = scene.step;
+  const shellReady = step >= 3 || (streaming && step >= 2);
+  const dataReady = step >= 3;
+  const interactive = step === 4;
+  return <MechanismFrame scene={scene} title="服务器怎样把页面逐段印出来" labels={labels} caption={captions[step]} onReplay={() => setStreaming(true)}>
+    <div className={styles.ssrScene}>
+      <div className={styles.ssrPrinter}>
+        <div className={styles.ssrPrinterHead}><Printer size={16} /><span>SERVER · 请求时生成</span></div>
+        <div className={styles.ssrPaper} style={{ "--print": step === 0 ? "12%" : dataReady ? "100%" : shellReady ? "45%" : "12%" } as CSSProperties}>
+          <strong>账户摘要</strong><span /><span /><small>{dataReady ? "HTML 已生成" : step === 1 || step === 2 ? "订单数据仍在等待" : "当前用户的请求"}</small>
+        </div>
+      </div>
+      <div className={styles.ssrBrowser}>
+        <div className={styles.ssrBrowserHead}><Browser size={16} /><span>BROWSER · 收到才显示</span></div>
+        {shellReady ? <div className={styles.ssrBrowserBody}><div className={styles.ssrShell}><span />账户</div><div className={styles.ssrData} data-ready={dataReady}><strong>{dataReady ? "本月订单：3 笔" : "订单摘要加载中"}</strong><i /><i /></div><button type="button" disabled={!interactive}>{interactive ? "查看订单 · 已接通" : "查看订单 · 等脚本"}</button></div> : <div className={styles.ssrNoPaper}><Clock size={20} /><span>还没有 HTML</span></div>}
+      </div>
+      <div className={styles.ssrReadout} role="status">
+        {interactive ? <CheckCircle size={16} /> : shellReady ? <Browser size={16} /> : <WarningCircle size={16} />}
+        <strong>{interactive ? "可见 + 可交互" : shellReady ? dataReady ? "内容可见，交互待接通" : "外壳先可见" : "整页仍在等"}</strong>
+        <button type="button" aria-pressed={streaming} onClick={() => { setStreaming(value => !value); scene.seek(2); }}>{streaming ? "关闭流式" : "打开流式"}</button>
+      </div>
     </div>
-    <div className={styles.heroNote} role="status"><Gear size={14} aria-hidden="true" /><span><strong>{current.label}</strong> · {current.note}</span></div>
-    <figcaption>SSR 把数据和 HTML 的主要工作放在服务器请求阶段；它改善的是到达路径，不是自动删除客户端代码。</figcaption>
-  </figure>;
+  </MechanismFrame>;
 }

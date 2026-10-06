@@ -1,30 +1,31 @@
 "use client";
 
-import { ArrowRight, CheckCircle, Clock, Cloud, FileCode, Gear, Package, WarningCircle } from "@phosphor-icons/react";
-import { SceneControls, useScene } from "../HarnessStoryScenes";
-import styles from "./RenderingConcept.module.css";
+import { Browser, CheckCircle, Cloud, FileText, Gear, Stamp } from "@phosphor-icons/react";
+import { useState } from "react";
+import { useScene } from "../HarnessStoryScenes";
+import { MechanismFrame, mechanismStyles as styles } from "../ConceptMechanismHeroRuntime";
 
-const frames = [
-  { label: "内容改成 v2", tone: "edit", rows: [["源文件", "v2"], ["构建产物", "v1"], ["CDN 文件", "v1"]], result: "仍是 v1", note: "源文件已经变化，但静态产物还没有重新生成。" },
-  { label: "刷新仍拿旧文件", tone: "stale", rows: [["源文件", "v2"], ["构建产物", "v1"], ["CDN 文件", "v1"]], result: "看到 v1", note: "访问静态页面只会拿现有文件，不会为这次请求临时渲染。" },
-  { label: "重新构建", tone: "build", rows: [["源文件", "v2"], ["构建产物", "build-84"], ["CDN 文件", "v1"]], result: "产物更新", note: "构建阶段重新读取内容，生成带新版本的 HTML。" },
-  { label: "发布到 CDN", tone: "publish", rows: [["源文件", "v2"], ["构建产物", "build-84"], ["CDN 文件", "等待切换"]], result: "准备发布", note: "新文件还要被部署到服务器或 CDN，访问端才会拿到它。" },
-  { label: "下一次看到 v2", tone: "ready", rows: [["源文件", "v2"], ["构建产物", "build-84"], ["CDN 文件", "v2"]], result: "看到 v2", note: "发布完成后，下一次请求才返回新的静态页面。" },
+const labels = ["改了源稿", "仍拿旧件", "盖上构建章", "放上新件", "访客取 v2"];
+const captions = [
+  "源稿先改成 v2；上一轮构建出来的静态文件还没有变化。",
+  "访问 CDN 只会拿货架上的 v1，刷新不会自动读取源稿。",
+  "构建任务读取 v2，并给新的 HTML 产物盖上版本章。",
+  "发布把 v2 放上 CDN 货架；访问路径仍然是拿现成文件。",
+  "下一位访客取到 v2。页面仍可加载客户端脚本，静态生成只改变 HTML 何时产出。",
 ];
 
 export function SsgHero() {
-  const scene = useScene(frames.length);
-  const current = frames[scene.step];
-  const ResultIcon = current.tone === "stale" || current.tone === "edit" ? WarningCircle : current.tone === "publish" ? Clock : CheckCircle;
-  return <figure ref={scene.ref} className={styles.hero} data-scene={current.tone} aria-label="静态生成从内容变更到发布的过程">
-    <div className={styles.heroTop}><span>文件改了，网页何时跟上</span><strong>SSG · {String(scene.step + 1).padStart(2, "0")}</strong></div>
-    <SceneControls scene={scene} labels={frames.map(frame => frame.label)} compact />
-    <div className={styles.heroBoard}>
-      <div className={styles.renderStage}><div className={styles.renderStageHeader}><span>构建与分发</span><span>source → CDN</span></div><div className={styles.renderRows}>{current.rows.map(([label, value], index) => { const Icon = label === "源文件" ? FileCode : label === "构建产物" ? Gear : Cloud; return <div className={styles.renderRow} data-active={index <= scene.step ? "true" : "false"} key={label}><Icon size={13} aria-hidden="true" /><span>{label}</span><small>{value}</small></div>; })}</div></div>
-      <div className={styles.renderArrow} aria-hidden="true"><ArrowRight size={18} /></div>
-      <div className={styles.heroResult}><ResultIcon size={17} aria-hidden="true" /><span>访问结果</span><strong>{current.result}</strong><small>{current.note}</small></div>
+  const scene = useScene(labels.length);
+  const [built, setBuilt] = useState(false);
+  const step = scene.step;
+  const version = built || step >= 3 ? "v2" : "v1";
+  const stamped = built || step >= 2;
+  return <MechanismFrame scene={scene} title="静态页面怎样等一枚构建印章" labels={labels} caption={captions[step]} onReplay={() => setBuilt(false)}>
+    <div className={styles.ssgScene}>
+      <div className={styles.ssgSource}><div className={styles.ssgLabel}><FileText size={15} />SOURCE</div><div className={styles.ssgSourceCard}><strong>docs/pricing.md · {step >= 1 ? "v2" : "v1"}</strong><span /><span /><small>{step >= 1 ? "改动尚未成为页面" : "当前源稿"}</small></div></div>
+      <div className={styles.ssgBuild}><div className={styles.ssgLabel}><Gear size={15} />BUILD</div><div className={styles.ssgStamp}><Stamp size={20} /><strong>{stamped ? "build-84" : "等待构建"}</strong><small>{stamped ? "读源稿 · 产出 HTML" : "访问不会触发"}</small></div></div>
+      <div className={styles.ssgShelf}><div className={styles.ssgLabel}><Cloud size={15} />CDN SHELF</div><div className={styles.ssgShelfCard} data-version={version}><strong>pricing.html · {version}</strong><span /><span /><small>{version === "v2" ? "下一次请求可取" : "货架仍是旧件"}</small></div></div>
+      <div className={styles.ssgVisitor} role="status"><Browser size={16} /><strong>访客拿到 {version}</strong><span>{version === "v1" ? "刷新仍是旧 HTML" : "直接返回静态产物"}</span><button type="button" onClick={() => { setBuilt(value => !value); scene.seek(3); }}>{built ? "保留 v2" : "重新构建"}</button>{version === "v2" && <CheckCircle size={16} />}</div>
     </div>
-    <div className={styles.heroNote} role="status"><Package size={14} aria-hidden="true" /><span><strong>{current.label}</strong> · {current.note}</span></div>
-    <figcaption>SSG 把生成动作提前到构建阶段；访问时拿的是已经存在的文件，内容新鲜度取决于下一次构建和发布。</figcaption>
-  </figure>;
+  </MechanismFrame>;
 }

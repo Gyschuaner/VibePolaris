@@ -532,7 +532,7 @@
     "mechanism": "服务器为每个请求读取上下文与数据并生成 HTML 流或字符串，浏览器先呈现内容，再加载客户端代码完成交互。",
     "misconception": "SSR 不保证更快，也不自动减少客户端 JavaScript；慢数据依赖会推迟首字节。",
     "demoSignature": "pipeline: 5 frames; actors=页面请求/服务端数据/服务端渲染/HTML 流/客户端接管; phases=请求带上下文→慢数据拖住→外壳先流出→客户端接管→两条时间线; action=增加数据延迟并打开流式边界",
-    "sourceUrls": ["https://react.dev/reference/react-dom/server/renderToPipeableStream", "https://nextjs.org/docs/app/building-your-application/rendering/server-components", "https://web.dev/articles/rendering-on-the-web"],
+    "sourceUrls": ["https://react.dev/reference/react-dom/server/renderToPipeableStream", "https://nextjs.org/docs/app/building-your-application/rendering/server-components", "https://web.dev/articles/rendering-on-the-web", "https://nodejs.org/api/stream.html"],
     "rewriteRisk": "high",
     "nearDuplicates": ["csr", "ssg", "hydration"]
   },
@@ -541,7 +541,7 @@
     "mechanism": "构建阶段枚举页面路径、读取内容并产出静态 HTML；访问时 CDN/服务器直接返回既有文件，内容更新依赖重新构建或再生成。",
     "misconception": "SSG 不是“没有 JavaScript”的网站，也不适合必须按当前用户或每秒数据生成的页面。",
     "demoSignature": "timeline: 5 frames; actors=文档源文件/构建任务/静态 HTML/CDN/访问请求; phases=内容改成 v2→刷新仍拿旧文件→重新构建→发布到 CDN→下一次看到 v2; action=推进构建与发布",
-    "sourceUrls": ["https://nextjs.org/docs/pages/building-your-application/rendering/static-site-generation", "https://nextjs.org/docs/pages/building-your-application/rendering/incremental-static-regeneration", "https://web.dev/articles/rendering-on-the-web"],
+    "sourceUrls": ["https://nextjs.org/docs/pages/building-your-application/rendering/static-site-generation", "https://nextjs.org/docs/pages/building-your-application/rendering/incremental-static-regeneration", "https://web.dev/articles/rendering-on-the-web", "https://nextjs.org/docs/pages/building-your-application/rendering/automatic-static-optimization"],
     "rewriteRisk": "high",
     "nearDuplicates": ["ssr", "deploy", "cache"]
   },
@@ -550,7 +550,7 @@
     "mechanism": "路由器把 URL 的路径、参数和查询与规则表匹配，选择页面或处理器；客户端路由还通过 History API 改变地址而不整页刷新。",
     "misconception": "路由不等于导航菜单，也不负责用户授权；URL 匹配成功后仍需加载数据和校验权限。",
     "demoSignature": "tree: 5 frames; actors=地址栏/路由树/参数结果/访问检查/目标页面/404; phases=拆出路径→读查询参数→检查访问→打开目标页→未知路径; action=切换 URL 分支并观察参数与回退",
-    "sourceUrls": ["https://developer.mozilla.org/en-US/docs/Web/API/History_API", "https://nextjs.org/docs/app/building-your-application/routing", "https://url.spec.whatwg.org/"],
+    "sourceUrls": ["https://developer.mozilla.org/en-US/docs/Web/API/History_API", "https://nextjs.org/docs/app/building-your-application/routing", "https://url.spec.whatwg.org/", "https://developer.mozilla.org/en-US/docs/Web/API/URL_API"],
     "rewriteRisk": "high",
     "nearDuplicates": ["user-flow", "ssr", "ssg"]
   },
@@ -579,7 +579,7 @@
     "mechanism": "浏览器按 origin 保存同步字符串键值，数据跨页面会话保留；同源其他文档的修改可触发 storage 事件。",
     "misconception": "localStorage 不是安全保险箱，也不是数据库；同步读写会阻塞主线程，且对象需序列化。",
     "demoSignature": "memory: 5 frames; actors=标签页 A/localStorage/标签页 B/另一来源/storage 事件; phases=按 origin 分盒→A 写入 theme→换到另一来源→值先变字符串→下次仍能恢复; action=切换 origin 与序列化方式",
-    "sourceUrls": ["https://html.spec.whatwg.org/multipage/webstorage.html", "https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage", "https://developer.mozilla.org/en-US/docs/Web/API/Window/storage_event"],
+    "sourceUrls": ["https://html.spec.whatwg.org/multipage/webstorage.html", "https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage", "https://developer.mozilla.org/en-US/docs/Web/API/Window/storage_event", "https://web.dev/articles/storage-for-the-web"],
     "rewriteRisk": "high",
     "nearDuplicates": ["cookie", "design-token", "app-permission"]
   },
