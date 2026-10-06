@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { Archive, ArrowDown, ArrowRight, ArrowsClockwise, Broadcast, CheckCircle, Clock, Code, Cube, CurrencyCircleDollar, Database, FileText, FlowArrow, Flask, Funnel, GitBranch, ListChecks, LockSimple, MagnifyingGlass, MapPin, Pulse, Scales, ShieldCheck, TreeStructure, WarningCircle } from "@phosphor-icons/react";
+import { Archive, ArrowDown, ArrowRight, ArrowsClockwise, Broadcast, CheckCircle, Clock, Code, Cube, CurrencyCircleDollar, Database, FileText, FlowArrow, Flask, Funnel, Gear, GitBranch, Globe, ListChecks, LockSimple, MagnifyingGlass, MapPin, Pulse, Scales, ShieldCheck, TreeStructure, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./DataTestSignatureHeroes.module.css";
 
@@ -212,6 +212,33 @@ export function UnitTestSignatureHero() {
       <div className={styles.unitSpecimen}><div><Flask size={17} /><span>测试样本</span></div><strong>priceAfterDiscount()</strong>{unitCases.map((item, index) => <div key={item.input} data-active={step === 0 && index === 2} data-done={asserted}><code>{item.input}</code><small>{ran ? item.output : "预期：" + item.output}</small></div>)}</div>
       <div className={styles.unitPrism}><div><Code size={17} /><span>被测规则</span></div><strong>{ran ? "输入 → 规则 → 返回" : "等待调用"}</strong><pre>{"if price < 0\n  throw RangeError\nelse\n  return price × .9"}</pre><div className={styles.unitClock}><Clock size={14} /><span>{fixedClock ? "clock = 2026-08-31" : "clock = system today"}</span></div></div>
       <div className={styles.unitOracle}><div><CheckCircle size={17} /><span>断言账本</span></div><strong>{asserted ? "3 pass · 1 expected error" : "尚无结果"}</strong><div className={styles.unitAssertions}><span data-ok={asserted}>return value</span><span data-ok={asserted}>error type</span><span data-ok={step >= 3}>boundary −1</span></div><small>{asserted ? "只看行为，不窥探私有实现" : "运行后才填写"}</small></div>
+    </div>
+  </Frame>;
+}
+
+const integrationSteps = ["装好现场", "请求过桥", "支付失败", "核对回滚"];
+
+export function IntegrationTestSignatureHero() {
+  const scene = useScene(integrationSteps.length);
+  const [paymentFails, setPaymentFails] = useState(true);
+  const step = scene.step;
+  const sent = step >= 1;
+  const failed = sent && paymentFails && step >= 2;
+  const verified = step >= 3;
+  const result = step === 0
+    ? { icon: Gear, title: "先装一座真实小现场", detail: "服务、schema 和数据库保留真实边界，支付故障可控" }
+    : step === 1
+      ? { icon: Globe, title: "请求穿过接口边界", detail: "POST /orders 写入事务，而不是直接调用内部函数" }
+      : !paymentFails
+        ? { icon: CheckCircle, title: "依赖成功，事务可提交", detail: verified ? "response=201，orders/outbox 各有 1 行" : "再查响应和真实行数" }
+        : step === 2
+          ? { icon: WarningCircle, title: "支付边界返回 500", detail: "事务不能把半笔订单留在数据库里", danger: true }
+          : { icon: CheckCircle, title: "回滚由两侧证据证明", detail: "response=502，orders/outbox=0 行" };
+  return <Frame label="集成测试让请求穿过真实服务与数据库边界，并用受控支付失败核对事务结果" eyebrow="把组件接回一小段真实现场" meta="request → boundary → evidence" scene={scene} steps={integrationSteps} result={result} caption="集成测试把真实协议、配置和状态接回现场，同时把外部故障限定在可重复的控制面。只看 HTTP 响应不够，还要查数据库和 outbox 是否留下了正确副作用。" controls={<div className={styles.inlineControls} role="group" aria-label="集成测试支付依赖"><button type="button" aria-pressed={paymentFails} onClick={() => { setPaymentFails(value => !value); scene.seek(2); }}><WarningCircle size={15} />{paymentFails ? "让支付成功" : "注入支付 500"}</button></div>}>
+    <div className={styles.integrationBoard} data-failed={failed} data-success={!paymentFails && verified}>
+      <div className={styles.integrationRequest}><div><Globe size={17} /><span>接口入口</span></div><strong>POST /orders</strong><code>{sent ? "order-42 · ¥128" : "等待请求"}</code><small>真实路由与请求格式</small></div>
+      <div className={styles.integrationBridge}><div className={styles.integrationBridgeTop}><span>事务边界</span><strong>{failed ? "rollback" : verified ? "commit" : "open"}</strong></div><div className={styles.integrationRails}><div><Database size={16} /><span>PostgreSQL</span><small>{failed ? "0 rows" : verified ? "orders=1" : "真实 schema"}</small></div><div data-danger={failed}><Gear size={16} /><span>Payment</span><small>{failed ? "500 injected" : "201 ok"}</small></div></div><div className={styles.integrationSeal} data-danger={failed}>{failed ? "边界失败，回到起点" : verified ? "事务状态已确认" : "等待外部结果"}</div></div>
+      <div className={styles.integrationEvidence}><div><CheckCircle size={17} /><span>证据账本</span></div><div><code>response</code><strong>{verified ? paymentFails ? "502" : "201" : "—"}</strong></div><div><code>orders / outbox</code><strong>{verified ? paymentFails ? "0 / 0" : "1 / 1" : "—"}</strong></div><small>{verified ? "协议结果与真实状态同时核对" : "还不能下结论"}</small></div>
     </div>
   </Frame>;
 }
