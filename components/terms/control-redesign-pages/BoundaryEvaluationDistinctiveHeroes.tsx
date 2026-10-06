@@ -8,34 +8,6 @@ function HeroShell({ kind, label, children }: { kind: Parameters<typeof ControlR
 
 const textStyle = { fontFamily: "ui-monospace, SFMono-Regular, monospace" };
 
-export function SkillHero() {
-  return <HeroShell kind="skill" label="技能像折叠工具箱：先用元数据匹配任务，再展开说明，最后只取当前需要的资源">
-    <svg className={styles.mechanismSvg} viewBox="0 0 340 150" role="img" aria-hidden="true">
-      <path className={styles.skillBeam} d="M35 75 H84" />
-      <circle className={styles.skillTask} cx="24" cy="75" r="14" />
-      <path className={styles.skillTaskMark} d="M18 75 l5 5 8-10" />
-      <g className={styles.skillBox}>
-        <path d="M84 61 h37 l8 8 h27 v45 H84z" />
-        <path d="M84 61 h37 l8 8 H84z" />
-        <text x="112" y="101" textAnchor="middle" style={textStyle}>skill</text>
-      </g>
-      <path className={styles.skillUnfold} d="M156 91 C181 91 179 43 202 43 H322" />
-      <path className={styles.skillUnfoldSecondary} d="M156 102 C185 102 186 117 207 117 H322" />
-      <g className={styles.skillMeta}>
-        <rect x="207" y="25" width="110" height="35" rx="7" />
-        <text x="262" y="46" textAnchor="middle" style={textStyle}>name + description</text>
-      </g>
-      <g className={styles.skillBody}>
-        <rect x="207" y="100" width="110" height="35" rx="7" />
-        <text x="262" y="115" textAnchor="middle" style={textStyle}>SKILL.md</text>
-        <text x="262" y="129" textAnchor="middle" style={textStyle}>按需读取</text>
-      </g>
-      <circle className={styles.mechanismSkillResource} cx="190" cy="117" r="5" />
-      <text className={styles.mechanismCaption} x="175" y="22" style={textStyle}>match → disclose</text>
-    </svg>
-  </HeroShell>;
-}
-
 export function EvaluationRunHero() {
   const cells = Array.from({ length: 12 }, (_, index) => index < 10 ? "pass" : "review");
   return <HeroShell kind="evalrun" label="评测运行把题集、版本、评分器和十二个逐项格子封在同一个编号里，十格通过、两格待复核">

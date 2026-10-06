@@ -20,10 +20,10 @@ import {
   PassFailLesson,
   RubricLesson,
   SafetyEvaluationLesson,
-  SkillLesson,
 } from "./BoundaryEvaluationLessons";
 import { BoundaryLesson, BoundaryHero } from "./PermissionBoundaryAnimation";
 import { XssHero, XssLesson } from "./XssAnimation";
+import { SkillHero, SkillLesson } from "./SkillAnimation";
 import {
   CostEvaluationHero,
   EvaluationRunHero,
@@ -32,7 +32,6 @@ import {
   PassFailHero,
   RubricHero,
   SafetyEvaluationHero,
-  SkillHero,
 } from "./BoundaryEvaluationDistinctiveHeroes";
 
 function PermissionCite({ id }: { id: string }) { return <Cite id={id} sources={permissionBoundarySources}/>; }
@@ -68,7 +67,7 @@ const skillSections: [string, string][] = [["skill-structure-section", "技能�
 export function BoundarySkillTermPage() {
   return <Article slug="skill" title="技能" subtitle="Skill · 把一类任务的做法按需装进上下文" sources={skillRedesignSources} sections={skillSections} hero={<SkillHero/>} intro={<>技能像一只按需打开的工具箱：启动时先让智能体知道“这里有一套处理 PDF 表单的做法”，真正匹配到任务后，才把 <code>SKILL.md</code> 和脚本材料拿出来。<strong>它改变的是可复用的工作说明，不是模型突然多了一种能力。</strong></>}> 
     <ArticleSection id="skill-structure-section" title="技能目录装的是什么"><p id="skill-structure" className="vp-citation-target">Agent Skills 规范把技能组织成带元数据和 <code>SKILL.md</code> 的目录，说明文件还可以指向脚本和参考资料。<SkillCite id="skill-structure"/>元数据负责让宿主发现技能，正文负责告诉智能体如何做事。</p><p id="skill-purpose" className="vp-citation-target">Anthropic 把技能描述为可组合的任务知识和程序材料：把团队反复说的步骤写成文件，智能体可以在需要时复用。<SkillCite id="skill-purpose"/>技能仍依赖宿主能读取目录、运行允许的程序。</p><SkillLesson/></ArticleSection>
-    <ArticleSection id="skill-disclosure-section" title="为什么不是一开始全读"><p id="skill-trigger" className="vp-citation-target">技能的 <code>name</code> 与 <code>description</code> 先作为轻量线索参与匹配，当前任务合适时才进一步读取正文。<SkillCite id="skill-trigger"/>这让许多技能可以并存，又不把全部细节塞进每一轮上下文。</p><p id="skill-disclosure" className="vp-citation-target">Anthropic 与 OpenAI 的技能文档都把渐进式披露作为关键机制：先暴露描述，再暴露说明，必要时才读资源或脚本输出。<SkillCite id="skill-disclosure"/>首图里的三格不是三次模型调用，而是信息进入上下文的三个门槛。</p><p id="skill-resources" className="vp-citation-target">脚本和参考文件是可选资源，运行后应只把对当前任务有用的结果带回来。<SkillCite id="skill-resources"/>把整个仓库一股脑塞进上下文，会让技能失去它本来要解决的负担。</p></ArticleSection>
+    <ArticleSection id="skill-disclosure-section" title="为什么不是一开始全读"><p id="skill-trigger" className="vp-citation-target">技能的 <code>name</code> 与 <code>description</code> 先作为轻量线索参与匹配，当前任务合适时才进一步读取正文。<SkillCite id="skill-trigger"/>这让许多技能可以并存，又不把全部细节塞进每一轮上下文。</p><p id="skill-disclosure" className="vp-citation-target">Anthropic 与 OpenAI 的技能文档都把渐进式披露作为关键机制：先暴露描述，再暴露说明，必要时才读资源或脚本输出。<SkillCite id="skill-disclosure"/>首图里的三层抽屉不是三次模型调用，而是信息进入上下文的三个门槛。</p><p id="skill-resources" className="vp-citation-target">脚本和参考文件是可选资源，运行后应只把对当前任务有用的结果带回来。<SkillCite id="skill-resources"/>把整个仓库一股脑塞进上下文，会让技能失去它本来要解决的负担。</p></ArticleSection>
     <ArticleSection id="skill-security-section" title="技能不会凭空增加权限"><p id="skill-security" className="vp-citation-target">技能说明可以建议使用工具，却不会自动授予文件、网络或账户权限；宿主仍要按自己的执行边界和审批机制放行。<SkillCite id="skill-security"/>安装不可信技能等于把不可信代码和指令带进工作区，应先审查来源、脚本和数据流。</p><ArticleAside title="技能和工具的分界"><p>技能告诉智能体“如何组织一次任务”，工具才提供真正的读写、联网或执行入口。把两者混为一谈，会以为写进 SKILL.md 就能绕过权限。</p></ArticleAside></ArticleSection>
   </Article>;
 }

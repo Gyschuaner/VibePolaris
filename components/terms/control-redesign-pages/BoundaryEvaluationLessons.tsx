@@ -75,12 +75,6 @@ export function BoundaryLesson() {
   </LessonShell>;
 }
 
-export function SkillLesson() {
-  const [stage, setStage] = useState<"meta" | "body" | "resource">("meta");
-  const labels = { meta: "任务匹配", body: "读取 SKILL.md", resource: "调用脚本" };
-  return <LessonShell eyebrow="先看描述，再把细节按需带进上下文" title="技能披露阶梯"><div className={styles.lessonControls}><button type="button" aria-pressed={stage === "meta"} onClick={() => setStage("meta")}>只看元数据</button><button type="button" aria-pressed={stage === "body"} onClick={() => setStage("body")}>匹配后读正文</button><button type="button" aria-pressed={stage === "resource"} onClick={() => setStage("resource")}>需要时读资源</button><button type="button" onClick={() => setStage("meta")}>重置</button></div><div className={styles.labGrid}><div className={styles.labRow}><span>常驻</span><code>name + description</code><em>约 100 token</em></div><div className={styles.labRow}><span>当前</span><code>{stage === "meta" ? "等待任务匹配" : stage === "body" ? "SKILL.md 已进入上下文" : "SKILL.md + 脚本输出"}</code><em>{labels[stage]}</em></div><div className={styles.labRow}><span>资源</span><code>{stage === "resource" ? "scripts/convert.py → 结果" : "暂不读取"}</code><em>{stage === "resource" ? "按需暴露" : "保持隐藏"}</em></div></div></LessonShell>;
-}
-
 export function EvaluationRunLesson() {
   const [traceComplete, setTraceComplete] = useState(false);
   const [sameSet, setSameSet] = useState(true);
