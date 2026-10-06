@@ -1,7 +1,7 @@
 import { ArticleSection, ArticleAside } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { cascadeSources } from "@/lib/cascade-sources";
-import { CascadeHero } from "./cascade-hero";
+import { CascadeSignatureHero } from "../PlatformCssSignatureHeroes";
 import { CascadeLesson } from "./cascade";
 
 const sections: [string, string][] = [
@@ -18,7 +18,7 @@ export function CascadeTermPage() {
     subtitle="CSS Cascade · 规则冲突时，浏览器怎样留下一个值"
     sources={cascadeSources}
     sections={sections}
-    hero={<CascadeHero />}
+    hero={<CascadeSignatureHero />}
     intro={<>同一个按钮可能同时收到浏览器默认样式、组件样式、主题层和行内声明。<strong>层叠不是挑“看起来更具体”的那一条，而是按来源与重要性、层、优先级、作用域距离和出现顺序逐关筛选。</strong>每一关只让仍在竞争的声明继续向前。</>}
   >
     <ArticleSection id="cascade-definition-section" title="先问：这条声明从哪里来">
