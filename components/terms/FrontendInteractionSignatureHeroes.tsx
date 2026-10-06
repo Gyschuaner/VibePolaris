@@ -6,9 +6,9 @@ import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import styles from "./FrontendInteractionSignatureHeroes.module.css";
 
-type Scene = ReturnType<typeof useScene>;
+export type Scene = ReturnType<typeof useScene>;
 
-function HeroShell({ scene, title, labels, children, caption, onReplay, className = "" }: { scene: Scene; title: string; labels: string[]; children: ReactNode; caption?: ReactNode; onReplay?: () => void; className?: string }) {
+export function HeroShell({ scene, title, labels, children, caption, onReplay, className = "" }: { scene: Scene; title: string; labels: string[]; children: ReactNode; caption?: ReactNode; onReplay?: () => void; className?: string }) {
   return <div className={`${styles.hero} ${className}`} ref={scene.ref} role="region" aria-label={title}>
     <SceneControls scene={scene} labels={labels} compact onReplay={onReplay} />
     <div className={styles.canvas}>{children}</div>
