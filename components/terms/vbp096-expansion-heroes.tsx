@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowCounterClockwise, ArrowRight, Check, CheckCircle, Brain, Circuitry, Clock, Database, FileCode, Keyboard, Lightning, Package, ShieldCheck, Stack, Timer, WarningCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowRight, Check, CheckCircle, Brain, Circuitry, Clock, Database, FileCode, Keyboard, Lightning, Package, ShieldCheck, Stack, Timer, WarningCircle, Wrench } from "@phosphor-icons/react";
 import { useState } from "react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./Vbp096ExpansionHeroes.module.css";
@@ -77,5 +77,18 @@ export function ContextCompactionSignatureHero() {
     <div className={styles.contextBoard}><div className={styles.contextTray}><span>有限托盘</span><div className={styles.contextPieces}>{["系统目标", "旧对话", "工具回执", "未完成动作"].map((item, index) => <b key={item} data-kept={index === 0 || index === 3 || (compacted && index === 2)} data-muted={compacted && index === 1}>{compacted && index === 1 ? "旧对话摘要" : item}</b>)}</div><div className={styles.capacity}><i><b data-fill={scene.step >= 1 ? "full" : compacted ? "half" : "low"} /></i><strong>{compacted ? "11k" : scene.step >= 1 ? "26k" : "8k"} / 24k</strong></div></div><div className={styles.contextAction} data-danger={scene.step === 2}><Stack size={23} /><strong>{scene.step < 2 ? "继续装入" : scene.step === 2 ? "先标记不能丢的东西" : "压缩旧对话"}</strong><small>{scene.step === 2 ? "目标 · 证据 · 未完成动作" : compacted ? "摘要留下可继续执行的状态" : "输出位置也要留空间"}</small></div><div className={styles.contextResult} data-good={compacted}><CheckCircle size={19} /><span>{compacted ? "任务边界仍然可见" : "还没有重新核对"}</span></div></div>
     <div className={styles.status} role="status"><strong>{scene.step === 0 ? "每一段材料都占容量" : scene.step === 1 ? "溢出不是模型突然失忆" : scene.step === 2 ? "压缩前先标记保留物" : "释放空间后重新核对"}</strong><span>{compacted ? "摘要只能保留被明确选中的目标、证据和动作。" : "不要把所有历史都当成同等重要。"}</span></div>
     <figcaption>上下文压缩不是随便删文字，而是先划出任务边界，再缩短旧材料并检查关键状态有没有留下。</figcaption>
+  </figure>;
+}
+
+export function ToolSchemaSignatureHero() {
+  const scene = useScene(4);
+  const [invalid, setInvalid] = useState(false);
+  return <figure ref={scene.ref} className={styles.frame} data-kind="tool-schema" data-step={scene.step} aria-label="工具 schema 让模型请求先经过参数校验再执行">
+    <Header eyebrow="模型可以提议动作，参数要先过契约" meta={invalid ? "invalid args" : "schema v1"} />
+    <SceneControls scene={scene} labels={["提出调用", "对照 schema", "校验参数", "执行或拒绝"]} />
+    <div className={styles.controls} role="group" aria-label="切换工具参数状态"><button type="button" aria-pressed={!invalid} onClick={() => { setInvalid(false); scene.seek(0); }}><Check size={15} />参数有效</button><button type="button" aria-pressed={invalid} onClick={() => { setInvalid(true); scene.seek(0); }}><WarningCircle size={15} />缺少必填项</button></div>
+    <div className={styles.toolBoard}><div className={styles.toolCall}><Brain size={21} /><span>模型提议</span><code>get_weather(city: {invalid ? "?" : '"上海"'})</code><small>{scene.step >= 1 ? "结构化参数" : "草稿"}</small></div><ArrowRight size={20} className={styles.boardArrow} /><div className={styles.validator} data-active={scene.step >= 1} data-danger={invalid && scene.step >= 2}><ShieldCheck size={21} /><span>schema validator</span><strong>{scene.step < 2 ? "等待检查" : invalid ? "缺少 city" : "通过"}</strong><small>{scene.step >= 1 ? "type=string · required" : "先读契约"}</small></div><ArrowRight size={20} className={styles.boardArrow} /><div className={styles.toolExecution} data-good={scene.step === 3 && !invalid} data-danger={scene.step === 3 && invalid}><Wrench size={21} /><span>工具</span><strong>{scene.step < 3 ? "未执行" : invalid ? "拒绝调用" : "返回 24°C"}</strong><small>{scene.step === 3 && invalid ? "不会把猜测传给外部系统" : "副作用在闸门之后"}</small></div></div>
+    <div className={styles.status} role="status"><strong>{scene.step === 0 ? "请求还只是提议" : scene.step === 1 ? "schema 说明形状" : scene.step === 2 ? invalid ? "校验发现缺少参数" : "参数满足契约" : invalid ? "拒绝比错误执行更安全" : "工具得到可执行输入"}</strong><span>{invalid ? "schema 不能证明业务授权，但能先挡住结构错误。" : "结构校验通过后仍要检查权限、超时和外部结果。"}</span></div>
+    <figcaption>工具 schema 把模型输出变成可检查的调用请求；它约束参数形状，不代替授权和业务判断。</figcaption>
   </figure>;
 }

@@ -21758,5 +21758,192 @@
         "note": "重复上下文与缓存边界"
       }
     ]
+  },
+  {
+    "slug": "tool-schema",
+    "lead": "模型说要调用工具，怎样知道它传的参数能执行？",
+    "definition": "工具 Schema 用结构化规则声明工具名称、参数类型、必填字段和允许值，让执行层先校验模型提出的调用请求。",
+    "boundary": "结构通过不等于有权执行，也不等于外部结果正确；授权、超时、幂等和副作用控制仍在 schema 之外。",
+    "sceneKind": "contract",
+    "sceneTitle": "一次工具调用怎样从提议走到执行",
+    "actionLabel": "推进一个阶段",
+    "actors": [
+      {
+        "id": "model",
+        "label": "模型提议",
+        "detail": "get_weather(city=?)",
+        "icon": "brain",
+        "group": "请求"
+      },
+      {
+        "id": "schema",
+        "label": "工具 Schema",
+        "detail": "city:string · required",
+        "icon": "file",
+        "group": "契约"
+      },
+      {
+        "id": "validator",
+        "label": "参数校验",
+        "detail": "等待检查",
+        "icon": "shield",
+        "group": "闸门"
+      },
+      {
+        "id": "tool",
+        "label": "天气工具",
+        "detail": "副作用在闸门之后",
+        "icon": "gear",
+        "group": "执行"
+      }
+    ],
+    "edges": [
+      {
+        "id": "model-schema",
+        "from": "model",
+        "to": "schema",
+        "label": "对照形状"
+      },
+      {
+        "id": "schema-validator",
+        "from": "schema",
+        "to": "validator",
+        "label": "校验参数"
+      },
+      {
+        "id": "validator-tool",
+        "from": "validator",
+        "to": "tool",
+        "label": "通过才执行"
+      }
+    ],
+    "frames": [
+      {
+        "label": "提出调用",
+        "note": "模型给出工具名和一份尚未确认的参数。",
+        "activeIds": [
+          "model"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "schema",
+          "validator",
+          "tool"
+        ],
+        "values": {
+          "model": "get_weather(city=?)"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "读取 schema",
+        "note": "执行层先知道 city 必填且必须是字符串。",
+        "activeIds": [
+          "schema"
+        ],
+        "doneIds": [
+          "model"
+        ],
+        "mutedIds": [
+          "validator",
+          "tool"
+        ],
+        "values": {
+          "schema": "city:string · required"
+        },
+        "activeEdgeIds": [
+          "model-schema"
+        ]
+      },
+      {
+        "label": "校验参数",
+        "note": "缺少 city 或类型错误时，调用在外部副作用前被拒绝。",
+        "activeIds": [
+          "validator"
+        ],
+        "doneIds": [
+          "model",
+          "schema"
+        ],
+        "mutedIds": [
+          "tool"
+        ],
+        "values": {
+          "validator": "PASS / invalid args"
+        },
+        "activeEdgeIds": [
+          "schema-validator"
+        ]
+      },
+      {
+        "label": "执行或拒绝",
+        "note": "通过才把可执行输入传给天气工具，失败保留可解释错误。",
+        "activeIds": [
+          "tool"
+        ],
+        "doneIds": [
+          "model",
+          "schema",
+          "validator"
+        ],
+        "mutedIds": [],
+        "values": {
+          "tool": "city=上海 → 24°C"
+        },
+        "activeEdgeIds": [
+          "validator-tool"
+        ],
+        "metric": {
+          "label": "副作用发生前",
+          "value": "先校验"
+        }
+      }
+    ],
+    "insight": "工具 schema 让调用形状可检查，却不替权限、超时和业务结果负责。",
+    "quiz": {
+      "question": "工具参数缺少 required 的 city 字段时，哪项最合适？",
+      "options": [
+        {
+          "label": "在执行工具前拒绝并返回结构错误",
+          "correct": true
+        },
+        {
+          "label": "猜一个城市继续调用",
+          "correct": false
+        },
+        {
+          "label": "先执行再让外部系统报错",
+          "correct": false
+        }
+      ],
+      "success": "先校验参数可以阻止猜测进入外部副作用。",
+      "retry": "先分清结构校验、授权判断和工具结果。"
+    },
+    "prompt": {
+      "title": "审查一个工具调用契约",
+      "text": "请写出工具 schema、参数校验、授权、幂等、超时、错误和副作用确认，说明每一步由谁负责。"
+    },
+    "sources": [
+      {
+        "url": "https://platform.openai.com/docs/guides/function-calling",
+        "label": "OpenAI · Function calling",
+        "note": "工具调用与结构化参数"
+      },
+      {
+        "url": "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+        "label": "MCP · Tools",
+        "note": "工具输入 schema 与调用结果"
+      },
+      {
+        "url": "https://json-schema.org/draft/2020-12/json-schema-validation",
+        "label": "JSON Schema · Validation",
+        "note": "类型、必填与值域规则"
+      },
+      {
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use",
+        "label": "Anthropic · Tool use",
+        "note": "工具定义、调用和结果边界"
+      }
+    ]
   }
 ]

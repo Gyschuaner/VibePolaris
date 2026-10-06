@@ -1918,5 +1918,23 @@
       "memory",
       "tokenization"
     ]
+  },
+  {
+    "slug": "tool-schema",
+    "mechanism": "工具 Schema 把工具名称、输入对象和字段约束写成机器可验证的契约；模型只能提出调用，执行器在授权和副作用之前先检查结构。",
+    "misconception": "Schema 通过不代表请求有权限、参数语义正确或外部结果可信；它也不能替代超时、幂等和错误处理。",
+    "demoSignature": "4帧｜对象：模型提议、schema、校验器、天气工具｜交互：切换有效/缺少 city 并推进提议→读取→校验→执行｜变化：invalid args 在副作用前 BLOCK，正确 city 才返回 24°C｜结果：结构闸门与业务授权分离。",
+    "sourceUrls": [
+      "https://platform.openai.com/docs/guides/function-calling",
+      "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+      "https://json-schema.org/draft/2020-12/json-schema-validation",
+      "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+    ],
+    "rewriteRisk": "高：必须让结构校验在副作用前出现，并明确它不等于授权、幂等或结果核验。",
+    "nearDuplicates": [
+      "tools",
+      "json-schema",
+      "function-calling"
+    ]
   }
 ]

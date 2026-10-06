@@ -5264,5 +5264,54 @@
       "memory",
       "tokenization"
     ]
+  },
+  {
+    "zh": "工具 Schema",
+    "en": "Tool Schema",
+    "slug": "tool-schema",
+    "cat": "AI·Agent",
+    "say": "描述工具名称、参数形状和必填条件，让模型提议的调用先通过结构检查。",
+    "aliases": [
+      "Tool Schema",
+      "工具参数模式",
+      "工具契约"
+    ],
+    "question": "模型说要调用工具，怎样知道它传的参数能执行？",
+    "definition": "工具 Schema 用结构化规则描述工具名称、参数类型、必填字段和允许值；模型可以提出调用，但执行层先校验形状，再决定是否授权和运行。",
+    "boundary": "Schema 只检查结构和部分值域，不证明用户有权限，也不保证外部结果正确。版本变化、拒绝处理、超时和副作用仍需要独立设计。",
+    "demoType": "contract",
+    "demoTitle": "工具调用先过参数闸门",
+    "demoSteps": [
+      {
+        "label": "提出调用",
+        "value": "get_weather(city: 上海)",
+        "note": "模型输出的是待检查的调用请求。"
+      },
+      {
+        "label": "校验形状",
+        "value": "city:string · required",
+        "note": "缺少必填字段时停在执行前。"
+      },
+      {
+        "label": "执行工具",
+        "value": "通过 → 24°C",
+        "note": "结构有效不等于授权完成，仍要检查权限和结果。"
+      }
+    ],
+    "quizQuestion": "工具 Schema 主要保证什么？",
+    "quizOptions": [
+      "调用参数符合约定的结构",
+      "调用方一定拥有业务权限",
+      "外部系统一定返回正确事实"
+    ],
+    "correctText": "Schema 先挡住结构错误，再把请求交给授权和执行层。",
+    "wrongText": "权限和外部结果属于另外的边界。",
+    "promptTitle": "为一个工具写调用契约",
+    "prompt": "请列出工具名称、必填参数、类型、枚举或范围、错误返回、权限判断、超时和副作用确认。",
+    "relatedSlugs": [
+      "tools",
+      "json-schema",
+      "function-calling"
+    ]
   }
 ]
