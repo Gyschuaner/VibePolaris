@@ -38,6 +38,7 @@
 | 播放生命周期修正 | `e275027a` |
 | 热区、离线与布局证据修正 | `29b707c9` |
 | 签名、手势、焦点与来源修正 | `4144f10f`, `3ba53b78`, `3b7dc1c0` |
+| 发布后触控几何修正 | `1f54440d` |
 
 ## 验证与审查
 
@@ -47,6 +48,7 @@
 - `git diff --check` 通过。
 - 本地生产预览 `http://localhost:3291` 真实浏览器逐条打开十条路由并推进末步；桌面宽度 1280 下无横向溢出。触控演示实际命中为 3/10 和 9/10，末态热区与邻居矩形实际重叠；自适应末态的 `document.activeElement` 为“任务 8 完成”。
 - 触觉初态不播放无限动画；只有场景播放且词条可见时运行一轮脉冲，暂停、离屏和减少动态效果时停止。
+- 发布后复核发现触控落点原先使用百分比距离而画面使用像素矩形，已在 `1f54440d` 改为同一 SVG viewBox 坐标；唯一 reviewer 逐步核验 16×16 命中 3/10、48×48 命中 9/10、末态重叠 10px，以及重播恢复默认态。
 - 唯一 reviewer `/root/ai_stack_review` 最终结论为 PASS。其审查覆盖十条机制差异、状态与来源映射、边界分支、焦点和热区证据。
 - 完整 `npm test` 仍有 12 个既有内容基线断言失败，集中在 CSS 教程来源、历史词库数量和早期专属演示期望；本批未修改这些断言对应的历史内容，也未将其误报为本批通过。
 - CUA 当前环境无法提供可编程窄视口覆盖；保留此前 reviewer 对 390px 十条路由无横溢出、无重复 ID、无 console error 的真实浏览器证据，当前改动只改变状态常量、几何阈值和焦点行为。
@@ -54,9 +56,9 @@
 ## 发布记录
 
 - 当前分支：`feat/VBP-090-interaction-mechanisms`，从最新 `origin/main` (`0dbb7371`) 创建。
-- dev PR [#383](https://github.com/Gyschuaner/VibePolaris/pull/383) 已合入，合并提交为 `dfc0ec67cda9b2906c46e99f5f87479c400fda9e`；main PR [#384](https://github.com/Gyschuaner/VibePolaris/pull/384) 已合入，生产源提交为 `99d17dc1c860f88f4ab0d8b7a87ba4162d0e2763`。
-- 生产镜像为 `vibepolaris:99d17dc1c860f88f4ab0d8b7a87ba4162d0e2763`，发布目录为 `/opt/vibepolaris/releases/20261006T194026Z-99d17dc1`，`vibepolaris-web-1` 为 `running/healthy`。
-- 切换前备份位于 `/opt/vibepolaris/backups/20261006T194026Z-from-22d8e217`；旧生产 release 为 `/opt/vibepolaris/releases/20261006T190052Z-22d8e217`，新 release 的 `rollback.sh` 已写入旧 release 和旧镜像引用；`vibepolaris_xiaobei_data` 数据卷未改动。
+- dev PR [#383](https://github.com/Gyschuaner/VibePolaris/pull/383) 已合入，合并提交为 `dfc0ec67cda9b2906c46e99f5f87479c400fda9e`；main PR [#384](https://github.com/Gyschuaner/VibePolaris/pull/384) 已合入，首版生产源提交为 `99d17dc1c860f88f4ab0d8b7a87ba4162d0e2763`。发布后触控修正经 PR [#387](https://github.com/Gyschuaner/VibePolaris/pull/387) 合入 dev、PR [#388](https://github.com/Gyschuaner/VibePolaris/pull/388) 合入 main，最终生产源提交为 `b5f2cb264ab5ea198528875080bcf1ed77405588`。
+- 最终生产镜像为 `vibepolaris:b5f2cb264ab5ea198528875080bcf1ed77405588`，发布目录为 `/opt/vibepolaris/releases/20261006T195650Z-b5f2cb26`，`vibepolaris-web-1` 为 `running/healthy`。
+- 首版切换前备份位于 `/opt/vibepolaris/backups/20261006T194026Z-from-22d8e217`；触控修正切换前备份位于 `/opt/vibepolaris/backups/20261006T195650Z-from-99d17dc1`，最终 release 的 `rollback.sh` 指向上一版 release 和镜像；`vibepolaris_xiaobei_data` 数据卷未改动。
 - 生产 HTTPS 冒烟：`/`、`/news`、`/about`、`/sitemap.xml` 与十条 VBP-090 词条均返回 200；另外抽查五条路由的首图标题文本已出现在生产 HTML 中。
 - 本批十个 slug 在 `content/zh/published-terms.json` 中已有公开记录；本批不重复改动公开清单，统一发布页面实现。
 - DP requirement/deployment 查询在本轮仍因 CLI TLS `UNEXPECTED_EOF_WHILE_READING` 无法连接，未创建或伪造 DP 对象；平台恢复后只用 `dp.exe` 补录真实需求、测试和部署记录。
