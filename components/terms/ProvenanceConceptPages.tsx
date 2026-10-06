@@ -5,6 +5,7 @@ import { DatasetLesson, QualityLesson, LineageLesson } from './ProvenanceConcept
 import { datasetSources, qualitySources, lineageSources } from '@/lib/provenance-sources';
 import base from './EventConcepts.module.css';
 import s from './ProvenanceConcepts.module.css';
+import { DataLineageSignatureHero } from './DataTestSignatureHeroes';
 function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{names.map(name => <span key={name} id={`${slug}-${name}`} className={base.anchor} aria-hidden="true"/>)}</>; }
 
 export function DatasetTermPage() {
@@ -72,7 +73,7 @@ export function LineageTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={lineageSources}/>;
   return <ConceptArticle slug="data-lineage" title="数据血缘" sources={lineageSources} sections={[["relations", "从结果找到来源与过程"], ["trace", "同一份输入，两个报表值"], ["impact", "字段变化影响的下游输出"], ["history", "当前关系与历史记录要分开"]]}
     intro={<>报表的合计从 2000 分变成 1800 分，先别急着认定哪一版算错了：可能是输入变了，也可能是计算规则变了。数据血缘把这个结果、使用过的输入和处理过程关联起来，帮我们顺着这些关联查清变化来自哪里。</>}
-    hero={<ConceptHero slug="data-lineage" label="1800分输出关联run43、减去优惠的规则和amount与discount两个输入字段"><div className={s.lineageHero}><div className={s.heroOutput}><strong>1800 分</strong><span>daily.total · v2</span></div><div className={s.heroRun}><code>run-43 · 规则 v2</code><code>sum(amount − discount)</code></div><div className={s.heroInputs}><code>amount</code><code>discount</code></div></div></ConceptHero>}>
+    hero={<DataLineageSignatureHero />}>
     <ArticleSection id="relations" title="从结果找到来源与过程"><Legacy slug="data-lineage" names={["question", "definition"]}/>
       <p id="lineage-relations" className="vp-citation-target"><strong>数据血缘记录数据与处理之间的依赖，帮助追查一个结果怎样产生、哪些后续结果依赖它。</strong>W3C PROV 是通用的来源记录模型：实体是要追查的东西，例如一份输入快照或输出报表；活动是发生过的处理，例如某次汇总；参与者是承担责任的人、组织或程序。模型可以表达活动使用了什么、生成了什么，以及一个结果由哪些输入派生而来。在本例中，费用来源 s1 和 daily.total 都是实体，求和规则是活动，run-42 就是这次活动的记录；这样读者看到的不只是两张表相连，还能知道中间做了什么。<Cite id="lineage-relations"/></p>
       <p>向上看，是“这个合计来自哪些输入”；向下看，是“这份输入改变后，哪些输出可能需要复查”。没有血缘记录，也能逐份打开文件、检查计算规则或询问维护者，但要自己拼出这条路径。血缘把已知关系记下来，方便沿途调查；<strong>它不自动证明数据正确，也不自动执行修复。</strong>处理数据的任务负责计算，血缘记录负责说明这些处理怎样关联输入与结果。</p>

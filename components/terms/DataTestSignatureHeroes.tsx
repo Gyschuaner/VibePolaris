@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { Archive, ArrowDown, ArrowRight, ArrowsClockwise, CheckCircle, Cube, CurrencyCircleDollar, Database, FileText, Funnel, GitBranch, ListChecks, MapPin, Scales, ShieldCheck, TreeStructure, WarningCircle } from "@phosphor-icons/react";
+import { Archive, ArrowDown, ArrowRight, ArrowsClockwise, CheckCircle, Cube, CurrencyCircleDollar, Database, FileText, FlowArrow, Funnel, GitBranch, ListChecks, MagnifyingGlass, MapPin, Scales, ShieldCheck, TreeStructure, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./DataTestSignatureHeroes.module.css";
 
@@ -131,6 +131,30 @@ export function DataValidationSignatureHero() {
       <div className={styles.validationRecords}><span>待检查记录</span>{validationRows.map(row => { const failed = row.failures.some(failure => checks.indexOf(failure) <= step); return <div key={row.id} data-failed={failed} data-passed={step === 3 && !failed}><code>{row.id}</code><strong>{row.value}</strong><small>{failed ? row.failures.join(" · ") : step === 3 ? "通过" : "等待"}</small></div>; })}</div>
       <div className={styles.validationSieve}>{checks.map((label, index) => <div key={label} data-active={step === index} data-done={step > index}><span>{index + 1}</span><strong>{label}</strong><small>{step > index ? "已检查" : step === index ? "当前规则" : "排队"}</small></div>)}</div>
       <div className={styles.validationReport}><div><Funnel size={17} /><span>报告</span></div><strong>{step === 3 ? "1 pass · 3 hold" : `${Math.max(0, 4 - visibleFailures.length)} 条暂通过`}</strong><div className={styles.validationReasons}>{visibleFailures.length ? visibleFailures.map(row => <code key={row.id}>{row.id}: {row.failures.join(" + ")}</code>) : <code>尚无失败原因</code>}</div></div>
+    </div>
+  </Frame>;
+}
+
+const lineageSteps = ["点开报表格", "找到运行", "展开输入列", "看下游影响"];
+
+export function DataLineageSignatureHero() {
+  const scene = useScene(lineageSteps.length);
+  const [impact, setImpact] = useState(false);
+  const step = scene.step;
+  const showColumns = step >= 2;
+  const showImpact = impact && step >= 3;
+  const result = step === 0
+    ? { icon: MagnifyingGlass, title: "先从一个结果问起", detail: "1800 分不是凭空出现的数字" }
+    : step === 1
+      ? { icon: GitBranch, title: "找到生成它的运行", detail: "run-43 使用规则 v2 处理快照 s1" }
+      : step === 2
+        ? { icon: Database, title: "展开到实际输入列", detail: "amount 与 discount 都参与 sum(amount − discount)" }
+        : { icon: FlowArrow, title: "沿登记关系找影响", detail: showImpact ? "daily.total → monthly.total，共 2 个下游输出" : "打开影响分析，看看谁需要复查" };
+  return <Frame label="数据血缘从报表单元展开到实际运行、规则和输入列，再沿关系查看下游影响" eyebrow="从一个数字，沿着关系回到现场" meta="output → run → columns → impact" scene={scene} steps={lineageSteps} result={result} caption="血缘是一条可追溯的关系链：结果对应哪次运行、用了哪个规则、读了哪些列，以及字段变化会波及哪些输出。图上没有一条线，只能说明当前登记范围之外没有证据。" controls={<div className={styles.inlineControls} role="group" aria-label="数据血缘观察模式"><button type="button" aria-pressed={impact} onClick={() => { setImpact(value => !value); scene.seek(3); }}><FlowArrow size={15} />{impact ? "收起影响分析" : "查看下游影响"}</button></div>}>
+    <div className={styles.lineageBoard} data-columns={showColumns} data-impact={showImpact}>
+      <div className={styles.lineageSource}><span>来源快照 s1</span><div data-active={showColumns}><code>amount</code><strong>1200 · 800</strong></div><div data-active={showColumns}><code>discount</code><strong>200 · 0</strong></div><small>{showColumns ? "两列进入规则 v2" : "点击结果展开"}</small></div>
+      <div className={styles.lineageMiddle}><div className={styles.lineageResult}><span>daily.total</span><strong>1800</strong><small>CNY cents · v2</small></div><div className={styles.lineageRun}><GitBranch size={15} /><code>run-43</code><span>sum(amount − discount)</span></div></div>
+      <div className={styles.lineageImpact}>{showImpact ? <><span>下游影响</span><div><FlowArrow size={16} /><code>monthly.total</code><small>需要复查</small></div><div><FlowArrow size={16} /><code>finance.dashboard</code><small>依赖日合计</small></div></> : <><span>关系待展开</span><div className={styles.lineageHint}><MapPin size={16} /><small>{step >= 3 ? "点击‘查看下游影响’" : "先走到字段层"}</small></div></>}</div>
     </div>
   </Frame>;
 }
