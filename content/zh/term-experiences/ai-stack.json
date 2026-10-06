@@ -17235,14 +17235,29 @@
     },
     "sources": [
       {
-        "url": "https://csrc.nist.gov/projects/role-based-access-control",
-        "label": "NIST CSRC · role based access control",
-        "note": "安全要求与风险边界"
+        "url": "https://csrc.nist.gov/glossary/term/least_privilege",
+        "label": "NIST · Least privilege",
+        "note": "只给任务所需的最小资源与动作"
       },
       {
-        "url": "https://csrc.nist.gov/glossary/term/least_privilege",
-        "label": "NIST CSRC · least privilege",
-        "note": "安全要求与风险边界"
+        "url": "https://csrc.nist.gov/projects/role-based-access-control/faqs",
+        "label": "NIST · Role Based Access Control FAQs",
+        "note": "角色与权限的关系仍需落到具体资源"
+      },
+      {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
+        "label": "OWASP · Authorization Cheat Sheet",
+        "note": "每次请求核对主体、对象与动作"
+      },
+      {
+        "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization",
+        "label": "Model Context Protocol · Authorization",
+        "note": "资源服务器验证令牌、受众与 scope"
+      },
+      {
+        "url": "https://csrc.nist.gov/pubs/sp/800/162/final",
+        "label": "NIST · Attribute Based Access Control",
+        "note": "主体、资源与环境属性组合策略"
       }
     ]
   },
@@ -17438,13 +17453,238 @@
     "sources": [
       {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html",
-        "label": "OWASP Cheat Sheet · Cross Site Scripting Prevention Cheat Sheet",
-        "note": "攻击面与防护检查"
+        "label": "OWASP · Cross Site Scripting Prevention Cheat Sheet",
+        "note": "按 HTML、属性、URL 等输出上下文防护"
       },
       {
-        "url": "https://owasp.org/www-community/attacks/xss/",
-        "label": "OWASP · xss",
-        "note": "安全风险与验证方法"
+        "url": "https://community.owasp.org/attacks/xss/",
+        "label": "OWASP · Cross Site Scripting",
+        "note": "攻击者让浏览器在站点身份下执行脚本"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML",
+        "label": "MDN · Element.innerHTML",
+        "note": "字符串会被解析成 HTML 节点"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent",
+        "label": "MDN · Node.textContent",
+        "note": "把字符串保留为节点文字"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API",
+        "label": "MDN · Trusted Types API",
+        "note": "为危险 sink 增加可信对象策略"
+      }
+    ]
+  },
+  {
+    "slug": "skill",
+    "lead": "技能为什么能让智能体学会一套新做法，却不把整套资料一开始塞进上下文？",
+    "definition": "技能是带有元数据、SKILL.md 和可选资源的任务目录，宿主根据任务匹配按需披露说明与脚本输出。",
+    "boundary": "技能提供做法和材料，不自动增加模型能力、工具权限或数据访问范围。",
+    "sceneKind": "pipeline",
+    "sceneTitle": "从任务匹配到脚本输出的渐进披露",
+    "actionLabel": "切换披露层",
+    "actors": [
+      {
+        "id": "task",
+        "label": "当前任务",
+        "detail": "填写 PDF 表单",
+        "icon": "file",
+        "group": "输入"
+      },
+      {
+        "id": "meta",
+        "label": "技能元数据",
+        "detail": "name + description",
+        "icon": "spark",
+        "group": "匹配"
+      },
+      {
+        "id": "body",
+        "label": "SKILL.md",
+        "detail": "步骤与约束",
+        "icon": "code",
+        "group": "说明"
+      },
+      {
+        "id": "resource",
+        "label": "脚本资源",
+        "detail": "convert.py",
+        "icon": "gear",
+        "group": "执行"
+      },
+      {
+        "id": "result",
+        "label": "脚本输出",
+        "detail": "字段结果",
+        "icon": "chart",
+        "group": "结果"
+      }
+    ],
+    "edges": [
+      {
+        "id": "t-m",
+        "from": "task",
+        "to": "meta",
+        "label": "匹配"
+      },
+      {
+        "id": "m-b",
+        "from": "meta",
+        "to": "body",
+        "label": "读取"
+      },
+      {
+        "id": "b-r",
+        "from": "body",
+        "to": "resource",
+        "label": "按需调用"
+      },
+      {
+        "id": "r-o",
+        "from": "resource",
+        "to": "result",
+        "label": "返回"
+      }
+    ],
+    "frames": [
+      {
+        "label": "只看元数据",
+        "note": "启动时只保留技能名称和描述，细节不占上下文。",
+        "activeIds": [
+          "task",
+          "meta"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "body",
+          "resource",
+          "result"
+        ],
+        "values": {
+          "meta": "匹配候选"
+        },
+        "activeEdgeIds": [
+          "t-m"
+        ]
+      },
+      {
+        "label": "任务命中",
+        "note": "当前任务与描述匹配，读取 SKILL.md 的步骤和边界。",
+        "activeIds": [
+          "meta",
+          "body"
+        ],
+        "doneIds": [
+          "task"
+        ],
+        "mutedIds": [
+          "resource",
+          "result"
+        ],
+        "values": {
+          "body": "进入上下文"
+        },
+        "activeEdgeIds": [
+          "t-m",
+          "m-b"
+        ]
+      },
+      {
+        "label": "需要脚本",
+        "note": "只有需要转换文件时才调用脚本，脚本本身不必全文进入上下文。",
+        "activeIds": [
+          "body",
+          "resource"
+        ],
+        "doneIds": [
+          "task",
+          "meta"
+        ],
+        "mutedIds": [
+          "result"
+        ],
+        "values": {
+          "resource": "convert.py"
+        },
+        "activeEdgeIds": [
+          "m-b",
+          "b-r"
+        ]
+      },
+      {
+        "label": "带回结果",
+        "note": "上下文接收字段结果，技能目录和脚本权限仍由宿主控制。",
+        "activeIds": [
+          "resource",
+          "result"
+        ],
+        "doneIds": [
+          "task",
+          "meta",
+          "body"
+        ],
+        "mutedIds": [],
+        "values": {
+          "result": "字段已提取"
+        },
+        "activeEdgeIds": [
+          "b-r",
+          "r-o"
+        ]
+      }
+    ],
+    "insight": "技能把重复做法变成按需披露的工作包，却不等于新的权限或新的模型能力。",
+    "quiz": {
+      "question": "为什么技能不会一安装就把全部正文塞进上下文？",
+      "options": [
+        {
+          "label": "先用元数据匹配，命中后再逐层读取",
+          "correct": true
+        },
+        {
+          "label": "技能文件越长越容易被读取",
+          "correct": false
+        },
+        {
+          "label": "安装顺序决定下一轮上下文",
+          "correct": false
+        }
+      ],
+      "success": "渐进式披露让许多技能共存而不互相挤占上下文。",
+      "retry": "正文和脚本都应在任务需要时才进入当前工作。"
+    },
+    "prompt": {
+      "title": "写一份可匹配的技能描述",
+      "text": "为 PDF 表单技能写 name、description、正文步骤和脚本资源的披露边界。"
+    },
+    "sources": [
+      {
+        "url": "https://agentskills.io/specification",
+        "label": "Agent Skills · Specification",
+        "note": "技能目录、元数据与 SKILL.md 结构"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills",
+        "label": "Anthropic Engineering · Agent Skills",
+        "note": "可组合任务知识与渐进式披露"
+      },
+      {
+        "url": "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview",
+        "label": "Anthropic Docs · Agent Skills overview",
+        "note": "正文、脚本和参考资源按需加载"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/tools-skills",
+        "label": "OpenAI Developers · Skills",
+        "note": "技能与任务匹配、工具和资源组织"
+      },
+      {
+        "url": "https://developers.openai.com/plugins/concepts/skills",
+        "label": "OpenAI Developers · Skills in plugins",
+        "note": "技能不等于权限，宿主仍控制工具边界"
       }
     ]
   },
@@ -17609,22 +17849,27 @@
       {
         "url": "https://developers.openai.com/api/docs/guides/evals",
         "label": "OpenAI API · Working with evals",
-        "note": "评测对象、运行和结果记录"
+        "note": "数据集、运行、评分器与结果的关系"
       },
       {
         "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
         "label": "Anthropic · Demystifying evals for AI agents",
-        "note": "任务、试跑、评分器、轨迹和结果"
+        "note": "任务、成功标准、轨迹和比较条件"
       },
       {
         "url": "https://developers.openai.com/api/docs/guides/graders",
         "label": "OpenAI API · Graders",
-        "note": "评分器类型、结构化评分与结果"
+        "note": "逐项评分、理由与未评分状态"
       },
       {
         "url": "https://airc.nist.gov/airmf-resources/playbook/",
         "label": "NIST AI RMF Playbook",
-        "note": "风险测量、治理和持续评估"
+        "note": "测量记录与后续治理动作"
+      },
+      {
+        "url": "https://inspect.aisi.org.uk/scoring.html",
+        "label": "Inspect · Scoring",
+        "note": "评分状态和证据如何保留"
       }
     ]
   },
@@ -17782,22 +18027,27 @@
       {
         "url": "https://developers.openai.com/api/docs/guides/safety-best-practices",
         "label": "OpenAI API · Safety best practices",
-        "note": "安全检查与高风险动作边界"
+        "note": "高风险动作前的限制、验证与人工介入"
       },
       {
         "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
         "label": "Anthropic · Demystifying evals for AI agents",
-        "note": "任务、试跑、评分器、轨迹和结果"
+        "note": "真实任务与攻击变体覆盖"
       },
       {
         "url": "https://airc.nist.gov/airmf-resources/playbook/",
         "label": "NIST AI RMF Playbook",
-        "note": "风险测量、治理和持续评估"
+        "note": "风险测量、记录与门槛处理"
       },
       {
         "url": "https://arxiv.org/abs/2211.09110",
-        "label": "HELM · arXiv:2211.09110",
-        "note": "多维度、可复现的模型评测"
+        "label": "HELM · Holistic Evaluation of Language Models",
+        "note": "多维评测与安全维度边界"
+      },
+      {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html",
+        "label": "OWASP · Cross Site Scripting Prevention Cheat Sheet",
+        "note": "危险输入到真实副作用的应用层防护"
       }
     ]
   },
@@ -17948,22 +18198,27 @@
       {
         "url": "https://developers.openai.com/api/docs/guides/cost-optimization",
         "label": "OpenAI API · Cost optimization",
-        "note": "成本组成与优化方法"
+        "note": "令牌、模型与请求数量的成本取舍"
       },
       {
         "url": "https://developers.openai.com/api/docs/guides/evals",
         "label": "OpenAI API · Working with evals",
-        "note": "评测对象、运行和结果记录"
+        "note": "任务质量与运行记录"
       },
       {
         "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
         "label": "Anthropic · Demystifying evals for AI agents",
-        "note": "任务、试跑、评分器、轨迹和结果"
+        "note": "任务成功、轨迹与成本共同观察"
       },
       {
         "url": "https://developers.openai.com/api/docs/guides/batch",
         "label": "OpenAI API · Batch API",
-        "note": "批量运行与异步成本/吞吐取舍"
+        "note": "批量执行带来的条件变化"
+      },
+      {
+        "url": "https://arxiv.org/abs/2211.09110",
+        "label": "HELM · Holistic Evaluation of Language Models",
+        "note": "单一指标的覆盖边界"
       }
     ]
   },
@@ -18118,22 +18373,27 @@
       {
         "url": "https://developers.openai.com/api/docs/guides/latency-optimization",
         "label": "OpenAI API · Latency optimization",
-        "note": "延迟组成与优化边界"
+        "note": "首字、完整响应和优化位置"
       },
       {
         "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
         "label": "Anthropic · Demystifying evals for AI agents",
-        "note": "任务、试跑、评分器、轨迹和结果"
+        "note": "真实任务端到端轨迹"
       },
       {
         "url": "https://mlcommons.org/benchmarks/inference-datacenter/",
-        "label": "MLCommons MLPerf Inference",
+        "label": "MLCommons · MLPerf Inference",
         "note": "统一条件下的延迟与吞吐基准"
       },
       {
         "url": "https://developers.openai.com/api/docs/guides/evals",
         "label": "OpenAI API · Working with evals",
-        "note": "评测对象、运行和结果记录"
+        "note": "运行级时间点与结果记录"
+      },
+      {
+        "url": "https://arxiv.org/abs/2211.09110",
+        "label": "HELM · Holistic Evaluation of Language Models",
+        "note": "多维性能指标的比较边界"
       }
     ]
   },
@@ -18303,22 +18563,27 @@
       {
         "url": "https://developers.openai.com/api/docs/guides/graders",
         "label": "OpenAI API · Graders",
-        "note": "评分器类型、结构化评分与结果"
+        "note": "把成功条件变成可执行评分"
       },
       {
         "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
         "label": "Anthropic · Demystifying evals for AI agents",
-        "note": "任务、试跑、评分器、轨迹和结果"
+        "note": "结果证据与运行轨迹"
       },
       {
         "url": "https://developers.openai.com/api/docs/guides/safety-best-practices",
         "label": "OpenAI API · Safety best practices",
-        "note": "安全检查与高风险动作边界"
+        "note": "缺证据时的检查与阻断"
       },
       {
         "url": "https://airc.nist.gov/airmf-resources/playbook/",
         "label": "NIST AI RMF Playbook",
-        "note": "风险测量、治理和持续评估"
+        "note": "通过、失败和未评分的后续动作"
+      },
+      {
+        "url": "https://inspect.aisi.org.uk/scoring.html",
+        "label": "Inspect · Scoring",
+        "note": "评分结果、证据和状态"
       }
     ]
   },
@@ -18475,22 +18740,27 @@
       {
         "url": "https://developers.openai.com/api/docs/guides/graders",
         "label": "OpenAI API · Graders",
-        "note": "评分器类型、结构化评分与结果"
+        "note": "评分规则与评分器的边界"
       },
       {
         "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
         "label": "Anthropic · Demystifying evals for AI agents",
-        "note": "任务、试跑、评分器、轨迹和结果"
+        "note": "成功标准、示例与校准"
       },
       {
         "url": "https://arxiv.org/abs/2303.16634",
-        "label": "G-Eval · arXiv:2303.16634",
-        "note": "模型评分与人工一致性研究"
+        "label": "G-Eval · NLG Evaluation using GPT-4 with Better Human Alignment",
+        "note": "维度、步骤与人工一致性"
       },
       {
         "url": "https://arxiv.org/abs/2306.05685",
-        "label": "MT-Bench · arXiv:2306.05685",
-        "note": "LLM-as-a-judge 的偏差与校准"
+        "label": "MT-Bench · Judging LLM-as-a-Judge",
+        "note": "模型裁判偏差与边界样例"
+      },
+      {
+        "url": "https://inspect.aisi.org.uk/scoring.html",
+        "label": "Inspect · Scoring",
+        "note": "证据、分档和未评分状态"
       }
     ]
   },
@@ -18644,22 +18914,27 @@
       {
         "url": "https://developers.openai.com/api/docs/guides/graders",
         "label": "OpenAI API · Graders",
-        "note": "评分器类型、结构化评分与结果"
+        "note": "人、程序和模型都可作为评分器"
       },
       {
         "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
         "label": "Anthropic · Demystifying evals for AI agents",
-        "note": "任务、试跑、评分器、轨迹和结果"
+        "note": "先定义标准再独立评审轨迹"
       },
       {
         "url": "https://arxiv.org/abs/2303.16634",
-        "label": "G-Eval · arXiv:2303.16634",
-        "note": "模型评分与人工一致性研究"
+        "label": "G-Eval · NLG Evaluation using GPT-4 with Better Human Alignment",
+        "note": "人工参考与自动评分校准"
       },
       {
         "url": "https://arxiv.org/abs/2306.05685",
-        "label": "MT-Bench · arXiv:2306.05685",
-        "note": "LLM-as-a-judge 的偏差与校准"
+        "label": "MT-Bench · Judging LLM-as-a-Judge",
+        "note": "位置、长度和偏好偏差"
+      },
+      {
+        "url": "https://inspect.aisi.org.uk/scoring.html",
+        "label": "Inspect · Scoring",
+        "note": "盲评、证据与评分记录"
       }
     ]
   },

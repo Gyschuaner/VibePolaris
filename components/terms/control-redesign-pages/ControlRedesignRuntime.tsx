@@ -23,7 +23,17 @@ export type ControlHeroKind =
   | "dependency"
   | "threat"
   | "approval"
-  | "dataset";
+  | "dataset"
+  | "boundary"
+  | "xss"
+  | "skill"
+  | "evalrun"
+  | "safetyEval"
+  | "costEval"
+  | "latencyEval"
+  | "passFail"
+  | "rubric"
+  | "humanGrader";
 
 export function ControlRedesignRuntime({ kind, label, children }: { kind: ControlHeroKind; label: string; children: ReactNode }) {
   const heroRef = useRef<HTMLElement | null>(null);

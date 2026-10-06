@@ -1472,10 +1472,10 @@
     "slug": "permission-boundary",
     "mechanism": "权限边界把主体、动作和资源放进模型外的策略判定，并在真实资源访问前强制检查，拒绝结果也留下审计证据。",
     "misconception": "提示词、按钮和一次审批都不是权限边界；只有执行层和资源层的持续校验能限制越界访问。",
-    "demoSignature": "令牌先只有 read:sales；请求 salary 时策略返回 deny、资源返回 0 行并记录 audit；加入 read:salary 后才 allow。",
+    "demoSignature": "令牌从 read:sales 起步；salary 请求先经过主体、动作和资源策略，越界时返回 0 行并写入 audit，授权扩大后才允许重试。",
     "sourceUrls": [
-      "https://csrc.nist.gov/projects/role-based-access-control/faqs",
       "https://csrc.nist.gov/glossary/term/least_privilege",
+      "https://csrc.nist.gov/projects/role-based-access-control/faqs",
       "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
       "https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization",
       "https://csrc.nist.gov/pubs/sp/800/162/final"
@@ -1491,10 +1491,10 @@
     "slug": "xss",
     "mechanism": "跨站脚本漏洞让不可信数据以可执行脚本或危险HTML进入网页上下文，浏览器随后以站点身份执行它。",
     "misconception": "XSS不只是<script>标签；事件属性、URL和不同输出上下文都需要相应编码或安全API。",
-    "demoSignature": "输入：评论含带事件属性的图片标签；中间：直接innerHTML时产生1个可执行节点，改用textContent后可执行节点1→0；输出：页面只显示原始文字。可视化：建议4帧的DOM树危险节点被转成文本；交互：切换不安全/安全渲染看事件是否触发。",
+    "demoSignature": "评论里的事件属性进入两个 DOM sink：innerHTML 生成可执行节点，textContent 保留原字符；Trusted Types 开启后危险写入直接停下。",
     "sourceUrls": [
       "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html",
-      "https://owasp.org/www-community/attacks/xss/",
+      "https://community.owasp.org/attacks/xss/",
       "https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML",
       "https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent",
       "https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API"
@@ -1506,15 +1506,35 @@
     ]
   },
   {
+    "slug": "skill",
+    "mechanism": "技能用轻量元数据匹配当前任务，再按需披露 SKILL.md、脚本和参考资源，减少无关上下文并保持工作步骤可复用。",
+    "misconception": "技能不是模型能力升级，也不是权限授予；它只提供宿主可以读取和执行的说明与材料。",
+    "demoSignature": "任务先和技能元数据匹配，再读取 SKILL.md，最后按需调用脚本并只带回结果；没有任务命中时正文和资源保持隐藏。",
+    "sourceUrls": [
+      "https://agentskills.io/specification",
+      "https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills",
+      "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview",
+      "https://developers.openai.com/api/docs/guides/tools-skills",
+      "https://developers.openai.com/plugins/concepts/skills"
+    ],
+    "rewriteRisk": "不要把渐进式披露写成“技能自动学会新能力”；正文需区分元数据匹配、正文读取、资源执行和宿主权限。",
+    "nearDuplicates": [
+      "tools",
+      "mcp",
+      "prompt"
+    ]
+  },
+  {
     "slug": "evaluation-run",
     "mechanism": "评测运行是一次有编号的执行记录：它固定评测集、被测版本、评分规则和运行环境，逐题或逐任务保存输入、输出、评分与最终状态，之后才能复查和比较。",
     "misconception": "评测运行不是评测数据集，也不是一个分数；缺少版本、样本或轨迹的运行记录不能证明两次结果可比。",
-    "demoSignature": "输入：run-17 · support-v1 · agent-B · rubric-v2；中间：run-18 在同一题集版本下切换到 agent-C；输出：切换题集版本或少1条轨迹的运行标为不可比较。演示必须保留正常结果、关键失败或边界状态，并让读者能回到逐项证据。",
+    "demoSignature": "run-17 通过 9/12，run-18 通过 10/12；两次运行锁定同一题集、版本和评分器，逐项轨迹齐全才可比较，换题集或缺证据时标成不可比较。",
     "sourceUrls": [
       "https://developers.openai.com/api/docs/guides/evals",
       "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
       "https://developers.openai.com/api/docs/guides/graders",
-      "https://airc.nist.gov/airmf-resources/playbook/"
+      "https://airc.nist.gov/airmf-resources/playbook/",
+      "https://inspect.aisi.org.uk/scoring.html"
     ],
     "rewriteRisk": "评测运行不是评测数据集，也不是一个分数；缺少版本、样本或轨迹的运行记录不能证明两次结果可比。 正文需要写清条件、证据和无法判断时的处理。",
     "nearDuplicates": [
@@ -1527,12 +1547,13 @@
     "slug": "safety-evaluation",
     "mechanism": "安全评测用有代表性的风险任务、攻击变体和允许行为检查模型、权限与工具环境的组合，记录安全完成、拒答、升级、泄露、越权和真实副作用。",
     "misconception": "安全评测不是一次过滤器扫描，也不能证明未来所有攻击都会被挡住；应用权限、工具边界和真实环境仍需独立验证。",
-    "demoSignature": "输入：正常请求、越权请求、间接注入三类风险案例；中间：正常请求安全完成，越权请求拒绝且工具未执行，间接注入读出敏感字段；输出：高风险副作用=1，发布门槛阻断。演示必须保留正常结果、关键失败或边界状态，并让读者能回到逐项证据。",
+    "demoSignature": "正常请求完成、越权请求拒绝且工具未执行、间接注入触发敏感字段时安全门阻断；一个真实副作用不能被总体通过率冲掉。",
     "sourceUrls": [
       "https://developers.openai.com/api/docs/guides/safety-best-practices",
       "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
       "https://airc.nist.gov/airmf-resources/playbook/",
-      "https://arxiv.org/abs/2211.09110"
+      "https://arxiv.org/abs/2211.09110",
+      "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html"
     ],
     "rewriteRisk": "安全评测不是一次过滤器扫描，也不能证明未来所有攻击都会被挡住；应用权限、工具边界和真实环境仍需独立验证。 正文需要写清条件、证据和无法判断时的处理。",
     "nearDuplicates": [
@@ -1545,12 +1566,13 @@
     "slug": "cost-evaluation",
     "mechanism": "成本评测在固定任务和质量指标下统计输入输出令牌、调用次数、工具费用、重试和单任务成本，再与质量、延迟等目标一起比较。",
     "misconception": "价格表本身不是成本评测；不同题集、缓存命中、失败重试和并发量会改变真实单位成本，不能只拿单次报价相除。",
-    "demoSignature": "输入：同一20题并固定计费口径；中间：统一条件下 A 17/20 · ¥0.42、B 18/20 · ¥0.86，预算为 ¥1.00；输出：B 变为 ¥1.16 时转入复核，命中缓存等条件变化时暂不直接比较。演示必须保留正常结果、关键失败或边界状态，并让读者能回到逐项证据。",
+    "demoSignature": "同一 20 题上并排显示通过数、令牌/重试和费用；B 超过预算时停在复核，命中缓存或批量条件改变时另组报告。",
     "sourceUrls": [
       "https://developers.openai.com/api/docs/guides/cost-optimization",
       "https://developers.openai.com/api/docs/guides/evals",
       "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
-      "https://developers.openai.com/api/docs/guides/batch"
+      "https://developers.openai.com/api/docs/guides/batch",
+      "https://arxiv.org/abs/2211.09110"
     ],
     "rewriteRisk": "价格表本身不是成本评测；不同题集、缓存命中、失败重试和并发量会改变真实单位成本，不能只拿单次报价相除。 正文需要写清条件、证据和无法判断时的处理。",
     "nearDuplicates": [
@@ -1563,12 +1585,13 @@
     "slug": "latency-evaluation",
     "mechanism": "延迟评测把一次请求拆成排队、首字、工具等待和完成等时间点，并用 p50、p95 等分位数描述典型和长尾等待。",
     "misconception": "延迟不是吞吐量，也不是只看服务器平均值；网络、并发、输出长度、工具和超时策略都会改变用户实际等待。",
-    "demoSignature": "输入：请求 0ms · 首字 420ms · 工具等待 · 完成或超时；中间：p50 1.9s，p95 可为 3.8s 或 4.8s；输出：p95 超过 4s 进入长尾优化，工具超时单独报告。演示必须保留正常结果、关键失败或边界状态，并让读者能回到逐项证据。",
+    "demoSignature": "一条请求从首字到工具返回再到完成，p50 与 p95 分开亮起；工具超时保留阶段并从完成分布单独报告。",
     "sourceUrls": [
       "https://developers.openai.com/api/docs/guides/latency-optimization",
       "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
       "https://mlcommons.org/benchmarks/inference-datacenter/",
-      "https://developers.openai.com/api/docs/guides/evals"
+      "https://developers.openai.com/api/docs/guides/evals",
+      "https://arxiv.org/abs/2211.09110"
     ],
     "rewriteRisk": "延迟不是吞吐量，也不是只看服务器平均值；网络、并发、输出长度、工具和超时策略都会改变用户实际等待。 正文需要写清条件、证据和无法判断时的处理。",
     "nearDuplicates": [
@@ -1582,12 +1605,13 @@
     "slug": "pass-fail-grader",
     "mechanism": "通过失败评分器把预先写好的成功条件变成可执行的二值检查，例如文件存在、字段正确或副作用已发生，同时保留未评分状态。",
     "misconception": "二值结果适合清晰判据，不适合把复杂质量压成一个开关；环境不可读、证据缺失和真实失败不能混成同一个 false。",
-    "demoSignature": "输入：answer.json 存在且 amount=120；中间：文件和金额正确=通过，文件存在但金额错误=失败，环境不可读=未评分；输出：发布只接受通过；未评分先补证据，不当作零分。演示必须保留正常结果、关键失败或边界状态，并让读者能回到逐项证据。",
+    "demoSignature": "判据先检查 answer.json 和 amount=120，再分成 pass、fail、unscored；发布只放行 pass，缺环境先补证据。",
     "sourceUrls": [
       "https://developers.openai.com/api/docs/guides/graders",
       "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
       "https://developers.openai.com/api/docs/guides/safety-best-practices",
-      "https://airc.nist.gov/airmf-resources/playbook/"
+      "https://airc.nist.gov/airmf-resources/playbook/",
+      "https://inspect.aisi.org.uk/scoring.html"
     ],
     "rewriteRisk": "二值结果适合清晰判据，不适合把复杂质量压成一个开关；环境不可读、证据缺失和真实失败不能混成同一个 false。 正文需要写清条件、证据和无法判断时的处理。",
     "nearDuplicates": [
@@ -1600,12 +1624,13 @@
     "slug": "grading-rubric",
     "mechanism": "评分规则把目标拆成可观察的评分维度、等级描述和证据要求；本页用事实准确、条件保留、没有越界承诺三项逐条检查一条退款回答。",
     "misconception": "规则不是评分器本身；规则写得含糊、维度重叠或没有反例时，代码、模型和人工都可能稳定地产生不同误判。",
-    "demoSignature": "输入：事实准确、条件保留、没有越界承诺；中间：三种回答按规则逐项检查；输出：保留条件为 3/3，漏掉条件为 1/3，越界承诺为 0/3。演示必须保留正常结果、关键失败或边界状态，并让读者能回到逐项证据。",
+    "demoSignature": "同一回答依次核对事实、条件和越界承诺；正例、漏条件和过度承诺落在 3/3、2/3、0/3，不把整体印象藏进总分。",
     "sourceUrls": [
       "https://developers.openai.com/api/docs/guides/graders",
       "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
       "https://arxiv.org/abs/2303.16634",
-      "https://arxiv.org/abs/2306.05685"
+      "https://arxiv.org/abs/2306.05685",
+      "https://inspect.aisi.org.uk/scoring.html"
     ],
     "rewriteRisk": "规则不是评分器本身；规则写得含糊、维度重叠或没有反例时，代码、模型和人工都可能稳定地产生不同误判。 正文需要写清条件、证据和无法判断时的处理。",
     "nearDuplicates": [
@@ -1618,12 +1643,13 @@
     "slug": "human-grader",
     "mechanism": "人工评分器让经过说明和校准的评审者按评分规则检查输出，保留分数、理由和分歧，用来验证规则、校准模型评分器并处理主观任务。",
     "misconception": "人工评分不是天然一致或绝对正确；没有盲评、样例、双人复核和分歧处理时，人的偏差也会进入指标。",
-    "demoSignature": "输入：同一量表和一条回答；中间：两位评审可给出 4/5 与 4/5，也可能出现 4/5 与 2/5 的分歧；输出：分歧由第三人确认 3/5，证据不足时两人都返回未评分。演示必须保留正常结果、关键失败或边界状态，并让读者能回到逐项证据。",
+    "demoSignature": "两位评审按同一量表独立评分；4/5 对 2/5 的分歧回到证据和第三人校准，决定性证据缺失时保留 unscored。",
     "sourceUrls": [
       "https://developers.openai.com/api/docs/guides/graders",
       "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
       "https://arxiv.org/abs/2303.16634",
-      "https://arxiv.org/abs/2306.05685"
+      "https://arxiv.org/abs/2306.05685",
+      "https://inspect.aisi.org.uk/scoring.html"
     ],
     "rewriteRisk": "人工评分不是天然一致或绝对正确；没有盲评、样例、双人复核和分歧处理时，人的偏差也会进入指标。 正文需要写清条件、证据和无法判断时的处理。",
     "nearDuplicates": [
