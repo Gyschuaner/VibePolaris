@@ -4,9 +4,7 @@ import {
   ArrowDown,
   ArrowRight,
   ArrowUpRight,
-  ArrowsClockwise,
   Browser,
-  Check,
   CheckCircle,
   CloudArrowDown,
   Code,
@@ -91,7 +89,7 @@ export function CssGridSignatureHero() {
     <div className={styles.gridSignature} data-step={step}>
       <div className={styles.gridLineLabel}><span>列线</span><b>1</b><b>2</b><b>3</b><b>4</b></div>
       <div className={styles.gridBoard} role="img" aria-label={`当前网格演示第 ${step + 1} 步`}>
-        {cells.map((cell, index) => <div key={cell} className={styles.gridCell} data-cell={cell.toLowerCase()} data-hidden={step === 0 || (step === 3 && cell === "E")} data-span={step >= 2 && cell === "A"} data-dense={step === 4 && cell === "D"}><strong>{step === 0 ? "·" : cell}</strong><small>{step >= 2 && cell === "A" ? "span 2" : step === 5 ? "min 120" : "1 cell"}</small></div>)}
+        {cells.map(cell => <div key={cell} className={styles.gridCell} data-cell={cell.toLowerCase()} data-hidden={step === 0 || (step === 3 && cell === "E")} data-span={step >= 2 && cell === "A"} data-dense={step === 4 && cell === "D"}><strong>{step === 0 ? "·" : cell}</strong><small>{step >= 2 && cell === "A" ? "span 2" : step === 5 ? "min 120" : "1 cell"}</small></div>)}
       </div>
       <div className={styles.gridRowLabel}><span>行</span><b>1</b><b>2</b><b>3</b></div>
       <div className={styles.gridProof} role="status"><GridFour size={16} aria-hidden="true" /><span>{step === 3 ? "sparse · 空位保留" : step === 4 ? "dense · 回头填洞" : step === 5 ? "2 列 · implicit row" : step >= 2 ? "跨列先占轨道" : "auto-placement"}</span></div>
