@@ -2,7 +2,7 @@
 
 import { ArrowRight, ArrowsClockwise, Browser, Check, CheckCircle, Cloud, Code, Cube, Cursor, Database, DeviceMobile, Eye, FileCode, Fingerprint, Gear, Gauge, GitBranch, Key, Layout, Lightning, MapPinLine, Monitor, Package, Ruler, ShieldCheck, SpeakerHigh, Stack, Target, WarningCircle } from "@phosphor-icons/react";
 import { useScene, SceneControls } from "./HarnessStoryScenes";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import styles from "./FrontendInteractionSignatureHeroes.module.css";
 
@@ -97,11 +97,12 @@ export function EmulatorSignatureHero() {
 const signingLabels = ["生成摘要", "私钥签名", "设备验签", "篡改拒绝"];
 export function CodeSigningSignatureHero() {
   const scene = useScene(signingLabels.length);
+  const digest = scene.step === 3 ? "sha256 · e2b4…90" : scene.step === 0 ? "sha256 · a7c9…31" : "sha256 · a7c9…31";
   return <HeroShell scene={scene} title="代码签名如何让篡改留下证据" labels={signingLabels} className={styles.signingHero}>
     <div className={styles.signingBoard} data-step={scene.step}>
       <div className={styles.packageCard}><Package size={24} /><strong>APK</strong><span>同一份构建产物</span><div className={styles.byteStrip}>{["A1", "C4", "7E", "09", "F2", "4B"].map((byte, index) => <b key={byte} data-changed={scene.step === 3 && index === 3}>{scene.step === 3 && index === 3 ? "00" : byte}</b>)}</div></div>
       <ArrowRight className={styles.signingArrow} size={22} aria-hidden="true" />
-      <div className={styles.signatureColumn}><div className={styles.digest}><Fingerprint size={21} /><span>摘要</span><code>{scene.step === 0 ? "sha256 · 等待" : "sha256 · 已固定"}</code></div><div className={styles.keySeal}><Key size={21} /><span>私钥</span><b>{scene.step > 0 ? "已签名" : "未使用"}</b></div></div>
+      <div className={styles.signatureColumn}><div className={styles.digest}><Fingerprint size={21} /><span>摘要</span><code>{digest}</code></div><div className={styles.keySeal}><Key size={21} /><span>私钥</span><b>{scene.step > 0 ? "已签名" : "未使用"}</b></div></div>
       <ArrowRight className={styles.signingArrow} size={22} aria-hidden="true" />
       <div className={`${styles.verifyCard} ${scene.step === 3 ? styles.isRejected : ""}`}><ShieldCheck size={24} /><span>设备验签</span><strong>{scene.step < 2 ? "尚未验证" : scene.step === 2 ? "验证通过" : "拒绝安装"}</strong>{scene.step === 3 ? <WarningCircle size={18} /> : scene.step === 2 ? <CheckCircle size={18} /> : null}</div>
     </div>
@@ -109,14 +110,14 @@ export function CodeSigningSignatureHero() {
 }
 
 const gestureLabels = ["按下，等待更多输入", "短距离抬起", "快速移动", "停留后移动"];
-const gesturePaths = ["M 46 90 L 46 90", "M 46 90 L 88 82", "M 46 90 C 105 84 160 54 222 26", "M 46 90 C 52 52 82 62 112 34 C 144 8 175 24 222 26"];
-const gestureMeasures = ["1 个触点 · 0 px", "距离 42 px · 120 ms", "速度 1.8 px/ms", "持续 620 ms · 方向改变"];
+const gesturePaths = ["M 46 90 L 46 90", "M 46 90 L 52 89", "M 46 90 C 70 84 100 66 132 52", "M 46 90 C 52 52 82 62 112 34 C 144 8 175 24 222 26"];
+const gestureMeasures = ["1 个触点 · 0 px", "距离 6 px · 很快抬起", "距离 86 px · 速度 720 px/s", "停留 500 ms · 方向改变"];
 export function GestureSignatureHero() {
   const scene = useScene(gestureLabels.length);
   const results = ["等待", "tap", "swipe", "drag"];
   return <HeroShell scene={scene} title="触点轨迹如何变成手势结果" labels={gestureLabels} className={styles.gestureHero}>
     <div className={styles.gestureBoard} data-step={scene.step}>
-      <div className={styles.gestureTrack}><svg viewBox="0 0 260 120" role="img" aria-label="触点轨迹"><path d={gesturePaths[scene.step]} className={styles.gesturePath} /><circle cx={scene.step === 0 ? 46 : scene.step === 1 ? 88 : 222} cy={scene.step === 0 ? 90 : scene.step === 1 ? 82 : 26} r="7" className={styles.gesturePointer} /></svg><div className={styles.gestureOrigin}><Cursor size={17} />按下</div></div>
+      <div className={styles.gestureTrack}><svg viewBox="0 0 260 120" role="img" aria-label="触点轨迹"><path d={gesturePaths[scene.step]} className={styles.gesturePath} /><circle cx={scene.step === 0 ? 46 : scene.step === 1 ? 52 : scene.step === 2 ? 132 : 222} cy={scene.step === 0 ? 90 : scene.step === 1 ? 89 : scene.step === 2 ? 52 : 26} r="7" className={styles.gesturePointer} /></svg><div className={styles.gestureOrigin}><Cursor size={17} />按下</div></div>
       <div className={styles.gestureReadout}><span>识别器读到</span><div className={styles.gestureMeasure}><Ruler size={18} /><strong>{gestureMeasures[scene.step]}</strong></div><div className={styles.gestureResult}><span>结果</span><b>{results[scene.step]}</b></div><small>{scene.step === 0 ? "还不能决定是哪种手势" : "阈值、方向和时间共同参与"}</small></div>
     </div>
   </HeroShell>;
@@ -174,12 +175,14 @@ const adaptiveLabels = ["窄屏单任务", "中宽保留上下文", "宽屏改�
 export function AdaptiveLayoutSignatureHero() {
   const scene = useScene(adaptiveLabels.length);
   const [completed, setCompleted] = useState(false);
+  const focusRef = useRef<HTMLButtonElement>(null);
   const reset = () => setCompleted(false);
+  useEffect(() => { if (scene.step === 3) focusRef.current?.focus(); }, [scene.step]);
   const widths = ["390", "720", "1000", "1000"];
   return <HeroShell scene={scene} title="窗口变宽时怎样重排关系并保留任务" labels={adaptiveLabels} onReplay={reset} className={styles.adaptiveHero}>
     <div className={styles.adaptiveBoard} data-step={scene.step}>
       <div className={styles.windowBar}><Layout size={19} /><span>应用窗口</span><strong>{widths[scene.step]} · 教学示例</strong><input aria-label="拖宽窗口" type="range" min="0" max="3" value={scene.step} onChange={(event) => scene.seek(Number(event.currentTarget.value))} /></div>
-      <div className={styles.adaptiveWindow}><div className={styles.adaptiveNav}><span>导航</span><i /><i /><i /></div>{scene.step < 1 ? null : <div className={styles.adaptiveList}><span>任务列表</span><b>任务 8</b><i>任务 7</i><i>任务 9</i></div>}<div className={styles.adaptiveDetail}><span>任务详情</span><strong>任务 8</strong><p>订单资料仍在这里</p><button type="button" aria-label="任务 8 完成" aria-pressed={completed} data-focused={scene.step === 0 || scene.step === 3} onClick={() => setCompleted(true)}><Check size={15} />{completed ? "已完成" : "完成"}</button></div></div>
+      <div className={styles.adaptiveWindow}><div className={styles.adaptiveNav}><span>导航</span><i /><i /><i /></div>{scene.step < 1 ? null : <div className={styles.adaptiveList}><span>任务列表</span><b>任务 8</b><i>任务 7</i><i>任务 9</i></div>}<div className={styles.adaptiveDetail}><span>任务详情</span><strong>任务 8</strong><p>订单资料仍在这里</p><button ref={focusRef} type="button" aria-label="任务 8 完成" aria-pressed={completed} data-focused={scene.step === 0 || scene.step === 3} onClick={() => setCompleted(true)}><Check size={15} />{completed ? "已完成" : "完成"}</button></div></div>
       <div className={styles.adaptiveProof}><Target size={18} /><span>{completed ? "焦点：任务 8 · 已完成" : scene.step === 0 || scene.step === 3 ? "焦点：任务 8 · 完成" : "选中：任务 8"}</span><CheckCircle size={18} /></div>
     </div>
   </HeroShell>;
