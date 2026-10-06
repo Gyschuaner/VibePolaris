@@ -1,8 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { codeSplittingSources } from "@/lib/code-splitting-sources";
-import { CodeSplittingHero } from "./code-splitting-hero";
-import { CodeSplittingLesson } from "./code-splitting";
+import { CodeSplittingSignatureHero as CodeSplittingHero } from "../RenderingLayoutSignatureHeroes";
 
 const sections: [string, string][] = [
   ["code-splitting-definition-section", "先画功能边界，再谈包大小"],
@@ -17,7 +16,6 @@ export function CodeSplittingTermPage() {
       <p id="split-boundary" className="vp-citation-target">代码分割是构建器把一个大入口拆成多个 chunk 的过程。边界可以来自路由、动态 import 或异步功能；关键不是把文件平均切开，而是把“用户何时需要它”写进依赖图。<Cite id="split-boundary" sources={codeSplittingSources} /></p>
       <p id="split-dynamic-import" className="vp-citation-target">动态 <code>import()</code> 返回 Promise，构建器可以据此留下异步边界。用户触发边界后，运行时请求对应模块，加载完成才有机会执行并渲染功能。<Cite id="split-dynamic-import" sources={codeSplittingSources} /></p>
       <p id="split-next" className="vp-citation-target">框架的 lazy loading API 往往把动态导入、loading UI 和客户端/服务端边界放在一起处理。它帮你描述加载时机，却不会自动知道编辑器是否值得延后；边界仍要从真实用户路径推出来。<Cite id="split-next" sources={codeSplittingSources} /></p>
-      <CodeSplittingLesson />
     </ArticleSection>
 
     <ArticleSection id="code-splitting-request-section" title="用户走到那里，chunk 才出发">
