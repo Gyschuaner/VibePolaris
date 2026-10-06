@@ -2,7 +2,7 @@ import { Article, Cite } from "../AiStackConceptPageShared";
 import { ArticleAside, ArticleSection } from "../ConceptArticle";
 import { conversionRateSources, designTokenSources, feedbackSources, focusManagementSources, funnelSources, iterationSources, mockupSources, sitemapSources, usabilityTestingSources, visualHierarchySources } from "@/lib/product-design-sources";
 import { ConversionRateLesson, DesignTokenLesson, FeedbackLesson, FunnelLesson, IterationLesson, MockupLesson, SitemapLesson, UsabilityTestingLesson, VisualHierarchyLesson } from "./ProductDesignLessons";
-import { ConversionRateHero, IterationHero } from "./mechanism-heroes";
+import { ConversionRateHero, FunnelHero, IterationHero } from "./mechanism-heroes";
 import { FocusManagementHero } from "./focus-management-hero";
 import styles from "./ProductDesignConcepts.module.css";
 
@@ -86,16 +86,11 @@ const funnelSections: [string, string][] = [
   ["funnel-boundary", "开放性、顺序和时间窗都会改口径"],
 ];
 
-function FunnelHero() {
-  return <figure className={styles.miniHero} aria-label="一群小点穿过三道筛网，每道筛网留下不同人数"><div className={styles.miniTop}><span>筛网留下掉落位置</span><strong>FUNNEL · 04</strong></div><div className={styles.funnelSignature}><div className={styles.funnelSieve}><i className={styles.funnelParticle} /><i className={styles.funnelParticle} /><i className={styles.funnelParticle} /><i className={styles.funnelParticle} /><i className={styles.funnelParticle} /><b data-gate="one" /><b data-gate="two" /><b data-gate="three" /></div><span>能定位哪一关，不能凭人数猜原因。</span></div></figure>;
-}
-
 export function FunnelTermPage() {
   return <Article slug="funnel" title="漏斗" subtitle="Funnel · 按顺序看用户在哪一步离开" sources={funnelSources} sections={funnelSections} hero={<FunnelHero />} intro={<>漏斗把一条已经知道的用户路径拆成有顺序的事件，观察同一批人从第一步走到后面还剩多少。<strong>它负责定位流失发生在哪一关，不负责替你解释用户为什么离开</strong>；后一个问题要靠日志、研究或实验继续查。</>}>
     <ArticleSection id="funnel-definition" title="先把已经知道的路径写成步骤">
       <p id="funnel-route" className="vp-citation-target">只有当你已经知道要观察哪条路径，漏斗才有用：例如“到达注册页 → 填写表单 → 验证邮箱”。<Cite id="funnel-route" sources={funnelSources} />每一步都要对应一个能被记录的事件，顺序和进入第一步的用户集合也要写清楚。</p>
       <p id="funnel-steps" className="vp-citation-target">分析工具通常把漏斗步骤写成事件或字段过滤条件，并按这些条件生成每一步的用户数。<Cite id="funnel-steps" sources={funnelSources} />本例把 1000 个到达注册页的人作为起点，再看其中多少人填写、验证。</p>
-      <FunnelLesson />
     </ArticleSection>
     <ArticleSection id="funnel-count" title="人数变化只定位位置，不解释原因">
       <p id="funnel-dropoff" className="vp-citation-target">每一栏都可以读成“走到这一步的用户”和“从上一步掉下去的用户”。<Cite id="funnel-dropoff" sources={funnelSources} />1000 人到 420 人说明第一段掉得多，但它没有告诉你是验证码、表单长度还是网络问题。</p>
