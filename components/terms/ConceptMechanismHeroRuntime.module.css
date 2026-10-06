@@ -27,10 +27,30 @@
 .ssrReadout { grid-column: 1 / 3; display: flex; align-items: center; justify-content: center; gap: 6px; color: var(--accent-text); font-size: 10px; }
 .ssrReadout strong { font-size: 11px; }
 
+/* SSG: a versioned sheet waits on the CDN shelf until a build stamps it. */
+.ssgScene { display: grid; grid-template-columns: 1.05fr .7fr 1fr; gap: 10px; min-height: 210px; align-items: stretch; }
+.ssgSource, .ssgBuild, .ssgShelf { display: grid; align-content: center; gap: 8px; min-width: 0; padding: 12px; border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); border-radius: 15px; background: color-mix(in srgb, var(--surface) 80%, transparent); }
+.ssgLabel { display: flex; align-items: center; gap: 5px; color: var(--muted); font-size: 9px; }
+.ssgSourceCard, .ssgShelfCard { display: grid; gap: 6px; min-height: 96px; padding: 10px; border-radius: 10px; background: #f5f0df; color: var(--accent-text); }
+.ssgSourceCard strong, .ssgShelfCard strong { font-size: 11px; }
+.ssgSourceCard span, .ssgShelfCard span { width: 80%; height: 5px; border-radius: 99px; background: color-mix(in srgb, var(--accent-text) 20%, transparent); }
+.ssgSourceCard span:nth-child(3), .ssgShelfCard span:nth-child(3) { width: 55%; }
+.ssgStamp { display: grid; place-items: center; gap: 7px; min-height: 96px; border: 1px dashed color-mix(in srgb, var(--brand-star) 55%, transparent); border-radius: 12px; color: var(--accent-text); text-align: center; }
+.ssgStamp strong { font-size: 11px; }
+.ssgStamp small { color: var(--muted); font-size: 8px; }
+.ssgShelfCard { background: color-mix(in srgb, #e6efdf 62%, var(--surface)); transition: transform .45s, opacity .35s; }
+.ssgShelfCard[data-version="v1"] { opacity: .72; }
+.ssgShelfCard[data-version="v2"] { transform: translateY(-4px); }
+.ssgVisitor { grid-column: 1 / 4; display: flex; align-items: center; justify-content: center; gap: 7px; color: var(--accent-text); font-size: 10px; }
+.ssgVisitor strong { font-size: 11px; }
+.ssgVisitor button { padding: 5px 8px; border: 1px solid color-mix(in srgb, var(--accent-text) 28%, transparent); border-radius: 7px; background: var(--tint); color: var(--accent-text); font-size: 9px; }
+
 @media (max-width: 760px) {
   .hero { padding: 12px; border-radius: 17px; }
   .ssrScene { grid-template-columns: 1fr; min-height: 0; }
   .ssrReadout { grid-column: 1; }
+  .ssgScene { grid-template-columns: 1fr; min-height: 0; }
+  .ssgVisitor { grid-column: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
