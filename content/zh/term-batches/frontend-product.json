@@ -2346,5 +2346,54 @@
       "request",
       "timeout"
     ]
+  },
+  {
+    "zh": "乐观更新",
+    "en": "Optimistic Update",
+    "slug": "optimistic-update",
+    "cat": "前端",
+    "say": "先把界面改成用户期待的样子，服务器失败时再恢复并解释。",
+    "aliases": [
+      "Optimistic UI",
+      "乐观界面更新",
+      "乐观交互"
+    ],
+    "question": "为什么点一下收藏，星星马上亮了？",
+    "definition": "乐观更新先在本地界面应用用户动作，再把变化发送给服务器；服务器确认后保留结果，失败时撤销本地变化并告诉用户原因。",
+    "boundary": "它不是忽略服务器，也不是把失败藏起来。需要保存旧状态、处理并发冲突和重复提交；高风险动作应谨慎使用。",
+    "demoType": "state",
+    "demoTitle": "收藏按钮先亮，再等服务器确认",
+    "demoSteps": [
+      {
+        "label": "本地先变",
+        "value": "☆ → ★",
+        "note": "用户得到即时反馈，但服务端还没有确认。"
+      },
+      {
+        "label": "请求在路上",
+        "value": "POST /favorite · pending",
+        "note": "界面状态与服务器状态暂时不同。"
+      },
+      {
+        "label": "成功或回滚",
+        "value": "200 保留 / 403 恢复",
+        "note": "失败路径必须恢复旧值并解释原因。"
+      }
+    ],
+    "quizQuestion": "乐观更新失败时最重要的补偿是什么？",
+    "quizOptions": [
+      "恢复旧状态并说明失败",
+      "继续显示成功并忽略服务器",
+      "把所有后续点击永久禁用"
+    ],
+    "correctText": "乐观更新必须准备可解释的回滚或冲突处理。",
+    "wrongText": "即时反馈不能替代服务端确认。",
+    "promptTitle": "设计一次乐观更新",
+    "prompt": "请列出本地先改的状态、旧值、请求幂等键、成功确认、失败回滚、并发冲突和用户提示。",
+    "relatedSlugs": [
+      "state",
+      "response",
+      "idempotency"
+    ]
   }
 ]

@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle, Clock, Keyboard, Lightning, Timer } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowRight, Check, CheckCircle, Clock, Keyboard, Lightning, Timer, WarningCircle } from "@phosphor-icons/react";
 import { useState } from "react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./Vbp096ExpansionHeroes.module.css";
@@ -24,3 +24,17 @@ export function DebounceSignatureHero() {
   </figure>;
 }
 
+
+export function OptimisticUpdateSignatureHero() {
+  const scene = useScene(4);
+  const [outcome, setOutcome] = useState<"pass" | "fail">("pass");
+  const failed = outcome === "fail";
+  return <figure ref={scene.ref} className={styles.frame} data-kind="optimistic" data-step={scene.step} aria-label="乐观更新先改变本地界面，再等待服务器确认或回滚">
+    <Header eyebrow="先让手感跟上，再等服务器回话" meta={failed ? "rollback path" : "confirmed path"} />
+    <SceneControls scene={scene} labels={["点击操作", "本地先变", "请求在路上", "确认或回滚"]} />
+    <div className={styles.controls} role="group" aria-label="切换服务器结果"><button type="button" aria-pressed={!failed} onClick={() => { setOutcome("pass"); scene.seek(0); }}><CheckCircle size={15} />服务器成功</button><button type="button" aria-pressed={failed} onClick={() => { setOutcome("fail"); scene.seek(0); }}><WarningCircle size={15} />服务器失败</button></div>
+    <div className={styles.optimisticBoard}><div className={styles.localCard} data-active={scene.step >= 1}><span>本地界面</span><strong>{scene.step >= 1 ? "★ 已收藏" : "☆ 收藏"}</strong><small>{scene.step >= 1 ? "先更新，用户立刻看到" : "等待点击"}</small></div><ArrowRight size={20} className={styles.boardArrow} /><div className={styles.serverCard} data-active={scene.step >= 2} data-danger={failed && scene.step === 3}><span>服务器</span><strong>{scene.step < 2 ? "未确认" : scene.step === 3 && failed ? "拒绝" : "保存中"}</strong><small>{scene.step === 3 ? failed ? "权限不足" : "200 OK" : "POST /favorite"}</small></div><div className={styles.optimisticOutcome} data-danger={failed && scene.step === 3}>{failed && scene.step === 3 ? <ArrowCounterClockwise size={19} /> : <Check size={19} />}<span>{scene.step === 3 ? failed ? "恢复 ☆，并解释原因" : "保持 ★，状态已确认" : "等待最终结果"}</span></div></div>
+    <div className={styles.status} role="status"><strong>{scene.step === 0 ? "动作还没有发生" : scene.step === 1 ? "局部状态先变" : scene.step === 2 ? "网络请求不能被假装完成" : failed ? "回滚是显式的失败路径" : "确认后才成为服务端事实"}</strong><span>{failed ? "乐观更新必须保存旧值和失败后的恢复动作。" : "速度变快不等于服务器已接受，更不等于没有冲突。"}</span></div>
+    <figcaption>乐观更新把“用户先看到什么”和“服务器最终确认什么”分成两条时间线，失败时要能回到可解释的旧状态。</figcaption>
+  </figure>;
+}

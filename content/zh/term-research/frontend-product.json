@@ -1098,5 +1098,23 @@
       "timeout",
       "request"
     ]
+  },
+  {
+    "slug": "optimistic-update",
+    "mechanism": "乐观更新先写本地暂态状态，再发送服务端操作；成功确认后保留，失败时依据旧值回滚或转入冲突处理。",
+    "misconception": "本地界面变绿不等于服务器已保存，也不代表重复请求、权限失败和并发编辑已经解决。",
+    "demoSignature": "4帧｜对象：用户、界面收藏星、服务器请求、回滚路径｜交互：切换 200/403 并推进点击→本地→pending→确认｜变化：星星先亮，403 时恢复并显示权限原因；200 时保持并记录确认｜结果：暂态反馈与持久事实分离。",
+    "sourceUrls": [
+      "https://tanstack.com/query/latest/docs/framework/react/guides/optimistic-updates",
+      "https://www.apollographql.com/docs/react/performance/optimistic-ui",
+      "https://relay.dev/docs/v20.0.0/guided-tour/updating-data/imperatively-modifying-store-data/",
+      "https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST"
+    ],
+    "rewriteRisk": "高：必须显示旧值、服务端确认、失败回滚和并发边界，不能只把按钮改成立即变色。",
+    "nearDuplicates": [
+      "state",
+      "response",
+      "idempotency"
+    ]
   }
 ]

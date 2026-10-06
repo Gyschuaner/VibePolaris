@@ -18968,5 +18968,189 @@
         "note": "延迟调用与 immediate 边界"
       }
     ]
+  },
+  {
+    "slug": "optimistic-update",
+    "lead": "为什么点一下收藏，星星马上亮了？",
+    "definition": "乐观更新把用户动作先反映到本地界面，再等待服务端确认；失败时要用旧状态回滚或进入冲突处理。",
+    "boundary": "本地看到的成功只是暂态，不能直接当作持久事实；重复点击、网络重试和权限失败都需要额外设计。",
+    "sceneKind": "state-machine",
+    "sceneTitle": "本地状态与服务器确认的两条时间线",
+    "actionLabel": "推进一个阶段",
+    "actors": [
+      {
+        "id": "user",
+        "label": "用户操作",
+        "detail": "点击收藏",
+        "icon": "user",
+        "group": "触发"
+      },
+      {
+        "id": "local",
+        "label": "本地界面",
+        "detail": "★ 已收藏",
+        "icon": "component",
+        "group": "即时反馈"
+      },
+      {
+        "id": "server",
+        "label": "服务器",
+        "detail": "等待 POST",
+        "icon": "server",
+        "group": "事实来源"
+      },
+      {
+        "id": "rollback",
+        "label": "回滚路径",
+        "detail": "恢复旧状态并解释",
+        "icon": "gear",
+        "group": "失败处理"
+      }
+    ],
+    "edges": [
+      {
+        "id": "user-local",
+        "from": "user",
+        "to": "local",
+        "label": "先更新"
+      },
+      {
+        "id": "local-server",
+        "from": "local",
+        "to": "server",
+        "label": "发送请求"
+      },
+      {
+        "id": "server-rollback",
+        "from": "server",
+        "to": "rollback",
+        "label": "失败恢复"
+      }
+    ],
+    "frames": [
+      {
+        "label": "用户点击",
+        "note": "动作刚发生，本地状态仍未改变。",
+        "activeIds": [
+          "user"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "local",
+          "server",
+          "rollback"
+        ],
+        "activeEdgeIds": []
+      },
+      {
+        "label": "本地先亮",
+        "note": "星星立即变亮，用户不用等待网络往返。",
+        "activeIds": [
+          "local"
+        ],
+        "doneIds": [
+          "user"
+        ],
+        "mutedIds": [
+          "server",
+          "rollback"
+        ],
+        "values": {
+          "local": "★ 已收藏"
+        },
+        "activeEdgeIds": [
+          "user-local"
+        ]
+      },
+      {
+        "label": "请求等待确认",
+        "note": "服务器仍是 pending；本地视觉不能冒充已保存。",
+        "activeIds": [
+          "server"
+        ],
+        "doneIds": [
+          "user",
+          "local"
+        ],
+        "mutedIds": [
+          "rollback"
+        ],
+        "values": {
+          "server": "POST /favorite · pending"
+        },
+        "activeEdgeIds": [
+          "local-server"
+        ]
+      },
+      {
+        "label": "成功或回滚",
+        "note": "失败时恢复旧值并给出原因，成功时才把本地状态变成服务端事实。",
+        "activeIds": [
+          "rollback"
+        ],
+        "doneIds": [
+          "user",
+          "local",
+          "server"
+        ],
+        "mutedIds": [],
+        "values": {
+          "rollback": "403 → ☆ · 说明权限不足"
+        },
+        "activeEdgeIds": [
+          "server-rollback"
+        ],
+        "metric": {
+          "label": "最终状态",
+          "value": "可解释"
+        }
+      }
+    ],
+    "insight": "乐观更新加快反馈，却把回滚、冲突和重复提交责任显式带进界面。",
+    "quiz": {
+      "question": "收藏请求返回 403 后，页面应该怎样处理？",
+      "options": [
+        {
+          "label": "恢复旧状态并告诉用户没有保存成功",
+          "correct": true
+        },
+        {
+          "label": "保持已收藏，避免用户失望",
+          "correct": false
+        },
+        {
+          "label": "把错误吞掉并继续发相同请求",
+          "correct": false
+        }
+      ],
+      "success": "本地先变必须有失败后的回滚和说明。",
+      "retry": "先区分即时反馈与服务端事实。"
+    },
+    "prompt": {
+      "title": "写清乐观更新的回滚路径",
+      "text": "请为一次收藏或编辑动作列出本地状态、服务端确认、旧值保存、重复请求、冲突和失败提示。"
+    },
+    "sources": [
+      {
+        "url": "https://tanstack.com/query/latest/docs/framework/react/guides/optimistic-updates",
+        "label": "TanStack Query · Optimistic Updates",
+        "note": "本地先改与失败回滚"
+      },
+      {
+        "url": "https://www.apollographql.com/docs/react/performance/optimistic-ui",
+        "label": "Apollo Client · Optimistic UI",
+        "note": "临时响应与缓存确认"
+      },
+      {
+        "url": "https://relay.dev/docs/v20.0.0/guided-tour/updating-data/imperatively-modifying-store-data/",
+        "label": "Relay · Optimistic Updaters",
+        "note": "乐观更新与服务端响应"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST",
+        "label": "MDN · POST",
+        "note": "请求结果与副作用边界"
+      }
+    ]
   }
 ]
