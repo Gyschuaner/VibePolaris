@@ -3,6 +3,7 @@ import { ArticleAside, ArticleSection } from "../ConceptArticle";
 import { conversionRateSources, designTokenSources, feedbackSources, focusManagementSources, funnelSources, iterationSources, mockupSources, sitemapSources, usabilityTestingSources, visualHierarchySources } from "@/lib/product-design-sources";
 import { ConversionRateLesson, DesignTokenLesson, FeedbackLesson, FunnelLesson, IterationLesson, MockupLesson, SitemapLesson, UsabilityTestingLesson, VisualHierarchyLesson } from "./ProductDesignLessons";
 import { ConversionRateHero, FunnelHero, IterationHero, MockupHero, UsabilityTestingHero } from "./mechanism-heroes";
+import { DesignTokenMechanismHero, FeedbackMechanismHero, SitemapMechanismHero, VisualHierarchyMechanismHero } from "../vbp095-mechanism-heroes";
 import { FocusManagementHero } from "./focus-management-hero";
 import styles from "./ProductDesignConcepts.module.css";
 
@@ -164,7 +165,7 @@ function SitemapHero() {
 }
 
 export function SitemapTermPage() {
-  return <Article slug="sitemap" title="站点地图" subtitle="Sitemap · 把页面放回它所属的任务里" sources={sitemapSources} sections={sitemapSections} hero={<SitemapHero />} intro={<>站点地图把页面、栏目和父子关系放在一张结构图里，让团队看见哪里太深、哪里没有入口、哪些名字不属于同一类。<strong>它描述信息架构，不规定用户必须沿着树一层层点击</strong>；真实任务可以从不同入口横跨多个栏目。</>}>
+  return <Article slug="sitemap" title="站点地图" subtitle="Sitemap · 把页面放回它所属的任务里" sources={sitemapSources} sections={sitemapSections} hero={<SitemapMechanismHero />} intro={<>站点地图把页面、栏目和父子关系放在一张结构图里，让团队看见哪里太深、哪里没有入口、哪些名字不属于同一类。<strong>它描述信息架构，不规定用户必须沿着树一层层点击</strong>；真实任务可以从不同入口横跨多个栏目。</>}>
     <ArticleSection id="sitemap-definition" title="先把页面关系画出来">
       <p id="sitemap-page-structure" className="vp-citation-target">清楚的页面结构要让人知道内容在哪个区域、哪一级标题下面、怎样跳到重要部分。<Cite id="sitemap-page-structure" sources={sitemapSources} />把 12 个页面全部平铺在一行，只能证明页面存在，不能说明它们怎样被理解。</p>
       <p id="sitemap-hierarchy" className="vp-citation-target">整理站点地图时，先按用户任务和内容主题划出逻辑类别，再把子页面放到能被猜到的父级下面。<Cite id="sitemap-hierarchy" sources={sitemapSources} />订单、退货和优惠说明可能属于同一组；账户资料、地址和安全设置则是另一组。</p>
@@ -193,7 +194,7 @@ function DesignTokenHero() {
 }
 
 export function DesignTokenTermPage() {
-  return <Article slug="design-token" title="设计令牌" subtitle="Design Token · 把用途和具体值分开" sources={designTokenSources} sections={designTokenSections} hero={<DesignTokenHero />} intro={<>设计令牌把颜色、间距、字体等设计决策保存为可复用的名字和值，让设计工具和代码有机会共享同一套语言。<strong>关键不在于把色值改成变量名，而在于让组件引用“用途”并能被主题映射替换</strong>。</>}>
+  return <Article slug="design-token" title="设计令牌" subtitle="Design Token · 把用途和具体值分开" sources={designTokenSources} sections={designTokenSections} hero={<DesignTokenMechanismHero />} intro={<>设计令牌把颜色、间距、字体等设计决策保存为可复用的名字和值，让设计工具和代码有机会共享同一套语言。<strong>关键不在于把色值改成变量名，而在于让组件引用“用途”并能被主题映射替换</strong>。</>}>
     <ArticleSection id="design-token-definition" title="先把设计决策命名，再让组件引用">
       <p id="token-definition" className="vp-citation-target">颜色、间距、字体比例都可以成为令牌，它们是设计系统里不可再拆的决策单位。<Cite id="token-definition" sources={designTokenSources} />名字应描述“文本、背景、操作”等用途，而不是某一张卡片或某一个页面的外观。</p>
       <p id="token-reference" className="vp-citation-target">令牌可以通过引用形成基础值、语义值和组件使用之间的关系。<Cite id="token-reference" sources={designTokenSources} />当按钮和链接都引用 <code>color.action</code>，基础颜色改变时，关系图能告诉你哪些地方会一起更新。</p>
@@ -223,7 +224,7 @@ function VisualHierarchyHero() {
 }
 
 export function VisualHierarchyTermPage() {
-  return <Article slug="visual-hierarchy" title="视觉层级" subtitle="Visual Hierarchy · 让页面告诉用户先看什么" sources={visualHierarchySources} sections={visualHierarchySections} hero={<VisualHierarchyHero />} intro={<>当标题、金额、说明和按钮都在喊“先看我”，用户就得自己做排序。<strong>视觉层级用大小、字重、对比、位置、分组和留白，把主要任务排在辅助信息前面</strong>；它改变的是注意顺序，不是把内容凭空变重要。</>}>
+  return <Article slug="visual-hierarchy" title="视觉层级" subtitle="Visual Hierarchy · 让页面告诉用户先看什么" sources={visualHierarchySources} sections={visualHierarchySections} hero={<VisualHierarchyMechanismHero />} intro={<>当标题、金额、说明和按钮都在喊“先看我”，用户就得自己做排序。<strong>视觉层级用大小、字重、对比、位置、分组和留白，把主要任务排在辅助信息前面</strong>；它改变的是注意顺序，不是把内容凭空变重要。</>}>
     <ArticleSection id="visual-hierarchy-definition" title="先让页面回答：第一眼该看什么">
       <p id="hierarchy-attention" className="vp-citation-target">视觉层级是把页面元素按预期重要性组织起来，让眼睛有一个可以开始、继续和停下来的路线。<Cite id="hierarchy-attention" sources={visualHierarchySources} />如果所有卡片同样大、同样深、同样挤在一起，用户并不是“看得更完整”，而是在几处焦点之间来回试探。</p>
       <p id="hierarchy-contrast" className="vp-citation-target">颜色本身没有固定的“重要色”，真正起作用的是它和周围背景、邻近元素之间的对比；字号和字重也一样，只有放在同一页面的相对关系里才会产生顺序。<Cite id="hierarchy-contrast" sources={visualHierarchySources} />所以先写清用户要完成的任务，再决定哪一个信息应该更近、更大或更安静。</p>
@@ -253,7 +254,7 @@ function FeedbackHero() {
 }
 
 export function FeedbackTermPage() {
-  return <Article slug="feedback" title="反馈" subtitle="Feedback · 让系统状态被看见" sources={feedbackSources} sections={feedbackSections} hero={<FeedbackHero />} intro={<>用户按下“保存”之后，真正想知道的不是页面有没有播放一段动画，而是这次操作有没有被接住、现在还要等多久、失败后能不能继续。<strong>反馈把系统状态翻译成用户当下能采取行动的信号</strong>：可以是原位置的文字变化、按钮状态、进度、声音或触觉。</>}>
+  return <Article slug="feedback" title="反馈" subtitle="Feedback · 让系统状态被看见" sources={feedbackSources} sections={feedbackSections} hero={<FeedbackMechanismHero />} intro={<>用户按下“保存”之后，真正想知道的不是页面有没有播放一段动画，而是这次操作有没有被接住、现在还要等多久、失败后能不能继续。<strong>反馈把系统状态翻译成用户当下能采取行动的信号</strong>：可以是原位置的文字变化、按钮状态、进度、声音或触觉。</>}>
     <ArticleSection id="feedback-definition" title="先让用户知道：系统听见了吗">
       <p id="feedback-visibility" className="vp-citation-target">系统状态可见，用户才不必靠猜测判断一次点击是否生效。<Cite id="feedback-visibility" sources={feedbackSources} />保存按钮进入处理中、暂时避免重复提交，就是“已收到”的证据；它和最终保存成功仍是两个不同阶段。</p>
       <p id="feedback-local" className="vp-citation-target">反馈最好贴着发生变化的对象出现。<Cite id="feedback-local" sources={feedbackSources} />编辑邮箱的表单旁边写“已保存 14:32”，比在页面角落闪过一条 Toast 更容易让用户把结果和刚才的输入对应起来。</p>

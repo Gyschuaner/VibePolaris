@@ -1,4 +1,5 @@
 import { ArrowRight, ShieldCheck } from "@phosphor-icons/react/dist/ssr";
+import type { ReactNode } from "react";
 
 import { ArticleCitation, ArticleSection, ConceptArticle } from "./ConceptArticle";
 import { ConceptHero } from "./ConceptHero";
@@ -6,6 +7,7 @@ import { BackendNetworkLesson, type BackendNetworkLessonSpec } from "./backend-n
 import styles from "./BackendNetworkConcepts.module.css";
 import type { Source } from "@/lib/backend-network-sources";
 import { acidSources, apiKeySources, columnSources, nosqlSources, rbacSources, relationalDatabaseSources, rowSources, tcpSources, tlsHandshakeSources, udpSources } from "@/lib/backend-network-sources";
+import { NosqlMechanismHero, RelationalDatabaseMechanismHero, RowMechanismHero } from "./vbp095-mechanism-heroes";
 
 type Block = { id: string; text: string };
 type Section = { id: string; title: string; blocks: Block[]; lesson?: BackendNetworkLessonSpec };
@@ -15,6 +17,7 @@ type PageSpec = {
   subtitle: string;
   intro: string;
   hero: { question: string; nodes: [string, string][]; proof: string };
+  mechanismHero?: ReactNode;
   sections: Section[];
   sources: Source[];
   relatedIntro: string;
@@ -44,7 +47,7 @@ function renderBackendNetworkPage(spec: PageSpec) {
     sections={spec.sections.map(({ id, title }) => [id, title])}
     relatedIntro={spec.relatedIntro}
     intro={spec.intro}
-    hero={<BackendNetworkHero slug={spec.slug} hero={spec.hero} />}
+    hero={spec.mechanismHero ?? <BackendNetworkHero slug={spec.slug} hero={spec.hero} />}
   >
     {spec.sections.map(section => <ArticleSection id={section.id} title={section.title} key={section.id}>
       {section.blocks.map(block => <p id={block.id} className="vp-citation-target" key={block.id}>{block.text}<Cite id={block.id} /></p>)}
@@ -171,6 +174,7 @@ const relationalDatabaseSpec: PageSpec = {
     nodes: [["customers", "id = 7"], ["orders", "customer_id = 7"], ["结果", "订单号 + 金额"]],
     proof: "连接条件把两张关系组合起来；约束帮助拒绝不存在的客户。",
   },
+  mechanismHero: <RelationalDatabaseMechanismHero />,
   sections: [
     {
       id: "relational-definition-section",
@@ -225,6 +229,7 @@ const nosqlSpec: PageSpec = {
     nodes: [["访问模式", "最近订单"], ["数据模型", "文档 / 键值"], ["取舍", "读写与一致性"]],
     proof: "模型围绕查询路径设计；NoSQL 不等于没有结构。",
   },
+  mechanismHero: <NosqlMechanismHero />,
   sections: [
     {
       id: "nosql-models-section",
@@ -279,6 +284,7 @@ const rowSpec: PageSpec = {
     nodes: [["订单行", "id = 7"], ["事务版本", "已提交 / 未提交"], ["读取", "按隔离规则可见"]],
     proof: "行是记录与版本的组合；结果位置不能代替稳定身份。",
   },
+  mechanismHero: <RowMechanismHero />,
   sections: [
     {
       id: "row-definition-section",
