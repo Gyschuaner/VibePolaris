@@ -2,6 +2,7 @@ import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptT
 import { MechanismHero } from "./ConceptHero";
 import { MobileConceptLesson } from "./MobileConceptLessons";
 import { AdaptiveLayoutSignatureHero, OfflineFirstSignatureHero } from "./FrontendInteractionSignatureHeroes";
+import { AppLifecycleSignatureHero, AppPermissionSignatureHero, BoxModelSignatureHero, CrossPlatformSignatureHero, CssSelectorSignatureHero, PushNotificationSignatureHero, SafeAreaSignatureHero, WebviewSignatureHero } from "./PlatformCssSignatureHeroes";
 import { adaptiveLayoutSources, appLifecycleSources, appPermissionSources, boxModelSources, crossPlatformSources, cssSelectorSources, offlineFirstSources, pushNotificationSources, safeAreaSources, webviewSources } from "@/lib/mobile-css-concept-sources";
 import styles from "./ConceptArticle.module.css";
 import { ArrowRight, Bell, Browser, CheckCircle, Cloud, Code, Database, FileText, GitBranch, Layout, ShieldCheck, Stack, TreeStructure, User } from "@phosphor-icons/react/dist/ssr";
@@ -86,7 +87,7 @@ export function AdaptiveLayoutTermPage() {
 }
 
 export function SafeAreaTermPage() {
-  return <ConceptArticle slug="safe-area" title="Safe area" subtitle="安全区域" hero={<MobileHero trigger="设备有刘海或手势区" change="背景铺满，关键内容读取动态 inset" proof="标题和底部按钮离开危险边界" />} sections={safeAreaSections} sources={safeAreaSources} intro={<>安全区域是系统或浏览器为刘海、圆角、状态栏和手势区留下的动态安全边距；inset 指这段系统或浏览器提供的安全距离。<strong>背景可以继续画到屏幕边缘，标题、按钮等关键内容要根据当前值离开危险位置。</strong></>}>
+  return <ConceptArticle slug="safe-area" title="Safe area" subtitle="安全区域" hero={<SafeAreaSignatureHero />} sections={safeAreaSections} sources={safeAreaSources} intro={<>安全区域是系统或浏览器为刘海、圆角、状态栏和手势区留下的动态安全边距；inset 指这段系统或浏览器提供的安全距离。<strong>背景可以继续画到屏幕边缘，标题、按钮等关键内容要根据当前值离开危险位置。</strong></>}>
     <ArticleSection id="safe-task" title="全屏页面里的危险位置">
       <p>你做了一个全屏阅读页，背景图片铺满了手机。顶部标题紧贴屏幕边缘，底部“下一章”按钮却被手势条盖住。问题不是背景太大，而是可操作内容没有避开系统占用的区域。</p>
       <p id="safe-area-native" className="vp-citation-target">在 iOS 中，UIKit 的 safe area 表示视图中不会被导航栏、状态栏或其他遮挡覆盖的区域。约束关键内容到 safe area，可以让系统根据设备形态计算边距。<Cite id="safe-area-native" sources={safeAreaSources} /></p>
@@ -115,7 +116,7 @@ export function SafeAreaTermPage() {
 }
 
 export function AppLifecycleTermPage() {
-  return <ConceptArticle slug="app-lifecycle" title="App lifecycle" subtitle="应用生命周期" hero={<MobileHero trigger="用户切到后台" change="前台 → 后台 → 可能被回收" proof="重新打开只能从已持久化草稿尝试恢复" />} sections={lifecycleSections} sources={appLifecycleSources} intro={<>应用生命周期描述运行环境如何让页面或应用经历创建、可见、后台、冻结、销毁和重新创建。<strong>它帮助你安排保存、暂停和恢复，但不承诺每一个“即将离开”的事件都会发生。</strong></>}>
+  return <ConceptArticle slug="app-lifecycle" title="App lifecycle" subtitle="应用生命周期" hero={<AppLifecycleSignatureHero />} sections={lifecycleSections} sources={appLifecycleSources} intro={<>应用生命周期描述运行环境如何让页面或应用经历创建、可见、后台、冻结、销毁和重新创建。<strong>它帮助你安排保存、暂停和恢复，但不承诺每一个“即将离开”的事件都会发生。</strong></>}>
     <ArticleSection id="lifecycle-task" title="离开页面前的草稿">
       <p>你在手机上写发布说明，切到聊天应用复制一段链接，回来时页面被重新打开，刚写的内容只剩标题。你可能以为“切后台时保存一下”就够了，但系统可能在后台直接回收进程，页面没有机会执行最后一步。</p>
       <p id="lifecycle-states-source" className="vp-citation-target">Android Activity 生命周期把创建、开始、恢复、暂停、停止和销毁等阶段区分开来；浏览器也会通过可见性、冻结和恢复事件表达页面是否继续参与工作。不同平台的事件名称不同，共同点是运行环境会改变，应用要据此调整资源和状态。<Cite id="lifecycle-states-source" sources={appLifecycleSources} /></p>
@@ -144,7 +145,7 @@ export function AppLifecycleTermPage() {
 }
 
 export function AppPermissionTermPage() {
-  return <ConceptArticle slug="app-permission" title="App permission" subtitle="应用权限" hero={<MobileHero trigger="用户点击拍照上传" change="用途说明 → 系统决定" proof="允许打开相机，拒绝仍有文件上传" />} sections={permissionSections} sources={appPermissionSources} intro={<>应用权限决定某项能力能不能代表用户访问相机、麦克风、位置或通知。<strong>好的权限流程从具体任务开始，在需要时解释用途，让系统作决定，并为拒绝准备可用的替代路径。</strong></>}>
+  return <ConceptArticle slug="app-permission" title="App permission" subtitle="应用权限" hero={<AppPermissionSignatureHero />} sections={permissionSections} sources={appPermissionSources} intro={<>应用权限决定某项能力能不能代表用户访问相机、麦克风、位置或通知。<strong>好的权限流程从具体任务开始，在需要时解释用途，让系统作决定，并为拒绝准备可用的替代路径。</strong></>}>
     <ArticleSection id="permission-task" title="相机权限应该何时出现">
       <p>你在订单页点击“拍照上传发票”。如果应用一打开就弹出相机权限，用户还不知道为什么需要；如果点击拍照后没有任何解释，系统弹窗也会显得突然。权限请求应该跟着当前任务出现。</p>
       <p id="permission-timing" className="vp-citation-target">权限最佳实践通常建议在用户触发相关功能时请求，并在系统对话框之前解释用途。这样用户可以把“允许相机”与刚刚选择的拍照任务联系起来，而不是在启动时面对一串没有上下文的询问。<Cite id="permission-timing" sources={appPermissionSources} /></p>
@@ -173,7 +174,7 @@ export function AppPermissionTermPage() {
 }
 
 export function PushNotificationTermPage() {
-  return <ConceptArticle slug="push-notification" title="Push notification" subtitle="推送通知" hero={<MobileHero trigger="订单状态发生变化" change="令牌 → FCM/APNs → 系统通知" proof="点击后从服务器核对最新订单" />} sections={pushSections} sources={pushNotificationSources} intro={<>推送通知把服务器上的变化提示到用户设备。<strong>它是一条经过令牌、推送服务、系统权限和展示策略的链路，不是服务器发一段文字就等于用户看到了。</strong></>}>
+  return <ConceptArticle slug="push-notification" title="Push notification" subtitle="推送通知" hero={<PushNotificationSignatureHero />} sections={pushSections} sources={pushNotificationSources} intro={<>推送通知把服务器上的变化提示到用户设备。<strong>它是一条经过令牌、推送服务、系统权限和展示策略的链路，不是服务器发一段文字就等于用户看到了。</strong></>}>
     <ArticleSection id="push-task" title="订单状态怎样到达用户">
       <p>你在电商应用里等待包裹，仓库状态变成“已发出”。业务希望用户收到提醒并点回订单详情。要解释这件事，需要跟着消息走过安装、令牌登记、服务器提交、平台投递和用户点击几个不同位置。</p>
       <p id="push-route-source" className="vp-citation-target">Firebase 的 FCM 架构把应用服务器、FCM 后端、平台传输层和客户端分开。Apple 的远程通知服务器也要求业务服务器向 APNs 提交消息，再由系统负责到达设备。它们共同说明：业务服务器不是直接操作手机通知栏。<Cite id="push-route-source" sources={pushNotificationSources} /></p>
@@ -202,7 +203,7 @@ export function PushNotificationTermPage() {
 }
 
 export function CrossPlatformDevelopmentTermPage() {
-  return <ConceptArticle slug="cross-platform-development" title="Cross-platform development" subtitle="跨平台开发" hero={<MobileHero trigger="同一订单要跑在两个平台" change="共享规则 → 平台适配器" proof="业务一致，权限和相机由各平台处理" />} sections={crossSections} sources={crossPlatformSources} intro={<>跨平台开发把能共用的业务规则、数据和部分界面放在共享核心，再用平台实现接上 iOS 和 Android 的差异。<strong>共享的是清楚的边界，不是承诺所有行为完全相同。</strong></>}>
+  return <ConceptArticle slug="cross-platform-development" title="Cross-platform development" subtitle="跨平台开发" hero={<CrossPlatformSignatureHero />} sections={crossSections} sources={crossPlatformSources} intro={<>跨平台开发把能共用的业务规则、数据和部分界面放在共享核心，再用平台实现接上 iOS 和 Android 的差异。<strong>共享的是清楚的边界，不是承诺所有行为完全相同。</strong></>}>
     <ArticleSection id="cross-task" title="一套规则，两个平台">
       <p>你要做一个订单应用：总价计算、优惠规则和订单状态在 iOS 与 Android 应该一致，但相机、通知、文件选择和生命周期由各自系统管理。真正的问题不是“代码能不能复制”，而是哪些决策应该保持一致、哪些能力必须面对平台差异。</p>
       <p id="cross-core-source" className="vp-citation-target">Flutter 的架构说明把框架层、引擎和平台嵌入区分开；Kotlin Multiplatform 也把共享业务逻辑和平台代码分开组织。共同的做法是先找到可验证的共享核心，再把平台 API 留在边界。<Cite id="cross-core-source" sources={crossPlatformSources} /></p>
@@ -231,7 +232,7 @@ export function CrossPlatformDevelopmentTermPage() {
 }
 
 export function WebviewTermPage() {
-  return <ConceptArticle slug="webview" title="WebView" subtitle="内嵌网页容器" hero={<MobileHero trigger="网页请求分享订单" change="网页消息 → 宿主校验 → 原生调用" proof="未知来源不会执行原生分享" />} sections={webviewSections} sources={webviewSources} intro={<>WebView 是原生应用里由系统网页引擎提供的页面容器。<strong>网页负责展示和发起受限请求，宿主应用负责导航、权限、存储和消息桥的安全边界。</strong></>}>
+  return <ConceptArticle slug="webview" title="WebView" subtitle="内嵌网页容器" hero={<WebviewSignatureHero />} sections={webviewSections} sources={webviewSources} intro={<>WebView 是原生应用里由系统网页引擎提供的页面容器。<strong>网页负责展示和发起受限请求，宿主应用负责导航、权限、存储和消息桥的安全边界。</strong></>}>
     <ArticleSection id="webview-task" title="在原生应用里打开网页">
       <p>你要在购物 App 里展示帮助中心，同时允许用户从帮助页点击“分享本订单”。最省事的做法可能是在原生页面里嵌入一个网页，但这会带来两个问题：网页能看到什么，网页能调用哪些原生能力。</p>
       <p id="webview-container-source" className="vp-citation-target">Android WebView 和 Apple WKWebView 都提供了在原生应用中加载网页的容器。宿主可以控制导航、Cookie、下载和与原生代码的通信；它们不是把完整浏览器无条件搬进应用。<Cite id="webview-container-source" sources={webviewSources} /></p>
@@ -260,7 +261,7 @@ export function WebviewTermPage() {
 }
 
 export function CssSelectorTermPage() {
-  return <ConceptArticle slug="css-selector" title="CSS selector" subtitle="CSS 选择器" hero={<MobileHero trigger="规则没有改变通知卡片" change="条件 → DOM 匹配集合" proof="命中后再经过层叠竞争" />} sections={selectorSections} sources={cssSelectorSources} intro={<>CSS 选择器描述哪些 DOM 元素符合一组条件。<strong>它先负责找出候选元素，匹配成功后浏览器还要经过层叠计算，才决定最终样式。</strong></>}>
+  return <ConceptArticle slug="css-selector" title="CSS selector" subtitle="CSS 选择器" hero={<CssSelectorSignatureHero />} sections={selectorSections} sources={cssSelectorSources} intro={<>CSS 选择器描述哪些 DOM 元素符合一组条件。<strong>它先负责找出候选元素，匹配成功后浏览器还要经过层叠计算，才决定最终样式。</strong></>}>
     <ArticleSection id="selector-task" title="为什么这条规则没有命中">
       <p>你给订单卡片写了 <code>.card &gt; button[disabled]</code>，页面却没有把禁用按钮变灰。先不要马上提高权重：可能按钮不是卡片的直接子元素，或者 <code>disabled</code> 属性落在了另一个节点上。</p>
       <p id="selector-match-source" className="vp-citation-target">Selectors 规范把选择器定义为匹配元素的条件，条件可以包括类型、类、属性、关系和伪类。浏览器会在 DOM 树中判断每个元素是否满足这些条件。<Cite id="selector-match-source" sources={cssSelectorSources} /></p>
@@ -289,7 +290,7 @@ export function CssSelectorTermPage() {
 }
 
 export function BoxModelTermPage() {
-  return <ConceptArticle slug="box-model" title="CSS box model" subtitle="CSS 盒模型" hero={<MobileHero trigger="卡片比 width 更宽" change="content → padding → border" proof="margin 在盒子外，box-sizing 改变尺寸起点" />} sections={boxSections} sources={boxModelSources} intro={<>CSS 盒模型把元素的空间拆成 content、padding、border 和 margin。<strong>理解它，就能解释为什么一个写着 width: 200px 的卡片最后占了更宽的空间。</strong></>}>
+  return <ConceptArticle slug="box-model" title="CSS box model" subtitle="CSS 盒模型" hero={<BoxModelSignatureHero />} sections={boxSections} sources={boxModelSources} intro={<>CSS 盒模型把元素的空间拆成 content、padding、border 和 margin。<strong>理解它，就能解释为什么一个写着 width: 200px 的卡片最后占了更宽的空间。</strong></>}>
     <ArticleSection id="box-task" title="卡片为什么比 width 更宽">
       <p>你给一张卡片写了 <code>width: 200px</code>，又加了左右各 12px 的内边距和 5px 的边框。测量时发现外框接近 234px。代码没有偷偷改数字，浏览器只是把 width 和盒子模型的其他区域一起计算了。</p>
       <p id="box-definition" className="vp-citation-target">CSS 盒模型把每个元素表示为内容区、内边距、边框和外边距的层。MDN 的介绍用这四个区域解释元素在布局中占据的空间；W3C 的 Box Model 规范定义了这些盒子之间的关系。<Cite id="box-definition" sources={boxModelSources} /></p>

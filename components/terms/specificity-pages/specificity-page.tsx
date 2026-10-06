@@ -1,7 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { specificitySources } from "@/lib/specificity-sources";
-import { SpecificityHero } from "./specificity-hero";
+import { SpecificitySignatureHero } from "../PlatformCssSignatureHeroes";
 import { SpecificityLesson } from "./specificity";
 
 const sections: [string, string][] = [
@@ -12,7 +12,7 @@ const sections: [string, string][] = [
 ];
 
 export function SpecificityTermPage() {
-  return <Article slug="specificity" title="CSS 优先级" subtitle="Specificity · 选择器冲突时先看哪一列" sources={specificitySources} sections={sections} hero={<SpecificityHero />} intro={<>两条 CSS 规则都命中了同一个按钮时，浏览器不会数谁写得长。<strong>它把选择器拆成 ID、类/属性/伪类、元素/伪元素三列，先比较左边，再决定右边是否还有机会。</strong>这让“为什么这条规则没生效”变成一笔能读懂的账。</>}>
+  return <Article slug="specificity" title="CSS 优先级" subtitle="Specificity · 选择器冲突时先看哪一列" sources={specificitySources} sections={sections} hero={<SpecificitySignatureHero />} intro={<>两条 CSS 规则都命中了同一个按钮时，浏览器不会数谁写得长。<strong>它把选择器拆成 ID、类/属性/伪类、元素/伪元素三列，先比较左边，再决定右边是否还有机会。</strong>这让“为什么这条规则没生效”变成一笔能读懂的账。</>}>
     <ArticleSection id="specificity-definition-section" title="先把选择器拆成三列">
       <p id="specificity-definition" className="vp-citation-target">Specificity（优先级）是选择器在层叠比较中的三列分数：ID、类/属性/伪类、元素/伪元素。浏览器先确认候选来自相同的来源、重要性和层，再在这个阶段比较三列；优先级不会让一条根本没有命中的规则起死回生。<Cite id="specificity-definition" sources={specificitySources} /></p>
       <p id="specificity-columns" className="vp-citation-target">把 <code>#settings .card</code> 写成 <code>1-1-0</code>：第一个 1 是 ID，第二个 1 是 class，最后的 0 表示没有元素选择器。W3C 的选择器规范用这个分组比较复杂选择器，而不是把每个字符换成一个“分数”。<Cite id="specificity-columns" sources={specificitySources} /></p>
