@@ -74,9 +74,3 @@ export function BoundaryLesson() {
     {audit.length > 0 && <div className={styles.boundaryAudit} aria-label="最近审计记录"><span>审计记录（重置前保留）</span>{audit.map((entry, index) => <div key={`${entry.target}-${index}`}><code>{entry.target}.csv · {entry.scope}</code><strong data-kind={entry.outcome}>{entry.outcome === "allowed" ? "allow" : "deny"}</strong></div>)}</div>}
   </LessonShell>;
 }
-
-export function HumanGraderLesson() {
-  const [caseType, setCaseType] = useState<"agree" | "split" | "missing">("agree");
-  const values = { agree: ["甲 4/5 · 乙 4/5", "一致", "保留共同理由"], split: ["甲 4/5 · 乙 2/5", "第三人 3/5", "写回校准样例"], missing: ["甲 unscored · 乙 unscored", "等待证据", "不塞进通过率"] } as const;
-  return <LessonShell eyebrow="人工的价值不是永远一致，而是把分歧留下来" title="双人评审校准"><div className={styles.lessonControls}><button type="button" aria-pressed={caseType === "agree"} onClick={() => setCaseType("agree")}>评分一致</button><button type="button" aria-pressed={caseType === "split"} onClick={() => setCaseType("split")}>出现分歧</button><button type="button" aria-pressed={caseType === "missing"} onClick={() => setCaseType("missing")}>证据不足</button><button type="button" onClick={() => setCaseType("agree")}>重置</button></div><div className={styles.labGrid}><div className={styles.labRow}><span>独立分数</span><code>{values[caseType][0]}</code><em>先遮住彼此结果</em></div><div className={styles.labRow}><span>校准</span><code>{values[caseType][1]}</code><em>{caseType === "split" ? "回到规则" : "记录状态"}</em></div><div className={styles.labRow}><span>留下</span><code>{values[caseType][2]}</code><em>可供下轮复查</em></div></div></LessonShell>;
-}
