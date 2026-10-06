@@ -16,7 +16,7 @@ const useCaseCaptions = [
 export function UseCaseHero() {
   const scene = useScene(useCaseLabels.length);
   const step = scene.step;
-  const branch = step >= 2 ? (step === 2 ? "expired" : "timeout") : "success";
+  const branch = step === 1 ? "success" : step === 2 ? "expired" : step === 3 ? "timeout" : "idle";
   return <MechanismFrame scene={scene} title="一次退款怎样在条件和分支间落地" labels={useCaseLabels} caption={useCaseCaptions[step]}>
     <div className={styles.useCaseScene}>
       <div className={styles.useCaseActors}>
