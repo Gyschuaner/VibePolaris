@@ -1,6 +1,6 @@
 "use client";
 
-import { Archive, ArrowRight, ArrowsOutCardinal, ArrowCounterClockwise, Bell, Browser, Camera, CheckCircle, Clock, Cloud, Code, Database, DeviceMobile, FileArrowUp, Gear, GitBranch, Key, LockSimple, MapPinLine, Ruler, ShieldCheck, Stack, Target, TreeStructure, WarningCircle } from "@phosphor-icons/react";
+import { Archive, ArrowRight, ArrowsOutCardinal, ArrowCounterClockwise, Bell, Browser, Camera, CheckCircle, Clock, Cloud, Code, Database, DeviceMobile, FileArrowUp, Gear, GitBranch, Key, LockSimple, MapPinLine, Ruler, Scales, ShieldCheck, Stack, Target, TreeStructure, WarningCircle } from "@phosphor-icons/react";
 import type { CSSProperties } from "react";
 import { useState } from "react";
 import { HeroShell } from "./FrontendInteractionSignatureHeroes";
@@ -181,6 +181,31 @@ export function BoxModelSignatureHero() {
       <div className={styles.boxStack}><div className={styles.boxMargin}><span>margin</span><div className={styles.boxBorder}><span>border</span><div className={styles.boxPadding}><span>padding</span><div className={styles.boxContent}><strong>内容</strong><small>width: 200px</small></div></div></div></div></div>
       <div className={styles.boxMeasure}><Ruler size={20} /><span>外框账单</span><strong>{outside}</strong><small>{scene.step === 0 ? "只有 content" : scene.step === 1 ? "padding 加在外面" : scene.step === 2 ? "border 也占空间" : sizing === "border-box" ? "width 已包含 padding + border" : "width 只指 content"}</small></div>
       <div className={styles.boxProof} role="status"><Stack size={18} /><div><strong>{scene.step < 3 ? "每一层都负责不同的空间" : sizing === "border-box" ? "总尺寸固定，内容区分配剩余空间" : "内容尺寸固定，外框继续向外长"}</strong><span>{scene.step === 3 ? "margin 仍在整个盒子之外，另算相邻间距" : "先分辨盒子内部和盒子外部"}</span></div></div>
+    </div>
+  </HeroShell>;
+}
+
+const cascadeLabels = ["浏览器先给默认值", "作者层进入", "后来创建的层胜出", "important 翻转层顺序"];
+type CascadeMode = "normal" | "important";
+const cascadeCards = [
+  { id: "ua", name: "浏览器默认", code: "button { color: black }", value: "black" },
+  { id: "base", name: "base 层", code: "@layer base · .button", value: "seagreen" },
+  { id: "theme", name: "theme 层", code: "@layer theme · #app .button", value: "olive" },
+];
+
+export function CascadeSignatureHero() {
+  const scene = useScene(cascadeLabels.length);
+  const [mode, setMode] = useState<CascadeMode>("normal");
+  const important = mode === "important";
+  const winner = scene.step === 0 ? cascadeCards[0] : important && scene.step === 3 ? cascadeCards[1] : scene.step >= 2 ? cascadeCards[2] : cascadeCards[1];
+  const resetMode = (next: CascadeMode) => { setMode(next); scene.seek(0); };
+  return <HeroShell scene={scene} title="CSS 层叠怎样从规则牌堆留下一个值" labels={cascadeLabels} className={styles.platformHero}>
+    <div className={styles.cascadeBoard} data-step={scene.step} data-mode={mode}>
+      <div className={styles.cascadeChoice} role="group" aria-label="选择声明重要性"><span>声明状态</span><button type="button" aria-pressed={!important} onClick={() => resetMode("normal")}>普通</button><button type="button" aria-pressed={important} onClick={() => resetMode("important")}>!important</button></div>
+      <div className={styles.cascadePile}>{cascadeCards.map((card, index) => <div key={card.id} className={styles.cascadeCard} data-card={card.id} data-active={winner.id === card.id} style={{ "--card-index": index } as React.CSSProperties}><Stack size={17} /><div><span>{card.name}</span><code>{important && card.id === "base" ? `${card.code} !important` : card.code}</code></div><strong>{card.value}</strong></div>)}</div>
+      <div className={styles.cascadeScale}><Scales size={22} /><span>当前比较</span><strong>{important && scene.step === 3 ? "重要声明" : scene.step < 2 ? "来源与层" : "theme 层"}</strong><i /></div>
+      <div className={styles.cascadeWinner} style={{ "--winner": winner.value } as React.CSSProperties}><div className={styles.cascadeSwatch} /><span>最终 color</span><strong>{winner.name}</strong><code>{winner.value}</code><CheckCircle size={18} /></div>
+      <div className={styles.cascadeProof} role="status"><span>观察牌桌</span><strong>{important && scene.step === 3 ? "base 的重要声明翻过了层顺序" : scene.step < 3 ? "只让仍在竞争的声明继续比较" : "普通声明里，后来创建的 theme 层胜出"}</strong><small>{important ? "!important 先改变比较区间，再进入层叠顺序" : "选择器优先级还没有机会出场"}</small></div>
     </div>
   </HeroShell>;
 }
