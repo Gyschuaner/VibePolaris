@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, ArrowsClockwise, Browser, Check, CheckCircle, Code, DeviceMobile, Eye, FileCode, Fingerprint, Gear, Gauge, GitBranch, Key, Lightning, MapPinLine, Monitor, Package, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
+import { ArrowRight, ArrowsClockwise, Browser, Check, CheckCircle, Code, Cursor, DeviceMobile, Eye, FileCode, Fingerprint, Gear, Gauge, GitBranch, Key, Lightning, MapPinLine, Monitor, Package, Ruler, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
 import { useScene, SceneControls } from "./HarnessStoryScenes";
 import { useState } from "react";
 import type { ReactNode } from "react";
@@ -100,6 +100,20 @@ export function CodeSigningSignatureHero() {
       <div className={styles.signatureColumn}><div className={styles.digest}><Fingerprint size={21} /><span>摘要</span><code>{scene.step === 0 ? "sha256 · 等待" : "sha256 · 已固定"}</code></div><div className={styles.keySeal}><Key size={21} /><span>私钥</span><b>{scene.step > 0 ? "已签名" : "未使用"}</b></div></div>
       <ArrowRight className={styles.signingArrow} size={22} aria-hidden="true" />
       <div className={`${styles.verifyCard} ${scene.step === 3 ? styles.isRejected : ""}`}><ShieldCheck size={24} /><span>设备验签</span><strong>{scene.step < 2 ? "尚未验证" : scene.step === 2 ? "验证通过" : "拒绝安装"}</strong>{scene.step === 3 ? <WarningCircle size={18} /> : scene.step === 2 ? <CheckCircle size={18} /> : null}</div>
+    </div>
+  </HeroShell>;
+}
+
+const gestureLabels = ["按下，等待更多输入", "短距离抬起", "快速移动", "停留后移动"];
+const gesturePaths = ["M 46 90 L 46 90", "M 46 90 L 88 82", "M 46 90 C 105 84 160 54 222 26", "M 46 90 C 52 52 82 62 112 34 C 144 8 175 24 222 26"];
+const gestureMeasures = ["1 个触点 · 0 px", "距离 42 px · 120 ms", "速度 1.8 px/ms", "持续 620 ms · 方向改变"];
+export function GestureSignatureHero() {
+  const scene = useScene(gestureLabels.length);
+  const results = ["等待", "tap", "swipe", "drag"];
+  return <HeroShell scene={scene} title="触点轨迹如何变成手势结果" labels={gestureLabels} className={styles.gestureHero}>
+    <div className={styles.gestureBoard} data-step={scene.step}>
+      <div className={styles.gestureTrack}><svg viewBox="0 0 260 120" role="img" aria-label="触点轨迹"><path d={gesturePaths[scene.step]} className={styles.gesturePath} /><circle cx={scene.step === 0 ? 46 : scene.step === 1 ? 88 : 222} cy={scene.step === 0 ? 90 : scene.step === 1 ? 82 : 26} r="7" className={styles.gesturePointer} /></svg><div className={styles.gestureOrigin}><Cursor size={17} />按下</div></div>
+      <div className={styles.gestureReadout}><span>识别器读到</span><div className={styles.gestureMeasure}><Ruler size={18} /><strong>{gestureMeasures[scene.step]}</strong></div><div className={styles.gestureResult}><span>结果</span><b>{results[scene.step]}</b></div><small>{scene.step === 0 ? "还不能决定是哪种手势" : "阈值、方向和时间共同参与"}</small></div>
     </div>
   </HeroShell>;
 }
