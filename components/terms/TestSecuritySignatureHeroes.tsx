@@ -310,7 +310,7 @@ export function EncryptionAtRestSignatureHero() {
   const scene = useScene(restSteps.length);
   const [attacker, setAttacker] = useState<"disk" | "app">("disk");
   const revoked = scene.step === 3;
-  const canDecrypt = attacker === "app" && !revoked;
+  const canDecrypt = scene.step >= 2 && attacker === "app" && !revoked;
   const choose = (next: "disk" | "app") => { setAttacker(next); scene.seek(0); };
   const status = revoked
     ? { icon: ShieldCheck, title: "grant 已撤销", detail: attacker === "app" ? "新的解密请求停在 KMS，存储中的密文仍保留" : "介质副本从头到尾都没有拿到 KEK" }
