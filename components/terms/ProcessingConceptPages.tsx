@@ -5,6 +5,7 @@ import { BatchLesson, StreamLesson, EventDrivenLesson } from './ProcessingConcep
 import { batchSources, streamSources, eventDrivenSources } from '@/lib/processing-sources';
 import base from './EventConcepts.module.css';
 import s from './ProcessingConcepts.module.css';
+import { StreamProcessingSignatureHero } from './DataTestSignatureHeroes';
 function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{names.map(name => <span key={name} id={`${slug}-${name}`} className={base.anchor} aria-hidden="true"/>)}</>; }
 export function BatchTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={batchSources}/>;
@@ -37,7 +38,7 @@ export function StreamTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={streamSources}/>;
   return <ConceptArticle slug="stream-processing" title="流处理" sources={streamSources} sections={[["flow", "持续到来的借阅记录"], ["time", "发生时间、到达与处理时间"], ["windows", "窗口何时可以给出结果"], ["late", "晚到记录的处理"]]}
     intro={<>借阅记录不断到来，看板可以随着窗口陆续完成而更新。麻烦的是，较早发生的记录也可能较晚才收到。流处理除了计算，还要决定记录属于哪个时间窗口、何时输出结果，以及输出以后收到旧记录该怎么办。</>}
-    hero={<ConceptHero slug="stream-processing" label="t2、t12、t4（数字是发生时刻）乱序到达；t4赶在第一窗口关闭前到达时得到2次和1次借阅"><div className={s.streamHero}><div className={s.heroArrivals}>{[2,12,4].map(t=><code key={t}>t{t}</code>)}</div><div className={s.heroWindows}><div><span>[0, 10)</span><strong>2 次</strong></div><div><span>[10, 20)</span><strong>1 次</strong></div></div></div></ConceptHero>}>
+    hero={<StreamProcessingSignatureHero />}>
     <ArticleSection id="flow" title="持续到来的借阅记录"><Legacy slug="stream-processing" names={["question", "definition"]}/>
       <p id="stream-flow" className="vp-citation-target"><strong>流处理在记录持续到来的过程中进行计算，而不用等数据全部收齐。</strong>Kafka Streams、Flink 和 Beam 是三种不同的流处理工具；下面的讲解参照它们的文档，说的是同一套机制，但各家的默认值和配置名称并不完全一样。Kafka Streams 将流描述为不断更新的记录序列，处理流程把数据来源、处理节点与输出连接起来。过滤可以逐条做，借阅次数汇总则需要跨记录保留信息；这份要跨记录保留的信息，各引擎通常叫作状态。<Cite id="stream-flow"/></p>
       <p>持续计算不意味着每条记录立刻得到最终结果。当计算要覆盖一段时间内的计数、要关联不同来源的数据，或要应对乱序到达时，就需要先确定等待与输出规则。数据到达得快，也不等于结果已经足够完整。</p>

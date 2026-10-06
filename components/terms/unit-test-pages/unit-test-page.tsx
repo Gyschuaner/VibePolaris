@@ -1,7 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { unitTestSources } from "@/lib/unit-test-sources";
-import { UnitTestHero } from "./unit-test-hero";
+import { UnitTestSignatureHero } from "../DataTestSignatureHeroes";
 import { UnitTestLesson } from "./unit-test";
 
 const sections: [string, string][] = [
@@ -12,7 +12,7 @@ const sections: [string, string][] = [
 ];
 
 export function UnitTestTermPage() {
-  return <Article slug="unit-test" title="单元测试" subtitle="Unit Test · 把一小段代码放进可重复的实验室" sources={unitTestSources} sections={sections} hero={<UnitTestHero />} intro={<>折扣函数只有十几行，为什么还要专门测试 -1、0、100 和 101？因为单元测试不是给代码贴一张“已检查”标签，而是把一个小单元的输入、依赖和可观察结果摆在同一张桌子上，让失败尽快指向真正的边界。</>}>
+  return <Article slug="unit-test" title="单元测试" subtitle="Unit Test · 把一小段代码放进可重复的实验室" sources={unitTestSources} sections={sections} hero={<UnitTestSignatureHero />} intro={<>折扣函数只有十几行，为什么还要专门测试 -1、0、100 和 101？因为单元测试不是给代码贴一张“已检查”标签，而是把一个小单元的输入、依赖和可观察结果摆在同一张桌子上，让失败尽快指向真正的边界。</>}>
     <ArticleSection id="unit-scope" title="先把大系统缩成一张小桌子">
       <p id="unit-definition" className="vp-citation-target">Martin Fowler 说，unit test 这个词本身没有唯一尺寸：面向对象的团队可能把一个类当作单元，函数式代码可能把一个函数当作单元。共同点是范围小、由程序员用熟悉的工具编写，而且应该比更大范围的测试快得多。<Cite id="unit-definition" sources={unitTestSources} /></p>
       <p id="unit-isolation" className="vp-citation-target">所以“单元”不是把产品硬切成一个文件，而是选一块能单独说明行为的边界。我们把折扣规则、四组输入和一个时钟接口放在桌上；数据库、网络和整条结算流程先留在桌外。若这条规则失败，报告应该直接说出哪组输入出了问题。<Cite id="unit-isolation" sources={unitTestSources} /></p>

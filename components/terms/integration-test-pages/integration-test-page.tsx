@@ -1,7 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { integrationTestSources } from "@/lib/integration-test-sources";
-import { IntegrationTestHero } from "./integration-test-hero";
+import { IntegrationTestSignatureHero } from "../DataTestSignatureHeroes";
 import { IntegrationTestLesson } from "./integration-test";
 
 const sections: [string, string][] = [
@@ -12,7 +12,7 @@ const sections: [string, string][] = [
 ];
 
 export function IntegrationTestTermPage() {
-  return <Article slug="integration-test" title="集成测试" subtitle="Integration Test · 让组件在真实边界上互相见面" sources={integrationTestSources} sections={sections} hero={<IntegrationTestHero />} intro={<>订单接口的每个函数都通过了，连上数据库却在事务边界上摔倒了。集成测试把组件接回一小段真实现场，让请求、配置、数据格式和副作用一起接受检查，同时把不值得拉进来的外部故障留在可控范围内。</>}>
+  return <Article slug="integration-test" title="集成测试" subtitle="Integration Test · 让组件在真实边界上互相见面" sources={integrationTestSources} sections={sections} hero={<IntegrationTestSignatureHero />} intro={<>订单接口的每个函数都通过了，连上数据库却在事务边界上摔倒了。集成测试把组件接回一小段真实现场，让请求、配置、数据格式和副作用一起接受检查，同时把不值得拉进来的外部故障留在可控范围内。</>}>
     <ArticleSection id="integration-boundary" title="让真实边界一起上场">
       <p id="integration-definition" className="vp-citation-target">Martin Fowler 把集成测试的核心说得很直接：检查独立开发的单元连接后能不能按预期工作。它不必天然等于“启动整个宇宙”；可以只挑订单服务和数据库这一小段边界，也可以根据风险把范围扩大。<Cite id="integration-definition" sources={integrationTestSources} /></p>
       <p id="integration-boundary-evidence" className="vp-citation-target">Microsoft 的示例把数据库、文件系统、网络和请求响应管线都视为可能参与的基础设施，并强调集成测试使用生产中真正的组件，因此比单元测试更慢、更需要数据准备。这个差异正是它的价值：让真实配置和真实协议暴露彼此的假设。<Cite id="integration-boundary-evidence" sources={integrationTestSources} /></p>

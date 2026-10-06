@@ -1,17 +1,18 @@
-import { FileText, ShieldCheck, Archive, EnvelopeSimple, Database } from '@phosphor-icons/react/dist/ssr';
+import { ShieldCheck, EnvelopeSimple, Database } from '@phosphor-icons/react/dist/ssr';
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
 import { ConceptHero } from './ConceptHero';
 import { PipelineLesson, WebhookLesson, DistributedLesson } from './CoordinationConceptLessons';
 import { pipelineSources, webhookSources, distributedSources } from '@/lib/coordination-sources';
 import base from './EventConcepts.module.css';
 import s from './CoordinationConcepts.module.css';
+import { DataPipelineSignatureHero } from './DataTestSignatureHeroes';
 function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{names.map(name => <span key={name} id={`${slug}-${name}`} className={base.anchor} aria-hidden="true"/>)}</>; }
 
 export function PipelineTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={pipelineSources}/>;
   return <ConceptArticle slug="data-pipeline" title="数据管道" sources={pipelineSources} sections={[["work", "把数据处理组织起来"], ["depends", "前置成功，后续才能开始"], ["replay", "重跑同一份输入"], ["trace", "留下结果的来路"]]}
     intro={<>图书馆每天收到一批借阅记录，先把这批输入固定成快照 s1，后面重跑时仍读取这份快照；读入后分成校验和原始归档两路，再汇总借阅次数，最后更新报表。按计划触发的一整轮处理称作一次运行；计划何时触发是调度时间，要处理哪一天是数据范围；实际开始执行的时刻，则可能和调度时间对不上。数据管道把这些步骤连接起来，让每一步拿到约定的输入，也让结果能够追溯到这次运行。</>}
-    hero={<ConceptHero slug="data-pipeline" label="输入分成校验与原始归档两路，两项前置成功后发布报表"><div className={s.pipeHero}><div className={s.pipeInput}><FileText size={25}/><span>借阅快照 s1</span></div><div className={s.pipeBranch}><div><ShieldCheck size={29}/><span>校验 → 汇总</span></div><div><Archive size={29}/><span>原始归档</span></div></div><div className={s.pipeOutput}>两路完成 → 发布报表</div></div></ConceptHero>}>
+    hero={<DataPipelineSignatureHero />}>
     <ArticleSection id="work" title="把数据处理组织起来"><Legacy slug="data-pipeline" names={["question", "definition"]}/>
       <p id="pipeline-workflow" className="vp-citation-target"><strong>数据管道把读取、处理与输出连接成一套可运行的数据流程。</strong>它既要描述各步怎样交接，也要记录这一轮真正执行到了哪里。实际系统会用编排工具把这些约定变成可运行的任务，例如 AWS Glue 或 Airflow；数据管道不依赖某一个产品。以 AWS Glue 为例，一个 workflow 可以把多个任务和触发条件组合起来，触发方式可以是计划、手动或事件；在 Glue 里，静态视图展示流程设计好的样子，动态视图展示某次运行实际进行到哪里、有没有出错，其他工具可能使用不同的名称。设计好的流程是计划，某次运行的状态与结果是实际发生的，两者需要分开看。<Cite id="pipeline-workflow"/></p>
       <p>管道可以处理固定范围的一批数据，也可以持续接收记录；本页只用固定批次的每日借阅报表解释依赖。读取与业务校验是不同职责，归档原始输入只保证原始材料还在，不能说明统计已经正确。<strong>先约定每一步的输入、输出和成功条件，再连接任务。</strong></p>
