@@ -75,8 +75,8 @@ export function ScopeHero() {
       <div className={styles.scopeFrame} data-tight={step >= 1} data-change={step === 3}>
         <div className={styles.scopeFrameHead}><Target size={16} /><span>THIS RELEASE</span><strong>{step === 3 ? "重新评估" : step >= 1 ? "已圈定" : "空白"}</strong></div>
         <div className={styles.scopeGoal}><strong>导出当前筛选结果</strong><small>用户：运营人员 · 交给财务核对</small></div>
-        <div className={styles.scopeIncluded}><CheckCircle size={15} /><span>筛选条件 · CSV · 手动下载</span></div>
-        <div className={styles.scopeDependency}><GitBranch size={15} /><span>{step === 3 ? "接口字段权限需重新确认" : "接口提供当前筛选结果"}</span></div>
+        <div className={styles.scopeIncluded} data-on={step >= 1}><CheckCircle size={15} /><span>{step >= 1 ? "筛选条件 · CSV · 手动下载" : "等待确认包含项"}</span></div>
+        <div className={styles.scopeDependency}><GitBranch size={15} /><span>{step === 0 ? "依赖尚未核对" : step === 3 ? "接口字段权限需重新确认" : "接口提供当前筛选结果"}</span></div>
       </div>
       <div className={styles.scopeOutside}><div className={styles.scopeOutsideHead}><WarningCircle size={16} /><span>OUTSIDE / LATER</span></div><div data-muted={step < 2}>自定义图表</div><div data-muted={step < 2}>定时报表</div><div data-muted={step < 2}>大文件异步导出</div><small>{step >= 2 ? "记录候选，不偷偷扩大承诺" : "相邻想法还在边界外"}</small></div>
     </div>
