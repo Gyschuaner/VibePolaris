@@ -171,14 +171,14 @@
 | lazy-loading | 懒加载 | 前端 | VBP-092 · 逐条实现、reviewer PASS，生产已发布 |
 | hydration | 水合 | 前端 | VBP-092 · 逐条实现、reviewer PASS，生产已发布 |
 | csr | 客户端渲染 | 前端 | VBP-092 · 逐条实现、reviewer PASS，生产已发布 |
-| ssr | 服务端渲染 | 前端 | 待处理 |
-| ssg | 静态站点生成 | 前端 | 待处理 |
-| routing | 路由 | 前端 | 待处理 |
+| ssr | 服务端渲染 | 前端 | 093 · 生产已发布 |
+| ssg | 静态站点生成 | 前端 | 093 · 生产已发布 |
+| routing | 路由 | 前端 | 093 · 生产已发布 |
 | cookie | Cookie | 前端 | VBP-075 · 生产已发布 |
-| local-storage | 本地存储 | 前端 | 待处理 |
+| local-storage | 本地存储 | 前端 | 093 · 生产已发布 |
 | websocket | WebSocket | 前端 | VBP-075 · 生产已发布 |
 | cors | 跨源资源共享 | 前端 | VBP-075 · 生产已发布 |
-| focus-management | 焦点管理 | 前端 | 待处理 |
+| focus-management | 焦点管理 | 前端 | 093 · 生产已发布 |
 | working-tree | 工作区 | Git | 044 · 生产已发布 |
 | staging-area | 暂存区 | Git | 044 · 生产已发布 |
 | diff | 差异 | Git | 044 · 生产已发布 |
@@ -197,11 +197,11 @@
 | code-review | 代码评审 | Git | 045 · 生产已发布 |
 | ci | 持续集成 | Git | 045 · 生产已发布 |
 | cd | 持续交付 | Git | 045 · 生产已发布 |
-| preview-deployment | 预览部署 | Git | 待处理 |
-| rollback | 回滚 | Git | 待处理 |
-| user-story | 用户故事 | 产品与设计 | 待处理 |
-| problem-statement | 问题陈述 | 产品与设计 | 待处理 |
-| target-user | 目标用户 | 产品与设计 | 待处理 |
+| preview-deployment | 预览部署 | Git | 093 · 生产已发布 |
+| rollback | 回滚 | Git | 093 · 生产已发布 |
+| user-story | 用户故事 | 产品与设计 | 093 · 生产已发布 |
+| problem-statement | 问题陈述 | 产品与设计 | 093 · 生产已发布 |
+| target-user | 目标用户 | 产品与设计 | 093 · 生产已发布 |
 | use-case | 使用场景 | 产品与设计 | 待处理 |
 | acceptance-criteria | 验收标准 | 产品与设计 | 待处理 |
 | scope | 范围 | 产品与设计 | 待处理 |
