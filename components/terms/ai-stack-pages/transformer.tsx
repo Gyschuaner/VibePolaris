@@ -1,7 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { transformerSources } from "@/lib/ai-stack-concept-sources/transformer";
-import { TransformerHero } from "../ai-stack-lessons/transformer-hero";
+import { TransformerSignatureHero } from "../AiStackSignatureHeroes";
 import { TransformerLesson } from "../ai-stack-lessons/transformer";
 
 const sections: [string, string][] = [
@@ -12,7 +12,7 @@ const sections: [string, string][] = [
 ];
 
 export function TransformerTermPage() {
-  return <Article slug="transformer" title="Transformer" subtitle="Transformer · 让一排 token 在层层计算里交换信息" sources={transformerSources} sections={sections} hero={<TransformerHero />} intro={<>读到“Transformer”时，先不要把它想成一台会自动理解世界的机器。它更像一摞反复工作的处理台：每一层先让各个位置交换相关信息，再让每个位置把收到的内容重新整理，下一层接着处理。</>}>
+  return <Article slug="transformer" title="Transformer" subtitle="Transformer · 让一排 token 在层层计算里交换信息" sources={transformerSources} sections={sections} hero={<TransformerSignatureHero />} intro={<>读到“Transformer”时，先不要把它想成一台会自动理解世界的机器。它更像一摞反复工作的处理台：每一层先让各个位置交换相关信息，再让每个位置把收到的内容重新整理，下一层接着处理。</>}>
     <ArticleSection id="transformer-story" title="先看一排 token 怎样互相照见">
       <p>句子“<strong>小猫坐在窗边，它看见雨</strong>”摆到模型面前时，里面的词不会各自关在小格子里。模型先把 token 和位置信息编码，再让每个位置去询问同一排里的其他位置：我现在需要谁的线索？“它”可能需要回看“小猫”，“看见”则和“雨”一起构成一段动作与场景。</p>
       <p id="transformer-origin" className="vp-citation-target">Transformer 最初被提出为只依赖注意力机制的序列架构，去掉了循环和卷积；它的关键变化不是让模型跳过输入，而是让序列中的位置能够在同一轮计算里建立关系。<Cite id="transformer-origin" sources={transformerSources} /></p>
