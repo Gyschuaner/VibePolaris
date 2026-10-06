@@ -85,6 +85,12 @@
 .gestureTrack svg { width: 100%; height: 135px; }.gesturePath { fill: none; stroke: var(--accent-text); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 8 7; transition: d .45s; }.gesturePointer { fill: var(--brand-star); stroke: var(--paper); stroke-width: 3; filter: drop-shadow(0 3px 4px color-mix(in srgb, var(--brand-star) 38%, transparent)); transition: cx .45s, cy .45s; }
 .gestureOrigin { position: absolute; left: 14px; bottom: 10px; display: flex; align-items: center; gap: 5px; color: var(--muted); font-size: 9px; }.gestureReadout { display: grid; align-content: center; gap: 8px; min-height: 135px; padding: 13px; border-radius: 16px; background: color-mix(in srgb, #e6efdf 63%, var(--surface)); }.gestureReadout > span, .gestureResult span { color: var(--muted); font-size: 9px; }.gestureMeasure { display: flex; align-items: center; gap: 7px; color: var(--accent-text); }.gestureMeasure strong { font-size: 11px; line-height: 1.35; }.gestureResult { display: flex; align-items: baseline; justify-content: space-between; gap: 7px; }.gestureResult b { color: var(--accent-text); font: 800 18px ui-monospace, SFMono-Regular, monospace; }.gestureReadout small { color: var(--muted); font-size: 9px; line-height: 1.35; }
 
+.hapticBoard { display: grid; grid-template-columns: 1fr 1fr; grid-template-areas: "event mode" "actuator fallback"; align-items: stretch; min-height: 170px; gap: 8px; }
+.hapticEvent, .hapticMode, .hapticActuator, .hapticFallback { display: grid; align-content: center; gap: 6px; min-height: 76px; padding: 11px; border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); border-radius: 15px; background: color-mix(in srgb, var(--paper) 72%, transparent); transition: .35s; }
+.hapticEvent { grid-area: event; }.hapticMode { grid-area: mode; }.hapticActuator { grid-area: actuator; position: relative; overflow: hidden; }.hapticFallback { grid-area: fallback; grid-template-columns: auto auto 1fr; align-items: center; }.hapticEvent span, .hapticMode span, .hapticActuator span, .hapticFallback span { color: var(--muted); font-size: 9px; }.hapticEvent strong, .hapticMode b, .hapticActuator b, .hapticFallback strong { color: var(--accent-text); font-size: 11px; }.hapticMode svg, .hapticActuator > svg, .hapticFallback svg { color: var(--accent-text); }
+.pulseRings { position: absolute; right: 15px; top: 12px; width: 42px; height: 42px; }.pulseRings i { position: absolute; inset: 0; border: 1px solid color-mix(in srgb, var(--brand-star) 68%, transparent); border-radius: 50%; opacity: 0; transform: scale(.3); }.hapticBoard[data-step="0"] .pulseRings i:nth-child(1), .hapticBoard[data-step="1"] .pulseRings i:nth-child(2), .hapticBoard[data-step="2"] .pulseRings i:nth-child(3) { animation: pulse 1.5s ease-out infinite; }.hapticBoard[data-step="3"] .hapticActuator { border-color: #a55c54; background: #f3d8d0; }.hapticBoard[data-step="3"] .hapticActuator > svg, .hapticBoard[data-step="3"] .hapticActuator b { color: #a55c54; }
+@keyframes pulse { 0% { opacity: .7; transform: scale(.3); } 75%, 100% { opacity: 0; transform: scale(1); } }
+
 @media (max-width: 760px) {
   .hero { padding: 12px; border-radius: 17px; }
   .canvas { min-height: 0; }
@@ -107,6 +113,7 @@
   .packageCard, .verifyCard { min-height: 82px; }
   .gestureBoard { grid-template-columns: 1fr; min-height: 0; }
   .gestureTrack { min-height: 125px; }.gestureReadout { min-height: 100px; }
+  .hapticBoard { grid-template-areas: "event" "mode" "actuator" "fallback"; grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero *, .hero *::before, .hero *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }

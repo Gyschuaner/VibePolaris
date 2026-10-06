@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, ArrowsClockwise, Browser, Check, CheckCircle, Code, Cursor, DeviceMobile, Eye, FileCode, Fingerprint, Gear, Gauge, GitBranch, Key, Lightning, MapPinLine, Monitor, Package, Ruler, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
+import { ArrowRight, ArrowsClockwise, Browser, Check, CheckCircle, Code, Cursor, DeviceMobile, Eye, FileCode, Fingerprint, Gear, Gauge, GitBranch, Key, Lightning, MapPinLine, Monitor, Package, Ruler, ShieldCheck, SpeakerHigh, WarningCircle } from "@phosphor-icons/react";
 import { useScene, SceneControls } from "./HarnessStoryScenes";
 import { useState } from "react";
 import type { ReactNode } from "react";
@@ -114,6 +114,20 @@ export function GestureSignatureHero() {
     <div className={styles.gestureBoard} data-step={scene.step}>
       <div className={styles.gestureTrack}><svg viewBox="0 0 260 120" role="img" aria-label="触点轨迹"><path d={gesturePaths[scene.step]} className={styles.gesturePath} /><circle cx={scene.step === 0 ? 46 : scene.step === 1 ? 88 : 222} cy={scene.step === 0 ? 90 : scene.step === 1 ? 82 : 26} r="7" className={styles.gesturePointer} /></svg><div className={styles.gestureOrigin}><Cursor size={17} />按下</div></div>
       <div className={styles.gestureReadout}><span>识别器读到</span><div className={styles.gestureMeasure}><Ruler size={18} /><strong>{gestureMeasures[scene.step]}</strong></div><div className={styles.gestureResult}><span>结果</span><b>{results[scene.step]}</b></div><small>{scene.step === 0 ? "还不能决定是哪种手势" : "阈值、方向和时间共同参与"}</small></div>
+    </div>
+  </HeroShell>;
+}
+
+const hapticLabels = ["选择发生", "确认成功", "警告或失败", "设备不可用"];
+export function HapticFeedbackSignatureHero() {
+  const scene = useScene(hapticLabels.length);
+  const modes = ["selection", "success", "warning", "fallback"];
+  return <HeroShell scene={scene} title="语义事件如何变成触觉并保留可见回退" labels={hapticLabels} className={styles.hapticHero}>
+    <div className={styles.hapticBoard} data-step={scene.step} data-mode={modes[scene.step]}>
+      <div className={styles.hapticEvent}><span>语义事件</span><strong>{hapticLabels[scene.step]}</strong><small>{scene.step === 0 ? "选中一项" : scene.step === 1 ? "保存成功" : scene.step === 2 ? "操作被拒绝" : "执行器无响应"}</small></div>
+      <div className={styles.hapticMode}><Lightning size={23} /><span>平台模式</span><b>{scene.step === 0 ? "selection" : scene.step === 1 ? "notification.success" : scene.step === 2 ? "notification.warning" : "无可用模式"}</b></div>
+      <div className={styles.hapticActuator}><div className={styles.pulseRings}><i /><i /><i /></div><DeviceMobile size={26} /><span>设备执行器</span><b>{scene.step === 3 ? "不播放" : "短促触感"}</b></div>
+      <div className={styles.hapticFallback}><Eye size={19} /><SpeakerHigh size={19} /><div><span>同时保留</span><strong>{scene.step === 3 ? "文字 + 视觉" : "文字 + 视觉 + 可选声音"}</strong></div></div>
     </div>
   </HeroShell>;
 }
