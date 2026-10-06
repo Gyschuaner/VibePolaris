@@ -1120,7 +1120,7 @@
     "slug": "conditional-branch",
     "mechanism": "条件分支先计算条件得到真或假，再只执行匹配的路径，并跳过其他路径；没有 else 且条件为假时，直接继续后面的代码。",
     "misconception": "分支不是把两段代码都执行后再选结果；以 JavaScript 为例，0 和空文字会按规则算假，多数其他值算真。页面 if 运行在用户自己的浏览器里，登录权限仍需服务器重新校验。",
-    "demoSignature": "输入：score=59，条件score>=60；中间：比较得false，令牌只走未通过路径；输出：把score拖到60后条件变true，令牌改走通过路径。可视化：4帧表现准备条件、求值、输出和跨过阈值后的路径切换；交互：拖score越过60观察另一条路径被选中。",
+    "demoSignature": "阈值闸门：score 令牌先经过 score >= 60 的判断，再只进入通过或未通过的一条路径；拖过边界时，闸门结果和出口同时换向。",
     "sourceUrls": [
       "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/if...else",
       "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-if-statement",
@@ -1138,7 +1138,7 @@
     "slug": "loop",
     "mechanism": "循环先设置初始状态，再反复处理当前项并更新状态，直到停止条件成立。",
     "misconception": "如果状态不朝停止条件推进，循环可能一直运行；数组索引到达元素数量时，才表示没有下一项可读。每轮错误还需要明确停止、跳过或重试。",
-    "demoSignature": "输入：数组 [2,4,6]，索引从0开始且累计和为0；中间：每轮读取当前项、累加并让索引0→1→2→3；输出：索引3等于数组长度3，循环停止，结果12。可视化：4帧表现初始化、第一轮、后两轮和停止；交互：单步执行并可制造不更新索引的死循环警示。",
+    "demoSignature": "传送带循环：索引带着 2、4、6 逐格前进，累计值在每轮落下；冻结索引会停在当前格，抵达 length 才打开停止闸门。",
     "sourceUrls": [
       "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Loops_and_iteration",
       "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-iteration-statements",
@@ -1155,7 +1155,7 @@
     "slug": "object",
     "mechanism": "对象把一组具名属性放在同一个结构里，读取属性时通过键找到对应值；函数值也可以成为对象的方法。",
     "misconception": "对象不是 JSON：JavaScript 对象可以包含方法和运行时状态；JSON 文本只能表示有限的数据类型，删除属性后读取不存在的键在 JavaScript 中会得到 undefined。",
-    "demoSignature": "输入：user={name:'林',age:20}；中间：读取键age命中20，再写age=21使属性数仍为2；输出：对象状态更新。可视化：4帧表现键值集合、修改、增加和删除属性；交互：新增、修改、删除一个属性。",
+    "demoSignature": "键值抽屉：name、age 作为带名字的抽屉各自保存当前值；修改 age 只点亮这一格，新增和删除会改变抽屉集合的形状。",
     "sourceUrls": [
       "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects",
       "https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-object-type",
@@ -1172,7 +1172,7 @@
     "slug": "array",
     "mechanism": "数组按顺序保存一组元素，通常用从零开始的索引访问，也可以逐项处理；插入和删除会影响长度及后续位置。",
     "misconception": "索引表示当前位置，不是稳定的业务 ID；商品编号应跟着商品保存。不同语言对数组元素类型的限制也可能不同。",
-    "demoSignature": "输入：['A','B','C']；中间：在索引1插入'X'，长度3→4，B位置1→2、C位置2→3；输出：['A','X','B','C']。可视化：4帧表现原顺序、选择插入点、后续格子右移和插入完成；交互：拖一项插入不同位置观察索引重排。",
+    "demoSignature": "插入位移轨道：X 卡进索引 1 的空位，B、C 像被推开的书脊向右滑，长度和后续索引一起更新。",
     "sourceUrls": [
       "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Indexed_collections",
       "https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array-objects",
@@ -1189,7 +1189,7 @@
     "slug": "client-server",
     "mechanism": "客户端发出请求，服务器根据资源和规则处理后返回响应；双方通过约定的协议交换消息，响应可能成功也可能带错误状态。",
     "misconception": "客户端与服务器是一次交互中的角色，不固定等于浏览器和某台物理机器；404 和 500 等状态也会沿响应通道回到客户端。",
-    "demoSignature": "sealed-envelope: 4 phases; actors=客户端/请求信封/服务器处理/响应状态; phases=封装→拆封查询→封回响应→客户端呈现; action=切换200、404、500",
+    "demoSignature": "请求信封往返：客户端封装 GET，服务器拆封并处理，再把带 200/404/500 的响应封回；切换状态码会改变客户端呈现而不是抹掉请求阶段。",
     "sourceUrls": [
       "https://www.rfc-editor.org/rfc/rfc9110.html",
       "https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview",
@@ -1206,7 +1206,7 @@
     "slug": "monolith",
     "mechanism": "单体把多个业务模块一起构建、测试和发布成一份应用；模块可以分开组织，但部署时一起换上。",
     "misconception": "单体可以有清晰的内部模块，也可以把代码放在一个或多个仓库；判断它要看部署边界。",
-    "demoSignature": "输入：用户、订单、支付3模块；中间：只改支付仍要重新生成并测试整份应用；输出：一次发布换上包含全部模块的应用。可视化：建议4帧的三个模块组成一份应用、支付变更、整体重建测试、整体发布；交互：点击模块查看改动如何牵动整份应用。",
+    "demoSignature": "整包发布楼：用户、订单、支付在内部是三间模块，支付点亮后仍要让整座应用重建、测试并盖上同一个 v2 发布封印。",
     "sourceUrls": [
       "https://learn.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures",
       "https://docs.aws.amazon.com/whitepapers/latest/develop-deploy-dotnet-apps-on-aws/building-monoliths-or-microservices.html",
@@ -1223,7 +1223,7 @@
     "slug": "microservices",
     "mechanism": "微服务把业务能力拆成多个可分别构建、测试和发布的服务；服务通过网络接口协作，各自负责一块业务。",
     "misconception": "服务越多，网络调用、数据一致性、监控和运维工作越多；拆成多个服务不自动带来收益。",
-    "demoSignature": "输入：订单服务调用库存和支付；中间：3个服务各自版本，库存请求等待2秒仍无回应，订单把状态保存为处理中；输出：独立发布的收益与跨服务协调成本同时出现。可视化：建议4帧的各自发布、两次请求、等待超时、保存处理中；交互：推进帧观察一次调用如何留下中间状态。",
+    "demoSignature": "服务舱等待：订单、库存、支付各自运行和发布；库存舱延迟时，订单停在 processing，读者能看到独立故障边界和网络协作成本。",
     "sourceUrls": [
       "https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/microservices",
       "https://csrc.nist.gov/pubs/sp/800/204/final",
@@ -1242,9 +1242,13 @@
     "slug": "distributed-system",
     "mechanism": "分布式系统由多台独立计算节点通过消息协作；节点没有完美共享时钟，并可能分别失败或延迟。",
     "misconception": "把应用部署到多台机器并不等于问题自动解决；并发、部分失败和顺序不一致是核心难点。",
-    "demoSignature": "输入：A、B两节点同时更新余额；中间：消息延迟使A看到10→7、B仍看到10→6，版本号1分叉为2a/2b；输出：按冲突规则合并为3。可视化：建议6帧的双时间轴与延迟消息；交互：拖动网络延迟观察冲突出现。",
+    "demoSignature": "分叉时钟：A、B 从同一版本出发，各自写入并由延迟消息带出 2a/2b；拖动延迟会改变冲突何时出现，合并规则才负责收束。",
     "sourceUrls": [
-      "https://lamport.azurewebsites.net/pubs/time-clocks.pdf"
+      "https://lamport.azurewebsites.net/pubs/time-clocks.pdf",
+      "https://aws.amazon.com/what-is/distributed-computing/",
+      "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication500-292.pdf",
+      "https://docs.aws.amazon.com/wellarchitected/latest/framework/distributed-system.html",
+      "https://martinfowler.com/articles/patterns-of-distributed-systems/"
     ],
     "rewriteRisk": "不要笼统说“多机协作”；需让部分失败、时序或一致性至少一个问题可见。",
     "nearDuplicates": [
@@ -1256,10 +1260,12 @@
     "slug": "event-driven-architecture",
     "mechanism": "事件驱动架构让生产者发布已经发生的事实，消费者异步订阅并各自处理，双方通过事件格式而非直接调用解耦。",
     "misconception": "事件不是命令的同义词；事件描述已发生事实，消费者可能有多个并需处理重复或乱序。",
-    "demoSignature": "输入：OrderCreated事件id=E7；中间：队列副本1→2，库存和邮件各消费1次，重复投递使邮件收到第2次；输出：幂等键E7将重复副作用2→1。可视化：建议6帧的事件扇出与去重闸门；交互：重放事件查看消费者状态。",
+    "demoSignature": "事件扇出与重放：OrderCreated E7 作为一份事实分给库存和邮件，第二次重放仍被事件 id 的幂等记录挡在副作用之前。",
     "sourceUrls": [
       "https://github.com/cloudevents/spec/blob/main/cloudevents/spec.md",
-      "https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/event-driven"
+      "https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/event-driven",
+      "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-events.html",
+      "https://cloud.google.com/eventarc/docs/overview"
     ],
     "rewriteRisk": "必须出现异步、扇出或重复处理，别画成换名字的请求—响应。",
     "nearDuplicates": [
@@ -1271,7 +1277,7 @@
     "slug": "serverless",
     "mechanism": "无服务器把函数交给云平台，在请求或事件到来时准备运行环境；平台管理底层服务器和自动扩缩，开发者仍负责代码、配置和数据。",
     "misconception": "服务器仍然存在；冷启动、执行时限、临时状态、供应商接口和计费规则仍需考虑。",
-    "demoSignature": "输入：每分钟请求量从0升到120；中间：函数运行份数0→6，第一次准备运行环境产生420ms示例延迟；输出：流量回落后运行份数6→0，空闲时示例计量不再增长。可视化：建议4帧的无请求、流量突增、第一次启动、流量归零；交互：拖请求速率查看运行份数与延迟。",
+    "demoSignature": "弹性实例架：请求速率从 0 拉到 120/min，平台准备更多函数实例；第一份实例显示冷启动，流量回落后运行环境逐步归零。",
     "sourceUrls": [
       "https://cloud.google.com/discover/what-is-serverless-computing",
       "https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtime-environment.html",
