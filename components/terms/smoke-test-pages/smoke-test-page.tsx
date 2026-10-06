@@ -1,7 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { smokeTestSources } from "@/lib/smoke-test-sources";
-import { SmokeTestHero } from "./smoke-test-hero";
+import { SmokeTestSignatureHero } from "../DataTestSignatureHeroes";
 import { SmokeTestLesson } from "./smoke-test";
 
 const sections: [string, string][] = [
@@ -12,7 +12,7 @@ const sections: [string, string][] = [
 ];
 
 export function SmokeTestTermPage() {
-  return <Article slug="smoke-test" title="冒烟测试" subtitle="Smoke Test · 用几盏关键灯决定要不要继续" sources={smokeTestSources} sections={sections} hero={<SmokeTestHero />} intro={<>新版本刚部署，是先把 120 个回归用例全部点燃，还是先用几条最关键的检查确认环境没有直接坏掉？冒烟测试站在完整测试之前，负责快速回答一个很实际的问题：这个构建现在值得继续投入时间吗？</>}>
+  return <Article slug="smoke-test" title="冒烟测试" subtitle="Smoke Test · 用几盏关键灯决定要不要继续" sources={smokeTestSources} sections={sections} hero={<SmokeTestSignatureHero />} intro={<>新版本刚部署，是先把 120 个回归用例全部点燃，还是先用几条最关键的检查确认环境没有直接坏掉？冒烟测试站在完整测试之前，负责快速回答一个很实际的问题：这个构建现在值得继续投入时间吗？</>}>
     <ArticleSection id="smoke-purpose" title="先回答：这个构建值得继续测吗">
       <p id="smoke-definition" className="vp-citation-target">Microsoft 把 smoke test 放进 build verification testing：它是测试方案基本功能的端到端检查，运行通常很快；如果这类检查失败，说明构建有严重问题。冒烟测试因此是发布流程的门槛，不是把所有质量一次测完的缩小版。<Cite id="smoke-definition" sources={smokeTestSources} /></p>
       <p id="smoke-fast" className="vp-citation-target">同一份 Microsoft 指南还强调，BVT 既要足够覆盖构建质量，又要小到能在分配的时间里执行。这里的“快”不是随便少写几条，而是只保留能改变下一步决定的检查：进程是否能响应、身份入口是否可用、最重要的业务动作能不能走通。<Cite id="smoke-fast" sources={smokeTestSources} /></p>

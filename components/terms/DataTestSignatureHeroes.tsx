@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { Archive, ArrowDown, ArrowRight, ArrowsClockwise, Browser, Broadcast, CheckCircle, Clock, Code, Cube, CurrencyCircleDollar, Database, EnvelopeSimple, Eye, FileText, FlowArrow, Flask, Funnel, Gear, GitBranch, Globe, ListChecks, LockSimple, MagnifyingGlass, MapPin, Package, Pulse, Scales, ShieldCheck, TreeStructure, WarningCircle } from "@phosphor-icons/react";
+import { Archive, ArrowDown, ArrowsClockwise, Browser, Broadcast, CheckCircle, Clock, Code, Cube, CurrencyCircleDollar, Database, EnvelopeSimple, Eye, FileText, FlowArrow, Flask, Funnel, Gauge, Gear, GitBranch, GitCommit, Globe, ListChecks, LockSimple, MagnifyingGlass, MapPin, Package, Pulse, Scales, ShieldCheck, TreeStructure, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./DataTestSignatureHeroes.module.css";
 
@@ -265,6 +265,31 @@ export function E2eTestSignatureHero() {
       <div className={styles.e2eJourney}><div><Browser size={17} /><span>浏览器旅程</span></div><strong>确认订单</strong><code>{step >= 1 ? "click → POST /orders" : "等待用户动作"}</code><small>{step === 0 ? "fresh session · u-42" : "真实可见入口"}</small></div>
       <div className={styles.e2eStack}><span>跨层事实</span><div data-done={step >= 1}><Package size={16} /><strong>API</strong><code>{step >= 1 ? "201 · pending" : "—"}</code></div><div data-done={paid}><Database size={16} /><strong>数据库</strong><code>{paid ? "status=paid" : "status=—"}</code></div><div data-done={step >= 3 && !mailLost} data-danger={mailLost && step >= 3}><EnvelopeSimple size={16} /><strong>邮件沙箱</strong><code>{step >= 3 ? mailLost ? "0 封" : "1 封" : "—"}</code></div></div>
       <div className={styles.e2eInvariant}><div><CheckCircle size={17} /><span>验收不变量</span></div><strong>{complete ? "PASS" : mailLost && step >= 3 ? "STOP" : "等待"}</strong><div className={styles.e2eProof}><span>用户看到</span><code>{paid ? "订单已支付" : "等待结果"}</code></div><div className={styles.e2eProof}><span>系统留下</span><code>{step >= 3 ? mailLost ? "mail=0 · fail" : "DB=paid · mail=1" : "尚未核对"}</code></div></div>
+    </div>
+  </Frame>;
+}
+
+const smokeSteps = ["候选到站", "点亮四盏灯", "放行或停闸"];
+const smokeChecks = ["health", "login", "order", "payment"];
+
+export function SmokeTestSignatureHero() {
+  const scene = useScene(smokeSteps.length);
+  const [paymentFails, setPaymentFails] = useState(false);
+  const step = scene.step;
+  const stopped = paymentFails && step >= 1;
+  const passed = step >= 2 && !paymentFails;
+  const result = step === 0
+    ? { icon: GitCommit, title: "候选构建先到闸门前", detail: "完整回归保持锁定，先确认环境没有直接坏掉" }
+    : stopped
+      ? { icon: WarningCircle, title: "支付灯灭，立即停闸", detail: "完整回归没有启动，先修复候选构建", danger: true }
+      : step === 1
+        ? { icon: Gauge, title: "关键灯正在逐盏亮起", detail: "health、login、order、payment 只检查最值钱的路径" }
+        : { icon: CheckCircle, title: "冒烟通过，放行后续预算", detail: "四项关键路径通过，完整回归可以开始" };
+  return <Frame label="冒烟测试用少量关键路径点亮信号灯，决定候选构建是否放行完整回归" eyebrow="先看关键灯，再开大套件" meta="candidate → smoke gate → regression" scene={scene} steps={smokeSteps} result={result} caption="冒烟测试只回答一个入口问题：这个候选构建值得继续投入完整测试吗？它要快速暴露环境级故障，也要把 STOP 与 PROCEED 变成清楚的放行信号。" controls={<div className={styles.inlineControls} role="group" aria-label="冒烟测试故障场景"><button type="button" aria-pressed={paymentFails} onClick={() => { setPaymentFails(value => !value); scene.seek(1); }}><WarningCircle size={15} />{paymentFails ? "恢复支付路径" : "注入支付 502"}</button></div>}>
+    <div className={styles.smokeBoard} data-stopped={stopped} data-passed={passed}>
+      <div className={styles.smokeCandidate}><div><GitCommit size={17} /><span>候选构建</span></div><strong>commit 9f31</strong><code>{step === 0 ? "deployed · waiting" : "deployed · under smoke"}</code><small>先测四条关键路径</small></div>
+      <div className={styles.smokeTower}><div className={styles.smokeTowerHead}><Gauge size={17} /><span>信号塔</span><strong>{stopped ? "STOP" : passed ? "PROCEED" : "WAIT"}</strong></div><div className={styles.smokeLights}>{smokeChecks.map((check, index) => { const lit = step >= 1 && !stopped && (index < 3 || step >= 2); const danger = check === "payment" && stopped; return <div key={check} data-lit={lit} data-danger={danger}><i /><span>{check}</span><code>{danger ? "502" : lit ? check === "health" ? "200" : check === "login" ? "pass" : "ok" : "—"}</code></div>; })}</div><small>{stopped ? "失败已经足够说明构建不应继续" : passed ? "关键路径已给出放行证据" : "每盏灯代表一条高价值入口"}</small></div>
+      <div className={styles.smokeRunway}><div><LockSimple size={17} /><span>完整回归</span></div><strong>{stopped ? "保持锁定" : passed ? "已解锁" : "等待闸门"}</strong><div className={styles.smokeRunwayRail}><span /><span /><span /></div><small>{stopped ? "120 tests · not started" : passed ? "120 tests · ready" : "120 tests · locked"}</small></div>
     </div>
   </Frame>;
 }
