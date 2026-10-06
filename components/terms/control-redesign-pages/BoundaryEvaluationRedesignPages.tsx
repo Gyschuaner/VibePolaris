@@ -1,4 +1,3 @@
-import type { CSSProperties, ReactNode } from "react";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { ArticleAside, ArticleSection } from "../ConceptArticle";
 import {
@@ -25,12 +24,18 @@ import {
   SkillLesson,
   XssLesson,
 } from "./BoundaryEvaluationLessons";
-import { ControlRedesignRuntime } from "./ControlRedesignRuntime";
-import styles from "./ControlRedesignConcepts.module.css";
-
-function HeroShell({ kind, label, children }: { kind: Parameters<typeof ControlRedesignRuntime>[0]["kind"]; label: string; children: ReactNode }) {
-  return <ControlRedesignRuntime kind={kind} label={label}>{children}</ControlRedesignRuntime>;
-}
+import {
+  BoundaryHero,
+  CostEvaluationHero,
+  EvaluationRunHero,
+  HumanGraderHero,
+  LatencyEvaluationHero,
+  PassFailHero,
+  RubricHero,
+  SafetyEvaluationHero,
+  SkillHero,
+  XssHero,
+} from "./BoundaryEvaluationDistinctiveHeroes";
 
 function PermissionCite({ id }: { id: string }) { return <Cite id={id} sources={permissionBoundarySources}/>; }
 function XssCite({ id }: { id: string }) { return <Cite id={id} sources={xssRedesignSources}/>; }
@@ -42,46 +47,6 @@ function LatencyCite({ id }: { id: string }) { return <Cite id={id} sources={lat
 function PassFailCite({ id }: { id: string }) { return <Cite id={id} sources={passFailRedesignSources}/>; }
 function RubricCite({ id }: { id: string }) { return <Cite id={id} sources={rubricRedesignSources}/>; }
 function HumanCite({ id }: { id: string }) { return <Cite id={id} sources={humanGraderRedesignSources}/>; }
-
-function BoundaryHero() {
-  return <HeroShell kind="boundary" label="只有 read:sales 的令牌遇到工资表请求时，资源访问闸门返回拒绝"><div className={styles.boundaryHero}><div className={styles.boundaryRequests}><div className={styles.boundaryRequest}><span>sales · read</span><strong>allow</strong></div><div className={styles.boundaryRequest} data-denied="true"><span>salary · read</span><strong>deny</strong></div><div className={styles.boundaryRequest}><span>审计事件</span><strong>记录</strong></div></div><div className={styles.boundaryToken}><small>token scope</small><strong>read:sales</strong><span>salary 不在边界</span></div></div></HeroShell>;
-}
-
-function XssHero() {
-  return <HeroShell kind="xss" label="同一段评论在 innerHTML 中成为节点，在 textContent 中只保留可见文字"><div className={styles.xssHero}><div className={styles.xssPane} data-danger="true"><span>innerHTML</span><code>&lt;img onerror=…&gt;</code><strong>1 个可执行节点</strong></div><div className={styles.xssArrow}>→</div><div className={styles.xssPane}><span>textContent</span><code>&lt;img onerror=…&gt;</code><strong>0 个脚本节点</strong></div></div></HeroShell>;
-}
-
-function SkillHero() {
-  return <HeroShell kind="skill" label="技能先以元数据匹配任务，再逐层披露 SKILL.md 和脚本输出"><div className={styles.skillHero}><div className={styles.skillCapsule}><small>任务</small><strong>PDF 表单</strong></div><div className={styles.skillFile}><small>匹配后读取</small><strong>SKILL.md</strong><span>步骤 + 约束</span></div><div className={styles.skillResource}><small>需要时</small><strong>scripts/</strong><span>输出进入上下文</span></div></div></HeroShell>;
-}
-
-function EvaluationRunHero() {
-  return <HeroShell kind="evalrun" label="一次评测运行把题集、版本和逐项轨迹锁在同一个 run 编号里"><div className={styles.evalrunHero}><div className={styles.runLedger}><div className={styles.runRow}><span>题集</span><code>support-v1</code><em>12 题</em></div><div className={styles.runRow}><span>版本</span><code>agent-C</code><em>rubric-v2</em></div><div className={styles.runRow}><span>结果</span><code>10 / 12</code><em>逐项可回查</em></div></div><div className={styles.runStamp}><small>evaluation</small><strong>run-18</strong><span>10 / 12</span></div></div></HeroShell>;
-}
-
-function SafetyEvaluationHero() {
-  return <HeroShell kind="safetyEval" label="正常任务允许，越权请求不触发敏感工具，泄露副作用会让安全门槛失败"><div className={styles.safetyEvalHero}><div className={styles.safetyCases}><div className={styles.safetyCase}><span>自己的订单</span><strong>完成</strong></div><div className={styles.safetyCase}><span>读取他人工资</span><strong>拒绝</strong></div><div className={styles.safetyCase} data-risk="true"><span>间接注入读字段</span><strong>阻断</strong></div></div><div className={styles.safetyGate}><small>副作用</small><strong>0</strong><span>门槛</span></div></div></HeroShell>;
-}
-
-function CostEvaluationHero() {
-  return <HeroShell kind="costEval" label="同一组任务同时显示质量和单任务成本，超过预算的方案停在复核处"><div className={styles.costEvalHero}><div className={styles.costMeter}><div className={styles.costBar}><span>方案 A</span><i style={{"--fill":"42%"} as CSSProperties}/><code>17/20 · ¥0.42</code></div><div className={styles.costBar} data-over="true"><span>方案 B</span><i style={{"--fill":"100%"} as CSSProperties}/><code>18/20 · ¥1.16</code></div></div><div className={styles.costGate}><small>预算</small><strong>¥1.00</strong><span>先复核</span></div></div></HeroShell>;
-}
-
-function LatencyEvaluationHero() {
-  return <HeroShell kind="latencyEval" label="一次请求先在 420ms 给出首字，工具返回后完成；p95 长尾单独亮起"><div className={styles.latencyEvalHero}><div className={styles.latencyTrack}><span>首字<br />420ms</span><span>工具<br />1.8s</span><span>完成<br />3.4s</span></div><div className={styles.latencyStats}><span>p50 1.9s</span><strong>p95 4.8s · tail</strong></div><div className={styles.latencyTail}><i className={styles.latencyDot}/><i className={styles.latencyDot}/><i className={styles.latencyDot}/><i className={styles.latencyDot}/><i className={styles.latencyDot}/></div></div></HeroShell>;
-}
-
-function PassFailHero() {
-  return <HeroShell kind="passFail" label="评分器先检查文件和字段，再把证据分成 pass、fail 或 unscored"><div className={styles.passFailHero}><div className={styles.passFailEvidenceRows}><div className={styles.passFailEvidenceRow}><span>文件存在</span><strong>✓</strong></div><div className={styles.passFailEvidenceRow}><span>amount = 120</span><strong>✓</strong></div><div className={styles.passFailEvidenceRow} data-state="unscored"><span>环境可读</span><strong>?</strong></div></div><div className={styles.passFailDecision}><small>判定</small><strong>PASS</strong><span>门槛</span></div></div></HeroShell>;
-}
-
-function RubricHero() {
-  return <HeroShell kind="rubric" label="评分规则把回答拆成事实、条件和越界承诺三项逐格检查"><div className={styles.rubricHero}><div className={styles.rubricChecks}><div className={styles.rubricCheck}><span>事实准确</span><strong>✓</strong></div><div className={styles.rubricCheck}><span>条件保留</span><strong>✓</strong></div><div className={styles.rubricCheck} data-miss="true"><span>越界承诺</span><strong>0</strong></div></div><div className={styles.rubricScore}><small>score</small><strong>2 / 3</strong><span>可解释</span></div></div></HeroShell>;
-}
-
-function HumanGraderHero() {
-  return <HeroShell kind="humanGrader" label="两位评审按同一量表独立评分，分歧回到校准样例而不是被平均数盖掉"><div className={styles.humanGraderHero}><div className={styles.reviewCard}><span>评审甲</span><strong>4 / 5</strong><small>条件保留</small></div><div className={styles.reviewBridge}>↔<small>分歧</small></div><div className={styles.reviewCard}><span>评审乙</span><strong>2 / 5</strong><small>条件缺失</small></div><div className={styles.calibrationCard}><span>第三人校准</span><strong>3 / 5 · 写回样例</strong></div></div></HeroShell>;
-}
 
 const permissionSections: [string, string][] = [["permission-definition-section", "提示词不是权限边界"], ["permission-policy-section", "一次请求怎样被挡住"], ["permission-boundary-section", "边界扩大后要重新授权"]];
 export function BoundaryPermissionTermPage() {
