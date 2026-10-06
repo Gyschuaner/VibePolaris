@@ -1,4 +1,3 @@
-import type { CSSProperties, ReactNode } from "react";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { ArticleAside, ArticleSection } from "../ConceptArticle";
 import {
@@ -13,24 +12,16 @@ import {
   skillRedesignSources,
   xssRedesignSources,
 } from "@/lib/boundary-evaluation-redesign-sources";
-import {
-  BoundaryLesson,
-  CostEvaluationLesson,
-  EvaluationRunLesson,
-  HumanGraderLesson,
-  LatencyEvaluationLesson,
-  PassFailLesson,
-  RubricLesson,
-  SafetyEvaluationLesson,
-  SkillLesson,
-  XssLesson,
-} from "./BoundaryEvaluationLessons";
-import { ControlRedesignRuntime } from "./ControlRedesignRuntime";
-import styles from "./ControlRedesignConcepts.module.css";
-
-function HeroShell({ kind, label, children }: { kind: Parameters<typeof ControlRedesignRuntime>[0]["kind"]; label: string; children: ReactNode }) {
-  return <ControlRedesignRuntime kind={kind} label={label}>{children}</ControlRedesignRuntime>;
-}
+import { BoundaryLesson, BoundaryHero } from "./PermissionBoundaryAnimation";
+import { XssHero, XssLesson } from "./XssAnimation";
+import { SkillHero, SkillLesson } from "./SkillAnimation";
+import { EvaluationRunHero, EvaluationRunLesson } from "./EvaluationRunAnimation";
+import { SafetyEvaluationHero, SafetyEvaluationLesson } from "./SafetyEvaluationAnimation";
+import { CostEvaluationHero, CostEvaluationLesson } from "./CostEvaluationAnimation";
+import { LatencyEvaluationHero, LatencyEvaluationLesson } from "./LatencyEvaluationAnimation";
+import { PassFailHero, PassFailLesson } from "./PassFailAnimation";
+import { RubricHero, RubricLesson } from "./RubricAnimation";
+import { HumanGraderHero, HumanGraderLesson } from "./HumanGraderAnimation";
 
 function PermissionCite({ id }: { id: string }) { return <Cite id={id} sources={permissionBoundarySources}/>; }
 function XssCite({ id }: { id: string }) { return <Cite id={id} sources={xssRedesignSources}/>; }
@@ -42,46 +33,6 @@ function LatencyCite({ id }: { id: string }) { return <Cite id={id} sources={lat
 function PassFailCite({ id }: { id: string }) { return <Cite id={id} sources={passFailRedesignSources}/>; }
 function RubricCite({ id }: { id: string }) { return <Cite id={id} sources={rubricRedesignSources}/>; }
 function HumanCite({ id }: { id: string }) { return <Cite id={id} sources={humanGraderRedesignSources}/>; }
-
-function BoundaryHero() {
-  return <HeroShell kind="boundary" label="只有 read:sales 的令牌遇到工资表请求时，资源访问闸门返回拒绝"><div className={styles.boundaryHero}><div className={styles.boundaryRequests}><div className={styles.boundaryRequest}><span>sales · read</span><strong>allow</strong></div><div className={styles.boundaryRequest} data-denied="true"><span>salary · read</span><strong>deny</strong></div><div className={styles.boundaryRequest}><span>审计事件</span><strong>记录</strong></div></div><div className={styles.boundaryToken}><small>token scope</small><strong>read:sales</strong><span>salary 不在边界</span></div></div></HeroShell>;
-}
-
-function XssHero() {
-  return <HeroShell kind="xss" label="同一段评论在 innerHTML 中成为节点，在 textContent 中只保留可见文字"><div className={styles.xssHero}><div className={styles.xssPane} data-danger="true"><span>innerHTML</span><code>&lt;img onerror=…&gt;</code><strong>1 个可执行节点</strong></div><div className={styles.xssArrow}>→</div><div className={styles.xssPane}><span>textContent</span><code>&lt;img onerror=…&gt;</code><strong>0 个脚本节点</strong></div></div></HeroShell>;
-}
-
-function SkillHero() {
-  return <HeroShell kind="skill" label="技能先以元数据匹配任务，再逐层披露 SKILL.md 和脚本输出"><div className={styles.skillHero}><div className={styles.skillCapsule}><small>任务</small><strong>PDF 表单</strong></div><div className={styles.skillFile}><small>匹配后读取</small><strong>SKILL.md</strong><span>步骤 + 约束</span></div><div className={styles.skillResource}><small>需要时</small><strong>scripts/</strong><span>输出进入上下文</span></div></div></HeroShell>;
-}
-
-function EvaluationRunHero() {
-  return <HeroShell kind="evalrun" label="一次评测运行把题集、版本和逐项轨迹锁在同一个 run 编号里"><div className={styles.evalrunHero}><div className={styles.runLedger}><div className={styles.runRow}><span>题集</span><code>support-v1</code><em>12 题</em></div><div className={styles.runRow}><span>版本</span><code>agent-C</code><em>rubric-v2</em></div><div className={styles.runRow}><span>结果</span><code>10 / 12</code><em>逐项可回查</em></div></div><div className={styles.runStamp}><small>evaluation</small><strong>run-18</strong><span>10 / 12</span></div></div></HeroShell>;
-}
-
-function SafetyEvaluationHero() {
-  return <HeroShell kind="safetyEval" label="正常任务允许，越权请求不触发敏感工具，泄露副作用会让安全门槛失败"><div className={styles.safetyEvalHero}><div className={styles.safetyCases}><div className={styles.safetyCase}><span>自己的订单</span><strong>完成</strong></div><div className={styles.safetyCase}><span>读取他人工资</span><strong>拒绝</strong></div><div className={styles.safetyCase} data-risk="true"><span>间接注入读字段</span><strong>阻断</strong></div></div><div className={styles.safetyGate}><small>副作用</small><strong>0</strong><span>门槛</span></div></div></HeroShell>;
-}
-
-function CostEvaluationHero() {
-  return <HeroShell kind="costEval" label="同一组任务同时显示质量和单任务成本，超过预算的方案停在复核处"><div className={styles.costEvalHero}><div className={styles.costMeter}><div className={styles.costBar}><span>方案 A</span><i style={{"--fill":"42%"} as CSSProperties}/><code>17/20 · ¥0.42</code></div><div className={styles.costBar} data-over="true"><span>方案 B</span><i style={{"--fill":"100%"} as CSSProperties}/><code>18/20 · ¥1.16</code></div></div><div className={styles.costGate}><small>预算</small><strong>¥1.00</strong><span>先复核</span></div></div></HeroShell>;
-}
-
-function LatencyEvaluationHero() {
-  return <HeroShell kind="latencyEval" label="一次请求先在 420ms 给出首字，工具返回后完成；p95 长尾单独亮起"><div className={styles.latencyEvalHero}><div className={styles.latencyTrack}><span>首字<br />420ms</span><span>工具<br />1.8s</span><span>完成<br />3.4s</span></div><div className={styles.latencyStats}><span>p50 1.9s</span><strong>p95 4.8s · tail</strong></div><div className={styles.latencyTail}><i className={styles.latencyDot}/><i className={styles.latencyDot}/><i className={styles.latencyDot}/><i className={styles.latencyDot}/><i className={styles.latencyDot}/></div></div></HeroShell>;
-}
-
-function PassFailHero() {
-  return <HeroShell kind="passFail" label="评分器先检查文件和字段，再把证据分成 pass、fail 或 unscored"><div className={styles.passFailHero}><div className={styles.passFailEvidenceRows}><div className={styles.passFailEvidenceRow}><span>文件存在</span><strong>✓</strong></div><div className={styles.passFailEvidenceRow}><span>amount = 120</span><strong>✓</strong></div><div className={styles.passFailEvidenceRow} data-state="unscored"><span>环境可读</span><strong>?</strong></div></div><div className={styles.passFailDecision}><small>判定</small><strong>PASS</strong><span>门槛</span></div></div></HeroShell>;
-}
-
-function RubricHero() {
-  return <HeroShell kind="rubric" label="评分规则把回答拆成事实、条件和越界承诺三项逐格检查"><div className={styles.rubricHero}><div className={styles.rubricChecks}><div className={styles.rubricCheck}><span>事实准确</span><strong>✓</strong></div><div className={styles.rubricCheck}><span>条件保留</span><strong>✓</strong></div><div className={styles.rubricCheck} data-miss="true"><span>越界承诺</span><strong>0</strong></div></div><div className={styles.rubricScore}><small>score</small><strong>2 / 3</strong><span>可解释</span></div></div></HeroShell>;
-}
-
-function HumanGraderHero() {
-  return <HeroShell kind="humanGrader" label="两位评审按同一量表独立评分，分歧回到校准样例而不是被平均数盖掉"><div className={styles.humanGraderHero}><div className={styles.reviewCard}><span>评审甲</span><strong>4 / 5</strong><small>条件保留</small></div><div className={styles.reviewBridge}>↔<small>分歧</small></div><div className={styles.reviewCard}><span>评审乙</span><strong>2 / 5</strong><small>条件缺失</small></div><div className={styles.calibrationCard}><span>第三人校准</span><strong>3 / 5 · 写回样例</strong></div></div></HeroShell>;
-}
 
 const permissionSections: [string, string][] = [["permission-definition-section", "提示词不是权限边界"], ["permission-policy-section", "一次请求怎样被挡住"], ["permission-boundary-section", "边界扩大后要重新授权"]];
 export function BoundaryPermissionTermPage() {
@@ -105,7 +56,7 @@ const skillSections: [string, string][] = [["skill-structure-section", "技能�
 export function BoundarySkillTermPage() {
   return <Article slug="skill" title="技能" subtitle="Skill · 把一类任务的做法按需装进上下文" sources={skillRedesignSources} sections={skillSections} hero={<SkillHero/>} intro={<>技能像一只按需打开的工具箱：启动时先让智能体知道“这里有一套处理 PDF 表单的做法”，真正匹配到任务后，才把 <code>SKILL.md</code> 和脚本材料拿出来。<strong>它改变的是可复用的工作说明，不是模型突然多了一种能力。</strong></>}> 
     <ArticleSection id="skill-structure-section" title="技能目录装的是什么"><p id="skill-structure" className="vp-citation-target">Agent Skills 规范把技能组织成带元数据和 <code>SKILL.md</code> 的目录，说明文件还可以指向脚本和参考资料。<SkillCite id="skill-structure"/>元数据负责让宿主发现技能，正文负责告诉智能体如何做事。</p><p id="skill-purpose" className="vp-citation-target">Anthropic 把技能描述为可组合的任务知识和程序材料：把团队反复说的步骤写成文件，智能体可以在需要时复用。<SkillCite id="skill-purpose"/>技能仍依赖宿主能读取目录、运行允许的程序。</p><SkillLesson/></ArticleSection>
-    <ArticleSection id="skill-disclosure-section" title="为什么不是一开始全读"><p id="skill-trigger" className="vp-citation-target">技能的 <code>name</code> 与 <code>description</code> 先作为轻量线索参与匹配，当前任务合适时才进一步读取正文。<SkillCite id="skill-trigger"/>这让许多技能可以并存，又不把全部细节塞进每一轮上下文。</p><p id="skill-disclosure" className="vp-citation-target">Anthropic 与 OpenAI 的技能文档都把渐进式披露作为关键机制：先暴露描述，再暴露说明，必要时才读资源或脚本输出。<SkillCite id="skill-disclosure"/>首图里的三格不是三次模型调用，而是信息进入上下文的三个门槛。</p><p id="skill-resources" className="vp-citation-target">脚本和参考文件是可选资源，运行后应只把对当前任务有用的结果带回来。<SkillCite id="skill-resources"/>把整个仓库一股脑塞进上下文，会让技能失去它本来要解决的负担。</p></ArticleSection>
+    <ArticleSection id="skill-disclosure-section" title="为什么不是一开始全读"><p id="skill-trigger" className="vp-citation-target">技能的 <code>name</code> 与 <code>description</code> 先作为轻量线索参与匹配，当前任务合适时才进一步读取正文。<SkillCite id="skill-trigger"/>这让许多技能可以并存，又不把全部细节塞进每一轮上下文。</p><p id="skill-disclosure" className="vp-citation-target">Anthropic 与 OpenAI 的技能文档都把渐进式披露作为关键机制：先暴露描述，再暴露说明，必要时才读资源或脚本输出。<SkillCite id="skill-disclosure"/>首图里的三层抽屉不是三次模型调用，而是信息进入上下文的三个门槛。</p><p id="skill-resources" className="vp-citation-target">脚本和参考文件是可选资源，运行后应只把对当前任务有用的结果带回来。<SkillCite id="skill-resources"/>把整个仓库一股脑塞进上下文，会让技能失去它本来要解决的负担。</p></ArticleSection>
     <ArticleSection id="skill-security-section" title="技能不会凭空增加权限"><p id="skill-security" className="vp-citation-target">技能说明可以建议使用工具，却不会自动授予文件、网络或账户权限；宿主仍要按自己的执行边界和审批机制放行。<SkillCite id="skill-security"/>安装不可信技能等于把不可信代码和指令带进工作区，应先审查来源、脚本和数据流。</p><ArticleAside title="技能和工具的分界"><p>技能告诉智能体“如何组织一次任务”，工具才提供真正的读写、联网或执行入口。把两者混为一谈，会以为写进 SKILL.md 就能绕过权限。</p></ArticleAside></ArticleSection>
   </Article>;
 }
