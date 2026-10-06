@@ -2,7 +2,7 @@ import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptT
 import { MechanismHero } from "./ConceptHero";
 import { MobileConceptLesson } from "./MobileConceptLessons";
 import { AdaptiveLayoutSignatureHero, OfflineFirstSignatureHero } from "./FrontendInteractionSignatureHeroes";
-import { AppLifecycleSignatureHero, AppPermissionSignatureHero, CrossPlatformSignatureHero, PushNotificationSignatureHero, SafeAreaSignatureHero, WebviewSignatureHero } from "./PlatformCssSignatureHeroes";
+import { AppLifecycleSignatureHero, AppPermissionSignatureHero, CrossPlatformSignatureHero, CssSelectorSignatureHero, PushNotificationSignatureHero, SafeAreaSignatureHero, WebviewSignatureHero } from "./PlatformCssSignatureHeroes";
 import { adaptiveLayoutSources, appLifecycleSources, appPermissionSources, boxModelSources, crossPlatformSources, cssSelectorSources, offlineFirstSources, pushNotificationSources, safeAreaSources, webviewSources } from "@/lib/mobile-css-concept-sources";
 import styles from "./ConceptArticle.module.css";
 import { ArrowRight, Bell, Browser, CheckCircle, Cloud, Code, Database, FileText, GitBranch, Layout, ShieldCheck, Stack, TreeStructure, User } from "@phosphor-icons/react/dist/ssr";
@@ -261,7 +261,7 @@ export function WebviewTermPage() {
 }
 
 export function CssSelectorTermPage() {
-  return <ConceptArticle slug="css-selector" title="CSS selector" subtitle="CSS 选择器" hero={<MobileHero trigger="规则没有改变通知卡片" change="条件 → DOM 匹配集合" proof="命中后再经过层叠竞争" />} sections={selectorSections} sources={cssSelectorSources} intro={<>CSS 选择器描述哪些 DOM 元素符合一组条件。<strong>它先负责找出候选元素，匹配成功后浏览器还要经过层叠计算，才决定最终样式。</strong></>}>
+  return <ConceptArticle slug="css-selector" title="CSS selector" subtitle="CSS 选择器" hero={<CssSelectorSignatureHero />} sections={selectorSections} sources={cssSelectorSources} intro={<>CSS 选择器描述哪些 DOM 元素符合一组条件。<strong>它先负责找出候选元素，匹配成功后浏览器还要经过层叠计算，才决定最终样式。</strong></>}>
     <ArticleSection id="selector-task" title="为什么这条规则没有命中">
       <p>你给订单卡片写了 <code>.card &gt; button[disabled]</code>，页面却没有把禁用按钮变灰。先不要马上提高权重：可能按钮不是卡片的直接子元素，或者 <code>disabled</code> 属性落在了另一个节点上。</p>
       <p id="selector-match-source" className="vp-citation-target">Selectors 规范把选择器定义为匹配元素的条件，条件可以包括类型、类、属性、关系和伪类。浏览器会在 DOM 树中判断每个元素是否满足这些条件。<Cite id="selector-match-source" sources={cssSelectorSources} /></p>

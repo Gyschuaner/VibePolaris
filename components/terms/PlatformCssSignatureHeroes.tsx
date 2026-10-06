@@ -1,6 +1,6 @@
 "use client";
 
-import { Archive, ArrowRight, ArrowsOutCardinal, ArrowCounterClockwise, Bell, Browser, Camera, CheckCircle, Clock, Cloud, Code, Database, DeviceMobile, FileArrowUp, Gear, GitBranch, Key, LockSimple, MapPinLine, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
+import { Archive, ArrowRight, ArrowsOutCardinal, ArrowCounterClockwise, Bell, Browser, Camera, CheckCircle, Clock, Cloud, Code, Database, DeviceMobile, FileArrowUp, Gear, GitBranch, Key, LockSimple, MapPinLine, ShieldCheck, Target, TreeStructure, WarningCircle } from "@phosphor-icons/react";
 import type { CSSProperties } from "react";
 import { useState } from "react";
 import { HeroShell } from "./FrontendInteractionSignatureHeroes";
@@ -140,6 +140,29 @@ export function WebviewSignatureHero() {
       <div className={styles.webviewBridge}><ShieldCheck size={21} /><span>宿主消息桥</span><strong>{scene.step < 1 ? "等待消息" : scene.step === 1 ? "检查 origin" : scene.step === 2 ? "校验 method + payload" : unknown ? "拒绝" : "允许"}</strong><small>{scene.step < 2 ? "网页不能直接调用原生 API" : "把请求翻译成有限能力"}</small><i /></div>
       <div className={styles.webviewNative}><DeviceMobile size={22} /><span>原生能力</span><strong>{scene.step === 3 && !unknown ? "系统分享面板" : "尚未打开"}</strong><small>{unknown && scene.step === 3 ? "来源不在白名单" : "只接收通过校验的请求"}</small>{scene.step === 3 ? (unknown ? <LockSimple size={18} /> : <CheckCircle size={18} />) : null}</div>
       <div className={styles.webviewProof} role="status"><span>宿主的证据</span><strong>{scene.step < 3 ? "原生动作还没有发生" : unknown ? "未知页面被挡在消息桥外" : "原生分享已被明确允许"}</strong><small>{scene.step === 0 ? "先看到网页请求，再谈是否执行" : scene.step === 1 ? "来源是权限边界的一部分" : scene.step === 2 ? "方法名和参数也需要白名单" : "网页展示与原生执行各负其责"}</small></div>
+    </div>
+  </HeroShell>;
+}
+
+const selectorLabels = ["先看一组节点", "加上 class 条件", "再加属性条件", "把命中交给层叠"];
+const selectorSamples = [".notice", ".notice.alert", ".notice.alert[data-live]", ".notice.alert[data-live]"];
+const selectorNodes = [
+  { id: "nav", label: "nav", kind: "导航" },
+  { id: "notice", label: "notice", kind: "普通提示" },
+  { id: "alert", label: "notice.alert", kind: "错误提示" },
+  { id: "live", label: "notice.alert[data-live]", kind: "实时错误" },
+  { id: "footer", label: "footer", kind: "页脚" },
+];
+
+export function CssSelectorSignatureHero() {
+  const scene = useScene(selectorLabels.length);
+  const matches = scene.step === 0 ? ["notice", "alert", "live"] : scene.step === 1 ? ["alert", "live"] : ["live"];
+  return <HeroShell scene={scene} title="CSS 选择器怎样从节点墙里找出匹配集合" labels={selectorLabels} className={styles.platformHero}>
+    <div className={styles.selectorBoard} data-step={scene.step}>
+      <div className={styles.selectorRule}><Code size={20} /><span>当前选择器</span><code>{selectorSamples[scene.step]}</code><small>{scene.step < 3 ? "只负责找元素" : "命中的元素还要继续参加层叠"}</small></div>
+      <div className={styles.selectorLens}><Target size={20} /><span>匹配条件</span><strong>{matches.length} 个节点</strong><i /></div>
+      <div className={styles.selectorNodes} role="img" aria-label={`当前选择器命中 ${matches.length} 个节点`}><div className={styles.selectorNodeTitle}><TreeStructure size={18} /><span>DOM 节点墙</span></div>{selectorNodes.map(node => <div key={node.id} className={styles.selectorNode} data-match={matches.includes(node.id)}><span>{node.label}</span><small>{node.kind}</small>{matches.includes(node.id) ? <CheckCircle size={16} /> : null}</div>)}</div>
+      <div className={styles.selectorProof} role="status"><span>观察匹配结果</span><strong>{scene.step === 3 ? "只找到实时错误这一项" : `从五个节点收窄到 ${matches.length} 个`}</strong><small>{scene.step === 3 ? "颜色最终由层叠决定，不是选择器直接上色" : "改变一个条件，匹配集合就会改变"}</small></div>
     </div>
   </HeroShell>;
 }
