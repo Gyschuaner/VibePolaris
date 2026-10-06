@@ -64,19 +64,19 @@ const manifestLabels = ["声明完整", "入口缺失", "权限缺失", "链接�
 type ManifestPart = "entry" | "permission" | "link";
 export function AppManifestSignatureHero() {
   const scene = useScene(manifestLabels.length);
-  const [missing, setMissing] = useState<ManifestPart | null>(null);
+  const parts: ManifestPart[] = ["entry", "permission", "link"];
+  const missing = parts[scene.step - 1] ?? null;
   const names: Record<ManifestPart, string> = { entry: "入口", permission: "相机权限", link: "链接匹配" };
-  const reset = () => setMissing(null);
-  return <HeroShell scene={scene} title="应用清单怎样让平台读懂应用" labels={manifestLabels} onReplay={reset} className={styles.manifestHero}>
-    <div className={styles.manifestToggles} role="group" aria-label="移除一项清单声明">{(Object.keys(names) as ManifestPart[]).map((key) => <button key={key} type="button" aria-pressed={missing === key} onClick={() => { setMissing(key); scene.seek(0); }}>{missing === key ? `已移除${names[key]}` : `移除${names[key]}`}</button>)}</div>
+  return <HeroShell scene={scene} title="应用清单怎样让平台读懂应用" labels={manifestLabels} className={styles.manifestHero}>
+    <div className={styles.manifestToggles} role="group" aria-label="移除一项清单声明">{parts.map((key, index) => <button key={key} type="button" aria-pressed={missing === key} onClick={() => scene.seek(missing === key ? 0 : index + 1)}>{missing === key ? `恢复${names[key]}` : `移除${names[key]}`}</button>)}</div>
     <div className={styles.manifestBoard} data-step={scene.step} data-missing={missing ?? "none"}>
-      <div className={styles.manifestFile}><FileCode size={24} /><strong>Manifest</strong><span>平台读取的声明</span><b>entry · permission · link</b></div>
+      <div className={styles.manifestFile}><FileCode size={24} /><strong>Manifest</strong><span>Android 示例</span><b>{parts.map(part => <span key={part}>{missing === part ? <del>{part}</del> : part}{" "}</span>)}</b></div>
       <div className={styles.manifestPorts}>
         <div data-missing={missing === "entry"}><span>入口</span><strong>主界面</strong><i>{missing === "entry" ? "未声明" : "可启动"}</i></div>
-        <div data-missing={missing === "permission"}><span>能力</span><strong>相机</strong><i>{missing === "permission" ? "无法请求" : "已声明"}</i></div>
+        <div data-missing={missing === "permission"}><span>能力</span><strong>相机</strong><i>{missing === "permission" ? "无法请求" : "可请求授权"}</i></div>
         <div data-missing={missing === "link"}><span>链接</span><strong>/orders/*</strong><i>{missing === "link" ? "不匹配" : "可处理"}</i></div>
       </div>
-      <div className={styles.manifestSystem}><DeviceMobile size={25} /><span>系统结果</span><strong>{scene.step === 0 ? "按声明启动" : missing === "entry" ? "没有入口" : missing === "permission" ? "运行时需另行请求" : missing === "link" ? "回退网页" : "读取声明"}</strong></div>
+      <div className={styles.manifestSystem}><DeviceMobile size={25} /><span>系统结果</span><strong>{missing === "entry" ? "找不到主界面入口" : missing === "permission" ? "相机请求被拒绝" : missing === "link" ? "链接回退网页" : "主界面可启动"}</strong></div>
     </div>
   </HeroShell>;
 }
