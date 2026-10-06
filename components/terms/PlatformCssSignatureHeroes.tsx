@@ -78,7 +78,7 @@ export function AppPermissionSignatureHero() {
       <div className={styles.permissionGate}><Gear size={20} /><span>权限闸门</span><strong>{scene.step < 2 ? "尚未决定" : decisionLabel}</strong><small>{scene.step === 1 ? "说明：只用于拍照，不上传相册" : "系统状态决定能否调用相机"}</small></div>
       <div className={styles.permissionResult}>
         <div className={styles.permissionSystem}><ShieldCheck size={18} /><span>系统对话框</span><b>{scene.step < 2 ? "等待请求" : scene.step === 2 ? "用户选择" : decisionLabel}</b></div>
-        <div className={styles.permissionOutcome} data-visible={scene.step === 3} data-decision={decision}><span>{decision === "allow" ? "相机" : "文件选择"}</span>{decision === "allow" ? <Camera size={22} /> : <FileArrowUp size={22} />}<strong>{scene.step === 3 ? (decision === "allow" ? "打开相机" : "改用文件上传") : "等待结果"}</strong>{scene.step === 3 ? <CheckCircle size={17} /> : null}</div>
+        <div className={styles.permissionOutcome} data-visible={scene.step === 3} data-decision={decision}><span>{decision === "allow" ? "相机" : "文件选择"}</span>{decision === "allow" ? <Camera size={22} /> : <FileArrowUp size={22} />}<strong>{scene.step === 3 ? (decision === "allow" ? "打开相机" : "改用文件上传") : "等待结果"}</strong>{scene.step === 3 ? (decision === "allow" ? <CheckCircle size={17} /> : <WarningCircle size={17} />) : null}</div>
       </div>
       <div className={styles.permissionProof} role="status"><span>结果证据</span><strong>{scene.step < 3 ? "尚未代表用户访问设备" : decision === "allow" ? "相机已获得本次所需访问" : "拒绝相机，任务仍有可用后路"}</strong><small>{scene.step === 0 ? "先解释当前动作需要什么" : scene.step === 1 ? "解释不是替系统做决定" : scene.step === 2 ? "允许与拒绝都会进入应用分支" : "拒绝不能被画成成功"}</small></div>
     </div>
