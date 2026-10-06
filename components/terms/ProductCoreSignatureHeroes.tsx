@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowDown, ArrowRight, Browser, CheckCircle, Code, FileText, GitBranch, HardDrives, LockKey, Package, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
+import { ArrowDown, ArrowRight, Browser, CheckCircle, Code, FileText, GitBranch, Gauge, HardDrives, LockKey, Package, Scissors, ShieldCheck, Target, WarningCircle } from "@phosphor-icons/react";
 import { useState, type ReactNode } from "react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./ProductCoreSignatureHeroes.module.css";
@@ -102,6 +102,27 @@ export function TypeScriptSignatureHero() {
       <ArrowDown className={styles.typeArrow} size={19} aria-hidden="true" />
       <div className={styles.typeRuntime}><div className={styles.typeRuntimeHead}><FileText size={19} /><strong>真实输入</strong></div><code>&#123; name: {payload === "valid" ? '"Lin"' : "42"} &#125;</code><div className={styles.typeGate}><ShieldCheck size={14} /><span>{scene.step < 3 ? "尚未校验" : payload === "valid" ? "shape ok" : "shape mismatch"}</span></div></div>
       <div className={styles.typeBadge} data-visible={scene.step >= 2}>{scene.step >= 2 ? "类型尺已移开" : "类型尺"}</div>
+    </div>
+  </Frame>;
+}
+
+export function MvpSignatureHero() {
+  const scene = useScene(4);
+  const [scope, setScope] = useState<"minimum" | "full">("minimum");
+  const labels = ["写下假设", "选关键任务", "砍掉外围", "留下证据"];
+  const current = [
+    { title: "先写要验证的猜测", detail: "邀请码能被找到吗？", icon: Target },
+    { title: "只保留一条关键任务", detail: "进入空间 → 找到邀请码", icon: Gauge },
+    { title: scope === "minimum" ? "外围功能先留在桌上" : "功能太多，证据被摊薄", detail: scope === "minimum" ? "支付 · 多语言 · 分享" : "无法知道哪一项改变结果", icon: Scissors },
+    { title: scope === "minimum" ? "任务留下可观察证据" : "还没学到关键答案", detail: scope === "minimum" ? "3/3 找到邀请码" : "完成 ≠ 验证假设", icon: scope === "minimum" ? CheckCircle : WarningCircle },
+  ][scene.step];
+
+  return <Frame ariaLabel="MVP 通过缩小范围验证一个关键产品假设" className={styles.mvp} eyebrow="少做一点，是为了更快知道什么是真的" meta="hypothesis · task · evidence" labels={labels} scene={scene} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="MVP 的最小指的是验证范围，不是粗糙程度；留下关键任务和证据，才能知道下一轮该保留、修改还是放弃。">
+    <div className={styles.mvpControls} role="group" aria-label="选择产品范围"><button type="button" aria-pressed={scope === "minimum"} onClick={() => { setScope("minimum"); scene.seek(3); }}><Target size={15} />一个假设</button><button type="button" aria-pressed={scope === "full"} onClick={() => { setScope("full"); scene.seek(3); }}><Gauge size={15} />完整愿望单</button></div>
+    <div className={styles.mvpBoard} data-scope={scope} data-step={scene.step}>
+      <div className={styles.mvpTarget}><Target size={22} /><span>本轮假设</span><strong>邀请码能找到</strong><small>判断：用户是否完成关键任务</small></div>
+      <div className={styles.mvpChips} aria-label="功能筹码">{["入口", "邀请码", "支付", "分享", "多语言"].map((item, index) => <span key={item} data-keep={index < 2 && scene.step >= 1} data-extra={index > 1}>{item}</span>)}</div>
+      <div className={styles.mvpEvidence}><span>证据槽</span><strong>{scope === "minimum" && scene.step >= 3 ? "3 / 3" : "—"}</strong><small>{scope === "minimum" && scene.step >= 3 ? "找到邀请码" : "等待可观察结果"}</small></div>
     </div>
   </Frame>;
 }
