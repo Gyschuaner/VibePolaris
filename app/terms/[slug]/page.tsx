@@ -120,6 +120,7 @@ import { LocalStorageTermPage } from "@/components/terms/rendering-pages/local-s
 import { ConversionRateTermPage, DesignTokenTermPage, FeedbackTermPage, FocusManagementTermPage, FunnelTermPage, IterationTermPage, MockupTermPage, SitemapTermPage, UsabilityTestingTermPage, VisualHierarchyTermPage } from "@/components/terms/product-design-pages/ProductDesignPages";
 import { A11yTermPage, ClientServerTermPage, DeployTermPage, IaTermPage, LoadingStateTermPage, MicrointeractionTermPage, PrototypeTermPage, ReducedMotionTermPage, UserFlowTermPage, WireframeTermPage } from "@/components/terms/flow-redesign-pages/FlowRedesignPages";
 import { DebounceTermPage } from "@/components/terms/DebounceConceptPage";
+import { OptimisticUpdateTermPage } from "@/components/terms/OptimisticUpdateConceptPage";
 import { EnvironmentVariableTermPage, ExpressionTermPage, FormatterTermPage, FunctionTermPage, LinterTermPage, LockfileTermPage, MonorepoTermPage, ParameterTermPage, ReturnValueTermPage, SourceMapTermPage } from "@/components/terms/toolchain-redesign-pages/ToolchainRedesignPages";
 import { ArrayTermPage, ConditionalBranchTermPage, ControlClientServerTermPage, DistributedSystemTermPage, EventDrivenArchitectureTermPage, LoopTermPage, MicroservicesTermPage, MonolithTermPage, ObjectTermPage, ServerlessTermPage } from "@/components/terms/control-redesign-pages/ControlRedesignPages";
 
@@ -168,6 +169,7 @@ const articleTermPages = {
   microinteraction: MicrointeractionTermPage,
   'reduced-motion': ReducedMotionTermPage,
   debounce: DebounceTermPage,
+  'optimistic-update': OptimisticUpdateTermPage,
   'client-server': ControlClientServerTermPage,
   'conditional-branch': ConditionalBranchTermPage,
   loop: LoopTermPage,
