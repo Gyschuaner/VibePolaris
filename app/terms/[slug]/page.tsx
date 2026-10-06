@@ -118,6 +118,7 @@ import { LocalStorageTermPage } from "@/components/terms/rendering-pages/local-s
 import { ConversionRateTermPage, DesignTokenTermPage, FeedbackTermPage, FocusManagementTermPage, FunnelTermPage, IterationTermPage, MockupTermPage, SitemapTermPage, UsabilityTestingTermPage, VisualHierarchyTermPage } from "@/components/terms/product-design-pages/ProductDesignPages";
 import { A11yTermPage, ClientServerTermPage, DeployTermPage, IaTermPage, LoadingStateTermPage, MicrointeractionTermPage, PrototypeTermPage, ReducedMotionTermPage, UserFlowTermPage, WireframeTermPage } from "@/components/terms/flow-redesign-pages/FlowRedesignPages";
 import { EnvironmentVariableTermPage, ExpressionTermPage, FormatterTermPage, FunctionTermPage, LinterTermPage, LockfileTermPage, MonorepoTermPage, ParameterTermPage, ReturnValueTermPage, SourceMapTermPage } from "@/components/terms/toolchain-redesign-pages/ToolchainRedesignPages";
+import { ArrayTermPage, ConditionalBranchTermPage, ControlClientServerTermPage, DistributedSystemTermPage, EventDrivenArchitectureTermPage, LoopTermPage, MicroservicesTermPage, MonolithTermPage, ObjectTermPage, ServerlessTermPage } from "@/components/terms/control-redesign-pages/ControlRedesignPages";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -164,7 +165,14 @@ const articleTermPages = {
   'loading-state': LoadingStateTermPage,
   microinteraction: MicrointeractionTermPage,
   'reduced-motion': ReducedMotionTermPage,
-  'client-server': ClientServerTermPage,
+  'client-server': ControlClientServerTermPage,
+  'conditional-branch': ConditionalBranchTermPage,
+  loop: LoopTermPage,
+  object: ObjectTermPage,
+  array: ArrayTermPage,
+  monolith: MonolithTermPage,
+  microservices: MicroservicesTermPage,
+  serverless: ServerlessTermPage,
   deploy: DeployTermPage,
   'user-flow': UserFlowTermPage,
   wireframe: WireframeTermPage,
@@ -356,10 +364,10 @@ const articleTermPages = {
   "data-validation": ValidationTermPage,
   "data-pipeline": PipelineTermPage,
   webhook: WebhookTermPage,
-  "distributed-system": DistributedTermPage,
+  "distributed-system": DistributedSystemTermPage,
   "batch-processing": BatchTermPage,
   "stream-processing": StreamTermPage,
-  "event-driven-architecture": EventDrivenTermPage,
+  "event-driven-architecture": EventDrivenArchitectureTermPage,
   backup: BackupTermPage,
   sharding: ShardingTermPage,
   queue: QueueTermPage,
