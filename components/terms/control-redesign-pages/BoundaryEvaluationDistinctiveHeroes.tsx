@@ -8,29 +8,6 @@ function HeroShell({ kind, label, children }: { kind: Parameters<typeof ControlR
 
 const textStyle = { fontFamily: "ui-monospace, SFMono-Regular, monospace" };
 
-export function BoundaryHero() {
-  return <HeroShell kind="boundary" label="权限令牌沿着请求路径前进，销售数据打开，工资表在授权闸门前被挡住">
-    <svg className={styles.mechanismSvg} viewBox="0 0 340 150" role="img" aria-hidden="true">
-      <path className={styles.permissionRoute} d="M28 74 H203 M203 48 H302 M203 100 H302" />
-      <path className={styles.permissionGate} d="M203 32 V116" />
-      <path className={styles.permissionGateMark} d="M196 74 H210" />
-      <circle className={styles.permissionToken} cx="28" cy="74" r="13" />
-      <text className={styles.mechanismText} x="28" y="77" textAnchor="middle" style={textStyle}>S</text>
-      <g className={styles.permissionSales}>
-        <circle cx="302" cy="48" r="17" />
-        <path d="M294 48 l6 6 10-12" />
-        <text x="302" y="78" textAnchor="middle" style={textStyle}>sales</text>
-      </g>
-      <g className={styles.permissionSalary}>
-        <circle cx="302" cy="100" r="17" />
-        <path d="M295 93 l14 14 M309 93 l-14 14" />
-        <text x="302" y="130" textAnchor="middle" style={textStyle}>salary</text>
-      </g>
-      <text className={styles.mechanismCaption} x="203" y="22" textAnchor="middle" style={textStyle}>scope</text>
-    </svg>
-  </HeroShell>;
-}
-
 export function XssHero() {
   return <HeroShell kind="xss" label="同一段不可信字符串经过两个不同的 DOM 入口，一个被解析成节点，一个停留在文字层">
     <svg className={styles.mechanismSvg} viewBox="0 0 340 150" role="img" aria-hidden="true">
