@@ -143,7 +143,7 @@ export function TouchTargetSignatureHero() {
   const scene = useScene(touchLabels.length);
   const target = { left: 55, top: 50 };
   const neighborLeft = scene.step === 3 ? 55 : 72;
-  const radius = scene.step === 0 ? 22 : 52;
+  const radius = scene.step === 0 ? 26 : 48;
   const hits = touchPoints.map(([left, top]) => {
     const dx = Number.parseFloat(left) - target.left;
     const dy = Number.parseFloat(top) - target.top;
