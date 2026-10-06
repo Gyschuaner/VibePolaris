@@ -1,7 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { testCaseSources } from "@/lib/test-case-sources";
-import { TestCaseHero } from "./test-case-hero";
+import { TestCaseSignatureHero as TestCaseHero } from "../TestSecuritySignatureHeroes";
 import { TestCaseLesson } from "./test-case";
 
 const sections: [string, string][] = [

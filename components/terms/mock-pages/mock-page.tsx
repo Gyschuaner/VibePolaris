@@ -1,7 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { mockSources } from "@/lib/mock-sources";
-import { MockHero } from "./mock-hero";
+import { MockSignatureHero as MockHero } from "../TestSecuritySignatureHeroes";
 import { MockLesson } from "./mock";
 
 const sections: [string, string][] = [
