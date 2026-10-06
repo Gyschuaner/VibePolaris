@@ -17,16 +17,16 @@
 
 | 顺序 | slug | 机制与正文接点 | 实现提交 | review / 浏览器 | 状态 |
 | --- | --- | --- | --- | --- | --- |
-| 1 | flexbox | 主轴自由空间、grow/shrink、wrap、axis；`flex-free-space` / `flex-grow-ratio` | 待提交 | 待执行 | 本地实现 |
-| 2 | css-grid | 轨道、跨列、sparse/dense、implicit track；`grid-span` / `grid-dense` | 待提交 | 待执行 | 本地实现 |
-| 3 | positioning | containing block、占位、viewport、sticky threshold；`position-containing-block` / `position-sticky` | 待提交 | 待执行 | 本地实现 |
-| 4 | breakpoint | 内容压力线先于断点；`breakpoint-content` / `breakpoint-failure` | 待提交 | 待执行 | 本地实现 |
-| 5 | media-query | width、hover、motion 信号分别命中规则；`mq-condition` / `mq-combine` | 待提交 | 待执行 | 本地实现 |
-| 6 | module | live binding、复制快照、TDZ；`module-live` / `module-cycle` | 待提交 | 待执行 | 本地实现 |
-| 7 | code-splitting | 动态入口、chunk 请求、缓存、过度拆分；`split-boundary` / `split-granularity` | 待提交 | 待执行 | 本地实现 |
-| 8 | lazy-loading | viewport window、预留尺寸、ready/error；`lazy-intersection` / `lazy-loading-attribute` | 待提交 | 待执行 | 本地实现 |
-| 9 | hydration | server HTML、客户端匹配、事件接管、mismatch；`hydration-match` / `hydration-mismatch` | 待提交 | 待执行 | 本地实现 |
-| 10 | csr | shell、脚本、数据、DOM、交互；`csr-shell` / `csr-data` | 待提交 | 待执行 | 本地实现 |
+| 1 | flexbox | 主轴自由空间、grow/shrink、wrap、axis；`flex-free-space` / `flex-grow-ratio` | `6184e076` | 唯一 reviewer PASS；桌面与 390px CUA | 待统一发布 |
+| 2 | css-grid | 轨道、跨列、sparse/dense、implicit track；`grid-span` / `grid-dense` | `84740bc7` | 唯一 reviewer PASS；sparse/dense 实际回填 | 待统一发布 |
+| 3 | positioning | containing block、占位、viewport、sticky threshold；`position-containing-block` / `position-sticky` | `6fc4537d` | 唯一 reviewer PASS；桌面与 390px CUA | 待统一发布 |
+| 4 | breakpoint | 内容压力线先于断点；`breakpoint-content` / `breakpoint-failure` | `578a71d5` | 唯一 reviewer PASS；桌面与 390px CUA | 待统一发布 |
+| 5 | media-query | width、hover、motion 信号分别命中规则；`mq-condition` / `mq-combine` | `e6cf6155` | 唯一 reviewer PASS；首步重置已验证 | 待统一发布 |
+| 6 | module | live binding、复制快照、TDZ；`module-live` / `module-cycle` | `f3a53024` | 唯一 reviewer PASS；首步 live binding 重置已验证 | 待统一发布 |
+| 7 | code-splitting | 动态入口、chunk 请求、缓存、过度拆分；`split-boundary` / `split-granularity` | `dc745744` | 唯一 reviewer PASS；桌面与 390px CUA | 待统一发布 |
+| 8 | lazy-loading | viewport window、预留尺寸、ready/error；`lazy-intersection` / `lazy-loading-attribute` | `a4d450b3` | 唯一 reviewer PASS；失败态重试已验证 | 待统一发布 |
+| 9 | hydration | server HTML、客户端匹配、事件接管、mismatch；`hydration-match` / `hydration-mismatch` | `de043a82` | 唯一 reviewer PASS；4 来源同序 | 待统一发布 |
+| 10 | csr | shell、脚本、数据、DOM、交互；`csr-shell` / `csr-data` | `925a0940` | 唯一 reviewer PASS；4 来源同序 | 待统一发布 |
 
 ## 资料核对
 
@@ -34,12 +34,12 @@
 
 ## 验收记录
 
-- `npm run typecheck`：待最终十条完成后记录。
-- `npm run build`：待最终十条完成后记录。
-- `npm run audit:terms`：待最终十条完成后记录。
-- 真实浏览器：待最终十条完成后按桌面与 390px 视口逐页检查；包括播放、逐步、重播、失败分支、键盘、无横向溢出和控制台。
-- 唯一 reviewer：`/root/ai_stack_review`，待十条本地实现与基础检查完成后统一审读。
+- `npm run typecheck`：通过（HEAD `5db016ab`）。
+- `npm run build`：通过，生成 1064 个静态页面；仅有既有 Node module type / experimental warning。
+- `npm run audit:terms`：通过，322 条唯一演示、322 条来源覆盖、重复场景与近重复均为 0。
+- 真实浏览器：桌面端十页均 `h1=1`、无横向溢出、无重复 ID、无控制台 error/warn；390px 下十页 `scrollWidth=390`，逐步、重播、Flexbox 几何、Grid dense、Media/Module 首步重置与 Lazy retry 均实测。
+- 唯一 reviewer：`/root/ai_stack_review`，HEAD `5db016ab`，十条逐条 PASS；helper、research、experience 来源顺序和 Cite 映射无 orphan/missing/duplicate。
 
 ## 发布记录
 
-待十条独立提交、reviewer PASS、真实浏览器验收和构建通过后，统一更新公开清单并发布。生产提交、镜像 digest、release、健康检查和回滚路径在发布后补齐；DP CLI 当前仍受 TLS EOF 阻塞，不能伪造状态或绕过 CLI。
+十条独立提交、唯一 reviewer PASS、真实浏览器验收和构建均已完成；公开清单原已包含这十个 slug，本批统一发布代码与演示更新。生产提交、镜像 digest、release、健康检查和回滚路径在发布后补齐；DP CLI 当前仍受 TLS EOF 阻塞，不能伪造状态或绕过 CLI。
