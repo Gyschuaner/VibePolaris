@@ -8,24 +8,6 @@ function HeroShell({ kind, label, children }: { kind: Parameters<typeof ControlR
 
 const textStyle = { fontFamily: "ui-monospace, SFMono-Regular, monospace" };
 
-export function LatencyEvaluationHero() {
-  return <HeroShell kind="latencyEval" label="一个请求的光点先到达首字，再穿过工具等待，最后落在完成线；更晚的尾部单独标出">
-    <svg className={styles.mechanismSvg} viewBox="0 0 340 150" role="img" aria-hidden="true">
-      <path className={styles.latencyAxis} d="M28 77 H315" />
-      <path className={styles.latencyTick} d="M85 69 V85 M191 69 V85 M284 69 V85" />
-      <circle className={styles.latencyCursor} cx="28" cy="77" r="7" />
-      <circle className={styles.latencyPulse} cx="85" cy="77" r="13" />
-      <circle className={styles.latencyTool} cx="191" cy="77" r="7" />
-      <circle className={styles.latencyDone} cx="284" cy="77" r="7" />
-      <text className={styles.mechanismText} x="85" y="51" textAnchor="middle" style={textStyle}>首字 420ms</text>
-      <text className={styles.mechanismText} x="191" y="106" textAnchor="middle" style={textStyle}>工具 1.8s</text>
-      <text className={styles.mechanismText} x="284" y="51" textAnchor="middle" style={textStyle}>完成 3.4s</text>
-      <g className={styles.latencyTailDots}><circle cx="250" cy="124" r="3"/><circle cx="264" cy="124" r="3"/><circle cx="278" cy="124" r="3"/><circle cx="292" cy="124" r="3"/><circle cx="306" cy="124" r="3"/></g>
-      <text className={styles.mechanismCaption} x="278" y="141" textAnchor="middle" style={textStyle}>p95 4.8s · tail</text>
-    </svg>
-  </HeroShell>;
-}
-
 export function PassFailHero() {
   return <HeroShell kind="passFail" label="三个证据卡沿着判定轨道进入不同的桶：正确进入通过，错误进入失败，环境未知停在未评分">
     <svg className={styles.mechanismSvg} viewBox="0 0 340 150" role="img" aria-hidden="true">

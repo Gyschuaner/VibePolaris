@@ -75,12 +75,6 @@ export function BoundaryLesson() {
   </LessonShell>;
 }
 
-export function LatencyEvaluationLesson() {
-  const [state, setState] = useState<"normal" | "tail" | "timeout">("normal");
-  const values = { normal: ["420ms", "1.8s", "3.4s", "p95 3.8s"], tail: ["420ms", "1.8s", "3.4s", "p95 4.8s"], timeout: ["420ms", "5.0s 超时", "未完成", "不纳入完成分布"] } as const;
-  return <LessonShell eyebrow="用户先看到首字，系统后来才完成任务" title="等待时间拆解"><div className={styles.lessonControls}><button type="button" aria-pressed={state === "normal"} onClick={() => setState("normal")}>正常完成</button><button type="button" aria-pressed={state === "tail"} onClick={() => setState("tail")}>放大长尾</button><button type="button" aria-pressed={state === "timeout"} onClick={() => setState("timeout")}>工具超时</button><button type="button" onClick={() => setState("normal")}>重置</button></div><div className={styles.labGrid}><div className={styles.labRow}><span>首字</span><code>{values[state][0]}</code><em>开始反馈</em></div><div className={styles.labRow}><span>工具</span><code>{values[state][1]}</code><em>{state === "timeout" ? "等待失败" : "返回"}</em></div><div className={styles.labRow}><span>完成</span><code>{values[state][2]}</code><em>{values[state][3]}</em></div></div></LessonShell>;
-}
-
 export function PassFailLesson() {
   const [result, setResult] = useState<"pass" | "fail" | "unscored">("pass");
   const values = { pass: ["answer.json + amount=120", "pass", "允许进入门槛"], fail: ["answer.json + amount=90", "fail", "进入修复"], unscored: ["环境不可读", "unscored", "暂停并重跑"] } as const;
