@@ -379,7 +379,7 @@ export function ContextOverflowTermPage() {
   return <ConceptArticle slug="context-overflow" title="上下文溢出" subtitle="Context Overflow · 先算预算，再决定保留什么" sources={contextOverflowSources}
     sections={[['context-overflow-definition', '窗口算的是整轮预算'], ['context-overflow-overflow', '超限先停，不要重复原请求'], ['context-overflow-recovery', '压缩后要验证保留了什么'], ['context-overflow-boundary', '能装下不等于用得好']]}
     intro={<>上下文溢出发生在一次请求需要的令牌超过模型窗口：系统指令、历史消息、工具结果和预计输出都占预算。处理它不是把旧内容无限塞回去，而是先找出哪些事实必须留下，再用压缩、检索或分段让下一轮可检查、可继续。</>}
-    hero={<ConceptHero slug="context-overflow" label="26k 请求超过 24k 窗口；压缩目标、决策和未完成动作后回到 11k"><div className={s.contextOverflowHero}><div className={s.contextHeroCard} data-overflow="true"><span>原始请求</span><strong>26k</strong><small>超过窗口 24k</small></div><ArrowRight size={22} aria-hidden="true"/><div className={s.contextHeroCard}><span>压缩后</span><strong>11k</strong><small>保留目标与待办</small></div><p className={s.contextHeroNote}>先保留高信号事实，再让下一轮继续</p></div></ConceptHero>}>
+    hero={<ContextOverflowSignatureHero/>}>
     <ArticleSection id="context-overflow-definition" title="窗口算的是整轮预算"><Legacy slug="context-overflow" names={['question', 'definition-anchor']}/>
       <p id="context-overflow-definition-detail" className="vp-citation-target"><strong>上下文窗口是模型本轮生成时可以参考的全部令牌空间，也包括它将要生成的输出。</strong>Claude 文档明确把系统提示、消息、工具结果、图片、文档、工具定义和输出都算进窗口；窗口大小不是只给用户文字预留的容量。<Cite id="context-overflow-definition-detail"/></p>
       <p>因此要先把一轮请求拆成几块：系统规则、当前问题、历史、工具结果、预计输出。每块都可能随对话增长。把“还有多少字能发”当成预算，会漏掉工具定义、图片和模型输出，直到服务端在发送或生成过程中拒绝请求。</p>
