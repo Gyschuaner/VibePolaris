@@ -18799,5 +18799,174 @@
         "note": "说明基线、变化审查和视觉发布门禁。"
       }
     ]
+  },
+  {
+    "slug": "debounce",
+    "lead": "搜索框里每敲一个字都要发请求吗？",
+    "definition": "防抖把快速连续的事件合并成一次动作：新事件会重置计时，只有安静窗口结束后，最后一个值才被交给回调。",
+    "boundary": "它会舍弃中间事件并增加等待时间；已经发出的异步请求仍可能返回，不能把防抖当成并发控制。",
+    "sceneKind": "timeline",
+    "sceneTitle": "连续输入怎样只触发一次搜索",
+    "actionLabel": "推进一个阶段",
+    "actors": [
+      {
+        "id": "input",
+        "label": "输入串",
+        "detail": "你 · 你想 · 你想搜",
+        "icon": "keyboard",
+        "group": "事件"
+      },
+      {
+        "id": "timer",
+        "label": "安静窗口",
+        "detail": "等待 300ms",
+        "icon": "clock",
+        "group": "计时"
+      },
+      {
+        "id": "search",
+        "label": "搜索请求",
+        "detail": "等待最后一个值",
+        "icon": "search",
+        "group": "副作用"
+      }
+    ],
+    "edges": [
+      {
+        "id": "input-timer",
+        "from": "input",
+        "to": "timer",
+        "label": "重置计时"
+      },
+      {
+        "id": "timer-search",
+        "from": "timer",
+        "to": "search",
+        "label": "窗口结束"
+      }
+    ],
+    "frames": [
+      {
+        "label": "输入连续到来",
+        "note": "每个字符都先进入事件轨道，搜索请求还没有发出。",
+        "activeIds": [
+          "input"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "timer",
+          "search"
+        ],
+        "values": {
+          "input": "你 → 你想 → 你想搜"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "计时被反复重置",
+        "note": "新输入到来就把窗口重新放回起点，中间值不会单独提交。",
+        "activeIds": [
+          "input",
+          "timer"
+        ],
+        "doneIds": [
+          "input"
+        ],
+        "mutedIds": [
+          "search"
+        ],
+        "values": {
+          "timer": "300ms ← 重置"
+        },
+        "activeEdgeIds": [
+          "input-timer"
+        ]
+      },
+      {
+        "label": "安静窗口完成",
+        "note": "没有新事件的时间足够长，最后一个值才获得提交资格。",
+        "activeIds": [
+          "timer"
+        ],
+        "doneIds": [
+          "input"
+        ],
+        "mutedIds": [
+          "search"
+        ],
+        "values": {
+          "timer": "0ms · ready"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "只发一次请求",
+        "note": "搜索拿到最终输入；防抖没有替你处理响应乱序或请求失败。",
+        "activeIds": [
+          "search"
+        ],
+        "doneIds": [
+          "input",
+          "timer"
+        ],
+        "mutedIds": [],
+        "values": {
+          "search": "query=你想搜 · 1 次"
+        },
+        "activeEdgeIds": [
+          "timer-search"
+        ],
+        "metric": {
+          "label": "请求次数",
+          "value": "1"
+        }
+      }
+    ],
+    "insight": "防抖把“连续变化”与“稳定后的动作”分开，但不负责网络并发和响应顺序。",
+    "quiz": {
+      "question": "用户快速输入三个字符时，哪项最符合防抖？",
+      "options": [
+        {
+          "label": "只在最后一个字符后等待窗口并执行一次",
+          "correct": true
+        },
+        {
+          "label": "三个字符立即发三个请求",
+          "correct": false
+        },
+        {
+          "label": "无论网络结果如何都按输入顺序返回",
+          "correct": false
+        }
+      ],
+      "success": "防抖合并的是触发时机；异步结果仍要单独管理。",
+      "retry": "先区分事件触发次数、请求次数和响应顺序。"
+    },
+    "prompt": {
+      "title": "设定输入事件的等待边界",
+      "text": "请列出事件频率、允许延迟、等待窗口、取消旧请求和失败提示，判断这里应该用防抖、节流还是两者组合。"
+    },
+    "sources": [
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Glossary/Debounce",
+        "label": "MDN · Debounce",
+        "note": "事件等待窗口与最后一次调用"
+      },
+      {
+        "url": "https://lodash.com/docs/4.17.15#debounce",
+        "label": "Lodash · debounce",
+        "note": "leading/trailing 与取消、刷新"
+      },
+      {
+        "url": "https://rxjs.dev/api/operators/debounceTime",
+        "label": "RxJS · debounceTime",
+        "note": "按静默时间发出最近值"
+      },
+      {
+        "url": "https://underscorejs.org/#debounce",
+        "label": "Underscore · debounce",
+        "note": "延迟调用与 immediate 边界"
+      }
+    ]
   }
 ]

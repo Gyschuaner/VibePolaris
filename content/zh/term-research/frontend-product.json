@@ -1080,5 +1080,23 @@
       "e2e-test",
       "usability-testing"
     ]
+  },
+  {
+    "slug": "debounce",
+    "mechanism": "防抖在事件持续到来时重置等待计时，只在静默窗口结束后把最后一次状态交给回调；取消和刷新控制的是延迟调用本身，不是已经发出的异步请求。",
+    "misconception": "防抖不是节流，也不是请求取消器。它可能丢掉中间值、增加首个结果的等待时间，旧请求仍可能在新请求之后返回。",
+    "demoSignature": "4帧｜对象：输入串、300ms 计时器、搜索请求｜交互：推进“输入→重置→安静→提交”，切换短/长窗口｜变化：输入卡不断回到起点，窗口结束后只发 query=你想搜 一次｜结果：请求次数与输入次数分开可见。",
+    "sourceUrls": [
+      "https://developer.mozilla.org/en-US/docs/Glossary/Debounce",
+      "https://lodash.com/docs/4.17.15#debounce",
+      "https://rxjs.dev/api/operators/debounceTime",
+      "https://underscorejs.org/#debounce"
+    ],
+    "rewriteRisk": "中：必须把静默窗口、最后值、中间事件和异步响应顺序分开，不能写成“减少请求”的口号。",
+    "nearDuplicates": [
+      "event",
+      "timeout",
+      "request"
+    ]
   }
 ]
