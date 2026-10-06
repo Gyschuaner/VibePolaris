@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowCounterClockwise, ArrowDown, ArrowRight, Browser, CheckCircle, Clock, Code, Envelope, Eye, FileText, GitBranch, Gauge, HardDrives, Layout, LockKey, MagnifyingGlass, Package, Pause, Scissors, ShareNetwork, ShieldCheck, Tag, Target, WarningCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowDown, ArrowRight, Browser, CheckCircle, Clock, Code, Envelope, Eye, FileText, GitBranch, Gauge, HardDrives, Layout, LockKey, MagnifyingGlass, Package, Pause, Scissors, ShareNetwork, ShieldCheck, Stack, Tag, Target, WarningCircle } from "@phosphor-icons/react";
 import { useState, type ReactNode } from "react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./ProductCoreSignatureHeroes.module.css";
@@ -206,6 +206,27 @@ export function IaSignatureHero() {
       <div className={styles.iaCard}><FileText size={20} /><span>一份正文</span><strong>API 密钥</strong><small>只维护这一张卡</small></div>
       <div className={styles.iaTags}><span>领域</span><b data-active={scene.step >= 1}>账户安全</b><b data-active={entry === "task" && scene.step >= 1}>换 API 密钥</b><b data-active={entry === "team" && scene.step >= 2}>开发工具</b></div>
       <div className={styles.iaSearch}><MagnifyingGlass size={18} /><code>{entry === "task" ? "换 API 密钥" : "开发工具"}</code><small>{scene.step >= 2 ? entry === "task" ? "找到 → API 密钥" : "结果太宽，需补任务词" : "等待入口"}</small></div>
+    </div>
+  </Frame>;
+}
+
+export function DesignSystemSignatureHero() {
+  const scene = useScene(4);
+  const [token, setToken] = useState<"brand" | "contrast">("brand");
+  const labels = ["定下 token", "织成组件", "同步实例", "留下治理"];
+  const current = [
+    { title: "先给重复决定一个名字", detail: "--action-color", icon: Layout },
+    { title: "组件把规则织进去", detail: "Button · focus · disabled", icon: Stack },
+    { title: token === "brand" ? "两个实例一起改变" : "对比 token 也能整体替换", detail: token === "brand" ? "CTA A + CTA B" : "contrast-safe pair", icon: CheckCircle },
+    { title: "治理让改变可追踪", detail: "token v2 · migration note", icon: GitBranch },
+  ][scene.step];
+
+  return <Frame ariaLabel="设计系统把设计决定织成可复用组件并留下治理记录" className={styles.designSystem} eyebrow="组件只是织片，系统还要记住为什么这样织" meta="tokens · components · governance" labels={labels} scene={scene} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="设计系统把原则、token、组件、模式和治理放在同一套约定里；它让一致性可维护，也让迁移和例外有记录。">
+    <div className={styles.designSystemControls} role="group" aria-label="选择设计 token"><button type="button" aria-pressed={token === "brand"} onClick={() => { setToken("brand"); scene.seek(2); }}><Layout size={15} />品牌 token</button><button type="button" aria-pressed={token === "contrast"} onClick={() => { setToken("contrast"); scene.seek(2); }}><CheckCircle size={15} />高对比 token</button></div>
+    <div className={styles.designSystemBoard} data-token={token} data-step={scene.step}>
+      <div className={styles.dsToken}><span>token</span><code>--action-color</code><strong>{token === "brand" ? "苔绿" : "深蓝"}</strong><small>一个决定，多个使用处</small></div>
+      <div className={styles.dsLoom}><span>组件织片</span><div className={styles.dsThreads}><b data-on={scene.step >= 1}>Button / primary</b><b data-on={scene.step >= 1}>Button / quiet</b></div><div className={styles.dsInstances}><i data-on={scene.step >= 2}>保存</i><i data-on={scene.step >= 2}>继续</i></div></div>
+      <div className={styles.dsGovernance}><GitBranch size={19} /><span>治理记录</span><strong>{scene.step >= 3 ? "v2 · 已迁移" : "待记录"}</strong><small>{scene.step >= 3 ? "旧 token → 新 token" : "谁能改、怎样发布"}</small></div>
     </div>
   </Frame>;
 }
