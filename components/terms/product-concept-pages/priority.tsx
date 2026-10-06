@@ -1,6 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
-import { GitArticle, Cite, GitHero } from "../GitConceptPageShared";
-import { PriorityLesson } from "../product-concept-lessons/priority";
+import { GitArticle, Cite } from "../GitConceptPageShared";
+import { PriorityHero } from "./mechanism-heroes";
 import { prioritySources } from "@/lib/product-concept-sources/priority";
 
 const sections: [string, string][] = [
@@ -16,13 +16,12 @@ export function PriorityTermPage() {
     subtitle="Priority · 资源有限时决定先做什么"
     sources={prioritySources}
     sections={sections}
-    hero={<GitHero contextLabel="先保护当前目标" contextTitle="降低首次配置失败率" trigger="三个需求都说“很重要”，团队该怎样决定先后？" change="共同目标 → 多维比较 → 证据驱动重排" proof="每项先后都能说出依据" />}
+    hero={<PriorityHero />}
     intro={<>优先级是在资源有限时，根据当前目标、用户影响、时限、风险、依赖和工作量形成的工作顺序。它让团队说清楚为什么先做一项、另一项暂缓，以及哪些新信息会让顺序改变；它不是谁声音大谁先做，也不是贴上标签后永远不变。</>}
   >
     <ArticleSection id="priority-goal" title="先把当前目标说清楚">
       <p id="priority-goal-detail" className="vp-citation-target">优先级必须依附一个共同目标。假设本期要降低首次配置失败率，那么诊断故障、修复登录阻塞和界面微调的先后，就应围绕用户能否完成配置来判断；离开目标谈“最重要”，没有可比较的参照。<Cite id="priority-goal-detail" sources={prioritySources} /></p>
       <p id="priority-problem-detail" className="vp-citation-target">先确认正在解决的问题和受影响的人，再比较候选工作。发现阶段的研究和问题证据能说明影响是否真实、频率有多高，以及某项工作是否只是提出者的偏好；优先级不是把未经验证的想法直接排进队列。<Cite id="priority-problem-detail" sources={prioritySources} /></p>
-      <PriorityLesson />
     </ArticleSection>
 
     <ArticleSection id="priority-factors" title="用多个因素比较取舍">

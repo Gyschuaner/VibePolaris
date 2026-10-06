@@ -2,6 +2,7 @@ import { Article, Cite } from "../AiStackConceptPageShared";
 import { ArticleAside, ArticleSection } from "../ConceptArticle";
 import { conversionRateSources, designTokenSources, feedbackSources, focusManagementSources, funnelSources, iterationSources, mockupSources, sitemapSources, usabilityTestingSources, visualHierarchySources } from "@/lib/product-design-sources";
 import { ConversionRateLesson, DesignTokenLesson, FeedbackLesson, FunnelLesson, IterationLesson, MockupLesson, SitemapLesson, UsabilityTestingLesson, VisualHierarchyLesson } from "./ProductDesignLessons";
+import { ConversionRateHero, FunnelHero, IterationHero, MockupHero, UsabilityTestingHero } from "./mechanism-heroes";
 import { FocusManagementHero } from "./focus-management-hero";
 import styles from "./ProductDesignConcepts.module.css";
 
@@ -36,10 +37,6 @@ const iterationSections: [string, string][] = [
   ["iteration-boundary", "迭代也需要停止条件"],
 ];
 
-function IterationHero() {
-  return <figure className={styles.miniHero} aria-label="一枚证据指针在交付、观察和调整之间改变下一轮范围"><div className={styles.miniTop}><span>证据把指针拨向下一轮</span><strong>ITERATE · 02</strong></div><div className={styles.iterationSignature}><div className={styles.iterationDial}><i /><span data-phase="ship">交付</span><span data-phase="observe">观察</span><span data-phase="adjust">调整</span></div><small>不是绕圈忙碌，而是每次带着新证据回来。</small></div></figure>;
-}
-
 export function IterationTermPage() {
   return <Article slug="iteration" title="迭代" subtitle="Iteration · 用一轮结果决定下一轮" sources={iterationSources} sections={iterationSections} hero={<IterationHero />} intro={<>“等全部做完再看”会把错误藏到最后。<strong>迭代是在有限范围内交付可运行结果，再用真实使用、验收或数据决定下一步</strong>；它切的是风险和学习路径，不是把任务随意切成几段。</>}>
     <ArticleSection id="iteration-definition" title="先把目标切成可验证的一块">
@@ -48,7 +45,6 @@ export function IterationTermPage() {
     </ArticleSection>
     <ArticleSection id="iteration-evidence" title="结果要回到下一轮">
       <p id="iteration-research" className="vp-citation-target">研究也可以一轮一轮做：先用小范围任务确认问题，再根据观察到的停顿、失败或遗漏调整下一轮。<Cite id="iteration-research" sources={iterationSources} />这比项目末尾才安排一次“大而全”的验证更容易把问题留在可修改的范围里。</p>
-      <IterationLesson />
       <p id="iteration-inspect" className="vp-citation-target">检查结果不是装饰性的复盘。<Cite id="iteration-inspect" sources={iterationSources} />如果用户能完成目标，就可以保留这一块；如果只在某个字段失败，就把下一轮收窄到这个缺口；如果证据不支持原假设，也应允许停止。</p>
     </ArticleSection>
     <ArticleSection id="iteration-boundary" title="迭代也需要停止条件">
@@ -65,10 +61,6 @@ const conversionRateSections: [string, string][] = [
   ["conversion-rate-boundary", "百分比离不开时间窗和去重"],
 ];
 
-function ConversionRateHero() {
-  return <figure className={styles.miniHero} aria-label="同一批用户的外圈起点与内圈完成者形成转化率"><div className={styles.miniTop}><span>完成者在起点人群里留下印记</span><strong>RATE · 03</strong></div><div className={styles.conversionSignature}><div className={styles.conversionRings}><i data-ring="outer" /><i data-ring="inner" /><strong>120</strong><small>/ 1000 · 12%</small></div><span>换完成事件，内圈就会改变。</span></div></figure>;
-}
-
 export function ConversionRateTermPage() {
   return <Article slug="conversion-rate" title="转化率" subtitle="Conversion Rate · 先固定口径，再读百分比" sources={conversionRateSources} sections={conversionRateSections} hero={<ConversionRateHero />} intro={<>“1000 人进来，120 人完成”看起来只需要做一道除法。<strong>真正决定转化率的是分母、完成事件、去重方式和时间窗</strong>；其中任何一项变化，百分比就不再是同一个指标。</>}>
     <ArticleSection id="conversion-rate-definition" title="先把起点和完成事件说清楚">
@@ -77,7 +69,6 @@ export function ConversionRateTermPage() {
     </ArticleSection>
     <ArticleSection id="conversion-rate-formula" title="同一批用户，分子换了，结果就换了">
       <p id="conversion-formula" className="vp-citation-target">用户级转化率可以写成“在规定窗口内完成全部步骤的独立用户 ÷ 进入第一步的独立用户”。<Cite id="conversion-formula" sources={conversionRateSources} />用提交表单做完成事件，180 ÷ 1000 得到 18%；换成验证邮箱，120 ÷ 1000 就变成 12%。</p>
-      <ConversionRateLesson />
       <p id="conversion-steps" className="vp-citation-target">漏斗报告会按有序步骤筛选用户，分母和每一步的完成人数都依赖这些步骤定义。<Cite id="conversion-steps" sources={conversionRateSources} />所以“注册按钮点击量 ÷ 页面访问量”只有在两者单位、用户集合和窗口都对齐时，才可以称为一项可比的转化率。</p>
     </ArticleSection>
     <ArticleSection id="conversion-rate-boundary" title="百分比离不开时间窗和去重">
@@ -95,16 +86,11 @@ const funnelSections: [string, string][] = [
   ["funnel-boundary", "开放性、顺序和时间窗都会改口径"],
 ];
 
-function FunnelHero() {
-  return <figure className={styles.miniHero} aria-label="一群小点穿过三道筛网，每道筛网留下不同人数"><div className={styles.miniTop}><span>筛网留下掉落位置</span><strong>FUNNEL · 04</strong></div><div className={styles.funnelSignature}><div className={styles.funnelSieve}><i className={styles.funnelParticle} /><i className={styles.funnelParticle} /><i className={styles.funnelParticle} /><i className={styles.funnelParticle} /><i className={styles.funnelParticle} /><b data-gate="one" /><b data-gate="two" /><b data-gate="three" /></div><span>能定位哪一关，不能凭人数猜原因。</span></div></figure>;
-}
-
 export function FunnelTermPage() {
   return <Article slug="funnel" title="漏斗" subtitle="Funnel · 按顺序看用户在哪一步离开" sources={funnelSources} sections={funnelSections} hero={<FunnelHero />} intro={<>漏斗把一条已经知道的用户路径拆成有顺序的事件，观察同一批人从第一步走到后面还剩多少。<strong>它负责定位流失发生在哪一关，不负责替你解释用户为什么离开</strong>；后一个问题要靠日志、研究或实验继续查。</>}>
     <ArticleSection id="funnel-definition" title="先把已经知道的路径写成步骤">
       <p id="funnel-route" className="vp-citation-target">只有当你已经知道要观察哪条路径，漏斗才有用：例如“到达注册页 → 填写表单 → 验证邮箱”。<Cite id="funnel-route" sources={funnelSources} />每一步都要对应一个能被记录的事件，顺序和进入第一步的用户集合也要写清楚。</p>
       <p id="funnel-steps" className="vp-citation-target">分析工具通常把漏斗步骤写成事件或字段过滤条件，并按这些条件生成每一步的用户数。<Cite id="funnel-steps" sources={funnelSources} />本例把 1000 个到达注册页的人作为起点，再看其中多少人填写、验证。</p>
-      <FunnelLesson />
     </ArticleSection>
     <ArticleSection id="funnel-count" title="人数变化只定位位置，不解释原因">
       <p id="funnel-dropoff" className="vp-citation-target">每一栏都可以读成“走到这一步的用户”和“从上一步掉下去的用户”。<Cite id="funnel-dropoff" sources={funnelSources} />1000 人到 420 人说明第一段掉得多，但它没有告诉你是验证码、表单长度还是网络问题。</p>
@@ -125,16 +111,11 @@ const usabilityTestingSections: [string, string][] = [
   ["usability-testing-boundary", "一次测试发现问题，不替全体用户下结论"],
 ];
 
-function UsabilityTestingHero() {
-  return <figure className={styles.miniHero} aria-label="热区和视线轨迹显示参与者在任务中哪里停顿"><div className={styles.miniTop}><span>让视线留下热区</span><strong>TEST · 05</strong></div><div className={styles.usabilitySignature}><div className={styles.usabilityViewport}><span data-hot="low">订单</span><span data-hot="high">退货</span><span data-hot="mid">筛选</span><i aria-hidden="true" /></div><small>主持人记录停顿，不把答案塞进任务卡。</small></div></figure>;
-}
-
 export function UsabilityTestingTermPage() {
   return <Article slug="usability-testing" title="可用性测试" subtitle="Usability Testing · 看用户怎样完成真实任务" sources={usabilityTestingSources} sections={usabilityTestingSections} hero={<UsabilityTestingHero />} intro={<>可用性测试不是请用户评价“喜不喜欢”，而是给一个可信的目标，看他能不能靠自己的理解完成。<strong>研究者要记录用户做了什么、在哪里停顿、何时需要帮助</strong>；测试的是服务，不是把参与者判对错。</>}>
     <ArticleSection id="usability-testing-definition" title="任务给目标，不给操作答案">
       <p id="usability-task" className="vp-citation-target">好的任务像真实生活中的一句请求：说明想达成什么，不透露按钮名称、菜单位置或正确路径。<Cite id="usability-task" sources={usabilityTestingSources} />“退回一件尺码不合适的商品”让参与者自己寻找入口，“点击订单详情里的售后按钮”则提前教了答案。</p>
       <p id="usability-plan" className="vp-citation-target">开始测试前，先写研究问题、目标用户、任务和完成标准，再决定每轮要观察哪一段服务。<Cite id="usability-plan" sources={usabilityTestingSources} />这样主持人记录的是能帮助决策的证据，而不是一堆没有上下文的意见。</p>
-      <UsabilityTestingLesson />
     </ArticleSection>
     <ArticleSection id="usability-testing-observation" title="主持人把停顿和提示都留下">
       <p id="usability-observe" className="vp-citation-target">主持人应该让参与者边做边说，自己主要观察、倾听和记下发生了什么。<Cite id="usability-observe" sources={usabilityTestingSources} />参与者回看订单两次、在筛选器停住、说“我不知道从哪开始”，都比一句“这里不好用”更接近可修复的问题。</p>
@@ -154,16 +135,11 @@ const mockupSections: [string, string][] = [
   ["mockup-boundary", "把缺失状态写出来，别让一张图冒充产品"],
 ];
 
-function MockupHero() {
-  return <figure className={styles.miniHero} aria-label="三张半透明稿纸叠在一起，最上层揭示当前能验证的内容"><div className={styles.miniTop}><span>揭开一层，问题就换了</span><strong>MOCKUP · 06</strong></div><div className={styles.mockupSignature}><div className={styles.mockupSheets}><i data-sheet="wireframe">结构</i><i data-sheet="visual">外观</i><i data-sheet="prototype">行为</i></div><small>静态稿能说明外观，不能替交互作证。</small></div></figure>;
-}
-
 export function MockupTermPage() {
   return <Article slug="mockup" title="视觉稿" subtitle="Mockup · 把外观说清楚，但别冒充交互" sources={mockupSources} sections={mockupSections} hero={<MockupHero />} intro={<>视觉稿把已经确定的结构换成具体的字体、颜色、图像和间距，让团队可以讨论“看起来是否对”。<strong>它是外观的证据，不是点击后的行为证据</strong>；加载、错误、响应式和返回路径还需要状态清单或原型继续补上。</>}>
     <ArticleSection id="mockup-definition" title="先确认结构，再确认外观">
       <p id="mockup-structure" className="vp-citation-target">线框图先把页面当作一张地图：有哪些信息、哪个操作放在哪里、读者按什么顺序理解。<Cite id="mockup-structure" sources={mockupSources} />结构没站稳就急着调颜色，评审很容易被阴影和图片带走。</p>
       <p id="mockup-visual" className="vp-citation-target">视觉稿在这张地图上补入字体、色彩、真实内容和视觉层级，用来对齐外观与品牌表达。<Cite id="mockup-visual" sources={mockupSources} />它可以让团队发现字重不够、对比不清或间距失衡，却不能证明按钮已经能工作。</p>
-      <MockupLesson />
     </ArticleSection>
     <ArticleSection id="mockup-validation" title="静态画面和交互原型各自回答什么">
       <p id="mockup-prototype" className="vp-citation-target">原型把画面连接成可操作的路径，才有机会检查点击后去了哪里、返回是否合理、任务是否能完成。<Cite id="mockup-prototype" sources={mockupSources} />所以“按钮看起来像按钮”是视觉稿结论，“点击后进入下一步并能返回”是原型结论。</p>
