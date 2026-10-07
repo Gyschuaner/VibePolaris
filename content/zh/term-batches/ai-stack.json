@@ -5767,5 +5767,55 @@
       "model-fallback",
       "safety-evaluation"
     ]
+  },
+  {
+    "zh": "参数高效微调",
+    "en": "Parameter-Efficient Fine-Tuning",
+    "slug": "parameter-efficient-fine-tuning",
+    "cat": "AI·Agent",
+    "say": "冻结基座模型，只训练少量适配参数，让不同任务共享同一份大模型。",
+    "aliases": [
+      "PEFT",
+      "适配器微调",
+      "LoRA 微调"
+    ],
+    "question": "换一个任务时，为什么只挂一张小适配器磁贴，而不是重新搬动整座基座模型？",
+    "definition": "参数高效微调冻结大部分基座参数，只更新少量参数或外接适配器。LoRA 使用低秩更新，提示/前缀调优直接在输入侧学习任务信号；这些方法减少训练、存储和传输成本。",
+    "boundary": "少量可训练参数不等于任务一定学会，也不代表适配器继承了所有安全和事实边界。适配器必须绑定基座版本、训练数据、兼容层和独立评测。",
+    "demoType": "comparison",
+    "demoTitle": "适配器磁贴墙：换任务，不搬基座",
+    "demoSteps": [
+      {
+        "label": "冻结基座",
+        "value": "99%+ 参数保持不动",
+        "note": "先把可训练区域和共享能力分开。"
+      },
+      {
+        "label": "挂上客服磁贴",
+        "value": "小文件 · 订单语气偏置",
+        "note": "适配器改变任务方向，不是把基座复制一份。"
+      },
+      {
+        "label": "换成代码磁贴",
+        "value": "同一基座 · 另一套任务偏置",
+        "note": "多个适配器可以共享基座，但每张都要单独评测。"
+      }
+    ],
+    "quizQuestion": "PEFT 主要减少哪类成本？",
+    "quizOptions": [
+      "需要更新和保存的参数量",
+      "所有事实核验和权限检查",
+      "任务评测所需的证据"
+    ],
+    "correctText": "PEFT 主要减少训练时更新、保存和传输的参数。",
+    "wrongText": "适配器小并不会取消评测、权限或事实核验。",
+    "promptTitle": "规划一个 PEFT 版本",
+    "prompt": "请绑定基座版本、适配器方法、训练数据、可训练参数、峰值显存、任务评测和已知失败样本。",
+    "relatedSlugs": [
+      "fine-tuning",
+      "quantization",
+      "llm",
+      "model-card"
+    ]
   }
 ]
