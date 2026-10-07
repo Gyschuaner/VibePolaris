@@ -123,6 +123,18 @@ export type TermExperience = z.infer<typeof termExperienceSchema>;
 export type TermSceneKind = (typeof sceneKinds)[number];
 export type TermActorIcon = (typeof actorIcons)[number];
 
+// Arrows and moving edges are reserved for concepts whose meaning is an
+// ordered hand-off. Other scenes can still show relationships, but use their
+// own spatial grammar (layers, comparison, matrix, contract, etc.) instead of
+// looking like a generic flowchart.
+export const flowSceneKinds: ReadonlySet<TermSceneKind> = new Set(["pipeline", "route", "branch", "loop"]);
+export const topologySceneKinds: ReadonlySet<TermSceneKind> = new Set([
+  ...flowSceneKinds,
+  "tree",
+  "network",
+  "state-machine",
+]);
+
 export const termExperiences = z.array(termExperienceSchema).parse([
   ...baseExperienceSource,
   ...aiStackExperienceSource,

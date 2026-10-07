@@ -37,7 +37,7 @@ import Link from "next/link";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import type { Term } from "@/lib/content";
-import type { TermActorIcon, TermExperience, TermSceneKind } from "@/lib/term-experiences";
+import { flowSceneKinds, topologySceneKinds, type TermActorIcon, type TermExperience, type TermSceneKind } from "@/lib/term-experiences";
 import { DesignSystemSignatureHero, MvpSignatureHero, PackageSignatureHero, RuntimeSignatureHero, TypeScriptSignatureHero } from "./ProductCoreSignatureHeroes";
 import { AppManifestSignatureHero, CodeSigningSignatureHero, DeepLinkSignatureHero, EmulatorSignatureHero, GestureSignatureHero, HapticFeedbackSignatureHero, SemanticHtmlSignatureHero, TouchTargetSignatureHero } from "./FrontendInteractionSignatureHeroes";
 import { CircuitBreakerSignatureHero, ContextCompactionSignatureHero, DataContractSignatureHero, DebounceSignatureHero, OptimisticUpdateSignatureHero, LatencyBudgetSignatureHero, ToolSchemaSignatureHero } from "./vbp096-expansion-heroes";
@@ -179,6 +179,8 @@ function CopyAction({ text, label }: { text: string; label: string }) {
 
 function TermScene({ experience }: { experience: TermExperience }) {
   const controlKind = inferSceneControl(experience.actionLabel);
+  const isFlowScene = flowSceneKinds.has(experience.sceneKind);
+  const hasTopology = topologySceneKinds.has(experience.sceneKind);
   const [activeFrame, setActiveFrame] = useState(0);
   const [isPlaying, setIsPlaying] = useState(controlKind === "step");
   const stageRef = useRef<HTMLDivElement>(null);
@@ -234,7 +236,7 @@ function TermScene({ experience }: { experience: TermExperience }) {
 
   return (
     <div
-      className={`term-scene term-scene-${experience.sceneKind}`}
+      className={`term-scene term-scene-${experience.sceneKind} ${isFlowScene ? "is-flow-scene" : "is-mechanism-scene"}`}
       data-frame={activeFrame}
       ref={stageRef}
       style={{ "--frame-index": activeFrame, "--frame-count": experience.frames.length } as React.CSSProperties}
@@ -252,7 +254,7 @@ function TermScene({ experience }: { experience: TermExperience }) {
       </div>
 
       <div className="term-scene-canvas" data-scene-kind={experience.sceneKind} aria-label={`${experience.sceneTitle}，当前：${frame.label}`}>
-        <SceneTopology experience={experience} activeFrame={activeFrame} />
+        {hasTopology ? <SceneTopology experience={experience} activeFrame={activeFrame} /> : null}
         <div className="term-scene-actors">
           {experience.actors.map((actor, index) => {
             const Icon = actorIcons[actor.icon];
@@ -277,10 +279,10 @@ function TermScene({ experience }: { experience: TermExperience }) {
         </div>
 
         {experience.edges.length > 0 ? (
-          <div className="term-scene-edges" aria-hidden="true">
+          <div className={`term-scene-edges ${isFlowScene ? "is-flow-relations" : "is-mechanism-relations"}`} aria-hidden="true">
             {experience.edges.map((edge, index) => (
               <span className={frame.activeEdgeIds.includes(edge.id) ? "is-active" : ""} style={{ "--edge-index": index } as React.CSSProperties} key={edge.id}>
-                {edge.label}<ArrowRight size={15} />
+                <i aria-hidden="true" />{edge.label}{isFlowScene ? <ArrowRight size={15} /> : null}
               </span>
             ))}
           </div>

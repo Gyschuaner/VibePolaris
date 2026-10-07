@@ -4769,6 +4769,53 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
   transition: color .3s ease, background .3s ease, transform .3s ease;
 }
 .term-scene-edges > span.is-active { color: var(--accent-strong); background: var(--tint); transform: translateY(-2px); }
+.term-scene-edges.is-mechanism-relations {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  align-items: stretch;
+  gap: 10px;
+}
+.term-scene-edges.is-mechanism-relations > span {
+  justify-content: flex-start;
+  min-height: 42px;
+  border: 1px solid color-mix(in srgb, var(--hairline) 88%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface) 86%, var(--tint));
+}
+.term-scene-edges.is-mechanism-relations > span > i {
+  flex: 0 0 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--hairline);
+  transition: background .3s ease, box-shadow .3s ease;
+}
+.term-scene-edges.is-mechanism-relations > span.is-active {
+  transform: none;
+  border-color: color-mix(in srgb, var(--brand-star) 60%, var(--hairline));
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--accent) 10%, transparent);
+}
+.term-scene-edges.is-mechanism-relations > span.is-active > i {
+  background: var(--brand-star);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--brand-star) 15%, transparent);
+}
+.term-scene.is-mechanism-scene .term-scene-topology path.is-active {
+  stroke-dasharray: 2 8;
+  animation-name: term-topology-pulse;
+}
+.term-scene-layers .term-scene-edges.is-mechanism-relations,
+.term-scene-memory .term-scene-edges.is-mechanism-relations,
+.term-scene-contract .term-scene-edges.is-mechanism-relations {
+  width: min(620px, 100%);
+  margin-inline: auto;
+}
+.term-scene-compare .term-scene-edges.is-mechanism-relations,
+.term-scene-transform .term-scene-edges.is-mechanism-relations {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.term-scene-matrix .term-scene-edges.is-mechanism-relations {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
 .term-scene-metric {
   position: absolute;
   right: 24px;
@@ -4912,6 +4959,11 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
   animation: term-edge-arrive .48s cubic-bezier(.2,.8,.2,1) both;
   animation-delay: calc(var(--edge-index) * 28ms);
 }
+.term-scene.is-mechanism-scene .term-scene-edges.is-mechanism-relations > span.is-active {
+  animation-name: term-relation-pulse;
+  animation-duration: .48s;
+  transform: none;
+}
 .term-scene-route .term-scene-actor.is-active { animation-name: term-route-travel; animation-duration: .62s; }
 .term-scene-pipeline .term-scene-actor.is-active { animation-name: term-pipeline-pass; animation-duration: .7s; }
 .term-scene-transform .term-scene-actor.is-active { animation-name: term-transform-change; animation-duration: .72s; }
@@ -4947,7 +4999,9 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
 @keyframes term-caption-in { from { opacity: .2; transform: translateY(7px); } to { opacity: 1; transform: none; } }
 @keyframes term-metric-in { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: none; } }
 @keyframes term-topology-flow { to { stroke-dashoffset: -32; } }
+@keyframes term-topology-pulse { 0%, 100% { opacity: .48; } 50% { opacity: 1; } }
 @keyframes term-edge-arrive { from { opacity: .15; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0) translateY(-2px); } }
+@keyframes term-relation-pulse { from { opacity: .35; } to { opacity: 1; } }
 @keyframes term-route-travel { from { opacity: .2; transform: translateX(-18px) scale(.96); } to { opacity: 1; transform: translateX(0) translateY(-8px) scale(1); } }
 @keyframes term-pipeline-pass { 0% { opacity: .2; transform: translateX(-14px) scale(.96); } 58% { box-shadow: 0 18px 34px color-mix(in srgb, var(--brand-star) 22%, transparent); } 100% { opacity: 1; transform: translateX(0) translateY(-8px) scale(1); } }
 @keyframes term-transform-change { 0% { opacity: .2; transform: rotate(-2deg) scale(.9); } 70% { transform: rotate(.5deg) translateY(-10px) scale(1.02); } 100% { opacity: 1; transform: translateY(-8px) scale(1); } }
@@ -5019,6 +5073,10 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
   .term-scene-select { grid-column: 2; justify-self: stretch; min-width: 0; }
   .term-scene-range,
   .term-scene-select { grid-template-columns: 1fr; gap: 7px; }
+  .term-scene-edges.is-mechanism-relations,
+  .term-scene-compare .term-scene-edges.is-mechanism-relations,
+  .term-scene-transform .term-scene-edges.is-mechanism-relations,
+  .term-scene-matrix .term-scene-edges.is-mechanism-relations { grid-template-columns: 1fr; }
   .term-scene-range output { justify-self: end; }
   .term-scene-frames { grid-template-columns: 1fr; }
   .term-scene-frames button { border-right: 0; border-bottom: 1px solid var(--hairline); }
