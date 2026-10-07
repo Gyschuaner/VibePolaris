@@ -29,16 +29,17 @@ export function ChunkingBoundaryHero() {
 }
 
 export function RetrievalEvidenceHero() {
-  const scene = AutoScene({ length: 5 });
+  const scene = AutoScene({ length: 6 });
   const opened = scene.step >= 1;
   const ranked = scene.step >= 2;
-  const removed = scene.step >= 3;
-  const cited = scene.step >= 4;
-  return <div ref={scene.ref} className={styles.retrievalHero} data-step={scene.step} role="img" aria-label="检索把查询磁石放到证据架上，候选按相关性排队，缺少来源的卡片被抽走">
-    <div className={styles.signatureTop}><span>EVIDENCE SHELF / RETRIEVAL</span><strong>{cited ? "CITED" : removed ? "GAP" : ranked ? "RANKED" : opened ? "OPEN" : "QUERY"}</strong></div>
-    <SceneControls scene={scene} labels={["写下查询", "打开证据架", "调语义滑轨", "抽走无来源", "夹住引用"]} compact />
+  const expanded = scene.step >= 3;
+  const removed = scene.step >= 4;
+  const cited = scene.step >= 5;
+  return <div ref={scene.ref} className={styles.retrievalHero} data-step={scene.step} role="img" aria-label="检索把查询磁石放到证据架上，候选先排序并扩大 top-k，再抽走缺少来源的卡片，最后只夹住可引用证据">
+    <div className={styles.signatureTop}><span>EVIDENCE SHELF / RETRIEVAL</span><strong>{cited ? "CITED" : removed ? "GAP" : expanded ? "TOP-K 5" : ranked ? "RANKED" : opened ? "OPEN" : "QUERY"}</strong></div>
+    <SceneControls scene={scene} labels={["写下查询", "打开证据架", "调语义滑轨", "扩大 top-k", "抽走无来源", "关上引用闸"]} compact />
     <div className={styles.retrievalShelf}>
-      <div className={styles.queryCard}><MagnifyingGlass size={17}/><strong>退款多久到账？</strong><small>query magnet</small></div>
+      <div className={styles.queryCard}><MagnifyingGlass size={17}/><strong>退款多久到账？</strong><small>{expanded ? "top-k 3 → 5" : "top-k 3"}</small></div>
       <div className={styles.evidenceCards} data-open={opened} data-ranked={ranked}>
         <div className={styles.evidenceCard} data-rank="1"><span>01</span><strong>退款政策 §2</strong><small>0.88 · p.04</small></div>
         <div className={styles.evidenceCard} data-rank="2"><span>02</span><strong>账户结算说明</strong><small>0.57 · v2</small></div>
@@ -52,21 +53,23 @@ export function RetrievalEvidenceHero() {
 
 export function VectorStoreLedgerHero() {
   const scene = AutoScene({ length: 4 });
-  const stored = scene.step >= 1;
+  const indexed = scene.step >= 0;
+  const queried = scene.step >= 1;
   const filtered = scene.step >= 2;
-  const migrated = scene.step >= 3;
-  return <div ref={scene.ref} className={styles.vectorLedgerHero} data-step={scene.step} role="img" aria-label="向量存储账本把向量和原文版本绑在一起，过滤和迁移会改变可返回的记录">
-    <div className={styles.signatureTop}><span>VECTOR LEDGER / VERSIONED STORE</span><strong>{migrated ? "MIGRATED" : filtered ? "FILTERED" : stored ? "INDEXED" : "EMPTY"}</strong></div>
-    <SceneControls scene={scene} labels={["摆上原文卡", "写入向量", "套版本过滤", "迁移旧索引"]} compact />
+  const returned = scene.step >= 3;
+  return <div ref={scene.ref} className={styles.vectorLedgerHero} data-step={scene.step} role="img" aria-label="向量存储先建立近邻索引，再查询候选、套元数据过滤，最后返回带来源的前五条记录">
+    <div className={styles.signatureTop}><span>VECTOR LEDGER / VERSIONED STORE</span><strong>{returned ? "TOP 5" : filtered ? "FILTERED" : queried ? "NEIGHBORS" : "INDEXED"}</strong></div>
+    <SceneControls scene={scene} labels={["建立索引", "查询近邻", "套元数据过滤", "返回前五"]} compact />
     <div className={styles.vectorLedger}>
-      <div className={styles.vectorSource}><FileText size={16}/><strong>退款政策</strong><small>原文 / p.04</small></div>
-      <div className={styles.vectorDots} data-visible={stored}><i/><i/><i/><i/><i/><small>embedding</small></div>
+      <div className={styles.vectorSource}><FileText size={16}/><strong>退款政策</strong><small>原文 / p.04 · v3</small></div>
+      <div className={styles.vectorDots} data-visible={indexed}><i/><i/><i/><i/><i/><small>embedding · HNSW</small></div>
       <div className={styles.vectorRows}>
-        <div data-active={!filtered}><Tag size={13}/><span>v2 · 全库</span><code>doc-17</code></div>
-        <div data-active={filtered}><Tag size={13}/><span>v3 · 2026</span><code>{migrated ? "re-indexed" : "doc-17"}</code></div>
+        <div data-active={queried}><MagnifyingGlass size={13}/><span>{queried ? "近邻候选" : "向量索引"}</span><code>{queried ? "20 段" : "10k 段"}</code></div>
+        <div data-active={filtered}><Funnel size={13}/><span>{filtered ? "产品 = 支付" : "元数据过滤"}</span><code>{filtered ? "20 → 7" : "待用"}</code></div>
+        <div data-active={returned}><CheckCircle size={13}/><span>{returned ? "返回前五" : "结果等待"}</span><code>{returned ? "5 cards" : "top-k"}</code></div>
       </div>
     </div>
-    <div className={styles.signatureProof}>{migrated ? <><CheckCircle size={14}/> 新模型与旧向量已分开，来源仍可回查</> : filtered ? <><Funnel size={14}/> 过滤改变候选范围，不会改写原文</> : <><LockSimple size={14}/> 只存向量，命中后找不回出处</>}</div>
+    <div className={styles.signatureProof}>{returned ? <><CheckCircle size={14}/> 前五条连同来源和元数据一起返回</> : filtered ? <><Funnel size={14}/> 过滤缩小候选范围，不会改写原文</> : queried ? <><MagnifyingGlass size={14}/> 先找近邻，再套业务条件</> : <><LockSimple size={14}/> 索引把原文位置挂在向量旁</>}</div>
   </div>;
 }
 
