@@ -688,14 +688,65 @@
     "relatedSlugs": ["retry", "idempotency", "request", "connection-pool"]
   },
   {
-    "zh": "关系型数据库", "en": "Relational Database", "slug": "relational-database", "cat": "后端",
-    "say": "把数据放进有列定义的表中，并用主键和外键表达关系。", "aliases": ["关系数据库", "SQL 数据库", "RDBMS"],
-    "question": "订单和用户之间的关系应该怎样保存？", "definition": "关系型数据库用表、行、列和约束组织数据，并通过 SQL 查询和修改。", "boundary": "关系型数据库适合结构明确且需要事务的数据，不表示所有数据都必须拆成表。",
-    "demoType": "hierarchy", "demoTitle": "用户和订单怎样形成关系",
-    "demoSteps": [{"label":"保留列","value":"id · name","note":"先选出结果需要的属性。"},{"label":"连接匹配","value":"customers.id = orders.customer_id","note":"主键和外键把相关行配在一起。"},{"label":"过滤结果","value":"customer_id=7 · amount>100","note":"条件只留下满足查询的组合。"}],
-    "quizQuestion": "关系型数据库主要怎样组织数据？", "quizOptions": ["表、行、列和关系", "只保存图片像素", "只按文件夹层级"], "correctText": "表结构和关系是其核心组织方式。", "wrongText": "它不只用于图片，也不以文件夹作为主要数据模型。",
-    "promptTitle": "设计关系数据结构", "prompt": "请把这些业务对象整理为表、主键、外键和必要约束，并说明高频查询需要哪些索引。", "relatedSlugs": ["sql", "table", "primary-key", "nosql"]
-  },
+  "zh": "关系型数据库",
+  "en": "Relational Database",
+  "slug": "relational-database",
+  "cat": "后端",
+  "say": "两张表不复制客户姓名，也能拼出订单报表；关键在键、约束和查询操作怎样组合，而不是表格长得像电子表格。",
+  "aliases": [
+    "关系数据库",
+    "SQL 数据库",
+    "RDBMS"
+  ],
+  "question": "关系模型怎样把客户、订单和查询结果分开保存，又能在需要时组合出可核对的报表？",
+  "definition": "关系数据库用关系（表）、属性（列）、元组（行）、键和约束来表达数据。客户和订单可以各自保存事实，主键标识客户，外键表达订单属于哪个客户，查询再通过投影、连接和选择产生新的结果关系。输入表仍保持原状，结果是否匹配取决于连接条件、过滤条件和约束，而不是数据库自动“理解”业务关系。",
+  "boundary": "关系模型不等于 SQL 语法、电子表格界面或某一款数据库；事务、索引、锁和物理存储是实现层的其他问题。主键/外键能约束身份和引用，却不能自动保证金额、权限或业务流程正确；连接条件漏写时，行数可能悄悄膨胀。",
+  "demoType": "comparison",
+  "demoTitle": "从两张关系表到一份可核对的订单报表",
+  "demoSteps": [
+    {
+      "label": "事实分在两张表",
+      "value": "3 rows · id/name · 5 rows · customer_id/amount",
+      "note": "customers 保存 id、name，orders 保存 order_id、customer_id、amount；客户姓名只存一处，订单通过外键指向它。"
+    },
+    {
+      "label": "先投影需要的列",
+      "value": "customer_id · name · amount",
+      "note": "查询只保留报表要看的字段，减少把无关列带进组合；这一步不会删除原表中的列。"
+    },
+    {
+      "label": "按键连接而不是按位置拼",
+      "value": "5 matched · 0 unexplained · name attached",
+      "note": "customer.id = order.customer_id 命中后，订单拿到对应姓名；没有匹配的外键单独留下，提醒我们选择 INNER 还是 OUTER JOIN。"
+    },
+    {
+      "label": "再应用业务条件",
+      "value": "id=7 AND amount>100 · 3 rows",
+      "note": "在连接结果上过滤 customer_id=7 且 amount>100，5 条记录留下 3 条；筛选改变结果关系，不改变客户和订单事实。"
+    },
+    {
+      "label": "结果单独可核对",
+      "value": "new relation · 3 rows · unchanged · unchanged",
+      "note": "报表有 3 行、3 个来源字段，输入表仍是原来的 3 和 5 行；把结果当作新关系，才能继续排序、汇总或再查询。"
+    }
+  ],
+  "quizQuestion": "JOIN 生成订单报表后，customers 和 orders 两张输入表会怎样？",
+  "quizOptions": [
+    "保持原状，查询生成一份新的结果关系",
+    "永久合并成一张表并删除外键",
+    "自动删除所有没有订单的客户"
+  ],
+  "correctText": "投影、连接和过滤默认只生成查询结果，输入关系是否修改要由独立的写操作决定。",
+  "wrongText": "把查询结果误当成存储结构，会看不见连接条件、约束和写入边界。",
+  "promptTitle": "从业务事实设计关系查询",
+  "prompt": "请把客户和订单建成两张关系表，标出主键、外键和约束；先投影字段，再按键连接，最后筛选 customer_id=7 且 amount>100。给出匹配与未匹配记录数，并说明查询为何没有改写输入表。",
+  "relatedSlugs": [
+    "sql",
+    "table",
+    "primary-key",
+    "nosql"
+  ]
+},
   {
     "zh": "SQL", "en": "Structured Query Language", "slug": "sql", "cat": "后端",
     "say": "用统一语句读取、增加、修改和删除关系型数据库中的数据。", "aliases": ["结构化查询语言", "数据库查询", "SQL 语句"],

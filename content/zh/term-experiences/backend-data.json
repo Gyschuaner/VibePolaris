@@ -6287,223 +6287,257 @@
     ]
   },
   {
-    "slug": "relational-database",
-    "lead": "两张表为什么可以在不复制客户姓名的情况下拼出订单报表？",
-    "definition": "关系数据库用关系、属性、键与约束表达数据结构，再通过选择、投影和连接等操作从既有关系生成新的结果关系。",
-    "boundary": "关系模型不等于电子表格界面，也不等于 SQL 语言本身。事务、索引和物理存储是实现层的其他问题。",
-    "sceneKind": "assembly",
-    "sceneTitle": "从客户与订单关系组装报表",
-    "actionLabel": "应用下一个关系操作",
-    "actors": [
-      {
-        "id": "customers-rel",
-        "label": "customers",
-        "detail": "3 rows · id,name",
-        "icon": "database",
-        "group": "输入关系"
-      },
-      {
-        "id": "orders-rel",
-        "label": "orders",
-        "detail": "5 rows · customer_id,amount",
-        "icon": "database",
-        "group": "输入关系"
-      },
-      {
-        "id": "selection-op",
-        "label": "过滤",
-        "detail": "customer_id = 7 AND amount > 100",
-        "icon": "search",
-        "group": "关系操作"
-      },
-      {
-        "id": "join-op",
-        "label": "连接",
-        "detail": "customer.id = order.customer_id",
-        "icon": "gear",
-        "group": "关系操作"
-      },
-      {
-        "id": "projection-op",
-        "label": "保留列",
-        "detail": "customer_id, name, amount",
-        "icon": "layout",
-        "group": "关系操作"
-      },
-      {
-        "id": "report-rel",
-        "label": "结果关系",
-        "detail": "等待生成",
-        "icon": "chart",
-        "group": "输出"
-      }
-    ],
-    "edges": [
-      {
-        "id": "orders-selection",
-        "from": "orders-rel",
-        "to": "projection-op",
-        "label": "保留列"
-      },
-      {
-        "id": "selection-join",
-        "from": "projection-op",
-        "to": "join-op",
-        "label": "5 rows"
-      },
-      {
-        "id": "customers-join",
-        "from": "customers-rel",
-        "to": "join-op",
-        "label": "按键匹配"
-      },
-      {
-        "id": "customers-projection",
-        "from": "customers-rel",
-        "to": "projection-op",
-        "label": "保留列"
-      },
-      {
-        "id": "join-projection",
-        "from": "join-op",
-        "to": "selection-op",
-        "label": "连接后 5 rows"
-      },
-      {
-        "id": "projection-report",
-        "from": "selection-op",
-        "to": "report-rel",
-        "label": "3 rows"
-      }
-    ],
-    "frames": [
-      {
-        "label": "保留列",
-        "note": "先留下报表真正需要的客户、订单和金额字段，输入关系仍保持分开。",
-        "activeIds": [
-          "customers-rel",
-          "orders-rel",
-          "projection-op"
-        ],
-        "doneIds": [
-          "projection-op"
-        ],
-        "mutedIds": [
-          "join-op",
-          "selection-op",
-          "report-rel"
-        ],
-        "values": {
-          "orders-rel": "5 rows",
-          "projection-op": "customer_id, name, amount"
-        },
-        "activeEdgeIds": [
-          "orders-selection",
-          "customers-projection"
-        ],
-        "metric": {
-          "label": "先定列",
-          "value": "3 fields"
-        }
-      },
-      {
-        "label": "连接匹配",
-        "note": "customer_id 与客户 id 匹配后，5 条订单各自获得对应姓名。",
-        "activeIds": [
-          "customers-rel",
-          "projection-op",
-          "join-op"
-        ],
-        "doneIds": [
-          "join-op"
-        ],
-        "mutedIds": [
-          "orders-rel",
-          "selection-op",
-          "report-rel"
-        ],
-        "values": {
-          "join-op": "5 matched rows",
-          "customers-rel": "name attached"
-        },
-        "activeEdgeIds": [
-          "selection-join",
-          "customers-join"
-        ]
-      },
-      {
-        "label": "过滤结果",
-        "note": "连接后的 5 条订单再按 customer_id=7 与 amount>100 过滤，结果留下 3 行。",
-        "activeIds": [
-          "join-op",
-          "selection-op",
-          "report-rel"
-        ],
-        "doneIds": [
-          "report-rel"
-        ],
-        "mutedIds": [
-          "customers-rel",
-          "orders-rel",
-          "projection-op"
-        ],
-        "values": {
-          "report-rel": "3 rows · 2 columns",
-          "selection-op": "customer_id=7 · amount>100"
-        },
-        "activeEdgeIds": [
-          "join-projection",
-          "projection-report"
-        ]
-      }
-    ],
-    "insight": "关系模型把数据结构与组合操作分开，查询结果也是一个新的关系。",
-    "quiz": {
-      "question": "JOIN 生成报表后，customers 与 orders 两张表会怎样？",
-      "options": [
-        {
-          "label": "保持原状，查询产生新的结果关系",
-          "correct": true
-        },
-        {
-          "label": "永久合并成一张表",
-          "correct": false
-        },
-        {
-          "label": "自动删除未匹配数据",
-          "correct": false
-        }
+  "slug": "relational-database",
+  "lead": "两张表不复制客户姓名，也能拼出订单报表；关键在键、约束和查询操作怎样组合，而不是表格长得像电子表格。",
+  "definition": "关系数据库用关系（表）、属性（列）、元组（行）、键和约束来表达数据。客户和订单可以各自保存事实，主键标识客户，外键表达订单属于哪个客户，查询再通过投影、连接和选择产生新的结果关系。输入表仍保持原状，结果是否匹配取决于连接条件、过滤条件和约束，而不是数据库自动“理解”业务关系。",
+  "boundary": "关系模型不等于 SQL 语法、电子表格界面或某一款数据库；事务、索引、锁和物理存储是实现层的其他问题。主键/外键能约束身份和引用，却不能自动保证金额、权限或业务流程正确；连接条件漏写时，行数可能悄悄膨胀。",
+  "sceneKind": "assembly",
+  "sceneTitle": "投影、连接和过滤如何产生一张新结果",
+  "actionLabel": "应用下一个关系操作",
+  "actors": [
+    {
+      "id": "customers-rel",
+      "label": "customers",
+      "detail": "3 rows · id,name",
+      "icon": "database",
+      "group": "输入关系"
+    },
+    {
+      "id": "orders-rel",
+      "label": "orders",
+      "detail": "5 rows · customer_id,amount",
+      "icon": "database",
+      "group": "输入关系"
+    },
+    {
+      "id": "selection-op",
+      "label": "过滤",
+      "detail": "customer_id = 7 AND amount > 100",
+      "icon": "search",
+      "group": "关系操作"
+    },
+    {
+      "id": "join-op",
+      "label": "连接",
+      "detail": "customer.id = order.customer_id",
+      "icon": "gear",
+      "group": "关系操作"
+    },
+    {
+      "id": "projection-op",
+      "label": "保留列",
+      "detail": "customer_id, name, amount",
+      "icon": "layout",
+      "group": "关系操作"
+    },
+    {
+      "id": "report-rel",
+      "label": "结果关系",
+      "detail": "等待生成",
+      "icon": "chart",
+      "group": "输出"
+    }
+  ],
+  "edges": [
+    {
+      "id": "orders-selection",
+      "from": "orders-rel",
+      "to": "projection-op",
+      "label": "保留列"
+    },
+    {
+      "id": "selection-join",
+      "from": "projection-op",
+      "to": "join-op",
+      "label": "5 rows"
+    },
+    {
+      "id": "customers-join",
+      "from": "customers-rel",
+      "to": "join-op",
+      "label": "按键匹配"
+    },
+    {
+      "id": "customers-projection",
+      "from": "customers-rel",
+      "to": "projection-op",
+      "label": "保留列"
+    },
+    {
+      "id": "join-projection",
+      "from": "join-op",
+      "to": "selection-op",
+      "label": "连接后 5 rows"
+    },
+    {
+      "id": "projection-report",
+      "from": "selection-op",
+      "to": "report-rel",
+      "label": "3 rows"
+    }
+  ],
+  "frames": [
+    {
+      "label": "事实分在两张表",
+      "note": "customers 保存 id、name，orders 保存 order_id、customer_id、amount；客户姓名只存一处，订单通过外键指向它。",
+      "activeIds": [
+        "customers-rel",
+        "orders-rel"
       ],
-      "success": "关系操作产生查询结果，不会自动改写输入关系。",
-      "retry": "区分查询结果与存储结构。"
+      "doneIds": [],
+      "mutedIds": [
+        "selection-op",
+        "join-op",
+        "projection-op",
+        "report-rel"
+      ],
+      "values": {
+        "customers-rel": "3 rows · id/name",
+        "orders-rel": "5 rows · customer_id/amount"
+      },
+      "activeEdgeIds": []
     },
-    "prompt": {
-      "title": "用关系操作描述一个查询",
-      "text": "请列出输入关系、键与约束，并分别说明选择哪些行、如何连接、最终投影哪些列。"
+    {
+      "label": "先投影需要的列",
+      "note": "查询只保留报表要看的字段，减少把无关列带进组合；这一步不会删除原表中的列。",
+      "activeIds": [
+        "customers-rel",
+        "orders-rel",
+        "projection-op"
+      ],
+      "doneIds": [
+        "projection-op"
+      ],
+      "mutedIds": [
+        "selection-op",
+        "join-op",
+        "report-rel"
+      ],
+      "values": {
+        "projection-op": "customer_id · name · amount"
+      },
+      "activeEdgeIds": [
+        "customers-projection",
+        "orders-selection"
+      ]
     },
-    "sources": [
+    {
+      "label": "按键连接而不是按位置拼",
+      "note": "customer.id = order.customer_id 命中后，订单拿到对应姓名；没有匹配的外键单独留下，提醒我们选择 INNER 还是 OUTER JOIN。",
+      "activeIds": [
+        "customers-rel",
+        "orders-rel",
+        "join-op"
+      ],
+      "doneIds": [
+        "projection-op"
+      ],
+      "mutedIds": [
+        "selection-op",
+        "report-rel"
+      ],
+      "values": {
+        "join-op": "5 matched · 0 unexplained",
+        "customers-rel": "name attached"
+      },
+      "activeEdgeIds": [
+        "selection-join",
+        "customers-join"
+      ]
+    },
+    {
+      "label": "再应用业务条件",
+      "note": "在连接结果上过滤 customer_id=7 且 amount>100，5 条记录留下 3 条；筛选改变结果关系，不改变客户和订单事实。",
+      "activeIds": [
+        "join-op",
+        "selection-op",
+        "projection-op",
+        "report-rel"
+      ],
+      "doneIds": [
+        "join-op"
+      ],
+      "mutedIds": [
+        "customers-rel",
+        "orders-rel"
+      ],
+      "values": {
+        "selection-op": "id=7 AND amount>100",
+        "report-rel": "3 rows"
+      },
+      "activeEdgeIds": [
+        "join-projection",
+        "projection-report"
+      ]
+    },
+    {
+      "label": "结果单独可核对",
+      "note": "报表有 3 行、3 个来源字段，输入表仍是原来的 3 和 5 行；把结果当作新关系，才能继续排序、汇总或再查询。",
+      "activeIds": [
+        "report-rel",
+        "customers-rel",
+        "orders-rel"
+      ],
+      "doneIds": [
+        "selection-op",
+        "projection-op"
+      ],
+      "mutedIds": [
+        "join-op"
+      ],
+      "values": {
+        "report-rel": "new relation · 3 rows",
+        "customers-rel": "unchanged",
+        "orders-rel": "unchanged"
+      },
+      "activeEdgeIds": []
+    }
+  ],
+  "insight": "关系查询把“事实怎样存”与“这次要怎样组合”分开；连接条件和约束是可核对的机制，不是表格外观。",
+  "quiz": {
+    "question": "JOIN 生成订单报表后，customers 和 orders 两张输入表会怎样？",
+    "options": [
       {
-        "url": "https://www.postgresql.org/docs/current/tutorial-sql.html",
-        "label": "PostgreSQL · The SQL Language",
-        "note": "表、行、查询与表连接"
+        "label": "保持原状，查询生成一份新的结果关系",
+        "correct": true
       },
       {
-        "url": "https://www.postgresql.org/docs/current/ddl.html",
-        "label": "PostgreSQL · Data Definition",
-        "note": "表结构、主键、外键与约束"
+        "label": "永久合并成一张表并删除外键",
+        "correct": false
       },
       {
-        "url": "https://www.sqlite.org/lang.html",
-        "label": "SQLite · SQL Language",
-        "note": "查询、连接与修改语句的范围"
-      },
-      {
-        "url": "https://www.ibm.com/think/topics/relational-databases",
-        "label": "IBM · Relational databases",
-        "note": "关系表、键、SQL 与事务边界"
+        "label": "自动删除所有没有订单的客户",
+        "correct": false
       }
-    ]
+    ],
+    "success": "投影、连接和过滤默认只生成查询结果，输入关系是否修改要由独立的写操作决定。",
+    "retry": "把查询结果误当成存储结构，会看不见连接条件、约束和写入边界。"
   },
+  "prompt": "请把客户和订单建成两张关系表，标出主键、外键和约束；先投影字段，再按键连接，最后筛选 customer_id=7 且 amount>100。给出匹配与未匹配记录数，并说明查询为何没有改写输入表。",
+  "sources": [
+    {
+      "url": "https://www.postgresql.org/docs/current/tutorial-sql.html",
+      "label": "PostgreSQL · SQL tutorial",
+      "note": "PostgreSQL SQL tutorial：核对表、行、查询、连接和查询结果的边界。"
+    },
+    {
+      "url": "https://www.postgresql.org/docs/current/ddl.html",
+      "label": "PostgreSQL · Data definition",
+      "note": "PostgreSQL Data Definition：核对主键、外键和约束的职责。"
+    },
+    {
+      "url": "https://www.sqlite.org/lang.html",
+      "label": "SQLite · SQL language",
+      "note": "SQLite SQL language：核对 SELECT、JOIN 和修改语句并非同一类操作。"
+    },
+    {
+      "url": "https://www.ibm.com/think/topics/relational-databases",
+      "label": "IBM · Relational databases",
+      "note": "IBM relational database：补充关系表、键、SQL 和事务的概念边界。"
+    }
+  ],
+  "promptTitle": "从业务事实设计关系查询"
+},
   {
     "slug": "sql",
     "lead": "SQL 文本完全不变，为什么加索引后数据库会换一套执行步骤？",
