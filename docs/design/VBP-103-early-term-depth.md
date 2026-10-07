@@ -51,4 +51,16 @@
 
 ## 发布记录
 
-本文件随 VBP-103 代码分支提交；待 reviewer PASS 后合入 `main` 并按 AGENTS.md 执行生产部署。生产部署完成后补充提交号、镜像、发布目录、数据库备份、回滚脚本、健康检查和 DP CLI 结果。DP CLI 若继续出现 SSL EOF，只记录实际失败，不伪造部署对象。
+### 代码与生产
+
+- PR：[#456](https://github.com/Gyschuaner/VibePolaris/pull/456)，已合入 `main`。
+- 生产提交：`cd0be6d59939583f3add2cb54b58765b4b4eb336`。
+- 镜像：`vibepolaris:cd0be6d59939583f3add2cb54b58765b4b4eb336`，amd64；本地 gzip 包 SHA256 为 `a4e7af4a7b3b117446afce7f0c5d3eed1e6aa78c51da2d0e56b0aa719e5b409b`，远端校验一致。
+- 发布目录：`/opt/vibepolaris/releases/20261007T224335Z-cd0be6d5`；当前软链接已切换到该目录，容器报告 `healthy`。
+- SQLite 备份：`/opt/vibepolaris/backups/20261007T224335Z-from-2c2d6234d703bcb44a5bb4c71d6802ff3dfb67db/sqlite/xiaobei.sqlite`；备份清单校验通过，SHA256 为 `8a2f07e7031a61fbcddf33a8bf83cfc29c4c48d23dcaddd1f7bcc81824a2b18d`。
+- 回滚：`/opt/vibepolaris/releases/20261007T224335Z-cd0be6d5/rollback.sh` 已生成，可切回上一发布目录和镜像。
+- 服务器本机通过 Caddy HTTPS 冒烟检查十条新路由，全部 HTTP 200：`visual-hierarchy`、`microinteraction`、`feedback`、`loading-state`、`reduced-motion`、`sitemap`、`design-token`、`relational-database`、`nosql`、`row`。操作机直接访问公网域名时仍遇到 `SSL_ERROR_SYSCALL`，因此公网链路未宣称已验证。
+
+### DP 记录
+
+已按 `developer-platform-cli` 查询部署列表并尝试写入 `deploy-vbp103-early-term-depth-prod-20261008` 两次；两次均因 `SSL: UNEXPECTED_EOF_WHILE_READING` 无法连接 Developer Platform，未伪造部署对象。恢复连接后只需用本节真实提交、发布目录、备份和结果补录 DP。
