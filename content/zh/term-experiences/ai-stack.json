@@ -200,194 +200,236 @@
   },
   {
     "slug": "reasoning-model",
-    "lead": "库存17件，先卖4件再卖6件，怎样让每一步都能检查？",
-    "definition": "推理模型或推理模式会为多步骤任务分配更多计算，用来推断、搜索或验证；演示中的检查步骤是人和程序都能复算的公开记录，不等于模型私有的思维过程。",
-    "boundary": "更多推理计算可能改善特定任务的完成率，但不是正确性证明；外部事实、数值和业务约束仍需要独立核验。",
-    "sceneKind": "timeline",
-    "sceneTitle": "库存数值沿步骤推进",
-    "actionLabel": "改变销量重算",
+    "lead": "这件商品能退款吗？怎样让结论先等条件落账？",
+    "definition": "推理模型或推理模式会为多步骤任务分配更多计算，用来拆分条件、比较路径或检查中间结果；这里公开的是可复算的条件账本，不是模型私有的思维过程。",
+    "boundary": "更多推理计算可能改善特定任务的完成率，但不是正确性证明；预算、外部事实和业务约束仍需要分别核验。",
+    "sceneKind": "spectrum",
+    "sceneTitle": "退款条件在预算光谱上逐项落账",
+    "actionLabel": "改变核对预算",
     "actors": [
       {
-        "id": "problem",
-        "label": "库存题",
-        "detail": "17件，卖4件，再卖6件",
+        "id": "question",
+        "label": "退款问题",
+        "detail": "这件商品能退款吗？",
         "icon": "message",
         "group": "输入"
       },
       {
-        "id": "stock",
-        "label": "库存牌",
-        "detail": "当前 17",
-        "icon": "chart",
-        "group": "状态"
+        "id": "conditions",
+        "label": "条件账本",
+        "detail": "未发货 · 12天 · 包装完整",
+        "icon": "file",
+        "group": "核对"
       },
       {
-        "id": "check",
-        "label": "约束检查",
-        "detail": "库存不得小于0",
-        "icon": "shield",
-        "group": "校验"
+        "id": "budget",
+        "label": "推理预算",
+        "detail": "还有多少计算可用",
+        "icon": "clock",
+        "group": "边界"
       },
       {
-        "id": "result",
-        "label": "结果",
-        "detail": "剩余 7",
+        "id": "verdict",
+        "label": "带条件的结论",
+        "detail": "可以退款 · 仅限未发货",
         "icon": "spark",
         "group": "输出"
       }
     ],
     "edges": [
       {
-        "id": "p-s",
-        "from": "problem",
-        "to": "stock",
-        "label": "读取操作"
+        "id": "q-c",
+        "from": "question",
+        "to": "conditions",
+        "label": "展开条件"
       },
       {
-        "id": "s-c",
-        "from": "stock",
-        "to": "check",
-        "label": "检查"
+        "id": "c-b",
+        "from": "conditions",
+        "to": "budget",
+        "label": "消耗计算"
       },
       {
-        "id": "c-r",
-        "from": "check",
-        "to": "result",
-        "label": "通过后输出"
+        "id": "b-v",
+        "from": "budget",
+        "to": "verdict",
+        "label": "完成后盖章"
       }
     ],
     "frames": [
       {
-        "label": "读取初值",
-        "note": "先把库存状态定为17。",
+        "label": "问题落下",
+        "note": "先看到退款问题，结论还没有条件托住。",
         "activeIds": [
-          "problem",
-          "stock"
+          "question"
         ],
         "doneIds": [],
         "mutedIds": [
-          "result"
+          "conditions",
+          "budget",
+          "verdict"
         ],
         "values": {
-          "stock": "17"
+          "verdict": "可以退款？"
         },
         "activeEdgeIds": [
-          "p-s"
+          "q-c"
         ]
       },
       {
-        "label": "第一次扣减",
-        "note": "卖出4件后，库存从17变为13。",
+        "label": "条件摊开",
+        "note": "问题被拆成未发货、30天内、包装完整三项。",
         "activeIds": [
-          "stock"
+          "conditions",
+          "budget"
         ],
         "doneIds": [
-          "problem"
+          "question"
         ],
         "mutedIds": [
-          "result"
+          "verdict"
         ],
         "values": {
-          "stock": "17 → 13"
+          "conditions": "3 项待核对",
+          "budget": "开始消耗"
         },
-        "activeEdgeIds": [],
+        "activeEdgeIds": [
+          "q-c",
+          "c-b"
+        ],
         "metric": {
-          "label": "当前库存",
-          "value": "13"
+          "label": "公开账本",
+          "value": "0 / 3"
         }
       },
       {
-        "label": "第二次扣减",
-        "note": "再卖6件，库存从13变为7。",
+        "label": "逐项配对",
+        "note": "前两项已落账，包装完整仍没有证据，天平不能盖章。",
         "activeIds": [
-          "stock"
+          "conditions",
+          "budget"
         ],
         "doneIds": [
-          "problem"
+          "question"
         ],
         "mutedIds": [
-          "result"
+          "verdict"
         ],
         "values": {
-          "stock": "13 → 7"
+          "conditions": "2 / 3 已核对",
+          "budget": "继续计算"
         },
-        "activeEdgeIds": [],
+        "activeEdgeIds": [
+          "c-b"
+        ],
         "metric": {
-          "label": "当前库存",
-          "value": "7"
+          "label": "天平状态",
+          "value": "未平衡"
         }
       },
       {
-        "label": "检查约束",
-        "note": "这是公开、可复算的业务规则检查；7 没有越过 0，结果可以交付。这里没有展示模型的私有思维过程。",
+        "label": "结论带条件",
+        "note": "三项条件都能回到输入，结论连同适用范围一起交付。",
         "activeIds": [
-          "check",
-          "result"
+          "verdict"
         ],
         "doneIds": [
-          "problem",
-          "stock"
+          "question",
+          "conditions",
+          "budget"
         ],
         "mutedIds": [],
         "values": {
-          "check": "通过",
-          "result": "7 件"
+          "budget": "完成",
+          "verdict": "可以退款 · 带条件"
         },
         "activeEdgeIds": [
-          "s-c",
-          "c-r"
-        ]
+          "b-v"
+        ],
+        "metric": {
+          "label": "已核对",
+          "value": "3 / 3"
+        }
+      },
+      {
+        "label": "预算耗尽",
+        "note": "只完成两项时，公开记录应保留未完成，不能把半截推理写成已验证。",
+        "activeIds": [
+          "budget",
+          "verdict"
+        ],
+        "doneIds": [
+          "question",
+          "conditions"
+        ],
+        "mutedIds": [],
+        "values": {
+          "budget": "到边",
+          "verdict": "未完成 · 不能盖章"
+        },
+        "activeEdgeIds": [
+          "c-b"
+        ],
+        "metric": {
+          "label": "已核对",
+          "value": "2 / 3"
+        }
       }
     ],
-    "insight": "演示把检查步骤写成公开、可复算的状态记录；它帮助人和程序核对结论，不是模型私有思维过程，也不是正确性证明。",
+    "insight": "演示把额外计算翻译成公开、可复算的条件账本；它帮助人和程序核对结论，不是模型私有思维过程，也不是正确性证明。",
     "quiz": {
-      "question": "若第二次销量改为16，最可靠的处理是什么？",
+      "question": "退款条件还缺一项时，最可靠的处理是什么？",
       "options": [
         {
-          "label": "重算到 -3 后触发库存约束",
+          "label": "保留未完成，补齐证据后再下结论",
           "correct": true
         },
         {
-          "label": "仍输出7件以保持答案稳定",
+          "label": "延长回答文字，直接盖章",
           "correct": false
         },
         {
-          "label": "只延长回答文字",
+          "label": "把缺失条件当成默认通过",
           "correct": false
         }
       ],
-      "success": "输入一变，就要重新过一遍库存计算和约束检查。",
-      "retry": "推理长度不能替代对中间数值的检查。"
+      "success": "条件不完整时，先留下边界，补齐证据再交付结论。",
+      "retry": "推理长度不能替代缺失条件和外部核验。"
     },
     "prompt": {
-      "title": "拆解一个多步判断",
-      "text": "请把多步骤任务拆成可检查的输入、约束和中间结果，并标出需要程序、工具或来源独立核验的结论。"
+      "title": "让结论先过条件账本",
+      "text": "请把这个多步骤判断拆成输入、约束、公开可复算的中间记录和预算边界，并标出需要工具、来源或人工独立核验的结论。"
     },
     "sources": [
       {
         "url": "https://developers.openai.com/api/docs/guides/reasoning",
         "label": "OpenAI · Reasoning models",
-        "note": "推理调用与 effort"
+        "note": "推理 token、effort 与预算"
       },
       {
         "url": "https://developers.openai.com/api/docs/guides/reasoning-best-practices",
         "label": "OpenAI · Reasoning best practices",
-        "note": "不依赖私有思维过程"
+        "note": "约束提示与私有思维链边界"
       },
       {
         "url": "https://arxiv.org/abs/2201.11903",
-        "label": "arXiv · Chain-of-Thought Prompting",
-        "note": "少样本推理示例"
+        "label": "Wei et al. · Chain-of-Thought",
+        "note": "中间步骤与复杂任务表现"
+      },
+      {
+        "url": "https://arxiv.org/abs/2305.10601",
+        "label": "Yao et al. · Tree of Thoughts",
+        "note": "候选路径、评估与回溯"
       },
       {
         "url": "https://arxiv.org/abs/2501.12948",
         "label": "arXiv · DeepSeek-R1",
-        "note": "推理策略与验证"
+        "note": "强化学习与推理模式"
       },
       {
-        "url": "https://arxiv.org/abs/2408.03314",
-        "label": "arXiv · Scaling LLM Test-Time Compute",
-        "note": "推理计算与任务难度"
+        "url": "https://doi.org/10.6028/NIST.AI.600-1",
+        "label": "NIST · Generative AI Profile",
+        "note": "准确性、可靠性与独立评估"
       }
     ]
   },
