@@ -6106,24 +6106,24 @@
     "demoTitle": "成对偏好台：一边升一点，另一边就要相对退后",
     "demoSteps": [
       {
-        "label": "放入回答对",
-        "value": "chosen：给出边界 · rejected：只给结论",
-        "note": "训练样本表达相对偏好，而不是一张绝对分数表。"
+        "label": "放入成对回答",
+        "value": "chosen · 说明限制 / rejected · 只给结论",
+        "note": "先把一对回答放到同一张偏好板上，不假装有绝对分数。"
       },
       {
-        "label": "对照参考模型",
-        "value": "policy / reference 的概率差",
-        "note": "先看当前模型和参考模型对两份回答的相对倾向。"
+        "label": "看参考模型",
+        "value": "reference 0.52 · policy 0.55",
+        "note": "参考模型和当前策略先给出相对倾向，仍未完成优化。"
       },
       {
-        "label": "移动偏好刻度",
-        "value": "chosen ↑ · rejected ↓",
-        "note": "分类目标把相对差距拉开，不显示一个独立奖励网络。"
+        "label": "移动相对概率",
+        "value": "reference 0.44 · policy 0.71 · chosen 相对提高",
+        "note": "分类目标把 chosen 和 rejected 的相对差距拉开，不需要独立奖励网络。"
       },
       {
-        "label": "换一条坏标签",
-        "value": "漂亮但错误的 chosen",
-        "note": "优化会忠实放大标签，数据质量仍是边界。"
+        "label": "换坏标签试试",
+        "value": "chosen · 套话很多 / rejected · 事实更完整",
+        "note": "错误偏好也会被有效放大，链路更短不替你判断标签质量。"
       }
     ],
     "quizQuestion": "DPO 省掉了哪一层显式组件？",

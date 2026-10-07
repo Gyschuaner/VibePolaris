@@ -25538,8 +25538,8 @@
     "edges": [],
     "frames": [
       {
-        "label": "放入回答对",
-        "note": "样本表达相对偏好，不是一张绝对分数表。",
+        "label": "放入成对回答",
+        "note": "先把一对回答放到同一张偏好板上，不假装有绝对分数。",
         "activeIds": [
           "chosen",
           "rejected"
@@ -25550,13 +25550,13 @@
           "policy"
         ],
         "values": {
-          "chosen": "chosen",
-          "rejected": "rejected"
+          "chosen": "chosen · 说明限制",
+          "rejected": "rejected · 只给结论"
         }
       },
       {
-        "label": "对照参考模型",
-        "note": "先看当前模型和参考模型对两份回答的相对倾向。",
+        "label": "看参考模型",
+        "note": "参考模型和当前策略先给出相对倾向，仍未完成优化。",
         "activeIds": [
           "reference",
           "policy"
@@ -25567,13 +25567,13 @@
         ],
         "mutedIds": [],
         "values": {
-          "reference": "anchor",
-          "policy": "chosen / rejected 概率差"
+          "reference": "reference 0.52",
+          "policy": "policy 0.55"
         }
       },
       {
-        "label": "拉开相对差距",
-        "note": "分类目标提高 chosen、压低 rejected，不出现独立奖励网络。",
+        "label": "移动相对概率",
+        "note": "分类目标把 chosen 和 rejected 的相对差距拉开，不需要独立奖励网络。",
         "activeIds": [
           "chosen",
           "rejected",
@@ -25584,12 +25584,13 @@
         ],
         "mutedIds": [],
         "values": {
-          "policy": "chosen ↑ · rejected ↓"
+          "reference": "reference 0.44",
+          "policy": "policy 0.71 · chosen 相对提高"
         }
       },
       {
-        "label": "换一条坏标签",
-        "note": "如果错误答案被标成 chosen，优化会忠实放大这条偏好。",
+        "label": "换坏标签试试",
+        "note": "错误偏好也会被有效放大，链路更短不替你判断标签质量。",
         "activeIds": [
           "chosen",
           "policy"
@@ -25601,8 +25602,9 @@
           "rejected"
         ],
         "values": {
-          "chosen": "漂亮但错误",
-          "policy": "方向被带偏"
+          "chosen": "chosen · 套话很多",
+          "rejected": "rejected · 事实更完整",
+          "policy": "0.78 · 错误偏好也会被放大"
         }
       }
     ],
