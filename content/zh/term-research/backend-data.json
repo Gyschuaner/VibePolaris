@@ -268,7 +268,7 @@
   "slug": "encryption-in-transit",
   "mechanism": "传输中加密用 TLS 在每一对通信端点之间协商协议与密钥、验证服务身份，并用记录层保护后续应用数据；代理终止 TLS 后，下一跳需要自己的协议和证书边界。",
   "misconception": "浏览器有 HTTPS 小锁不代表整条服务链路都保持密文；证书签名可信不等于主机名匹配，TLS 终止后的内部 HTTP 也不会因为外层加密自动获得保护。",
-  "demoSignature": "6帧｜对象：浏览器、CDN、负载均衡、应用、三段链路、Authorization、抓包视图、SAN 身份｜交互：推进待出发、握手、3/3 TLS、CDN 终止导致内部明文、SAN mismatch 阻断、恢复下一跳｜变化：ciphertext→Authorization 可见→0 B blocked→ciphertext；结果：逐段画出 TLS 的真实保护范围。",
+  "demoSignature": "5帧｜对象：一份订单包裹、三枚跳点封条、TLS record、Authorization、证书 SAN｜交互：推进第一段封条、核对身份、展示代理打开、重新盖下一枚封条、身份不匹配时停下｜变化：ciphertext→握手检查→Authorization 可见→重新变回 ciphertext→0 B blocked；结果：用每一跳的封条显示 TLS 的真实保护范围。",
   "sourceUrls": [
     "https://www.rfc-editor.org/rfc/rfc8446.html",
     "https://www.rfc-editor.org/rfc/rfc9525.html",

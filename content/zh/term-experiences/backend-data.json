@@ -19613,8 +19613,8 @@
   "definition": "传输加密用 TLS 在每一对端点之间提供机密性、完整性和身份验证；代理终止后，下一跳要重新建立自己的安全通道。",
   "boundary": "HTTPS 不保证穿过所有代理后仍为密文。证书主机名、TLS 版本、内部链路和终止后的应用日志必须分别检查。",
   "sceneKind": "network",
-  "sceneTitle": "同一条订单请求在三段链路分别怎样被保护",
-  "actionLabel": "推进一次链路审查",
+  "sceneTitle": "同一份订单包裹经过每一跳的封条检查",
+  "actionLabel": "逐步检查、打开与重新盖回三枚封条",
   "actors": [
     {
       "id": "browser",
@@ -19693,182 +19693,54 @@
   ],
   "frames": [
     {
-      "label": "先标出三个跳点",
-      "note": "浏览器、CDN、负载均衡和应用不是一个端点；每条边都要单独检查。",
-      "activeIds": [
-        "browser",
-        "cdn",
-        "load-balancer",
-        "app"
-      ],
-      "doneIds": [],
-      "mutedIds": [
-        "packet-view",
-        "auth-field"
-      ],
-      "values": {
-        "browser": "orders.example",
-        "cdn": "edge-1",
-        "load-balancer": "lb.internal",
-        "app": "orders-api"
-      },
-      "activeEdgeIds": [
-        "browser-cdn",
-        "cdn-lb",
-        "lb-app"
-      ],
-      "metric": {
-        "label": "待审查链路",
-        "value": "3 hops"
-      }
+      "label": "第一段先盖上封条",
+      "note": "订单先在浏览器和 CDN 之间建立一条 TLS 通道，后面的跳点还没有继承这枚封条。",
+      "activeIds": ["browser", "cdn", "packet-view"],
+      "doneIds": ["browser"],
+      "mutedIds": ["load-balancer", "app", "auth-field"],
+      "values": {"browser": "orders.example", "cdn": "TLS · sealed", "packet-view": "ciphertext"},
+      "activeEdgeIds": ["browser-cdn"],
+      "metric": {"label": "已封跳点", "value": "1 / 3"}
     },
     {
-      "label": "先验证服务身份",
-      "note": "浏览器期待 orders.example，证书身份要在主机名匹配后才允许应用数据继续。",
-      "activeIds": [
-        "browser",
-        "cdn",
-        "load-balancer"
-      ],
-      "doneIds": [
-        "browser"
-      ],
-      "mutedIds": [
-        "app",
-        "packet-view",
-        "auth-field"
-      ],
-      "values": {
-        "browser": "reference=orders.example",
-        "cdn": "SAN valid",
-        "load-balancer": "等待下一跳"
-      },
-      "activeEdgeIds": [
-        "browser-cdn"
-      ]
+      "label": "对端身份待核对",
+      "note": "规则和证书身份先对上，收到 ServerHello 不等于应用数据已经可以发送。",
+      "activeIds": ["browser", "cdn", "load-balancer"],
+      "doneIds": ["browser"],
+      "mutedIds": ["app", "packet-view", "auth-field"],
+      "values": {"browser": "reference=orders.example", "cdn": "SAN valid", "load-balancer": "检查中"},
+      "activeEdgeIds": ["browser-cdn", "cdn-lb"],
+      "metric": {"label": "身份检查", "value": "CHECK"}
     },
     {
-      "label": "三段都保持 TLS",
-      "note": "三条边都有记录层保护，抓包视图只显示密文，Authorization 没有出现在网络中。",
-      "activeIds": [
-        "browser",
-        "cdn",
-        "load-balancer",
-        "app",
-        "packet-view"
-      ],
-      "doneIds": [
-        "browser",
-        "cdn",
-        "load-balancer"
-      ],
-      "mutedIds": [
-        "auth-field"
-      ],
-      "values": {
-        "packet-view": "TLS record · ciphertext",
-        "auth-field": "not visible"
-      },
-      "activeEdgeIds": [
-        "browser-cdn",
-        "cdn-lb",
-        "lb-app"
-      ],
-      "metric": {
-        "label": "安全跳点",
-        "value": "3 / 3"
-      }
+      "label": "代理打开这一段",
+      "note": "CDN 终止 TLS 后，如果 CDN 到负载均衡器回退 HTTP，Authorization 会在内部抓包中出现。",
+      "activeIds": ["cdn", "load-balancer", "packet-view", "auth-field"],
+      "doneIds": ["browser"],
+      "mutedIds": ["app"],
+      "values": {"cdn": "TLS terminated", "load-balancer": "HTTP clear", "packet-view": "Authorization visible", "auth-field": "Bearer …"},
+      "activeEdgeIds": ["cdn-lb", "cdn-packet", "auth-lb"],
+      "metric": {"label": "可见跳点", "value": "LEAK"}
     },
     {
-      "label": "CDN 到 LB 回退 HTTP",
-      "note": "外层 TLS 仍在，但 CDN 解密后以明文转发；内部抓包可以读到 Authorization。",
-      "activeIds": [
-        "cdn",
-        "load-balancer",
-        "packet-view",
-        "auth-field"
-      ],
-      "doneIds": [
-        "browser"
-      ],
-      "mutedIds": [
-        "app"
-      ],
-      "values": {
-        "cdn": "TLS terminated",
-        "load-balancer": "HTTP clear",
-        "packet-view": "Authorization visible",
-        "auth-field": "Bearer …"
-      },
-      "activeEdgeIds": [
-        "cdn-lb",
-        "cdn-packet",
-        "auth-lb"
-      ],
-      "metric": {
-        "label": "安全跳点",
-        "value": "2 / 3"
-      }
+      "label": "下一跳重新盖回",
+      "note": "修好中间链路后，CDN、负载均衡器和应用之间分别完成 TLS，抓包重新只看见密文。",
+      "activeIds": ["browser", "cdn", "load-balancer", "app", "packet-view"],
+      "doneIds": ["browser", "cdn", "load-balancer"],
+      "mutedIds": ["auth-field"],
+      "values": {"packet-view": "TLS record · ciphertext", "auth-field": "not visible"},
+      "activeEdgeIds": ["browser-cdn", "cdn-lb", "lb-app"],
+      "metric": {"label": "已封跳点", "value": "3 / 3"}
     },
     {
-      "label": "内部证书主机名不匹配",
-      "note": "证书链即使可信，SAN 不是 lb.internal 也不能把这次连接当成目标服务。",
-      "activeIds": [
-        "cdn",
-        "load-balancer",
-        "packet-view"
-      ],
-      "doneIds": [
-        "browser"
-      ],
-      "mutedIds": [
-        "app",
-        "auth-field"
-      ],
-      "values": {
-        "load-balancer": "SAN ≠ lb.internal",
-        "packet-view": "0 B · blocked"
-      },
-      "activeEdgeIds": [
-        "cdn-lb"
-      ],
-      "metric": {
-        "label": "应用数据",
-        "value": "0 B"
-      }
-    },
-    {
-      "label": "修好证书后重建下一跳",
-      "note": "修正内部证书身份并重新握手，LB 到应用才重新出现受保护的记录层。",
-      "activeIds": [
-        "browser",
-        "cdn",
-        "load-balancer",
-        "app",
-        "packet-view"
-      ],
-      "doneIds": [
-        "browser",
-        "cdn",
-        "load-balancer"
-      ],
-      "mutedIds": [
-        "auth-field"
-      ],
-      "values": {
-        "load-balancer": "SAN = lb.internal",
-        "packet-view": "TLS record · ciphertext",
-        "auth-field": "not visible"
-      },
-      "activeEdgeIds": [
-        "browser-cdn",
-        "cdn-lb",
-        "lb-app"
-      ],
-      "metric": {
-        "label": "安全跳点",
-        "value": "3 / 3"
-      }
+      "label": "身份不对就停下",
+      "note": "证书链即使可信，SAN 不是 lb.internal 也不能把这次连接当成目标服务；应用数据保持 0 B。",
+      "activeIds": ["cdn", "load-balancer", "packet-view"],
+      "doneIds": ["browser"],
+      "mutedIds": ["app", "auth-field"],
+      "values": {"load-balancer": "SAN ≠ lb.internal", "packet-view": "0 B · blocked"},
+      "activeEdgeIds": ["cdn-lb"],
+      "metric": {"label": "应用数据", "value": "0 B"}
     }
   ],
   "insight": "传输加密不是地址栏的一枚锁，而是每一段端点、身份和记录保护都能对上的路径。",
