@@ -96,6 +96,7 @@ const sceneCopy = {
   spectrum: { heading: "拖动尺度，观察差异", insight: "尺度结论" },
   assembly: { heading: "把各部分装到一起", insight: "组合结论" },
   terminal: { heading: "逐条执行并看输出", insight: "执行结论" },
+  "magnet-drawer": { heading: "拉开抽屉，检查哪张卡能被引用", insight: "证据结论" },
 } satisfies Record<TermSceneKind, { heading: string; insight: string }>;
 
 type SceneControlKind = "range" | "select" | "step";
