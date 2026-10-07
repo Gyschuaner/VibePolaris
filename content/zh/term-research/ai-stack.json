@@ -2220,7 +2220,7 @@
     "slug": "direct-preference-optimization",
     "mechanism": "DPO 将成对偏好、当前策略和参考模型写进直接分类损失，提升 chosen 相对 rejected 的概率，省去显式奖励模型和在线策略采样。",
     "misconception": "工程链路更短不代表数据和对齐风险更少；DPO 仍依赖高质量偏好、参考模型和独立评测。",
-    "demoSignature": "4帧｜对象：chosen、rejected、参考模型、当前模型｜交互：放回答对、对照参考、拉开差距、换坏标签｜变化：相对偏好→概率差→方向移动→坏标签被放大；非流程对照台。",
+    "demoSignature": "4帧｜对象：chosen/rejected、reference、policy 相对概率、坏标签｜交互：放入成对回答、看参考模型、移动相对概率、换坏标签试试｜变化：回答对先并排→参考和当前策略给出倾向→chosen 相对提高→错误偏好同样会被放大；非流程相对概率台。",
     "sourceUrls": [
       "https://arxiv.org/abs/2305.18290",
       "https://huggingface.co/docs/trl/en/dpo_trainer",
