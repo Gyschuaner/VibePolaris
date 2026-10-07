@@ -141,8 +141,28 @@ import { AcidTermPage } from "@/components/terms/AcidConceptPage";
 import { EnvironmentVariableTermPage, ExpressionTermPage, FormatterTermPage, FunctionTermPage, LinterTermPage, LockfileTermPage, MonorepoTermPage, ParameterTermPage, ReturnValueTermPage, SourceMapTermPage } from "@/components/terms/toolchain-redesign-pages/ToolchainRedesignPages";
 import { ArrayTermPage, ConditionalBranchTermPage, ControlClientServerTermPage, DistributedSystemTermPage, EventDrivenArchitectureTermPage, LoopTermPage, MicroservicesTermPage, MonolithTermPage, ObjectTermPage, ServerlessTermPage } from "@/components/terms/control-redesign-pages/ControlRedesignPages";
 import { BeamSearchTermPage, ConfidenceCalibrationTermPage, DataContaminationTermPage, KnowledgeDistillationTermPage, MixtureOfExpertsTermPage, ModelCardTermPage, OutOfDistributionTermPage, ParameterEfficientFineTuningTermPage, QuantizationTermPage, SpeculativeDecodingTermPage } from "@/components/terms/ModelMechanismsPages";
+import { CssTermPage } from "@/components/terms/frontend-foundations-pages/css";
+import { FormTermPage } from "@/components/terms/frontend-foundations-pages/form";
+import { HtmlTermPage } from "@/components/terms/frontend-foundations-pages/html";
+import { JavascriptTermPage } from "@/components/terms/frontend-foundations-pages/javascript";
+import { DomTermPage } from "@/components/terms/frontend-foundations-pages/dom";
+import { FrameworkTermPage } from "@/components/terms/frontend-foundations-pages/framework";
+import { SsgSsrTermPage } from "@/components/terms/frontend-foundations-pages/ssg-ssr";
+import { LibraryTermPage } from "@/components/terms/frontend-foundations-pages/library";
+import { RuntimeTermPage } from "@/components/terms/frontend-foundations-pages/runtime";
+import { ResponsiveTermPage } from "@/components/terms/frontend-foundations-pages/responsive";
 
 const articleTermPages = {
+  responsive: ResponsiveTermPage,
+  css: CssTermPage,
+  form: FormTermPage,
+  html: HtmlTermPage,
+  javascript: JavascriptTermPage,
+  dom: DomTermPage,
+  framework: FrameworkTermPage,
+  "ssg-ssr": SsgSsrTermPage,
+  library: LibraryTermPage,
+  runtime: RuntimeTermPage,
   'offline-first': OfflineFirstTermPage,
   'adaptive-layout': AdaptiveLayoutTermPage,
   'safe-area': SafeAreaTermPage,
@@ -468,9 +488,6 @@ const articleTermPages = {
 
 const dedicatedTermPages = {
   ...articleTermPages,
-  css: TermDetailExperience,
-  html: TermDetailExperience,
-  javascript: TermDetailExperience,
 } satisfies Record<string, ComponentType<BespokeTermPageProps>>;
 
 export const dynamicParams = false;

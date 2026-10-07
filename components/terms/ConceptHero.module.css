@@ -4,8 +4,9 @@
 .art{height:100%;position:relative;font-size:12px}
 .hero *{animation-play-state:paused!important}
 .hero[data-playing="true"] *{animation-play-state:running!important}
-.replay{position:absolute;right:0;bottom:0;border:0;background:none;color:var(--muted);cursor:pointer;width:34px;height:34px;display:grid;place-items:center;opacity:.6;transition:opacity .2s,rotate .3s}
-.replay:hover{opacity:1;rotate:-35deg}.replay:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.controls{position:absolute;right:0;bottom:0;display:flex;gap:3px;padding:3px;border:1px solid color-mix(in srgb,var(--hairline) 75%,transparent);border-radius:999px;background:color-mix(in srgb,var(--paper) 88%,transparent);box-shadow:0 3px 12px color-mix(in srgb,var(--ink) 4%,transparent)}
+.control{width:25px;height:25px;padding:0;border:0;border-radius:50%;display:grid;place-items:center;background:transparent;color:var(--muted);cursor:pointer;transition:background .2s,color .2s}
+.control:hover{background:var(--tint);color:var(--accent-text)}.control:focus-visible{outline:2px solid var(--accent-text);outline-offset:2px}
 .dispatch{height:100%;position:relative}
 .sender,.receiver{display:flex;flex-direction:column;align-items:center;gap:9px;position:absolute;top:9px;left:7%}
 .receiver{left:auto;right:7%}
@@ -51,3 +52,12 @@
 @media(max-width:600px){.hero{max-width:330px;justify-self:center;margin:10px 0 0;height:225px}.hero[data-kind="pass-fail-grader"]{height:330px}}
 @media(max-width:600px){.hero[data-kind="mechanism"]{height:360px;max-width:340px}.mechanismQuestion strong{font-size:14px}.mechanismHero{grid-template-columns:1fr;grid-template-rows:auto 21px auto 21px auto;gap:5px;padding:8px 0}.mechanismCard{min-height:92px;padding:11px 13px}.mechanismCard strong{font-size:14px}.mechanismCard code{font-size:11px}.mechanismArrow{justify-self:center;transform:rotate(90deg)}.mechanismLayers{padding-top:0}.mechanismLayers .mechanismCard{min-height:50px}.mechanismCompare{grid-template-columns:1fr;grid-template-rows:auto 66px auto;gap:5px}.mechanismCompare .mechanismCard{min-height:92px}.mechanismScale{height:62px;grid-template-columns:auto auto;justify-content:center;column-gap:7px;border-block:0}.mechanismScale code{grid-column:1 / -1}.mechanismField{grid-template-columns:1fr;grid-template-rows:auto 44px auto;gap:5px}.mechanismFieldQuestion,.mechanismFieldResult{min-height:85px}.mechanismFieldMarks{height:44px;display:flex;justify-content:center;gap:16px}.mechanismFieldMarks b{max-width:120px}.mechanismLedgerRow{grid-template-columns:22px 70px minmax(0,1fr);}.mechanismLedgerRow i{grid-column:3}.mechanismSplit{grid-template-columns:1fr;gap:5px}.mechanismSplit>.mechanismCard{min-height:92px}.mechanismSplitTokens{grid-template-columns:auto 1fr;align-items:center}.mechanismSplitTokens span{grid-column:1 / -1}.mechanismSplitTokens i{display:none}.mechanismShelfCards{grid-template-columns:1fr;gap:5px}.mechanismShelfCards .mechanismCard{min-height:54px;display:grid;grid-template-columns:22px 1fr;grid-template-rows:auto auto;column-gap:7px}.mechanismShelfCards .mechanismCard svg{grid-row:1 / span 2}.mechanismShelfCards .mechanismCard span,.mechanismShelfCards .mechanismCard strong,.mechanismShelfCards .mechanismCard code{grid-column:2}.mechanismShelfCards .mechanismCard:nth-child(2){margin-top:0;margin-left:8%}.mechanismBoundary{grid-template-columns:1fr;grid-template-rows:auto 92px auto;gap:5px}.mechanismBoundaryRing{width:92px;height:92px;justify-self:center}.mechanismBoundaryRing>div{width:62px;height:62px}.mechanismBoundaryRing strong{font-size:9px}.mechanismLens{grid-template-columns:102px minmax(0,1fr);gap:9px}.mechanismLensCore{width:100px;height:100px}.mechanismLensCore strong{font-size:10px;padding:0 8px}.mechanismLensOrbit span{padding:9px 10px;font-size:10px}}
 @media(prefers-reduced-motion:reduce){.hero *{animation:none!important;transition:none!important}.request{left:calc(92% - 158px)}}
+@media(max-width:600px){
+  .hero[data-kind="framework"]{height:390px}
+  .hero[data-kind="dom"]{height:360px}
+  .hero[data-kind="html"]{height:400px}
+  .hero[data-kind="javascript"]{height:255px}
+  .hero[data-kind="ssg-ssr"]{height:285px}
+  .hero[data-kind="library"]{height:320px}
+  .hero[data-kind="runtime"]{height:360px}
+}

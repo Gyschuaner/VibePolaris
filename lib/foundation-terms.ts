@@ -87,8 +87,8 @@ export const foundationTermSchema = z.object({
     eyebrow: z.string().min(1),
     title: z.string().min(1),
     ariaLabel: z.string().min(1),
-    steps: z.array(demoStepSchema).length(3),
-    chain: z.array(z.string().min(1)).length(3),
+    steps: z.array(demoStepSchema).min(1).max(7),
+    chain: z.array(z.string().min(1)).min(1).max(7),
     responsibility: z.string().min(1),
   }),
   aiGuide: z.object({
