@@ -2687,5 +2687,25 @@
       "transformer",
       "inference"
     ]
+  },
+  {
+    "slug": "attention-head",
+    "mechanism": "每个 attention head 在独立 Q/K/V 投影子空间中计算权重并汇总 V，多头结果拼接后再投影回 model dimension。",
+    "misconception": "头不是硬编码的语法模块，热力图也不是稳定解释；头的数量、mask、投影和输入共同决定一次权重。",
+    "demoSignature": "5帧｜对象：token矩阵、Head A、Head B、mask、拼接多头、输出投影｜交互：切换观察头并改变可见范围｜变化：共享输入→两张权重表→mask约束→拼接→回到主干；双热力矩阵，不是流程图。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/1706.03762",
+      "https://d2l.ai/chapter_attention-mechanisms-and-transformers/multihead-attention.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.MultiheadAttention.html",
+      "https://arxiv.org/abs/1806.05152",
+      "https://arxiv.org/abs/1905.09418"
+    ],
+    "rewriteRisk": "不要给注意力头预设人类语义，也不要把热力图写成模型解释的充分证据；需交代 Q/K/V、mask、拼接和冗余边界。",
+    "nearDuplicates": [
+      "attention",
+      "transformer",
+      "tokenization",
+      "embedding"
+    ]
   }
 ]

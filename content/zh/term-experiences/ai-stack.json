@@ -31565,5 +31565,261 @@
         "note": "提供 Q/K/V 注意力与位置机制的原始 Transformer 背景。"
       }
     ]
+  },
+  {
+    "slug": "attention-head",
+    "lead": "把一次注意力拆成几副不同的眼镜，各自在自己的子空间里找关系。",
+    "definition": "注意力头是多头注意力中的一个独立 Q/K/V 投影子空间。每个头把输入投影到自己的 query、key、value 维度，计算一张注意力权重，再与其他头的结果拼接并投影回模型维度。不同头可能偏向近邻、指代、位置或其他统计关系，但这些解释需要用激活和任务证据验证。",
+    "boundary": "注意力头不是一个固定语义器官，也不保证“一头负责语法、另一头负责记忆”。头之间可能冗余，剪掉某些头有时影响不大；mask、head dimension、数量和 Q/K/V 投影共同决定行为。看到一张漂亮热力图，只能说明一次输入下的权重，不能单独证明头学到了人类命名的关系。",
+    "sceneKind": "matrix",
+    "sceneTitle": "两副眼镜、两张热力图、一次拼接",
+    "actionLabel": "切换观察的头",
+    "actors": [
+      {
+        "id": "tokens",
+        "label": "Token 行列",
+        "detail": "猫 · 追 · 狗 · 它",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "head-a",
+        "label": "Head A",
+        "detail": "指代候选更亮",
+        "icon": "search",
+        "group": "子空间 A"
+      },
+      {
+        "id": "head-b",
+        "label": "Head B",
+        "detail": "局部邻近更亮",
+        "icon": "search",
+        "group": "子空间 B"
+      },
+      {
+        "id": "mask",
+        "label": "Mask",
+        "detail": "屏蔽不可见位置",
+        "icon": "shield",
+        "group": "约束"
+      },
+      {
+        "id": "concat",
+        "label": "拼接多头",
+        "detail": "沿特征维合并",
+        "icon": "layout",
+        "group": "组合"
+      },
+      {
+        "id": "output",
+        "label": "输出投影",
+        "detail": "回到 model dimension",
+        "icon": "brain",
+        "group": "结果"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "所有头先共享输入",
+        "note": "同一排 token 进入这一层，但随后会被不同的 Q/K/V 投影看成不同坐标。",
+        "activeIds": [
+          "tokens"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "head-a",
+          "head-b",
+          "mask",
+          "concat",
+          "output"
+        ],
+        "values": {
+          "tokens": "猫 · 追 · 狗 · 它"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "Head A 亮出自己的关系",
+        "note": "一副头的权重集中到“它→猫”；这只是当前输入和当前投影的结果。",
+        "activeIds": [
+          "head-a"
+        ],
+        "doneIds": [
+          "tokens"
+        ],
+        "mutedIds": [
+          "head-b",
+          "mask",
+          "concat",
+          "output"
+        ],
+        "values": {
+          "head-a": "它→猫 0.72"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "Head B 换一副眼镜",
+        "note": "另一副头在不同子空间里突出局部邻近；两张热力图可以同时成立。",
+        "activeIds": [
+          "head-b"
+        ],
+        "doneIds": [
+          "tokens",
+          "head-a"
+        ],
+        "mutedIds": [
+          "mask",
+          "concat",
+          "output"
+        ],
+        "values": {
+          "head-b": "追→猫/狗 · 局部更亮"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "先套 mask，再合并结果",
+        "note": "不可见位置先被约束；多个头的输出沿特征维拼接，而不是按票数选一张图。",
+        "activeIds": [
+          "mask",
+          "concat"
+        ],
+        "doneIds": [
+          "tokens",
+          "head-a",
+          "head-b"
+        ],
+        "mutedIds": [
+          "output"
+        ],
+        "values": {
+          "mask": "causal/padding · 只保留允许位置",
+          "concat": "head A ⊕ head B ⊕ …"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "回到主干尺寸",
+        "note": "输出投影把拼接后的向量送回 model dimension；头的语义仍需跨样本验证。",
+        "activeIds": [
+          "output"
+        ],
+        "doneIds": [
+          "tokens",
+          "head-a",
+          "head-b",
+          "mask",
+          "concat"
+        ],
+        "mutedIds": [],
+        "values": {
+          "output": "Wᵒ(concat heads) · 语义结论待验证"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "注意力头是多头注意力中的独立投影视角；热力图展示一次计算的权重，不能直接升级成固定的人类语义。",
+    "quiz": {
+      "question": "多头注意力里的“头”最准确地指什么？",
+      "options": [
+        {
+          "label": "一个独立的 Q/K/V 投影子空间与其注意力计算",
+          "correct": true
+        },
+        {
+          "label": "一段必须负责某个人类语法概念的规则代码",
+          "correct": false
+        },
+        {
+          "label": "把输出复制一份后贴在序列末尾",
+          "correct": false
+        }
+      ],
+      "success": "对，每个头是一套投影与注意力计算，最后再组合。",
+      "retry": "把头看成不同子空间的计算视角，不要把热力图标签当成硬编码规则。"
+    },
+    "prompt": {
+      "title": "审查一层多头注意力",
+      "text": "给出 token 数、head 数、model dimension、head dimension 和 mask；分别列出一个头的 Q/K/V 投影、注意力矩阵、加权 V，再说明多头如何拼接回输出，并标注哪些语义解释还缺少跨样本证据。"
+    },
+    "teaching": [
+      {
+        "id": "split",
+        "title": "多头是在特征空间里分屏",
+        "body": "多头注意力把 model dimension 分成多个 head dimension，每个头有自己的 Q、K、V 投影。它们读取同一输入，但不会共享一张完全相同的注意力矩阵。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "weights",
+        "title": "热力图是这一次的权重",
+        "body": "某个头在某个输入上把“它”指向“猫”，说明这一轮 Q/K 相似度经过 softmax 后偏向那里。换输入、mask 或层数，图案都可能变化，单张图不够证明稳定语义。",
+        "sourceIndices": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": "combine",
+        "title": "头与头最后要合回主干",
+        "body": "每个头对 V 做加权汇总，结果沿特征维拼接，再经过输出投影。这个合并不是投票，也不是挑一个“最聪明的头”，而是把多个子空间的结果交给下一层。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "mask",
+        "title": "每副眼镜都受同一类可见性约束",
+        "body": "causal mask、padding mask 或其他约束会改变哪些位置能参与计算。若只展示亮色格子，不说明 mask，读者容易把被禁止的关系误读成模型没看见。",
+        "sourceIndices": [
+          2,
+          3,
+          5
+        ]
+      },
+      {
+        "id": "redundancy",
+        "title": "多不等于每头都有独占职责",
+        "body": "研究发现部分头可能冗余，剪枝有时对任务影响有限；这不表示所有头都可随意删除，而是提醒我们用消融、跨样本和任务指标验证解释。",
+        "sourceIndices": [
+          4,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/1706.03762",
+        "label": "Vaswani et al. · Attention Is All You Need",
+        "note": "提出 multi-head attention 的 Q/K/V 投影、拼接与输出投影。"
+      },
+      {
+        "url": "https://d2l.ai/chapter_attention-mechanisms-and-transformers/multihead-attention.html",
+        "label": "Dive into Deep Learning · Multi-head attention",
+        "note": "从张量形状解释多个头如何并行计算和合并。"
+      },
+      {
+        "url": "https://pytorch.org/docs/stable/generated/torch.nn.MultiheadAttention.html",
+        "label": "PyTorch · MultiheadAttention",
+        "note": "说明 embed_dim、num_heads、mask 与 Q/K/V 输入。"
+      },
+      {
+        "url": "https://arxiv.org/abs/1806.05152",
+        "label": "Voita et al. · Analyzing Multi-Head Self-Attention",
+        "note": "分析不同头的功能与跨输入行为，提醒语义解释需要证据。"
+      },
+      {
+        "url": "https://arxiv.org/abs/1905.09418",
+        "label": "Michel et al. · Are Sixteen Heads Really Better than One?",
+        "note": "用消融研究多头冗余与剪枝影响。"
+      }
+    ]
   }
 ]
