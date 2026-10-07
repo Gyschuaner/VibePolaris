@@ -60,7 +60,7 @@ import { ContainerTermPage, InfrastructureContainerImageTermPage, Infrastructure
 import { BoundaryPermissionTermPage, BoundaryXssTermPage, BoundarySkillTermPage, BoundaryEvaluationRunTermPage, BoundarySafetyEvaluationTermPage, BoundaryCostEvaluationTermPage, BoundaryLatencyEvaluationTermPage, BoundaryPassFailGraderTermPage, BoundaryGradingRubricTermPage, BoundaryHumanGraderTermPage } from '@/components/terms/control-redesign-pages/BoundaryEvaluationRedesignPages';
 import { BranchTermPage, CheckoutSwitchTermPage, CdTermPage, CiTermPage, CloneTermPage, CodeReviewTermPage as GitCodeReviewTermPage, DiffTermPage, FetchTermPage as GitFetchTermPage, MergeConflictTermPage, MergeTermPage, PreviewDeploymentTermPage, PullRequestTermPage as GitPullRequestTermPage, PullTermPage, PushTermPage, RebaseTermPage as GitRebaseTermPage, RemoteTermPage, RepoCommitTermPage, RevertTermPage as GitRevertTermPage, RollbackTermPage, StashTermPage as GitStashTermPage, StagingAreaTermPage, WorkingTreeTermPage } from "@/components/terms/GitConceptPages";
 import { AcceptanceCriteriaTermPage, PriorityTermPage, ProblemStatementTermPage, RoadmapTermPage, ScopeTermPage, TargetUserTermPage, UseCaseTermPage, UserStoryTermPage } from "@/components/terms/ProductConceptPages";
-import { AcidTermPage, NosqlTermPage, RelationalDatabaseTermPage, RowTermPage } from "@/components/terms/BackendNetworkTermPages";
+import { NosqlTermPage, RelationalDatabaseTermPage, RowTermPage } from "@/components/terms/BackendNetworkTermPages";
 import { TcpTermPage } from "@/components/terms/transport-http-pages/tcp";
 import { UdpTermPage } from "@/components/terms/transport-http-pages/udp";
 import { TlsHandshakeTermPage } from "@/components/terms/transport-http-pages/tls-handshake";
@@ -127,6 +127,7 @@ import { ContextCompactionTermPage } from "@/components/terms/ContextCompactionC
 import { ToolSchemaTermPage } from "@/components/terms/ToolSchemaConceptPage";
 import { LatencyBudgetTermPage } from "@/components/terms/LatencyBudgetConceptPage";
 import { ColumnTermPage } from "@/components/terms/ColumnConceptPage";
+import { AcidTermPage } from "@/components/terms/AcidConceptPage";
 import { EnvironmentVariableTermPage, ExpressionTermPage, FormatterTermPage, FunctionTermPage, LinterTermPage, LockfileTermPage, MonorepoTermPage, ParameterTermPage, ReturnValueTermPage, SourceMapTermPage } from "@/components/terms/toolchain-redesign-pages/ToolchainRedesignPages";
 import { ArrayTermPage, ConditionalBranchTermPage, ControlClientServerTermPage, DistributedSystemTermPage, EventDrivenArchitectureTermPage, LoopTermPage, MicroservicesTermPage, MonolithTermPage, ObjectTermPage, ServerlessTermPage } from "@/components/terms/control-redesign-pages/ControlRedesignPages";
 
@@ -182,6 +183,7 @@ const articleTermPages = {
   'tool-schema': ToolSchemaTermPage,
   'latency-budget': LatencyBudgetTermPage,
   column: ColumnTermPage,
+  acid: AcidTermPage,
   'client-server': ControlClientServerTermPage,
   'conditional-branch': ConditionalBranchTermPage,
   loop: LoopTermPage,
@@ -297,7 +299,6 @@ const articleTermPages = {
   "relational-database": RelationalDatabaseTermPage,
   nosql: NosqlTermPage,
   row: RowTermPage,
-  acid: AcidTermPage,
   tcp: TcpTermPage,
   udp: UdpTermPage,
   "tls-handshake": TlsHandshakeTermPage,

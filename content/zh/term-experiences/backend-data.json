@@ -8463,7 +8463,7 @@
         ],
         "values": {
           "consistency": "missing CHECK",
-          "failure-result": "A=-20 · committed"
+          "failure-result": "A=-30 · committed"
         },
         "activeEdgeIds": [
           "work-consistency",
@@ -8471,8 +8471,8 @@
         ]
       },
       {
-        "label": "隔离级别改变并发结果",
-        "note": "两个事务基于同一快照修改不同记录时，较弱隔离可能出现写偏差。",
+        "label": "隔离性挡住未提交读取",
+        "note": "READ COMMITTED 下，B 继续看到已提交的旧值；较弱隔离示意可能看到 A=-30 的未提交值。",
         "activeIds": [
           "acid-workload",
           "isolation",
@@ -8487,8 +8487,8 @@
           "durability"
         ],
         "values": {
-          "isolation": "snapshot anomaly",
-          "failure-result": "rule broken"
+          "isolation": "READ COMMITTED / weak",
+          "failure-result": "B sees 100 / -30 uncommitted"
         },
         "activeEdgeIds": [
           "work-isolation",
@@ -8551,19 +8551,24 @@
     },
     "sources": [
       {
-        "url": "https://research.ibm.com/publications/principles-of-transaction-oriented-database-recovery",
-        "label": "Härder & Reuter · Recovery Principles",
-        "note": "原始规范与实现说明"
-      },
-      {
         "url": "https://www.postgresql.org/docs/current/tutorial-transactions.html",
         "label": "PostgreSQL · Transactions",
-        "note": "数据库行为与约束"
+        "note": "BEGIN、COMMIT、ROLLBACK 与整体提交"
       },
       {
-        "url": "https://www.postgresql.org/docs/current/wal-reliability.html",
-        "label": "PostgreSQL · WAL Reliability",
-        "note": "数据库行为与约束"
+        "url": "https://www.postgresql.org/docs/current/wal-intro.html",
+        "label": "PostgreSQL · Write-Ahead Logging",
+        "note": "WAL、提交与故障恢复"
+      },
+      {
+        "url": "https://research.ibm.com/publications/principles-of-transaction-oriented-database-recovery",
+        "label": "IBM Research · Recovery Principles",
+        "note": "事务恢复与原子性/持久性背景"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/sql/relational-databases/sql-server-transaction-locking-and-row-versioning-guide",
+        "label": "Microsoft Learn · Locking and row versioning",
+        "note": "锁、行版本与并发可见性"
       }
     ]
   },
