@@ -28,3 +28,11 @@
 ## 交付记录
 
 实现顺序按表格逐条进行，每条独立提交；十条完成后统一跑构建、词条审计和真实浏览器验收，再由唯一 reviewer `/root/ai_stack_review` 做内容与语言审阅，最后一起发布。
+
+## 本地验收记录
+
+- 十条体验均有 4 段教学、5 条以上来源（最低为 5 条），且 `sourceIndices` 均落在对应来源范围内。
+- `npm run typecheck`：通过。
+- `npm run build`：通过，生成 1091 个静态页面。
+- `node scripts/audit-term-distinctiveness.mjs`：352 条体验、352 条来源覆盖；流程类 `pipeline/route/loop` 为 44 条，占 12.5%；重复、相邻同构和近重复均为 0。
+- 干净的本地浏览器会话逐条打开十条路由，桌面和 390px 视口均出现标题、首图、正文与参考资料；服务器的 8001 空端口分支实际显示连接失败。浏览器控制台没有新增 error 或 warning。
