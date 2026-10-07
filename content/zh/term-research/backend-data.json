@@ -40,11 +40,45 @@
   {"slug":"pagination","mechanism":"分页把结果集分段返回；offset 依据位置跳过记录，cursor/keyset 依据稳定排序键从上次边界继续，二者对并发插入的表现不同。","misconception":"page=2 不是稳定的数据切片；列表期间插入或删除记录可能造成 offset 重复或遗漏，cursor 也必须绑定确定排序。","demoSignature":"6帧｜对象：按 created_at,id 排序的 8 条记录、offset 与 cursor 两条分页轨、插入记录 X｜交互：取前 3 条后在第 1/2 条间插入 X，再点击下一页｜变化：offset 边界整体后移，cursor 仍从旧末项继续｜结果：offset 重复一条，cursor 返回后续三条且无重复。","sourceUrls":["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Query.Pagination.html","https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api"],"rewriteRisk":"高：若只演示页码按钮，会漏掉数据变化下的正确性问题。","nearDuplicates":["query-parameter","index","full-text-search"]},
   {"slug":"retry","mechanism":"重试在暂时性失败后再次发起操作，通常配合超时、指数退避、随机抖动、次数上限和幂等保证，避免同步重试放大故障。","misconception":"任何错误都重试会加剧过载；认证失败、校验失败等非暂时错误通常应直接处理，非幂等操作还可能重复写入。","demoSignature":"7帧｜对象：100 个客户端、503 响应、重试定时器、后端并发曲线和队列｜交互：切换固定 1 秒与指数退避+抖动并点击故障恢复｜变化：固定策略在整秒形成尖峰，抖动把点分散到时间窗｜结果：峰值并发 100→23、队列清空 9s→4s。","sourceUrls":["https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/","https://www.rfc-editor.org/rfc/rfc9110.html"],"rewriteRisk":"高：要同时呈现错误分类、退避和幂等，不能写成‘失败再试一次’。","nearDuplicates":["timeout","idempotency","rate-limiting"]},
   {"slug":"timeout","mechanism":"超时为连接、TLS、读写或整体调用设置等待上限；到期表示调用方停止等待，不证明远端操作未执行。","misconception":"一个总超时不能覆盖所有阶段，也不能把超时当失败回滚证据；服务端可能已提交，只是响应丢失。","demoSignature":"6帧｜对象：DNS 20ms、connect 80ms、TLS 120ms、处理 300ms、响应 40ms 瀑布条与两个 timeout 滑杆｜交互：拖动 connect=50ms、total=400ms 并重放｜变化：终止线分别落在连接和处理阶段；处理超时时服务端写入仍完成｜结果：调用方两次都报超时，但服务端状态第二次已变更。","sourceUrls":["https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/"],"rewriteRisk":"高：需强调调用方视角与阶段性，避免把超时等同服务器取消。","nearDuplicates":["retry","connection-pool","request"]},
-  {"slug":"relational-database","mechanism":"关系数据库用关系、属性、键和约束组织数据，并通过关系代数式操作组合结果；事务和并发控制决定修改如何可见。","misconception":"关系型不等于只能做固定表格，也不等于天然 ACID 或不会水平扩展；能力取决于具体实现和建模。","demoSignature":"3帧｜对象：customers 与 orders 表、主键 id 和外键 customer_id｜交互：依次保留列、连接匹配、过滤结果｜变化：相关行按主外键组合，再由条件留下目标记录｜结果：得到 customer_id=7 且 amount>100 的 3 行结果，原表没有被修改。","sourceUrls":["https://www.postgresql.org/docs/current/tutorial-sql.html","https://www.postgresql.org/docs/current/ddl.html","https://www.sqlite.org/lang.html","https://www.ibm.com/think/topics/relational-databases"],"rewriteRisk":"高：容易与 table、SQL、schema 同义重复，应讲关系模型和约束，不讲某个产品界面。","nearDuplicates":["nosql","sql","database"]},
+  {"slug":"relational-database","mechanism":"关系数据库用关系（表）、属性（列）、元组（行）、键和约束来表达数据。客户和订单可以各自保存事实，主键标识客户，外键表达订单属于哪个客户，查询再通过投影、连接和选择产生新的结果关系。输入表仍保持原状，结果是否匹配取决于连接条件、过滤条件和约束，而不是数据库自动理解业务关系。","misconception":"关系模型不等于 SQL 语法、电子表格界面或某一款数据库；事务、索引、锁和物理存储是实现层的其他问题。主键/外键能约束身份和引用，却不能自动保证金额、权限或业务流程正确；连接条件漏写时，行数可能悄悄膨胀。","demoSignature":"assembly: 5 frames; objects=customers/orders/投影/连接/过滤/结果关系; change=选列、主外键匹配、保留未匹配证据、过滤金额、得到新关系; evidence=3 条结果且输入表未被改写","sourceUrls":["https://www.postgresql.org/docs/current/tutorial-sql.html","https://www.postgresql.org/docs/current/ddl.html","https://www.sqlite.org/lang.html","https://www.ibm.com/think/topics/relational-databases"],"rewriteRisk":"高：容易与 table、SQL、schema 同义重复，应讲关系模型和约束，不讲某个产品界面。","nearDuplicates":["nosql","sql","database"]},
   {"slug":"sql","mechanism":"SQL 是声明式语言：查询描述所需结果，数据库优化器选择扫描、连接和排序等执行计划；同一结果可能有不同物理路径。","misconception":"SQL 不是逐行执行脚本，书写顺序也不等于执行计划；索引存在不代表优化器一定使用。","demoSignature":"5帧｜对象：同一 SELECT JOIN、EXPLAIN 树、orders.customer_id 索引开关、页读取计数｜交互：先执行查询再创建索引并 ANALYZE 重放｜变化：计划从 Seq Scan+Hash Join 切到 Index Scan 路径｜结果：读页 8200→96、耗时 240ms→18ms，SQL 文本不变。","sourceUrls":["https://www.postgresql.org/docs/current/tutorial-sql.html","https://www.postgresql.org/docs/current/using-explain.html"],"rewriteRisk":"中：不能只展示 SELECT 语法，要解释声明与执行计划分离。","nearDuplicates":["relational-database","orm","join"]},
-  {"slug":"nosql","mechanism":"NoSQL 是多类非关系数据模型的统称，包括文档、键值、列族和图；它们通过不同的数据布局、查询接口和一致性取舍服务特定访问模式。","misconception":"NoSQL 不是‘没有结构’或‘一定更快’，文档数据库也有模式、索引和事务边界；选型要从查询与一致性要求出发。","demoSignature":"3帧｜对象：用户 7、profile 文档、最近订单、共享商品和 120 个订单｜交互：依次读取一个用户、修改共享价格、选择查询模型｜变化：聚合文档缩短读取路径，复制属性放大更新范围｜结果：模型选择同时考虑访问模式、一致性和数据结构。","sourceUrls":["https://www.mongodb.com/resources/basics/databases/document-databases","https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf","https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html","https://cassandra.apache.org/doc/stable/cassandra/developing/data-modeling/intro.html"],"rewriteRisk":"高：这是伞形术语，不能用单个文档数据库的特性代表全部 NoSQL。","nearDuplicates":["relational-database","vector-database","json"]},
+  {
+    "slug": "nosql",
+    "mechanism": "NoSQL 是文档、键值、列族和图等非关系模型的统称。它们通常围绕主要访问模式设计数据布局：文档可以把一次读取需要的字段聚在一起，键值模型把 key→value 读写做得直接，列族模型按分区与列组织大规模访问。代价是复制、分区、索引、事务和一致性要按具体产品与业务语义单独设计。",
+    "misconception": "NoSQL 不表示没有结构，也不保证比关系数据库更快；文档字段可以有验证规则，键值存储也有分区和容量边界。把商品当前价嵌进历史订单后，改价是少一次 join 还是要回写 120 份副本，取决于字段代表历史事实还是当前状态。",
+    "demoSignature": "compare: 5 frames; objects=关系/文档/键值模型/最近订单/共享改价/成本板; change=读路径、写触及范围、历史快照语义、一致性选择; evidence=logical reads、updates 和语义说明同时出现",
+    "sourceUrls": [
+      "https://www.mongodb.com/resources/basics/databases/document-databases",
+      "https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf",
+      "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html",
+      "https://cassandra.apache.org/doc/stable/cassandra/developing/data-modeling/intro.html"
+    ],
+    "rewriteRisk": "高：这是伞形术语，不能用单个文档数据库的特性代表全部 NoSQL。",
+    "nearDuplicates": [
+      "relational-database",
+      "vector-database",
+      "json"
+    ]
+  },
   {"slug":"table","mechanism":"表由命名列、行和约束构成，是关系数据库保存关系实例的常见实现；列定义约束允许的值，行是某一时刻的记录。","misconception":"表不是电子表格：行通常无固有顺序，单元格不能随意混合类型，跨行规则要靠约束或事务维护。","demoSignature":"5帧｜对象：id/email/created_at 三列表、三行记录、ORDER BY 开关与类型闸门｜交互：拖动物理行位置、执行无排序查询，再把 abc 写入 id｜变化：结果顺序不受拖动承诺，非法值在列类型处被拒｜结果：无 ORDER BY 顺序变化；插入报 invalid input syntax。","sourceUrls":["https://www.postgresql.org/docs/current/ddl-basics.html","https://www.postgresql.org/docs/current/queries-order.html"],"rewriteRisk":"中：需突出无序关系与列约束，避免‘像 Excel’的误导类比。","nearDuplicates":["row","column","database-schema"]},
-  {"slug":"row","mechanism":"行是一组与表列对应的字段值，通常通过主键识别；并发数据库中同一逻辑行可能存在多个版本供不同事务观察。","misconception":"行号不是稳定身份，读取到的行也不一定是全局最新版本；没有 ORDER BY 时结果位置不可依赖。","demoSignature":"4帧｜对象：id=7 的行、事务 A/B/C 与 balance 版本｜交互：依次创建未提交版本、读取旧快照、提交新版本、读取新快照｜变化：B 在 A 未提交和提交后仍按既有快照看到 100，提交后开始的 C 看到 80｜结果：同一逻辑行的可见版本随事务边界变化，不能把结果位置当身份。","sourceUrls":["https://www.postgresql.org/docs/current/ddl-basics.html","https://www.postgresql.org/docs/current/mvcc-intro.html","https://www.postgresql.org/docs/current/queries-order.html","https://www.sqlite.org/withoutrowid.html"],"rewriteRisk":"中：若只说‘表中的一条记录’，会与记录概念重复并遗漏版本可见性。","nearDuplicates":["table","column","primary-key"]},
+  {
+    "slug": "row",
+    "mechanism": "行是按表的列结构保存的一组字段值，通常由主键识别一个逻辑对象。数据库采用多版本并发控制时，更新会产生可供事务判断的版本；一个已经开始的事务按自己的快照读到旧版本，提交后新开的事务才读到新版本。行的概念因此同时涉及字段结构、逻辑身份和读取时的可见性。",
+    "misconception": "行号或物理位置不是稳定身份，结果没有 ORDER BY 时也不能把第几行当作对象顺序。主键相同的版本不代表出现了两个客户；不同数据库的隔离级别、锁和版本清理策略不同，读到旧值也不等于所有写入都永远不可见。",
+    "demoSignature": "timeline: 5 frames; objects=事务 A/B/C、行 v1/v2、快照; change=未提交、旧快照、提交、新快照、可见版本; evidence=B 仍读 100、C 读 80，逻辑 id 保持 7",
+    "sourceUrls": [
+      "https://www.postgresql.org/docs/current/ddl-basics.html",
+      "https://www.postgresql.org/docs/current/mvcc-intro.html",
+      "https://www.postgresql.org/docs/current/queries-order.html",
+      "https://www.sqlite.org/withoutrowid.html"
+    ],
+    "rewriteRisk": "中：若只说‘表中的一条记录’，会与记录概念重复并遗漏版本可见性。",
+    "nearDuplicates": [
+      "table",
+      "column",
+      "primary-key"
+    ]
+  },
   {"slug":"column","mechanism":"列定义一个具名属性及其数据类型、默认值和约束；数据库按列定义检查新值，并可用表达式计算查询结果列。","misconception":"列不是只有显示标题；把状态、金额、时间都存成字符串会丢失类型检查、排序语义和可用运算。","demoSignature":"3帧｜对象：amount TEXT、amount NUMERIC 与输入 2、10、9.5、abc｜交互：依次查看文本列、数值列、提交错误输入｜变化：文本按字典序比较，数值列可求和，abc 在写入边界被拒｜结果：类型决定排序、计算和错误何时暴露。","sourceUrls":["https://www.postgresql.org/docs/current/ddl-basics.html","https://www.postgresql.org/docs/current/datatype.html","https://www.postgresql.org/docs/current/queries-select-lists.html","https://www.sqlite.org/datatype3.html"],"rewriteRisk":"中：应讲类型和约束如何改变可执行操作，不要与字段或表头同义。","nearDuplicates":["table","row","database-schema"]},
   {"slug":"database-schema","mechanism":"数据库 schema 既可指数据库对象的命名空间，也常泛指表、列、类型、约束及关系的结构契约；变更结构会影响查询和写入。","misconception":"schema 不是一份静态说明书，也不等于 JSON Schema；在 PostgreSQL 中它还是隔离同名对象的命名空间。","demoSignature":"5帧｜对象：sales.orders 与 archive.orders 两个命名空间、search_path 控件｜交互：拖动 search_path 顺序并执行 SELECT * FROM orders｜变化：解析箭头先指向 sales，调序后指向 archive｜结果：同一句 SQL 返回 3 行或 1200 行。","sourceUrls":["https://www.postgresql.org/docs/current/ddl-schemas.html","https://www.postgresql.org/docs/current/ddl.html"],"rewriteRisk":"高：中文‘数据库模式’同时承载命名空间与结构契约，正文必须先声明语境。","nearDuplicates":["table","database-migration","orm"]},
   {"slug":"primary-key","mechanism":"主键约束要求选定列组合唯一且非空，用来标识表中的行；数据库通常为其建立唯一 B-tree 索引。","misconception":"主键不必是自增整数，也不等于行号；一张表只有一个主键约束，但可以由多列组成。","demoSignature":"4帧｜对象：enrollments 表、(student_id, course_id) 复合键徽章｜交互：依次插入 (7,2)、(7,3)、(7,2)、(null,4)｜变化：前两行入表，后两行撞到唯一与非空闸门｜结果：表保留 2 行并显示具体冲突键。","sourceUrls":["https://www.postgresql.org/docs/current/ddl-constraints.html"],"rewriteRisk":"中：需区分唯一约束、业务标识和自动生成策略。","nearDuplicates":["unique-constraint","foreign-key","index"]},

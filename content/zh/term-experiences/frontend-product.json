@@ -16280,1413 +16280,1561 @@
     ]
   },
   {
-    "slug": "sitemap",
-    "lead": "几十个页面应该怎样分组，用户才知道从哪里进入？",
-    "definition": "站点地图把页面组织为父子层级与交叉入口，用于检查孤立页面、层级深度和导航命名；它不规定用户必须按树形顺序操作。",
-    "boundary": "容易与 XML sitemap 或用户流程混淆；这里研究的是信息结构，不是搜索引擎文件或任务步骤。",
-    "sceneKind": "tree",
-    "sceneTitle": "十二个页面怎样按用户任务形成三层结构",
-    "actionLabel": "移动一个页面节点",
-    "actors": [
-      {
-        "id": "pages",
-        "label": "页面清单",
-        "detail": "12 个未分组页面",
-        "icon": "file",
-        "group": "输入"
-      },
-      {
-        "id": "root",
-        "label": "网站根节点",
-        "detail": "主导航起点",
-        "icon": "layout",
-        "group": "层级"
-      },
-      {
-        "id": "orders",
-        "label": "订单",
-        "detail": "列表、详情、退货",
-        "icon": "component",
-        "group": "一级栏目"
-      },
-      {
-        "id": "account",
-        "label": "账户",
-        "detail": "资料、地址、安全",
-        "icon": "component",
-        "group": "一级栏目"
-      },
-      {
-        "id": "orphan",
-        "label": "优惠说明",
-        "detail": "当前无入口",
-        "icon": "search",
-        "group": "待处理"
-      },
-      {
-        "id": "nav",
-        "label": "主导航",
-        "detail": "映射一级栏目",
-        "icon": "browser",
-        "group": "结果"
-      }
-    ],
-    "edges": [
-      {
-        "id": "root-orders",
-        "from": "root",
-        "to": "orders",
-        "label": "一级"
-      },
-      {
-        "id": "root-account",
-        "from": "root",
-        "to": "account",
-        "label": "一级"
-      },
-      {
-        "id": "orders-orphan",
-        "from": "orders",
-        "to": "orphan",
-        "label": "重新归属"
-      },
-      {
-        "id": "root-nav",
-        "from": "root",
-        "to": "nav",
-        "label": "生成主导航"
-      }
-    ],
-    "frames": [
-      {
-        "label": "页面先全部平铺",
-        "note": "十二个页面只有名称，没有父子关系，优惠说明也找不到入口。",
-        "activeIds": [
-          "pages",
-          "orphan"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "root",
-          "orders",
-          "account",
-          "nav"
-        ],
-        "values": {
-          "pages": "12 个平级节点",
-          "orphan": "无入口"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "按任务建立一级栏目",
-        "note": "订单任务和账户任务成为两个一级节点，相关页面落到对应分组。",
-        "activeIds": [
-          "pages",
-          "root",
-          "orders",
-          "account"
-        ],
-        "doneIds": [
-          "pages"
-        ],
-        "mutedIds": [
-          "orphan",
-          "nav"
-        ],
-        "values": {
-          "orders": "3 个子页面",
-          "account": "3 个子页面"
-        },
-        "activeEdgeIds": [
-          "root-orders",
-          "root-account"
-        ]
-      },
-      {
-        "label": "处理孤立页面",
-        "note": "优惠说明与订单优惠有关，被放入订单分组；没有任务归属的重复页被标为删除候选。",
-        "activeIds": [
-          "orders",
-          "orphan"
-        ],
-        "doneIds": [
-          "pages",
-          "root"
-        ],
-        "mutedIds": [
-          "account",
-          "nav"
-        ],
-        "values": {
-          "orphan": "订单 / 优惠说明"
-        },
-        "activeEdgeIds": [
-          "orders-orphan"
-        ]
-      },
-      {
-        "label": "一级结构映射导航",
-        "note": "主导航只显示订单和账户，详情页留在层级内，不把所有页面塞进菜单。",
-        "activeIds": [
-          "root",
-          "orders",
-          "account",
-          "nav"
-        ],
-        "doneIds": [
-          "pages",
-          "orphan"
-        ],
-        "mutedIds": [],
-        "values": {
-          "nav": "订单 · 账户"
-        },
-        "activeEdgeIds": [
-          "root-nav"
-        ]
-      }
-    ],
-    "insight": "站点地图表达页面归属和层级，导航只是从这套结构中选择可见入口。",
-    "quiz": {
-      "question": "站点地图最直接回答什么？",
-      "options": [
-        {
-          "label": "页面如何分组和形成层级",
-          "correct": true
-        },
-        {
-          "label": "按钮点击后的全部动画",
-          "correct": false
-        },
-        {
-          "label": "接口的数据库结构",
-          "correct": false
-        }
+  "slug": "sitemap",
+  "lead": "读者在站内迷路时，站点地图先把“页面属于哪一组、还有没有入口”摊在桌上。",
+  "definition": "站点地图是对网站信息结构的一张可检视模型：它把页面按用户任务组成父子层级，标出哪些页面进入主导航、哪些页面只在子层可达，也能另列一份供爬虫读取的 URL 清单。它帮助作者发现孤立页、层级过深和命名重复，但不会替用户规定唯一的阅读顺序。",
+  "boundary": "这里的站点地图讨论页面之间的归属和入口，不是 XML sitemap 文件本身，也不是“点击首页→列表→详情”的操作流程。XML 清单解决抓取发现，导航解决人的进入路径；两者可能共享 URL，却回答不同问题。地图也不能证明页面内容有用、链接可访问或搜索一定收录。",
+  "sceneKind": "tree",
+  "sceneTitle": "一组页面的归属、入口与 XML 清单分开看",
+  "actionLabel": "移动节点并切换观察层",
+  "actors": [
+    {
+      "id": "pages",
+      "label": "页面清单",
+      "detail": "12 个未分组页面",
+      "icon": "file",
+      "group": "输入"
+    },
+    {
+      "id": "root",
+      "label": "网站根节点",
+      "detail": "主导航起点",
+      "icon": "layout",
+      "group": "层级"
+    },
+    {
+      "id": "orders",
+      "label": "订单",
+      "detail": "列表、详情、退货",
+      "icon": "component",
+      "group": "一级栏目"
+    },
+    {
+      "id": "account",
+      "label": "账户",
+      "detail": "资料、地址、安全",
+      "icon": "component",
+      "group": "一级栏目"
+    },
+    {
+      "id": "orphan",
+      "label": "优惠说明",
+      "detail": "当前无入口",
+      "icon": "search",
+      "group": "待处理"
+    },
+    {
+      "id": "nav",
+      "label": "主导航",
+      "detail": "映射一级栏目",
+      "icon": "browser",
+      "group": "结果"
+    }
+  ],
+  "edges": [
+    {
+      "id": "root-orders",
+      "from": "root",
+      "to": "orders",
+      "label": "一级"
+    },
+    {
+      "id": "root-account",
+      "from": "root",
+      "to": "account",
+      "label": "一级"
+    },
+    {
+      "id": "orders-orphan",
+      "from": "orders",
+      "to": "orphan",
+      "label": "重新归属"
+    },
+    {
+      "id": "root-nav",
+      "from": "root",
+      "to": "nav",
+      "label": "生成主导航"
+    }
+  ],
+  "frames": [
+    {
+      "label": "页面先平铺",
+      "note": "十二个页面只有名称，没有父级；优惠说明没有任何入口。先暴露缺口，才不会用一条箭头假装结构已经存在。",
+      "activeIds": [
+        "pages",
+        "root",
+        "orphan"
       ],
-      "success": "它主要表达信息和页面的组织关系。",
-      "retry": "交互动效和数据库结构需要其他图示。"
+      "doneIds": [],
+      "mutedIds": [
+        "orders",
+        "account",
+        "nav"
+      ],
+      "values": {
+        "pages": "12 个未分组页面",
+        "orphan": "无入口"
+      },
+      "activeEdgeIds": []
     },
-    "prompt": {
-      "title": "整理网站页面层级",
-      "text": "请把下面页面清单按用户任务和内容归属整理成不超过三层的站点地图，标出重复、孤立和命名含糊的页面，并说明主导航对应哪些一级栏目。"
+    {
+      "label": "按任务分一级栏目",
+      "note": "把订单相关页面和账户相关页面分别放进栏目；根节点表达归属，主导航还没有被迫展示每个详情页。",
+      "activeIds": [
+        "pages",
+        "root",
+        "orders",
+        "account"
+      ],
+      "doneIds": [
+        "pages"
+      ],
+      "mutedIds": [
+        "orphan",
+        "nav"
+      ],
+      "values": {
+        "orders": "订单 · 3 个子页",
+        "account": "账户 · 3 个子页"
+      },
+      "activeEdgeIds": [
+        "root-orders",
+        "root-account"
+      ]
     },
-    "sources": [
+    {
+      "label": "检查层级和命名",
+      "note": "继续展开一层，确认列表、详情和退货页都能从所属任务到达；超过三层的路径先标成需要重组的信号。",
+      "activeIds": [
+        "root",
+        "orders",
+        "account"
+      ],
+      "doneIds": [
+        "pages"
+      ],
+      "mutedIds": [
+        "orphan",
+        "nav"
+      ],
+      "values": {
+        "orders": "列表 → 详情 · 深度 2",
+        "account": "资料 → 安全 · 深度 2"
+      },
+      "activeEdgeIds": [
+        "root-orders",
+        "root-account"
+      ]
+    },
+    {
+      "label": "把孤立页放回语境",
+      "note": "优惠说明与订单优惠有关，于是进入订单分组；若找不到真实任务归属，就应删除或重新定义，而不是偷偷藏在地图里。",
+      "activeIds": [
+        "orders",
+        "orphan"
+      ],
+      "doneIds": [
+        "pages",
+        "root",
+        "account"
+      ],
+      "mutedIds": [
+        "nav"
+      ],
+      "values": {
+        "orphan": "订单 / 优惠说明",
+        "orders": "入口已补"
+      },
+      "activeEdgeIds": [
+        "orders-orphan"
+      ]
+    },
+    {
+      "label": "导航和 XML 各自验收",
+      "note": "主导航只露出订单、账户两个入口；切到 XML 观察层时列出全部可抓取 URL。页面归属、人的入口和爬虫清单终于不再混成一张图。",
+      "activeIds": [
+        "root",
+        "orders",
+        "account",
+        "nav"
+      ],
+      "doneIds": [
+        "pages",
+        "orphan"
+      ],
+      "mutedIds": [],
+      "values": {
+        "nav": "导航：2 个入口 · XML：12 个 URL"
+      },
+      "activeEdgeIds": [
+        "root-nav"
+      ]
+    }
+  ],
+  "insight": "站点地图先表达页面的归属和到达关系，再分别检查人的导航入口与爬虫 URL 清单；它不是把所有点击步骤画成一条线。",
+  "quiz": {
+    "question": "一个页面出现在 XML sitemap 里，但主导航找不到它，最准确的判断是什么？",
+    "options": [
       {
-        "url": "https://www.w3.org/WAI/tutorials/page-structure/",
-        "label": "资料来源",
-        "note": "用于核对定义、边界与演示"
+        "label": "它可能可被搜索发现，但信息结构仍缺少面向人的入口",
+        "correct": true
       },
       {
-        "url": "https://www.w3.org/WAI/WCAG2/supplemental/patterns/o2p02-site-structure/",
-        "label": "资料来源",
-        "note": "用于核对定义、边界与演示"
+        "label": "它一定会出现在主导航的第一层",
+        "correct": false
       },
       {
-        "url": "https://guidance.publishing.service.gov.uk/writing-to-gov-uk-standards/plan-manage-content/plan-new-govuk-content/",
-        "label": "资料来源",
-        "note": "用于核对定义、边界与演示"
-      },
-      {
-        "url": "https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview",
-        "label": "资料来源",
-        "note": "用于核对定义、边界与演示"
+        "label": "它已经证明页面内容质量合格",
+        "correct": false
       }
-    ]
+    ],
+    "success": "XML 清单和主导航解决不同的发现问题，仍需检查页面是否属于某个用户任务。",
+    "retry": "把抓取清单、导航菜单和内容质量混为一谈，会看不见真正的孤立页。"
   },
+  "prompt": {
+    "title": "审查一张站点地图",
+    "text": "请把页面按用户任务分组，标出每个页面的父级、主导航入口和 XML sitemap 状态；对孤立页、超过三层的路径和重复命名分别给出处理理由，不要把地图画成用户操作流程。"
+  },
+  "sources": [
+    {
+      "url": "https://www.w3.org/WAI/tutorials/page-structure/",
+      "label": "W3C · Page Structure",
+      "note": "W3C 页面结构：核对层级、标题和页面组织对可理解性的作用。"
+    },
+    {
+      "url": "https://www.w3.org/WAI/WCAG2/supplemental/patterns/o2p02-site-structure/",
+      "label": "W3C · Site Structure",
+      "note": "W3C site structure pattern：核对站点结构与导航入口的关系。"
+    },
+    {
+      "url": "https://guidance.publishing.service.gov.uk/writing-to-gov-uk-standards/plan-manage-content/plan-new-govuk-content/",
+      "label": "GOV.UK · Plan content",
+      "note": "GOV.UK 内容规划：核对按用户任务组织内容、发现孤立页面的做法。"
+    },
+    {
+      "url": "https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview",
+      "label": "Google · Sitemaps",
+      "note": "Google Search Central：核对 XML sitemap 只提供可抓取 URL 清单的边界。"
+    }
+  ],
+  "promptTitle": "审查一张站点地图"
+},
   {
-    "slug": "design-token",
-    "lead": "品牌主色改变时，怎样避免在几十个组件里逐个找颜色值？",
-    "definition": "设计令牌用稳定名称和值表示设计决策，并可通过引用形成基础值—语义值—组件值的解析图，再转换到设计工具和代码平台。",
-    "boundary": "不是把每个色值都换成变量名；若令牌绑定页面或颜色外观，主题和跨平台复用仍会失败。",
-    "sceneKind": "network",
-    "sceneTitle": "主题色变化如何通过语义令牌影响多个组件",
-    "actionLabel": "切换主题映射",
-    "actors": [
-      {
-        "id": "base",
-        "label": "基础颜色",
-        "detail": "lime-500 / moss-900",
-        "icon": "spark",
-        "group": "基础令牌"
-      },
-      {
-        "id": "semantic",
-        "label": "语义令牌",
-        "detail": "color.action / color.text",
-        "icon": "code",
-        "group": "语义令牌"
-      },
-      {
-        "id": "button",
-        "label": "按钮",
-        "detail": "使用 color.action",
-        "icon": "component",
-        "group": "组件"
-      },
-      {
-        "id": "link",
-        "label": "链接",
-        "detail": "使用 color.action",
-        "icon": "component",
-        "group": "组件"
-      },
-      {
-        "id": "theme",
-        "label": "主题映射",
-        "detail": "浅色 / 深色",
-        "icon": "gear",
-        "group": "配置"
-      }
-    ],
-    "edges": [
-      {
-        "id": "base-semantic",
-        "from": "base",
-        "to": "semantic",
-        "label": "映射值"
-      },
-      {
-        "id": "semantic-button",
-        "from": "semantic",
-        "to": "button",
-        "label": "引用"
-      },
-      {
-        "id": "semantic-link",
-        "from": "semantic",
-        "to": "link",
-        "label": "引用"
-      },
-      {
-        "id": "theme-semantic",
-        "from": "theme",
-        "to": "semantic",
-        "label": "切换映射"
-      }
-    ],
-    "frames": [
-      {
-        "label": "组件引用语义名",
-        "note": "按钮和链接都读取 color.action，不直接写 #B7D524。",
-        "activeIds": [
-          "semantic",
-          "button",
-          "link"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "base",
-          "theme"
-        ],
-        "values": {
-          "semantic": "color.action",
-          "button": "引用",
-          "link": "引用"
-        },
-        "activeEdgeIds": [
-          "semantic-button",
-          "semantic-link"
-        ]
-      },
-      {
-        "label": "浅色主题映射基础值",
-        "note": "color.action 映射到 moss-900，组件同时得到深色前景。",
-        "activeIds": [
-          "base",
-          "semantic",
-          "theme",
-          "button",
-          "link"
-        ],
-        "doneIds": [
-          "theme"
-        ],
-        "mutedIds": [],
-        "values": {
-          "theme": "light",
-          "semantic": "moss-900"
-        },
-        "activeEdgeIds": [
-          "base-semantic",
-          "theme-semantic",
-          "semantic-button",
-          "semantic-link"
-        ]
-      },
-      {
-        "label": "深色主题只改映射",
-        "note": "切换主题后语义令牌改为 lime-500，两个组件同时更新，不逐个搜索颜色。",
-        "activeIds": [
-          "theme",
-          "semantic",
-          "button",
-          "link"
-        ],
-        "doneIds": [
-          "base"
-        ],
-        "mutedIds": [],
-        "values": {
-          "theme": "dark",
-          "semantic": "lime-500"
-        },
-        "activeEdgeIds": [
-          "theme-semantic",
-          "semantic-button",
-          "semantic-link"
-        ]
-      },
-      {
-        "label": "局部硬编码暴露",
-        "note": "给链接写死旧色后再次切换主题，按钮正常更新，链接对比度检查失败。",
-        "activeIds": [
-          "link",
-          "theme"
-        ],
-        "doneIds": [
-          "base",
-          "semantic",
-          "button"
-        ],
-        "mutedIds": [],
-        "values": {
-          "button": "已更新",
-          "link": "hard-coded · contrast fail"
-        },
-        "activeEdgeIds": []
-      }
-    ],
-    "insight": "设计令牌把使用目的与具体值分开，主题变化通过语义映射传到所有正确引用它的组件。",
-    "quiz": {
-      "question": "哪种令牌名称更容易跨组件使用？",
-      "options": [
-        {
-          "label": "color.text.muted",
-          "correct": true
-        },
-        {
-          "label": "card3-gray",
-          "correct": false
-        },
-        {
-          "label": "almost-black-final",
-          "correct": false
-        }
+  "slug": "design-token",
+  "lead": "品牌色要换一套主题时，设计令牌把“用途”和“今天用的颜色”分开，改一次映射就能看见谁跟上、谁掉队。",
+  "definition": "设计令牌是带稳定名称的设计决策，例如 color.action、space.3 或 radius.card。组件引用语义令牌，语义令牌再指向某个主题下的基础值；换主题时改变的是映射关系，按钮、链接和其他消费端都会得到新的值。令牌因此保存了命名、引用和跨工具同步的关系，而不只是把一串十六进制颜色换成变量名。",
+  "boundary": "令牌不会替你决定层级、交互状态或对比度，也不能修复一个根本不该共用颜色的组件。若组件绕过语义名写死旧值，主题切换只会更新一半；若没有记录平台、状态和无障碍约束，令牌数量增加也可能让系统更难维护。统一命名不是统一审美。",
+  "sceneKind": "network",
+  "sceneTitle": "一条语义引用链怎样把主题改动送到组件",
+  "actionLabel": "切换主题并检查引用",
+  "actors": [
+    {
+      "id": "base",
+      "label": "基础颜色",
+      "detail": "lime-500 / moss-900",
+      "icon": "spark",
+      "group": "基础令牌"
+    },
+    {
+      "id": "semantic",
+      "label": "语义令牌",
+      "detail": "color.action / color.text",
+      "icon": "code",
+      "group": "语义令牌"
+    },
+    {
+      "id": "button",
+      "label": "按钮",
+      "detail": "使用 color.action",
+      "icon": "component",
+      "group": "组件"
+    },
+    {
+      "id": "link",
+      "label": "链接",
+      "detail": "使用 color.action",
+      "icon": "component",
+      "group": "组件"
+    },
+    {
+      "id": "theme",
+      "label": "主题映射",
+      "detail": "浅色 / 深色",
+      "icon": "gear",
+      "group": "配置"
+    }
+  ],
+  "edges": [
+    {
+      "id": "base-semantic",
+      "from": "base",
+      "to": "semantic",
+      "label": "映射值"
+    },
+    {
+      "id": "semantic-button",
+      "from": "semantic",
+      "to": "button",
+      "label": "引用"
+    },
+    {
+      "id": "semantic-link",
+      "from": "semantic",
+      "to": "link",
+      "label": "引用"
+    },
+    {
+      "id": "theme-semantic",
+      "from": "theme",
+      "to": "semantic",
+      "label": "切换映射"
+    }
+  ],
+  "frames": [
+    {
+      "label": "组件先说用途",
+      "note": "按钮和链接都写 color.action，组件没有直接知道今天是苔藓绿还是荧光绿。用途先稳定下来，主题才有可替换的位置。",
+      "activeIds": [
+        "semantic",
+        "button",
+        "link"
       ],
-      "success": "语义名称说明用途，不依赖某个页面或临时版本。",
-      "retry": "组件编号和临时描述会限制复用并容易过期。"
+      "doneIds": [],
+      "mutedIds": [
+        "base",
+        "theme"
+      ],
+      "values": {
+        "semantic": "color.action",
+        "button": "引用语义名",
+        "link": "引用语义名"
+      },
+      "activeEdgeIds": [
+        "semantic-button",
+        "semantic-link"
+      ]
     },
-    "prompt": {
-      "title": "整理一组设计令牌",
-      "text": "请把下面散落的颜色和间距值归并为基础令牌与语义令牌，合并重复值，说明主题切换时哪些语义映射需要变化。"
+    {
+      "label": "浅色主题解析",
+      "note": "浅色主题把 color.action 映射到 moss-900，两个消费端同时得到同一套动作色；这一步改变的是映射，不是组件代码。",
+      "activeIds": [
+        "base",
+        "semantic",
+        "theme",
+        "button",
+        "link"
+      ],
+      "doneIds": [
+        "theme"
+      ],
+      "mutedIds": [],
+      "values": {
+        "theme": "light",
+        "base": "moss-900",
+        "semantic": "color.action → moss-900"
+      },
+      "activeEdgeIds": [
+        "base-semantic",
+        "theme-semantic",
+        "semantic-button",
+        "semantic-link"
+      ]
     },
-    "sources": [
+    {
+      "label": "深色主题只换映射",
+      "note": "切换为深色后，语义名仍叫 color.action，只指向 lime-500；按钮和链接一起更新，读者可以把变化归因到一处。",
+      "activeIds": [
+        "base",
+        "semantic",
+        "theme",
+        "button",
+        "link"
+      ],
+      "doneIds": [
+        "theme",
+        "base"
+      ],
+      "mutedIds": [],
+      "values": {
+        "theme": "dark",
+        "base": "lime-500",
+        "semantic": "color.action → lime-500"
+      },
+      "activeEdgeIds": [
+        "base-semantic",
+        "theme-semantic",
+        "semantic-button",
+        "semantic-link"
+      ]
+    },
+    {
+      "label": "硬编码的链接掉队",
+      "note": "如果链接偷偷写 #58634d，再切主题时按钮变亮、链接仍是旧色；引用图断开的地方，就是需要回收的维护债。",
+      "activeIds": [
+        "link",
+        "theme",
+        "button"
+      ],
+      "doneIds": [
+        "semantic",
+        "base"
+      ],
+      "mutedIds": [],
+      "values": {
+        "button": "已更新",
+        "link": "hard-coded 旧值",
+        "theme": "对比度检查失败"
+      },
+      "activeEdgeIds": []
+    },
+    {
+      "label": "验收状态而非只看色板",
+      "note": "最后同时检查默认、悬停、禁用和键盘焦点状态；令牌让值能同步，却不替代组件状态和对比度验收。",
+      "activeIds": [
+        "semantic",
+        "button",
+        "link",
+        "theme"
+      ],
+      "doneIds": [
+        "base"
+      ],
+      "mutedIds": [],
+      "values": {
+        "button": "4 个状态均有值",
+        "link": "修复后重新检查",
+        "theme": "light/dark 可切换"
+      },
+      "activeEdgeIds": [
+        "theme-semantic",
+        "semantic-button",
+        "semantic-link"
+      ]
+    }
+  ],
+  "insight": "令牌把设计意图放在组件和具体值之间；它的价值在引用关系可追踪，失败也能看出是哪一个消费端绕开了这条链。",
+  "quiz": {
+    "question": "切换主题后按钮更新、链接不变，优先检查哪一处？",
+    "options": [
       {
-        "url": "https://www.designtokens.org/tr/2025.10/",
-        "label": "资料来源",
-        "note": "用于核对定义、边界与演示"
+        "label": "链接是否绕过语义令牌写死了颜色",
+        "correct": true
       },
       {
-        "url": "https://www.designtokens.org/",
-        "label": "资料来源",
-        "note": "用于核对定义、边界与演示"
+        "label": "是否需要把所有组件改成同一个字号",
+        "correct": false
       },
       {
-        "url": "https://developer.android.com/develop/ui/compose/designsystems/material3",
-        "label": "资料来源",
-        "note": "用于核对定义、边界与演示"
-      },
-      {
-        "url": "https://v1.lightningdesignsystem.com/design-tokens/",
-        "label": "资料来源",
-        "note": "用于核对定义、边界与演示"
+        "label": "是否应该删除深色主题",
+        "correct": false
       }
-    ]
+    ],
+    "success": "先检查链接的引用链和状态值，主题映射本身可能已经正常工作。",
+    "retry": "令牌解决值的关系，不会通过改字号或删除主题来修复断开的引用。"
   },
+  "prompt": {
+    "title": "追踪一次主题切换",
+    "text": "请为一个按钮和一条链接建立 primitive→semantic→component 的令牌引用，分别给出浅色、深色、悬停、禁用和键盘焦点值；切换主题后列出仍写死旧值的组件，并检查对比度。"
+  },
+  "sources": [
+    {
+      "url": "https://www.designtokens.org/tr/2025.10/",
+      "label": "Design Tokens · Format",
+      "note": "Design Tokens Community Group：核对令牌交换格式、命名和跨工具传递的范围。"
+    },
+    {
+      "url": "https://www.designtokens.org/",
+      "label": "Design Tokens · Community",
+      "note": "Design Tokens Community Group 首页：核对令牌作为设计决策而非页面样式的定位。"
+    },
+    {
+      "url": "https://developer.android.com/develop/ui/compose/designsystems/material3",
+      "label": "Material 3 · Color roles",
+      "note": "Material 3：核对颜色角色、主题映射和组件状态的分层方式。"
+    },
+    {
+      "url": "https://v1.lightningdesignsystem.com/design-tokens/",
+      "label": "Salesforce · Design tokens",
+      "note": "Lightning Design System：核对语义 token 与组件消费端的关系。"
+    }
+  ],
+  "promptTitle": "追踪一次主题切换"
+},
   {
-    "slug": "visual-hierarchy",
-    "lead": "页面信息都很重要时，为什么用户反而抓不到重点？",
-    "definition": "字号、字重、对比、位置、分组和留白共同改变注意顺序；层级效果来自相对差异，而非单个元素绝对大小。",
-    "boundary": "把所有内容加粗放大不会产生层级，只会让竞争更强；视觉层级也不能修复错误的信息结构。",
-    "sceneKind": "spectrum",
-    "sceneTitle": "同一页面的注意力如何从平均分布变成清楚顺序",
-    "actionLabel": "调整一个视觉变量",
-    "actors": [
-      {
-        "id": "title",
-        "label": "页面标题",
-        "detail": "当前 24px",
-        "icon": "file",
-        "group": "内容"
-      },
-      {
-        "id": "primary",
-        "label": "主要操作",
-        "detail": "提交申请",
-        "icon": "component",
-        "group": "内容"
-      },
-      {
-        "id": "secondary",
-        "label": "辅助说明",
-        "detail": "使用条件",
-        "icon": "file",
-        "group": "内容"
-      },
-      {
-        "id": "decoration",
-        "label": "装饰标签",
-        "detail": "新品、推荐、热门",
-        "icon": "spark",
-        "group": "内容"
-      },
-      {
-        "id": "attention",
-        "label": "注意力热图",
-        "detail": "第一眼与阅读顺序",
-        "icon": "chart",
-        "group": "观察"
-      }
-    ],
-    "edges": [],
-    "frames": [
-      {
-        "label": "所有内容同时强调",
-        "note": "标题、按钮、说明和三个标签都用大字号高饱和色，热图分散成五处。",
-        "activeIds": [
-          "title",
-          "primary",
-          "secondary",
-          "decoration",
-          "attention"
-        ],
-        "doneIds": [],
-        "mutedIds": [],
-        "values": {
-          "attention": "5 个竞争焦点"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "先降低辅助信息",
-        "note": "说明改为较小字号和次要颜色，装饰标签去掉两枚，竞争点减少。",
-        "activeIds": [
-          "secondary",
-          "decoration",
-          "attention"
-        ],
-        "doneIds": [
-          "title",
-          "primary"
-        ],
-        "mutedIds": [],
-        "values": {
-          "attention": "3 个焦点"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "建立标题到操作的顺序",
-        "note": "标题增大并增加下方留白，主要按钮靠近任务内容，热图先到标题再到按钮。",
-        "activeIds": [
-          "title",
-          "primary",
-          "attention"
-        ],
-        "doneIds": [
-          "secondary",
-          "decoration"
-        ],
-        "mutedIds": [],
-        "values": {
-          "attention": "标题 → 内容 → 提交"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "窄屏保持同一优先级",
-        "note": "切到手机宽度，按钮移到内容末尾，说明折叠，但阅读顺序没有反转。",
-        "activeIds": [
-          "title",
-          "primary",
-          "secondary",
-          "attention"
-        ],
-        "doneIds": [
-          "decoration"
-        ],
-        "mutedIds": [],
-        "values": {
-          "attention": "顺序保持"
-        },
-        "activeEdgeIds": []
-      }
-    ],
-    "insight": "视觉层级用大小、位置、对比和留白建立阅读顺序，不是让更多内容同时显眼。",
-    "quiz": {
-      "question": "建立视觉层级时应避免什么？",
-      "options": [
-        {
-          "label": "同时强调页面上大多数内容",
-          "correct": true
-        },
-        {
-          "label": "使用字号差异",
-          "correct": false
-        },
-        {
-          "label": "利用留白分组",
-          "correct": false
-        }
+  "slug": "visual-hierarchy",
+  "lead": "页面上的字、按钮和标签都在争第一眼时，视觉层级先回答“现在该看什么、下一步做什么”。",
+  "definition": "视觉层级是读者在一组信息里形成注意顺序的结果。字号和字重提供尺度，位置和分组提供阅读路径，对比和留白标出主次；它们共同建立“先看标题、再理解任务、最后行动”的节奏。层级不是某个元素越大越重要，而是相对差异、语义结构和当前任务一起让重点容易被找到。",
+  "boundary": "把所有字都加粗、给每个标签都上高饱和色，只会让竞争更激烈。视觉层级不能替代正确的标题结构、清楚的文案或键盘顺序；在窄屏上也不能只靠缩小字号维持桌面布局，而要重新安排分组和操作顺序。注意力热图是观察线索，不是对每个读者的精确预测。",
+  "sceneKind": "spectrum",
+  "sceneTitle": "只改变一个变量，观察注意力怎样重新排队",
+  "actionLabel": "调一个层级旋钮",
+  "actors": [
+    {
+      "id": "title",
+      "label": "页面标题",
+      "detail": "当前 24px",
+      "icon": "file",
+      "group": "内容"
+    },
+    {
+      "id": "primary",
+      "label": "主要操作",
+      "detail": "提交申请",
+      "icon": "component",
+      "group": "内容"
+    },
+    {
+      "id": "secondary",
+      "label": "辅助说明",
+      "detail": "使用条件",
+      "icon": "file",
+      "group": "内容"
+    },
+    {
+      "id": "decoration",
+      "label": "装饰标签",
+      "detail": "新品、推荐、热门",
+      "icon": "spark",
+      "group": "内容"
+    },
+    {
+      "id": "attention",
+      "label": "注意力热图",
+      "detail": "第一眼与阅读顺序",
+      "icon": "chart",
+      "group": "观察"
+    }
+  ],
+  "edges": [],
+  "frames": [
+    {
+      "label": "所有东西同时抢眼",
+      "note": "标题、按钮、说明和三个标签都使用大字号与高饱和色，热图出现五个同强度焦点；读者不知道先解决什么。",
+      "activeIds": [
+        "title",
+        "primary",
+        "secondary",
+        "decoration",
+        "attention"
       ],
-      "success": "强调过多会让页面重新变得没有重点。",
-      "retry": "字号和留白都是常见层级工具。"
+      "doneIds": [],
+      "mutedIds": [],
+      "values": {
+        "attention": "5 个竞争焦点"
+      },
+      "activeEdgeIds": []
     },
-    "prompt": {
-      "title": "检查页面的视觉阅读顺序",
-      "text": "请按用户主要任务审查下面页面，标出第一眼、第二步和辅助信息。通过字号、字重、位置、颜色和留白调整，不增加装饰性文字。"
+    {
+      "label": "先撤掉装饰竞争",
+      "note": "把辅助说明降到次要对比，移除两个只是宣传性质的标签；重点减少，内容没有被删除。",
+      "activeIds": [
+        "secondary",
+        "decoration",
+        "attention"
+      ],
+      "doneIds": [
+        "title",
+        "primary"
+      ],
+      "mutedIds": [],
+      "values": {
+        "attention": "3 个焦点",
+        "decoration": "1 个必要标签"
+      },
+      "activeEdgeIds": []
     },
-    "sources": [
+    {
+      "label": "拉开标题和说明",
+      "note": "标题得到更大的尺度和留白，说明保留可读对比；热图先落在标题，再进入任务内容，而不是被颜色推着跳。",
+      "activeIds": [
+        "title",
+        "secondary",
+        "attention"
+      ],
+      "doneIds": [
+        "decoration"
+      ],
+      "mutedIds": [
+        "primary"
+      ],
+      "values": {
+        "title": "24 → 32px",
+        "attention": "标题优先"
+      },
+      "activeEdgeIds": []
+    },
+    {
+      "label": "让主要操作靠近决定点",
+      "note": "按钮放在任务解释之后，保留明显但不刺眼的对比；阅读顺序成为标题 → 条件 → 提交，按钮不再孤零零地抢第一眼。",
+      "activeIds": [
+        "title",
+        "primary",
+        "attention"
+      ],
+      "doneIds": [
+        "secondary",
+        "decoration"
+      ],
+      "mutedIds": [],
+      "values": {
+        "primary": "主操作",
+        "attention": "标题 → 条件 → 提交"
+      },
+      "activeEdgeIds": []
+    },
+    {
+      "label": "窄屏保住语义顺序",
+      "note": "卡片折成单列，标题、条件和按钮仍按同一顺序出现；字号变小是适配，语义层级和键盘顺序没有被挤乱。",
+      "activeIds": [
+        "title",
+        "primary",
+        "secondary",
+        "attention"
+      ],
+      "doneIds": [
+        "decoration"
+      ],
+      "mutedIds": [],
+      "values": {
+        "attention": "桌面/窄屏顺序一致"
+      },
+      "activeEdgeIds": []
+    }
+  ],
+  "insight": "层级的结果是可预测的注意顺序；先确定任务，再用尺度、位置、对比和留白把顺序做出来，最后在不同宽度检查它是否仍成立。",
+  "quiz": {
+    "question": "一个页面的标题、按钮和辅助说明都被加粗放大后仍然难读，下一步最有价值的动作是什么？",
+    "options": [
       {
-        "url": "https://www.nngroup.com/articles/visual-hierarchy-ux-definition/",
-        "label": "资料来源",
-        "note": "用于核对定义、边界与演示"
+        "label": "减少竞争并明确主次顺序",
+        "correct": true
       },
       {
-        "url": "https://www.w3.org/WAI/WCAG22/Understanding/headings-and-labels.html",
-        "label": "资料来源",
-        "note": "用于核对定义、边界与演示"
+        "label": "继续把所有元素换成更亮的颜色",
+        "correct": false
       },
       {
-        "url": "https://www.w3.org/WAI/tutorials/page-structure/headings/",
-        "label": "资料来源",
-        "note": "用于核对定义、边界与演示"
-      },
-      {
-        "url": "https://developer.android.com/develop/ui/compose/designsystems/material3",
-        "label": "资料来源",
-        "note": "用于核对定义、边界与演示"
+        "label": "把辅助说明全部删除",
+        "correct": false
       }
-    ]
+    ],
+    "success": "层级来自相对关系；先撤掉非关键竞争，再把主要操作放回任务语境。",
+    "retry": "继续加重或随意删说明会损害理解，不能证明重点已经清楚。"
   },
+  "prompt": {
+    "title": "检查页面的视觉阅读顺序",
+    "text": "请以用户当前任务为中心，标出第一眼、理解条件和主要操作三个层级；每轮只改一个变量（尺度、位置、对比或留白），分别在桌面和窄屏记录注意顺序、标题结构、键盘顺序和辅助信息是否仍可达。"
+  },
+  "sources": [
+    {
+      "url": "https://www.nngroup.com/articles/visual-hierarchy-ux-definition/",
+      "label": "NN/g · Visual hierarchy",
+      "note": "NN/g Visual Hierarchy：核对大小、对比、位置和留白如何形成注意顺序。"
+    },
+    {
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/headings-and-labels.html",
+      "label": "W3C · Headings and labels",
+      "note": "WCAG headings and labels：核对视觉强调不能替代语义标题和可理解标签。"
+    },
+    {
+      "url": "https://www.w3.org/WAI/tutorials/page-structure/headings/",
+      "label": "W3C · Page headings",
+      "note": "W3C Page Structure headings：核对标题层级与页面结构的关系。"
+    },
+    {
+      "url": "https://developer.android.com/develop/ui/compose/designsystems/material3",
+      "label": "Material 3 · Design system",
+      "note": "Material 3：核对 typography、color 和 spacing 作为相对层级系统的协作。"
+    }
+  ],
+  "promptTitle": "检查页面的视觉阅读顺序"
+},
   {
-    "slug": "feedback",
-    "lead": "用户点了保存按钮后页面毫无变化，他怎么知道是否成功？",
-    "definition": "界面在动作被接收、处理中和完成后把系统状态映射为局部视觉、文字、声音或触觉信号，使用户能决定下一步。",
-    "boundary": "反馈不等于每次弹 Toast；若结果已经在原位置清楚变化，额外通知可能重复和打断。",
-    "sceneKind": "state-machine",
-    "sceneTitle": "一次保存操作在五种状态下给出什么反馈",
-    "actionLabel": "推进保存状态",
-    "actors": [
-      {
-        "id": "form",
-        "label": "资料表单",
-        "detail": "用户已修改邮箱",
-        "icon": "file",
-        "group": "界面"
-      },
-      {
-        "id": "button",
-        "label": "保存按钮",
-        "detail": "空闲",
-        "icon": "component",
-        "group": "界面"
-      },
-      {
-        "id": "request",
-        "label": "保存请求",
-        "detail": "尚未发出",
-        "icon": "network",
-        "group": "系统"
-      },
-      {
-        "id": "status",
-        "label": "状态消息",
-        "detail": "可见且可被读出",
-        "icon": "message",
-        "group": "反馈"
-      },
-      {
-        "id": "retry",
-        "label": "重试入口",
-        "detail": "失败时出现",
-        "icon": "component",
-        "group": "恢复"
-      }
-    ],
-    "edges": [
-      {
-        "id": "button-request",
-        "from": "button",
-        "to": "request",
-        "label": "点击提交"
-      },
-      {
-        "id": "request-status",
-        "from": "request",
-        "to": "status",
-        "label": "返回结果"
-      },
-      {
-        "id": "status-retry",
-        "from": "status",
-        "to": "retry",
-        "label": "失败后提供"
-      }
-    ],
-    "frames": [
-      {
-        "label": "空闲时可提交",
-        "note": "表单有未保存修改，按钮文字为保存，状态区不占用注意力。",
-        "activeIds": [
-          "form",
-          "button"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "request",
-          "status",
-          "retry"
-        ],
-        "values": {
-          "button": "保存 · enabled"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "处理中防止重复",
-        "note": "点击后按钮变为保存中并禁用，请求只发出一次，表单内容仍保留。",
-        "activeIds": [
-          "button",
-          "request",
-          "form"
-        ],
-        "doneIds": [
-          "button"
-        ],
-        "mutedIds": [
-          "status",
-          "retry"
-        ],
-        "values": {
-          "button": "保存中 · disabled",
-          "request": "pending"
-        },
-        "activeEdgeIds": [
-          "button-request"
-        ]
-      },
-      {
-        "label": "成功明确结束",
-        "note": "请求完成，按钮恢复，状态区显示已保存并读出，未保存标记消失。",
-        "activeIds": [
-          "request",
-          "status",
-          "button",
-          "form"
-        ],
-        "doneIds": [
-          "request"
-        ],
-        "mutedIds": [
-          "retry"
-        ],
-        "values": {
-          "status": "已保存",
-          "form": "clean"
-        },
-        "activeEdgeIds": [
-          "request-status"
-        ]
-      },
-      {
-        "label": "失败保留输入",
-        "note": "改成服务失败，表单仍保留新邮箱，状态区说明未保存并出现重试。",
-        "activeIds": [
-          "request",
-          "status",
-          "form",
-          "retry"
-        ],
-        "doneIds": [
-          "button"
-        ],
-        "mutedIds": [],
-        "values": {
-          "status": "保存失败 · 内容未丢失",
-          "retry": "可用"
-        },
-        "activeEdgeIds": [
-          "request-status",
-          "status-retry"
-        ]
-      },
-      {
-        "label": "从当前任务重试",
-        "note": "用户选择重试，原来的输入仍在，按钮重新进入处理中；反馈没有把人送回空白起点。",
-        "activeIds": [
-          "button",
-          "request",
-          "form"
-        ],
-        "doneIds": [
-          "button"
-        ],
-        "mutedIds": [
-          "status",
-          "retry"
-        ],
-        "values": {
-          "button": "重试中 · disabled",
-          "request": "pending"
-        },
-        "activeEdgeIds": [
-          "button-request"
-        ]
-      }
-    ],
-    "insight": "反馈让用户知道动作是否开始、是否完成以及失败后能做什么，不能只在成功时改变页面。",
-    "quiz": {
-      "question": "表单提交失败后，什么反馈更合适？",
-      "options": [
-        {
-          "label": "保留填写内容并指出可处理的错误",
-          "correct": true
-        },
-        {
-          "label": "清空表单只显示“失败”",
-          "correct": false
-        },
-        {
-          "label": "页面保持完全不变",
-          "correct": false
-        }
+  "slug": "feedback",
+  "lead": "点击保存后，用户需要看到的不是一颗漂亮星星，而是“已接收、处理中、已保存还是失败，我下一步能做什么”。",
+  "definition": "反馈是系统把用户动作对应的状态变化呈现出来：动作被接收时确认触发，请求进行时告诉用户仍在工作，成功时显示结果已经落地，失败时保留能恢复的上下文并给出下一步。好的反馈贴着发生变化的对象出现，文字、禁用状态和数据更新各自承担不同证据，不靠一个短暂的 Toast 包办全部沟通。",
+  "boundary": "反馈不等于动效，也不等于每次都弹全局通知。状态消息不能替代表单错误、服务端拒绝或可操作的重试；成功提示也不能在数据尚未保存时提前出现。若结果已经在原位置清楚变化，额外通知可能只是噪声；若动作有副作用，还要说明是否可以撤销。",
+  "sceneKind": "state-machine",
+  "sceneTitle": "从修改到成功或失败，反馈证据跟着对象走",
+  "actionLabel": "推进保存请求",
+  "actors": [
+    {
+      "id": "form",
+      "label": "资料表单",
+      "detail": "用户已修改邮箱",
+      "icon": "file",
+      "group": "界面"
+    },
+    {
+      "id": "button",
+      "label": "保存按钮",
+      "detail": "空闲",
+      "icon": "component",
+      "group": "界面"
+    },
+    {
+      "id": "request",
+      "label": "保存请求",
+      "detail": "尚未发出",
+      "icon": "network",
+      "group": "系统"
+    },
+    {
+      "id": "status",
+      "label": "状态消息",
+      "detail": "可见且可被读出",
+      "icon": "message",
+      "group": "反馈"
+    },
+    {
+      "id": "retry",
+      "label": "重试入口",
+      "detail": "失败时出现",
+      "icon": "component",
+      "group": "恢复"
+    }
+  ],
+  "edges": [
+    {
+      "id": "button-request",
+      "from": "button",
+      "to": "request",
+      "label": "点击提交"
+    },
+    {
+      "id": "request-status",
+      "from": "request",
+      "to": "status",
+      "label": "返回结果"
+    },
+    {
+      "id": "status-retry",
+      "from": "status",
+      "to": "retry",
+      "label": "失败后提供"
+    }
+  ],
+  "frames": [
+    {
+      "label": "表单有未保存改动",
+      "note": "输入值已经改变，保存按钮可用；页面明确区分当前草稿和服务器已保存值，不把本地修改冒充成功。",
+      "activeIds": [
+        "form",
+        "button"
       ],
-      "success": "保留输入并说明原因能支持用户继续完成任务。",
-      "retry": "清空或无反馈都会增加重复操作和不确定性。"
+      "doneIds": [],
+      "mutedIds": [
+        "request",
+        "status",
+        "retry"
+      ],
+      "values": {
+        "form": "dirty · draft=新邮箱",
+        "button": "可保存"
+      },
+      "activeEdgeIds": []
     },
-    "prompt": {
-      "title": "补齐交互的反馈状态",
-      "text": "请检查下面交互的空闲、处理中、成功、失败和重试状态。为每个状态写清按钮、内容和错误信息如何变化，避免重复弹出无关提示。"
+    {
+      "label": "动作被接收并进入等待",
+      "note": "点击后按钮暂时禁用，请求对象出现；原位提示“正在保存”，用户知道重复点击不会提交两次。",
+      "activeIds": [
+        "form",
+        "button",
+        "request",
+        "status"
+      ],
+      "doneIds": [
+        "button"
+      ],
+      "mutedIds": [
+        "retry"
+      ],
+      "values": {
+        "button": "保存中 · disabled",
+        "request": "pending",
+        "status": "正在保存"
+      },
+      "activeEdgeIds": [
+        "button-request",
+        "request-status"
+      ]
     },
-    "sources": [
+    {
+      "label": "成功落在原位置",
+      "note": "服务端确认后，表单的已保存值更新，消息说明时间和结果；按钮恢复可用，反馈有可核验对象。",
+      "activeIds": [
+        "form",
+        "button",
+        "status"
+      ],
+      "doneIds": [
+        "request"
+      ],
+      "mutedIds": [
+        "retry"
+      ],
+      "values": {
+        "form": "saved=新邮箱",
+        "status": "已保存 · 14:32",
+        "button": "可再次保存"
+      },
+      "activeEdgeIds": [
+        "request-status"
+      ]
+    },
+    {
+      "label": "失败保留用户上下文",
+      "note": "网络或校验失败时，输入值不被清空，消息说清原因；失败状态不伪装成成功，重试入口紧挨着仍可编辑的表单。",
+      "activeIds": [
+        "form",
+        "button",
+        "status",
+        "retry"
+      ],
+      "doneIds": [
+        "request"
+      ],
+      "mutedIds": [],
+      "values": {
+        "form": "draft 保留",
+        "status": "未保存 · 网络超时",
+        "retry": "重试"
+      },
+      "activeEdgeIds": [
+        "status-retry"
+      ]
+    },
+    {
+      "label": "重试沿当前任务继续",
+      "note": "重试只重新发起请求，成功后回到已保存状态；如果服务端返回字段错误，错误应落到字段旁而不是只留一条消失的提示。",
+      "activeIds": [
+        "form",
+        "button",
+        "request",
+        "status",
+        "retry"
+      ],
+      "doneIds": [],
+      "mutedIds": [],
+      "values": {
+        "request": "retry #2",
+        "status": "结果可验证",
+        "retry": "失败时仍可操作"
+      },
+      "activeEdgeIds": [
+        "status-retry",
+        "button-request",
+        "request-status"
+      ]
+    }
+  ],
+  "insight": "反馈的工作是让用户判断当前状态和下一步；接收、处理中、成功、失败与恢复分别需要不同证据。",
+  "quiz": {
+    "question": "保存请求失败时，哪种反馈最能帮助用户继续任务？",
+    "options": [
       {
-        "url": "https://www.nngroup.com/articles/visibility-system-status/",
-        "label": "Nielsen Norman Group",
-        "note": "系统状态可见性与反馈位置"
+        "label": "保留输入、说明原因并提供可操作的重试",
+        "correct": true
       },
       {
-        "url": "https://www.w3.org/WAI/WCAG21/Understanding/status-messages",
-        "label": "W3C Specification",
-        "note": "状态消息与辅助技术通知"
+        "label": "只播放一段成功动画后清空表单",
+        "correct": false
       },
       {
-        "url": "https://www.w3.org/WAI/ARIA/apg/patterns/alert/",
-        "label": "WAI-ARIA Authoring Practices",
-        "note": "不抢焦点的即时提示"
-      },
-      {
-        "url": "https://design-system.service.gov.uk/components/error-message/",
-        "label": "GOV.UK Design System",
-        "note": "错误信息与恢复入口"
+        "label": "让按钮一直转圈但不说明发生了什么",
+        "correct": false
       }
-    ]
+    ],
+    "success": "失败不应抹掉用户已经输入的内容，原因和恢复动作要在同一上下文里可见。",
+    "retry": "装饰动画和无限等待都不能证明数据是否已保存，也没有给出恢复路径。"
   },
+  "prompt": {
+    "title": "设计一次可恢复的保存反馈",
+    "text": "请列出表单 dirty、请求 pending、成功、服务端校验失败、网络超时和重试六种状态；为每种状态指定按钮是否可用、原位消息、数据值和焦点位置，并说明哪些反馈必须可被读屏器读到。"
+  },
+  "sources": [
+    {
+      "url": "https://www.nngroup.com/articles/visibility-system-status/",
+      "label": "NN/g · System status",
+      "note": "NN/g Visibility of System Status：核对及时、贴近当前动作的状态反馈原则。"
+    },
+    {
+      "url": "https://www.w3.org/WAI/WCAG21/Understanding/status-messages",
+      "label": "W3C · Status messages",
+      "note": "WCAG Status Messages：核对异步状态消息在不抢焦点时仍应被辅助技术感知。"
+    },
+    {
+      "url": "https://www.w3.org/WAI/ARIA/apg/patterns/alert/",
+      "label": "WAI-ARIA · Alert",
+      "note": "WAI-ARIA Alert Pattern：核对警告消息与用户操作、焦点移动的边界。"
+    },
+    {
+      "url": "https://design-system.service.gov.uk/components/error-message/",
+      "label": "GOV.UK · Error message",
+      "note": "GOV.UK Error message：核对错误原因、字段位置和恢复动作的写法。"
+    }
+  ],
+  "promptTitle": "设计一次可恢复的保存反馈"
+},
   {
-    "slug": "loading-state",
-    "lead": "接口要等两秒，页面应该空白、转圈还是保留内容占位？",
-    "definition": "异步操作开始后，界面根据等待范围与可估计程度选择局部禁用、内容占位、确定进度或不确定指示，并在结果到达时转换到内容、空或错误状态。",
-    "boundary": "转圈不是通用答案；无限 spinner 会掩盖超时，内容占位也不适合所有短操作或结构未知的页面。",
-    "sceneKind": "timeline",
-    "sceneTitle": "同一列表在 100ms、2s、8s 与超时下的等待表现",
-    "actionLabel": "增加接口等待时间",
-    "actors": [
-      {
-        "id": "action",
-        "label": "刷新列表",
-        "detail": "用户主动请求",
-        "icon": "component",
-        "group": "触发"
-      },
-      {
-        "id": "timer",
-        "label": "等待计时",
-        "detail": "100ms → 8s",
-        "icon": "clock",
-        "group": "系统"
-      },
-      {
-        "id": "placeholder",
-        "label": "内容占位",
-        "detail": "保留列表结构",
-        "icon": "layout",
-        "group": "反馈"
-      },
-      {
-        "id": "progress",
-        "label": "进度与取消",
-        "detail": "长任务可估计",
-        "icon": "chart",
-        "group": "反馈"
-      },
-      {
-        "id": "result",
-        "label": "列表结果",
-        "detail": "内容、空或错误",
-        "icon": "file",
-        "group": "结果"
-      }
-    ],
-    "edges": [
-      {
-        "id": "action-timer",
-        "from": "action",
-        "to": "timer",
-        "label": "开始等待"
-      },
-      {
-        "id": "timer-placeholder",
-        "from": "timer",
-        "to": "placeholder",
-        "label": "超过短阈值"
-      },
-      {
-        "id": "timer-progress",
-        "from": "timer",
-        "to": "progress",
-        "label": "长任务"
-      },
-      {
-        "id": "timer-result",
-        "from": "timer",
-        "to": "result",
-        "label": "结束"
-      }
-    ],
-    "frames": [
-      {
-        "label": "100ms 内直接完成",
-        "note": "刷新很快返回，不闪现转圈或占位，列表内容直接更新。",
-        "activeIds": [
-          "action",
-          "timer",
-          "result"
-        ],
-        "doneIds": [
-          "action",
-          "timer"
-        ],
-        "mutedIds": [
-          "placeholder",
-          "progress"
-        ],
-        "values": {
-          "timer": "100 ms（示例）",
-          "result": "12 条内容"
-        },
-        "activeEdgeIds": [
-          "action-timer",
-          "timer-result"
-        ]
-      },
-      {
-        "label": "2s 显示结构占位",
-        "note": "延迟增加后，原列表位置出现对应行块，页面布局保持稳定。",
-        "activeIds": [
-          "timer",
-          "placeholder"
-        ],
-        "doneIds": [
-          "action"
-        ],
-        "mutedIds": [
-          "progress",
-          "result"
-        ],
-        "values": {
-          "timer": "2 s（示例）",
-          "placeholder": "5 行占位"
-        },
-        "activeEdgeIds": [
-          "timer-placeholder"
-        ]
-      },
-      {
-        "label": "8s 改为可估计进度",
-        "note": "任务能报告完成量，页面显示 60% 和取消入口，不让用户盯着无限转圈。",
-        "activeIds": [
-          "timer",
-          "progress"
-        ],
-        "doneIds": [
-          "action",
-          "placeholder"
-        ],
-        "mutedIds": [
-          "result"
-        ],
-        "values": {
-          "progress": "60% · 可取消"
-        },
-        "activeEdgeIds": [
-          "timer-progress"
-        ]
-      },
-      {
-        "label": "超时必须停止等待",
-        "note": "超过上限后进度停止，页面显示连接超时与重试，不能把空列表当作成功。",
-        "activeIds": [
-          "timer",
-          "progress",
-          "result"
-        ],
-        "doneIds": [
-          "action"
-        ],
-        "mutedIds": [
-          "placeholder"
-        ],
-        "values": {
-          "progress": "stopped",
-          "result": "连接超时 · 重试"
-        },
-        "activeEdgeIds": [
-          "timer-result"
-        ]
-      }
-    ],
-    "insight": "加载表现要对应等待长度、范围和可估计程度，结束时必须落到内容、空结果或明确错误。",
-    "quiz": {
-      "question": "加载失败后应怎样处理加载指示？",
-      "options": [
-        {
-          "label": "停止加载并显示失败结果和重试",
-          "correct": true
-        },
-        {
-          "label": "让转圈永久继续",
-          "correct": false
-        },
-        {
-          "label": "直接显示空列表且不解释",
-          "correct": false
-        }
+  "slug": "loading-state",
+  "lead": "等待不是一个无限转圈：时间变长时，界面要告诉用户还缺什么、已经完成多少、是否该重试。",
+  "definition": "加载状态是异步内容从发起到可用之间的临时界面模型。短操作可以直接完成，稍长的列表需要保留内容骨架，能估计总量时显示确定进度，超过合理等待则给出超时或重试出口。加载状态不是一个装饰 spinner，而是把未知的等待范围、已完成的工作和最终结果分开表达。",
+  "boundary": "骨架屏只能说明页面结构，不代表数据已经到达；进度条只有在系统知道工作总量时才应显示百分比；不确定指示器也不能无限掩盖网络失败。首次加载、增量加载、空结果和错误是不同状态，不能用同一段动画把它们混在一起。",
+  "sceneKind": "timeline",
+  "sceneTitle": "一条请求的时间预算如何改变等待证据",
+  "actionLabel": "拖动请求时间",
+  "actors": [
+    {
+      "id": "action",
+      "label": "刷新列表",
+      "detail": "用户主动请求",
+      "icon": "component",
+      "group": "触发"
+    },
+    {
+      "id": "timer",
+      "label": "等待计时",
+      "detail": "100ms → 8s",
+      "icon": "clock",
+      "group": "系统"
+    },
+    {
+      "id": "placeholder",
+      "label": "内容占位",
+      "detail": "保留列表结构",
+      "icon": "layout",
+      "group": "反馈"
+    },
+    {
+      "id": "progress",
+      "label": "进度与取消",
+      "detail": "长任务可估计",
+      "icon": "chart",
+      "group": "反馈"
+    },
+    {
+      "id": "result",
+      "label": "列表结果",
+      "detail": "内容、空或错误",
+      "icon": "file",
+      "group": "结果"
+    }
+  ],
+  "edges": [
+    {
+      "id": "action-timer",
+      "from": "action",
+      "to": "timer",
+      "label": "开始等待"
+    },
+    {
+      "id": "timer-placeholder",
+      "from": "timer",
+      "to": "placeholder",
+      "label": "超过短阈值"
+    },
+    {
+      "id": "timer-progress",
+      "from": "timer",
+      "to": "progress",
+      "label": "长任务"
+    },
+    {
+      "id": "timer-result",
+      "from": "timer",
+      "to": "result",
+      "label": "结束"
+    }
+  ],
+  "frames": [
+    {
+      "label": "短请求直接落地",
+      "note": "请求在 100ms 内完成，用户几乎只看到内容出现；为了这么短的等待再插入一个 spinner，反而会制造闪烁。",
+      "activeIds": [
+        "action",
+        "result"
       ],
-      "success": "失败是独立状态，需要明确说明。",
-      "retry": "永久加载或伪装为空数据都会误导用户。"
+      "doneIds": [],
+      "mutedIds": [
+        "timer",
+        "placeholder",
+        "progress"
+      ],
+      "values": {
+        "timer": "<100ms",
+        "result": "内容直接出现"
+      },
+      "activeEdgeIds": []
     },
-    "prompt": {
-      "title": "选择合适的加载表现",
-      "text": "请根据下面操作的等待时间、内容结构和是否保留旧数据，选择按钮加载、内容占位、进度条或局部提示，并补充超时、失败、空结果和取消。"
+    {
+      "label": "慢一点先守住结构",
+      "note": "等待超过感知阈值后，列表骨架保留标题、头像和行高，让用户知道内容会在哪里到达，空白不再冒充失败。",
+      "activeIds": [
+        "action",
+        "timer",
+        "placeholder"
+      ],
+      "doneIds": [
+        "action"
+      ],
+      "mutedIds": [
+        "progress",
+        "result"
+      ],
+      "values": {
+        "timer": "≈2s",
+        "placeholder": "结构占位"
+      },
+      "activeEdgeIds": [
+        "action-timer",
+        "timer-placeholder"
+      ]
     },
-    "sources": [
+    {
+      "label": "总量已知再给进度",
+      "note": "上传文件时系统知道总字节数，确定进度显示已完成 6/10；这个数字来自工作量，不是凭感觉加速的动画。",
+      "activeIds": [
+        "timer",
+        "placeholder",
+        "progress"
+      ],
+      "doneIds": [
+        "action"
+      ],
+      "mutedIds": [
+        "result"
+      ],
+      "values": {
+        "progress": "60% · 6/10",
+        "timer": "可估计"
+      },
+      "activeEdgeIds": [
+        "timer-progress"
+      ]
+    },
+    {
+      "label": "卡住后给出口",
+      "note": "超过服务端时间预算仍没有结果，进度停住并说明超时；重试或取消成为可见动作，页面不再用转圈要求用户盲等。",
+      "activeIds": [
+        "timer",
+        "progress",
+        "result"
+      ],
+      "doneIds": [
+        "placeholder"
+      ],
+      "mutedIds": [
+        "action"
+      ],
+      "values": {
+        "timer": ">8s",
+        "progress": "stalled",
+        "result": "超时 · 重试/取消"
+      },
+      "activeEdgeIds": [
+        "timer-result"
+      ]
+    },
+    {
+      "label": "结果、空态和错误分开",
+      "note": "请求回来后只替换对应占位：有数据显示列表，零条显示空态，失败保留错误和重试；加载动画在有证据时停止。",
+      "activeIds": [
+        "result"
+      ],
+      "doneIds": [
+        "action",
+        "timer",
+        "placeholder",
+        "progress"
+      ],
+      "mutedIds": [],
+      "values": {
+        "result": "data / empty / error 三选一"
+      },
+      "activeEdgeIds": []
+    }
+  ],
+  "insight": "等待反馈要跟着时间预算和可知工作量升级；状态有了可解释的出口，用户才知道是还在做、没有数据，还是已经失败。",
+  "quiz": {
+    "question": "什么时候适合显示确定百分比进度？",
+    "options": [
       {
-        "url": "https://www.nngroup.com/articles/progress-indicators/",
-        "label": "Nielsen Norman Group · Progress Indicators",
-        "note": "用户研究与等待提示"
+        "label": "系统知道可计算的总工作量",
+        "correct": true
       },
       {
-        "url": "https://www.nngroup.com/articles/designing-for-waits-and-interruptions/",
-        "label": "Nielsen Norman Group · Designing for Waits and Interruptions",
-        "note": "等待、打断与恢复"
+        "label": "任何请求一开始就显示 0% 到 100%",
+        "correct": false
       },
       {
-        "url": "https://m3.material.io/components/progress-indicators/overview",
-        "label": "Material Design · Progress indicators",
-        "note": "确定与不确定进度组件"
-      },
-      {
-        "url": "https://developer.apple.com/design/human-interface-guidelines/progress-indicators",
-        "label": "Apple HIG · Progress indicators",
-        "note": "短操作与长任务的进度表现"
+        "label": "当页面没有内容可显示时随便播放",
+        "correct": false
       }
-    ]
+    ],
+    "success": "百分比应该对应可估计的总量，否则只能诚实地显示不确定等待和超时出口。",
+    "retry": "伪造进度只会让等待看起来更长，也不能告诉用户请求是否真的向前推进。"
   },
+  "prompt": {
+    "title": "为异步内容画时间预算",
+    "text": "请把请求分成短于 100ms、需要保留结构、可计算进度、超时和最终 data/empty/error 五种状态；为每一段写出显示对象、可操作动作、停止条件和键盘/读屏反馈，禁止用无限 spinner 掩盖失败。"
+  },
+  "sources": [
+    {
+      "url": "https://www.nngroup.com/articles/progress-indicators/",
+      "label": "NN/g · Progress indicators",
+      "note": "NN/g Progress Indicators：核对不确定与确定进度的使用条件和等待感受。"
+    },
+    {
+      "url": "https://www.nngroup.com/articles/designing-for-waits-and-interruptions/",
+      "label": "NN/g · Designing for waits",
+      "note": "NN/g Designing for Waits：核对等待过程、打断和恢复出口。"
+    },
+    {
+      "url": "https://m3.material.io/components/progress-indicators/overview",
+      "label": "Material 3 · Progress",
+      "note": "Material 3 Progress indicators：核对 determinate、indeterminate 和进度语义。"
+    },
+    {
+      "url": "https://developer.apple.com/design/human-interface-guidelines/progress-indicators",
+      "label": "Apple HIG · Progress",
+      "note": "Apple HIG Progress indicators：核对短操作、长任务和可取消进度的区别。"
+    }
+  ],
+  "promptTitle": "为异步内容画时间预算"
+},
   {
-    "slug": "microinteraction",
-    "lead": "收藏按钮怎样让用户确认点击已经生效，又不过度打断阅读？",
-    "definition": "微交互由触发、规则、局部反馈和持续状态组成；系统触发或用户动作改变单一任务的状态，并把结果立即呈现在上下文中。",
-    "boundary": "微交互不是小动画的同义词；没有状态或反馈含义的装饰运动不属于有效微交互。",
-    "sceneKind": "state-machine",
-    "sceneTitle": "收藏按钮从按下到失败撤回的完整状态",
-    "actionLabel": "点击收藏按钮",
-    "actors": [
-      {
-        "id": "button",
-        "label": "收藏按钮",
-        "detail": "未收藏",
-        "icon": "component",
-        "group": "控件"
-      },
-      {
-        "id": "icon",
-        "label": "星标图标",
-        "detail": "轮廓 / 填充",
-        "icon": "spark",
-        "group": "视觉"
-      },
-      {
-        "id": "count",
-        "label": "收藏数",
-        "detail": "24",
-        "icon": "chart",
-        "group": "数据"
-      },
-      {
-        "id": "request",
-        "label": "收藏请求",
-        "detail": "pending",
-        "icon": "network",
-        "group": "系统"
-      },
-      {
-        "id": "message",
-        "label": "结果提示",
-        "detail": "成功、失败、撤销",
-        "icon": "message",
-        "group": "反馈"
-      }
-    ],
-    "edges": [
-      {
-        "id": "button-request",
-        "from": "button",
-        "to": "request",
-        "label": "发起收藏"
-      },
-      {
-        "id": "request-icon",
-        "from": "request",
-        "to": "icon",
-        "label": "确认状态"
-      },
-      {
-        "id": "request-count",
-        "from": "request",
-        "to": "count",
-        "label": "更新数量"
-      },
-      {
-        "id": "request-message",
-        "from": "request",
-        "to": "message",
-        "label": "返回结果"
-      }
-    ],
-    "frames": [
-      {
-        "label": "按下给即时响应",
-        "note": "按钮轻微缩小，星标从轮廓向填充过渡，但数量旁保留处理中标记。",
-        "activeIds": [
-          "button",
-          "icon",
-          "request"
-        ],
-        "doneIds": [
-          "button"
-        ],
-        "mutedIds": [
-          "count",
-          "message"
-        ],
-        "values": {
-          "icon": "填充中",
-          "request": "pending"
-        },
-        "activeEdgeIds": [
-          "button-request"
-        ]
-      },
-      {
-        "label": "成功确认数据变化",
-        "note": "请求成功，星标稳定填充，收藏数从 24 变 25，读屏状态改为已收藏。",
-        "activeIds": [
-          "request",
-          "icon",
-          "count",
-          "message"
-        ],
-        "doneIds": [
-          "button",
-          "request"
-        ],
-        "mutedIds": [],
-        "values": {
-          "icon": "已收藏",
-          "count": "25",
-          "message": "收藏成功"
-        },
-        "activeEdgeIds": [
-          "request-icon",
-          "request-count",
-          "request-message"
-        ]
-      },
-      {
-        "label": "再次点击进入撤销",
-        "note": "用户再次点击，图标回到轮廓，数量减一；操作仍走请求确认。",
-        "activeIds": [
-          "button",
-          "icon",
-          "count",
-          "request"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "message"
-        ],
-        "values": {
-          "icon": "取消中",
-          "count": "24"
-        },
-        "activeEdgeIds": [
-          "button-request"
-        ]
-      },
-      {
-        "label": "失败时回到可信状态",
-        "note": "把请求切成失败，星标和数量恢复到服务端已确认值，并显示可重试提示。",
-        "activeIds": [
-          "request",
-          "icon",
-          "count",
-          "message"
-        ],
-        "doneIds": [
-          "button"
-        ],
-        "mutedIds": [],
-        "values": {
-          "icon": "已收藏",
-          "count": "25",
-          "message": "取消失败 · 重试"
-        },
-        "activeEdgeIds": [
-          "request-icon",
-          "request-count",
-          "request-message"
-        ]
-      }
-    ],
-    "insight": "微交互用短暂变化解释触发、处理中和结果，数据失败时要回到可信状态。",
-    "quiz": {
-      "question": "微交互动效最重要的作用是什么？",
-      "options": [
-        {
-          "label": "说明操作和状态变化",
-          "correct": true
-        },
-        {
-          "label": "让每个页面持续移动",
-          "correct": false
-        },
-        {
-          "label": "延长用户等待时间",
-          "correct": false
-        }
+  "slug": "microinteraction",
+  "lead": "收藏按钮的微小回弹不是装饰：它告诉用户按下被接收、数量变了、失败能撤回，而且不会把主任务拖走。",
+  "definition": "微交互是围绕单一任务发生的短状态变化：用户或系统触发动作，规则决定允许什么，局部反馈说明动作已被接收，持续状态记录结果，必要时还提供撤销。它可以有形变、颜色或触觉，但动效只是传达状态的手段；真正的对象是按钮、计数、请求结果和下一步操作之间的关系。",
+  "boundary": "没有状态含义的循环装饰不是微交互，持续闪烁也不能代替成功或失败。乐观更新必须有回滚规则，重复点击要处理幂等或禁用，键盘和减少动态模式要得到同样的结果。一个漂亮的图标变形不能证明服务器已经保存。",
+  "sceneKind": "state-machine",
+  "sceneTitle": "按钮的局部反馈如何跟随真实请求状态",
+  "actionLabel": "点击并观察可逆状态",
+  "actors": [
+    {
+      "id": "button",
+      "label": "收藏按钮",
+      "detail": "未收藏",
+      "icon": "component",
+      "group": "控件"
+    },
+    {
+      "id": "icon",
+      "label": "星标图标",
+      "detail": "轮廓 / 填充",
+      "icon": "spark",
+      "group": "视觉"
+    },
+    {
+      "id": "count",
+      "label": "收藏数",
+      "detail": "24",
+      "icon": "chart",
+      "group": "数据"
+    },
+    {
+      "id": "request",
+      "label": "收藏请求",
+      "detail": "pending",
+      "icon": "network",
+      "group": "系统"
+    },
+    {
+      "id": "message",
+      "label": "结果提示",
+      "detail": "成功、失败、撤销",
+      "icon": "message",
+      "group": "反馈"
+    }
+  ],
+  "edges": [
+    {
+      "id": "button-request",
+      "from": "button",
+      "to": "request",
+      "label": "发起收藏"
+    },
+    {
+      "id": "request-icon",
+      "from": "request",
+      "to": "icon",
+      "label": "确认状态"
+    },
+    {
+      "id": "request-count",
+      "from": "request",
+      "to": "count",
+      "label": "更新数量"
+    },
+    {
+      "id": "request-message",
+      "from": "request",
+      "to": "message",
+      "label": "返回结果"
+    }
+  ],
+  "frames": [
+    {
+      "label": "可操作但未收藏",
+      "note": "按钮有清楚的可聚焦样式，图标和计数表示当前事实；悬停只提示可操作，不提前改变收藏状态。",
+      "activeIds": [
+        "button",
+        "icon",
+        "count"
       ],
-      "success": "动效应帮助用户看懂发生了什么。",
-      "retry": "持续装饰和人为延迟会增加干扰。"
+      "doneIds": [],
+      "mutedIds": [
+        "request",
+        "message"
+      ],
+      "values": {
+        "icon": "☆",
+        "count": "12",
+        "button": "可收藏"
+      },
+      "activeEdgeIds": []
     },
-    "prompt": {
-      "title": "设计一个状态清楚的微交互",
-      "text": "请为下面收藏操作定义触发、按下、请求中、成功、失败和撤销状态。动效说明图标与计数如何变化，并提供减少动态效果时的淡入替代。"
+    {
+      "label": "按下先给即时确认",
+      "note": "指针或键盘触发后，图标短促缩放并进入 pending，计数可以暂时显示 13，但请求对象仍标记未确认。",
+      "activeIds": [
+        "button",
+        "icon",
+        "count",
+        "request"
+      ],
+      "doneIds": [
+        "button"
+      ],
+      "mutedIds": [
+        "message"
+      ],
+      "values": {
+        "icon": "★ · pending",
+        "count": "13 · optimistic",
+        "request": "保存中"
+      },
+      "activeEdgeIds": [
+        "button-request",
+        "request-icon",
+        "request-count"
+      ]
     },
-    "sources": [
+    {
+      "label": "成功让事实落地",
+      "note": "服务端确认后，图标停在实心、计数固定为 13，局部消息告诉用户已收藏；短动画到此停止，不持续吸引注意。",
+      "activeIds": [
+        "icon",
+        "count",
+        "request",
+        "message"
+      ],
+      "doneIds": [
+        "button"
+      ],
+      "mutedIds": [],
+      "values": {
+        "icon": "★ · saved",
+        "count": "13",
+        "message": "已收藏"
+      },
+      "activeEdgeIds": [
+        "request-icon",
+        "request-count",
+        "request-message"
+      ]
+    },
+    {
+      "label": "撤销窗口保持可逆",
+      "note": "再次点击或按撤销，规则把状态改回未收藏并把计数减一；撤销不是把过去抹掉，而是发起另一条明确动作。",
+      "activeIds": [
+        "button",
+        "icon",
+        "count",
+        "message"
+      ],
+      "doneIds": [
+        "request"
+      ],
+      "mutedIds": [],
+      "values": {
+        "icon": "☆",
+        "count": "12",
+        "message": "已撤销"
+      },
+      "activeEdgeIds": [
+        "request-message"
+      ]
+    },
+    {
+      "label": "失败回到可解释状态",
+      "note": "网络失败时，乐观的 13 被回滚为 12，消息说明未保存并保留重试；用户看到的是事实与反馈一致，而不是一颗假星星。",
+      "activeIds": [
+        "icon",
+        "count",
+        "request",
+        "message",
+        "button"
+      ],
+      "doneIds": [],
+      "mutedIds": [],
+      "values": {
+        "icon": "☆ · rollback",
+        "count": "12",
+        "request": "failed",
+        "message": "未保存 · 重试"
+      },
+      "activeEdgeIds": [
+        "request-icon",
+        "request-count",
+        "request-message"
+      ]
+    }
+  ],
+  "insight": "微交互的“微”指范围小、反馈快，不指规则可以含糊；动画结束时，局部状态必须和真实结果一致。",
+  "quiz": {
+    "question": "乐观把收藏数加一后请求失败，正确的微交互应该怎样收尾？",
+    "options": [
       {
-        "url": "https://www.nngroup.com/articles/microinteractions/",
-        "label": "Nielsen Norman Group · Microinteractions",
-        "note": "触发、规则、反馈和持续状态"
+        "label": "回滚计数、说明未保存并保留重试",
+        "correct": true
       },
       {
-        "url": "https://m3.material.io/styles/motion/overview",
-        "label": "Material Design · Motion",
-        "note": "运动如何说明状态关系"
+        "label": "继续播放成功动画直到用户离开",
+        "correct": false
       },
       {
-        "url": "https://developer.apple.com/design/human-interface-guidelines/playing-haptics",
-        "label": "Apple HIG · Playing haptics",
-        "note": "触觉反馈的时机与含义"
-      },
-      {
-        "url": "https://www.w3.org/WAI/WCAG21/Understanding/status-messages.html",
-        "label": "W3C WAI · Status Messages",
-        "note": "状态消息不能只靠动效"
+        "label": "清空页面让用户猜发生了什么",
+        "correct": false
       }
-    ]
+    ],
+    "success": "乐观反馈必须有失败回滚和可操作的恢复路径，最终显示服务器确认的事实。",
+    "retry": "持续动画或清空上下文都没有把局部反馈和真实状态接上。"
   },
+  "prompt": {
+    "title": "设计一个可回滚的微交互",
+    "text": "请为收藏按钮定义 idle、pressed、pending、success、undo、failure 六种状态，分别写出键盘触发、图标、计数、请求、消息和撤销规则；再给出 prefers-reduced-motion 下不依赖位移的替代反馈。"
+  },
+  "sources": [
+    {
+      "url": "https://www.nngroup.com/articles/microinteractions/",
+      "label": "NN/g · Microinteractions",
+      "note": "NN/g Microinteractions：核对触发器、规则、反馈和循环/模式四部分。"
+    },
+    {
+      "url": "https://m3.material.io/styles/motion/overview",
+      "label": "Material · Motion",
+      "note": "Material motion：核对短促、目的明确的状态动效和停止时机。"
+    },
+    {
+      "url": "https://developer.apple.com/design/human-interface-guidelines/playing-haptics",
+      "label": "Apple HIG · Haptics",
+      "note": "Apple HIG Haptics：核对触觉作为确认辅助而不是唯一反馈。"
+    },
+    {
+      "url": "https://www.w3.org/WAI/WCAG21/Understanding/status-messages.html",
+      "label": "W3C · Status messages",
+      "note": "WCAG Status Messages：核对成功、失败和撤销消息的可感知性。"
+    }
+  ],
+  "promptTitle": "设计一个可回滚的微交互"
+},
   {
-    "slug": "reduced-motion",
-    "lead": "流星式页面切换对部分用户造成眩晕时，怎样保留状态提示又减少不适？",
-    "definition": "操作系统偏好通过 prefers-reduced-motion 暴露给 CSS；页面应替换非必要大幅位移、缩放和视差，同时保留状态反馈与必要进度。",
-    "boundary": "不是把所有动画设为 duration:0，也不是只降低速度；快速大位移仍可能造成不适。",
-    "sceneKind": "compare",
-    "sceneTitle": "同一次页面切换在完整动效与减少动态模式下的差异",
-    "actionLabel": "切换减少动态偏好",
-    "actors": [
-      {
-        "id": "source",
-        "label": "概念星图",
-        "detail": "当前焦点 CSS",
-        "icon": "spark",
-        "group": "起点"
-      },
-      {
-        "id": "destination",
-        "label": "CSS 词条页",
-        "detail": "目标标题与焦点",
-        "icon": "file",
-        "group": "终点"
-      },
-      {
-        "id": "motion",
-        "label": "完整动效",
-        "detail": "流星曲线与缩放",
-        "icon": "spark",
-        "group": "表现 A"
-      },
-      {
-        "id": "reduced",
-        "label": "减少动态",
-        "detail": "短淡入与即时定位",
-        "icon": "shield",
-        "group": "表现 B"
-      },
-      {
-        "id": "state",
-        "label": "页面状态",
-        "detail": "标题、URL、焦点一致",
-        "icon": "browser",
-        "group": "结果"
-      }
-    ],
-    "edges": [],
-    "frames": [
-      {
-        "label": "完整动效建立连续性",
-        "note": "点击 CSS 后，星标沿短曲线进入标题位置，旧概念淡到边缘，URL 更新。",
-        "activeIds": [
-          "source",
-          "motion",
-          "destination",
-          "state"
-        ],
-        "doneIds": [
-          "source"
-        ],
-        "mutedIds": [
-          "reduced"
-        ],
-        "values": {
-          "motion": "位移 + 轻缩放",
-          "state": "/terms/css · focus=标题"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "开启减少动态偏好",
-        "note": "系统偏好切换后，大幅位移和缩放被关闭，状态变化本身保留。",
-        "activeIds": [
-          "motion",
-          "reduced"
-        ],
-        "doneIds": [
-          "source"
-        ],
-        "mutedIds": [
-          "destination",
-          "state"
-        ],
-        "values": {
-          "motion": "disabled",
-          "reduced": "enabled"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "替代为短淡入",
-        "note": "再次进入词条，旧页快速淡出，新标题原位淡入，没有跨屏移动。",
-        "activeIds": [
-          "source",
-          "reduced",
-          "destination"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "motion"
-        ],
-        "values": {
-          "reduced": "opacity 0→1 · no translate"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "结果和焦点保持一致",
-        "note": "两种模式最终都到相同 URL、标题和键盘焦点，成功状态没有被删掉。",
-        "activeIds": [
-          "destination",
-          "state"
-        ],
-        "doneIds": [
-          "source",
-          "motion",
-          "reduced"
-        ],
-        "mutedIds": [],
-        "values": {
-          "state": "/terms/css · focus=标题"
-        },
-        "activeEdgeIds": []
-      }
-    ],
-    "insight": "减少动态不是删除所有反馈，而是用更少位移和缩放表达同一状态变化。",
-    "quiz": {
-      "question": "用户开启减少动态效果后，界面应怎样处理？",
-      "options": [
-        {
-          "label": "减少大幅位移，同时保留清楚状态反馈",
-          "correct": true
-        },
-        {
-          "label": "删除所有成功和失败信息",
-          "correct": false
-        },
-        {
-          "label": "把动画速度加倍",
-          "correct": false
-        }
+  "slug": "reduced-motion",
+  "lead": "减少动态不是把页面变成无声的静止图，而是把大幅移动换成仍能说明状态的稳定变化。",
+  "definition": "prefers-reduced-motion 让页面知道用户希望减少非必要运动。完整模式可以用短距离移动、缩放和连续性提示空间关系；减少动态模式应取消大幅位移、视差和快速缩放，改用原位淡入、即时定位或颜色/文字变化。两种表现的终点必须相同：状态、URL、阅读顺序和键盘焦点不能因为少了动画而消失。",
+  "boundary": "减少动态不是把所有 duration 改成 0，也不是只把速度调慢；快速闪烁和大范围位移仍可能造成不适。需要保留的进度、成功、失败和焦点提示不能被一并删除；动画之外的布局跳动、自动播放和由交互触发的缩放也要一并审查。",
+  "sceneKind": "compare",
+  "sceneTitle": "完整轨迹和稳定替代如何共享状态终点",
+  "actionLabel": "切换减少动态偏好",
+  "actors": [
+    {
+      "id": "source",
+      "label": "概念星图",
+      "detail": "当前焦点 CSS",
+      "icon": "spark",
+      "group": "起点"
+    },
+    {
+      "id": "destination",
+      "label": "CSS 词条页",
+      "detail": "目标标题与焦点",
+      "icon": "file",
+      "group": "终点"
+    },
+    {
+      "id": "motion",
+      "label": "完整动效",
+      "detail": "流星曲线与缩放",
+      "icon": "spark",
+      "group": "表现 A"
+    },
+    {
+      "id": "reduced",
+      "label": "减少动态",
+      "detail": "短淡入与即时定位",
+      "icon": "shield",
+      "group": "表现 B"
+    },
+    {
+      "id": "state",
+      "label": "页面状态",
+      "detail": "标题、URL、焦点一致",
+      "icon": "browser",
+      "group": "结果"
+    }
+  ],
+  "edges": [],
+  "frames": [
+    {
+      "label": "完整模式展示空间关系",
+      "note": "点击 CSS 词条后，焦点沿短轨迹进入目标标题，URL 更新；位移有明确的起点和终点，自动播放到此停下。",
+      "activeIds": [
+        "source",
+        "motion",
+        "destination",
+        "state"
       ],
-      "success": "稳定的淡入或即时切换可以保留反馈并降低不适。",
-      "retry": "删除信息或加速动画都不能满足该偏好。"
+      "doneIds": [
+        "source"
+      ],
+      "mutedIds": [
+        "reduced"
+      ],
+      "values": {
+        "motion": "短位移 + 轻缩放",
+        "state": "URL=/terms/css · focus=标题"
+      },
+      "activeEdgeIds": []
     },
-    "prompt": {
-      "title": "为页面动画提供减少动态版本",
-      "text": "请检查下面动画中的大幅平移、缩放、视差和循环，使用 prefers-reduced-motion 提供淡入或即时状态替代，并保留操作成功、失败和焦点变化。"
+    {
+      "label": "读取用户偏好",
+      "note": "系统返回 prefers-reduced-motion: reduce，页面关闭跨屏位移和视差；这只是改变表现预算，目标状态还没有被删掉。",
+      "activeIds": [
+        "motion",
+        "reduced",
+        "state"
+      ],
+      "doneIds": [
+        "source"
+      ],
+      "mutedIds": [
+        "destination"
+      ],
+      "values": {
+        "motion": "disabled",
+        "reduced": "reduce",
+        "state": "URL 仍更新"
+      },
+      "activeEdgeIds": []
     },
-    "sources": [
+    {
+      "label": "用原位淡入替代",
+      "note": "再次进入目标页时，旧内容快速淡出，新标题在原位出现，不让整个页面穿过视口；读者仍能辨认变化发生在哪里。",
+      "activeIds": [
+        "source",
+        "reduced",
+        "destination"
+      ],
+      "doneIds": [],
+      "mutedIds": [
+        "motion"
+      ],
+      "values": {
+        "reduced": "opacity 0→1 · translate=0",
+        "destination": "标题原位出现"
+      },
+      "activeEdgeIds": []
+    },
+    {
+      "label": "焦点和状态不丢",
+      "note": "动画结束后，两种模式都有相同的 URL、标题和键盘焦点；减少动态不意味着把成功或导航反馈藏起来。",
+      "activeIds": [
+        "destination",
+        "state"
+      ],
+      "doneIds": [
+        "source",
+        "motion",
+        "reduced"
+      ],
+      "mutedIds": [],
+      "values": {
+        "state": "URL=/terms/css · focus=标题"
+      },
+      "activeEdgeIds": []
+    },
+    {
+      "label": "复杂运动也有静态替代",
+      "note": "地图视差、连续缩放或自动轮播在 reduce 模式下改为静态分层和手动控制，结构信息、暂停入口和可读文本继续存在。",
+      "activeIds": [
+        "reduced",
+        "destination",
+        "state"
+      ],
+      "doneIds": [
+        "motion"
+      ],
+      "mutedIds": [
+        "source"
+      ],
+      "values": {
+        "reduced": "no parallax · manual",
+        "state": "内容仍可操作"
+      },
+      "activeEdgeIds": []
+    }
+  ],
+  "insight": "减少动态改变的是运动方式和预算，不是概念状态；验收时要比较两种模式的终点、焦点、文本和可操作性。",
+  "quiz": {
+    "question": "用户开启减少动态后，哪一项仍然必须保留？",
+    "options": [
       {
-        "url": "https://www.w3.org/TR/mediaqueries-5/#prefers-reduced-motion",
-        "label": "W3C · Media Queries Level 5",
-        "note": "读取用户减少动态偏好"
+        "label": "状态、焦点和可读的结果反馈",
+        "correct": true
       },
       {
-        "url": "https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html",
-        "label": "W3C WAI · Animation from Interactions",
-        "note": "避免由交互触发的有害动画"
+        "label": "所有跨屏位移和视差",
+        "correct": false
       },
       {
-        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion",
-        "label": "MDN · prefers-reduced-motion",
-        "note": "媒体查询实现方式"
-      },
-      {
-        "url": "https://web.dev/articles/prefers-reduced-motion",
-        "label": "web.dev · prefers-reduced-motion",
-        "note": "为运动提供替代表现"
+        "label": "自动播放但把速度提高",
+        "correct": false
       }
-    ]
+    ],
+    "success": "可以删掉非必要的运动，但不能删掉导航、进度、成功失败和键盘可操作性。",
+    "retry": "保留大幅运动或加速只会增加风险，删掉状态则让用户无法判断结果。"
   },
+  "prompt": {
+    "title": "审查一套减少动态替代",
+    "text": "请列出页面里的位移、缩放、视差、自动播放和状态反馈，分别为正常模式与 prefers-reduced-motion: reduce 写出终点、焦点、时长和替代表现；验证两种模式的 URL、语义顺序、成功失败信息和键盘操作一致。"
+  },
+  "sources": [
+    {
+      "url": "https://www.w3.org/TR/mediaqueries-5/#prefers-reduced-motion",
+      "label": "W3C · Media Queries 5",
+      "note": "Media Queries Level 5：核对 prefers-reduced-motion 媒体特征和用户偏好语义。"
+    },
+    {
+      "url": "https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html",
+      "label": "W3C · Animation from interactions",
+      "note": "WCAG Animation from Interactions：核对交互触发动画的风险和替代表现。"
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion",
+      "label": "MDN · prefers-reduced-motion",
+      "note": "MDN prefers-reduced-motion：核对 CSS 媒体查询和实现边界。"
+    },
+    {
+      "url": "https://web.dev/articles/prefers-reduced-motion",
+      "label": "web.dev · Reduced motion",
+      "note": "web.dev prefers-reduced-motion：核对保留状态、减少视差和替代运动的方法。"
+    }
+  ],
+  "promptTitle": "审查一套减少动态替代"
+},
   {
     "slug": "dockerfile",
     "lead": "只改一个组件，为什么依赖安装也跟着重跑？",

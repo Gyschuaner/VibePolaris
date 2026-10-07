@@ -928,83 +928,131 @@
     "nearDuplicates": ["wireframe", "prototype", "visual-hierarchy"]
   },
   {
-    "slug": "sitemap",
-    "mechanism": "站点地图把页面组织为父子层级与交叉入口，用于检查孤立页面、层级深度和导航命名；它不规定用户必须按树形顺序操作。",
-    "misconception": "容易与 XML sitemap 或用户流程混淆；这里研究的是信息结构，不是搜索引擎文件或任务步骤。",
-    "demoSignature": "state: 4 frames; actors=页面清单/网站根节点/订单栏目/账户栏目/孤立优惠页/主导航; phases=12个页面平铺→按任务分订单与账户→优惠说明归入订单→主导航映射一级栏目; action=逐步移动节点并观察入口与层级变化",
-    "sourceUrls": ["https://www.w3.org/WAI/tutorials/page-structure/", "https://www.w3.org/WAI/WCAG2/supplemental/patterns/o2p02-site-structure/", "https://guidance.publishing.service.gov.uk/writing-to-gov-uk-standards/plan-manage-content/plan-new-govuk-content/", "https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview"],
-    "rewriteRisk": "high",
-    "nearDuplicates": ["ia", "user-flow", "routing"]
-  },
+  "slug": "sitemap",
+  "mechanism": "站点地图是对网站信息结构的一张可检视模型：它把页面按用户任务组成父子层级，标出哪些页面进入主导航、哪些页面只在子层可达，也能另列一份供爬虫读取的 URL 清单。它帮助作者发现孤立页、层级过深和命名重复，但不会替用户规定唯一的阅读顺序。",
+  "misconception": "这里的站点地图讨论页面之间的归属和入口，不是 XML sitemap 文件本身，也不是“点击首页→列表→详情”的操作流程。XML 清单解决抓取发现，导航解决人的进入路径；两者可能共享 URL，却回答不同问题。地图也不能证明页面内容有用、链接可访问或搜索一定收录。",
+  "demoSignature": "hierarchy: 5 frames; objects=页面清单/根节点/订单栏目/账户栏目/孤立优惠页/主导航; change=任务分组、层级深度、孤立页入口、导航与 XML 观察层; evidence=父级归属与 URL 清单分别可见",
+  "sourceUrls": [
+    "https://www.w3.org/WAI/tutorials/page-structure/",
+    "https://www.w3.org/WAI/WCAG2/supplemental/patterns/o2p02-site-structure/",
+    "https://guidance.publishing.service.gov.uk/writing-to-gov-uk-standards/plan-manage-content/plan-new-govuk-content/",
+    "https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview"
+  ],
+  "rewriteRisk": "high",
+  "nearDuplicates": [
+    "ia",
+    "user-flow",
+    "routing"
+  ]
+},
   {
-    "slug": "design-token",
-    "mechanism": "设计令牌用稳定名称和值表示设计决策，并可通过引用形成基础值—语义值—组件值的解析图，再转换到设计工具和代码平台。",
-    "misconception": "不是把每个色值都换成变量名；若令牌绑定页面或颜色外观，主题和跨平台复用仍会失败。",
-    "demoSignature": "state: 4 frames; actors=基础颜色/语义令牌/按钮/链接/主题映射; phases=组件引用color.action→浅色映射moss-900→深色映射lime-500→链接硬编码导致对比度失败; action=只切换语义映射，观察引用图是否同步",
-    "sourceUrls": ["https://www.designtokens.org/tr/2025.10/", "https://www.designtokens.org/", "https://developer.android.com/develop/ui/compose/designsystems/material3", "https://v1.lightningdesignsystem.com/design-tokens/"],
-    "rewriteRisk": "high",
-    "nearDuplicates": ["design-system", "css", "component"]
-  },
+  "slug": "design-token",
+  "mechanism": "设计令牌是带稳定名称的设计决策，例如 color.action、space.3 或 radius.card。组件引用语义令牌，语义令牌再指向某个主题下的基础值；换主题时改变的是映射关系，按钮、链接和其他消费端都会得到新的值。令牌因此保存了命名、引用和跨工具同步的关系，而不只是把一串十六进制颜色换成变量名。",
+  "misconception": "令牌不会替你决定层级、交互状态或对比度，也不能修复一个根本不该共用颜色的组件。若组件绕过语义名写死旧值，主题切换只会更新一半；若没有记录平台、状态和无障碍约束，令牌数量增加也可能让系统更难维护。统一命名不是统一审美。",
+  "demoSignature": "network: 5 frames; objects=基础值/语义令牌/按钮/链接/主题映射; change=引用语义名、浅色映射、深色映射、局部硬编码、对比度验收; evidence=引用链同步或断裂",
+  "sourceUrls": [
+    "https://www.designtokens.org/tr/2025.10/",
+    "https://www.designtokens.org/",
+    "https://developer.android.com/develop/ui/compose/designsystems/material3",
+    "https://v1.lightningdesignsystem.com/design-tokens/"
+  ],
+  "rewriteRisk": "high",
+  "nearDuplicates": [
+    "design-system",
+    "css",
+    "component"
+  ]
+},
   {
-    "slug": "visual-hierarchy",
-    "mechanism": "字号、字重、对比、位置、分组和留白共同改变注意顺序；层级效果来自相对差异，而非单个元素绝对大小。",
-    "misconception": "把所有内容加粗放大不会产生层级，只会让竞争更强；视觉层级也不能修复错误的信息结构。",
-    "demoSignature": "state: 4 frames; actors=页面标题/主要操作/辅助说明/装饰标签/注意力热图; phases=五个竞争焦点→降低辅助到三个→建立标题→内容→提交→窄屏顺序保持; action=每次只调整一个视觉变量，观察焦点是否收敛",
-    "sourceUrls": ["https://www.nngroup.com/articles/visual-hierarchy-ux-definition/", "https://www.w3.org/WAI/WCAG22/Understanding/headings-and-labels.html", "https://www.w3.org/WAI/tutorials/page-structure/headings/", "https://developer.android.com/develop/ui/compose/designsystems/material3"],
-    "rewriteRisk": "medium",
-    "nearDuplicates": ["mockup", "design-system", "css"]
-  },
+  "slug": "visual-hierarchy",
+  "mechanism": "视觉层级是读者在一组信息里形成注意顺序的结果。字号和字重提供尺度，位置和分组提供阅读路径，对比和留白标出主次；它们共同建立“先看标题、再理解任务、最后行动”的节奏。层级不是某个元素越大越重要，而是相对差异、语义结构和当前任务一起让重点容易被找到。",
+  "misconception": "把所有字都加粗、给每个标签都上高饱和色，只会让竞争更激烈。视觉层级不能替代正确的标题结构、清楚的文案或键盘顺序；在窄屏上也不能只靠缩小字号维持桌面布局，而要重新安排分组和操作顺序。注意力热图是观察线索，不是对每个读者的精确预测。",
+  "demoSignature": "spectrum: 5 frames; objects=标题/主要操作/辅助说明/装饰标签/注意力热图; change=减少竞争、拉开尺度、靠近任务、窄屏重排; evidence=焦点数量、顺序与可操作性同时可见",
+  "sourceUrls": [
+    "https://www.nngroup.com/articles/visual-hierarchy-ux-definition/",
+    "https://www.w3.org/WAI/WCAG22/Understanding/headings-and-labels.html",
+    "https://www.w3.org/WAI/tutorials/page-structure/headings/",
+    "https://developer.android.com/develop/ui/compose/designsystems/material3"
+  ],
+  "rewriteRisk": "medium",
+  "nearDuplicates": [
+    "mockup",
+    "design-system",
+    "css"
+  ]
+},
   {
-    "slug": "feedback",
-    "mechanism": "界面在动作被接收、处理中和完成后把系统状态映射为局部视觉、文字、声音或触觉信号，使用户能决定下一步。",
-    "misconception": "反馈不等于每次弹 Toast；若结果已经在原位置清楚变化，额外通知可能重复和打断。",
-    "demoSignature": "state: 5 frames; actors=邮箱输入/保存按钮/状态消息/重试入口; phases=有未保存修改→已接收并锁住按钮→原位置显示已保存时间→请求失败但输入保留→重试继续当前任务; action=逐步推进保存状态，观察每个阶段给出的下一步证据",
-    "sourceUrls": ["https://www.nngroup.com/articles/visibility-system-status/", "https://www.w3.org/WAI/WCAG21/Understanding/status-messages", "https://www.w3.org/WAI/ARIA/apg/patterns/alert/", "https://design-system.service.gov.uk/components/error-message/"],
-    "rewriteRisk": "high",
-    "nearDuplicates": ["loading-state", "microinteraction", "event"]
-  },
+  "slug": "feedback",
+  "mechanism": "反馈是系统把用户动作对应的状态变化呈现出来：动作被接收时确认触发，请求进行时告诉用户仍在工作，成功时显示结果已经落地，失败时保留能恢复的上下文并给出下一步。好的反馈贴着发生变化的对象出现，文字、禁用状态和数据更新各自承担不同证据，不靠一个短暂的 Toast 包办全部沟通。",
+  "misconception": "反馈不等于动效，也不等于每次都弹全局通知。状态消息不能替代表单错误、服务端拒绝或可操作的重试；成功提示也不能在数据尚未保存时提前出现。若结果已经在原位置清楚变化，额外通知可能只是噪声；若动作有副作用，还要说明是否可以撤销。",
+  "demoSignature": "state-machine: 5 frames; objects=表单/保存按钮/请求/状态消息/重试; change=dirty、pending、success、failure、retry; evidence=按钮状态、原位消息、数据值和恢复入口同步变化",
+  "sourceUrls": [
+    "https://www.nngroup.com/articles/visibility-system-status/",
+    "https://www.w3.org/WAI/WCAG21/Understanding/status-messages",
+    "https://www.w3.org/WAI/ARIA/apg/patterns/alert/",
+    "https://design-system.service.gov.uk/components/error-message/"
+  ],
+  "rewriteRisk": "high",
+  "nearDuplicates": [
+    "loading-state",
+    "microinteraction",
+    "event"
+  ]
+},
   {
-    "slug": "loading-state",
-    "mechanism": "异步操作开始后，界面根据等待范围与可估计程度选择局部禁用、内容占位、确定进度或不确定指示，并在结果到达时转换到内容、空或错误状态。",
-    "misconception": "转圈不是通用答案；无限 spinner 会掩盖超时，内容占位也不适合所有短操作或结构未知的页面。",
-    "demoSignature": "budget: 4 frames; actors=等待刻度/列表占位/确定进度/超时出口; phases=100ms直达→2s守住结构→8s显示完成量→超过上限停止并重试; action=拖长同一请求",
-    "sourceUrls": [
-      "https://www.nngroup.com/articles/progress-indicators/",
-      "https://www.nngroup.com/articles/designing-for-waits-and-interruptions/",
-      "https://m3.material.io/components/progress-indicators/overview",
-      "https://developer.apple.com/design/human-interface-guidelines/progress-indicators"
-    ],
-    "rewriteRisk": "high",
-    "nearDuplicates": ["feedback", "async-await", "fetch-api"]
-  },
+  "slug": "loading-state",
+  "mechanism": "加载状态是异步内容从发起到可用之间的临时界面模型。短操作可以直接完成，稍长的列表需要保留内容骨架，能估计总量时显示确定进度，超过合理等待则给出超时或重试出口。加载状态不是一个装饰 spinner，而是把未知的等待范围、已完成的工作和最终结果分开表达。",
+  "misconception": "骨架屏只能说明页面结构，不代表数据已经到达；进度条只有在系统知道工作总量时才应显示百分比；不确定指示器也不能无限掩盖网络失败。首次加载、增量加载、空结果和错误是不同状态，不能用同一段动画把它们混在一起。",
+  "demoSignature": "timeline: 5 frames; objects=动作/等待刻度/列表占位/确定进度/结果; change=短请求、慢请求、可估计进度、超时、结果或错误; evidence=结构占位、完成量与重试出口按时间出现",
+  "sourceUrls": [
+    "https://www.nngroup.com/articles/progress-indicators/",
+    "https://www.nngroup.com/articles/designing-for-waits-and-interruptions/",
+    "https://m3.material.io/components/progress-indicators/overview",
+    "https://developer.apple.com/design/human-interface-guidelines/progress-indicators"
+  ],
+  "rewriteRisk": "high",
+  "nearDuplicates": [
+    "feedback",
+    "async-await",
+    "fetch-api"
+  ]
+},
   {
-    "slug": "microinteraction",
-    "mechanism": "微交互由触发、规则、局部反馈和持续状态组成；系统触发或用户动作改变单一任务的状态，并把结果立即呈现在上下文中。",
-    "misconception": "微交互不是小动画的同义词；没有状态或反馈含义的装饰运动不属于有效微交互。",
-    "demoSignature": "recoil: 4 states; actors=收藏按钮/图标/计数/请求结果; phases=按下即时响应→成功确认→再次点击进入撤销→失败回到确认值; action=点击收藏并拨动撤销失败",
-    "sourceUrls": [
-      "https://www.nngroup.com/articles/microinteractions/",
-      "https://m3.material.io/styles/motion/overview",
-      "https://developer.apple.com/design/human-interface-guidelines/playing-haptics",
-      "https://www.w3.org/WAI/WCAG21/Understanding/status-messages.html"
-    ],
-    "rewriteRisk": "high",
-    "nearDuplicates": ["feedback", "event", "reduced-motion"]
-  },
+  "slug": "microinteraction",
+  "mechanism": "微交互是围绕单一任务发生的短状态变化：用户或系统触发动作，规则决定允许什么，局部反馈说明动作已被接收，持续状态记录结果，必要时还提供撤销。它可以有形变、颜色或触觉，但动效只是传达状态的手段；真正的对象是按钮、计数、请求结果和下一步操作之间的关系。",
+  "misconception": "没有状态含义的循环装饰不是微交互，持续闪烁也不能代替成功或失败。乐观更新必须有回滚规则，重复点击要处理幂等或禁用，键盘和减少动态模式要得到同样的结果。一个漂亮的图标变形不能证明服务器已经保存。",
+  "demoSignature": "state-machine: 5 frames; objects=收藏按钮/图标/计数/请求/消息; change=idle、pressed、success、undo、failure; evidence=局部形变、计数、请求结果和回滚保持一致",
+  "sourceUrls": [
+    "https://www.nngroup.com/articles/microinteractions/",
+    "https://m3.material.io/styles/motion/overview",
+    "https://developer.apple.com/design/human-interface-guidelines/playing-haptics",
+    "https://www.w3.org/WAI/WCAG21/Understanding/status-messages.html"
+  ],
+  "rewriteRisk": "high",
+  "nearDuplicates": [
+    "feedback",
+    "event",
+    "reduced-motion"
+  ]
+},
   {
-    "slug": "reduced-motion",
-    "mechanism": "操作系统偏好通过 prefers-reduced-motion 暴露给 CSS；页面应替换非必要大幅位移、缩放和视差，同时保留状态反馈与必要进度。",
-    "misconception": "不是把所有动画设为 duration:0，也不是只降低速度；快速大位移仍可能造成不适。",
-    "demoSignature": "motion-budget: 4 states; actors=同一页面切换/完整轨迹/原位淡入/焦点; phases=建立连续性→开启减少动态→替代为短淡入→结果和焦点一致; action=切换减少动态",
-    "sourceUrls": [
-      "https://www.w3.org/TR/mediaqueries-5/#prefers-reduced-motion",
-      "https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html",
-      "https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion",
-      "https://web.dev/articles/prefers-reduced-motion"
-    ],
-    "rewriteRisk": "high",
-    "nearDuplicates": ["microinteraction", "media-query", "a11y"]
-  },
+  "slug": "reduced-motion",
+  "mechanism": "prefers-reduced-motion 让页面知道用户希望减少非必要运动。完整模式可以用短距离移动、缩放和连续性提示空间关系；减少动态模式应取消大幅位移、视差和快速缩放，改用原位淡入、即时定位或颜色/文字变化。两种表现的终点必须相同：状态、URL、阅读顺序和键盘焦点不能因为少了动画而消失。",
+  "misconception": "减少动态不是把所有 duration 改成 0，也不是只把速度调慢；快速闪烁和大范围位移仍可能造成不适。需要保留的进度、成功、失败和焦点提示不能被一并删除；动画之外的布局跳动、自动播放和由交互触发的缩放也要一并审查。",
+  "demoSignature": "compare: 5 frames; objects=起点/终点/完整轨迹/减少动态/页面状态; change=正常运动、偏好开启、原位淡入、焦点确认、复杂运动替代; evidence=终点状态相同而运动预算不同",
+  "sourceUrls": [
+    "https://www.w3.org/TR/mediaqueries-5/#prefers-reduced-motion",
+    "https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html",
+    "https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion",
+    "https://web.dev/articles/prefers-reduced-motion"
+  ],
+  "rewriteRisk": "high",
+  "nearDuplicates": [
+    "microinteraction",
+    "media-query",
+    "a11y"
+  ]
+},
   {
     "slug": "dockerfile",
     "mechanism": "Dockerfile 是按顺序执行的构建指令集合：FROM 选基座，COPY/ADD 把 context 中的输入带进来，RUN 产生中间结果，后续指令再从前一层继续；构建器用指令和输入计算缓存，最终把层组合成镜像。",

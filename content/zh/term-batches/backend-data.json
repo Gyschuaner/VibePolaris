@@ -688,14 +688,65 @@
     "relatedSlugs": ["retry", "idempotency", "request", "connection-pool"]
   },
   {
-    "zh": "关系型数据库", "en": "Relational Database", "slug": "relational-database", "cat": "后端",
-    "say": "把数据放进有列定义的表中，并用主键和外键表达关系。", "aliases": ["关系数据库", "SQL 数据库", "RDBMS"],
-    "question": "订单和用户之间的关系应该怎样保存？", "definition": "关系型数据库用表、行、列和约束组织数据，并通过 SQL 查询和修改。", "boundary": "关系型数据库适合结构明确且需要事务的数据，不表示所有数据都必须拆成表。",
-    "demoType": "hierarchy", "demoTitle": "用户和订单怎样形成关系",
-    "demoSteps": [{"label":"保留列","value":"id · name","note":"先选出结果需要的属性。"},{"label":"连接匹配","value":"customers.id = orders.customer_id","note":"主键和外键把相关行配在一起。"},{"label":"过滤结果","value":"customer_id=7 · amount>100","note":"条件只留下满足查询的组合。"}],
-    "quizQuestion": "关系型数据库主要怎样组织数据？", "quizOptions": ["表、行、列和关系", "只保存图片像素", "只按文件夹层级"], "correctText": "表结构和关系是其核心组织方式。", "wrongText": "它不只用于图片，也不以文件夹作为主要数据模型。",
-    "promptTitle": "设计关系数据结构", "prompt": "请把这些业务对象整理为表、主键、外键和必要约束，并说明高频查询需要哪些索引。", "relatedSlugs": ["sql", "table", "primary-key", "nosql"]
-  },
+  "zh": "关系型数据库",
+  "en": "Relational Database",
+  "slug": "relational-database",
+  "cat": "后端",
+  "say": "两张表不复制客户姓名，也能拼出订单报表；关键在键、约束和查询操作怎样组合，而不是表格长得像电子表格。",
+  "aliases": [
+    "关系数据库",
+    "SQL 数据库",
+    "RDBMS"
+  ],
+  "question": "关系模型怎样把客户、订单和查询结果分开保存，又能在需要时组合出可核对的报表？",
+  "definition": "关系数据库用关系（表）、属性（列）、元组（行）、键和约束来表达数据。客户和订单可以各自保存事实，主键标识客户，外键表达订单属于哪个客户，查询再通过投影、连接和选择产生新的结果关系。输入表仍保持原状，结果是否匹配取决于连接条件、过滤条件和约束，而不是数据库自动“理解”业务关系。",
+  "boundary": "关系模型不等于 SQL 语法、电子表格界面或某一款数据库；事务、索引、锁和物理存储是实现层的其他问题。主键/外键能约束身份和引用，却不能自动保证金额、权限或业务流程正确；连接条件漏写时，行数可能悄悄膨胀。",
+  "demoType": "comparison",
+  "demoTitle": "从两张关系表到一份可核对的订单报表",
+  "demoSteps": [
+    {
+      "label": "事实分在两张表",
+      "value": "3 rows · id/name · 5 rows · customer_id/amount",
+      "note": "customers 保存 id、name，orders 保存 order_id、customer_id、amount；客户姓名只存一处，订单通过外键指向它。"
+    },
+    {
+      "label": "先投影需要的列",
+      "value": "customer_id · name · amount",
+      "note": "查询只保留报表要看的字段，减少把无关列带进组合；这一步不会删除原表中的列。"
+    },
+    {
+      "label": "按键连接而不是按位置拼",
+      "value": "5 matched · 0 unexplained · name attached",
+      "note": "customer.id = order.customer_id 命中后，订单拿到对应姓名；没有匹配的外键单独留下，提醒我们选择 INNER 还是 OUTER JOIN。"
+    },
+    {
+      "label": "再应用业务条件",
+      "value": "id=7 AND amount>100 · 3 rows",
+      "note": "在连接结果上过滤 customer_id=7 且 amount>100，5 条记录留下 3 条；筛选改变结果关系，不改变客户和订单事实。"
+    },
+    {
+      "label": "结果单独可核对",
+      "value": "new relation · 3 rows · unchanged · unchanged",
+      "note": "报表有 3 行、3 个来源字段，输入表仍是原来的 3 和 5 行；把结果当作新关系，才能继续排序、汇总或再查询。"
+    }
+  ],
+  "quizQuestion": "JOIN 生成订单报表后，customers 和 orders 两张输入表会怎样？",
+  "quizOptions": [
+    "保持原状，查询生成一份新的结果关系",
+    "永久合并成一张表并删除外键",
+    "自动删除所有没有订单的客户"
+  ],
+  "correctText": "投影、连接和过滤默认只生成查询结果，输入关系是否修改要由独立的写操作决定。",
+  "wrongText": "把查询结果误当成存储结构，会看不见连接条件、约束和写入边界。",
+  "promptTitle": "从业务事实设计关系查询",
+  "prompt": "请把客户和订单建成两张关系表，标出主键、外键和约束；先投影字段，再按键连接，最后筛选 customer_id=7 且 amount>100。给出匹配与未匹配记录数，并说明查询为何没有改写输入表。",
+  "relatedSlugs": [
+    "sql",
+    "table",
+    "primary-key",
+    "nosql"
+  ]
+},
   {
     "zh": "SQL", "en": "Structured Query Language", "slug": "sql", "cat": "后端",
     "say": "用统一语句读取、增加、修改和删除关系型数据库中的数据。", "aliases": ["结构化查询语言", "数据库查询", "SQL 语句"],
@@ -706,14 +757,64 @@
     "promptTitle": "检查 SQL 查询", "prompt": "请检查这条 SQL 的筛选、连接、排序和索引使用，给出正确且易读的改写。", "relatedSlugs": ["relational-database", "join", "index", "orm"]
   },
   {
-    "zh": "NoSQL", "en": "Not Only SQL", "slug": "nosql", "cat": "后端",
-    "say": "关系表之外的一组数据库类型，包括键值、文档、图和宽列数据库。", "aliases": ["非关系型数据库", "非关系数据库", "NoSQL 数据库"],
-    "question": "数据字段经常变化时，一定要使用关系表吗？", "definition": "NoSQL 泛指不以传统关系表为唯一模型的数据库，常针对特定读写和扩展需求设计。", "boundary": "NoSQL 不代表没有结构、没有查询语言或天然比关系数据库更快。",
-    "demoType": "comparison", "demoTitle": "同一商品的两种存储方式",
-    "demoSteps": [{"label":"读一个用户","value":"profile + 最近订单","note":"聚合文档让一次读取得到完整资料。"},{"label":"改共享价格","value":"商品 → 120 个订单","note":"复制属性会让一次变化影响多个记录。"},{"label":"选择查询模型","value":"访问模式 · 一致性 · 结构","note":"模型回答访问与一致性取舍。"}],
-    "quizQuestion": "选择 NoSQL 数据库最合理的依据是什么？", "quizOptions": ["数据模型和访问模式", "名字听起来更新", "不想设计任何结构"], "correctText": "模型、查询、一致性和扩展要求应共同决定。", "wrongText": "NoSQL 仍需要数据设计，名称本身不是选择依据。",
-    "promptTitle": "比较存储模型", "prompt": "请根据数据结构、读写模式、事务、一致性和扩展需求比较关系型与 NoSQL 方案。", "relatedSlugs": ["relational-database", "json", "vector-database"]
-  },
+  "zh": "NoSQL",
+  "en": "Not Only SQL",
+  "slug": "nosql",
+  "cat": "后端",
+  "say": "NoSQL 不是一张更松的表：先看“最近订单”还是“改共享价格”，不同模型会让读写成本和一致性落在不同地方。",
+  "aliases": [
+    "非关系型数据库",
+    "非关系数据库",
+    "NoSQL 数据库"
+  ],
+  "question": "同一份订单业务在关系、文档和键值模型中为什么会得到不同的读取路径与更新范围？",
+  "definition": "NoSQL 是文档、键值、列族和图等非关系模型的统称。它们通常围绕主要访问模式设计数据布局：文档可以把一次读取需要的字段聚在一起，键值模型把 key→value 读写做得直接，列族模型按分区与列组织大规模访问。代价是复制、分区、索引、事务和一致性要按具体产品与业务语义单独设计。",
+  "boundary": "NoSQL 不表示没有结构，也不保证比关系数据库更快；文档字段可以有验证规则，键值存储也有分区和容量边界。把商品当前价嵌进历史订单后，改价是少一次 join 还是要回写 120 份副本，取决于字段代表历史事实还是当前状态。",
+  "demoType": "comparison",
+  "demoTitle": "先写访问任务，再比较三种数据模型的代价",
+  "demoSteps": [
+    {
+      "label": "先写清楚两个任务",
+      "value": "user=7 · last 10 · sku=42 · shared price",
+      "note": "任务 A 是用户 7 最近 10 笔订单，任务 B 是修改 SKU 42 的共享价格；没有访问模式，比较模型名称没有意义。"
+    },
+    {
+      "label": "最近订单看读路径",
+      "value": "index + join · 1 document query · 1 + 10 gets · 读取路径可比较",
+      "note": "文档模型可一次取回嵌套订单；关系模型依赖索引和连接；键值模型先拿订单 id 再批量 get。1 次请求不等于永远更快，还要看分区和数据量。"
+    },
+    {
+      "label": "共享改价看写触及",
+      "value": "1 row · 120 documents · 120 values · 写放大 = 120",
+      "note": "关系模型改商品主记录；如果文档把当前价复制进 120 份订单，就要决定是否回写；键值模型也可能要触及同样多的 value。"
+    },
+    {
+      "label": "历史事实改变选择",
+      "value": "snapshot · 0 updates · 当前/历史语义待定",
+      "note": "订单里的成交价应保留当时的值时，120 份快照不该被新价覆盖；若页面要显示当前价，就必须承担同步或重新读取的成本。"
+    },
+    {
+      "label": "最后比较约束而非口号",
+      "value": "读 · 写 · 一致性 · 扩展",
+      "note": "把读写频率、分区键、事务范围、复制延迟和失败恢复写出来，才能判断模型是否适合；“NoSQL 更快”不是验收结论。"
+    }
+  ],
+  "quizQuestion": "订单中保存成交时价格时，文档模型里的价格快照意味着什么？",
+  "quizOptions": [
+    "商品改价时通常不应回写历史订单快照",
+    "文档模型没有结构也不需要索引",
+    "所有订单必须实时改成新的商品价格"
+  ],
+  "correctText": "快照表达历史事实，改当前商品价不应覆盖过去成交价；这是业务语义和数据布局共同决定的。",
+  "wrongText": "把灵活结构当成无结构，或把历史副本当成当前值，都会造成错误更新。",
+  "promptTitle": "按访问模式比较数据模型",
+  "prompt": "请为“用户 7 最近 10 笔订单”和“修改 SKU 42 当前价”分别比较关系、文档和键值模型的读取/写入触及范围；标出分区键、索引、事务和一致性延迟，并说明订单成交价是否应作为历史快照。",
+  "relatedSlugs": [
+    "relational-database",
+    "json",
+    "vector-database"
+  ]
+},
   {
     "zh": "表", "en": "Table", "slug": "table", "cat": "后端",
     "say": "关系型数据库中保存同类记录的结构，由列定义和多行数据组成。", "aliases": ["数据表", "数据库表", "Table"],
@@ -724,14 +825,65 @@
     "promptTitle": "检查数据表", "prompt": "请检查这张表的列、类型、空值、主键和唯一约束，指出重复或混合职责的字段。", "relatedSlugs": ["row", "column", "database-schema", "primary-key"]
   },
   {
-    "zh": "行", "en": "Row", "slug": "row", "cat": "后端",
-    "say": "表中的一条完整记录，例如某个用户或某笔订单。", "aliases": ["记录", "数据行", "Tuple"],
-    "question": "修改一个用户邮箱时，数据库具体改的是哪里？", "definition": "行是关系表中按列结构保存的一组字段值，通常对应一个实体或事件。", "boundary": "行由表的列定义约束，不能随意增加表中不存在的字段。",
-    "demoType": "state", "demoTitle": "一行用户记录怎样被更新",
-    "demoSteps": [{"label":"旧版本","value":"id=7 · balance=100","note":"事务 B 看到已提交的旧版本。"},{"label":"未提交更新","value":"事务 A · balance=80","note":"A 未提交时，B 仍按隔离规则看到 100。"},{"label":"提交后读取","value":"COMMIT · C 读 80","note":"提交后新事务可见已提交版本。"}],
-    "quizQuestion": "更新指定行最常用什么来定位？", "quizOptions": ["主键或唯一条件", "页面背景色", "随机选择"], "correctText": "稳定且唯一的条件可避免误改多行。", "wrongText": "样式和随机选择都不能可靠定位记录。",
-    "promptTitle": "检查行级更新", "prompt": "请检查这条 UPDATE 的定位条件和受影响行数，说明如何避免误更新整张表。", "relatedSlugs": ["table", "column", "primary-key", "sql"]
-  },
+  "zh": "行",
+  "en": "Row",
+  "slug": "row",
+  "cat": "后端",
+  "say": "表里的一行不是会被原地覆盖的电子表格格子：并发事务可能各自看到同一逻辑行的不同版本。",
+  "aliases": [
+    "记录",
+    "数据行",
+    "Tuple"
+  ],
+  "question": "主键相同的行为什么能在不同事务里同时显示 100 和 80？",
+  "definition": "行是按表的列结构保存的一组字段值，通常由主键识别一个逻辑对象。数据库采用多版本并发控制时，更新会产生可供事务判断的版本；一个已经开始的事务按自己的快照读到旧版本，提交后新开的事务才读到新版本。行的概念因此同时涉及字段结构、逻辑身份和读取时的可见性。",
+  "boundary": "行号或物理位置不是稳定身份，结果没有 ORDER BY 时也不能把第几行当作对象顺序。主键相同的版本不代表出现了两个客户；不同数据库的隔离级别、锁和版本清理策略不同，读到旧值也不等于所有写入都永远不可见。",
+  "demoType": "lifecycle",
+  "demoTitle": "同一逻辑行怎样在三个事务里显示不同版本",
+  "demoSteps": [
+    {
+      "label": "先有已提交行",
+      "value": "id=7 · balance=100 · committed",
+      "note": "id=7 的逻辑行当前是 balance=100，v1 已提交；行的身份来自主键，不来自它在结果表里的位置。"
+    },
+    {
+      "label": "A 写出未提交版本",
+      "value": "balance=100 · balance=80 · uncommitted",
+      "note": "事务 A 把余额改成 80，形成 v2；在提交前，A 自己可以看到新值，其他事务仍按各自规则看到 v1。"
+    },
+    {
+      "label": "B 的旧快照继续读 v1",
+      "value": "reads 100 · v1 visible",
+      "note": "B 在 A 提交前建立快照，所以读取仍是 100；这不是行拒绝更新，而是 B 的可见性规则没有跨到 v2。"
+    },
+    {
+      "label": "A 提交 v2",
+      "value": "balance=80 · committed · still 100",
+      "note": "A 提交后，v2 成为已提交版本；B 的既有快照不会自动改写，因此它仍可能读到 100。"
+    },
+    {
+      "label": "C 新快照读 v2",
+      "value": "reads 80 · v2 visible · id=7",
+      "note": "提交后才开始的事务 C 建立新快照，读到 80；两个读数对应同一个逻辑 id=7 的不同可见版本。"
+    }
+  ],
+  "quizQuestion": "主键相同的 v1 和 v2 是否说明表里有两个逻辑客户？",
+  "quizOptions": [
+    "不一定，它们可以是同一逻辑行的不同并发版本",
+    "一定，版本数就是对象数",
+    "主键在事务中会自动失效"
+  ],
+  "correctText": "MVCC 可以为同一逻辑行保留多个物理版本，再按事务快照选择可见值。",
+  "wrongText": "把物理版本当成逻辑对象，或把结果位置当成身份，都会误读并发行为。",
+  "promptTitle": "解释一次并发读取",
+  "prompt": "请用 id=7、balance=100/80 和事务 A/B/C 写出未提交、旧快照、提交、新快照四个边界；说明每个事务能看到哪个版本、是否需要 ORDER BY 才能谈结果顺序，并区分逻辑主键与物理版本。",
+  "relatedSlugs": [
+    "table",
+    "column",
+    "primary-key",
+    "sql"
+  ]
+},
   {
     "zh": "列", "en": "Column", "slug": "column", "cat": "后端",
     "say": "表中同一类字段的定义，例如邮箱列规定每行邮箱怎样保存。", "aliases": ["字段", "数据列", "Column"],

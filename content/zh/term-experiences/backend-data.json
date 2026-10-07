@@ -6287,223 +6287,260 @@
     ]
   },
   {
-    "slug": "relational-database",
-    "lead": "两张表为什么可以在不复制客户姓名的情况下拼出订单报表？",
-    "definition": "关系数据库用关系、属性、键与约束表达数据结构，再通过选择、投影和连接等操作从既有关系生成新的结果关系。",
-    "boundary": "关系模型不等于电子表格界面，也不等于 SQL 语言本身。事务、索引和物理存储是实现层的其他问题。",
-    "sceneKind": "assembly",
-    "sceneTitle": "从客户与订单关系组装报表",
-    "actionLabel": "应用下一个关系操作",
-    "actors": [
-      {
-        "id": "customers-rel",
-        "label": "customers",
-        "detail": "3 rows · id,name",
-        "icon": "database",
-        "group": "输入关系"
-      },
-      {
-        "id": "orders-rel",
-        "label": "orders",
-        "detail": "5 rows · customer_id,amount",
-        "icon": "database",
-        "group": "输入关系"
-      },
-      {
-        "id": "selection-op",
-        "label": "过滤",
-        "detail": "customer_id = 7 AND amount > 100",
-        "icon": "search",
-        "group": "关系操作"
-      },
-      {
-        "id": "join-op",
-        "label": "连接",
-        "detail": "customer.id = order.customer_id",
-        "icon": "gear",
-        "group": "关系操作"
-      },
-      {
-        "id": "projection-op",
-        "label": "保留列",
-        "detail": "customer_id, name, amount",
-        "icon": "layout",
-        "group": "关系操作"
-      },
-      {
-        "id": "report-rel",
-        "label": "结果关系",
-        "detail": "等待生成",
-        "icon": "chart",
-        "group": "输出"
-      }
-    ],
-    "edges": [
-      {
-        "id": "orders-selection",
-        "from": "orders-rel",
-        "to": "projection-op",
-        "label": "保留列"
-      },
-      {
-        "id": "selection-join",
-        "from": "projection-op",
-        "to": "join-op",
-        "label": "5 rows"
-      },
-      {
-        "id": "customers-join",
-        "from": "customers-rel",
-        "to": "join-op",
-        "label": "按键匹配"
-      },
-      {
-        "id": "customers-projection",
-        "from": "customers-rel",
-        "to": "projection-op",
-        "label": "保留列"
-      },
-      {
-        "id": "join-projection",
-        "from": "join-op",
-        "to": "selection-op",
-        "label": "连接后 5 rows"
-      },
-      {
-        "id": "projection-report",
-        "from": "selection-op",
-        "to": "report-rel",
-        "label": "3 rows"
-      }
-    ],
-    "frames": [
-      {
-        "label": "保留列",
-        "note": "先留下报表真正需要的客户、订单和金额字段，输入关系仍保持分开。",
-        "activeIds": [
-          "customers-rel",
-          "orders-rel",
-          "projection-op"
-        ],
-        "doneIds": [
-          "projection-op"
-        ],
-        "mutedIds": [
-          "join-op",
-          "selection-op",
-          "report-rel"
-        ],
-        "values": {
-          "orders-rel": "5 rows",
-          "projection-op": "customer_id, name, amount"
-        },
-        "activeEdgeIds": [
-          "orders-selection",
-          "customers-projection"
-        ],
-        "metric": {
-          "label": "先定列",
-          "value": "3 fields"
-        }
-      },
-      {
-        "label": "连接匹配",
-        "note": "customer_id 与客户 id 匹配后，5 条订单各自获得对应姓名。",
-        "activeIds": [
-          "customers-rel",
-          "projection-op",
-          "join-op"
-        ],
-        "doneIds": [
-          "join-op"
-        ],
-        "mutedIds": [
-          "orders-rel",
-          "selection-op",
-          "report-rel"
-        ],
-        "values": {
-          "join-op": "5 matched rows",
-          "customers-rel": "name attached"
-        },
-        "activeEdgeIds": [
-          "selection-join",
-          "customers-join"
-        ]
-      },
-      {
-        "label": "过滤结果",
-        "note": "连接后的 5 条订单再按 customer_id=7 与 amount>100 过滤，结果留下 3 行。",
-        "activeIds": [
-          "join-op",
-          "selection-op",
-          "report-rel"
-        ],
-        "doneIds": [
-          "report-rel"
-        ],
-        "mutedIds": [
-          "customers-rel",
-          "orders-rel",
-          "projection-op"
-        ],
-        "values": {
-          "report-rel": "3 rows · 2 columns",
-          "selection-op": "customer_id=7 · amount>100"
-        },
-        "activeEdgeIds": [
-          "join-projection",
-          "projection-report"
-        ]
-      }
-    ],
-    "insight": "关系模型把数据结构与组合操作分开，查询结果也是一个新的关系。",
-    "quiz": {
-      "question": "JOIN 生成报表后，customers 与 orders 两张表会怎样？",
-      "options": [
-        {
-          "label": "保持原状，查询产生新的结果关系",
-          "correct": true
-        },
-        {
-          "label": "永久合并成一张表",
-          "correct": false
-        },
-        {
-          "label": "自动删除未匹配数据",
-          "correct": false
-        }
+  "slug": "relational-database",
+  "lead": "两张表不复制客户姓名，也能拼出订单报表；关键在键、约束和查询操作怎样组合，而不是表格长得像电子表格。",
+  "definition": "关系数据库用关系（表）、属性（列）、元组（行）、键和约束来表达数据。客户和订单可以各自保存事实，主键标识客户，外键表达订单属于哪个客户，查询再通过投影、连接和选择产生新的结果关系。输入表仍保持原状，结果是否匹配取决于连接条件、过滤条件和约束，而不是数据库自动“理解”业务关系。",
+  "boundary": "关系模型不等于 SQL 语法、电子表格界面或某一款数据库；事务、索引、锁和物理存储是实现层的其他问题。主键/外键能约束身份和引用，却不能自动保证金额、权限或业务流程正确；连接条件漏写时，行数可能悄悄膨胀。",
+  "sceneKind": "assembly",
+  "sceneTitle": "投影、连接和过滤如何产生一张新结果",
+  "actionLabel": "应用下一个关系操作",
+  "actors": [
+    {
+      "id": "customers-rel",
+      "label": "customers",
+      "detail": "3 rows · id,name",
+      "icon": "database",
+      "group": "输入关系"
+    },
+    {
+      "id": "orders-rel",
+      "label": "orders",
+      "detail": "5 rows · customer_id,amount",
+      "icon": "database",
+      "group": "输入关系"
+    },
+    {
+      "id": "selection-op",
+      "label": "过滤",
+      "detail": "customer_id = 7 AND amount > 100",
+      "icon": "search",
+      "group": "关系操作"
+    },
+    {
+      "id": "join-op",
+      "label": "连接",
+      "detail": "customer.id = order.customer_id",
+      "icon": "gear",
+      "group": "关系操作"
+    },
+    {
+      "id": "projection-op",
+      "label": "保留列",
+      "detail": "customer_id, name, amount",
+      "icon": "layout",
+      "group": "关系操作"
+    },
+    {
+      "id": "report-rel",
+      "label": "结果关系",
+      "detail": "等待生成",
+      "icon": "chart",
+      "group": "输出"
+    }
+  ],
+  "edges": [
+    {
+      "id": "orders-selection",
+      "from": "orders-rel",
+      "to": "projection-op",
+      "label": "保留列"
+    },
+    {
+      "id": "selection-join",
+      "from": "projection-op",
+      "to": "join-op",
+      "label": "5 rows"
+    },
+    {
+      "id": "customers-join",
+      "from": "customers-rel",
+      "to": "join-op",
+      "label": "按键匹配"
+    },
+    {
+      "id": "customers-projection",
+      "from": "customers-rel",
+      "to": "projection-op",
+      "label": "保留列"
+    },
+    {
+      "id": "join-projection",
+      "from": "join-op",
+      "to": "selection-op",
+      "label": "连接后 5 rows"
+    },
+    {
+      "id": "projection-report",
+      "from": "selection-op",
+      "to": "report-rel",
+      "label": "3 rows"
+    }
+  ],
+  "frames": [
+    {
+      "label": "事实分在两张表",
+      "note": "customers 保存 id、name，orders 保存 order_id、customer_id、amount；客户姓名只存一处，订单通过外键指向它。",
+      "activeIds": [
+        "customers-rel",
+        "orders-rel"
       ],
-      "success": "关系操作产生查询结果，不会自动改写输入关系。",
-      "retry": "区分查询结果与存储结构。"
+      "doneIds": [],
+      "mutedIds": [
+        "selection-op",
+        "join-op",
+        "projection-op",
+        "report-rel"
+      ],
+      "values": {
+        "customers-rel": "3 rows · id/name",
+        "orders-rel": "5 rows · customer_id/amount"
+      },
+      "activeEdgeIds": []
     },
-    "prompt": {
-      "title": "用关系操作描述一个查询",
-      "text": "请列出输入关系、键与约束，并分别说明选择哪些行、如何连接、最终投影哪些列。"
+    {
+      "label": "先投影需要的列",
+      "note": "查询只保留报表要看的字段，减少把无关列带进组合；这一步不会删除原表中的列。",
+      "activeIds": [
+        "customers-rel",
+        "orders-rel",
+        "projection-op"
+      ],
+      "doneIds": [
+        "projection-op"
+      ],
+      "mutedIds": [
+        "selection-op",
+        "join-op",
+        "report-rel"
+      ],
+      "values": {
+        "projection-op": "customer_id · name · amount"
+      },
+      "activeEdgeIds": [
+        "customers-projection",
+        "orders-selection"
+      ]
     },
-    "sources": [
+    {
+      "label": "按键连接而不是按位置拼",
+      "note": "customer.id = order.customer_id 命中后，订单拿到对应姓名；没有匹配的外键单独留下，提醒我们选择 INNER 还是 OUTER JOIN。",
+      "activeIds": [
+        "customers-rel",
+        "orders-rel",
+        "join-op"
+      ],
+      "doneIds": [
+        "projection-op"
+      ],
+      "mutedIds": [
+        "selection-op",
+        "report-rel"
+      ],
+      "values": {
+        "join-op": "5 matched · 0 unexplained",
+        "customers-rel": "name attached"
+      },
+      "activeEdgeIds": [
+        "selection-join",
+        "customers-join"
+      ]
+    },
+    {
+      "label": "再应用业务条件",
+      "note": "在连接结果上过滤 customer_id=7 且 amount>100，5 条记录留下 3 条；筛选改变结果关系，不改变客户和订单事实。",
+      "activeIds": [
+        "join-op",
+        "selection-op",
+        "projection-op",
+        "report-rel"
+      ],
+      "doneIds": [
+        "join-op"
+      ],
+      "mutedIds": [
+        "customers-rel",
+        "orders-rel"
+      ],
+      "values": {
+        "selection-op": "id=7 AND amount>100",
+        "report-rel": "3 rows"
+      },
+      "activeEdgeIds": [
+        "join-projection",
+        "projection-report"
+      ]
+    },
+    {
+      "label": "结果单独可核对",
+      "note": "报表有 3 行、3 个来源字段，输入表仍是原来的 3 和 5 行；把结果当作新关系，才能继续排序、汇总或再查询。",
+      "activeIds": [
+        "report-rel",
+        "customers-rel",
+        "orders-rel"
+      ],
+      "doneIds": [
+        "selection-op",
+        "projection-op"
+      ],
+      "mutedIds": [
+        "join-op"
+      ],
+      "values": {
+        "report-rel": "new relation · 3 rows",
+        "customers-rel": "unchanged",
+        "orders-rel": "unchanged"
+      },
+      "activeEdgeIds": []
+    }
+  ],
+  "insight": "关系查询把“事实怎样存”与“这次要怎样组合”分开；连接条件和约束是可核对的机制，不是表格外观。",
+  "quiz": {
+    "question": "JOIN 生成订单报表后，customers 和 orders 两张输入表会怎样？",
+    "options": [
       {
-        "url": "https://www.postgresql.org/docs/current/tutorial-sql.html",
-        "label": "PostgreSQL · The SQL Language",
-        "note": "表、行、查询与表连接"
+        "label": "保持原状，查询生成一份新的结果关系",
+        "correct": true
       },
       {
-        "url": "https://www.postgresql.org/docs/current/ddl.html",
-        "label": "PostgreSQL · Data Definition",
-        "note": "表结构、主键、外键与约束"
+        "label": "永久合并成一张表并删除外键",
+        "correct": false
       },
       {
-        "url": "https://www.sqlite.org/lang.html",
-        "label": "SQLite · SQL Language",
-        "note": "查询、连接与修改语句的范围"
-      },
-      {
-        "url": "https://www.ibm.com/think/topics/relational-databases",
-        "label": "IBM · Relational databases",
-        "note": "关系表、键、SQL 与事务边界"
+        "label": "自动删除所有没有订单的客户",
+        "correct": false
       }
-    ]
+    ],
+    "success": "投影、连接和过滤默认只生成查询结果，输入关系是否修改要由独立的写操作决定。",
+    "retry": "把查询结果误当成存储结构，会看不见连接条件、约束和写入边界。"
   },
+  "prompt": {
+    "title": "从业务事实设计关系查询",
+    "text": "请把客户和订单建成两张关系表，标出主键、外键和约束；先投影字段，再按键连接，最后筛选 customer_id=7 且 amount>100。给出匹配与未匹配记录数，并说明查询为何没有改写输入表。"
+  },
+  "sources": [
+    {
+      "url": "https://www.postgresql.org/docs/current/tutorial-sql.html",
+      "label": "PostgreSQL · SQL tutorial",
+      "note": "PostgreSQL SQL tutorial：核对表、行、查询、连接和查询结果的边界。"
+    },
+    {
+      "url": "https://www.postgresql.org/docs/current/ddl.html",
+      "label": "PostgreSQL · Data definition",
+      "note": "PostgreSQL Data Definition：核对主键、外键和约束的职责。"
+    },
+    {
+      "url": "https://www.sqlite.org/lang.html",
+      "label": "SQLite · SQL language",
+      "note": "SQLite SQL language：核对 SELECT、JOIN 和修改语句并非同一类操作。"
+    },
+    {
+      "url": "https://www.ibm.com/think/topics/relational-databases",
+      "label": "IBM · Relational databases",
+      "note": "IBM relational database：补充关系表、键、SQL 和事务的概念边界。"
+    }
+  ],
+  "promptTitle": "从业务事实设计关系查询"
+},
   {
     "slug": "sql",
     "lead": "SQL 文本完全不变，为什么加索引后数据库会换一套执行步骤？",
@@ -6737,226 +6774,263 @@
     ]
   },
   {
-    "slug": "nosql",
-    "lead": "同一份订单数据，为什么查最近订单和修改商品价格会偏好不同模型？",
-    "definition": "NoSQL 是文档、键值、列族和图等非关系模型的统称；不同模型按访问模式选择数据布局、一致性和扩展方式。",
-    "boundary": "NoSQL 不表示没有结构，也不保证更快。文档数据库只是其中一种，事务与索引能力也因产品而异。",
-    "sceneKind": "compare",
-    "sceneTitle": "两种任务在三种数据模型中的读写成本",
-    "actionLabel": "切换访问任务",
-    "actors": [
-      {
-        "id": "rel-model",
-        "label": "关系模型",
-        "detail": "订单与商品分表",
-        "icon": "database",
-        "group": "模型"
-      },
-      {
-        "id": "doc-model",
-        "label": "文档模型",
-        "detail": "订单嵌套商品快照",
-        "icon": "file",
-        "group": "模型"
-      },
-      {
-        "id": "kv-model",
-        "label": "键值模型",
-        "detail": "user→order ids",
-        "icon": "memory",
-        "group": "模型"
-      },
-      {
-        "id": "recent-query",
-        "label": "最近订单",
-        "detail": "用户 7 · limit 10",
-        "icon": "search",
-        "group": "任务"
-      },
-      {
-        "id": "price-change",
-        "label": "修改共享价格",
-        "detail": "sku 42",
-        "icon": "gear",
-        "group": "任务"
-      },
-      {
-        "id": "cost-board",
-        "label": "触及记录",
-        "detail": "读取/写入次数",
-        "icon": "chart",
-        "group": "结果"
-      }
-    ],
-    "edges": [
-      {
-        "id": "recent-rel",
-        "from": "recent-query",
-        "to": "rel-model",
-        "label": "索引 + JOIN"
-      },
-      {
-        "id": "recent-doc",
-        "from": "recent-query",
-        "to": "doc-model",
-        "label": "单集合查询"
-      },
-      {
-        "id": "recent-kv",
-        "from": "recent-query",
-        "to": "kv-model",
-        "label": "键后多取"
-      },
-      {
-        "id": "price-rel",
-        "from": "price-change",
-        "to": "rel-model",
-        "label": "改商品一行"
-      },
-      {
-        "id": "price-doc",
-        "from": "price-change",
-        "to": "doc-model",
-        "label": "更新快照"
-      },
-      {
-        "id": "price-kv",
-        "from": "price-change",
-        "to": "kv-model",
-        "label": "更新副本"
-      }
-    ],
-    "frames": [
-      {
-        "label": "读取最近订单",
-        "note": "文档模型一次取回嵌套订单；关系模型需要索引与连接；键值模型先取 id 再批量读取。",
-        "activeIds": [
-          "recent-query",
-          "rel-model",
-          "doc-model",
-          "kv-model",
-          "cost-board"
-        ],
-        "doneIds": [
-          "recent-query"
-        ],
-        "mutedIds": [
-          "price-change"
-        ],
-        "values": {
-          "rel-model": "2 logical reads",
-          "doc-model": "1 query",
-          "kv-model": "1+10 gets"
-        },
-        "activeEdgeIds": [
-          "recent-rel",
-          "recent-doc",
-          "recent-kv"
-        ]
-      },
-      {
-        "label": "修改共享商品价格",
-        "note": "关系模型只改商品主记录，嵌入快照的模型要决定是否更新历史副本。",
-        "activeIds": [
-          "price-change",
-          "rel-model",
-          "doc-model",
-          "kv-model",
-          "cost-board"
-        ],
-        "doneIds": [
-          "price-change"
-        ],
-        "mutedIds": [
-          "recent-query"
-        ],
-        "values": {
-          "rel-model": "1 row",
-          "doc-model": "120 documents",
-          "kv-model": "120 values"
-        },
-        "activeEdgeIds": [
-          "price-rel",
-          "price-doc",
-          "price-kv"
-        ],
-        "metric": {
-          "label": "最大写入触及",
-          "value": "120"
-        }
-      },
-      {
-        "label": "一致性选择影响结果",
-        "note": "若历史订单应保留成交价，文档快照无需回写；若展示当前价，则要承担同步成本。",
-        "activeIds": [
-          "doc-model",
-          "price-change"
-        ],
-        "doneIds": [
-          "doc-model"
-        ],
-        "mutedIds": [
-          "rel-model",
-          "kv-model",
-          "recent-query",
-          "cost-board"
-        ],
-        "values": {
-          "doc-model": "历史价：0 updates",
-          "price-change": "业务语义决定"
-        },
-        "activeEdgeIds": [
-          "price-doc"
-        ]
-      }
-    ],
-    "insight": "选数据模型前先写清主要读写任务和一致性语义，不能只比较模型名称。",
-    "quiz": {
-      "question": "订单中的商品价格要保留成交时值，嵌入价格快照有什么影响？",
-      "options": [
-        {
-          "label": "商品改价时无需回写历史订单快照",
-          "correct": true
-        },
-        {
-          "label": "所有历史订单必须同步成新价",
-          "correct": false
-        },
-        {
-          "label": "文档模型因此没有结构",
-          "correct": false
-        }
+  "slug": "nosql",
+  "lead": "NoSQL 不是一张更松的表：先看“最近订单”还是“改共享价格”，不同模型会让读写成本和一致性落在不同地方。",
+  "definition": "NoSQL 是文档、键值、列族和图等非关系模型的统称。它们通常围绕主要访问模式设计数据布局：文档可以把一次读取需要的字段聚在一起，键值模型把 key→value 读写做得直接，列族模型按分区与列组织大规模访问。代价是复制、分区、索引、事务和一致性要按具体产品与业务语义单独设计。",
+  "boundary": "NoSQL 不表示没有结构，也不保证比关系数据库更快；文档字段可以有验证规则，键值存储也有分区和容量边界。把商品当前价嵌进历史订单后，改价是少一次 join 还是要回写 120 份副本，取决于字段代表历史事实还是当前状态。",
+  "sceneKind": "compare",
+  "sceneTitle": "最近订单和共享改价会把成本推向不同方向",
+  "actionLabel": "切换访问任务",
+  "actors": [
+    {
+      "id": "rel-model",
+      "label": "关系模型",
+      "detail": "订单与商品分表",
+      "icon": "database",
+      "group": "模型"
+    },
+    {
+      "id": "doc-model",
+      "label": "文档模型",
+      "detail": "订单嵌套商品快照",
+      "icon": "file",
+      "group": "模型"
+    },
+    {
+      "id": "kv-model",
+      "label": "键值模型",
+      "detail": "user→order ids",
+      "icon": "memory",
+      "group": "模型"
+    },
+    {
+      "id": "recent-query",
+      "label": "最近订单",
+      "detail": "用户 7 · limit 10",
+      "icon": "search",
+      "group": "任务"
+    },
+    {
+      "id": "price-change",
+      "label": "修改共享价格",
+      "detail": "sku 42",
+      "icon": "gear",
+      "group": "任务"
+    },
+    {
+      "id": "cost-board",
+      "label": "触及记录",
+      "detail": "读取/写入次数",
+      "icon": "chart",
+      "group": "结果"
+    }
+  ],
+  "edges": [
+    {
+      "id": "recent-rel",
+      "from": "recent-query",
+      "to": "rel-model",
+      "label": "索引 + JOIN"
+    },
+    {
+      "id": "recent-doc",
+      "from": "recent-query",
+      "to": "doc-model",
+      "label": "单集合查询"
+    },
+    {
+      "id": "recent-kv",
+      "from": "recent-query",
+      "to": "kv-model",
+      "label": "键后多取"
+    },
+    {
+      "id": "price-rel",
+      "from": "price-change",
+      "to": "rel-model",
+      "label": "改商品一行"
+    },
+    {
+      "id": "price-doc",
+      "from": "price-change",
+      "to": "doc-model",
+      "label": "更新快照"
+    },
+    {
+      "id": "price-kv",
+      "from": "price-change",
+      "to": "kv-model",
+      "label": "更新副本"
+    }
+  ],
+  "frames": [
+    {
+      "label": "先写清楚两个任务",
+      "note": "任务 A 是用户 7 最近 10 笔订单，任务 B 是修改 SKU 42 的共享价格；没有访问模式，比较模型名称没有意义。",
+      "activeIds": [
+        "recent-query",
+        "price-change",
+        "cost-board"
       ],
-      "success": "数据副本是否更新取决于它表示历史事实还是当前状态。",
-      "retry": "先确认嵌入字段的业务语义。"
+      "doneIds": [],
+      "mutedIds": [
+        "rel-model",
+        "doc-model",
+        "kv-model"
+      ],
+      "values": {
+        "recent-query": "user=7 · last 10",
+        "price-change": "sku=42 · shared price"
+      },
+      "activeEdgeIds": []
     },
-    "prompt": {
-      "title": "按访问模式比较数据模型",
-      "text": "请列出前三个读任务、前三个写任务、所需一致性、数据规模和热点键，再比较关系、文档或键值布局的触及记录数。"
+    {
+      "label": "最近订单看读路径",
+      "note": "文档模型可一次取回嵌套订单；关系模型依赖索引和连接；键值模型先拿订单 id 再批量 get。1 次请求不等于永远更快，还要看分区和数据量。",
+      "activeIds": [
+        "recent-query",
+        "rel-model",
+        "doc-model",
+        "kv-model",
+        "cost-board"
+      ],
+      "doneIds": [
+        "recent-query"
+      ],
+      "mutedIds": [
+        "price-change"
+      ],
+      "values": {
+        "rel-model": "index + join",
+        "doc-model": "1 document query",
+        "kv-model": "1 + 10 gets",
+        "cost-board": "读取路径可比较"
+      },
+      "activeEdgeIds": [
+        "recent-rel",
+        "recent-doc",
+        "recent-kv"
+      ]
     },
-    "sources": [
+    {
+      "label": "共享改价看写触及",
+      "note": "关系模型改商品主记录；如果文档把当前价复制进 120 份订单，就要决定是否回写；键值模型也可能要触及同样多的 value。",
+      "activeIds": [
+        "price-change",
+        "rel-model",
+        "doc-model",
+        "kv-model",
+        "cost-board"
+      ],
+      "doneIds": [
+        "price-change"
+      ],
+      "mutedIds": [
+        "recent-query"
+      ],
+      "values": {
+        "rel-model": "1 row",
+        "doc-model": "120 documents",
+        "kv-model": "120 values",
+        "cost-board": "写放大 = 120"
+      },
+      "activeEdgeIds": [
+        "price-rel",
+        "price-doc",
+        "price-kv"
+      ]
+    },
+    {
+      "label": "历史事实改变选择",
+      "note": "订单里的成交价应保留当时的值时，120 份快照不该被新价覆盖；若页面要显示当前价，就必须承担同步或重新读取的成本。",
+      "activeIds": [
+        "doc-model",
+        "price-change",
+        "cost-board"
+      ],
+      "doneIds": [
+        "rel-model",
+        "kv-model"
+      ],
+      "mutedIds": [
+        "recent-query"
+      ],
+      "values": {
+        "doc-model": "snapshot · 0 updates",
+        "price-change": "当前/历史语义待定"
+      },
+      "activeEdgeIds": [
+        "price-doc"
+      ]
+    },
+    {
+      "label": "最后比较约束而非口号",
+      "note": "把读写频率、分区键、事务范围、复制延迟和失败恢复写出来，才能判断模型是否适合；“NoSQL 更快”不是验收结论。",
+      "activeIds": [
+        "rel-model",
+        "doc-model",
+        "kv-model",
+        "cost-board"
+      ],
+      "doneIds": [
+        "recent-query",
+        "price-change"
+      ],
+      "mutedIds": [],
+      "values": {
+        "cost-board": "读 · 写 · 一致性 · 扩展"
+      },
+      "activeEdgeIds": []
+    }
+  ],
+  "insight": "NoSQL 选型从访问模式和一致性语义开始；数据副本是否同步，取决于它描述的是历史事实还是当前状态。",
+  "quiz": {
+    "question": "订单中保存成交时价格时，文档模型里的价格快照意味着什么？",
+    "options": [
       {
-        "url": "https://www.mongodb.com/resources/basics/databases/document-databases",
-        "label": "MongoDB · Document Database",
-        "note": "文档模型、灵活结构与聚合读取"
+        "label": "商品改价时通常不应回写历史订单快照",
+        "correct": true
       },
       {
-        "url": "https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf",
-        "label": "Amazon Dynamo · SOSP 2007 paper",
-        "note": "高可用、键值访问、复制与一致性取舍"
+        "label": "文档模型没有结构也不需要索引",
+        "correct": false
       },
       {
-        "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html",
-        "label": "AWS · What is Amazon DynamoDB?",
-        "note": "键值/文档 API 与分布式存储特征"
-      },
-      {
-        "url": "https://cassandra.apache.org/doc/stable/cassandra/developing/data-modeling/intro.html",
-        "label": "Apache Cassandra · Data Modeling",
-        "note": "围绕查询路径组织表与复制数据"
+        "label": "所有订单必须实时改成新的商品价格",
+        "correct": false
       }
-    ]
+    ],
+    "success": "快照表达历史事实，改当前商品价不应覆盖过去成交价；这是业务语义和数据布局共同决定的。",
+    "retry": "把灵活结构当成无结构，或把历史副本当成当前值，都会造成错误更新。"
   },
+  "prompt": {
+    "title": "按访问模式比较数据模型",
+    "text": "请为“用户 7 最近 10 笔订单”和“修改 SKU 42 当前价”分别比较关系、文档和键值模型的读取/写入触及范围；标出分区键、索引、事务和一致性延迟，并说明订单成交价是否应作为历史快照。"
+  },
+  "sources": [
+    {
+      "url": "https://www.mongodb.com/resources/basics/databases/document-databases",
+      "label": "MongoDB · Document database",
+      "note": "MongoDB Document Database：核对文档聚合、灵活字段和按访问模式建模。"
+    },
+    {
+      "url": "https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf",
+      "label": "Amazon Dynamo · SOSP",
+      "note": "Amazon Dynamo paper：核对键值访问、高可用与一致性取舍。"
+    },
+    {
+      "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html",
+      "label": "AWS · DynamoDB",
+      "note": "AWS DynamoDB introduction：核对键值/文档 API、分区键和容量边界。"
+    },
+    {
+      "url": "https://cassandra.apache.org/doc/stable/cassandra/developing/data-modeling/intro.html",
+      "label": "Apache Cassandra · Data modeling",
+      "note": "Apache Cassandra data modeling：核对围绕查询路径组织表和复制数据。"
+    }
+  ],
+  "promptTitle": "按访问模式比较数据模型"
+},
   {
     "slug": "table",
     "lead": "数据库表看起来像电子表格，为什么不能依赖当前显示的行顺序？",
@@ -7177,239 +7251,257 @@
     ]
   },
   {
-    "slug": "row",
-    "lead": "事务 A 已把余额改成 80，为什么事务 B 仍然读到 100？",
-    "definition": "行是一组按列结构保存的值；使用多版本并发控制时，同一逻辑行可以同时存在多个物理版本，由事务快照决定可见版本。",
-    "boundary": "行号不是稳定身份，当前读取值也不一定是全局最新值。主键标识逻辑行，事务可见性决定读到哪个版本。",
-    "sceneKind": "timeline",
-    "sceneTitle": "同一逻辑行在三个事务中的可见版本",
-    "actionLabel": "推进事务时间线",
-    "actors": [
-      {
-        "id": "txn-a",
-        "label": "事务 A",
-        "detail": "UPDATE balance=80",
-        "icon": "gear",
-        "group": "事务"
-      },
-      {
-        "id": "txn-b",
-        "label": "事务 B",
-        "detail": "已持有旧快照",
-        "icon": "search",
-        "group": "事务"
-      },
-      {
-        "id": "txn-c",
-        "label": "事务 C",
-        "detail": "提交后开始",
-        "icon": "search",
-        "group": "事务"
-      },
-      {
-        "id": "row-v1",
-        "label": "行版本 v1",
-        "detail": "id=7 · balance=100",
-        "icon": "component",
-        "group": "版本"
-      },
-      {
-        "id": "row-v2",
-        "label": "行版本 v2",
-        "detail": "id=7 · balance=80",
-        "icon": "component",
-        "group": "版本"
-      },
-      {
-        "id": "snapshot",
-        "label": "可见性规则",
-        "detail": "按快照选择版本",
-        "icon": "memory",
-        "group": "并发控制"
-      }
-    ],
-    "edges": [
-      {
-        "id": "a-v2",
-        "from": "txn-a",
-        "to": "row-v2",
-        "label": "创建新版本"
-      },
-      {
-        "id": "b-snapshot",
-        "from": "txn-b",
-        "to": "snapshot",
-        "label": "使用旧快照"
-      },
-      {
-        "id": "c-snapshot",
-        "from": "txn-c",
-        "to": "snapshot",
-        "label": "使用新快照"
-      },
-      {
-        "id": "snapshot-v1",
-        "from": "snapshot",
-        "to": "row-v1",
-        "label": "可见旧版"
-      },
-      {
-        "id": "snapshot-v2",
-        "from": "snapshot",
-        "to": "row-v2",
-        "label": "可见新版"
-      }
-    ],
-    "frames": [
-      {
-        "label": "A 创建未提交版本",
-        "note": "UPDATE 不覆盖所有读者正在使用的旧版本，v2 暂时只对 A 可见。",
-        "activeIds": [
-          "txn-a",
-          "row-v2"
-        ],
-        "doneIds": [
-          "txn-a"
-        ],
-        "mutedIds": [
-          "txn-b",
-          "txn-c",
-          "snapshot"
-        ],
-        "values": {
-          "row-v1": "balance=100 · committed",
-          "row-v2": "balance=80 · uncommitted"
-        },
-        "activeEdgeIds": [
-          "a-v2"
-        ]
-      },
-      {
-        "label": "B 的快照选择 v1",
-        "note": "B 在 A 提交前建立快照，因此继续读取已提交的旧版本。",
-        "activeIds": [
-          "txn-b",
-          "snapshot",
-          "row-v1"
-        ],
-        "doneIds": [
-          "txn-b"
-        ],
-        "mutedIds": [
-          "txn-a",
-          "txn-c",
-          "row-v2"
-        ],
-        "values": {
-          "txn-b": "reads 100",
-          "snapshot": "v1 visible"
-        },
-        "activeEdgeIds": [
-          "b-snapshot",
-          "snapshot-v1"
-        ]
-      },
-      {
-        "label": "A 提交 v2",
-        "note": "新版本进入已提交状态，但 B 的既有快照仍不自动改变。",
-        "activeIds": [
-          "txn-a",
-          "row-v2",
-          "snapshot"
-        ],
-        "doneIds": [
-          "row-v2"
-        ],
-        "mutedIds": [
-          "txn-c"
-        ],
-        "values": {
-          "row-v2": "committed",
-          "txn-b": "still 100"
-        },
-        "activeEdgeIds": [
-          "a-v2",
-          "b-snapshot",
-          "snapshot-v1"
-        ]
-      },
-      {
-        "label": "C 的新快照选择 v2",
-        "note": "提交后开始的事务看到 balance=80。",
-        "activeIds": [
-          "txn-c",
-          "snapshot",
-          "row-v2"
-        ],
-        "doneIds": [
-          "txn-c"
-        ],
-        "mutedIds": [
-          "txn-a",
-          "txn-b",
-          "row-v1"
-        ],
-        "values": {
-          "txn-c": "reads 80",
-          "snapshot": "v2 visible"
-        },
-        "activeEdgeIds": [
-          "c-snapshot",
-          "snapshot-v2"
-        ],
-        "metric": {
-          "label": "同一 id 的可见值",
-          "value": "B 100 · C 80"
-        }
-      }
-    ],
-    "insight": "并发读取的是事务快照中的行版本，不是一个不断被原地覆盖的单元格。",
-    "quiz": {
-      "question": "主键相同的两个行版本是否表示表中有两个逻辑对象？",
-      "options": [
-        {
-          "label": "不一定，它们可以是同一逻辑行的不同事务版本",
-          "correct": true
-        },
-        {
-          "label": "一定，版本数等于对象数",
-          "correct": false
-        },
-        {
-          "label": "主键在事务中不再有效",
-          "correct": false
-        }
+  "slug": "row",
+  "lead": "表里的一行不是会被原地覆盖的电子表格格子：并发事务可能各自看到同一逻辑行的不同版本。",
+  "definition": "行是按表的列结构保存的一组字段值，通常由主键识别一个逻辑对象。数据库采用多版本并发控制时，更新会产生可供事务判断的版本；一个已经开始的事务按自己的快照读到旧版本，提交后新开的事务才读到新版本。行的概念因此同时涉及字段结构、逻辑身份和读取时的可见性。",
+  "boundary": "行号或物理位置不是稳定身份，结果没有 ORDER BY 时也不能把第几行当作对象顺序。主键相同的版本不代表出现了两个客户；不同数据库的隔离级别、锁和版本清理策略不同，读到旧值也不等于所有写入都永远不可见。",
+  "sceneKind": "timeline",
+  "sceneTitle": "提交边界和快照决定读者看到哪一行",
+  "actionLabel": "推进事务时间线",
+  "actors": [
+    {
+      "id": "txn-a",
+      "label": "事务 A",
+      "detail": "UPDATE balance=80",
+      "icon": "gear",
+      "group": "事务"
+    },
+    {
+      "id": "txn-b",
+      "label": "事务 B",
+      "detail": "已持有旧快照",
+      "icon": "search",
+      "group": "事务"
+    },
+    {
+      "id": "txn-c",
+      "label": "事务 C",
+      "detail": "提交后开始",
+      "icon": "search",
+      "group": "事务"
+    },
+    {
+      "id": "row-v1",
+      "label": "行版本 v1",
+      "detail": "id=7 · balance=100",
+      "icon": "component",
+      "group": "版本"
+    },
+    {
+      "id": "row-v2",
+      "label": "行版本 v2",
+      "detail": "id=7 · balance=80",
+      "icon": "component",
+      "group": "版本"
+    },
+    {
+      "id": "snapshot",
+      "label": "可见性规则",
+      "detail": "按快照选择版本",
+      "icon": "memory",
+      "group": "并发控制"
+    }
+  ],
+  "edges": [
+    {
+      "id": "a-v2",
+      "from": "txn-a",
+      "to": "row-v2",
+      "label": "创建新版本"
+    },
+    {
+      "id": "b-snapshot",
+      "from": "txn-b",
+      "to": "snapshot",
+      "label": "使用旧快照"
+    },
+    {
+      "id": "c-snapshot",
+      "from": "txn-c",
+      "to": "snapshot",
+      "label": "使用新快照"
+    },
+    {
+      "id": "snapshot-v1",
+      "from": "snapshot",
+      "to": "row-v1",
+      "label": "可见旧版"
+    },
+    {
+      "id": "snapshot-v2",
+      "from": "snapshot",
+      "to": "row-v2",
+      "label": "可见新版"
+    }
+  ],
+  "frames": [
+    {
+      "label": "先有已提交行",
+      "note": "id=7 的逻辑行当前是 balance=100，v1 已提交；行的身份来自主键，不来自它在结果表里的位置。",
+      "activeIds": [
+        "row-v1",
+        "txn-a",
+        "txn-b",
+        "txn-c"
       ],
-      "success": "MVCC 可以为同一逻辑行保留多个物理版本，再按快照选择。",
-      "retry": "区分逻辑主键与并发控制产生的物理版本。"
+      "doneIds": [],
+      "mutedIds": [
+        "row-v2",
+        "snapshot"
+      ],
+      "values": {
+        "row-v1": "id=7 · balance=100 · committed"
+      },
+      "activeEdgeIds": []
     },
-    "prompt": {
-      "title": "分析一次并发行更新",
-      "text": "请画出各事务开始、读写和提交时刻，标出每个行版本的创建者与可见事务，并说明使用的隔离级别。"
+    {
+      "label": "A 写出未提交版本",
+      "note": "事务 A 把余额改成 80，形成 v2；在提交前，A 自己可以看到新值，其他事务仍按各自规则看到 v1。",
+      "activeIds": [
+        "txn-a",
+        "row-v1",
+        "row-v2"
+      ],
+      "doneIds": [
+        "txn-a"
+      ],
+      "mutedIds": [
+        "txn-b",
+        "txn-c",
+        "snapshot"
+      ],
+      "values": {
+        "row-v1": "balance=100",
+        "row-v2": "balance=80 · uncommitted"
+      },
+      "activeEdgeIds": [
+        "a-v2"
+      ]
     },
-    "sources": [
+    {
+      "label": "B 的旧快照继续读 v1",
+      "note": "B 在 A 提交前建立快照，所以读取仍是 100；这不是行拒绝更新，而是 B 的可见性规则没有跨到 v2。",
+      "activeIds": [
+        "txn-b",
+        "snapshot",
+        "row-v1"
+      ],
+      "doneIds": [
+        "txn-b"
+      ],
+      "mutedIds": [
+        "txn-a",
+        "txn-c",
+        "row-v2"
+      ],
+      "values": {
+        "txn-b": "reads 100",
+        "snapshot": "v1 visible"
+      },
+      "activeEdgeIds": [
+        "b-snapshot",
+        "snapshot-v1"
+      ]
+    },
+    {
+      "label": "A 提交 v2",
+      "note": "A 提交后，v2 成为已提交版本；B 的既有快照不会自动改写，因此它仍可能读到 100。",
+      "activeIds": [
+        "txn-a",
+        "row-v2",
+        "txn-b",
+        "snapshot"
+      ],
+      "doneIds": [
+        "row-v2"
+      ],
+      "mutedIds": [
+        "txn-c",
+        "row-v1"
+      ],
+      "values": {
+        "row-v2": "balance=80 · committed",
+        "txn-b": "still 100"
+      },
+      "activeEdgeIds": [
+        "a-v2",
+        "b-snapshot",
+        "snapshot-v1"
+      ]
+    },
+    {
+      "label": "C 新快照读 v2",
+      "note": "提交后才开始的事务 C 建立新快照，读到 80；两个读数对应同一个逻辑 id=7 的不同可见版本。",
+      "activeIds": [
+        "txn-c",
+        "snapshot",
+        "row-v2"
+      ],
+      "doneIds": [
+        "txn-a",
+        "txn-b",
+        "row-v1"
+      ],
+      "mutedIds": [],
+      "values": {
+        "txn-c": "reads 80",
+        "snapshot": "v2 visible",
+        "row-v2": "id=7"
+      },
+      "activeEdgeIds": [
+        "c-snapshot",
+        "snapshot-v2"
+      ]
+    }
+  ],
+  "insight": "行的逻辑身份由主键保持，读到哪一个版本由事务快照和隔离规则决定；不要把结果位置或一次读取当成永久事实。",
+  "quiz": {
+    "question": "主键相同的 v1 和 v2 是否说明表里有两个逻辑客户？",
+    "options": [
       {
-        "url": "https://www.postgresql.org/docs/current/ddl-basics.html",
-        "label": "PostgreSQL · Table Basics",
-        "note": "行列定义与未指定排序的边界"
+        "label": "不一定，它们可以是同一逻辑行的不同并发版本",
+        "correct": true
       },
       {
-        "url": "https://www.postgresql.org/docs/current/mvcc-intro.html",
-        "label": "PostgreSQL · Introduction to MVCC",
-        "note": "快照、已提交版本与并发读取"
+        "label": "一定，版本数就是对象数",
+        "correct": false
       },
       {
-        "url": "https://www.postgresql.org/docs/current/queries-order.html",
-        "label": "PostgreSQL · Sorting Rows",
-        "note": "ORDER BY 才能保证结果顺序"
-      },
-      {
-        "url": "https://www.sqlite.org/withoutrowid.html",
-        "label": "SQLite · WITHOUT ROWID",
-        "note": "rowid、主键与物理存储实现的区别"
+        "label": "主键在事务中会自动失效",
+        "correct": false
       }
-    ]
+    ],
+    "success": "MVCC 可以为同一逻辑行保留多个物理版本，再按事务快照选择可见值。",
+    "retry": "把物理版本当成逻辑对象，或把结果位置当成身份，都会误读并发行为。"
   },
+  "prompt": {
+    "title": "解释一次并发读取",
+    "text": "请用 id=7、balance=100/80 和事务 A/B/C 写出未提交、旧快照、提交、新快照四个边界；说明每个事务能看到哪个版本、是否需要 ORDER BY 才能谈结果顺序，并区分逻辑主键与物理版本。"
+  },
+  "sources": [
+    {
+      "url": "https://www.postgresql.org/docs/current/ddl-basics.html",
+      "label": "PostgreSQL · Table basics",
+      "note": "PostgreSQL Table Basics：核对行列结构、主键身份和未指定排序的边界。"
+    },
+    {
+      "url": "https://www.postgresql.org/docs/current/mvcc-intro.html",
+      "label": "PostgreSQL · MVCC",
+      "note": "PostgreSQL MVCC introduction：核对快照、提交版本与并发读取。"
+    },
+    {
+      "url": "https://www.postgresql.org/docs/current/queries-order.html",
+      "label": "PostgreSQL · ORDER BY",
+      "note": "PostgreSQL ORDER BY：核对只有显式排序才能保证结果顺序。"
+    },
+    {
+      "url": "https://www.sqlite.org/withoutrowid.html",
+      "label": "SQLite · WITHOUT ROWID",
+      "note": "SQLite WITHOUT ROWID：核对 rowid、主键和物理存储实现的区别。"
+    }
+  ],
+  "promptTitle": "解释一次并发读取"
+},
   {
     "slug": "column",
     "lead": "金额都存成字符串，为什么排序结果会变成 10、2、9.5？",
