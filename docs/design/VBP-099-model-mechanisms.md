@@ -35,3 +35,11 @@
 ## 旧词条流程视觉审计
 
 当前 `term-experiences` 共 339 条，其中真正使用箭头流向的 `route`、`pipeline`、`loop` 三类共 50 条（约 14.7%）；`branch` 另按条件面板呈现，不再自动画成流程箭头。本批十条使用量化光谱、课堂分层、专家矩阵、草稿回滚、束宽对照、可靠性光谱、封存契约、分布外检验、适配器装配和发布卡契约等独立空间语法，只有投机解码保留“草稿→验收→接受/回滚”的关系线，没有新增通用流程图。这一比例不是新的模板要求；它是现存数据的审计结果。后续批次把这 50 条逐条复核，只有概念确实表达有序交接时才保留 flow scene，其余改成 `compare`、`layers`、`matrix`、`contract`、`state-machine` 或专属场景，并同步改写 frames 的观察对象和停止证据，而不是只换一个标签。
+
+## 交付与生产发布
+
+- 功能分支 `feat/VBP-099-model-mechanisms` 从 `origin/main` 创建；PR [#441](https://github.com/Gyschuaner/VibePolaris/pull/441) 已合入 `main`，合并提交为 `0f80bb6f22ec7d74d4e1162211da07d90c6a422b`。
+- 唯一 reviewer `/root/ai_stack_review` 最终 PASS。`node --experimental-strip-types --test tests/term-library.test.mjs`、`npm run typecheck`、`npm run audit:terms`、`npm run build` 和 `git diff --check` 均通过；Next 生成 1081/1081 页面，审计为 339 条体验、339 条来源覆盖、flow 50/339（14.7%）、重复/相邻/近重复均为 0。
+- 生产部署批次 `deploy-vbp099-model-mechanisms-prod-20261007`（DP `cd35d53f-580c-4a9d-815c-544273a29b0d`）已发布到 `https://vibe.chuansgu.top`。镜像为 `vibepolaris:0f80bb6f22ec7d74d4e1162211da07d90c6a422b`，release 为 `/opt/vibepolaris/releases/20261007T123847Z-0f80bb6f`，`current` 已原子切换，`vibepolaris-web-1` 为 `healthy`。
+- 容器内根页、新闻、关于、sitemap 与十条新词条均 HTTP 200；公网根页、新闻、sitemap、量化、投机解码和模型卡均 HTTP 200，十条专属首图标记均可见。`vibepolaris_xiaobei_data` 未替换；在线 SQLite 备份保存于 `/opt/vibepolaris/backups/20261007T123847Z-from-410bdfb8f072a2d389dcd82c544c879148ec5f94/xiaobei.sqlite`。
+- 回滚入口为新 release 的 `rollback.sh`，恢复旧 release `/opt/vibepolaris/releases/20261007T110855Z-r1-410bdfb8` 与旧镜像 `vibepolaris:410bdfb8f072a2d389dcd82c544c879148ec5f94`；DP 任务 `VBP-099` 已完成，需求 `VBP-089` 已推进为 `ready_for_test`，父需求 `VBP-012` 保持进行中。
