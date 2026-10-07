@@ -40,3 +40,14 @@
 ## 逐条提交
 
 `b2c8929c` 少样本提示；`1a6d7dff` 函数调用；`a6b57121` 工具选择；`f28e48ed` 智能体循环；`b8fc7c1e` 交接；`05ba16d2` 护栏；`1855d95a` 向量存储；`33f446c2` 模型路由；`4c606f18` 提示词注入；`dd89b948` 编译器；`db38da13` 同步体验台账。
+
+## 生产发布（2026-10-08，Asia/Shanghai）
+
+- PR [#448](https://github.com/Gyschuaner/VibePolaris/pull/448) 已合入 `main`，合并提交为 `4d913eab903f7bf773e4126caaaf06f2f28abdcb`；本次部署镜像按完整 main 提交标记为 `vibepolaris:4d913eab903f7bf773e4126caaaf06f2f28abdcb`。
+- 本机构建 `linux/amd64` 镜像通过；远端镜像 ID 为 `sha256:d377981a3e812aa310f0ff3e7063c73359e77cbc8cd4d0924d95222baaadf7de`，架构为 `amd64`。
+- 生产 release 为 `/opt/vibepolaris/releases/20261007T183915Z-4d913eab`，`/opt/vibepolaris/current` 已原子切换到该目录，`vibepolaris-web-1` 为 `running / healthy`。
+- 切换前 release 为 `/opt/vibepolaris/releases/20261007T163622Z-922b99ff`，实际运行旧镜像为 `vibepolaris:bc802c90a423f12e030f012430ae33a791b8e817`；回滚备份为 `/opt/vibepolaris/backups/20261007T183915Z-from-bc802c90`，在线 SQLite 备份 `xiaobei.sqlite` 为 561152 bytes、权限 600，`vibepolaris_xiaobei_data` 未替换。
+- 新 release 的 `rollback.sh` 会恢复备份 Compose、旧镜像和旧 release；清理时只删除无容器引用的旧 VibePolaris 标签，保留新镜像与本次回滚镜像，根分区从 98% 降至 75%。
+- 服务器自身 HTTPS 冒烟：`/`、`/news`、`/sitemap.xml` 以及本批十条 `/terms/` 路由全部 HTTP 200；逐页 HTML 仍包含专属演示标记（少样本“反例让印章停下”、函数调用 `status: shipped`、循环 `200 OK`、向量 `top 5`、路由“没有可接候选”、编译器 `add(2, 3)`）。本机绕过代理直连生产地址的代表词条也返回 HTTP 200。
+- 发布后本地浏览器通过系统代理访问生产域名时出现 `SSL_ERROR_SYSCALL`，浏览器无法作为公网证据；服务器端 HTTPS、容器健康和本机 no-proxy 直连证据均已保留。发布前 fresh browser 的桌面/390px 交互验收和 console 检查已通过。
+- 已按 `developer-platform-cli` 尝试写入部署批次 `deploy-vbp092-flow-diversity-prod-20261007`，但 DP 当前持续返回 `SSL: UNEXPECTED_EOF_WHILE_READING`；没有伪造 deployment、需求状态或任务状态，待 DP 网络恢复后用同一批次 ID 补录并查询确认。
