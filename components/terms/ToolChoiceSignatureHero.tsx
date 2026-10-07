@@ -7,7 +7,7 @@ import styles from "./ConceptDiversitySignatureHeroes.module.css";
 
 export function ToolChoiceSignatureHero() {
   const scene = useScene(4);
-  const labels = ["放下任务票", "摊开候选", "调高风险刻度", "停在审批台"];
+  const labels = ["任务票放上桌", "三枚工具筹码露出", "选择针落在更新", "写操作停在审批台"];
   const candidates = ["calendar_read", "calendar_update", "web_search"];
   const chosen = scene.step >= 2 ? "calendar_update" : "";
   return <SignatureFrame scene={scene} labels={labels} ariaLabel="工具选择把候选工具、风险刻度和待审批动作放在一张选择台上" caption={scene.step === 3 ? "选择已经完成，写操作仍停在审批台；决定调用谁和真的执行，是两件事。" : scene.step === 2 ? "风险刻度拨高后，写操作被挑出来，但还只是待批准的票。" : "候选工具先摊开，任务票还没有让任何工具真正动起来。"}>
