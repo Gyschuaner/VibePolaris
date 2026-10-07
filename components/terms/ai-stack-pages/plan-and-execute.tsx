@@ -2,7 +2,7 @@ import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { planAndExecuteSources } from "@/lib/ai-stack-concept-sources/plan-and-execute";
 import { PlanAndExecuteLesson } from "../ai-stack-lessons/plan-and-execute";
-import { PlanBlueprintHero } from "../ai-stack-lessons/ai-interaction-heroes";
+import { PlanDependencyHero } from "../ai-stack-lessons/signature-heroes";
 
 export function PlanAndExecuteTermPage() {
   const sections: [string, string][] = [
@@ -11,7 +11,7 @@ export function PlanAndExecuteTermPage() {
     ["plan-adaptation", "计划要能吸收新结果"],
     ["plan-boundary", "失败会改写剩余步骤"],
   ];
-  return <Article slug="plan-and-execute" title="规划与执行" subtitle="Plan and Execute · 先排步骤，再按结果推进" sources={planAndExecuteSources} sections={sections} hero={<PlanBlueprintHero />} intro={<>规划与执行把一个目标拆成有前后关系、能检查的步骤，再逐项执行。计划只是对下一步的安排；真正的进展来自每一步返回的证据，以及系统是否根据失败结果改变后面的安排。蓝图可以被修改，但每次修改都应留下原因和新的检查点。</>}>
+  return <Article slug="plan-and-execute" title="规划与执行" subtitle="Plan and Execute · 先排步骤，再按结果推进" sources={planAndExecuteSources} sections={sections} hero={<PlanDependencyHero />} intro={<>规划与执行把一个目标拆成有前后关系、能检查的步骤，再逐项执行。计划只是对下一步的安排；真正的进展来自每一步返回的证据，以及系统是否根据失败结果改变后面的安排。依赖节点可以被修改，但每次修改都应留下原因和新的检查点。</>}>
     <ArticleSection id="plan-question" title="计划先把依赖写出来">
       <p>“发布一个页面”可以拆成构建、测试、部署。部署依赖测试通过，测试又依赖构建产物。把顺序、输入和阻塞条件写出来，读者能看见为什么部署还在等待，而不是把三个动词排成一行就当成完成。</p>
       <p id="plan-orchestration" className="vp-citation-target">智能体编排资料把计划看作决定哪些代理或步骤运行、以什么顺序运行，以及下一步根据什么结果决定；这不是单纯列待办事项。<Cite id="plan-orchestration" sources={planAndExecuteSources} />一份有用的计划还要说明谁负责产出、什么状态算完成、失败后允许走哪条分支。</p>

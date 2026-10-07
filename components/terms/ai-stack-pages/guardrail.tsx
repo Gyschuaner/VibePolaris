@@ -26,7 +26,7 @@ export function GuardrailTermPage() {
     </ArticleSection>
 
     <ArticleSection id="guardrail-failure-state" title="检查器出错时也要停在可见状态">
-      <p id="guardrail-failure" className="vp-citation-target">如果检查服务超时、规则版本加载失败或返回无法解析的结果，系统不能把“没检查到”当成“检查通过”。对高影响动作，安全的默认通常是暂停或拒绝；对低风险内容，可以进入重试队列，但要明确告知当前没有完成检查。<Cite id="guardrail-failure" sources={guardrailSources} /></p>
+      <p id="guardrail-failure" className="vp-citation-target">如果检查服务超时、规则版本加载失败或返回无法解析的结果，系统不能把“没检查到”当成“检查通过”。对高影响动作，产品策略通常会选择暂停或拒绝；对低风险内容，也可以进入重试队列，但要明确告知当前没有完成检查。<Cite id="guardrail-failure" sources={guardrailSources} /></p>
       <p>演示里把脱敏和阻断都画成命中后的分支，是为了强调护栏不只会亮红灯。真正的实现还要处理重试和幂等：同一条导出请求不能因为检查器重试就写出两份文件，也不能把旧检查结果套到新输入上。</p>
     </ArticleSection>
 

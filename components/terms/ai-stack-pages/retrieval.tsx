@@ -1,7 +1,8 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { retrievalSources } from "@/lib/ai-stack-concept-sources/retrieval";
-import { RetrievalHero, RetrievalLesson } from "../ai-stack-lessons/retrieval";
+import { RetrievalEvidenceHero } from "../ai-stack-lessons/signature-heroes";
+import { RetrievalLesson } from "../ai-stack-lessons/retrieval";
 
 export function RetrievalTermPage() {
   const sections: [string, string][] = [
@@ -10,7 +11,7 @@ export function RetrievalTermPage() {
     ["retrieval-scope", "范围和 top-k 会改变你看见的材料"],
     ["retrieval-boundary", "候选不是答案"],
   ];
-  return <Article slug="retrieval" title="检索" subtitle="Retrieval · 从资料集合中找出值得继续检查的候选" sources={retrievalSources} sections={sections} hero={<RetrievalHero />} intro={<>检索根据查询从已有资料中返回候选内容。它可以使用关键词、向量或混合方法，通常还带回分数、文档 ID 和版本。检索解决的是“先把哪些材料摆到桌面上”，不负责生成回答，也不能保证候选完整、正确或有权使用。</>}>
+  return <Article slug="retrieval" title="检索" subtitle="Retrieval · 从资料集合中找出值得继续检查的候选" sources={retrievalSources} sections={sections} hero={<RetrievalEvidenceHero />} intro={<>检索根据查询从已有资料中返回候选内容。它可以使用关键词、向量或混合方法，通常还带回分数、文档 ID 和版本。检索解决的是“先把哪些材料摆到桌面上”，不负责生成回答，也不能保证候选完整、正确或有权使用。</>}>
     <ArticleSection id="retrieval-candidate" title="检索先返回候选">
       <p>“退款多久到账”进入 200 段政策材料后，系统先缩小到几条候选，再让应用读取、重排或交给生成模型。候选数量、过滤条件、相关性分数和来源位置都应该可见，否则读者无法判断回答依据了什么，也无法解释为什么一段材料没有出现。</p>
       <p id="retrieval-semantic" className="vp-citation-target">OpenAI Retrieval 说明 semantic search 可以在词面不完全相同的情况下找到相关结果，并由 vector store 承载分块、嵌入和索引。<Cite id="retrieval-semantic" sources={retrievalSources} />例如用户问“钱什么时候退回”，结果可以命中写着“退款将在五个工作日内到账”的段落；相似不是事实证明，仍要回看原文。</p>

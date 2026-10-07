@@ -1,7 +1,8 @@
 import { ArticleSection } from "../ConceptArticle";
-import { Article, Cite, Hero } from "../AiStackConceptPageShared";
+import { Article, Cite } from "../AiStackConceptPageShared";
 import { subagentSources } from "@/lib/ai-stack-concept-sources/subagent";
 import { SubagentLesson } from "../ai-stack-lessons/subagent";
+import { SubagentContractHero } from "../ai-stack-lessons/signature-heroes";
 
 export function SubagentTermPage() {
   const sections: [string, string][] = [
@@ -10,7 +11,7 @@ export function SubagentTermPage() {
     ["subagent-return", "结果回到主线"],
     ["subagent-boundary", "和交接、编排分开"],
   ];
-  return <Article slug="subagent" title="子智能体" subtitle="Subagent · 在主任务旁完成一块可验收的工作" sources={subagentSources} sections={sections} hero={<Hero trigger="主报告只缺价格核对，为什么不把整段对话交出去？" change="主任务 → 独立支线 → 带状态返回 → 主线验收" proof="主智能体保留最终回复，缺来源的价格留在缺口里" />} intro={<>子智能体是主智能体分派出来、边界清楚且能独立验收的一块工作。完成后它把结果回传主线，由主智能体检查、合并或拒绝；最终回复权通常仍在主智能体。它不是“再开一个聊天窗口”，而是一份有输入契约和交付状态的临时支线。</>}>
+  return <Article slug="subagent" title="子智能体" subtitle="Subagent · 在主任务旁完成一块可验收的工作" sources={subagentSources} sections={sections} hero={<SubagentContractHero />} intro={<>子智能体是主智能体分派出来、边界清楚且能独立验收的一块工作。完成后它把结果回传主线，由主智能体检查、合并或拒绝；最终回复权通常仍在主智能体。它不是“再开一个聊天窗口”，而是一份有输入契约和交付状态的临时支线。</>}>
     <ArticleSection id="subagent-question" title="只分出可验收的工作">
       <p>主报告要比较三个方案，其中“核对价格”可以单独交给子智能体。主智能体给它三个指定 URL、要找的价格字段和返回格式；子智能体不需要接管整段对话，也不应该自己修改最终报告。这样拆分的好处是让主线继续处理结构和取舍，支线只负责一件能被复核的事。</p>
       <p id="subagent-definition" className="vp-citation-target">OpenAI 的编排模式把“专家作为工具”与“交接给专家”区分开：前者让管理者保留对话控制，适合边界清楚的子任务。<Cite id="subagent-definition" sources={subagentSources} />如果主线仍要比较所有方案，就不应把最终回复权一起交出去。</p>

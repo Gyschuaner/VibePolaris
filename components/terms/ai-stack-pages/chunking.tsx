@@ -1,7 +1,8 @@
 import { ArticleSection } from "../ConceptArticle";
-import { Article, Cite, Hero } from "../AiStackConceptPageShared";
+import { Article, Cite } from "../AiStackConceptPageShared";
 import { chunkingSources } from "@/lib/ai-stack-concept-sources/chunking";
 import { ContextRetrievalLesson } from "../ContextRetrievalLessonShared";
+import { ChunkingBoundaryHero } from "../ai-stack-lessons/signature-heroes";
 
 export function ChunkingTermPage() {
   const sections: [string, string][] = [
@@ -10,7 +11,7 @@ export function ChunkingTermPage() {
     ["chunking-reconstruction", "切开以后还要拼得回来"],
     ["chunking-boundary", "命中片段仍要回查"],
   ];
-  return <Article slug="chunking" title="分块" subtitle="Chunking · 把长文拆成可索引、可回查的小段" sources={chunkingSources} sections={sections} hero={<Hero trigger="为什么同一份政策，切法不同会得到不同的引用？" change="长文档 → 带结构和位置的检索单元" proof="块边界改变可命中的上下文，需保留标题、页码和相邻条件" />} intro={<>分块把长文档切成可以单独索引和返回的小段。它不是把文章平均切成几段，而是在“这一小段单独拿出来，读者还能不能做出正确判断”这个问题上做取舍。大小、重叠、标题层级和页码都会影响检索命中与引用范围，没有一个适合所有文档和查询的固定长度。</>}>
+  return <Article slug="chunking" title="分块" subtitle="Chunking · 把长文拆成可索引、可回查的小段" sources={chunkingSources} sections={sections} hero={<ChunkingBoundaryHero />} intro={<>分块把长文档切成可以单独索引和返回的小段。它不是把文章平均切成几段，而是在“这一小段单独拿出来，读者还能不能做出正确判断”这个问题上做取舍。大小、重叠、标题层级和页码都会影响检索命中与引用范围，没有一个适合所有文档和查询的固定长度。</>}>
     <ArticleSection id="chunking-unit" title="先决定检索单元">
       <p>政策文档的“退款时效”可能依赖上一段的适用对象和下一段的例外条件。如果只按字符截断，命中的一句话可能失去标题或限制。好的分块先确定读者需要回看的最小完整单元，再选择实现方法：FAQ 可以以问答为单位，合同更适合保留条款和子条款，日志则可能按一次事件或一个请求切开。</p>
       <p id="chunking-service" className="vp-citation-target">OpenAI Retrieval 会在文件进入 vector store 时自动分块、嵌入和建立索引；自动流程仍然有分块和引用边界，不能把它当成没有设计。<Cite id="chunking-service" sources={chunkingSources} />即使把切分交给服务，也要验证它返回的文本能否带回适用范围、例外和原文位置。</p>

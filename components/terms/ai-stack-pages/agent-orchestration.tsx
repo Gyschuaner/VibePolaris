@@ -19,7 +19,7 @@ export function AgentOrchestrationTermPage() {
 
     <ArticleSection id="orchestration-mode" title="并行和串行各有代价">
       <p id="orchestration-parallel" className="vp-citation-target">没有相互依赖的任务可以并行，以缩短等待时间；有依赖的任务必须等前置结果，否则核对员只能凭空判断，撰写员也可能把未经确认的材料写进去。<Cite id="orchestration-parallel" sources={agentOrchestrationSources} /></p>
-      <p id="orchestration-pattern" className="vp-citation-target">Anthropic 将常见编排模式区分为预先安排的工作流和由模型决定下一步的智能体循环：前者更容易预测和调试，后者可以应对开放任务，但要付出更高的延迟、成本和失控风险。<Cite id="orchestration-pattern" sources={agentOrchestrationSources} />“并行”只回答何时开工，不回答结果如何判断。</p>
+      <p id="orchestration-pattern" className="vp-citation-target">Anthropic 将常见编排模式区分为预先安排的工作流和由模型决定下一步的智能体循环：前者更容易预测和调试，后者可以应对开放任务，但可能增加延迟、成本和失控风险。<Cite id="orchestration-pattern" sources={agentOrchestrationSources} />“并行”只回答何时开工，不回答结果如何判断。</p>
       <p id="orchestration-loop" className="vp-citation-target">运行器会在工具调用、交接和最终输出之间循环；编排器必须记录当前状态、允许的下一步和停止条件。没有最大轮数或预算上限，一个失败的工具调用就可能把所有角色拖进重复尝试。<Cite id="orchestration-loop" sources={agentOrchestrationSources} /></p>
     </ArticleSection>
 
