@@ -1018,19 +1018,23 @@
   ]
 },
   {
-    "slug": "reduced-motion",
-    "mechanism": "操作系统偏好通过 prefers-reduced-motion 暴露给 CSS；页面应替换非必要大幅位移、缩放和视差，同时保留状态反馈与必要进度。",
-    "misconception": "不是把所有动画设为 duration:0，也不是只降低速度；快速大位移仍可能造成不适。",
-    "demoSignature": "motion-budget: 4 states; actors=同一页面切换/完整轨迹/原位淡入/焦点; phases=建立连续性→开启减少动态→替代为短淡入→结果和焦点一致; action=切换减少动态",
-    "sourceUrls": [
-      "https://www.w3.org/TR/mediaqueries-5/#prefers-reduced-motion",
-      "https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html",
-      "https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion",
-      "https://web.dev/articles/prefers-reduced-motion"
-    ],
-    "rewriteRisk": "high",
-    "nearDuplicates": ["microinteraction", "media-query", "a11y"]
-  },
+  "slug": "reduced-motion",
+  "mechanism": "prefers-reduced-motion 让页面知道用户希望减少非必要运动。完整模式可以用短距离移动、缩放和连续性提示空间关系；减少动态模式应取消大幅位移、视差和快速缩放，改用原位淡入、即时定位或颜色/文字变化。两种表现的终点必须相同：状态、URL、阅读顺序和键盘焦点不能因为少了动画而消失。",
+  "misconception": "减少动态不是把所有 duration 改成 0，也不是只把速度调慢；快速闪烁和大范围位移仍可能造成不适。需要保留的进度、成功、失败和焦点提示不能被一并删除；动画之外的布局跳动、自动播放和由交互触发的缩放也要一并审查。",
+  "demoSignature": "compare: 5 frames; objects=起点/终点/完整轨迹/减少动态/页面状态; change=正常运动、偏好开启、原位淡入、焦点确认、复杂运动替代; evidence=终点状态相同而运动预算不同",
+  "sourceUrls": [
+    "https://www.w3.org/TR/mediaqueries-5/#prefers-reduced-motion",
+    "https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html",
+    "https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion",
+    "https://web.dev/articles/prefers-reduced-motion"
+  ],
+  "rewriteRisk": "high",
+  "nearDuplicates": [
+    "microinteraction",
+    "media-query",
+    "a11y"
+  ]
+},
   {
     "slug": "dockerfile",
     "mechanism": "Dockerfile 是按顺序执行的构建指令集合：FROM 选基座，COPY/ADD 把 context 中的输入带进来，RUN 产生中间结果，后续指令再从前一层继续；构建器用指令和输入计算缓存，最终把层组合成镜像。",

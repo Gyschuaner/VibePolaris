@@ -17573,176 +17573,196 @@
   "promptTitle": "设计一个可回滚的微交互"
 },
   {
-    "slug": "reduced-motion",
-    "lead": "流星式页面切换对部分用户造成眩晕时，怎样保留状态提示又减少不适？",
-    "definition": "操作系统偏好通过 prefers-reduced-motion 暴露给 CSS；页面应替换非必要大幅位移、缩放和视差，同时保留状态反馈与必要进度。",
-    "boundary": "不是把所有动画设为 duration:0，也不是只降低速度；快速大位移仍可能造成不适。",
-    "sceneKind": "compare",
-    "sceneTitle": "同一次页面切换在完整动效与减少动态模式下的差异",
-    "actionLabel": "切换减少动态偏好",
-    "actors": [
-      {
-        "id": "source",
-        "label": "概念星图",
-        "detail": "当前焦点 CSS",
-        "icon": "spark",
-        "group": "起点"
-      },
-      {
-        "id": "destination",
-        "label": "CSS 词条页",
-        "detail": "目标标题与焦点",
-        "icon": "file",
-        "group": "终点"
-      },
-      {
-        "id": "motion",
-        "label": "完整动效",
-        "detail": "流星曲线与缩放",
-        "icon": "spark",
-        "group": "表现 A"
-      },
-      {
-        "id": "reduced",
-        "label": "减少动态",
-        "detail": "短淡入与即时定位",
-        "icon": "shield",
-        "group": "表现 B"
-      },
-      {
-        "id": "state",
-        "label": "页面状态",
-        "detail": "标题、URL、焦点一致",
-        "icon": "browser",
-        "group": "结果"
-      }
-    ],
-    "edges": [],
-    "frames": [
-      {
-        "label": "完整动效建立连续性",
-        "note": "点击 CSS 后，星标沿短曲线进入标题位置，旧概念淡到边缘，URL 更新。",
-        "activeIds": [
-          "source",
-          "motion",
-          "destination",
-          "state"
-        ],
-        "doneIds": [
-          "source"
-        ],
-        "mutedIds": [
-          "reduced"
-        ],
-        "values": {
-          "motion": "位移 + 轻缩放",
-          "state": "/terms/css · focus=标题"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "开启减少动态偏好",
-        "note": "系统偏好切换后，大幅位移和缩放被关闭，状态变化本身保留。",
-        "activeIds": [
-          "motion",
-          "reduced"
-        ],
-        "doneIds": [
-          "source"
-        ],
-        "mutedIds": [
-          "destination",
-          "state"
-        ],
-        "values": {
-          "motion": "disabled",
-          "reduced": "enabled"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "替代为短淡入",
-        "note": "再次进入词条，旧页快速淡出，新标题原位淡入，没有跨屏移动。",
-        "activeIds": [
-          "source",
-          "reduced",
-          "destination"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "motion"
-        ],
-        "values": {
-          "reduced": "opacity 0→1 · no translate"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "结果和焦点保持一致",
-        "note": "两种模式最终都到相同 URL、标题和键盘焦点，成功状态没有被删掉。",
-        "activeIds": [
-          "destination",
-          "state"
-        ],
-        "doneIds": [
-          "source",
-          "motion",
-          "reduced"
-        ],
-        "mutedIds": [],
-        "values": {
-          "state": "/terms/css · focus=标题"
-        },
-        "activeEdgeIds": []
-      }
-    ],
-    "insight": "减少动态不是删除所有反馈，而是用更少位移和缩放表达同一状态变化。",
-    "quiz": {
-      "question": "用户开启减少动态效果后，界面应怎样处理？",
-      "options": [
-        {
-          "label": "减少大幅位移，同时保留清楚状态反馈",
-          "correct": true
-        },
-        {
-          "label": "删除所有成功和失败信息",
-          "correct": false
-        },
-        {
-          "label": "把动画速度加倍",
-          "correct": false
-        }
+  "slug": "reduced-motion",
+  "lead": "减少动态不是把页面变成无声的静止图，而是把大幅移动换成仍能说明状态的稳定变化。",
+  "definition": "prefers-reduced-motion 让页面知道用户希望减少非必要运动。完整模式可以用短距离移动、缩放和连续性提示空间关系；减少动态模式应取消大幅位移、视差和快速缩放，改用原位淡入、即时定位或颜色/文字变化。两种表现的终点必须相同：状态、URL、阅读顺序和键盘焦点不能因为少了动画而消失。",
+  "boundary": "减少动态不是把所有 duration 改成 0，也不是只把速度调慢；快速闪烁和大范围位移仍可能造成不适。需要保留的进度、成功、失败和焦点提示不能被一并删除；动画之外的布局跳动、自动播放和由交互触发的缩放也要一并审查。",
+  "sceneKind": "compare",
+  "sceneTitle": "完整轨迹和稳定替代如何共享状态终点",
+  "actionLabel": "切换减少动态偏好",
+  "actors": [
+    {
+      "id": "source",
+      "label": "概念星图",
+      "detail": "当前焦点 CSS",
+      "icon": "spark",
+      "group": "起点"
+    },
+    {
+      "id": "destination",
+      "label": "CSS 词条页",
+      "detail": "目标标题与焦点",
+      "icon": "file",
+      "group": "终点"
+    },
+    {
+      "id": "motion",
+      "label": "完整动效",
+      "detail": "流星曲线与缩放",
+      "icon": "spark",
+      "group": "表现 A"
+    },
+    {
+      "id": "reduced",
+      "label": "减少动态",
+      "detail": "短淡入与即时定位",
+      "icon": "shield",
+      "group": "表现 B"
+    },
+    {
+      "id": "state",
+      "label": "页面状态",
+      "detail": "标题、URL、焦点一致",
+      "icon": "browser",
+      "group": "结果"
+    }
+  ],
+  "edges": [],
+  "frames": [
+    {
+      "label": "完整模式展示空间关系",
+      "note": "点击 CSS 词条后，焦点沿短轨迹进入目标标题，URL 更新；位移有明确的起点和终点，自动播放到此停下。",
+      "activeIds": [
+        "source",
+        "motion",
+        "destination",
+        "state"
       ],
-      "success": "稳定的淡入或即时切换可以保留反馈并降低不适。",
-      "retry": "删除信息或加速动画都不能满足该偏好。"
+      "doneIds": [
+        "source"
+      ],
+      "mutedIds": [
+        "reduced"
+      ],
+      "values": {
+        "motion": "短位移 + 轻缩放",
+        "state": "URL=/terms/css · focus=标题"
+      },
+      "activeEdgeIds": []
     },
-    "prompt": {
-      "title": "为页面动画提供减少动态版本",
-      "text": "请检查下面动画中的大幅平移、缩放、视差和循环，使用 prefers-reduced-motion 提供淡入或即时状态替代，并保留操作成功、失败和焦点变化。"
+    {
+      "label": "读取用户偏好",
+      "note": "系统返回 prefers-reduced-motion: reduce，页面关闭跨屏位移和视差；这只是改变表现预算，目标状态还没有被删掉。",
+      "activeIds": [
+        "motion",
+        "reduced",
+        "state"
+      ],
+      "doneIds": [
+        "source"
+      ],
+      "mutedIds": [
+        "destination"
+      ],
+      "values": {
+        "motion": "disabled",
+        "reduced": "reduce",
+        "state": "URL 仍更新"
+      },
+      "activeEdgeIds": []
     },
-    "sources": [
+    {
+      "label": "用原位淡入替代",
+      "note": "再次进入目标页时，旧内容快速淡出，新标题在原位出现，不让整个页面穿过视口；读者仍能辨认变化发生在哪里。",
+      "activeIds": [
+        "source",
+        "reduced",
+        "destination"
+      ],
+      "doneIds": [],
+      "mutedIds": [
+        "motion"
+      ],
+      "values": {
+        "reduced": "opacity 0→1 · translate=0",
+        "destination": "标题原位出现"
+      },
+      "activeEdgeIds": []
+    },
+    {
+      "label": "焦点和状态不丢",
+      "note": "动画结束后，两种模式都有相同的 URL、标题和键盘焦点；减少动态不意味着把成功或导航反馈藏起来。",
+      "activeIds": [
+        "destination",
+        "state"
+      ],
+      "doneIds": [
+        "source",
+        "motion",
+        "reduced"
+      ],
+      "mutedIds": [],
+      "values": {
+        "state": "URL=/terms/css · focus=标题"
+      },
+      "activeEdgeIds": []
+    },
+    {
+      "label": "复杂运动也有静态替代",
+      "note": "地图视差、连续缩放或自动轮播在 reduce 模式下改为静态分层和手动控制，结构信息、暂停入口和可读文本继续存在。",
+      "activeIds": [
+        "reduced",
+        "destination",
+        "state"
+      ],
+      "doneIds": [
+        "motion"
+      ],
+      "mutedIds": [
+        "source"
+      ],
+      "values": {
+        "reduced": "no parallax · manual",
+        "state": "内容仍可操作"
+      },
+      "activeEdgeIds": []
+    }
+  ],
+  "insight": "减少动态改变的是运动方式和预算，不是概念状态；验收时要比较两种模式的终点、焦点、文本和可操作性。",
+  "quiz": {
+    "question": "用户开启减少动态后，哪一项仍然必须保留？",
+    "options": [
       {
-        "url": "https://www.w3.org/TR/mediaqueries-5/#prefers-reduced-motion",
-        "label": "W3C · Media Queries Level 5",
-        "note": "读取用户减少动态偏好"
+        "label": "状态、焦点和可读的结果反馈",
+        "correct": true
       },
       {
-        "url": "https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html",
-        "label": "W3C WAI · Animation from Interactions",
-        "note": "避免由交互触发的有害动画"
+        "label": "所有跨屏位移和视差",
+        "correct": false
       },
       {
-        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion",
-        "label": "MDN · prefers-reduced-motion",
-        "note": "媒体查询实现方式"
-      },
-      {
-        "url": "https://web.dev/articles/prefers-reduced-motion",
-        "label": "web.dev · prefers-reduced-motion",
-        "note": "为运动提供替代表现"
+        "label": "自动播放但把速度提高",
+        "correct": false
       }
-    ]
+    ],
+    "success": "可以删掉非必要的运动，但不能删掉导航、进度、成功失败和键盘可操作性。",
+    "retry": "保留大幅运动或加速只会增加风险，删掉状态则让用户无法判断结果。"
   },
+  "prompt": "请列出页面里的位移、缩放、视差、自动播放和状态反馈，分别为正常模式与 prefers-reduced-motion: reduce 写出终点、焦点、时长和替代表现；验证两种模式的 URL、语义顺序、成功失败信息和键盘操作一致。",
+  "sources": [
+    {
+      "url": "https://www.w3.org/TR/mediaqueries-5/#prefers-reduced-motion",
+      "label": "W3C · Media Queries 5",
+      "note": "Media Queries Level 5：核对 prefers-reduced-motion 媒体特征和用户偏好语义。"
+    },
+    {
+      "url": "https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html",
+      "label": "W3C · Animation from interactions",
+      "note": "WCAG Animation from Interactions：核对交互触发动画的风险和替代表现。"
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion",
+      "label": "MDN · prefers-reduced-motion",
+      "note": "MDN prefers-reduced-motion：核对 CSS 媒体查询和实现边界。"
+    },
+    {
+      "url": "https://web.dev/articles/prefers-reduced-motion",
+      "label": "web.dev · Reduced motion",
+      "note": "web.dev prefers-reduced-motion：核对保留状态、减少视差和替代运动的方法。"
+    }
+  ],
+  "promptTitle": "审查一套减少动态替代"
+},
   {
     "slug": "dockerfile",
     "lead": "只改一个组件，为什么依赖安装也跟着重跑？",

@@ -2222,35 +2222,64 @@
   ]
 },
   {
-    "zh": "减少动态效果", "en": "Reduced Motion", "slug": "reduced-motion", "cat": "产品与设计",
-    "say": "减少动态效果是用户的系统偏好，页面应降低大幅移动、缩放和持续动画。",
-    "aliases": ["Reduced Motion", "减少动画", "prefers-reduced-motion"],
-    "question": "流星式页面切换对部分用户造成眩晕时，怎样保留状态提示又减少不适？",
-    "definition": "减少动态效果偏好可通过系统 API 或 CSS 媒体查询读取。界面应移除非必要位移和视差，并用淡入或即时变化保留信息关系。",
-    "boundary": "减少动态效果不等于删除所有反馈。加载、进度和状态变化仍要以稳定方式表达。",
-    "demoType": "comparison", "demoTitle": "同一页面切换的两套运动预算",
-    "demoSteps": [
-      {
-        "label": "第1步",
-        "value": "完整轨迹",
-        "note": "这一步只改变当前机制，其他对象保持可见。"
-      },
-      {
-        "label": "第2步",
-        "value": "切换减少动态偏好",
-        "note": "读者能在原位置看到状态或关系发生变化。"
-      },
-      {
-        "label": "第3步",
-        "value": "原位淡入但保留焦点",
-        "note": "结果保留边界和下一步出口，不把未验证部分伪装成完成。"
-      }
-    ],
-    "quizQuestion": "用户开启减少动态效果后，界面应怎样处理？", "quizOptions": ["减少大幅位移，同时保留清楚状态反馈", "删除所有成功和失败信息", "把动画速度加倍"],
-    "correctText": "稳定的淡入或即时切换可以保留反馈并降低不适。", "wrongText": "删除信息或加速动画都不能满足该偏好。",
-    "promptTitle": "为页面动画提供减少动态版本", "prompt": "请检查下面动画中的大幅平移、缩放、视差和循环，使用 prefers-reduced-motion 提供淡入或即时状态替代，并保留操作成功、失败和焦点变化。",
-    "relatedSlugs": ["microinteraction", "media-query", "a11y"]
-  },
+  "zh": "减少动态效果",
+  "en": "Reduced Motion",
+  "slug": "reduced-motion",
+  "cat": "产品与设计",
+  "say": "减少动态不是把页面变成无声的静止图，而是把大幅移动换成仍能说明状态的稳定变化。",
+  "aliases": [
+    "Reduced Motion",
+    "减少动画",
+    "prefers-reduced-motion"
+  ],
+  "question": "同一次页面切换在完整动效和减少动态偏好下，怎样保持 URL、焦点和结果一致？",
+  "definition": "prefers-reduced-motion 让页面知道用户希望减少非必要运动。完整模式可以用短距离移动、缩放和连续性提示空间关系；减少动态模式应取消大幅位移、视差和快速缩放，改用原位淡入、即时定位或颜色/文字变化。两种表现的终点必须相同：状态、URL、阅读顺序和键盘焦点不能因为少了动画而消失。",
+  "boundary": "减少动态不是把所有 duration 改成 0，也不是只把速度调慢；快速闪烁和大范围位移仍可能造成不适。需要保留的进度、成功、失败和焦点提示不能被一并删除；动画之外的布局跳动、自动播放和由交互触发的缩放也要一并审查。",
+  "demoType": "comparison",
+  "demoTitle": "同一页面切换在两种运动偏好下保持同一结果",
+  "demoSteps": [
+    {
+      "label": "完整模式展示空间关系",
+      "value": "短位移 + 轻缩放 · URL=/terms/css · focus=标题",
+      "note": "点击 CSS 词条后，焦点沿短轨迹进入目标标题，URL 更新；位移有明确的起点和终点，自动播放到此停下。"
+    },
+    {
+      "label": "读取用户偏好",
+      "value": "disabled · reduce · URL 仍更新",
+      "note": "系统返回 prefers-reduced-motion: reduce，页面关闭跨屏位移和视差；这只是改变表现预算，目标状态还没有被删掉。"
+    },
+    {
+      "label": "用原位淡入替代",
+      "value": "opacity 0→1 · translate=0 · 标题原位出现",
+      "note": "再次进入目标页时，旧内容快速淡出，新标题在原位出现，不让整个页面穿过视口；读者仍能辨认变化发生在哪里。"
+    },
+    {
+      "label": "焦点和状态不丢",
+      "value": "URL=/terms/css · focus=标题",
+      "note": "动画结束后，两种模式都有相同的 URL、标题和键盘焦点；减少动态不意味着把成功或导航反馈藏起来。"
+    },
+    {
+      "label": "复杂运动也有静态替代",
+      "value": "no parallax · manual · 内容仍可操作",
+      "note": "地图视差、连续缩放或自动轮播在 reduce 模式下改为静态分层和手动控制，结构信息、暂停入口和可读文本继续存在。"
+    }
+  ],
+  "quizQuestion": "用户开启减少动态后，哪一项仍然必须保留？",
+  "quizOptions": [
+    "状态、焦点和可读的结果反馈",
+    "所有跨屏位移和视差",
+    "自动播放但把速度提高"
+  ],
+  "correctText": "可以删掉非必要的运动，但不能删掉导航、进度、成功失败和键盘可操作性。",
+  "wrongText": "保留大幅运动或加速只会增加风险，删掉状态则让用户无法判断结果。",
+  "promptTitle": "审查一套减少动态替代",
+  "prompt": "请列出页面里的位移、缩放、视差、自动播放和状态反馈，分别为正常模式与 prefers-reduced-motion: reduce 写出终点、焦点、时长和替代表现；验证两种模式的 URL、语义顺序、成功失败信息和键盘操作一致。",
+  "relatedSlugs": [
+    "microinteraction",
+    "media-query",
+    "a11y"
+  ]
+},
   {
     "zh": "Dockerfile",
     "en": "Dockerfile",
