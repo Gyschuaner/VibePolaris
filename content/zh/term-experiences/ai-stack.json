@@ -29220,5 +29220,290 @@
         "note": "比较自动评估器并用于 web/device agent 的评估和改进。"
       }
     ]
+  },
+  {
+    "slug": "computer-use",
+    "lead": "模型会点按钮，不代表它知道下一秒屏幕还是什么；电脑使用的核心是观察、受限动作和动作后的核验。",
+    "definition": "电脑使用（computer use）让模型通过截图或其他视觉观察理解图形界面，再发出鼠标、键盘、滚轮等结构化动作，由应用或执行器代为操作浏览器和桌面。一次动作之后，环境会返回新的截图或工具结果，模型再据此决定下一步；它把通用界面操作变成可调用能力，而不是把模型直接变成拥有电脑权限的人。",
+    "boundary": "电脑使用不是普通的文本 tool call，也不是“看懂截图”就等于完成任务：坐标会因窗口、缩放和滚动变化，页面里的文字还可能包含 prompt injection，动作执行也可能失败。它和浏览器 DOM/API 自动化的分工不同，前者在视觉界面上操作，后者可直接调用结构化页面或服务接口；当接口存在且足够可靠时，不必为了炫技去点屏幕。产品必须隔离环境、限制站点和权限，给购买、外传、删除等后果性动作设置确认，并在动作后核验真实状态。",
+    "sceneKind": "assembly",
+    "sceneTitle": "桌面状态台：截图、光标、权限门和结果一起变化",
+    "actionLabel": "执行下一次观察",
+    "actors": [
+      {
+        "id": "screen",
+        "label": "当前屏幕",
+        "detail": "退款表单 · 金额输入框可见",
+        "icon": "browser",
+        "group": "观察"
+      },
+      {
+        "id": "cursor",
+        "label": "光标目标",
+        "detail": "从截图定位到输入框",
+        "icon": "spark",
+        "group": "动作"
+      },
+      {
+        "id": "action",
+        "label": "结构化动作",
+        "detail": "click / type / scroll / keypress",
+        "icon": "code",
+        "group": "动作"
+      },
+      {
+        "id": "permission",
+        "label": "权限门",
+        "detail": "填写允许 · 提交需确认",
+        "icon": "shield",
+        "group": "安全"
+      },
+      {
+        "id": "feedback",
+        "label": "新画面",
+        "detail": "错误提示：币种缺失",
+        "icon": "browser",
+        "group": "反馈"
+      },
+      {
+        "id": "injection",
+        "label": "不可信内容",
+        "detail": "页面文字不能改写用户指令",
+        "icon": "file",
+        "group": "安全"
+      },
+      {
+        "id": "outcome",
+        "label": "真实状态",
+        "detail": "表单未提交 · 缺口可见",
+        "icon": "database",
+        "group": "结果"
+      },
+      {
+        "id": "stop",
+        "label": "停止条件",
+        "detail": "后果性动作前确认，异常时取消",
+        "icon": "key",
+        "group": "控制"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "先看当前屏幕",
+        "note": "界面状态不明时先取新截图；旧坐标、旧登录状态和旧页面都不能直接继承。",
+        "activeIds": [
+          "screen",
+          "injection"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "cursor",
+          "action",
+          "permission",
+          "feedback",
+          "outcome",
+          "stop"
+        ],
+        "values": {
+          "screen": "退款表单 · 提交按钮可见",
+          "injection": "页面文字只是数据"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "对准目标区域",
+        "note": "把截图里的视觉目标映射到执行环境的坐标空间，再准备一个小动作。",
+        "activeIds": [
+          "cursor",
+          "action",
+          "screen"
+        ],
+        "doneIds": [
+          "injection"
+        ],
+        "mutedIds": [
+          "permission",
+          "feedback",
+          "outcome",
+          "stop"
+        ],
+        "values": {
+          "cursor": "金额输入框 · 坐标来自当前原图",
+          "action": "准备 type(\"128.00\")"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "动作先过权限门",
+        "note": "输入字段和提交退款不是同一风险；真实发送、付款、删除或外传前要停下来确认。",
+        "activeIds": [
+          "permission",
+          "action",
+          "stop"
+        ],
+        "doneIds": [
+          "screen",
+          "cursor",
+          "injection"
+        ],
+        "mutedIds": [
+          "feedback",
+          "outcome"
+        ],
+        "values": {
+          "permission": "输入：允许 · 提交：等待确认",
+          "stop": "后果性动作暂停"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "拿回新画面",
+        "note": "动作执行后重新截图，发现币种缺失；下一步来自新状态，而不是盲点旧坐标。",
+        "activeIds": [
+          "feedback",
+          "screen",
+          "action"
+        ],
+        "doneIds": [
+          "cursor",
+          "permission",
+          "injection"
+        ],
+        "mutedIds": [
+          "outcome",
+          "stop"
+        ],
+        "values": {
+          "feedback": "金额已填 · 错误：币种缺失",
+          "screen": "页面状态已更新"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "结束在可核验状态",
+        "note": "未提交不等于失败：当前结果明确、缺口可修正，用户仍保留发送权；先记录状态再决定是否继续。",
+        "activeIds": [
+          "outcome",
+          "stop",
+          "permission",
+          "feedback"
+        ],
+        "doneIds": [
+          "screen",
+          "cursor",
+          "action",
+          "injection"
+        ],
+        "mutedIds": [],
+        "values": {
+          "outcome": "表单未提交 · 缺口已标出",
+          "stop": "等待用户确认后再发送"
+        },
+        "metric": {
+          "label": "操作边界",
+          "value": "可观察 · 可取消 · 可核验"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "电脑使用不是把权限交给模型，而是让模型在截图、动作执行器、权限门和结果核验之间小步前进；每次动作都应能解释、能取消、能回看。",
+    "quiz": {
+      "question": "准备点击“提交退款”时，电脑使用代理应该先做什么？",
+      "options": [
+        {
+          "label": "检查当前页面和权限，并在真实提交前请求用户确认",
+          "correct": true
+        },
+        {
+          "label": "沿用旧截图坐标连续点击，直到出现成功文字",
+          "correct": false
+        },
+        {
+          "label": "看见按钮就默认拥有发送和付款权限",
+          "correct": false
+        }
+      ],
+      "success": "屏幕可见、动作可执行和动作获准是三件事；提交前必须停下来确认。",
+      "retry": "先取新状态并检查后果性权限，不能把按钮可见当成授权。"
+    },
+    "prompt": {
+      "title": "为电脑使用任务写安全动作契约",
+      "text": "请把这个电脑操作任务拆成观察、允许动作、需确认动作、禁止动作和结果核验：说明何时必须获取新截图、坐标如何映射、哪些页面内容只能当不可信数据、出现错误或 prompt injection 时如何停止。优先使用可验证的 API 或 DOM 接口；只有确需图形界面时才执行鼠标键盘操作，并列出隔离环境、站点白名单、取消和回滚办法。"
+    },
+    "teaching": [
+      {
+        "id": "loop",
+        "title": "它靠“截图—动作—新截图”保持在现实里",
+        "body": "OpenAI 的接口说明把电脑操作拆成执行器循环：当 UI 状态未知时先给当前截图，执行一小组动作后再返回更新画面，并保持浏览器或桌面会话。坐标不是永久事实，下一步必须建立在新的观察上。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "actions",
+        "title": "动作是结构化请求，不是魔法手",
+        "body": "常见动作包括点击、拖拽、滚动、输入和按键；Anthropic 的工具还明确规定坐标、修饰键和截图空间。真正执行动作的是应用侧 driver，模型只能提出请求，不能凭一句话越过执行器的权限。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "safety",
+        "title": "看见页面，也可能看见攻击",
+        "body": "网页、文档和截图里的文字属于不可信内容，不能自行覆盖用户指令。OpenAI 建议隔离环境、站点白名单、后果性动作确认、步数/时间/成本上限和真实结果核验；Anthropic 也特别提醒电脑画面可能携带 prompt injection。",
+        "sourceIndices": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": "api",
+        "title": "能调用接口时，不必模拟鼠标",
+        "body": "电脑使用解决的是只有图形界面可操作，或视觉定位本身就是任务的一部分；如果同一动作有可靠的 API、DOM 或结构化工具，直接调用通常更易验证、也更少受坐标漂移影响。把视觉操作当成最后一层适配，而不是默认的万能入口。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "limits",
+        "title": "真实桌面仍然会让模型失手",
+        "body": "OSWorld 用 369 个真实网页、桌面和跨应用任务评估电脑代理，论文报告当时最佳模型的成功率远低于人类，主要困难是 GUI grounding 和操作知识。电脑使用是能力接口，不是任务成功保证，必须配合执行器、评测和人工接管。",
+        "sourceIndices": [
+          3,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://developers.openai.com/api/docs/guides/tools-computer-use",
+        "label": "OpenAI · Computer use",
+        "note": "说明截图、坐标、动作执行、状态保持、权限确认与结果核验。"
+      },
+      {
+        "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool",
+        "label": "Anthropic · Computer use tool",
+        "note": "列出 screenshot、click、type、scroll 等动作，以及坐标和执行器边界。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2404.07972",
+        "label": "Xie et al. · OSWorld",
+        "note": "在真实操作系统和跨应用任务中评估 GUI grounding 与电脑操作能力。"
+      },
+      {
+        "url": "https://www.anthropic.com/research/developing-computer-use",
+        "label": "Anthropic · Developing a computer use model",
+        "note": "说明 prompt injection 等电脑画面安全风险与受控部署边界。"
+      },
+      {
+        "url": "https://www.anthropic.com/news/3-5-models-and-computer-use",
+        "label": "Anthropic · Introducing computer use",
+        "note": "补充电脑使用通过截图、光标、点击、输入完成通用界面操作，仍处于实验性阶段。"
+      }
+    ]
   }
 ]

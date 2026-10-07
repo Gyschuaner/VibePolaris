@@ -2507,5 +2507,25 @@
       "process-supervision",
       "outcome-supervision"
     ]
+  },
+  {
+    "slug": "computer-use",
+    "mechanism": "电脑使用让模型读取截图或视觉观察，生成点击、拖拽、输入、滚动和按键等结构化动作，由应用侧执行器在受限浏览器/桌面环境中执行，再返回更新截图或工具结果；能力来自观察—动作—反馈循环，权限仍由执行环境控制。",
+    "misconception": "看见屏幕不等于拥有电脑权限，也不保证坐标正确、任务成功或页面内容可信；电脑使用与 API/DOM 自动化不同，后果性动作、prompt injection、隔离和结果核验必须单独处理。",
+    "demoSignature": "5帧｜对象：当前屏幕、光标目标、结构化动作、权限门、新画面、不可信内容、真实状态、停止条件｜交互：取截图、定位输入框、动作过权限门、拿回错误画面、停在可核验状态｜变化：未知界面→坐标映射→提交前确认→新截图发现币种缺失→未提交但状态清楚；桌面状态台，不是流程图。",
+    "sourceUrls": [
+      "https://developers.openai.com/api/docs/guides/tools-computer-use",
+      "https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool",
+      "https://arxiv.org/abs/2404.07972",
+      "https://www.anthropic.com/research/developing-computer-use",
+      "https://www.anthropic.com/news/3-5-models-and-computer-use"
+    ],
+    "rewriteRisk": "不要把 computer use 写成浏览器自动化、无限权限或任务成功保证；正文要区分视觉观察、执行器、坐标/会话状态、API/DOM 替代、prompt injection、敏感动作确认和真实结果核验。",
+    "nearDuplicates": [
+      "agent-harness",
+      "agent-trajectory",
+      "prompt-injection",
+      "tool-schema"
+    ]
   }
 ]
