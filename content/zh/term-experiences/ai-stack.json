@@ -25203,5 +25203,175 @@
         "note": "治理、风险与人工监督"
       }
     ]
+  },
+  {
+    "slug": "rlhf",
+    "lead": "人类没有替模型写出每个答案，模型为什么仍会朝某种偏好方向移动？",
+    "definition": "RLHF 通常先收集示范或成对偏好，让奖励模型学习哪些输出更符合标注者的判断，再用奖励信号优化语言模型。它把“哪一个更好”的比较变成可训练的代理目标，从而改变一类任务上的行为倾向。",
+    "boundary": "奖励模型只是特定标注者、规范和数据上的近似判断，不等于完整的人类价值或事实正确性。标注偏差、奖励投机、分布变化和评测盲点可能保留，训练后仍要做独立的安全、事实和场景测试。",
+    "sceneKind": "spectrum",
+    "sceneTitle": "偏好标尺：奖励是近似尺，不是事实秤",
+    "actionLabel": "移动偏好刻度",
+    "actors": [
+      {
+        "id": "prompt",
+        "label": "同一请求",
+        "detail": "解释一项退款政策",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "answer-a",
+        "label": "回答 A",
+        "detail": "快但漏掉限制",
+        "icon": "file",
+        "group": "候选"
+      },
+      {
+        "id": "answer-b",
+        "label": "回答 B",
+        "detail": "慢但说明边界",
+        "icon": "file",
+        "group": "候选"
+      },
+      {
+        "id": "human",
+        "label": "人类偏好",
+        "detail": "标注 B 更合适",
+        "icon": "user",
+        "group": "反馈"
+      },
+      {
+        "id": "reward",
+        "label": "奖励尺",
+        "detail": "近似排序，不是事实证明",
+        "icon": "chart",
+        "group": "代理目标"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "摆出回答对",
+        "note": "先比较具体行为，不急着给一个脱离标准的总分。",
+        "activeIds": [
+          "prompt",
+          "answer-a",
+          "answer-b"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "human",
+          "reward"
+        ],
+        "values": {
+          "answer-a": "快 · 漏限制",
+          "answer-b": "慢 · 有边界"
+        }
+      },
+      {
+        "label": "标记人类偏好",
+        "note": "偏好数据表达这组标注标准下的相对选择。",
+        "activeIds": [
+          "human"
+        ],
+        "doneIds": [
+          "prompt",
+          "answer-a",
+          "answer-b"
+        ],
+        "mutedIds": [
+          "reward"
+        ],
+        "values": {
+          "human": "B 更合适"
+        }
+      },
+      {
+        "label": "拟合奖励尺",
+        "note": "奖励模型学习近似排序，仍保留不确定区间。",
+        "activeIds": [
+          "reward"
+        ],
+        "doneIds": [
+          "prompt",
+          "answer-a",
+          "answer-b",
+          "human"
+        ],
+        "mutedIds": [],
+        "values": {
+          "reward": "B ↑ · 置信区间仍存在"
+        }
+      },
+      {
+        "label": "检查新样本",
+        "note": "措辞漂亮可能拿高分，事实仍必须独立核验。",
+        "activeIds": [
+          "answer-a",
+          "reward"
+        ],
+        "doneIds": [
+          "prompt",
+          "answer-b",
+          "human"
+        ],
+        "mutedIds": [],
+        "values": {
+          "answer-a": "高奖励 · 事实待核验"
+        }
+      }
+    ],
+    "insight": "RLHF 把偏好变成代理奖励，代理奖励上升不等于事实、安全和公平都被证明。",
+    "quiz": {
+      "question": "RLHF 的奖励模型最容易被误解成什么？",
+      "options": [
+        {
+          "label": "人类价值和事实正确性的完整替身",
+          "correct": false
+        },
+        {
+          "label": "一组偏好数据上的近似评判器",
+          "correct": true
+        },
+        {
+          "label": "只负责统计训练步数的计数器",
+          "correct": false
+        }
+      ],
+      "success": "奖励模型近似特定标注标准下的偏好，不能替代事实和安全验收。",
+      "retry": "奖励高只说明更像标注偏好；新场景仍需独立检查。"
+    },
+    "prompt": {
+      "title": "检查一个 RLHF 数据集的偏好尺",
+      "text": "请把每条偏好拆成提示、两个候选、标注规则、标注者分歧和未覆盖的失败类型；说明奖励模型学到的代理目标，列出它不能证明的事实、安全与公平结论，并设计一组独立留出评测。"
+    },
+    "sources": [
+      {
+        "url": "https://openai.com/index/instruction-following/",
+        "label": "OpenAI · Aligning language models",
+        "note": "示范、偏好、奖励模型与 PPO"
+      },
+      {
+        "url": "https://arxiv.org/abs/2203.02155",
+        "label": "Ouyang et al. · InstructGPT",
+        "note": "RLHF 训练与限制"
+      },
+      {
+        "url": "https://openai.com/index/learning-from-human-preferences/",
+        "label": "OpenAI · Learning from human preferences",
+        "note": "人类偏好作为奖励信号"
+      },
+      {
+        "url": "https://arxiv.org/abs/1706.03741",
+        "label": "Christiano et al. · Deep RL from Human Preferences",
+        "note": "偏好反馈强化学习原始研究"
+      },
+      {
+        "url": "https://doi.org/10.6028/NIST.AI.600-1",
+        "label": "NIST · AI Risk Management Framework",
+        "note": "代理目标和风险治理边界"
+      }
+    ]
   }
 ]
