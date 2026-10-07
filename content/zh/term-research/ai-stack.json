@@ -2253,5 +2253,24 @@
       "safety-evaluation",
       "guardrail"
     ]
+  },
+  {
+    "slug": "jailbreak",
+    "mechanism": "越狱提示利用角色、格式、编码、上下文冲突或多轮诱导，试图绕过安全策略和拒答边界；研究越狱是为了修复训练和应用防护的泛化缺口。",
+    "misconception": "没有一条万能字符串，越狱成败由模型版本、系统提示、工具权限、过滤和上下文共同决定；测试不应传播危险载荷。",
+    "demoSignature": "4帧｜对象：原始请求、包装层、安全边界、模型回应、回归记录｜交互：改变包装、拆分上下文、记录结果｜变化：正常→角色变体→一致性检查→安全回归；非流程分支压力计。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/2307.02483",
+      "https://developers.openai.com/api/docs/guides/red-teaming",
+      "https://www.anthropic.com/research/next-generation-constitutional-classifiers",
+      "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
+      "https://doi.org/10.6028/NIST.AI.100-2"
+    ],
+    "rewriteRisk": "用抽象类别和受控证据描述越狱，清楚区分安全研究、传播载荷和运行时防护。",
+    "nearDuplicates": [
+      "prompt-injection",
+      "red-teaming",
+      "guardrail"
+    ]
   }
 ]

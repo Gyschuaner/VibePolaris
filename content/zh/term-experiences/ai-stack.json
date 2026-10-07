@@ -25705,5 +25705,177 @@
         "note": "越狱与提示注入系统评估"
       }
     ]
+  },
+  {
+    "slug": "jailbreak",
+    "lead": "同一条危险请求换一层角色和格式，为什么可能让模型忘记原来的限制？",
+    "definition": "越狱提示试图绕过模型既定的安全策略、行为规范或拒答边界。它可能利用指令冲突、角色扮演、编码、上下文拼接或多轮诱导，把高风险目标包装成看似无害的任务；研究越狱是为了发现和修复安全训练的泛化缺口。",
+    "boundary": "越狱不是普通的提示优化，也不等于所有拒答失败都来自一条神奇字符串。模型版本、系统提示、工具权限、输入输出过滤和应用上下文共同决定风险；测试必须有授权，不应把危险载荷写成可直接滥用的教程。",
+    "sceneKind": "branch",
+    "sceneTitle": "边界压力计：改写请求，观察安全判断是否还站得住",
+    "actionLabel": "改变请求包装",
+    "actors": [
+      {
+        "id": "request",
+        "label": "原始请求",
+        "detail": "高风险目标",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "wrapper",
+        "label": "包装层",
+        "detail": "角色、编码、多轮分片",
+        "icon": "file",
+        "group": "变体"
+      },
+      {
+        "id": "boundary",
+        "label": "安全边界",
+        "detail": "策略、权限和风险分类",
+        "icon": "shield",
+        "group": "判断"
+      },
+      {
+        "id": "response",
+        "label": "模型回应",
+        "detail": "拒绝、替代或失守",
+        "icon": "robot",
+        "group": "结果"
+      },
+      {
+        "id": "record",
+        "label": "回归记录",
+        "detail": "抽象类别与防护证据",
+        "icon": "file",
+        "group": "后续"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "正常请求",
+        "note": "目标是理解安全政策，模型可以提供高层解释。",
+        "activeIds": [
+          "request",
+          "boundary",
+          "response"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "wrapper",
+          "record"
+        ],
+        "values": {
+          "response": "安全解释"
+        }
+      },
+      {
+        "label": "角色包装",
+        "note": "外层角色变化不应自动改变更高优先级的安全约束。",
+        "activeIds": [
+          "wrapper",
+          "boundary"
+        ],
+        "doneIds": [
+          "request"
+        ],
+        "mutedIds": [
+          "response",
+          "record"
+        ],
+        "values": {
+          "wrapper": "“没有限制的测试器”"
+        }
+      },
+      {
+        "label": "上下文拆分",
+        "note": "分片可能暴露重组和上下文一致性检查的缺口。",
+        "activeIds": [
+          "wrapper",
+          "response"
+        ],
+        "doneIds": [
+          "request",
+          "boundary"
+        ],
+        "mutedIds": [
+          "record"
+        ],
+        "values": {
+          "wrapper": "多段看似无害片段",
+          "response": "需要重组判断"
+        }
+      },
+      {
+        "label": "记录防护结果",
+        "note": "通过与否都保留风险类别和证据，不传播可滥用载荷。",
+        "activeIds": [
+          "response",
+          "record"
+        ],
+        "doneIds": [
+          "request",
+          "wrapper",
+          "boundary"
+        ],
+        "mutedIds": [],
+        "values": {
+          "response": "拒绝 + 安全替代",
+          "record": "加入变体回归"
+        }
+      }
+    ],
+    "insight": "越狱测试关注安全判断在变体和上下文中的稳定性，不是收集炫技字符串。",
+    "quiz": {
+      "question": "看到一次越狱成功，最正确的工程反应是什么？",
+      "options": [
+        {
+          "label": "抽象成风险类别并加入授权回归与变体评测",
+          "correct": true
+        },
+        {
+          "label": "把成功载荷直接放进产品示例",
+          "correct": false
+        },
+        {
+          "label": "只换系统提示一句就宣布修复",
+          "correct": false
+        }
+      ],
+      "success": "抽象类别、控制传播并做变体回归，才能检查防护是否泛化。",
+      "retry": "传播载荷或只改一句提示不能证明同类变体已被挡住。"
+    },
+    "prompt": {
+      "title": "审阅一次越狱风险而不传播载荷",
+      "text": "请用抽象类别描述输入变体、前置条件、模型和工具权限，记录预期拒答与实际行为；删除可直接复用的危险细节，补充同类变体、日志、修复措施和回归结果，并明确测试授权和停止条件。"
+    },
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2307.02483",
+        "label": "Wei et al. · Jailbroken",
+        "note": "安全训练失效模式与越狱研究"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/red-teaming",
+        "label": "OpenAI API · Red teaming",
+        "note": "授权探测与安全评测"
+      },
+      {
+        "url": "https://www.anthropic.com/research/next-generation-constitutional-classifiers",
+        "label": "Anthropic · Constitutional Classifiers",
+        "note": "对抗测试与越狱防护边界"
+      },
+      {
+        "url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
+        "label": "OWASP · Prompt Injection",
+        "note": "提示注入与越狱风险分类"
+      },
+      {
+        "url": "https://doi.org/10.6028/NIST.AI.100-2",
+        "label": "NIST · Adversarial Machine Learning",
+        "note": "对抗样本与攻击防护术语"
+      }
+    ]
   }
 ]
