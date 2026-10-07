@@ -2667,5 +2667,25 @@
       "tokenization",
       "embedding"
     ]
+  },
+  {
+    "slug": "rotary-position-embedding",
+    "mechanism": "RoPE 按位置旋转 Q/K 的二维维度对，使注意力内积包含相对位置角差；频率 base 与 scaling 决定长度边界。",
+    "misconception": "RoPE 不是简单相加式绝对位置编码，也不是所有向量都旋转；它不会自动解决超长上下文。",
+    "demoSignature": "5帧｜对象：Q/K坐标对、位置角度、旋转Q、旋转K、内积、未旋转V｜交互：拖动位置间距并切换长上下文参数｜变化：原坐标→分配角度→Q/K旋转→内积读相对角→长上下文另验；旋转坐标对照，不是流程图。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/2104.09864",
+      "https://d2l.ai/chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html",
+      "https://arxiv.org/abs/2307.09288",
+      "https://huggingface.co/docs/transformers/main/en/internal/rope_utils",
+      "https://arxiv.org/abs/1706.03762"
+    ],
+    "rewriteRisk": "不要把 RoPE 说成给所有 hidden state 加位置向量或保证无限上下文；必须区分 Q/K/V、二维分量、频率与 scaling。",
+    "nearDuplicates": [
+      "positional-encoding",
+      "attention",
+      "transformer",
+      "inference"
+    ]
   }
 ]

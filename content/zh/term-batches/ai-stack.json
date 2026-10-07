@@ -7535,5 +7535,65 @@
       "tokenization",
       "embedding"
     ]
+  },
+  {
+    "zh": "旋转位置嵌入",
+    "en": "Rotary Position Embedding",
+    "slug": "rotary-position-embedding",
+    "cat": "AI·Agent",
+    "say": "把 Q 和 K 在二维小平面里按位置转过不同角度，让内积自然带上相对距离。",
+    "aliases": [
+      "RoPE",
+      "Rotary Embedding",
+      "旋转位置编码"
+    ],
+    "question": "不把位置向量直接加到 token 上，模型还能怎样知道相隔几格？",
+    "definition": "旋转位置嵌入（RoPE）把 query 和 key 的相邻维度分成二维对，在每个位置按一个与位置相关的角度旋转。这样 Q 与 K 的点积会带出两者的相对位置差；value 通常不做同样的旋转，位置关系主要进入注意力分数。",
+    "boundary": "RoPE 不是把整条 hidden state 画个旋转动画，也不是简单把正弦向量加到 token embedding。实现必须明确旋转的维度配对、频率基数、最大上下文和缩放策略；长上下文扩展可能需要额外插值或变基，不能凭“用了 RoPE”保证任意长度都可靠。",
+    "demoType": "comparison",
+    "demoTitle": "同一支 Q/K，位置角度怎样改写相对关系",
+    "demoSteps": [
+      {
+        "label": "先放二维坐标对",
+        "value": "q=(1,0) · k=(0.8,0.6)",
+        "note": "RoPE 把相邻维度看成二维平面，先看原始方向，不把位置加到 value 上。"
+      },
+      {
+        "label": "给位置分配角度",
+        "value": "pos 2 → θ₂ · pos 5 → θ₅",
+        "note": "每个位置按频率表得到自己的旋转角；不同维度对有不同频率。"
+      },
+      {
+        "label": "分别旋转 Q 和 K",
+        "value": "R(θ₂)q · R(θ₅)k",
+        "note": "Q/K 的方向一起改变，向量长度保持；value 仍保留原路径。"
+      },
+      {
+        "label": "内积读出相对角",
+        "value": "q′·k′ 取决于 θ₂−θ₅",
+        "note": "注意力分数因此能感到两者相隔多远，而不必把绝对位置直接相加。"
+      },
+      {
+        "label": "把长上下文放回边界",
+        "value": "base、缩放、最大长度 → 需单独评测",
+        "note": "频率与实现策略决定远距离行为；旋转本身不承诺无限上下文。"
+      }
+    ],
+    "quizQuestion": "RoPE 主要把位置信息放进了哪一步？",
+    "quizOptions": [
+      "对 Q、K 的维度对做位置相关旋转，使它们的内积带相对位置信息",
+      "把每个 token 的 value 直接替换成位置编号",
+      "在输出文本后附加一个位置标签"
+    ],
+    "correctText": "RoPE 旋转 Q/K，再由注意力内积读取相对角度；value 通常不承担这一步。",
+    "wrongText": "先分开 Q、K、V 的职责，以及旋转维度、频率和长上下文策略。",
+    "promptTitle": "逐项审查 RoPE 实现",
+    "prompt": "给出 head_dim、旋转维度对、频率 base、位置索引和最大上下文，写出 Q/K 旋转前后的二维分量；验证内积如何依赖相对位置，并单独列出长上下文缩放和 value 不旋转的假设。",
+    "relatedSlugs": [
+      "positional-encoding",
+      "attention",
+      "transformer",
+      "inference"
+    ]
   }
 ]

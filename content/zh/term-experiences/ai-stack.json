@@ -31306,5 +31306,264 @@
         "note": "展示 Transformer 的序列形状、mask 与位置信息需由模型/输入提供。"
       }
     ]
+  },
+  {
+    "slug": "rotary-position-embedding",
+    "lead": "把 Q 和 K 在二维小平面里按位置转过不同角度，让内积自然带上相对距离。",
+    "definition": "旋转位置嵌入（RoPE）把 query 和 key 的相邻维度分成二维对，在每个位置按一个与位置相关的角度旋转。这样 Q 与 K 的点积会带出两者的相对位置差；value 通常不做同样的旋转，位置关系主要进入注意力分数。",
+    "boundary": "RoPE 不是把整条 hidden state 画个旋转动画，也不是简单把正弦向量加到 token embedding。实现必须明确旋转的维度配对、频率基数、最大上下文和缩放策略；长上下文扩展可能需要额外插值或变基，不能凭“用了 RoPE”保证任意长度都可靠。",
+    "sceneKind": "compare",
+    "sceneTitle": "两块旋转坐标纸：绝对角度如何留下相对距离",
+    "actionLabel": "拖动位置间距",
+    "actors": [
+      {
+        "id": "qk",
+        "label": "Q / K 坐标对",
+        "detail": "每两维组成一个小平面",
+        "icon": "layout",
+        "group": "输入"
+      },
+      {
+        "id": "angle",
+        "label": "位置角度",
+        "detail": "θ₂ 与 θ₅",
+        "icon": "clock",
+        "group": "位置"
+      },
+      {
+        "id": "qrot",
+        "label": "旋转后的 Q",
+        "detail": "R(θ₂)q",
+        "icon": "spark",
+        "group": "Q"
+      },
+      {
+        "id": "krot",
+        "label": "旋转后的 K",
+        "detail": "R(θ₅)k",
+        "icon": "spark",
+        "group": "K"
+      },
+      {
+        "id": "score",
+        "label": "Q′·K′",
+        "detail": "受相对角影响",
+        "icon": "chart",
+        "group": "注意力"
+      },
+      {
+        "id": "value",
+        "label": "V 保持原路",
+        "detail": "通常不做 RoPE 旋转",
+        "icon": "memory",
+        "group": "边界"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "先看未旋转坐标",
+        "note": "每两维组成一个二维平面；Q、K 先保留原始方向。",
+        "activeIds": [
+          "qk"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "angle",
+          "qrot",
+          "krot",
+          "score",
+          "value"
+        ],
+        "values": {
+          "qk": "q=(1,0) · k=(0.8,0.6)"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "位置变成角度",
+        "note": "不同位置和频率维度会得到不同 θ；角度不是额外 token。",
+        "activeIds": [
+          "angle"
+        ],
+        "doneIds": [
+          "qk"
+        ],
+        "mutedIds": [
+          "qrot",
+          "krot",
+          "score",
+          "value"
+        ],
+        "values": {
+          "angle": "pos 2→θ₂ · pos 5→θ₅"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "Q、K 各自转过角度",
+        "note": "旋转保持二维向量长度，却改变方向；value 仍在自己的路径上。",
+        "activeIds": [
+          "qrot",
+          "krot",
+          "value"
+        ],
+        "doneIds": [
+          "qk",
+          "angle"
+        ],
+        "mutedIds": [
+          "score"
+        ],
+        "values": {
+          "qrot": "R(θ₂)q",
+          "krot": "R(θ₅)k",
+          "value": "V：不旋转"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "内积留下相对角",
+        "note": "Q′与 K′的内积包含 θ₂−θ₅ 的影响，注意力因此能利用相对距离。",
+        "activeIds": [
+          "score"
+        ],
+        "doneIds": [
+          "qk",
+          "angle",
+          "qrot",
+          "krot",
+          "value"
+        ],
+        "mutedIds": [],
+        "values": {
+          "score": "score ≈ f(相对角度)"
+        },
+        "metric": {
+          "label": "位置差",
+          "value": "5−2=3"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "长上下文单独验收",
+        "note": "频率 base、缩放和最大长度决定远距离行为；RoPE 不等于无限上下文。",
+        "activeIds": [
+          "angle",
+          "score"
+        ],
+        "doneIds": [
+          "qk",
+          "qrot",
+          "krot",
+          "value"
+        ],
+        "mutedIds": [],
+        "values": {
+          "angle": "base / scaling / max length",
+          "score": "需长上下文评测"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "RoPE 把位置写进 Q/K 的方向，让注意力内积感到相对距离；实现和长上下文边界要单独核对。",
+    "quiz": {
+      "question": "RoPE 主要把位置信息放进了哪一步？",
+      "options": [
+        {
+          "label": "对 Q、K 的维度对做位置相关旋转，使它们的内积带相对位置信息",
+          "correct": true
+        },
+        {
+          "label": "把每个 token 的 value 直接替换成位置编号",
+          "correct": false
+        },
+        {
+          "label": "在输出文本后附加一个位置标签",
+          "correct": false
+        }
+      ],
+      "success": "对，关键是 Q/K 旋转后内积带出相对角。",
+      "retry": "把 Q、K、V 分开：RoPE 通常旋转前两者，value 不因此变成位置编号。"
+    },
+    "prompt": {
+      "title": "逐项审查 RoPE 实现",
+      "text": "给出 head_dim、旋转维度对、频率 base、位置索引和最大上下文，写出 Q/K 旋转前后的二维分量；验证内积如何依赖相对位置，并单独列出长上下文缩放和 value 不旋转的假设。"
+    },
+    "teaching": [
+      {
+        "id": "pair",
+        "title": "它把相邻维度看成一张张小坐标纸",
+        "body": "RoPE 将 head dimension 分成二维分量，每对分量用位置相关角度做旋转。向量长度保持，方向改变；这比把一整条向量粗略写成“转一下”更准确。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "relative",
+        "title": "相对距离从内积里冒出来",
+        "body": "Q 在位置 m、K 在位置 n 时，两个旋转后的向量内积会依赖 m−n 的角度差。模型因此可以在注意力分数中使用相对位置，而不必另加一张绝对位置表。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "qkv",
+        "title": "Q、K、V 的职责不能混",
+        "body": "RoFormer 的核心是把旋转放入 Q/K 的注意力计算；V 通常不旋转。若把“所有 hidden state 都旋转”当成定义，读者会错过真正承载位置信息的内积。",
+        "sourceIndices": [
+          1,
+          3
+        ]
+      },
+      {
+        "id": "base",
+        "title": "频率表决定远近怎么被看见",
+        "body": "不同维度使用不同频率，base 与位置索引共同决定角度。长上下文变体可能修改频率或加入缩放；这些是实现策略，要随模型版本一起记录。",
+        "sourceIndices": [
+          3,
+          4
+        ]
+      },
+      {
+        "id": "limit",
+        "title": "RoPE 仍需长上下文实测",
+        "body": "训练长度之外，角度分布、注意力衰减和数值范围都可能变化。Llama 等模型文档会把 rope scaling 作为配置项，不能从一个短上下文例子推断无限外推。",
+        "sourceIndices": [
+          3,
+          4,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2104.09864",
+        "label": "Su et al. · RoFormer",
+        "note": "提出 Rotary Position Embedding，并分析相对位置内积。"
+      },
+      {
+        "url": "https://d2l.ai/chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html",
+        "label": "Dive into Deep Learning · Self-attention and positional encoding",
+        "note": "提供位置编码和注意力关系的数学背景。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2307.09288",
+        "label": "Touvron et al. · Llama 2",
+        "note": "记录大语言模型中 RoPE 与上下文长度配置的实际使用。"
+      },
+      {
+        "url": "https://huggingface.co/docs/transformers/main/en/internal/rope_utils",
+        "label": "Hugging Face · RoPE utilities",
+        "note": "说明不同模型的 rope_type、参数和 scaling 配置。"
+      },
+      {
+        "url": "https://arxiv.org/abs/1706.03762",
+        "label": "Vaswani et al. · Attention Is All You Need",
+        "note": "提供 Q/K/V 注意力与位置机制的原始 Transformer 背景。"
+      }
+    ]
   }
 ]
