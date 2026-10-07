@@ -7675,7 +7675,7 @@
     "demoSteps": [
       {
         "label": "摆好源序列",
-        "value": "天气 很 好 → source tokens",
+        "value": "the weather is good → source tokens",
         "note": "输入序列先确定边界和顺序；它不要求和目标序列一一等长。"
       },
       {
@@ -7685,13 +7685,13 @@
       },
       {
         "label": "decoder 先拿目标前缀",
-        "value": "<BOS> → 今",
+        "value": "<BOS> → 天气",
         "note": "训练时可能喂真实前缀；推理时前缀来自模型自己上一轮的输出。"
       },
       {
         "label": "交叉注意力取源信息",
-        "value": "今 → 天　·　天气 → weather",
-        "note": "decoder 一边看已生成内容，一边从 encoder 表示里选择当前需要的源信息。"
+        "value": "目标“天气” ↔ 源“weather” · 当前对齐",
+        "note": "decoder 一边看已生成内容，一边从 encoder 表示里选择当前需要的源信息；这里用双语翻译表示对齐。"
       },
       {
         "label": "遇到停止条件",
