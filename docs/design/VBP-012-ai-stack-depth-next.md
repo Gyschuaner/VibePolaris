@@ -46,12 +46,12 @@
 
 - 内容分支 PR [#428](https://github.com/Gyschuaner/VibePolaris/pull/428) 合入 dev，随后 PR [#429](https://github.com/Gyschuaner/VibePolaris/pull/429) 合入 main。
 - 热修 PR [#430](https://github.com/Gyschuaner/VibePolaris/pull/430)（`b23df7ff`）修正来源台账、引用锚点和检索/向量分镜，合入 dev；发布 PR [#431](https://github.com/Gyschuaner/VibePolaris/pull/431) 合入 main `65b0528a`。
-- 窄屏修正 PR [#432](https://github.com/Gyschuaner/VibePolaris/pull/432)（`66de54fa`）和发布 PR [#433](https://github.com/Gyschuaner/VibePolaris/pull/433) 合入 main，最终提交 `d6e022ba243d9795552ac72103860f0d3b8adeee`。
+- 窄屏修正 PR [#432](https://github.com/Gyschuaner/VibePolaris/pull/432)（`66de54fa`）和发布 PR [#433](https://github.com/Gyschuaner/VibePolaris/pull/433) 合入 main，最终提交 `d6e022baa04ae8a6ab0743f5286cac0a13f1898f`。
 - 唯一 review subagent `/root/ai_stack_review` 对内容、引用、分镜、桌面视觉和 390px 账本布局均给出 PASS。本批未调用 ZCode CLI。
 
 ## 生产 release 与回滚
 
-- 镜像：`vibepolaris:d6e022ba243d9795552ac72103860f0d3b8adeee`。
+- 镜像：`vibepolaris:d6e022baa04ae8a6ab0743f5286cac0a13f1898f`。
 - 本地 linux/amd64 镜像 manifest：`sha256:d613dd9ed9948bb1b8d7d9e01e04e23e747598d52e149f150d92fd60c91d280a`；传输包 SHA-256：`2803535157a25909887335771741746bae7d1aeacb068172f128757411a7aca4`。
 - 当前 release：`/opt/vibepolaris/releases/20261007T101904Z-d6e022ba`，`/opt/vibepolaris/current` 已原子切换到此目录，`vibepolaris-web-1` 为 `running/healthy`。
 - 切换前 release：`/opt/vibepolaris/releases/20261007T100525Z-65b0528a`；本次备份：`/opt/vibepolaris/backups/20261007T101904Z-from-65b0528a`，SQLite 在线备份已保存，`vibepolaris_xiaobei_data` 数据卷未替换。
