@@ -64,6 +64,7 @@
 | 069 | 量化、知识蒸馏、混合专家、投机解码、束搜索、置信度校准、数据污染、分布外、参数高效微调、模型卡 | VBP-089 · [模型内部与部署机制十条设计记录](VBP-099-model-mechanisms.md) · 十条逐条重做，唯一 reviewer 复审，整批待发布 |
 | 070 | 上下文工程、查询重写、GraphRAG、Lost in the Middle、记忆巩固、过程监督、结果监督、奖励投机、智能体轨迹、计算机使用 | VBP-101 · [Agent 上下文扩展十条机制差异表](VBP-101-agent-context-expansion.md) · 十条逐条重做、唯一 reviewer PASS，流程类演示控制在 12.2%，PR #452 已合入并生产发布 |
 | 071 | Logit、Softmax、激活函数、层归一化、残差连接、前馈网络、位置编码、旋转位置嵌入、注意力头、序列到序列 | VBP-102 · [模型架构扩展十条机制差异表](VBP-102-model-architecture-expansion.md) · 十条逐条重做、唯一 reviewer PASS，全部使用非流程专属演示，已合入 main 并部署生产 |
+| 072 | 视觉层级、微交互、反馈、加载状态、减少动态、站点地图、设计令牌、关系型数据库、NoSQL、行 | VBP-103 · [早期词条深度复核](VBP-103-early-term-depth.md) · 十条逐条重写、每条独立研究与审读；演示覆盖 spectrum、state-machine、timeline、compare、tree、network、assembly，流程类保持 11.8%，待 reviewer 与批量发布 |
 
 后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 195 页，另有 9 页历史基准；其余 97 页待处理，新增候选不计入完成数。
 
