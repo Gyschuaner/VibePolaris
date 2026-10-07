@@ -142,11 +142,13 @@ import { EnvironmentVariableTermPage, ExpressionTermPage, FormatterTermPage, Fun
 import { ArrayTermPage, ConditionalBranchTermPage, ControlClientServerTermPage, DistributedSystemTermPage, EventDrivenArchitectureTermPage, LoopTermPage, MicroservicesTermPage, MonolithTermPage, ObjectTermPage, ServerlessTermPage } from "@/components/terms/control-redesign-pages/ControlRedesignPages";
 import { BeamSearchTermPage, ConfidenceCalibrationTermPage, DataContaminationTermPage, KnowledgeDistillationTermPage, MixtureOfExpertsTermPage, ModelCardTermPage, OutOfDistributionTermPage, ParameterEfficientFineTuningTermPage, QuantizationTermPage, SpeculativeDecodingTermPage } from "@/components/terms/ModelMechanismsPages";
 import { CssTermPage } from "@/components/terms/frontend-foundations-pages/css";
+import { FormTermPage } from "@/components/terms/frontend-foundations-pages/form";
 import { ResponsiveTermPage } from "@/components/terms/frontend-foundations-pages/responsive";
 
 const articleTermPages = {
   responsive: ResponsiveTermPage,
   css: CssTermPage,
+  form: FormTermPage,
   'offline-first': OfflineFirstTermPage,
   'adaptive-layout': AdaptiveLayoutTermPage,
   'safe-area': SafeAreaTermPage,
