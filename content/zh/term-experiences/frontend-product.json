@@ -16705,171 +16705,191 @@
     ]
   },
   {
-    "slug": "visual-hierarchy",
-    "lead": "页面信息都很重要时，为什么用户反而抓不到重点？",
-    "definition": "字号、字重、对比、位置、分组和留白共同改变注意顺序；层级效果来自相对差异，而非单个元素绝对大小。",
-    "boundary": "把所有内容加粗放大不会产生层级，只会让竞争更强；视觉层级也不能修复错误的信息结构。",
-    "sceneKind": "spectrum",
-    "sceneTitle": "同一页面的注意力如何从平均分布变成清楚顺序",
-    "actionLabel": "调整一个视觉变量",
-    "actors": [
-      {
-        "id": "title",
-        "label": "页面标题",
-        "detail": "当前 24px",
-        "icon": "file",
-        "group": "内容"
-      },
-      {
-        "id": "primary",
-        "label": "主要操作",
-        "detail": "提交申请",
-        "icon": "component",
-        "group": "内容"
-      },
-      {
-        "id": "secondary",
-        "label": "辅助说明",
-        "detail": "使用条件",
-        "icon": "file",
-        "group": "内容"
-      },
-      {
-        "id": "decoration",
-        "label": "装饰标签",
-        "detail": "新品、推荐、热门",
-        "icon": "spark",
-        "group": "内容"
-      },
-      {
-        "id": "attention",
-        "label": "注意力热图",
-        "detail": "第一眼与阅读顺序",
-        "icon": "chart",
-        "group": "观察"
-      }
-    ],
-    "edges": [],
-    "frames": [
-      {
-        "label": "所有内容同时强调",
-        "note": "标题、按钮、说明和三个标签都用大字号高饱和色，热图分散成五处。",
-        "activeIds": [
-          "title",
-          "primary",
-          "secondary",
-          "decoration",
-          "attention"
-        ],
-        "doneIds": [],
-        "mutedIds": [],
-        "values": {
-          "attention": "5 个竞争焦点"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "先降低辅助信息",
-        "note": "说明改为较小字号和次要颜色，装饰标签去掉两枚，竞争点减少。",
-        "activeIds": [
-          "secondary",
-          "decoration",
-          "attention"
-        ],
-        "doneIds": [
-          "title",
-          "primary"
-        ],
-        "mutedIds": [],
-        "values": {
-          "attention": "3 个焦点"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "建立标题到操作的顺序",
-        "note": "标题增大并增加下方留白，主要按钮靠近任务内容，热图先到标题再到按钮。",
-        "activeIds": [
-          "title",
-          "primary",
-          "attention"
-        ],
-        "doneIds": [
-          "secondary",
-          "decoration"
-        ],
-        "mutedIds": [],
-        "values": {
-          "attention": "标题 → 内容 → 提交"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "窄屏保持同一优先级",
-        "note": "切到手机宽度，按钮移到内容末尾，说明折叠，但阅读顺序没有反转。",
-        "activeIds": [
-          "title",
-          "primary",
-          "secondary",
-          "attention"
-        ],
-        "doneIds": [
-          "decoration"
-        ],
-        "mutedIds": [],
-        "values": {
-          "attention": "顺序保持"
-        },
-        "activeEdgeIds": []
-      }
-    ],
-    "insight": "视觉层级用大小、位置、对比和留白建立阅读顺序，不是让更多内容同时显眼。",
-    "quiz": {
-      "question": "建立视觉层级时应避免什么？",
-      "options": [
-        {
-          "label": "同时强调页面上大多数内容",
-          "correct": true
-        },
-        {
-          "label": "使用字号差异",
-          "correct": false
-        },
-        {
-          "label": "利用留白分组",
-          "correct": false
-        }
+  "slug": "visual-hierarchy",
+  "lead": "页面上的字、按钮和标签都在争第一眼时，视觉层级先回答“现在该看什么、下一步做什么”。",
+  "definition": "视觉层级是读者在一组信息里形成注意顺序的结果。字号和字重提供尺度，位置和分组提供阅读路径，对比和留白标出主次；它们共同建立“先看标题、再理解任务、最后行动”的节奏。层级不是某个元素越大越重要，而是相对差异、语义结构和当前任务一起让重点容易被找到。",
+  "boundary": "把所有字都加粗、给每个标签都上高饱和色，只会让竞争更激烈。视觉层级不能替代正确的标题结构、清楚的文案或键盘顺序；在窄屏上也不能只靠缩小字号维持桌面布局，而要重新安排分组和操作顺序。注意力热图是观察线索，不是对每个读者的精确预测。",
+  "sceneKind": "spectrum",
+  "sceneTitle": "只改变一个变量，观察注意力怎样重新排队",
+  "actionLabel": "调一个层级旋钮",
+  "actors": [
+    {
+      "id": "title",
+      "label": "页面标题",
+      "detail": "当前 24px",
+      "icon": "file",
+      "group": "内容"
+    },
+    {
+      "id": "primary",
+      "label": "主要操作",
+      "detail": "提交申请",
+      "icon": "component",
+      "group": "内容"
+    },
+    {
+      "id": "secondary",
+      "label": "辅助说明",
+      "detail": "使用条件",
+      "icon": "file",
+      "group": "内容"
+    },
+    {
+      "id": "decoration",
+      "label": "装饰标签",
+      "detail": "新品、推荐、热门",
+      "icon": "spark",
+      "group": "内容"
+    },
+    {
+      "id": "attention",
+      "label": "注意力热图",
+      "detail": "第一眼与阅读顺序",
+      "icon": "chart",
+      "group": "观察"
+    }
+  ],
+  "edges": [],
+  "frames": [
+    {
+      "label": "所有东西同时抢眼",
+      "note": "标题、按钮、说明和三个标签都使用大字号与高饱和色，热图出现五个同强度焦点；读者不知道先解决什么。",
+      "activeIds": [
+        "title",
+        "primary",
+        "secondary",
+        "decoration",
+        "attention"
       ],
-      "success": "强调过多会让页面重新变得没有重点。",
-      "retry": "字号和留白都是常见层级工具。"
+      "doneIds": [],
+      "mutedIds": [],
+      "values": {
+        "attention": "5 个竞争焦点"
+      },
+      "activeEdgeIds": []
     },
-    "prompt": {
-      "title": "检查页面的视觉阅读顺序",
-      "text": "请按用户主要任务审查下面页面，标出第一眼、第二步和辅助信息。通过字号、字重、位置、颜色和留白调整，不增加装饰性文字。"
+    {
+      "label": "先撤掉装饰竞争",
+      "note": "把辅助说明降到次要对比，移除两个只是宣传性质的标签；重点减少，内容没有被删除。",
+      "activeIds": [
+        "secondary",
+        "decoration",
+        "attention"
+      ],
+      "doneIds": [
+        "title",
+        "primary"
+      ],
+      "mutedIds": [],
+      "values": {
+        "attention": "3 个焦点",
+        "decoration": "1 个必要标签"
+      },
+      "activeEdgeIds": []
     },
-    "sources": [
+    {
+      "label": "拉开标题和说明",
+      "note": "标题得到更大的尺度和留白，说明保留可读对比；热图先落在标题，再进入任务内容，而不是被颜色推着跳。",
+      "activeIds": [
+        "title",
+        "secondary",
+        "attention"
+      ],
+      "doneIds": [
+        "decoration"
+      ],
+      "mutedIds": [
+        "primary"
+      ],
+      "values": {
+        "title": "24 → 32px",
+        "attention": "标题优先"
+      },
+      "activeEdgeIds": []
+    },
+    {
+      "label": "让主要操作靠近决定点",
+      "note": "按钮放在任务解释之后，保留明显但不刺眼的对比；阅读顺序成为标题 → 条件 → 提交，按钮不再孤零零地抢第一眼。",
+      "activeIds": [
+        "title",
+        "primary",
+        "attention"
+      ],
+      "doneIds": [
+        "secondary",
+        "decoration"
+      ],
+      "mutedIds": [],
+      "values": {
+        "primary": "主操作",
+        "attention": "标题 → 条件 → 提交"
+      },
+      "activeEdgeIds": []
+    },
+    {
+      "label": "窄屏保住语义顺序",
+      "note": "卡片折成单列，标题、条件和按钮仍按同一顺序出现；字号变小是适配，语义层级和键盘顺序没有被挤乱。",
+      "activeIds": [
+        "title",
+        "primary",
+        "secondary",
+        "attention"
+      ],
+      "doneIds": [
+        "decoration"
+      ],
+      "mutedIds": [],
+      "values": {
+        "attention": "桌面/窄屏顺序一致"
+      },
+      "activeEdgeIds": []
+    }
+  ],
+  "insight": "层级的结果是可预测的注意顺序；先确定任务，再用尺度、位置、对比和留白把顺序做出来，最后在不同宽度检查它是否仍成立。",
+  "quiz": {
+    "question": "一个页面的标题、按钮和辅助说明都被加粗放大后仍然难读，下一步最有价值的动作是什么？",
+    "options": [
       {
-        "url": "https://www.nngroup.com/articles/visual-hierarchy-ux-definition/",
-        "label": "资料来源",
-        "note": "用于核对定义、边界与演示"
+        "label": "减少竞争并明确主次顺序",
+        "correct": true
       },
       {
-        "url": "https://www.w3.org/WAI/WCAG22/Understanding/headings-and-labels.html",
-        "label": "资料来源",
-        "note": "用于核对定义、边界与演示"
+        "label": "继续把所有元素换成更亮的颜色",
+        "correct": false
       },
       {
-        "url": "https://www.w3.org/WAI/tutorials/page-structure/headings/",
-        "label": "资料来源",
-        "note": "用于核对定义、边界与演示"
-      },
-      {
-        "url": "https://developer.android.com/develop/ui/compose/designsystems/material3",
-        "label": "资料来源",
-        "note": "用于核对定义、边界与演示"
+        "label": "把辅助说明全部删除",
+        "correct": false
       }
-    ]
+    ],
+    "success": "层级来自相对关系；先撤掉非关键竞争，再把主要操作放回任务语境。",
+    "retry": "继续加重或随意删说明会损害理解，不能证明重点已经清楚。"
   },
+  "prompt": "请以用户当前任务为中心，标出第一眼、理解条件和主要操作三个层级；每轮只改一个变量（尺度、位置、对比或留白），分别在桌面和窄屏记录注意顺序、标题结构、键盘顺序和辅助信息是否仍可达。",
+  "sources": [
+    {
+      "url": "https://www.nngroup.com/articles/visual-hierarchy-ux-definition/",
+      "label": "NN/g · Visual hierarchy",
+      "note": "NN/g Visual Hierarchy：核对大小、对比、位置和留白如何形成注意顺序。"
+    },
+    {
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/headings-and-labels.html",
+      "label": "W3C · Headings and labels",
+      "note": "WCAG headings and labels：核对视觉强调不能替代语义标题和可理解标签。"
+    },
+    {
+      "url": "https://www.w3.org/WAI/tutorials/page-structure/headings/",
+      "label": "W3C · Page headings",
+      "note": "W3C Page Structure headings：核对标题层级与页面结构的关系。"
+    },
+    {
+      "url": "https://developer.android.com/develop/ui/compose/designsystems/material3",
+      "label": "Material 3 · Design system",
+      "note": "Material 3：核对 typography、color 和 spacing 作为相对层级系统的协作。"
+    }
+  ],
+  "promptTitle": "检查页面的视觉阅读顺序"
+},
   {
     "slug": "feedback",
     "lead": "用户点了保存按钮后页面毫无变化，他怎么知道是否成功？",
