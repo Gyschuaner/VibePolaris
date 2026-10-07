@@ -418,6 +418,29 @@
           "label": "服务端读取字段",
           "value": "3 项"
         }
+      },
+      {
+        "label": "GET body 在构造处停下",
+        "note": "GET 的读取语义并不因为多放了一段 body 就改变；Fetch 构造器直接拒绝这组组合。",
+        "activeIds": [
+          "method",
+          "content",
+          "handler"
+        ],
+        "doneIds": [
+          "target"
+        ],
+        "mutedIds": [
+          "headers"
+        ],
+        "values": {
+          "method": "GET",
+          "content": "{\"q\":\"海边\"}",
+          "handler": "TypeError · body not allowed"
+        },
+        "activeEdgeIds": [
+          "content-handler"
+        ]
       }
     ],
     "insight": "定位请求问题时，应分别检查方法与目标、字段、内容，而不是只看 URL。",
@@ -448,12 +471,65 @@
       {
         "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
         "label": "RFC 9110 · HTTP Semantics",
-        "note": "协议定义与报文语义"
+        "note": "请求消息、方法和请求目标的语义"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Messages",
+        "label": "MDN · HTTP messages",
+        "note": "请求行、头部、空行和可选正文"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch",
+        "label": "MDN · Using the Fetch API",
+        "note": "Request、fetch 与 body 处理"
+      },
+      {
+        "url": "https://fetch.spec.whatwg.org/#http-network-or-cache-fetch",
+        "label": "WHATWG · Fetch Standard",
+        "note": "Fetch 对请求构造和发送的定义"
       },
       {
         "url": "https://www.rfc-editor.org/rfc/rfc3986.html",
-        "label": "RFC 3986 · URI",
-        "note": "协议定义与报文语义"
+        "label": "RFC 3986 · URI Generic Syntax",
+        "note": "URI 的 query 组件与编码"
+      }
+    ],
+    "teaching": [
+      {
+        "id": "request-message",
+        "title": "请求是一整条消息",
+        "body": "浏览器点下“搜索”后，程序把操作写成一条发给服务的消息。方法说想做哪类操作，目标说明针对哪个资源，请求头补充解释条件，body 承载可选内容。只看地址栏，往往会漏掉认证、格式和实际提交的数据。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "request-target",
+        "title": "问号后面的键没有统一含义",
+        "body": "URI 的 query 部分只提供一段经过编码的字符；`q`、`page` 或 `dryRun` 代表什么，是接口自己约定的。重复键、空值和编码也要由接收方决定怎样解释，不能把问号后的每一项都当成同一种参数。",
+        "sourceIndices": [
+          1,
+          5
+        ]
+      },
+      {
+        "id": "request-body",
+        "title": "body 不是“请求的全部内容”",
+        "body": "请求体可以是 JSON、表单、文件或其他表示，Content-Type 帮接收方选择解析方式。GET 和 HEAD 在 Fetch 构造器中不能带 body；这不是把数据自动挪到 URL，而是这次请求组合本身不被接受。",
+        "sourceIndices": [
+          2,
+          3
+        ]
+      },
+      {
+        "id": "request-lifecycle",
+        "title": "构造成功还没有发送",
+        "body": "`new Request()` 只在浏览器内存中组装对象，`fetch()` 才会发起网络操作；拿到响应后，还要读取状态、字段和正文。演示里的“已匹配路由”只是请求能够被本地规则识别，不表示服务已经保存业务数据。",
+        "sourceIndices": [
+          2,
+          4
+        ]
       }
     ]
   },
