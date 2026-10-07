@@ -2547,5 +2547,25 @@
       "confidence-calibration",
       "inference"
     ]
+  },
+  {
+    "slug": "softmax",
+    "mechanism": "Softmax 对一组 logits 取指数并除以指数总和，生成依赖候选集合的归一化选择分布；temperature 和 mask 会在此之前改变输入或可见集合。",
+    "misconception": "softmax 的数值不是跨任务固定的事实正确率；加入候选、改变温度或更换模型都会改变它。",
+    "demoSignature": "5帧｜对象：原始logits、稳定平移、低温分布、高温分布、候选集合、事实核验｜交互：平移数值、切换温度、加入候选、分开事实核验｜变化：原始相对分数→稳定计算→尖分布/平分布→分母重算→百分比仍非证据；双分布对照，不是流程图。",
+    "sourceUrls": [
+      "https://docs.pytorch.org/docs/stable/generated/torch.nn.functional.softmax.html",
+      "https://docs.pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html",
+      "https://arxiv.org/abs/1706.03762",
+      "https://huggingface.co/docs/transformers/main/en/generation_strategies",
+      "https://d2l.ai/chapter_linear-classification/softmax-regression.html"
+    ],
+    "rewriteRisk": "不要把 softmax 写成事实概率或万能置信度；正文要交代候选集合、温度、数值稳定性和校准边界。",
+    "nearDuplicates": [
+      "logit",
+      "temperature",
+      "transformer",
+      "inference"
+    ]
   }
 ]
