@@ -112,15 +112,15 @@
     "slug": "temperature",
     "mechanism": "温度在采样阶段重新拉伸下一 token 的候选概率，通常低温更集中、高温更分散；实际效果取决于接口和解码组合。",
     "misconception": "温度不是创造力或准确度刻度，也不会替代事实检索；低温可能让错误更稳定。",
-    "demoSignature": "三候选概率柱随滑块改变集中度，低温显示更稳定，高温显示更分散；正文明确数值为教学示意且不改变事实校验。",
+    "demoSignature": "一枚落针抽签盘把同一句提示的三个候选分成不同面积：低温收窄最高候选，高温铺开其他区域；同一落点在两种温度下落进不同词区。盘外保留“事实材料 = ∅”的边界卡，不画流程节点。",
     "sourceUrls": [
-      "https://developers.openai.com/api/reference/resources/responses/methods/create",
-      "https://platform.openai.com/docs/guides/text?api-mode=responses",
-      "https://huggingface.co/docs/transformers/main/en/generation_strategies",
+      "https://developers.openai.com/api/docs/guides/text",
+      "https://ai.google.dev/gemini-api/docs/prompting-strategies",
+      "https://ai.google.dev/api/models",
       "https://huggingface.co/docs/transformers/main/en/main_classes/text_generation",
       "https://arxiv.org/abs/1904.09751"
     ],
-    "rewriteRisk": "只写采样阶段的相对概率变化，避免把温度宣传成创造力或准确度旋钮。",
+    "rewriteRisk": "把温度限定在候选采样分布，补齐不同模型的参数范围与 top-p/top-k 边界；避免把低温写成准确率开关，并把没有来源的事实题停在证据缺口。",
     "nearDuplicates": [
       "generative-ai"
     ]

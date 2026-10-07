@@ -60,6 +60,7 @@ import { ReasoningModelConceptTermPage } from '@/components/terms/ReasoningModel
 import { SystemPromptConceptTermPage } from '@/components/terms/SystemPromptConceptPage';
 import { FewShotPromptingConceptTermPage } from '@/components/terms/FewShotPromptingConceptPage';
 import { ZeroShotPromptingConceptTermPage } from '@/components/terms/ZeroShotPromptingConceptPage';
+import { TemperatureConceptTermPage } from '@/components/terms/TemperatureConceptPage';
 import { ContainerTermPage, InfrastructureContainerImageTermPage, InfrastructureServiceDiscoveryTermPage, InfrastructureObservabilityTermPage, InfrastructureSastTermPage, InfrastructureSecretScanningTermPage, InfrastructureDependencyScanningTermPage, InfrastructureThreatModelingTermPage, InfrastructureToolApprovalTermPage, InfrastructureEvaluationDatasetTermPage } from '@/components/terms/control-redesign-pages/InfrastructureRedesignPages';
 import { BoundaryPermissionTermPage, BoundaryXssTermPage, BoundarySkillTermPage, BoundaryEvaluationRunTermPage, BoundarySafetyEvaluationTermPage, BoundaryCostEvaluationTermPage, BoundaryLatencyEvaluationTermPage, BoundaryPassFailGraderTermPage, BoundaryGradingRubricTermPage, BoundaryHumanGraderTermPage } from '@/components/terms/control-redesign-pages/BoundaryEvaluationRedesignPages';
 import { BranchTermPage, CheckoutSwitchTermPage, CdTermPage, CiTermPage, CloneTermPage, CodeReviewTermPage as GitCodeReviewTermPage, DiffTermPage, FetchTermPage as GitFetchTermPage, MergeConflictTermPage, MergeTermPage, PreviewDeploymentTermPage, PullRequestTermPage as GitPullRequestTermPage, PullTermPage, PushTermPage, RebaseTermPage as GitRebaseTermPage, RemoteTermPage, RepoCommitTermPage, RevertTermPage as GitRevertTermPage, RollbackTermPage, StashTermPage as GitStashTermPage, StagingAreaTermPage, WorkingTreeTermPage } from "@/components/terms/GitConceptPages";
@@ -249,7 +250,7 @@ const articleTermPages = {
   'system-prompt': SystemPromptConceptTermPage,
   'few-shot-prompting': FewShotPromptingConceptTermPage,
   'zero-shot-prompting': ZeroShotPromptingConceptTermPage,
-  temperature: TemperatureTermPage,
+  temperature: TemperatureConceptTermPage,
   tokenization: TokenizationTermPage,
   'prompt-injection': PromptInjectionTermPage,
   compiler: CompilerTermPage,
