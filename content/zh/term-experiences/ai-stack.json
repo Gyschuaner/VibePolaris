@@ -2917,67 +2917,80 @@
     "lead": "“改会议时间”同时匹配三个工具时，为什么选中了更新工具却仍没有执行？",
     "definition": "应用先提供候选工具和选择策略，模型再提出本轮要不要调用、调用哪一个；auto、required、指定工具和 none 会改变可提出的选择。选出工具后，应用仍要检查参数、身份、权限和审批；写操作指会改变外部状态的调用。",
     "boundary": "选择不是执行，也不是授权；工具描述、allowlist 和策略只能缩小候选范围，不能替代业务权限、副作用控制或人工审批。",
-    "sceneKind": "route",
-    "sceneTitle": "工具相关性与审批条件分两次判断",
-    "actionLabel": "切换选择策略",
+    "sceneKind": "assembly",
+    "sceneTitle": "黄铜转盘把选择和执行分开",
+    "actionLabel": "切换选择策略并观察审批票",
     "actors": [
       {
         "id": "request",
-        "label": "请求",
+        "label": "任务票",
         "detail": "把会议改到周五",
         "icon": "user",
         "group": "输入"
       },
       {
+        "id": "dial",
+        "label": "选择针",
+        "detail": "auto / required / none",
+        "icon": "gear",
+        "group": "策略"
+      },
+      {
         "id": "read",
-        "label": "读取日历",
-        "detail": "相关性 0.42",
+        "label": "calendar_read",
+        "detail": "查空档",
         "icon": "clock",
-        "group": "候选"
+        "group": "筹码"
       },
       {
         "id": "update",
-        "label": "更新日历",
-        "detail": "相关性 0.91",
+        "label": "calendar_update",
+        "detail": "改时间",
         "icon": "gear",
-        "group": "候选"
+        "group": "筹码"
       },
       {
         "id": "search",
-        "label": "网页搜索",
-        "detail": "相关性 0.08",
+        "label": "web_search",
+        "detail": "找资料",
         "icon": "search",
-        "group": "候选"
+        "group": "筹码"
       },
       {
         "id": "approval",
-        "label": "写操作审批",
-        "detail": "待批准",
+        "label": "审批票",
+        "detail": "写操作暂停",
         "icon": "shield",
         "group": "闸门"
       }
     ],
     "edges": [
       {
-        "id": "r-read",
+        "id": "request-dial",
         "from": "request",
+        "to": "dial",
+        "label": "投递任务"
+      },
+      {
+        "id": "dial-read",
+        "from": "dial",
         "to": "read",
         "label": "候选"
       },
       {
-        "id": "r-up",
-        "from": "request",
+        "id": "dial-update",
+        "from": "dial",
         "to": "update",
         "label": "候选"
       },
       {
-        "id": "r-search",
-        "from": "request",
+        "id": "dial-search",
+        "from": "dial",
         "to": "search",
         "label": "候选"
       },
       {
-        "id": "up-ap",
+        "id": "update-approval",
         "from": "update",
         "to": "approval",
         "label": "写操作"
@@ -2985,84 +2998,40 @@
     ],
     "frames": [
       {
-        "label": "三个候选出现",
-        "note": "路由器先比较哪一个工具与请求相关；0.42、0.91、0.08 是教学示意，没有及格线，也不会自动放行。",
-        "activeIds": [
-          "request",
-          "read",
-          "update",
-          "search"
-        ],
+        "label": "任务票放上桌",
+        "note": "应用先接住“改会议时间”这张任务票；此刻没有工具被调用。",
+        "activeIds": ["request"],
         "doneIds": [],
-        "mutedIds": [
-          "approval"
-        ],
-        "values": {
-          "read": "0.42",
-          "update": "0.91",
-          "search": "0.08"
-        },
+        "mutedIds": ["dial", "read", "update", "search", "approval"],
+        "values": {"request": "把会议改到周五"},
         "activeEdgeIds": []
       },
       {
-        "label": "更新工具胜出",
-        "note": "最高分只是选择线索，模型提出“更新日历”的调用请求，尚未执行。",
-        "activeIds": [
-          "update"
-        ],
-        "doneIds": [
-          "request"
-        ],
-        "mutedIds": [
-          "read",
-          "search",
-          "approval"
-        ],
-        "values": {
-          "update": "已选择"
-        },
-        "activeEdgeIds": [
-          "r-up"
-        ]
+        "label": "三枚工具筹码露出",
+        "note": "选择针打开转盘，读取、更新和搜索只是候选能力，出现不等于执行。",
+        "activeIds": ["request", "dial", "read", "update", "search"],
+        "doneIds": ["request"],
+        "mutedIds": ["approval"],
+        "values": {"read": "查空档", "update": "改时间", "search": "找资料"},
+        "activeEdgeIds": ["request-dial", "dial-read", "dial-update", "dial-search"]
       },
       {
-        "label": "审批规则生效",
-        "note": "选择完成后，写操作仍停在审批闸门；审批通过前不会改变日历。",
-        "activeIds": [
-          "update",
-          "approval"
-        ],
-        "doneIds": [
-          "request"
-        ],
-        "mutedIds": [
-          "read",
-          "search"
-        ],
-        "values": {
-          "approval": "暂停"
-        },
-        "activeEdgeIds": [
-          "up-ap"
-        ]
+        "label": "选择针落在更新",
+        "note": "auto 或 required 可以让模型提出 calendar_update；这仍是一张待校验的调用票。",
+        "activeIds": ["dial", "update"],
+        "doneIds": ["request", "read", "search"],
+        "mutedIds": ["approval"],
+        "values": {"update": "PROPOSED"},
+        "activeEdgeIds": ["dial-update"]
       },
       {
-        "label": "改为禁止调用",
-        "note": "选择策略切到 none 后，三条工具路径全部关闭，只能生成文本回答。",
-        "activeIds": [
-          "request"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "read",
-          "update",
-          "search",
-          "approval"
-        ],
-        "values": {
-          "request": "仅文本回答"
-        },
-        "activeEdgeIds": []
+        "label": "写操作停在审批台",
+        "note": "审批通过前，calendar_update 不会改变日历；选择和执行是两道门。",
+        "activeIds": ["update", "approval"],
+        "doneIds": ["request", "dial", "read", "search"],
+        "mutedIds": [],
+        "values": {"approval": "NEEDS APPROVAL"},
+        "activeEdgeIds": ["update-approval"]
       }
     ],
     "insight": "工具选择决定模型提出哪个调用；能不能执行，是另一道由权限和审批做的判断。",
@@ -3091,24 +3060,29 @@
     },
     "sources": [
       {
-        "url": "https://developers.openai.com/api/docs/guides/function-calling#tool-choice",
-        "label": "OpenAI · Function calling · tool choice",
+        "url": "https://developers.openai.com/api/docs/guides/function-calling",
+        "label": "OpenAI · Function calling",
         "note": "auto/required/forced/none"
-      },
-      {
-        "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
-        "label": "Anthropic · Tool use with Claude",
-        "note": "模型提出调用与应用执行"
       },
       {
         "url": "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
         "label": "MCP · Tools specification 2025-06-18",
-        "note": "工具描述与 tools/call"
+        "note": "工具描述与输入 schema"
       },
       {
-        "url": "https://arxiv.org/abs/2302.04761",
-        "label": "arXiv · Toolformer",
-        "note": "模型学习调用工具"
+        "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works",
+        "label": "Anthropic · How tool use works",
+        "note": "模型提出调用与应用执行"
+      },
+      {
+        "url": "https://openai.github.io/openai-agents-python/tools/",
+        "label": "OpenAI Agents SDK · Tools",
+        "note": "运行器调用工具能力"
+      },
+      {
+        "url": "https://openai.github.io/openai-agents-python/human_in_the_loop/",
+        "label": "OpenAI Agents SDK · Human-in-the-loop",
+        "note": "高影响动作暂停审批"
       }
     ]
   },
