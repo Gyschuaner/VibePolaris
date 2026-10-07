@@ -16891,228 +16891,228 @@
   "promptTitle": "检查页面的视觉阅读顺序"
 },
   {
-    "slug": "feedback",
-    "lead": "用户点了保存按钮后页面毫无变化，他怎么知道是否成功？",
-    "definition": "界面在动作被接收、处理中和完成后把系统状态映射为局部视觉、文字、声音或触觉信号，使用户能决定下一步。",
-    "boundary": "反馈不等于每次弹 Toast；若结果已经在原位置清楚变化，额外通知可能重复和打断。",
-    "sceneKind": "state-machine",
-    "sceneTitle": "一次保存操作在五种状态下给出什么反馈",
-    "actionLabel": "推进保存状态",
-    "actors": [
-      {
-        "id": "form",
-        "label": "资料表单",
-        "detail": "用户已修改邮箱",
-        "icon": "file",
-        "group": "界面"
-      },
-      {
-        "id": "button",
-        "label": "保存按钮",
-        "detail": "空闲",
-        "icon": "component",
-        "group": "界面"
-      },
-      {
-        "id": "request",
-        "label": "保存请求",
-        "detail": "尚未发出",
-        "icon": "network",
-        "group": "系统"
-      },
-      {
-        "id": "status",
-        "label": "状态消息",
-        "detail": "可见且可被读出",
-        "icon": "message",
-        "group": "反馈"
-      },
-      {
-        "id": "retry",
-        "label": "重试入口",
-        "detail": "失败时出现",
-        "icon": "component",
-        "group": "恢复"
-      }
-    ],
-    "edges": [
-      {
-        "id": "button-request",
-        "from": "button",
-        "to": "request",
-        "label": "点击提交"
-      },
-      {
-        "id": "request-status",
-        "from": "request",
-        "to": "status",
-        "label": "返回结果"
-      },
-      {
-        "id": "status-retry",
-        "from": "status",
-        "to": "retry",
-        "label": "失败后提供"
-      }
-    ],
-    "frames": [
-      {
-        "label": "空闲时可提交",
-        "note": "表单有未保存修改，按钮文字为保存，状态区不占用注意力。",
-        "activeIds": [
-          "form",
-          "button"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "request",
-          "status",
-          "retry"
-        ],
-        "values": {
-          "button": "保存 · enabled"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "处理中防止重复",
-        "note": "点击后按钮变为保存中并禁用，请求只发出一次，表单内容仍保留。",
-        "activeIds": [
-          "button",
-          "request",
-          "form"
-        ],
-        "doneIds": [
-          "button"
-        ],
-        "mutedIds": [
-          "status",
-          "retry"
-        ],
-        "values": {
-          "button": "保存中 · disabled",
-          "request": "pending"
-        },
-        "activeEdgeIds": [
-          "button-request"
-        ]
-      },
-      {
-        "label": "成功明确结束",
-        "note": "请求完成，按钮恢复，状态区显示已保存并读出，未保存标记消失。",
-        "activeIds": [
-          "request",
-          "status",
-          "button",
-          "form"
-        ],
-        "doneIds": [
-          "request"
-        ],
-        "mutedIds": [
-          "retry"
-        ],
-        "values": {
-          "status": "已保存",
-          "form": "clean"
-        },
-        "activeEdgeIds": [
-          "request-status"
-        ]
-      },
-      {
-        "label": "失败保留输入",
-        "note": "改成服务失败，表单仍保留新邮箱，状态区说明未保存并出现重试。",
-        "activeIds": [
-          "request",
-          "status",
-          "form",
-          "retry"
-        ],
-        "doneIds": [
-          "button"
-        ],
-        "mutedIds": [],
-        "values": {
-          "status": "保存失败 · 内容未丢失",
-          "retry": "可用"
-        },
-        "activeEdgeIds": [
-          "request-status",
-          "status-retry"
-        ]
-      },
-      {
-        "label": "从当前任务重试",
-        "note": "用户选择重试，原来的输入仍在，按钮重新进入处理中；反馈没有把人送回空白起点。",
-        "activeIds": [
-          "button",
-          "request",
-          "form"
-        ],
-        "doneIds": [
-          "button"
-        ],
-        "mutedIds": [
-          "status",
-          "retry"
-        ],
-        "values": {
-          "button": "重试中 · disabled",
-          "request": "pending"
-        },
-        "activeEdgeIds": [
-          "button-request"
-        ]
-      }
-    ],
-    "insight": "反馈让用户知道动作是否开始、是否完成以及失败后能做什么，不能只在成功时改变页面。",
-    "quiz": {
-      "question": "表单提交失败后，什么反馈更合适？",
-      "options": [
-        {
-          "label": "保留填写内容并指出可处理的错误",
-          "correct": true
-        },
-        {
-          "label": "清空表单只显示“失败”",
-          "correct": false
-        },
-        {
-          "label": "页面保持完全不变",
-          "correct": false
-        }
+  "slug": "feedback",
+  "lead": "点击保存后，用户需要看到的不是一颗漂亮星星，而是“已接收、处理中、已保存还是失败，我下一步能做什么”。",
+  "definition": "反馈是系统把用户动作对应的状态变化呈现出来：动作被接收时确认触发，请求进行时告诉用户仍在工作，成功时显示结果已经落地，失败时保留能恢复的上下文并给出下一步。好的反馈贴着发生变化的对象出现，文字、禁用状态和数据更新各自承担不同证据，不靠一个短暂的 Toast 包办全部沟通。",
+  "boundary": "反馈不等于动效，也不等于每次都弹全局通知。状态消息不能替代表单错误、服务端拒绝或可操作的重试；成功提示也不能在数据尚未保存时提前出现。若结果已经在原位置清楚变化，额外通知可能只是噪声；若动作有副作用，还要说明是否可以撤销。",
+  "sceneKind": "state-machine",
+  "sceneTitle": "从修改到成功或失败，反馈证据跟着对象走",
+  "actionLabel": "推进保存请求",
+  "actors": [
+    {
+      "id": "form",
+      "label": "资料表单",
+      "detail": "用户已修改邮箱",
+      "icon": "file",
+      "group": "界面"
+    },
+    {
+      "id": "button",
+      "label": "保存按钮",
+      "detail": "空闲",
+      "icon": "component",
+      "group": "界面"
+    },
+    {
+      "id": "request",
+      "label": "保存请求",
+      "detail": "尚未发出",
+      "icon": "network",
+      "group": "系统"
+    },
+    {
+      "id": "status",
+      "label": "状态消息",
+      "detail": "可见且可被读出",
+      "icon": "message",
+      "group": "反馈"
+    },
+    {
+      "id": "retry",
+      "label": "重试入口",
+      "detail": "失败时出现",
+      "icon": "component",
+      "group": "恢复"
+    }
+  ],
+  "edges": [
+    {
+      "id": "button-request",
+      "from": "button",
+      "to": "request",
+      "label": "点击提交"
+    },
+    {
+      "id": "request-status",
+      "from": "request",
+      "to": "status",
+      "label": "返回结果"
+    },
+    {
+      "id": "status-retry",
+      "from": "status",
+      "to": "retry",
+      "label": "失败后提供"
+    }
+  ],
+  "frames": [
+    {
+      "label": "表单有未保存改动",
+      "note": "输入值已经改变，保存按钮可用；页面明确区分当前草稿和服务器已保存值，不把本地修改冒充成功。",
+      "activeIds": [
+        "form",
+        "button"
       ],
-      "success": "保留输入并说明原因能支持用户继续完成任务。",
-      "retry": "清空或无反馈都会增加重复操作和不确定性。"
+      "doneIds": [],
+      "mutedIds": [
+        "request",
+        "status",
+        "retry"
+      ],
+      "values": {
+        "form": "dirty · draft=新邮箱",
+        "button": "可保存"
+      },
+      "activeEdgeIds": []
     },
-    "prompt": {
-      "title": "补齐交互的反馈状态",
-      "text": "请检查下面交互的空闲、处理中、成功、失败和重试状态。为每个状态写清按钮、内容和错误信息如何变化，避免重复弹出无关提示。"
+    {
+      "label": "动作被接收并进入等待",
+      "note": "点击后按钮暂时禁用，请求对象出现；原位提示“正在保存”，用户知道重复点击不会提交两次。",
+      "activeIds": [
+        "form",
+        "button",
+        "request",
+        "status"
+      ],
+      "doneIds": [
+        "button"
+      ],
+      "mutedIds": [
+        "retry"
+      ],
+      "values": {
+        "button": "保存中 · disabled",
+        "request": "pending",
+        "status": "正在保存"
+      },
+      "activeEdgeIds": [
+        "button-request",
+        "request-status"
+      ]
     },
-    "sources": [
+    {
+      "label": "成功落在原位置",
+      "note": "服务端确认后，表单的已保存值更新，消息说明时间和结果；按钮恢复可用，反馈有可核验对象。",
+      "activeIds": [
+        "form",
+        "button",
+        "status"
+      ],
+      "doneIds": [
+        "request"
+      ],
+      "mutedIds": [
+        "retry"
+      ],
+      "values": {
+        "form": "saved=新邮箱",
+        "status": "已保存 · 14:32",
+        "button": "可再次保存"
+      },
+      "activeEdgeIds": [
+        "request-status"
+      ]
+    },
+    {
+      "label": "失败保留用户上下文",
+      "note": "网络或校验失败时，输入值不被清空，消息说清原因；失败状态不伪装成成功，重试入口紧挨着仍可编辑的表单。",
+      "activeIds": [
+        "form",
+        "button",
+        "status",
+        "retry"
+      ],
+      "doneIds": [
+        "request"
+      ],
+      "mutedIds": [],
+      "values": {
+        "form": "draft 保留",
+        "status": "未保存 · 网络超时",
+        "retry": "重试"
+      },
+      "activeEdgeIds": [
+        "status-retry"
+      ]
+    },
+    {
+      "label": "重试沿当前任务继续",
+      "note": "重试只重新发起请求，成功后回到已保存状态；如果服务端返回字段错误，错误应落到字段旁而不是只留一条消失的提示。",
+      "activeIds": [
+        "form",
+        "button",
+        "request",
+        "status",
+        "retry"
+      ],
+      "doneIds": [],
+      "mutedIds": [],
+      "values": {
+        "request": "retry #2",
+        "status": "结果可验证",
+        "retry": "失败时仍可操作"
+      },
+      "activeEdgeIds": [
+        "retry-request",
+        "request-status"
+      ]
+    }
+  ],
+  "insight": "反馈的工作是让用户判断当前状态和下一步；接收、处理中、成功、失败与恢复分别需要不同证据。",
+  "quiz": {
+    "question": "保存请求失败时，哪种反馈最能帮助用户继续任务？",
+    "options": [
       {
-        "url": "https://www.nngroup.com/articles/visibility-system-status/",
-        "label": "Nielsen Norman Group",
-        "note": "系统状态可见性与反馈位置"
+        "label": "保留输入、说明原因并提供可操作的重试",
+        "correct": true
       },
       {
-        "url": "https://www.w3.org/WAI/WCAG21/Understanding/status-messages",
-        "label": "W3C Specification",
-        "note": "状态消息与辅助技术通知"
+        "label": "只播放一段成功动画后清空表单",
+        "correct": false
       },
       {
-        "url": "https://www.w3.org/WAI/ARIA/apg/patterns/alert/",
-        "label": "WAI-ARIA Authoring Practices",
-        "note": "不抢焦点的即时提示"
-      },
-      {
-        "url": "https://design-system.service.gov.uk/components/error-message/",
-        "label": "GOV.UK Design System",
-        "note": "错误信息与恢复入口"
+        "label": "让按钮一直转圈但不说明发生了什么",
+        "correct": false
       }
-    ]
+    ],
+    "success": "失败不应抹掉用户已经输入的内容，原因和恢复动作要在同一上下文里可见。",
+    "retry": "装饰动画和无限等待都不能证明数据是否已保存，也没有给出恢复路径。"
   },
+  "prompt": "请列出表单 dirty、请求 pending、成功、服务端校验失败、网络超时和重试六种状态；为每种状态指定按钮是否可用、原位消息、数据值和焦点位置，并说明哪些反馈必须可被读屏器读到。",
+  "sources": [
+    {
+      "url": "https://www.nngroup.com/articles/visibility-system-status/",
+      "label": "NN/g · System status",
+      "note": "NN/g Visibility of System Status：核对及时、贴近当前动作的状态反馈原则。"
+    },
+    {
+      "url": "https://www.w3.org/WAI/WCAG21/Understanding/status-messages",
+      "label": "W3C · Status messages",
+      "note": "WCAG Status Messages：核对异步状态消息在不抢焦点时仍应被辅助技术感知。"
+    },
+    {
+      "url": "https://www.w3.org/WAI/ARIA/apg/patterns/alert/",
+      "label": "WAI-ARIA · Alert",
+      "note": "WAI-ARIA Alert Pattern：核对警告消息与用户操作、焦点移动的边界。"
+    },
+    {
+      "url": "https://design-system.service.gov.uk/components/error-message/",
+      "label": "GOV.UK · Error message",
+      "note": "GOV.UK Error message：核对错误原因、字段位置和恢复动作的写法。"
+    }
+  ],
+  "promptTitle": "设计一次可恢复的保存反馈"
+},
   {
     "slug": "loading-state",
     "lead": "接口要等两秒，页面应该空白、转圈还是保留内容占位？",

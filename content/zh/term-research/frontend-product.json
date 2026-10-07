@@ -964,14 +964,23 @@
   ]
 },
   {
-    "slug": "feedback",
-    "mechanism": "界面在动作被接收、处理中和完成后把系统状态映射为局部视觉、文字、声音或触觉信号，使用户能决定下一步。",
-    "misconception": "反馈不等于每次弹 Toast；若结果已经在原位置清楚变化，额外通知可能重复和打断。",
-    "demoSignature": "state: 5 frames; actors=邮箱输入/保存按钮/状态消息/重试入口; phases=有未保存修改→已接收并锁住按钮→原位置显示已保存时间→请求失败但输入保留→重试继续当前任务; action=逐步推进保存状态，观察每个阶段给出的下一步证据",
-    "sourceUrls": ["https://www.nngroup.com/articles/visibility-system-status/", "https://www.w3.org/WAI/WCAG21/Understanding/status-messages", "https://www.w3.org/WAI/ARIA/apg/patterns/alert/", "https://design-system.service.gov.uk/components/error-message/"],
-    "rewriteRisk": "high",
-    "nearDuplicates": ["loading-state", "microinteraction", "event"]
-  },
+  "slug": "feedback",
+  "mechanism": "反馈是系统把用户动作对应的状态变化呈现出来：动作被接收时确认触发，请求进行时告诉用户仍在工作，成功时显示结果已经落地，失败时保留能恢复的上下文并给出下一步。好的反馈贴着发生变化的对象出现，文字、禁用状态和数据更新各自承担不同证据，不靠一个短暂的 Toast 包办全部沟通。",
+  "misconception": "反馈不等于动效，也不等于每次都弹全局通知。状态消息不能替代表单错误、服务端拒绝或可操作的重试；成功提示也不能在数据尚未保存时提前出现。若结果已经在原位置清楚变化，额外通知可能只是噪声；若动作有副作用，还要说明是否可以撤销。",
+  "demoSignature": "state-machine: 5 frames; objects=表单/保存按钮/请求/状态消息/重试; change=dirty、pending、success、failure、retry; evidence=按钮状态、原位消息、数据值和恢复入口同步变化",
+  "sourceUrls": [
+    "https://www.nngroup.com/articles/visibility-system-status/",
+    "https://www.w3.org/WAI/WCAG21/Understanding/status-messages",
+    "https://www.w3.org/WAI/ARIA/apg/patterns/alert/",
+    "https://design-system.service.gov.uk/components/error-message/"
+  ],
+  "rewriteRisk": "high",
+  "nearDuplicates": [
+    "loading-state",
+    "microinteraction",
+    "event"
+  ]
+},
   {
     "slug": "loading-state",
     "mechanism": "异步操作开始后，界面根据等待范围与可估计程度选择局部禁用、内容占位、确定进度或不确定指示，并在结果到达时转换到内容、空或错误状态。",
