@@ -2447,5 +2447,25 @@
       "self-consistency",
       "evaluator-optimizer"
     ]
+  },
+  {
+    "slug": "outcome-supervision",
+    "mechanism": "结果监督把完整解答映射成最终结果标签，例如答案是否正确或是否满足可验证目标，再将这个整体信号用于训练 outcome reward model、筛选候选或强化学习；它不标注中间步骤。",
+    "misconception": "结果标签便宜不等于过程可靠。错误推理可能碰巧得到正确答案，ORM 也可能把表面相关性当成达标；是否适合只用结果监督取决于最终标准和过程错误的代价。",
+    "demoSignature": "5帧｜对象：同一道题、两份候选、结果标签、标注账本、过程盲点与监督选择｜交互：收最终答案、摊开单标签成本、让两份都通过、打开隐藏缺口、选择监督粒度｜变化：两个42→结果标签都通过→B的无依据假设被结果分数遮住→按任务补过程检查；双栏对照，不使用流程图。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/2211.14275",
+      "https://openai.com/index/improving-mathematical-reasoning-with-process-supervision/",
+      "https://arxiv.org/abs/2305.20050",
+      "https://arxiv.org/abs/2110.14168",
+      "https://openai.com/index/solving-math-word-problems/"
+    ],
+    "rewriteRisk": "不要把结果监督写成验证完整推理或通用安全信号；正文应同时交代标签效率、信用分配盲点、候选筛选、过程监督的补充作用和领域外推限制。",
+    "nearDuplicates": [
+      "process-supervision",
+      "chain-of-thought",
+      "confidence-calibration",
+      "evaluator-optimizer"
+    ]
   }
 ]
