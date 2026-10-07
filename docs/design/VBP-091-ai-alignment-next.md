@@ -32,9 +32,10 @@
 - `npm run typecheck`：通过。
 - `npm run audit:terms`：通过；`experienceCount=352`、`sourceCoverage=352`、`flowVisualCount=50`、`flowVisualRatio=0.142`、`duplicateSceneCount=0`、`adjacentSceneKindCount=0`、`nearDuplicatePairCount=0`。
 - `npm run build`：通过；静态页面 1091 个。构建只报告仓库既有的新闻 gapDays/实验性警告，没有构建错误。
+- `/root/ai_stack_review`：最终 `PASS`；三层台账四帧逐条一致，10/10，未发现 P1/P2 阻塞项。
 - 浏览器：本地 `http://127.0.0.1:3420` 逐条打开十页；390×844 下十页 `scrollWidth=390`、`bodyWidth=390`，无横向溢出；每页有 1 个机制演示区域和 3 个教学卡片；键盘 Space 可推进演示，边界题可选并返回反馈；代表页 console error 为空；演示单步截图已在验收中查看。
 - reduced-motion：`useScene` 在 `prefers-reduced-motion` 下停止自动播放并保留可手动跳转，hero CSS 在 reduce 媒体查询中关闭过渡和动画；浏览器当前环境媒体查询为 false，因此未声称在系统 reduce 设置下做了实机切换。
 
 ## 发布状态
 
-当前文档记录的是 feature 分支验收结果。DP 需求 `VBP-091`、研发任务和部署对象将在最终 review PASS 后按真实状态更新；Git 合并、生产镜像、发布目录、健康检查和回滚指针只填写实际执行结果。
+当前文档记录的是 feature 分支验收结果，已完成最终 review PASS。DP 需求 `VBP-091`、研发任务和部署对象按真实状态更新；Git 合并、生产镜像、发布目录、健康检查和回滚指针只填写实际执行结果。
