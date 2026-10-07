@@ -60,7 +60,7 @@ import { ContainerTermPage, InfrastructureContainerImageTermPage, Infrastructure
 import { BoundaryPermissionTermPage, BoundaryXssTermPage, BoundarySkillTermPage, BoundaryEvaluationRunTermPage, BoundarySafetyEvaluationTermPage, BoundaryCostEvaluationTermPage, BoundaryLatencyEvaluationTermPage, BoundaryPassFailGraderTermPage, BoundaryGradingRubricTermPage, BoundaryHumanGraderTermPage } from '@/components/terms/control-redesign-pages/BoundaryEvaluationRedesignPages';
 import { BranchTermPage, CheckoutSwitchTermPage, CdTermPage, CiTermPage, CloneTermPage, CodeReviewTermPage as GitCodeReviewTermPage, DiffTermPage, FetchTermPage as GitFetchTermPage, MergeConflictTermPage, MergeTermPage, PreviewDeploymentTermPage, PullRequestTermPage as GitPullRequestTermPage, PullTermPage, PushTermPage, RebaseTermPage as GitRebaseTermPage, RemoteTermPage, RepoCommitTermPage, RevertTermPage as GitRevertTermPage, RollbackTermPage, StashTermPage as GitStashTermPage, StagingAreaTermPage, WorkingTreeTermPage } from "@/components/terms/GitConceptPages";
 import { AcceptanceCriteriaTermPage, PriorityTermPage, ProblemStatementTermPage, RoadmapTermPage, ScopeTermPage, TargetUserTermPage, UseCaseTermPage, UserStoryTermPage } from "@/components/terms/ProductConceptPages";
-import { AcidTermPage, ColumnTermPage, NosqlTermPage, RelationalDatabaseTermPage, RowTermPage } from "@/components/terms/BackendNetworkTermPages";
+import { NosqlTermPage, RelationalDatabaseTermPage, RowTermPage } from "@/components/terms/BackendNetworkTermPages";
 import { TcpTermPage } from "@/components/terms/transport-http-pages/tcp";
 import { UdpTermPage } from "@/components/terms/transport-http-pages/udp";
 import { TlsHandshakeTermPage } from "@/components/terms/transport-http-pages/tls-handshake";
@@ -96,7 +96,7 @@ import { LeastPrivilegeTermPage } from "@/components/terms/least-privilege-pages
 import { HashingTermPage } from "@/components/terms/hashing-pages/hashing-page";
 import { InputValidationTermPage } from "@/components/terms/input-validation-pages/input-validation-page";
 import { EncryptionAtRestTermPage } from "@/components/terms/encryption-at-rest-pages/encryption-at-rest-page";
-import { EncryptionInTransitTermPage } from "@/components/terms/encryption-in-transit-pages/encryption-in-transit-page";
+import { EncryptionTransitTermPage } from "@/components/terms/EncryptionTransitConceptPage";
 import { FlexboxTermPage } from "@/components/terms/flexbox-pages/flexbox-page";
 import { CssGridTermPage } from "@/components/terms/css-grid-pages/css-grid-page";
 import { BreakpointTermPage } from "@/components/terms/breakpoint-pages/breakpoint-page";
@@ -119,6 +119,15 @@ import { RoutingTermPage } from "@/components/terms/rendering-pages/routing-page
 import { LocalStorageTermPage } from "@/components/terms/rendering-pages/local-storage-page";
 import { ConversionRateTermPage, DesignTokenTermPage, FeedbackTermPage, FocusManagementTermPage, FunnelTermPage, IterationTermPage, MockupTermPage, SitemapTermPage, UsabilityTestingTermPage, VisualHierarchyTermPage } from "@/components/terms/product-design-pages/ProductDesignPages";
 import { A11yTermPage, ClientServerTermPage, DeployTermPage, IaTermPage, LoadingStateTermPage, MicrointeractionTermPage, PrototypeTermPage, ReducedMotionTermPage, UserFlowTermPage, WireframeTermPage } from "@/components/terms/flow-redesign-pages/FlowRedesignPages";
+import { DebounceTermPage } from "@/components/terms/DebounceConceptPage";
+import { OptimisticUpdateTermPage } from "@/components/terms/OptimisticUpdateConceptPage";
+import { CircuitBreakerTermPage } from "@/components/terms/CircuitBreakerConceptPage";
+import { DataContractTermPage } from "@/components/terms/DataContractConceptPage";
+import { ContextCompactionTermPage } from "@/components/terms/ContextCompactionConceptPage";
+import { ToolSchemaTermPage } from "@/components/terms/ToolSchemaConceptPage";
+import { LatencyBudgetTermPage } from "@/components/terms/LatencyBudgetConceptPage";
+import { ColumnTermPage } from "@/components/terms/ColumnConceptPage";
+import { AcidTermPage } from "@/components/terms/AcidConceptPage";
 import { EnvironmentVariableTermPage, ExpressionTermPage, FormatterTermPage, FunctionTermPage, LinterTermPage, LockfileTermPage, MonorepoTermPage, ParameterTermPage, ReturnValueTermPage, SourceMapTermPage } from "@/components/terms/toolchain-redesign-pages/ToolchainRedesignPages";
 import { ArrayTermPage, ConditionalBranchTermPage, ControlClientServerTermPage, DistributedSystemTermPage, EventDrivenArchitectureTermPage, LoopTermPage, MicroservicesTermPage, MonolithTermPage, ObjectTermPage, ServerlessTermPage } from "@/components/terms/control-redesign-pages/ControlRedesignPages";
 
@@ -166,6 +175,15 @@ const articleTermPages = {
   'loading-state': LoadingStateTermPage,
   microinteraction: MicrointeractionTermPage,
   'reduced-motion': ReducedMotionTermPage,
+  debounce: DebounceTermPage,
+  'optimistic-update': OptimisticUpdateTermPage,
+  'circuit-breaker': CircuitBreakerTermPage,
+  'data-contract': DataContractTermPage,
+  'context-compaction': ContextCompactionTermPage,
+  'tool-schema': ToolSchemaTermPage,
+  'latency-budget': LatencyBudgetTermPage,
+  column: ColumnTermPage,
+  acid: AcidTermPage,
   'client-server': ControlClientServerTermPage,
   'conditional-branch': ConditionalBranchTermPage,
   loop: LoopTermPage,
@@ -281,8 +299,6 @@ const articleTermPages = {
   "relational-database": RelationalDatabaseTermPage,
   nosql: NosqlTermPage,
   row: RowTermPage,
-  column: ColumnTermPage,
-  acid: AcidTermPage,
   tcp: TcpTermPage,
   udp: UdpTermPage,
   "tls-handshake": TlsHandshakeTermPage,
@@ -317,7 +333,7 @@ const articleTermPages = {
   "hashing": HashingTermPage,
   "input-validation": InputValidationTermPage,
   "encryption-at-rest": EncryptionAtRestTermPage,
-  "encryption-in-transit": EncryptionInTransitTermPage,
+  "encryption-in-transit": EncryptionTransitTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,

@@ -1,0 +1,47 @@
+.hero { display: grid; gap: 11px; min-height: 226px; padding: 16px 17px 14px; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 18px; background: linear-gradient(145deg, color-mix(in srgb, var(--paper) 84%, #e6eee4), var(--paper)); overflow: hidden; color: var(--ink); }
+.heroTop { display: flex; justify-content: space-between; gap: 10px; align-items: center; color: var(--muted); font: 10px ui-monospace, SFMono-Regular, monospace; letter-spacing: .05em; }
+.heroTop strong { padding: 4px 7px; border-radius: 999px; background: color-mix(in srgb, var(--accent-text) 11%, transparent); color: var(--ink); font-size: 9px; }
+.stage { position: relative; min-height: 119px; display: grid; grid-template-columns: 1fr 92px 1fr; align-items: center; gap: 9px; }
+.requestField, .dependency { display: grid; gap: 6px; align-content: center; min-height: 84px; padding: 10px; border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); border-radius: 11px; background: color-mix(in srgb, var(--paper) 68%, transparent); }
+.requestField > span, .dependency > span { color: var(--muted); font: 9px ui-monospace, SFMono-Regular, monospace; }
+.requestDots { display: flex; flex-wrap: wrap; gap: 5px; }
+.requestDots i { width: 19px; height: 19px; display: grid; place-items: center; border-radius: 50%; background: var(--tint); color: var(--accent-text); font: 10px ui-monospace, SFMono-Regular, monospace; font-style: normal; transition: transform .35s, opacity .3s, background .3s; }
+.requestDots i[data-blocked="true"] { opacity: .38; transform: translateX(-7px); background: color-mix(in srgb, #a8584e 12%, transparent); color: #93473f; }
+.requestDots i[data-probe="true"] { box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent-text) 12%, transparent); }
+.dependency strong { font-size: 14px; }
+.dependency small { color: var(--muted); font-size: 9px; }
+.gate { position: relative; z-index: 2; width: 82px; height: 82px; display: grid; place-items: center; border: 3px solid var(--accent-text); border-radius: 50%; background: var(--paper); box-shadow: 0 0 0 7px color-mix(in srgb, var(--accent-text) 10%, transparent); text-align: center; transition: border-color .35s, box-shadow .35s, transform .35s; }
+.gate::after { content: ""; position: absolute; width: 23px; height: 5px; border-radius: 999px; background: currentColor; transform: rotate(-45deg); opacity: 0; transition: opacity .25s, transform .35s; }
+.gate strong { font: 700 11px ui-monospace, SFMono-Regular, monospace; }
+.gate small { display: block; margin-top: 2px; color: var(--muted); font-size: 8px; }
+.gate[data-mode="trip"], .gate[data-mode="open"] { border-color: #a8584e; color: #93473f; box-shadow: 0 0 0 7px color-mix(in srgb, #a8584e 12%, transparent); }
+.gate[data-mode="trip"]::after, .gate[data-mode="open"]::after { opacity: 1; transform: rotate(-45deg) scale(1.1); }
+.gate[data-mode="half"] { border-color: #b18442; color: #8a682d; box-shadow: 0 0 0 7px color-mix(in srgb, #b18442 13%, transparent); transform: rotate(4deg); }
+.gate[data-mode="recovered"] { border-color: var(--accent-text); box-shadow: 0 0 0 7px color-mix(in srgb, var(--accent-text) 13%, transparent); }
+.counter { display: flex; gap: 4px; align-items: center; margin-top: 3px; }
+.counter i { width: 6px; height: 6px; border-radius: 50%; background: color-mix(in srgb, var(--ink) 16%, transparent); }
+.counter i[data-hit="true"] { background: #a8584e; }
+.cooldown { position: absolute; left: 50%; bottom: 1px; transform: translateX(-50%); color: var(--muted); font: 9px ui-monospace, SFMono-Regular, monospace; opacity: 0; transition: opacity .3s; }
+.hero[data-mode="open"] .cooldown, .hero[data-mode="half"] .cooldown { opacity: 1; }
+.controls { display: flex; flex-wrap: wrap; gap: 5px; }
+.controls button { display: inline-flex; align-items: center; gap: 4px; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 999px; padding: 5px 8px; background: transparent; color: var(--muted); font: inherit; font-size: 10px; cursor: pointer; }
+.controls button:hover, .controls button[aria-pressed="true"] { border-color: var(--accent-text); background: var(--tint); color: var(--accent-text); }
+.caption { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.45; }
+.lab { display: grid; gap: 11px; margin: 24px 0 20px; padding: 15px; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 15px; background: color-mix(in srgb, var(--paper) 82%, #e6eee4); }
+.labHeader { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.labHeader span { color: var(--muted); font: 9px ui-monospace, SFMono-Regular, monospace; letter-spacing: .08em; }
+.labHeader strong { font-size: 14px; }
+.labControls { display: flex; flex-wrap: wrap; gap: 6px; }
+.labControls button { border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent); border-radius: 999px; padding: 6px 9px; background: transparent; color: var(--muted); font: inherit; font-size: 10px; cursor: pointer; }
+.labControls button:hover, .labControls button[aria-pressed="true"] { border-color: var(--accent-text); background: var(--tint); color: var(--accent-text); }
+.labReadout { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; padding: 11px 12px; border-radius: 9px; background: var(--paper); }
+.labReadout span { color: var(--muted); font-size: 10px; }
+.labReadout strong { font: 700 15px ui-monospace, SFMono-Regular, monospace; }
+.labReadout[data-open="true"] { border-left: 3px solid #a8584e; background: color-mix(in srgb, #a8584e 9%, var(--paper)); }
+.labReadout[data-half="true"] { border-left: 3px solid #b18442; background: color-mix(in srgb, #b18442 9%, var(--paper)); }
+.eventLog { display: flex; flex-wrap: wrap; gap: 5px; }
+.eventLog i { padding: 4px 6px; border-radius: 5px; background: color-mix(in srgb, var(--ink) 6%, transparent); color: var(--muted); font: 9px ui-monospace, SFMono-Regular, monospace; font-style: normal; }
+.labStatus { display: grid; gap: 3px; padding: 9px 10px; border-left: 2px solid var(--accent-text); background: color-mix(in srgb, var(--accent-text) 7%, transparent); font-size: 11px; line-height: 1.45; }
+.labStatus span { color: var(--muted); }
+@media (max-width: 600px) { .hero { min-height: 240px; } .stage { grid-template-columns: 1fr; gap: 7px; padding-bottom: 10px; } .gate { order: -1; justify-self: center; } .requestField, .dependency { min-height: 54px; } .cooldown { bottom: -2px; } .labReadout { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .requestDots i, .gate, .gate::after, .cooldown { transition: none; } }

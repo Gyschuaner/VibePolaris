@@ -8,6 +8,7 @@ import styles from "./BackendNetworkConcepts.module.css";
 import type { Source } from "@/lib/backend-network-sources";
 import { acidSources, apiKeySources, columnSources, nosqlSources, rbacSources, relationalDatabaseSources, rowSources, tcpSources, tlsHandshakeSources, udpSources } from "@/lib/backend-network-sources";
 import { NosqlMechanismHero, RelationalDatabaseMechanismHero, RowMechanismHero } from "./vbp095-mechanism-heroes";
+import { AcidMechanismHero, ColumnMechanismHero } from "./vbp096-database-heroes";
 
 type Block = { id: string; text: string };
 type Section = { id: string; title: string; blocks: Block[]; lesson?: BackendNetworkLessonSpec };
@@ -335,6 +336,7 @@ const columnSpec: PageSpec = {
   title: "列",
   subtitle: "Column · 给每个属性规定名字、类型和约束",
   intro: "“金额”这一列到底是文字还是数字，会决定排序、求和和错误输入怎样处理。数据库列不是表头上的装饰，而是对一类属性的持续约定：新行写入时，值要按它的类型和约束接受检查。",
+  mechanismHero: <ColumnMechanismHero />,
   hero: {
     question: "把四个金额放进同一列",
     nodes: [["输入", "2 · 10 · 9.5 · abc"], ["列类型", "NUMERIC"], ["结果", "21.5；abc 被拒"]],
@@ -386,6 +388,7 @@ export function ColumnTermPage() {
 
 const acidSpec: PageSpec = {
   slug: "acid",
+  mechanismHero: <AcidMechanismHero />,
   title: "ACID",
   subtitle: "ACID · 事务在成功、并发与故障中的四个承诺",
   intro: "转账要么从一个账户扣款并给另一个账户入账，要么两边都不改变。ACID 把事务中常被期待的四类属性拆开：原子性、一致性、隔离性和持久性；它们分别回答不同的失败问题。",

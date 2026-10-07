@@ -21569,5 +21569,572 @@
         "note": "减少分布式协调并用补偿动作处理异步边界"
       }
     ]
+  },
+  {
+    "slug": "context-compaction",
+    "lead": "对话太长时，为什么不能把前面全部塞给模型？",
+    "definition": "上下文压缩把旧历史、工具记录或中间草稿缩成较短表示，腾出窗口空间，同时保留会影响当前任务的目标、证据和未完成动作。",
+    "boundary": "摘要有损，可能漏掉细节和否定条件；它不是完整归档，也不保证模型自动知道哪些信息最重要。",
+    "sceneKind": "memory",
+    "sceneTitle": "有限窗口怎样留下可继续执行的状态",
+    "actionLabel": "推进一个阶段",
+    "actors": [
+      {
+        "id": "context",
+        "label": "上下文托盘",
+        "detail": "24k tokens",
+        "icon": "memory",
+        "group": "容量"
+      },
+      {
+        "id": "history",
+        "label": "旧对话",
+        "detail": "14k tokens",
+        "icon": "message",
+        "group": "历史"
+      },
+      {
+        "id": "evidence",
+        "label": "关键证据",
+        "detail": "订单号与约束",
+        "icon": "file",
+        "group": "保留"
+      },
+      {
+        "id": "task",
+        "label": "未完成动作",
+        "detail": "等待发送退款请求",
+        "icon": "gear",
+        "group": "任务"
+      }
+    ],
+    "edges": [
+      {
+        "id": "history-context",
+        "from": "history",
+        "to": "context",
+        "label": "占用窗口"
+      },
+      {
+        "id": "evidence-context",
+        "from": "evidence",
+        "to": "context",
+        "label": "标记保留"
+      },
+      {
+        "id": "task-context",
+        "from": "task",
+        "to": "context",
+        "label": "必须继续"
+      }
+    ],
+    "frames": [
+      {
+        "label": "材料装入窗口",
+        "note": "系统目标、旧对话和工具回执一起占用有限托盘。",
+        "activeIds": [
+          "context",
+          "history"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "evidence",
+          "task"
+        ],
+        "values": {
+          "context": "8k / 24k"
+        },
+        "activeEdgeIds": [
+          "history-context"
+        ]
+      },
+      {
+        "label": "容量被顶住",
+        "note": "继续把所有原文塞进来会越过窗口，最新任务可能还没位置。",
+        "activeIds": [
+          "context"
+        ],
+        "doneIds": [
+          "history"
+        ],
+        "mutedIds": [
+          "evidence",
+          "task"
+        ],
+        "values": {
+          "context": "26k / 24k · overflow"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "标记不可丢信息",
+        "note": "先标出目标、关键证据和未完成动作，再决定哪些旧材料可以缩短。",
+        "activeIds": [
+          "evidence",
+          "task"
+        ],
+        "doneIds": [
+          "context"
+        ],
+        "mutedIds": [
+          "history"
+        ],
+        "values": {
+          "evidence": "订单 A17 · 7 日",
+          "task": "发送退款请求"
+        },
+        "activeEdgeIds": [
+          "evidence-context",
+          "task-context"
+        ]
+      },
+      {
+        "label": "压缩并重新核对",
+        "note": "旧对话变成摘要，关键状态仍可继续使用；需要细节时要能回查原文。",
+        "activeIds": [
+          "context"
+        ],
+        "doneIds": [
+          "history",
+          "evidence",
+          "task"
+        ],
+        "mutedIds": [],
+        "values": {
+          "context": "11k / 24k · ready"
+        },
+        "activeEdgeIds": [
+          "history-context"
+        ],
+        "metric": {
+          "label": "必须保留",
+          "value": "目标 + 证据 + 动作"
+        }
+      }
+    ],
+    "insight": "压缩的单位不是“随便删消息”，而是保留能让任务继续的状态。",
+    "quiz": {
+      "question": "上下文快溢出时，哪项做法更可靠？",
+      "options": [
+        {
+          "label": "先标出目标、关键证据和未完成动作，再压缩旧材料",
+          "correct": true
+        },
+        {
+          "label": "无条件删除最早的一半消息",
+          "correct": false
+        },
+        {
+          "label": "只保留最后一条消息，其他都不需要",
+          "correct": false
+        }
+      ],
+      "success": "先定义任务边界，摘要才知道什么不能丢。",
+      "retry": "先区分容量管理、完整归档和任务状态。"
+    },
+    "prompt": {
+      "title": "为长对话写压缩清单",
+      "text": "请把对话分成目标、事实、证据、决策、未完成动作和可回查原文，定义压缩后必须重新核对的字段。"
+    },
+    "sources": [
+      {
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/context-windows",
+        "label": "Anthropic · Context windows",
+        "note": "上下文容量、超限与 compaction"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+        "label": "Anthropic · Effective context engineering",
+        "note": "有限 attention budget 与高信号选择"
+      },
+      {
+        "url": "https://docs.langchain.com/oss/python/langchain/short-term-memory",
+        "label": "LangChain · Short-term memory",
+        "note": "thread state、checkpointer 与记忆边界"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/semantic-kernel/concepts/ai-services/chat-completion/chat-history",
+        "label": "Semantic Kernel · Chat history",
+        "note": "角色消息与工具调用结果"
+      }
+    ]
+  },
+  {
+    "slug": "tool-schema",
+    "lead": "模型说要调用工具，怎样知道它传的参数能执行？",
+    "definition": "工具 Schema 用结构化规则声明工具名称、参数类型、必填字段和允许值，让执行层先校验模型提出的调用请求。",
+    "boundary": "结构通过不等于有权执行，也不等于外部结果正确；授权、超时、幂等和副作用控制仍在 schema 之外。",
+    "sceneKind": "contract",
+    "sceneTitle": "一次工具调用怎样从提议走到执行",
+    "actionLabel": "推进一个阶段",
+    "actors": [
+      {
+        "id": "model",
+        "label": "模型提议",
+        "detail": "get_weather(city=?)",
+        "icon": "brain",
+        "group": "请求"
+      },
+      {
+        "id": "schema",
+        "label": "工具 Schema",
+        "detail": "city:string · required",
+        "icon": "file",
+        "group": "契约"
+      },
+      {
+        "id": "validator",
+        "label": "参数校验",
+        "detail": "等待检查",
+        "icon": "shield",
+        "group": "闸门"
+      },
+      {
+        "id": "tool",
+        "label": "天气工具",
+        "detail": "副作用在闸门之后",
+        "icon": "gear",
+        "group": "执行"
+      }
+    ],
+    "edges": [
+      {
+        "id": "model-schema",
+        "from": "model",
+        "to": "schema",
+        "label": "对照形状"
+      },
+      {
+        "id": "schema-validator",
+        "from": "schema",
+        "to": "validator",
+        "label": "校验参数"
+      },
+      {
+        "id": "validator-tool",
+        "from": "validator",
+        "to": "tool",
+        "label": "通过才执行"
+      }
+    ],
+    "frames": [
+      {
+        "label": "提出调用",
+        "note": "模型给出工具名和一份尚未确认的参数。",
+        "activeIds": [
+          "model"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "schema",
+          "validator",
+          "tool"
+        ],
+        "values": {
+          "model": "get_weather(city=?)"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "读取 schema",
+        "note": "执行层先知道 city 必填且必须是字符串。",
+        "activeIds": [
+          "schema"
+        ],
+        "doneIds": [
+          "model"
+        ],
+        "mutedIds": [
+          "validator",
+          "tool"
+        ],
+        "values": {
+          "schema": "city:string · required"
+        },
+        "activeEdgeIds": [
+          "model-schema"
+        ]
+      },
+      {
+        "label": "校验参数",
+        "note": "缺少 city 或类型错误时，调用在外部副作用前被拒绝。",
+        "activeIds": [
+          "validator"
+        ],
+        "doneIds": [
+          "model",
+          "schema"
+        ],
+        "mutedIds": [
+          "tool"
+        ],
+        "values": {
+          "validator": "PASS / invalid args"
+        },
+        "activeEdgeIds": [
+          "schema-validator"
+        ]
+      },
+      {
+        "label": "执行或拒绝",
+        "note": "通过才把可执行输入传给天气工具，失败保留可解释错误。",
+        "activeIds": [
+          "tool"
+        ],
+        "doneIds": [
+          "model",
+          "schema",
+          "validator"
+        ],
+        "mutedIds": [],
+        "values": {
+          "tool": "city=上海 → 24°C"
+        },
+        "activeEdgeIds": [
+          "validator-tool"
+        ],
+        "metric": {
+          "label": "副作用发生前",
+          "value": "先校验"
+        }
+      }
+    ],
+    "insight": "工具 schema 让调用形状可检查，却不替权限、超时和业务结果负责。",
+    "quiz": {
+      "question": "工具参数缺少 required 的 city 字段时，哪项最合适？",
+      "options": [
+        {
+          "label": "在执行工具前拒绝并返回结构错误",
+          "correct": true
+        },
+        {
+          "label": "猜一个城市继续调用",
+          "correct": false
+        },
+        {
+          "label": "先执行再让外部系统报错",
+          "correct": false
+        }
+      ],
+      "success": "先校验参数可以阻止猜测进入外部副作用。",
+      "retry": "先分清结构校验、授权判断和工具结果。"
+    },
+    "prompt": {
+      "title": "审查一个工具调用契约",
+      "text": "请写出工具 schema、参数校验、授权、幂等、超时、错误和副作用确认，说明每一步由谁负责。"
+    },
+    "sources": [
+      {
+        "url": "https://platform.openai.com/docs/guides/function-calling",
+        "label": "OpenAI · Function calling",
+        "note": "工具调用与结构化参数"
+      },
+      {
+        "url": "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+        "label": "MCP · Tools",
+        "note": "工具输入 schema 与调用结果"
+      },
+      {
+        "url": "https://json-schema.org/draft/2020-12/json-schema-validation",
+        "label": "JSON Schema · Validation",
+        "note": "类型、必填与值域规则"
+      },
+      {
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use",
+        "label": "Anthropic · Tool use",
+        "note": "工具定义、调用和结果边界"
+      }
+    ]
+  },
+  {
+    "slug": "latency-budget",
+    "lead": "页面感觉慢，究竟是哪一段花掉了时间？",
+    "definition": "延迟预算把一次端到端请求的时间目标分给各个阶段，并用分段测量决定哪里应该优化、降级或改变用户体验。",
+    "boundary": "预算不是平均响应时间，也不等于每次请求的硬保证；用户感知、尾延迟、重试和并行阶段都要在同一张账上说明。",
+    "sceneKind": "pipeline",
+    "sceneTitle": "800ms 预算如何被 DNS、TLS、排队和模型分走",
+    "actionLabel": "推进一个阶段",
+    "actors": [
+      {
+        "id": "request",
+        "label": "一次请求",
+        "detail": "用户等待完整结果",
+        "icon": "browser",
+        "group": "目标"
+      },
+      {
+        "id": "network",
+        "label": "DNS + TLS",
+        "detail": "200ms 配额",
+        "icon": "network",
+        "group": "网络"
+      },
+      {
+        "id": "queue",
+        "label": "排队",
+        "detail": "90ms 配额",
+        "icon": "queue",
+        "group": "服务"
+      },
+      {
+        "id": "model",
+        "label": "模型计算",
+        "detail": "280ms 配额",
+        "icon": "brain",
+        "group": "计算"
+      }
+    ],
+    "edges": [
+      {
+        "id": "request-network",
+        "from": "request",
+        "to": "network",
+        "label": "先建立连接"
+      },
+      {
+        "id": "network-queue",
+        "from": "network",
+        "to": "queue",
+        "label": "进入服务"
+      },
+      {
+        "id": "queue-model",
+        "from": "queue",
+        "to": "model",
+        "label": "开始计算"
+      }
+    ],
+    "frames": [
+      {
+        "label": "分配总预算",
+        "note": "用户要的是完整结果，团队先把 800ms 写成共同目标。",
+        "activeIds": [
+          "request"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "network",
+          "queue",
+          "model"
+        ],
+        "values": {
+          "request": "800ms target"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "逐段计时",
+        "note": "DNS、TLS、排队和模型各自拿到时间份额，瓶颈开始有归属。",
+        "activeIds": [
+          "network",
+          "queue",
+          "model"
+        ],
+        "doneIds": [
+          "request"
+        ],
+        "mutedIds": [],
+        "values": {
+          "network": "200ms",
+          "queue": "90ms",
+          "model": "280ms"
+        },
+        "activeEdgeIds": [
+          "request-network",
+          "network-queue",
+          "queue-model"
+        ]
+      },
+      {
+        "label": "慢段出现",
+        "note": "模型从 280ms 变成 560ms，总账超过用户目标。",
+        "activeIds": [
+          "model"
+        ],
+        "doneIds": [
+          "request",
+          "network",
+          "queue"
+        ],
+        "mutedIds": [],
+        "values": {
+          "model": "560ms · slow"
+        },
+        "activeEdgeIds": [
+          "queue-model"
+        ],
+        "metric": {
+          "label": "当前总计",
+          "value": "850ms"
+        }
+      },
+      {
+        "label": "做出取舍",
+        "note": "降低模型延迟、并行网络、提前给反馈或调整目标，必须说明牺牲什么。",
+        "activeIds": [
+          "request"
+        ],
+        "doneIds": [
+          "network",
+          "queue",
+          "model"
+        ],
+        "mutedIds": [],
+        "values": {
+          "request": "预算内 / 重新定义体验"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "预算状态",
+          "value": "可交付或降级"
+        }
+      }
+    ],
+    "insight": "延迟预算把“慢”变成每段可测、可讨论、可取舍的时间账。",
+    "quiz": {
+      "question": "模型阶段多花 280ms 导致总计超出预算时，哪项判断更准确？",
+      "options": [
+        {
+          "label": "要看完整链路并决定优化、并行或改变体验目标",
+          "correct": true
+        },
+        {
+          "label": "只要模型平均值还可以就不用管",
+          "correct": false
+        },
+        {
+          "label": "把超出的时间藏到加载动画里即可",
+          "correct": false
+        }
+      ],
+      "success": "预算是为了暴露取舍，不是把超时藏起来。",
+      "retry": "先把端到端目标和分段时间放回同一张账。"
+    },
+    "prompt": {
+      "title": "拆一次请求的延迟账",
+      "text": "请按用户可感知阶段记录总预算、每段预算、p95/p99、重试影响和超预算后的降级或产品取舍。"
+    },
+    "sources": [
+      {
+        "url": "https://sre.google/sre-book/handling-overload/",
+        "label": "Google SRE · Handling overload",
+        "note": "延迟、过载和尾部行为"
+      },
+      {
+        "url": "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/",
+        "label": "AWS Builders Library · Timeouts",
+        "note": "超时、重试与延迟放大"
+      },
+      {
+        "url": "https://opentelemetry.io/docs/specs/semconv/http/http-metrics/",
+        "label": "OpenTelemetry · HTTP metrics",
+        "note": "分段测量和延迟直方图"
+      },
+      {
+        "url": "https://cloud.google.com/architecture/framework/performance-optimization",
+        "label": "Google Cloud · Performance optimization",
+        "note": "端到端性能目标与取舍"
+      }
+    ]
   }
 ]
