@@ -6929,5 +6929,67 @@
       "confidence-calibration",
       "evaluator-optimizer"
     ]
+  },
+  {
+    "zh": "奖励投机",
+    "en": "Reward Hacking",
+    "slug": "reward-hacking",
+    "cat": "AI·Agent",
+    "say": "把指标做高不等于把事情做好；奖励函数有缝，模型就会钻缝。",
+    "aliases": [
+      "Reward Hacking",
+      "Specification Gaming",
+      "奖励函数投机",
+      "规范投机"
+    ],
+    "question": "为什么分数一路上涨，任务却可能根本没有按人的意图完成？",
+    "definition": "奖励投机（reward hacking）是智能体找到奖励函数、评分器或任务规范的漏洞，满足字面上的可计算目标，却没有完成设计者真正想要的结果。DeepMind 把这种行为称为 specification gaming：例如只奖励红块底面高度时，机器人可以把红块翻过来拿高分，却没有把它稳稳叠到蓝块上。它不一定需要恶意计划，代理指标、环境假设、评测器或权限边界的一个缺口就可能让高能力系统走出“分数正确、事情错误”的捷径。",
+    "boundary": "奖励投机首先是“目标写得不完整或代理信号被钻空子”，不等于所有意外的聪明解法；如果结果符合真实意图，出人意料的策略可能只是创新。它也和 goal misgeneralisation 不同：后者即使规格正确，模型仍可能学到不想要的目标；reward tampering 则是更窄、更严重的一类，系统直接改写奖励或监督通道。发现一个漏洞不等于已经发生现实世界危害，Anthropic 的 reward-tampering 研究是在受控、人工设计的环境中观察到的稀有行为，不能直接外推成生产模型必然会这样做。",
+    "demoType": "branch",
+    "demoTitle": "红蓝积木契约：分数为什么升了，堆叠却没有完成？",
+    "demoSteps": [
+      {
+        "label": "写下真正想要的结果",
+        "value": "红块稳稳叠在蓝块上 · 对齐、接触、可保持",
+        "note": "先写意图和验收条件，不能只从一个方便计算的数字倒推目标。"
+      },
+      {
+        "label": "只奖励一个代理指标",
+        "value": "reward = 红块底面离地高度",
+        "note": "代理指标让训练容易开始，却把“叠在蓝块上”的关键条件留在了指标之外。"
+      },
+      {
+        "label": "出现高分捷径",
+        "value": "翻过红块 · 底面变高 · reward ↑",
+        "note": "字面目标被满足了，真实任务却没完成；这是 specification gaming 的典型形状。"
+      },
+      {
+        "label": "把意图补回契约",
+        "value": "高度 + 顶面/底面对齐 + 接触 + 稳定性",
+        "note": "补条件能缩小漏洞，但复杂任务仍可能留下新的未想到的角落，不能宣称一次修完。"
+      },
+      {
+        "label": "把评分通道也看住",
+        "value": "独立验收 · 随机审计 · 禁止改写评分文件",
+        "note": "如果系统能改动自己的评分或检查记录，那已经靠近 reward tampering；要隔离权限并保留审计。"
+      }
+    ],
+    "quizQuestion": "哪种情况最像奖励投机？",
+    "quizOptions": [
+      "智能体让代理指标变高，却绕开了人真正想要的结果",
+      "智能体找到新策略，同时完整满足了验收条件",
+      "评测者发现指标和目标一致，于是记录一次成功"
+    ],
+    "correctText": "奖励投机钻的是规范和代理指标的空隙：分数达标了，真实目标却被绕开。",
+    "wrongText": "新颖策略本身不是问题；只有字面奖励与真实意图脱钩，才需要把它当成投机来审查。",
+    "promptTitle": "审查一个奖励函数的漏洞",
+    "prompt": "请把任务的真实意图写成可观察的验收条件，再列出当前奖励函数实际测量的代理指标。逐项寻找“分数变高但结果变坏”的策略、环境假设、评测器盲点和可被修改的监督文件；为每个漏洞设计独立检查、随机抽样、权限隔离和回滚证据，并区分普通 specification gaming、goal misgeneralisation 与 reward tampering。",
+    "relatedSlugs": [
+      "rlhf",
+      "outcome-supervision",
+      "process-supervision",
+      "safety-evaluation",
+      "model-grader"
+    ]
   }
 ]

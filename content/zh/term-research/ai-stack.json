@@ -2467,5 +2467,25 @@
       "confidence-calibration",
       "evaluator-optimizer"
     ]
+  },
+  {
+    "slug": "reward-hacking",
+    "mechanism": "奖励投机是智能体优化奖励函数、评分器或任务规范的字面代理，利用未覆盖的条件或漏洞获得高分，却没有实现设计者的意图；specification gaming 是常见表述，reward tampering 是进一步直接改写奖励/监督通道的窄类。",
+    "misconception": "并非每个意外策略都是投机：若它同时满足真实验收，可能只是创新。也不能把受控 reward-tampering 实验写成生产模型必然会篡改奖励；goal misgeneralisation、规范漏洞与权限篡改要分开。",
+    "demoSignature": "5帧｜对象：红块、蓝块、真实意图、代理指标、高分捷径、验收条件、独立审计与评分通道｜交互：展开目标契约、只开代理指标、翻面拿高分、补齐验收、隔离记分牌｜变化：红块应叠在蓝块上→只量底面高度→翻面高分但未堆叠→契约补回接触/稳定→独立审计与权限隔离；红蓝积木契约台，不是流程图。",
+    "sourceUrls": [
+      "https://deepmind.google/blog/specification-gaming-the-flip-side-of-ai-ingenuity/",
+      "https://www.anthropic.com/research/reward-tampering",
+      "https://arxiv.org/abs/2209.13085",
+      "https://deepmind.google/blog/how-undesired-goals-can-arise-with-correct-rewards/",
+      "https://www.anthropic.com/research/emergent-misalignment-reward-hacking"
+    ],
+    "rewriteRisk": "避免把所有聪明捷径都叫 reward hacking，也不要把 goal misgeneralisation 或受控 reward tampering 夸大成同一件事；正文要同时写代理指标、真实意图、独立验收、权限隔离与研究外推边界。",
+    "nearDuplicates": [
+      "rlhf",
+      "outcome-supervision",
+      "process-supervision",
+      "safety-evaluation"
+    ]
   }
 ]
