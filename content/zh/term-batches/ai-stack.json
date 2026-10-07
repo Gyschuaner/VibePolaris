@@ -5717,5 +5717,55 @@
       "eval-dataset",
       "data-quality"
     ]
+  },
+  {
+    "zh": "分布外",
+    "en": "Out-of-Distribution",
+    "slug": "out-of-distribution",
+    "cat": "AI·Agent",
+    "say": "输入来自训练数据之外的地点、时间、设备或任务分布，模型的熟悉度与置信度可能脱钩。",
+    "aliases": [
+      "OOD",
+      "分布偏移",
+      "distribution shift"
+    ],
+    "question": "换了医院、摄像头或时间以后，为什么模型仍可能自信地给出错答案？",
+    "definition": "分布外输入与训练数据的分布不同，变化可以来自地点、时间、设备、群体或任务条件。模型可能在陌生输入上仍给出很高置信度，因此需要单独的 OOD 检测、拒答策略和环境评测。",
+    "boundary": "没有一个通用阈值能覆盖所有分布变化。最大 softmax 概率等基线可能失效；检测到 OOD 也不等于知道正确答案，业务还要决定人工复核或安全默认值。",
+    "demoType": "branch",
+    "demoTitle": "陌生件验收台：同一类别，换一个环境就要重新验收",
+    "demoSteps": [
+      {
+        "label": "同分布样本",
+        "value": "熟悉摄像头 · confidence 72%",
+        "note": "相似环境只说明输入更接近训练条件。"
+      },
+      {
+        "label": "换医院与夜间",
+        "value": "分布变化 · confidence 88%",
+        "note": "高置信没有自动证明模型见过这种环境。"
+      },
+      {
+        "label": "打开拒答门",
+        "value": "标记 OOD · 转人工复核",
+        "note": "把环境变化、置信度和业务动作分开记录。"
+      }
+    ],
+    "quizQuestion": "分布外输入最需要警惕哪种错觉？",
+    "quizOptions": [
+      "高置信看起来像熟悉和正确",
+      "输入来自新地点就一定没有任何信息",
+      "只要换模型名称就能消除偏移"
+    ],
+    "correctText": "陌生分布上也可能出现很高置信度，不能直接当熟悉。",
+    "wrongText": "OOD 不是完全没有信息，也不能靠改名消除，需评估环境与阈值。",
+    "promptTitle": "设计 OOD 验收矩阵",
+    "prompt": "请一次只改变地点、时间、设备或人群中的一个因素，分别记录置信度、OOD 分数、拒答率和人工复核结果。",
+    "relatedSlugs": [
+      "evaluation",
+      "confidence-calibration",
+      "model-fallback",
+      "safety-evaluation"
+    ]
   }
 ]
