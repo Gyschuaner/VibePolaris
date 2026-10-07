@@ -40,6 +40,7 @@ function MultimodalHero() {
     <div className={styles.heroTop}>让一句话找到图里的位置</div>
     <SceneControls scene={scene} labels={frames.map((frame) => frame.label)} compact />
     <div className={styles.viewfinderBoard} data-phase={current.phase}>
+      <div className={styles.cameraFrame} data-ready={current.image} data-focus={current.focus} aria-hidden="true"><span className={styles.cameraCrosshair} /><span className={styles.cameraScan} /></div>
       <div className={styles.questionPin}><TextT size={15} aria-hidden="true" /><span>这张票的日期？</span></div>
       <div className={styles.ticketSlot}><Ticket image={current.image} focus={current.focus} /></div>
       <div className={styles.evidenceStamp} data-danger={!current.image} data-answer={current.phase === "ANSWER"}>
@@ -69,6 +70,7 @@ function MultimodalLensLab() {
       <button type="button" onClick={() => { setKeepImage((value) => !value); scene.seek(2); }}>{keepImage ? "移除票面" : "重新带上票面"}</button>
     </div>
     <div className={styles.labViewfinder} data-missing={!imageInRequest}>
+      <div className={styles.cameraFrame} data-ready={imageInRequest} data-focus={focus} aria-hidden="true"><span className={styles.cameraCrosshair} /><span className={styles.cameraScan} /></div>
       <div className={styles.questionPin}><TextT size={17} aria-hidden="true" /><span>{query === "date" ? "这张票的日期？" : "从哪个登机口上飞机？"}</span></div>
       <div className={styles.ticketSlot}><Ticket image={imageInRequest} focus={focus} /></div>
       <div className={styles.evidenceStamp} data-danger={!imageInRequest} data-answer={focus !== "none"}>

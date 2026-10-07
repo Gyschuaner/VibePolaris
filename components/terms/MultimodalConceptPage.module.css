@@ -35,6 +35,29 @@
   height: 208px;
 }
 
+.cameraFrame {
+  position: absolute;
+  inset: 26px 5px 8px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 22%, transparent);
+  border-radius: 14px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent-text) 4%, transparent) 1px, transparent 1px) 0 0 / 33.33% 100%, linear-gradient(0deg, color-mix(in srgb, var(--accent-text) 4%, transparent) 1px, transparent 1px) 0 0 / 100% 50%;
+  opacity: .56;
+  pointer-events: none;
+  transition: border-color .45s, opacity .35s, background-color .45s;
+}
+.cameraFrame[data-ready="true"] { border-color: color-mix(in srgb, var(--accent-text) 45%, transparent); opacity: .78; }
+.cameraFrame[data-focus="date"],
+.cameraFrame[data-focus="gate"] { border-color: color-mix(in srgb, var(--brand-star) 70%, var(--accent-text)); background-color: color-mix(in srgb, var(--brand-star) 5%, transparent); }
+.cameraCrosshair { position: absolute; inset: 50% auto auto 50%; width: 24px; height: 24px; transform: translate(-50%, -50%); opacity: .38; }
+.cameraCrosshair::before,
+.cameraCrosshair::after { position: absolute; background: var(--accent-text); content: ""; }
+.cameraCrosshair::before { top: 11px; left: 0; width: 24px; height: 1px; }
+.cameraCrosshair::after { top: 0; left: 11px; width: 1px; height: 24px; }
+.cameraScan { position: absolute; left: 7%; right: 7%; top: 18%; height: 1px; background: color-mix(in srgb, var(--brand-star) 70%, transparent); opacity: 0; transform: translateY(0); }
+.cameraFrame[data-focus="date"] .cameraScan,
+.cameraFrame[data-focus="gate"] .cameraScan { animation: viewfinder-scan .9s ease-out both; }
+@keyframes viewfinder-scan { 0% { opacity: 0; transform: translateY(0); } 15% { opacity: .8; } 100% { opacity: 0; transform: translateY(92px); } }
+
 .questionPin {
   position: absolute;
   z-index: 2;
@@ -160,6 +183,11 @@
 .labControls button:hover,
 .labControls button[aria-pressed="true"] { border-color: var(--accent-text); background: color-mix(in srgb, var(--accent-text) 10%, var(--paper)); color: var(--ink); }
 .labViewfinder { height: 253px; max-width: 390px; width: 100%; margin: 0 auto; }
+.labViewfinder .cameraFrame { inset: 34px 1px 6px; }
+.labViewfinder .cameraCrosshair { width: 30px; height: 30px; }
+.labViewfinder .cameraCrosshair::before { top: 14px; width: 30px; }
+.labViewfinder .cameraCrosshair::after { left: 14px; height: 30px; }
+.labViewfinder .cameraScan { top: 16%; }
 .labViewfinder .questionPin { top: 4px; font-size: 13px; }
 .labViewfinder .ticketSlot { top: 52px; width: min(100% - 14px, 345px); }
 .labViewfinder .ticket { height: 157px; padding: 13px 16px; }
@@ -184,5 +212,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .hero *,
-  .lab * { transition: none !important; }
+  .lab * { transition: none !important; animation: none !important; }
 }

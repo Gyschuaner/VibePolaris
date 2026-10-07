@@ -270,7 +270,7 @@ export function HydrationSignatureHero() {
   </SignatureFrame>;
 }
 
-const csrLabels = ["收到壳", "执行脚本", "取回数据", "填入 DOM", "事件就绪"];
+const csrLabels = ["收到壳", "执行脚本", "等待数据", "填入 DOM", "事件就绪"];
 const csrCaptions = [
   "服务器先交付挂载点和脚本地址，主要内容还没有长出来。",
   "浏览器下载、解析并执行 JavaScript，空白取决于这段成本。",
@@ -281,20 +281,25 @@ const csrCaptions = [
 
 export function CsrSignatureHero() {
   const scene = useScene(csrLabels.length);
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const step = scene.step;
   const showContent = step >= 3;
-  return <SignatureFrame scene={scene} title="浏览器里的空挂载点怎样长成页面" labels={csrLabels} caption={csrCaptions[step]}>
+  const controls = { ...scene, seek: (next: number) => { setDetailsOpen(false); scene.seek(next); }, toggle: () => { setDetailsOpen(false); scene.toggle(); } };
+  return <SignatureFrame scene={controls} title="浏览器里的空挂载点怎样长成页面" labels={csrLabels} caption={csrCaptions[step]}>
     <div className={styles.csrSignature} data-step={step}>
+      <div className={styles.csrWorkbench}>
+      <div className={styles.serverDock} aria-label="提供壳、脚本和数据的服务器"><span>服务器</span><i /><i /><i /></div>
       <div className={styles.browserCanvas}>
         <div className={styles.browserBar}><Browser size={15} /><span>app.example</span><i data-live={showContent} /></div>
         <div className={styles.mountPoint} data-ready={showContent} data-interactive={step === 4}>
-          {showContent ? <div className={styles.mountCard}><span>今日订单</span><strong>3 件待处理</strong><div className={styles.orderRows}><i /><i /><i /></div><button type="button">{step === 4 ? "查看详情" : "等待事件"}</button></div> : <><span id="app">&lt;div id=&quot;app&quot; /&gt;</span><small>{step === 0 ? "空挂载点" : step === 1 ? "运行时建立中" : "等待 API"}</small></>}
+          {showContent ? <div className={styles.mountCard} data-expanded={detailsOpen}><span>今日订单</span><strong>{detailsOpen ? "订单 #031 · 待发货" : "3 件待处理"}</strong><div className={styles.orderRows}><i /><i /><i /></div><button type="button" disabled={step !== 4} aria-expanded={detailsOpen} onClick={() => setDetailsOpen(value => !value)}>{step !== 4 ? "等待事件" : detailsOpen ? "收起详情" : "查看详情"}</button></div> : <><span id="app">&lt;div id=&quot;app&quot; /&gt;</span>{step === 1 && <span className={styles.runtimeChip} aria-hidden="true"><Code size={16} /><i /></span>}<small>{step === 0 ? "空挂载点" : step === 1 ? "运行时建立中" : "等待 API"}</small></>}
           <span className={styles.mountCursor} data-on={step === 4} aria-hidden="true" />
         </div>
+      </div>
         <div className={styles.csrPackets} aria-label="进入浏览器的材料">
           <span className={styles.csrPacket} data-kind="shell" data-arrived={step >= 0}><Browser size={12} /><b>壳</b></span>
           <span className={styles.csrPacket} data-kind="script" data-arrived={step >= 1}><Code size={12} /><b>JS</b></span>
-          <span className={styles.csrPacket} data-kind="data" data-arrived={step >= 2}><Database size={12} /><b>API</b></span>
+          <span className={styles.csrPacket} data-kind="data" data-arrived={step >= 3}><Database size={12} /><b>{step === 2 ? "请求中" : "API"}</b></span>
         </div>
       </div>
       <div className={styles.csrProof} role="status"><span className={styles.csrPulse} data-on={showContent} aria-hidden="true" /><strong>{showContent ? step === 4 ? "内容已接上事件" : "数据长进挂载点" : "先只有一个空位置"}</strong><span>{step === 1 ? "脚本还在浏览器里执行" : step === 2 ? "数据回来前，空位仍然是空位" : "CSR 不等于没有服务器"}</span></div>
