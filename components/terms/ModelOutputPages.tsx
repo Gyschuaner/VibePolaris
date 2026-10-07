@@ -2,6 +2,7 @@ import { ArrowRight, Check, Code, Function, X } from '@phosphor-icons/react/dist
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
 import { ConceptHero } from './ConceptHero';
 import { StreamingOutputLesson, StructuredOutputLesson, FunctionCallingLesson } from './ModelOutputLessons';
+import { StreamingReceiptHero } from './ai-stack-lessons/streaming-output-hero';
 import { streamingSources, structuredSources, functionSources } from '@/lib/model-output-sources';
 import base from './EventConcepts.module.css';
 import s from './ModelOutputConcepts.module.css';
@@ -11,7 +12,7 @@ export function StreamingOutputTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={streamingSources}/>;
   return <ConceptArticle slug="streaming-output" title="流式输出" sources={streamingSources} sections={[["increment","生成与接收交错进行"],["events","文字增量与完成事件"],["framing","传输片段和语义事件"],["interruption","中断、取消与部分回答"]]}
     intro={<>流式输出让接收方在整个结果生成完之前，先拿到已经产生的部分。聊天界面可以先显示第一段，再接上后面的内容；程序也可以逐步处理。接收到文字与确认整次响应完成，是两件不同的事。</>}
-    hero={<ConceptHero slug="streaming-output" label="三个文字片段依次出现并组成回答，最后出现完成标记"><div className={s.streamHero}><div><i>订单</i><i>已发货</i><i>明天送达</i><ArrowRight size={20}/></div><p><span>订单已发货，明天送达。</span></p><span><Check size={14}/> 收到完成事件</span></div></ConceptHero>}>
+    hero={<ConceptHero slug="streaming-output" label="配送收据逐段打印，响应完成后才盖章，中断时留下断口"><StreamingReceiptHero /></ConceptHero>}>
     <ArticleSection id="increment" title="生成与接收交错进行"><Legacy slug="streaming-output" names={["question","definition"]}/>
       <p id="stream-definition" className="vp-citation-target"><strong>流式输出把已有的部分结果先交给接收方，后续内容继续产生和传送。</strong>这里的“增量”就是已经产生的一小段结果；OpenAI 的流式文档就是这样解释长回答的：开始显示文字时，整份输出还可能在生成。本页只讲模型回复的增量接收；流式传输本身不限于某一种接口。<Cite id="stream-definition"/></p>
       <p>假设订单助手要回复一段配送说明。一次性返回时，界面等待完整结果；流式返回时，先收到“订单 A102”，再收到“已发货”，随后补上预计日期。接收程序把增量按顺序加入一个暂存这些片段的缓冲区，界面呈现当前已有的文字。</p>
