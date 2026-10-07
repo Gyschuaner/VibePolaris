@@ -24703,5 +24703,164 @@
         "note": "补充模型卡之外仍需持续治理和监控。"
       }
     ]
+  },
+  {
+    "slug": "chain-of-thought",
+    "lead": "一笔退款为什么算错？把条件和算式放到同一张账本上，错误才有地方可找。",
+    "definition": "思维链提示让模型把复杂回答拆成中间推理步骤，再给出最后结论。对可计算任务，这些步骤能把输入条件、运算和暂时结论摊开，方便定位漏算；它改变的是本次请求的推理呈现，不是模型参数。",
+    "boundary": "草稿可读不等于前提正确，也不等于事实已核验。生产系统应保留适合审阅的摘要、证据和检查结果，不把私有思维过程或未经验证的猜测当成证明。",
+    "sceneKind": "layers",
+    "sceneTitle": "条件账本：先把输入铺平，再看结论是否站得住",
+    "actionLabel": "展开一层",
+    "actors": [
+      {
+        "id": "question",
+        "label": "退款问题",
+        "detail": "原价 60 元，退货费未知",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "facts",
+        "label": "条件卡",
+        "detail": "原价、费用、资格",
+        "icon": "file",
+        "group": "证据"
+      },
+      {
+        "id": "scratchpad",
+        "label": "中间账本",
+        "detail": "把算式和假设写开",
+        "icon": "code",
+        "group": "推理"
+      },
+      {
+        "id": "answer",
+        "label": "最终结论",
+        "detail": "退款金额 42 元",
+        "icon": "spark",
+        "group": "输出"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "只见结论",
+        "note": "数字出现了，但来源和计算关系还藏在答案后面。",
+        "activeIds": [
+          "answer"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "question",
+          "facts",
+          "scratchpad"
+        ],
+        "values": {
+          "answer": "退款 = 42 元"
+        }
+      },
+      {
+        "label": "铺开条件",
+        "note": "先把每个输入放到账本，防止把假设误当事实。",
+        "activeIds": [
+          "question",
+          "facts"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "scratchpad",
+          "answer"
+        ],
+        "values": {
+          "facts": "原价 60 · 费用 18"
+        }
+      },
+      {
+        "label": "写出算式",
+        "note": "中间步骤让每个数字都能回到输入，漏掉条件时会露出来。",
+        "activeIds": [
+          "scratchpad"
+        ],
+        "doneIds": [
+          "facts"
+        ],
+        "mutedIds": [
+          "answer"
+        ],
+        "values": {
+          "scratchpad": "60 - 18 = 42"
+        }
+      },
+      {
+        "label": "改动一项",
+        "note": "只把费用改成 25，结论随同一个条件变化。",
+        "activeIds": [
+          "scratchpad",
+          "answer"
+        ],
+        "doneIds": [
+          "facts"
+        ],
+        "mutedIds": [
+          "question"
+        ],
+        "values": {
+          "scratchpad": "60 - 25 = 35",
+          "answer": "退款 = 35 元"
+        }
+      }
+    ],
+    "insight": "中间步骤的价值是让条件和变化可检查，不是让更长的文字自动变成真相。",
+    "quiz": {
+      "question": "一条看起来完整的思维链，最不能替代什么？",
+      "options": [
+        {
+          "label": "核对前提和外部证据",
+          "correct": true
+        },
+        {
+          "label": "把中间步骤写得更长",
+          "correct": false
+        },
+        {
+          "label": "把最终答案加粗",
+          "correct": false
+        }
+      ],
+      "success": "思维链把推理摊开，但前提和证据仍要单独核对。",
+      "retry": "先回到输入和证据；步骤多不等于前提正确。"
+    },
+    "prompt": {
+      "title": "把复杂判断改成可检查账本",
+      "text": "请把这个问题拆成最少的可核对条件：列出每个输入的来源、需要执行的运算、暂时结论和仍未验证的假设。不要把猜测写成事实；最后给出不泄露私有思维过程的结果摘要，并标出需要人工或工具复核的位置。"
+    },
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2201.11903",
+        "label": "Wei et al. · Chain-of-Thought Prompting",
+        "note": "中间推理步骤与复杂任务表现"
+      },
+      {
+        "url": "https://arxiv.org/abs/2205.11916",
+        "label": "Kojima et al. · Zero-shot-CoT",
+        "note": "零样本触发推理步骤的研究"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/reasoning",
+        "label": "OpenAI · Reasoning models",
+        "note": "推理预算与可公开结果的边界"
+      },
+      {
+        "url": "https://platform.openai.com/docs/guides/prompt-engineering",
+        "label": "OpenAI · Prompt engineering",
+        "note": "把任务与约束写清的官方指南"
+      },
+      {
+        "url": "https://doi.org/10.6028/NIST.AI.600-1",
+        "label": "NIST · AI Risk Management Framework",
+        "note": "验证、风险和人类监督边界"
+      }
+    ]
   }
 ]
