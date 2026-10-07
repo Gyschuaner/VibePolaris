@@ -5,41 +5,27 @@
     "definition": "服务器是监听网络端点并处理消息的程序角色；一台主机可以同时运行多个服务器，一个服务也可以由多台主机共同承担。",
     "boundary": "服务器不等于物理主机，也不等于数据库。主机提供运行环境，服务器进程决定哪个端口接收什么协议。",
     "sceneKind": "network",
-    "sceneTitle": "一台主机上的三个监听进程",
+    "sceneTitle": "一台主机上的监听端口与路径",
     "actionLabel": "探测下一个端口",
     "actors": [
       {
         "id": "host",
         "label": "主机",
-        "detail": "203.0.113.7",
+        "detail": "127.0.0.1",
         "icon": "cloud",
         "group": "运行环境"
       },
       {
         "id": "web",
-        "label": "Web 服务",
-        "detail": "TCP 80",
+        "label": "HTTP 服务",
+        "detail": "TCP 8000",
         "icon": "server",
         "group": "进程"
       },
       {
-        "id": "secure",
-        "label": "TLS 服务",
-        "detail": "TCP 443",
-        "icon": "shield",
-        "group": "进程"
-      },
-      {
-        "id": "db",
-        "label": "数据库服务",
-        "detail": "TCP 5432",
-        "icon": "database",
-        "group": "进程"
-      },
-      {
         "id": "probe",
-        "label": "端口探测",
-        "detail": "逐个建立连接",
+        "label": "浏览器请求",
+        "detail": "逐个改变端口和路径",
         "icon": "network",
         "group": "客户端"
       }
@@ -49,43 +35,19 @@
         "id": "probe-web",
         "from": "probe",
         "to": "web",
-        "label": "connect :80"
-      },
-      {
-        "id": "probe-secure",
-        "from": "probe",
-        "to": "secure",
-        "label": "connect :443"
-      },
-      {
-        "id": "probe-db",
-        "from": "probe",
-        "to": "db",
-        "label": "connect :5432"
+        "label": "connect :8000"
       },
       {
         "id": "host-web",
         "from": "host",
         "to": "web",
         "label": "运行"
-      },
-      {
-        "id": "host-secure",
-        "from": "host",
-        "to": "secure",
-        "label": "运行"
-      },
-      {
-        "id": "host-db",
-        "from": "host",
-        "to": "db",
-        "label": "运行"
       }
     ],
     "frames": [
       {
-        "label": "80 端口应答",
-        "note": "探测命中 Web 进程，主机只负责把连接交给监听者。",
+        "label": "8000 /books 应答",
+        "note": "浏览器连到监听端口，HTTP 程序匹配书目路径并回 200。",
         "activeIds": [
           "probe",
           "web"
@@ -93,70 +55,42 @@
         "doneIds": [
           "web"
         ],
-        "mutedIds": [
-          "secure",
-          "db"
-        ],
+        "mutedIds": [],
         "values": {
           "web": "HTTP/1.1 200",
-          "host": "同一 IP"
+          "host": "127.0.0.1"
         },
         "activeEdgeIds": [
           "probe-web",
           "host-web"
         ],
         "metric": {
-          "label": "应答协议",
-          "value": "HTTP"
+          "label": "路径结果",
+          "value": "200"
         }
       },
       {
-        "label": "443 完成握手",
-        "note": "目标仍是同一 IP，但端口把连接交给另一个进程。",
+        "label": "8000 /missing",
+        "note": "连接仍然到达同一个程序，只是没有匹配到资源，所以得到 404。",
         "activeIds": [
           "probe",
-          "secure"
+          "web"
         ],
         "doneIds": [
-          "web",
-          "secure"
-        ],
-        "mutedIds": [
-          "db"
-        ],
-        "values": {
-          "secure": "TLS ServerHello",
-          "host": "203.0.113.7"
-        },
-        "activeEdgeIds": [
-          "probe-secure",
-          "host-secure"
-        ]
-      },
-      {
-        "label": "5432 进入数据库协议",
-        "note": "数据库服务也属于服务器角色，但它不是这台主机上的唯一服务。",
-        "activeIds": [
-          "probe",
-          "db"
-        ],
-        "doneIds": [
-          "web",
-          "secure",
-          "db"
+          "web"
         ],
         "mutedIds": [],
         "values": {
-          "db": "PostgreSQL ready",
-          "host": "3 个监听进程"
+          "web": "HTTP/1.1 404",
+          "host": "路径不存在"
         },
         "activeEdgeIds": [
-          "probe-db",
-          "host-db"
+          "probe-web",
+          "host-web"
         ],
         "metric": {
-          "label": "监听进程",
-          "value": "3"
+          "label": "路径结果",
+          "value": "404"
         }
       },
       {
@@ -166,26 +100,50 @@
           "probe"
         ],
         "doneIds": [
-          "web",
-          "secure",
-          "db"
+          "web"
         ],
         "mutedIds": [
           "host"
         ],
         "values": {
-          "host": "203.0.113.7",
+          "host": "127.0.0.1",
           "probe": ":8001 · 拒绝连接"
         },
-        "activeEdgeIds": []
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "处理函数",
+          "value": "未到达"
+        }
+      },
+      {
+        "label": "先问有没有响应",
+        "note": "200 和 404 都是程序回的响应，8001 则没有 HTTP 响应可读。",
+        "activeIds": [
+          "probe"
+        ],
+        "doneIds": [
+          "web"
+        ],
+        "mutedIds": [
+          "host"
+        ],
+        "values": {
+          "web": "响应 / 连接失败",
+          "probe": "先区分连接层"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "诊断顺序",
+          "value": "连接 → 路径"
+        }
       }
     ],
     "insight": "区分主机、进程和端口，才能解释同一台机器为何能提供多种服务。",
     "quiz": {
-      "question": "停止 443 端口对应的进程后，哪项判断最准确？",
+      "question": "把 8000 端口对应的进程停掉后，哪项判断最准确？",
       "options": [
         {
-          "label": "主机仍在线，但 TLS 服务无法建立连接",
+          "label": "主机仍在线，但 8000 的 HTTP 服务无法建立连接",
           "correct": true
         },
         {
@@ -193,7 +151,7 @@
           "correct": false
         },
         {
-          "label": "数据库也一定停止",
+          "label": "所有其他程序也一定停止",
           "correct": false
         }
       ],
@@ -216,7 +174,7 @@
         "note": "服务器软件、硬件与请求处理的区别"
       },
       {
-        "url": "https://nodejs.org/api/http.html",
+        "url": "https://nodejs.org/docs/latest-v22.x/api/http.html",
         "label": "Node.js · HTTP",
         "note": "createServer 与 listen 的监听关系"
       },
@@ -244,7 +202,7 @@
       {
         "id": "server-listen",
         "title": "端口只负责把连接交给监听者",
-        "body": "程序调用 listen 之后，操作系统才会把目标端口的连接交给它。端口号不是服务本身，也不会因为写进 URL 就自动启动程序；80、443 和 5432 可以由不同进程监听，使用的协议也可以不同。",
+        "body": "程序调用 listen 之后，操作系统才会把目标端口的连接交给它。端口号不是服务本身，也不会因为写进 URL 就自动启动程序；8000 和 8001 可以由不同进程监听，使用的协议也可以不同。",
         "sourceIndices": [
           1,
           3,
@@ -273,47 +231,47 @@
   },
   {
     "slug": "request",
-    "lead": "一次保存操作已经发出，后端究竟收到了哪些信息？",
+    "lead": "一次搜索或保存发出后，后端究竟收到了哪些信息？",
     "definition": "HTTP 请求把方法、目标 URI、字段和可选内容组合成一条消息，服务器按这些部分选择处理逻辑并解释输入。",
     "boundary": "请求是完整消息；query、header 和 body 只是其中的不同位置，不能互相替代。",
     "sceneKind": "assembly",
-    "sceneTitle": "组装一条创建订单的请求",
-    "actionLabel": "装入下一部分",
+    "sceneTitle": "一条书店请求的字段剖面",
+    "actionLabel": "组装下一部分",
     "actors": [
       {
         "id": "method",
         "label": "方法",
-        "detail": "POST",
+        "detail": "GET / POST",
         "icon": "gear",
         "group": "请求行"
       },
       {
         "id": "target",
         "label": "目标",
-        "detail": "/orders?dryRun=1",
+        "detail": "/books?q=海边",
         "icon": "network",
         "group": "请求行"
       },
       {
         "id": "headers",
-        "label": "请求字段",
-        "detail": "认证与内容类型",
+        "label": "请求头",
+        "detail": "Accept / Content-Type",
         "icon": "message",
         "group": "元信息"
       },
       {
         "id": "content",
-        "label": "请求内容",
-        "detail": "amount: 99",
+        "label": "请求体",
+        "detail": "JSON 书名表示",
         "icon": "package",
         "group": "表示"
       },
       {
         "id": "handler",
-        "label": "订单处理器",
-        "detail": "等待完整输入",
+        "label": "Request 对象",
+        "detail": "尚未发送",
         "icon": "server",
-        "group": "服务端"
+        "group": "浏览器"
       }
     ],
     "edges": [
@@ -321,31 +279,31 @@
         "id": "method-handler",
         "from": "method",
         "to": "handler",
-        "label": "选择操作"
+        "label": "写入方法"
       },
       {
         "id": "target-handler",
         "from": "target",
         "to": "handler",
-        "label": "选择资源"
+        "label": "写入目标"
       },
       {
         "id": "headers-handler",
         "from": "headers",
         "to": "handler",
-        "label": "解释条件"
+        "label": "写入请求头"
       },
       {
         "id": "content-handler",
         "from": "content",
         "to": "handler",
-        "label": "读取数据"
+        "label": "写入 body"
       }
     ],
     "frames": [
       {
-        "label": "先确定操作与目标",
-        "note": "方法和目标共同决定请求要进入哪个处理入口。",
+        "label": "先放方法与目标",
+        "note": "GET /books?q=海边 先表达读取书目，方法和目标一起组成请求行。",
         "activeIds": [
           "method",
           "target",
@@ -360,9 +318,9 @@
           "content"
         ],
         "values": {
-          "method": "POST",
-          "target": "/orders?dryRun=1",
-          "handler": "已匹配路由"
+          "method": "GET",
+          "target": "/books?q=海边",
+          "handler": "目标已写入"
         },
         "activeEdgeIds": [
           "method-handler",
@@ -370,32 +328,38 @@
         ]
       },
       {
-        "label": "字段补充解释条件",
-        "note": "认证字段决定调用者，Content-Type 决定后续内容如何解析。",
+        "label": "切到 POST 并补头",
+        "note": "把同一个书名改成 POST /books，Content-Type 标出正文的表示格式。",
         "activeIds": [
+          "method",
+          "target",
           "headers",
           "handler"
         ],
         "doneIds": [
           "method",
-          "target",
-          "headers"
+          "target"
         ],
         "mutedIds": [
           "content"
         ],
         "values": {
-          "headers": "Authorization + application/json",
-          "handler": "user=7"
+          "method": "POST",
+          "target": "/books",
+          "headers": "Content-Type: application/json",
+          "handler": "待组装"
         },
         "activeEdgeIds": [
+          "method-handler",
+          "target-handler",
           "headers-handler"
         ]
       },
       {
-        "label": "内容完成业务输入",
-        "note": "处理器只有在解析内容后才得到金额字段。",
+        "label": "放入 JSON body",
+        "note": "正文承载书名；Request 对象现在能被检查，但还没有发出网络请求。",
         "activeIds": [
+          "headers",
           "content",
           "handler"
         ],
@@ -407,20 +371,22 @@
         ],
         "mutedIds": [],
         "values": {
-          "content": "{amount: 99}",
-          "handler": "dryRun=1 · amount=99"
+          "headers": "Content-Type: application/json",
+          "content": "{\"title\":\"海边的书店\"}",
+          "handler": "Request 已构造"
         },
         "activeEdgeIds": [
+          "headers-handler",
           "content-handler"
         ],
         "metric": {
-          "label": "服务端读取字段",
-          "value": "3 项"
+          "label": "网络请求",
+          "value": "尚未发送"
         }
       },
       {
-        "label": "GET body 在构造处停下",
-        "note": "GET 的读取语义并不因为多放了一段 body 就改变；Fetch 构造器直接拒绝这组组合。",
+        "label": "GET + body 在构造处失败",
+        "note": "Fetch 不会把 GET 的 body 自动挪到 query；这种组合直接抛 TypeError，网络也没有发送。",
         "activeIds": [
           "method",
           "content",
@@ -434,33 +400,37 @@
         ],
         "values": {
           "method": "GET",
-          "content": "{\"q\":\"海边\"}",
+          "content": "{\"title\":\"海边的书店\"}",
           "handler": "TypeError · body not allowed"
         },
         "activeEdgeIds": [
           "content-handler"
-        ]
+        ],
+        "metric": {
+          "label": "失败位置",
+          "value": "Request 构造"
+        }
       }
     ],
     "insight": "定位请求问题时，应分别检查方法与目标、字段、内容，而不是只看 URL。",
     "quiz": {
-      "question": "服务端已匹配到正确路径，但返回 415，先检查哪一部分？",
+      "question": "GET 构造时勾选 JSON body，为什么会失败？",
       "options": [
         {
-          "label": "Content-Type 与请求内容是否一致",
+          "label": "Fetch 不允许 GET 携带 body",
           "correct": true
         },
         {
-          "label": "页面按钮的颜色",
+          "label": "query 参数会自动变成响应头",
           "correct": false
         },
         {
-          "label": "把 query 改成响应头",
+          "label": "服务器一定已经保存了书名",
           "correct": false
         }
       ],
-      "success": "415 指向内容格式解释，检查字段和实际字节是否匹配。",
-      "retry": "路径已经匹配，问题出在服务器如何解释请求内容。"
+      "success": "这次失败发生在 Request 构造阶段，网络请求还没有发出。",
+      "retry": "先看方法和 body 的组合规则，不能把构造失败当成服务器响应。"
     },
     "prompt": {
       "title": "拆解一条失败的 HTTP 请求",
@@ -491,6 +461,16 @@
         "url": "https://www.rfc-editor.org/rfc/rfc3986.html",
         "label": "RFC 3986 · URI Generic Syntax",
         "note": "URI 的 query 组件与编码"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Request/Request",
+        "label": "MDN · Request() constructor",
+        "note": "Request 对象的构造参数"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Request/clone",
+        "label": "MDN · Request.clone()",
+        "note": "读取请求正文前复制 Request"
       }
     ],
     "teaching": [
@@ -518,7 +498,8 @@
         "body": "请求体可以是 JSON、表单、文件或其他表示，Content-Type 帮接收方选择解析方式。GET 和 HEAD 在 Fetch 构造器中不能带 body；这不是把数据自动挪到 URL，而是这次请求组合本身不被接受。",
         "sourceIndices": [
           2,
-          3
+          3,
+          4
         ]
       },
       {
@@ -527,52 +508,54 @@
         "body": "`new Request()` 只在浏览器内存中组装对象，`fetch()` 才会发起网络操作；拿到响应后，还要读取状态、字段和正文。演示里的“已匹配路由”只是请求能够被本地规则识别，不表示服务已经保存业务数据。",
         "sourceIndices": [
           2,
-          4
+          4,
+          6,
+          7
         ]
       }
     ]
   },
   {
     "slug": "response",
-    "lead": "请求都成功到达服务器，为什么有时能看到内容，有时只有状态码？",
+    "lead": "请求已经到达服务器，为什么有时有 JSON，有时没有正文或正文读不了？",
     "definition": "HTTP 响应用状态码表达处理语义，用字段补充处理条件，并按需要携带内容；三者可以独立变化。",
-    "boundary": "响应不等于响应体，也不等于最终界面。HEAD、204 和 304 等场景可以正常返回而没有内容。",
+    "boundary": "响应不等于响应体，也不等于最终界面。204 和错误响应可以没有可用正文，空体与解析失败要分开。",
     "sceneKind": "branch",
-    "sceneTitle": "同一资源的三种无内容分支",
-    "actionLabel": "发送下一种请求",
+    "sceneTitle": "一份回执怎样落到页面",
+    "actionLabel": "切换下一份回执",
     "actors": [
       {
         "id": "resource",
-        "label": "商品资源",
-        "detail": "ETag: v3 · 12 KB",
+        "label": "书签资源",
+        "detail": "id=42 · 海边的书店",
         "icon": "file",
         "group": "服务端"
       },
       {
         "id": "get",
-        "label": "GET",
-        "detail": "普通读取",
+        "label": "创建书签",
+        "detail": "POST /bookmarks",
         "icon": "browser",
         "group": "请求"
       },
       {
         "id": "head",
-        "label": "HEAD",
-        "detail": "只取元信息",
+        "label": "移除书签",
+        "detail": "DELETE /bookmarks/42",
         "icon": "message",
         "group": "请求"
       },
       {
         "id": "conditional",
-        "label": "条件 GET",
-        "detail": "If-None-Match: v3",
+        "label": "缺少书名",
+        "detail": "POST /bookmarks · title 空",
         "icon": "search",
         "group": "请求"
       },
       {
         "id": "reply",
         "label": "响应",
-        "detail": "状态、字段、内容",
+        "detail": "状态、头、body",
         "icon": "server",
         "group": "结果"
       }
@@ -582,31 +565,31 @@
         "id": "get-resource",
         "from": "get",
         "to": "resource",
-        "label": "读取表示"
+        "label": "创建书签"
       },
       {
         "id": "head-resource",
         "from": "head",
         "to": "resource",
-        "label": "读取元信息"
+        "label": "移除书签"
       },
       {
         "id": "conditional-resource",
         "from": "conditional",
         "to": "resource",
-        "label": "验证版本"
+        "label": "检查输入"
       },
       {
         "id": "resource-reply",
         "from": "resource",
         "to": "reply",
-        "label": "生成响应"
+        "label": "生成回执"
       }
     ],
     "frames": [
       {
-        "label": "GET 返回完整表示",
-        "note": "资源存在且没有条件限制，响应携带状态、字段和 12 KB 内容。",
+        "label": "201 创建书签",
+        "note": "服务回 201 和 JSON 正文，客户端可以从响应读出书名，再把它放进页面。",
         "activeIds": [
           "get",
           "resource",
@@ -620,76 +603,74 @@
           "conditional"
         ],
         "values": {
-          "reply": "200 · body 12 KB",
-          "resource": "ETag v3"
+          "reply": "201 · JSON",
+          "resource": "title: 海边的书店"
         },
         "activeEdgeIds": [
           "get-resource",
           "resource-reply"
         ],
         "metric": {
-          "label": "内容字节",
-          "value": "12 KB"
+          "label": "页面书签",
+          "value": "新增 1 条"
         }
       },
       {
-        "label": "HEAD 只返回字段",
-        "note": "处理语义仍成功，但方法要求不传输响应内容。",
+        "label": "204 移除书签",
+        "note": "204 表示操作成功但没有正文，页面应根据状态更新，而不是继续解析 JSON。",
         "activeIds": [
           "head",
           "resource",
           "reply"
         ],
         "doneIds": [
-          "get",
           "head"
         ],
         "mutedIds": [
+          "get",
           "conditional"
         ],
         "values": {
-          "reply": "200 · body 0",
-          "resource": "Content-Length: 12288"
+          "reply": "204 · body 0",
+          "resource": "书签已移除"
         },
         "activeEdgeIds": [
           "head-resource",
           "resource-reply"
         ],
         "metric": {
-          "label": "内容字节",
+          "label": "响应体字节",
           "value": "0"
         }
       },
       {
-        "label": "条件命中旧版本",
-        "note": "客户端已持有 v3，服务器用 304 表明可继续使用本地副本。",
+        "label": "422 缺少书名",
+        "note": "服务理解请求但拒绝缺少 title，错误正文给页面一条可读提示。",
         "activeIds": [
           "conditional",
-          "resource",
           "reply"
         ],
-        "doneIds": [
+        "doneIds": [],
+        "mutedIds": [
           "get",
           "head",
-          "conditional"
+          "resource"
         ],
-        "mutedIds": [],
         "values": {
-          "conditional": "If-None-Match: v3",
-          "reply": "304 · body 0"
+          "conditional": "title: 缺失",
+          "reply": "422 · JSON error"
         },
         "activeEdgeIds": [
-          "conditional-resource",
-          "resource-reply"
+          "conditional-resource"
         ],
         "metric": {
-          "label": "重新传输内容",
-          "value": "0 KB"
+          "label": "资源结果",
+          "value": "未创建"
         }
       },
       {
-        "label": "201 但正文读不懂",
-        "note": "服务已经报告创建成功，客户端却在解析损坏的 JSON；网络结果和页面显示错误属于两层证据。",
+        "label": "拿到 201，解析正文失败",
+        "note": "服务器已经报告创建成功，客户端 JSON 读取失败；网络回执和页面显示属于两层证据。",
         "activeIds": [
           "reply",
           "resource"
@@ -706,28 +687,32 @@
         },
         "activeEdgeIds": [
           "resource-reply"
-        ]
+        ],
+        "metric": {
+          "label": "页面状态",
+          "value": "解析错误"
+        }
       }
     ],
     "insight": "状态、字段和内容是响应的不同部分；没有响应体不等于没有响应。",
     "quiz": {
-      "question": "浏览器收到 304 且响应体为空，应该怎样理解？",
+      "question": "收到 204 且响应体为空，页面应该怎样处理？",
       "options": [
         {
-          "label": "服务器确认本地副本仍可使用",
+          "label": "按成功结果更新页面，不调用 response.json()",
           "correct": true
         },
         {
-          "label": "服务器没有返回任何响应",
+          "label": "因为没有正文，所以服务器没有响应",
           "correct": false
         },
         {
-          "label": "资源必然已经删除",
+          "label": "把空正文当成创建成功的书签",
           "correct": false
         }
       ],
-      "success": "304 的意义在状态码与缓存条件，不需要重新传输内容。",
-      "retry": "空响应体只是结果的一部分，先看状态码和请求条件。"
+      "success": "204 有状态码但没有正文，空体本身就是这次响应的结果。",
+      "retry": "先区分状态、正文和页面处理，不能把空正文当成没有响应。"
     },
     "prompt": {
       "title": "检查一条 HTTP 响应",
@@ -758,6 +743,21 @@
         "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch",
         "label": "MDN · Using the Fetch API",
         "note": "fetch、状态检查与响应正文读取"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Response/Response",
+        "label": "MDN · Response() constructor",
+        "note": "在本地构造 Response 消息"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/422",
+        "label": "MDN · 422 Unprocessable Content",
+        "note": "内容可理解但无法按要求处理"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Response/json",
+        "label": "MDN · Response.json()",
+        "note": "读取并解析 JSON 响应正文"
       }
     ],
     "teaching": [
@@ -785,7 +785,8 @@
         "body": "204 明确表示这次没有响应内容。删除或更新完成后，服务可以只给状态和响应头；客户端应直接更新界面，不能无条件调用 `response.json()`，因为空字节不是合法 JSON。",
         "sourceIndices": [
           1,
-          4
+          4,
+          8
         ]
       },
       {
@@ -795,7 +796,10 @@
         "sourceIndices": [
           1,
           2,
-          5
+          5,
+          6,
+          7,
+          8
         ]
       }
     ]
@@ -1020,45 +1024,46 @@
         "body": "客户端超时后重发 POST，服务器可能已经创建了第一份便笺，只是响应没有回来。方法的幂等性只能提供语义线索，不能代替幂等键、去重策略或接口文档；支付、创建订单等操作尤其要记录请求标识。",
         "sourceIndices": [
           2,
-          3
+          3,
+          5
         ]
       }
     ]
   },
   {
     "slug": "status-code",
-    "lead": "接口都返回了错误，为什么 400、409、429 和 503 不能用同一种方式处理？",
+    "lead": "同一个导出接口返回不同状态码，为什么下一步不能都写成“再试一次”？",
     "definition": "状态码先用类别说明结果方向，再用具体代码给出协议层语义，客户端据此选择纠正输入、解决冲突、等待或重试。",
     "boundary": "状态码不是业务真相的全部，也不单独决定是否重试；还要结合方法、响应字段和错误内容。",
     "sceneKind": "state-machine",
-    "sceneTitle": "五种状态码驱动五个客户端动作",
+    "sceneTitle": "导出回执与任务状态分开",
     "actionLabel": "触发下一种结果",
     "actors": [
       {
         "id": "form",
-        "label": "提交表单",
-        "detail": "POST /orders",
+        "label": "提交导出",
+        "detail": "POST /exports",
         "icon": "browser",
         "group": "客户端"
       },
       {
         "id": "code",
-        "label": "响应状态",
-        "detail": "等待结果",
+        "label": "HTTP 状态",
+        "detail": "202 / 422 / 503",
         "icon": "message",
         "group": "协议"
       },
       {
         "id": "client-action",
-        "label": "后续动作",
-        "detail": "由状态决定",
+        "label": "客户端动作",
+        "detail": "查询、改输入或等待",
         "icon": "gear",
         "group": "客户端"
       },
       {
         "id": "server-state",
-        "label": "订单版本",
-        "detail": "v7",
+        "label": "导出任务",
+        "detail": "pending → done",
         "icon": "database",
         "group": "服务端"
       }
@@ -1068,25 +1073,25 @@
         "id": "form-code",
         "from": "form",
         "to": "code",
-        "label": "提交"
+        "label": "提交导出"
       },
       {
         "id": "code-action",
         "from": "code",
         "to": "client-action",
-        "label": "选择动作"
+        "label": "决定下一步"
       },
       {
         "id": "server-code",
         "from": "server-state",
         "to": "code",
-        "label": "处理结果"
+        "label": "任务查询"
       }
     ],
     "frames": [
       {
-        "label": "201 跳转新资源",
-        "note": "创建成功，客户端读取 Location 并进入新订单。",
+        "label": "202 已受理",
+        "note": "提交导出只得到受理回执，任务卡停在 pending，客户端要拿 task 地址继续查。",
         "activeIds": [
           "form",
           "code",
@@ -1095,117 +1100,148 @@
         "doneIds": [
           "form"
         ],
-        "mutedIds": [],
+        "mutedIds": [
+          "server-state"
+        ],
         "values": {
-          "code": "201 Created",
-          "client-action": "打开 /orders/42"
+          "form": "POST /exports",
+          "code": "202 Accepted",
+          "client-action": "GET /exports/7",
+          "server-state": "pending"
         },
         "activeEdgeIds": [
           "form-code",
           "code-action"
-        ]
-      },
-      {
-        "label": "400 定位输入错误",
-        "note": "请求格式或字段不满足约定，客户端保留表单并标出 amount。",
-        "activeIds": [
-          "code",
-          "client-action"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "server-state"
-        ],
-        "values": {
-          "code": "400 Invalid amount",
-          "client-action": "聚焦 amount"
-        },
-        "activeEdgeIds": [
-          "code-action"
-        ]
-      },
-      {
-        "label": "409 处理版本冲突",
-        "note": "服务端版本已从 v7 变为 v8，客户端不能盲目覆盖。",
-        "activeIds": [
-          "code",
-          "client-action",
-          "server-state"
-        ],
-        "doneIds": [],
-        "mutedIds": [],
-        "values": {
-          "code": "409 Conflict",
-          "server-state": "v8",
-          "client-action": "刷新并合并"
-        },
-        "activeEdgeIds": [
-          "server-code",
-          "code-action"
-        ]
-      },
-      {
-        "label": "429 等待配额恢复",
-        "note": "Retry-After 给出再次尝试前的等待窗口。",
-        "activeIds": [
-          "code",
-          "client-action"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "server-state"
-        ],
-        "values": {
-          "code": "429",
-          "client-action": "等待 30 s"
-        },
-        "activeEdgeIds": [
-          "code-action"
         ],
         "metric": {
-          "label": "等待时间",
-          "value": "30 s"
+          "label": "任务状态",
+          "value": "pending"
         }
       },
       {
-        "label": "503 进入退避重试",
-        "note": "暂时不可用时，客户端按幂等性和退避策略决定是否重试。",
+        "label": "查询仍是 pending",
+        "note": "GET /exports/7 返回 200，但正文里的 task state 仍是 pending；HTTP 成功不等于业务完成。",
         "activeIds": [
+          "server-state",
           "code",
           "client-action"
         ],
         "doneIds": [
-          "client-action"
+          "form"
         ],
         "mutedIds": [],
         "values": {
-          "code": "503",
-          "client-action": "1 s + 抖动后重试"
+          "code": "200 OK",
+          "server-state": "pending",
+          "client-action": "继续等待"
         },
         "activeEdgeIds": [
+          "server-code",
           "code-action"
-        ]
+        ],
+        "metric": {
+          "label": "查询结果",
+          "value": "pending"
+        }
+      },
+      {
+        "label": "后台完成后再查",
+        "note": "后台把任务改成 done，下一次查询才显示可下载文件。",
+        "activeIds": [
+          "server-state",
+          "code",
+          "client-action"
+        ],
+        "doneIds": [
+          "form"
+        ],
+        "mutedIds": [],
+        "values": {
+          "code": "200 OK",
+          "server-state": "done",
+          "client-action": "显示下载"
+        },
+        "activeEdgeIds": [
+          "server-code",
+          "code-action"
+        ],
+        "metric": {
+          "label": "查询结果",
+          "value": "done"
+        }
+      },
+      {
+        "label": "422 先改输入",
+        "note": "数量为 0 仍能解析但不满足接口范围，客户端应保留输入并修改后再提交。",
+        "activeIds": [
+          "form",
+          "code",
+          "client-action"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "server-state"
+        ],
+        "values": {
+          "form": "count=0",
+          "code": "422 Unprocessable Content",
+          "client-action": "修改数量"
+        },
+        "activeEdgeIds": [
+          "form-code",
+          "code-action"
+        ],
+        "metric": {
+          "label": "下一步",
+          "value": "改成 1–5"
+        }
+      },
+      {
+        "label": "503 等待服务",
+        "note": "服务暂时不可用并给出 Retry-After，是否重试还要结合请求语义。",
+        "activeIds": [
+          "form",
+          "code",
+          "client-action"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "server-state"
+        ],
+        "values": {
+          "form": "服务开关 off",
+          "code": "503 + Retry-After: 60",
+          "client-action": "等待后判断"
+        },
+        "activeEdgeIds": [
+          "form-code",
+          "code-action"
+        ],
+        "metric": {
+          "label": "等待窗口",
+          "value": "60 s"
+        }
       }
     ],
     "insight": "错误处理的第一步不是统一弹窗，而是让状态码驱动不同的可恢复动作。",
     "quiz": {
-      "question": "更新资源时收到 409，最合适的下一步是什么？",
+      "question": "提交导出得到 202，页面下一步应该做什么？",
       "options": [
         {
-          "label": "读取最新版本并解决冲突后再提交",
+          "label": "按 task 地址查询进度，不把 202 当成已完成",
           "correct": true
         },
         {
-          "label": "无限立即重试同一请求",
+          "label": "立刻把下载按钮标成文件已生成",
           "correct": false
         },
         {
-          "label": "把状态码改成 200",
+          "label": "无限重发同一个 POST",
           "correct": false
         }
       ],
-      "success": "409 表示当前状态冲突，先处理版本差异。",
-      "retry": "冲突不是暂时性网络故障，原样重试通常不会自行消失。"
+      "success": "202 只确认任务受理，完成状态要从后续查询得到。",
+      "retry": "把 HTTP 回执和导出任务状态分开，先看接口给出的查询地址。"
     },
     "prompt": {
       "title": "为接口状态码指定客户端动作",
@@ -1241,6 +1277,16 @@
         "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Retry-After",
         "label": "MDN · Retry-After",
         "note": "再次尝试前的时间提示"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/422",
+        "label": "MDN · 422 Unprocessable Content",
+        "note": "内容可理解但无法按要求处理"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/503",
+        "label": "MDN · 503 Service Unavailable",
+        "note": "服务暂时无法处理请求"
       }
     ],
     "teaching": [
@@ -1259,17 +1305,21 @@
         "body": "201 说明请求导致了新资源创建；202 只说明请求已接受，处理可能还在后台进行。若接口返回 202，客户端应根据接口提供的状态地址或后续查询判断进度，不能把“已接收”当作“订单已完成”。",
         "sourceIndices": [
           1,
-          3
+          2,
+          3,
+          6
         ]
       },
       {
         "id": "status-client",
         "title": "400、409、429 指向三种不同处理",
-        "body": "400 常用于请求写法或字段不符合约定，409 表示当前资源状态与请求冲突，429 表示请求过于频繁。它们都属于 4xx，但修复方式不同：改输入、重新读取并合并，或按 Retry-After 等提示等待。",
+        "body": "422 常用于内容能理解但不符合处理要求，409 表示当前资源状态与请求冲突，429 表示请求过于频繁。它们都属于 4xx，但修复方式不同：改输入、重新读取并合并，或按 Retry-After 等提示等待。",
         "sourceIndices": [
           1,
           4,
-          5
+          5,
+          6,
+          7
         ]
       },
       {
@@ -1278,54 +1328,55 @@
         "body": "503 表示服务暂时无法处理请求，可能带 Retry-After。客户端是否重试，还要看请求方法是否可安全重复、是否有幂等键、退避是否会继续压垮服务。状态码提供线索，不能单独替应用做这个决定。",
         "sourceIndices": [
           1,
-          5
+          6,
+          8
         ]
       }
     ]
   },
   {
     "slug": "http-header",
-    "lead": "请求内容没有变化，为什么增删一个字段就可能得到 200、304 或 401？",
+    "lead": "同一条 /books/42 请求换一个字段，为什么会得到不同的表示或 406？",
     "definition": "HTTP 字段为请求、响应或内容补充元数据，中间缓存、代理和应用会在不同位置读取、转发或删除它们。",
-    "boundary": "字段不是任意备注，也不适合装大量业务数据；敏感字段还要避免进入日志和非可信代理。",
+    "boundary": "字段是有定义的元数据，不是任意备注；请求偏好、正文类型和缓存选择要分开，敏感值还要避免进入日志。",
     "sceneKind": "layers",
-    "sceneTitle": "三个请求字段穿过代理、缓存与应用",
-    "actionLabel": "放入下一个字段",
+    "sceneTitle": "内容协商里的三个字段层次",
+    "actionLabel": "切换一个字段",
     "actors": [
       {
         "id": "client-header",
-        "label": "请求字段",
-        "detail": "Accept / If-None-Match / Authorization",
+        "label": "请求头",
+        "detail": "Accept / Content-Type",
         "icon": "message",
         "group": "客户端"
       },
       {
         "id": "proxy",
-        "label": "反向代理",
-        "detail": "转发与脱敏",
+        "label": "中间层",
+        "detail": "转发字段",
         "icon": "network",
         "group": "中间层"
       },
       {
         "id": "cache-node",
-        "label": "共享缓存",
-        "detail": "检查 ETag",
+        "label": "缓存",
+        "detail": "比较 Vary: Accept",
         "icon": "memory",
         "group": "中间层"
       },
       {
         "id": "app",
         "label": "应用",
-        "detail": "认证并生成内容",
+        "detail": "选择表示",
         "icon": "server",
         "group": "服务端"
       },
       {
         "id": "access-log",
-        "label": "访问日志",
-        "detail": "受控字段",
+        "label": "响应字段",
+        "detail": "Content-Type / Vary",
         "icon": "file",
-        "group": "观测"
+        "group": "服务端"
       }
     ],
     "edges": [
@@ -1339,78 +1390,79 @@
         "id": "proxy-cache",
         "from": "proxy",
         "to": "cache-node",
-        "label": "转发条件"
+        "label": "比较选择"
       },
       {
         "id": "cache-app",
         "from": "cache-node",
         "to": "app",
-        "label": "未命中"
+        "label": "转给应用"
       },
       {
         "id": "proxy-log",
         "from": "proxy",
         "to": "access-log",
-        "label": "记录摘要"
+        "label": "返回字段"
       }
     ],
     "frames": [
       {
-        "label": "Accept 到达应用",
-        "note": "缓存不消费媒体偏好，字段继续进入应用选择 JSON 表示。",
+        "label": "Accept 选择 JSON",
+        "note": "客户端请求 /books/42 的 JSON 表示，应用按 Accept 返回 JSON。",
         "activeIds": [
           "client-header",
           "proxy",
           "cache-node",
-          "app"
+          "app",
+          "access-log"
         ],
         "doneIds": [
           "client-header"
         ],
-        "mutedIds": [
-          "access-log"
-        ],
+        "mutedIds": [],
         "values": {
           "client-header": "Accept: application/json",
-          "app": "选择 JSON"
+          "app": "Content-Type: application/json",
+          "cache-node": "Vary: Accept",
+          "access-log": "JSON representation"
         },
         "activeEdgeIds": [
           "header-proxy",
           "proxy-cache",
-          "cache-app"
+          "cache-app",
+          "proxy-log"
         ]
       },
       {
-        "label": "条件字段在缓存结束",
-        "note": "If-None-Match 与缓存版本一致，请求不再访问应用。",
+        "label": "Accept 选择纯文本",
+        "note": "同一资源地址不变，只换 Accept；应用返回 text/plain，缓存要按 Vary: Accept 区分。",
         "activeIds": [
           "client-header",
           "proxy",
-          "cache-node"
+          "cache-node",
+          "app",
+          "access-log"
         ],
         "doneIds": [
-          "cache-node"
+          "client-header"
         ],
-        "mutedIds": [
-          "app"
-        ],
+        "mutedIds": [],
         "values": {
-          "client-header": "If-None-Match: v3",
-          "cache-node": "304 HIT",
-          "app": "未访问"
+          "client-header": "Accept: text/plain",
+          "app": "Content-Type: text/plain",
+          "cache-node": "Vary: Accept",
+          "access-log": "TXT representation"
         },
         "activeEdgeIds": [
           "header-proxy",
-          "proxy-cache"
-        ],
-        "metric": {
-          "label": "应用调用",
-          "value": "0"
-        }
+          "proxy-cache",
+          "cache-app",
+          "proxy-log"
+        ]
       },
       {
-        "label": "认证字段需要脱敏",
-        "note": "Authorization 进入应用做认证，但日志只能保留是否存在，不能记录令牌原文。",
+        "label": "Content-Type 描述正文",
+        "note": "Content-Type 说明当前消息正文是什么，不是客户端想接收的格式；两者分工不同。",
         "activeIds": [
           "client-header",
           "proxy",
@@ -1418,42 +1470,73 @@
           "access-log"
         ],
         "doneIds": [
-          "app"
+          "client-header"
         ],
         "mutedIds": [
           "cache-node"
         ],
         "values": {
-          "client-header": "Bearer eyJ…",
-          "app": "user=7",
-          "access-log": "authorization=present"
+          "client-header": "Content-Type: application/json",
+          "app": "按 JSON 解析",
+          "access-log": "正文类型已声明"
         },
         "activeEdgeIds": [
           "header-proxy",
           "cache-app",
           "proxy-log"
         ]
+      },
+      {
+        "label": "无法满足 XML",
+        "note": "请求 Accept: application/xml 时本例没有 XML 表示，返回 406；字段变化让结果不同。",
+        "activeIds": [
+          "client-header",
+          "proxy",
+          "cache-node",
+          "app",
+          "access-log"
+        ],
+        "doneIds": [
+          "client-header"
+        ],
+        "mutedIds": [],
+        "values": {
+          "client-header": "Accept: application/xml",
+          "app": "406 Not Acceptable",
+          "cache-node": "Vary: Accept",
+          "access-log": "无 XML 表示"
+        },
+        "activeEdgeIds": [
+          "header-proxy",
+          "proxy-cache",
+          "cache-app",
+          "proxy-log"
+        ],
+        "metric": {
+          "label": "可用表示",
+          "value": "JSON / TXT"
+        }
       }
     ],
     "insight": "理解字段要看谁读取、在哪一层结束，以及是否会被转发或记录。",
     "quiz": {
-      "question": "Authorization 已能被应用读取，访问日志应怎样处理？",
+      "question": "同一 /books/42 请求想要 XML，但服务没有 XML 表示，应该看到什么？",
       "options": [
         {
-          "label": "只记录是否存在或脱敏摘要",
+          "label": "406 Not Acceptable，并保留 Accept: application/xml 这个线索",
           "correct": true
         },
         {
-          "label": "完整记录令牌便于排查",
+          "label": "Content-Type 自动把 JSON 变成 XML",
           "correct": false
         },
         {
-          "label": "把令牌移到 URL query",
+          "label": "把 Accept 放进 URL 就能新增一种表示",
           "correct": false
         }
       ],
-      "success": "认证凭证需要传递，但不应在日志中留下可复用原文。",
-      "retry": "日志也属于凭证可能泄露的路径。"
+      "success": "Accept 表达偏好，无法满足时服务可以返回 406；Content-Type 描述实际正文。",
+      "retry": "先区分请求偏好和响应正文类型，再看服务提供哪些表示。"
     },
     "prompt": {
       "title": "审查 HTTP 字段的处理路径",
@@ -1505,7 +1588,7 @@
       {
         "id": "header-consumer",
         "title": "同一字段可以被不同层消费",
-        "body": "缓存可能读取条件字段决定是否回 304，应用读取 Accept 选择表示，认证组件读取 Authorization 判断身份。字段经过代理并不代表每一层都使用它；演示把“转发”和“消费”分开，避免把一张牌画成只属于某个程序。",
+        "body": "应用读取 Accept 选择表示，缓存读取 Vary 判断能否复用，Content-Type 则帮助接收方选择正文解析器。字段经过代理并不代表每一层都使用它；演示把“转发”和“消费”分开，避免把一张牌画成只属于某个程序。",
         "sourceIndices": [
           1,
           4,
@@ -1515,7 +1598,7 @@
       {
         "id": "header-trust",
         "title": "字段写进请求，不等于声明就是真的",
-        "body": "客户端可以自己写很多普通头，代理也可能改写或补充它们。Authorization 应由可信的认证边界验证，日志不应保存令牌原文；浏览器还会限制脚本设置某些 forbidden request header。",
+        "body": "客户端可以自己写很多普通头，代理也可能改写或补充它们。字段是否由浏览器自动设置、脚本可否修改，要按具体字段判断；浏览器还会限制脚本设置某些 forbidden request header。",
         "sourceIndices": [
           1,
           5,
@@ -2333,11 +2416,12 @@
       {
         "id": "body-representation",
         "title": "body 是表示，不是自动生成的对象",
-        "body": "请求体承载一段表示：可以是 JSON 文本、表单键值、multipart 的多个部分，也可以是图片或压缩字节。服务器先按 Content-Type 选择解释方式，再把字节转换成业务数据；body 本身没有“用户资料”这种固定含义。",
+        "body": "请求体承载一段表示：可以是 JSON 文本、表单键值、multipart 的多个部分，也可以是图片或压缩字节。服务器先按 Content-Type 选择解释方式，再把字节转换成业务数据；body 本身没有“用户资料”这种固定含义。解析成功也不等于业务可用，服务仍要检查字段、类型和范围。",
         "sourceIndices": [
           1,
           2,
-          3
+          3,
+          7
         ]
       },
       {
@@ -2589,7 +2673,7 @@
     },
     "sources": [
       {
-        "url": "https://www.rfc-editor.org/rfc/rfc8259",
+        "url": "https://www.rfc-editor.org/rfc/rfc8259.html",
         "label": "RFC 8259 · JSON",
         "note": "JSON 的结构、语法和互操作指导"
       },
@@ -2612,6 +2696,11 @@
         "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
         "label": "MDN · JSON object",
         "note": "JavaScript JSON API 的边界"
+      },
+      {
+        "url": "https://json-schema.org/overview/what-is-jsonschema",
+        "label": "JSON Schema · What is JSON Schema?",
+        "note": "用契约约束 JSON 字段与业务形状"
       }
     ],
     "teaching": [
@@ -2650,7 +2739,8 @@
         "sourceIndices": [
           1,
           3,
-          5
+          5,
+          6
         ]
       }
     ]
