@@ -1,0 +1,87 @@
+.hero,
+.lab {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent);
+  border-radius: 20px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--paper) 80%, #e8edf0), var(--paper));
+  color: var(--ink);
+}
+
+.hero { display: grid; gap: 11px; padding: 17px 18px 15px; }
+.hero::before,
+.lab::before { content: ""; position: absolute; inset: 9px; border: 1px solid color-mix(in srgb, var(--accent-text) 16%, transparent); border-radius: 15px; pointer-events: none; }
+.heroTop,
+.labTop { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--muted); font: 10px ui-monospace, SFMono-Regular, monospace; letter-spacing: .05em; }
+.heroTop strong,
+.labTop strong { padding: 4px 7px; border-radius: 999px; background: color-mix(in srgb, var(--accent-text) 10%, transparent); color: var(--ink); font-size: 9px; }
+.hero :global(.sceneControls), .lab :global(.sceneControls) { position: relative; }
+
+.stencilBoard { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; align-items: stretch; min-height: 207px; padding: 7px 0 2px; }
+.ruleCard, .requestSlip, .resultCard, .stencilStage { min-width: 0; padding: 11px 10px; border: 1px solid color-mix(in srgb, var(--ink) 13%, transparent); border-radius: 13px; background: color-mix(in srgb, var(--paper) 78%, transparent); }
+.ruleCard, .requestSlip { display: grid; align-content: center; gap: 6px; min-height: 101px; }
+.ruleCard { border-left: 3px solid var(--accent-text); }
+.ruleCard > svg, .requestSlip > svg { color: var(--accent-text); }
+.ruleCard span, .requestSlip span, .resultCard span, .stageLabel span { color: var(--muted); font-size: 9px; }
+.ruleCard strong, .requestSlip strong, .resultCard strong { overflow-wrap: anywhere; font-size: 11px; line-height: 1.45; }
+.ruleCard code, .requestSlip code, .resultCard code, .stageLabel code { overflow-wrap: anywhere; color: var(--accent-text); font: 9px/1.4 ui-monospace, SFMono-Regular, monospace; }
+.ruleCard[data-present="false"] { border-color: #a65449; background: #f6e3dd; color: #8f3f35; }
+.ruleCard[data-present="false"] > svg, .ruleCard[data-present="false"] code { color: #a65449; }
+.requestSlip[data-present="false"] { opacity: .62; }
+.stencilStage { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, .65fr) minmax(190px, 1.35fr); align-items: center; gap: 9px; min-height: 116px; background: color-mix(in srgb, var(--accent-text) 6%, var(--paper)); }
+.stageLabel { display: grid; align-content: center; gap: 5px; }
+.stageLabel > svg { color: var(--accent-text); }
+.stencilWindow { position: relative; display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; min-height: 73px; padding: 8px; border: 1px dashed color-mix(in srgb, var(--accent-text) 45%, transparent); border-radius: 12px; background: color-mix(in srgb, var(--paper) 75%, transparent); transition: border-color .35s, background .35s; }
+.stencilWindow[data-open="true"] { border-color: #a65449; background: #f6e3dd; }
+.stencilHole { display: grid; place-items: center; width: 48px; height: 48px; border: 2px solid var(--accent-text); border-radius: 50%; background: var(--paper); color: var(--accent-text); font: 10px ui-monospace, SFMono-Regular, monospace; }
+.stencilWindow[data-open="true"] .stencilHole { border-color: #a65449; color: #a65449; }
+.stencilLine { height: 1px; background: color-mix(in srgb, var(--accent-text) 45%, transparent); }
+.stencilSeal { display: grid; justify-items: center; gap: 3px; color: var(--accent-text); text-align: center; }
+.stencilWindow[data-open="true"] .stencilSeal { color: #a65449; }
+.stencilSeal strong { font-size: 9px; }
+.resultCard { grid-column: 1 / -1; display: grid; align-content: center; gap: 6px; min-height: 73px; }
+.resultCard > div { display: flex; align-items: center; gap: 5px; }
+.resultCard > div svg { color: var(--accent-text); }
+.resultCard[data-success="true"] { border-color: color-mix(in srgb, var(--accent-text) 38%, transparent); }
+.resultCard[data-danger="true"] { border-color: #a65449; background: #f6e3dd; color: #8f3f35; }
+.resultCard[data-danger="true"] > div svg, .resultCard[data-danger="true"] code { color: #a65449; }
+.heroNote, .labStatus { position: relative; display: flex; align-items: flex-start; gap: 7px; padding: 9px 10px; border-radius: 9px; background: color-mix(in srgb, var(--accent-text) 8%, transparent); color: var(--muted); font-size: 11px; line-height: 1.5; }
+.heroNote[data-danger="true"], .labStatus[data-danger="true"] { background: #f6e3dd; color: #8f3f35; }
+.heroNote strong, .labStatus strong { color: var(--ink); }
+.heroNote[data-danger="true"] strong, .labStatus[data-danger="true"] strong { color: #8f3f35; }
+.hero figcaption { position: relative; color: var(--muted); font-size: 10px; line-height: 1.45; }
+
+.lab { display: grid; gap: 12px; margin: 25px 0 18px; padding: 17px 18px 16px; }
+.labControls { position: relative; display: flex; flex-wrap: wrap; gap: 6px; }
+.labControls button { border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent); border-radius: 999px; padding: 6px 9px; background: transparent; color: var(--muted); font: inherit; font-size: 10px; cursor: pointer; }
+.labControls button:hover, .labControls button[aria-pressed="true"] { border-color: var(--accent-text); background: color-mix(in srgb, var(--accent-text) 10%, var(--paper)); color: var(--ink); }
+.labBoard { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; align-items: stretch; }
+.labRule, .labRequest, .labOutput { min-width: 0; display: grid; align-content: center; gap: 6px; padding: 11px 10px; border-radius: 11px; background: color-mix(in srgb, var(--paper) 75%, transparent); }
+.labRule { border-left: 3px solid var(--accent-text); }
+.labRule > svg, .labRequest > svg, .labOutput > svg { color: var(--accent-text); }
+.labRule span, .labRequest span, .labOutput span { color: var(--muted); font-size: 9px; }
+.labRule strong, .labRequest strong, .labOutput strong { overflow-wrap: anywhere; font-size: 11px; line-height: 1.4; }
+.labRule small, .labRequest small, .labOutput small { color: var(--muted); font-size: 9px; line-height: 1.4; }
+.labOutput { border: 1px solid color-mix(in srgb, var(--ink) 13%, transparent); }
+.labOutput[data-success="true"] { border-color: color-mix(in srgb, var(--accent-text) 38%, transparent); }
+.labOutput[data-danger="true"] { border-color: #a65449; background: #f6e3dd; color: #8f3f35; }
+.labOutput[data-danger="true"] > svg, .labOutput[data-danger="true"] small { color: #a65449; }
+.labBoard[data-danger="true"] .labRule { border-left-color: #a65449; }
+.labStatus { margin-top: 1px; }
+
+@media (max-width: 900px) {
+  .labBoard { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .labOutput { grid-column: 1 / -1; }
+}
+
+@media (max-width: 620px) {
+  .hero, .lab { padding-left: 14px; padding-right: 14px; }
+  .stencilBoard, .stencilStage, .labBoard { grid-template-columns: 1fr; }
+  .stencilStage, .resultCard, .labOutput { grid-column: auto; }
+  .stencilStage { min-height: 0; }
+  .stencilWindow { grid-template-columns: 48px 1fr 58px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stencilWindow { transition: none; }
+}
