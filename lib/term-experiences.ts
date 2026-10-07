@@ -124,10 +124,11 @@ export type TermSceneKind = (typeof sceneKinds)[number];
 export type TermActorIcon = (typeof actorIcons)[number];
 
 // Arrows and moving edges are reserved for concepts whose meaning is an
-// ordered hand-off. Other scenes can still show relationships, but use their
-// own spatial grammar (layers, comparison, matrix, contract, etc.) instead of
-// looking like a generic flowchart.
-export const flowSceneKinds: ReadonlySet<TermSceneKind> = new Set(["pipeline", "route", "branch", "loop"]);
+// ordered hand-off. A branch is rendered as a condition panel: it may have
+// alternatives, but alternatives are not automatically a process diagram.
+// Other scenes can still show relationships, using their own spatial grammar
+// (layers, comparison, matrix, contract, etc.) instead of a generic flowchart.
+export const flowSceneKinds: ReadonlySet<TermSceneKind> = new Set(["pipeline", "route", "loop"]);
 export const topologySceneKinds: ReadonlySet<TermSceneKind> = new Set([
   ...flowSceneKinds,
   "tree",

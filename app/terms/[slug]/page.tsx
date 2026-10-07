@@ -140,6 +140,7 @@ import { ColumnTermPage } from "@/components/terms/ColumnConceptPage";
 import { AcidTermPage } from "@/components/terms/AcidConceptPage";
 import { EnvironmentVariableTermPage, ExpressionTermPage, FormatterTermPage, FunctionTermPage, LinterTermPage, LockfileTermPage, MonorepoTermPage, ParameterTermPage, ReturnValueTermPage, SourceMapTermPage } from "@/components/terms/toolchain-redesign-pages/ToolchainRedesignPages";
 import { ArrayTermPage, ConditionalBranchTermPage, ControlClientServerTermPage, DistributedSystemTermPage, EventDrivenArchitectureTermPage, LoopTermPage, MicroservicesTermPage, MonolithTermPage, ObjectTermPage, ServerlessTermPage } from "@/components/terms/control-redesign-pages/ControlRedesignPages";
+import { BeamSearchTermPage, ConfidenceCalibrationTermPage, DataContaminationTermPage, KnowledgeDistillationTermPage, MixtureOfExpertsTermPage, ModelCardTermPage, OutOfDistributionTermPage, ParameterEfficientFineTuningTermPage, QuantizationTermPage, SpeculativeDecodingTermPage } from "@/components/terms/ModelMechanismsPages";
 
 const articleTermPages = {
   'offline-first': OfflineFirstTermPage,
@@ -218,6 +219,16 @@ const articleTermPages = {
   function: FunctionTermPage,
   parameter: ParameterTermPage,
   'return-value': ReturnValueTermPage,
+  quantization: QuantizationTermPage,
+  'knowledge-distillation': KnowledgeDistillationTermPage,
+  'mixture-of-experts': MixtureOfExpertsTermPage,
+  'speculative-decoding': SpeculativeDecodingTermPage,
+  'beam-search': BeamSearchTermPage,
+  'confidence-calibration': ConfidenceCalibrationTermPage,
+  'data-contamination': DataContaminationTermPage,
+  'out-of-distribution': OutOfDistributionTermPage,
+  'parameter-efficient-fine-tuning': ParameterEfficientFineTuningTermPage,
+  'model-card': ModelCardTermPage,
   container: ContainerTermPage,
   'container-image': InfrastructureContainerImageTermPage,
   'service-discovery': InfrastructureServiceDiscoveryTermPage,

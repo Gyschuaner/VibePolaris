@@ -101,9 +101,10 @@ const sceneKinds = Object.fromEntries(
     .map((kind) => [kind, experiences.filter((item) => item.sceneKind === kind).length]),
 );
 
-// Only ordered hand-offs keep arrow-led flow treatment in the renderer. The
-// rest use a mechanism-specific spatial grammar even when they have relations.
-const flowVisualKinds = new Set(["pipeline", "route", "branch", "loop"]);
+// Only ordered hand-offs keep arrow-led flow treatment in the renderer. A
+// branch is rendered as a condition panel so alternatives do not become a
+// generic process diagram by default.
+const flowVisualKinds = new Set(["pipeline", "route", "loop"]);
 const flowVisualCount = experiences.filter((item) => flowVisualKinds.has(item.sceneKind)).length;
 
 const frameCounts = Object.fromEntries(
