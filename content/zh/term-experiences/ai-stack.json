@@ -3253,19 +3253,19 @@
     "definition": "智能体循环把当前状态、一个受控动作、外部结果、状态更新和停止判断连成多轮过程；每轮结果都要改变下一轮可见的状态。",
     "boundary": "一次工具调用或模型连续输出都不是循环。没有状态回写、完成判据和失败/取消/轮数上限出口，重复动作不能证明任务完成。",
     "sceneKind": "loop",
-    "sceneTitle": "一张健康检查任务单怎样从 500 回到 200",
-    "actionLabel": "逐步推进检查并切换轮数上限",
+    "sceneTitle": "维修工作台怎样把回执写回任务票",
+    "actionLabel": "推进维修台并切换轮数上限",
     "actors": [
       {
         "id": "ticket",
-        "label": "任务单",
+        "label": "发布任务票",
         "detail": "GET /health → 500",
         "icon": "file",
         "group": "起点"
       },
       {
         "id": "action",
-        "label": "一次动作",
+        "label": "检修抽屉",
         "detail": "run_checks()",
         "icon": "gear",
         "group": "执行"
@@ -3279,14 +3279,21 @@
       },
       {
         "id": "state",
-        "label": "写回状态",
+        "label": "状态卡",
         "detail": "issue = config",
         "icon": "layout",
         "group": "状态"
       },
       {
+        "id": "verification",
+        "label": "复查灯",
+        "detail": "等待新的健康检查",
+        "icon": "chart",
+        "group": "验证"
+      },
+      {
         "id": "gate",
-        "label": "完成闸门",
+        "label": "停止闸门",
         "detail": "200 OK 或 max_turns",
         "icon": "shield",
         "group": "停止"
@@ -3297,128 +3304,96 @@
         "id": "ticket-action",
         "from": "ticket",
         "to": "action",
-        "label": "执行"
+        "label": "拉开"
       },
       {
         "id": "action-observation",
         "from": "action",
         "to": "observation",
-        "label": "返回"
+        "label": "带回"
       },
       {
         "id": "observation-state",
         "from": "observation",
         "to": "state",
-        "label": "写回"
+        "label": "贴回"
       },
       {
-        "id": "state-gate",
+        "id": "state-verification",
         "from": "state",
+        "to": "verification",
+        "label": "触发复查"
+      },
+      {
+        "id": "verification-gate",
+        "from": "verification",
         "to": "gate",
-        "label": "判断"
+        "label": "通过才开"
       }
     ],
     "frames": [
       {
-        "label": "接住失败任务单",
-        "note": "循环从可见的失败开始：GET /health 返回 500，状态里还有一个配置问题。",
-        "activeIds": [
-          "ticket"
-        ],
+        "label": "失败票钉上桌",
+        "note": "维修工作台从可见的失败开始：GET /health 返回 500，票面还标着一个配置问题。",
+        "activeIds": ["ticket"],
         "doneIds": [],
-        "mutedIds": [
-          "action",
-          "observation",
-          "state",
-          "gate"
-        ],
-        "values": {
-          "ticket": "500 · 1 项问题"
-        },
+        "mutedIds": ["action", "observation", "state", "verification", "gate"],
+        "values": {"ticket": "500 · 1 项问题"},
         "activeEdgeIds": []
       },
       {
-        "label": "发出一个动作",
-        "note": "只执行一次 run_checks()；工具没有回执前，不把等待写成通过。",
-        "activeIds": [
-          "action"
-        ],
-        "doneIds": [
-          "ticket"
-        ],
-        "mutedIds": [
-          "observation",
-          "state",
-          "gate"
-        ],
-        "values": {
-          "action": "running"
-        },
-        "activeEdgeIds": [
-          "ticket-action"
-        ]
+        "label": "拉开检修抽屉",
+        "note": "先读配置再决定怎么修；动作发出而回执未回时，任务仍然没有完成。",
+        "activeIds": ["action"],
+        "doneIds": ["ticket"],
+        "mutedIds": ["observation", "state", "verification", "gate"],
+        "values": {"action": "inspect_config()"},
+        "activeEdgeIds": ["ticket-action"]
       },
       {
-        "label": "读回原始结果",
-        "note": "工具带回 500 和缺失字段，结果本身成为下一轮的证据。",
-        "activeIds": [
-          "observation"
-        ],
-        "doneIds": [
-          "ticket",
-          "action"
-        ],
-        "mutedIds": [
-          "state",
-          "gate"
-        ],
-        "values": {
-          "observation": "500 · API_BASE_URL"
-        },
-        "activeEdgeIds": [
-          "action-observation"
-        ]
+        "label": "回执滑回来",
+        "note": "工具带回 500 和缺失字段，纸质回执本身成为下一轮的证据。",
+        "activeIds": ["observation"],
+        "doneIds": ["ticket", "action"],
+        "mutedIds": ["state", "verification", "gate"],
+        "values": {"observation": "500 · API_BASE_URL"},
+        "activeEdgeIds": ["action-observation"]
       },
       {
-        "label": "把结果写回状态",
-        "note": "状态从“未知问题”变成“配置待修复”；下一轮知道该改哪里，而不是盲目重试。",
-        "activeIds": [
-          "state"
-        ],
-        "doneIds": [
-          "ticket",
-          "action",
-          "observation"
-        ],
-        "mutedIds": [
-          "gate"
-        ],
-        "values": {
-          "state": "issue = config"
-        },
-        "activeEdgeIds": [
-          "observation-state"
-        ]
+        "label": "贴回状态卡",
+        "note": "把 issue = config 写回任务单，下一轮知道该改哪里，而不是盲目重试。",
+        "activeIds": ["state"],
+        "doneIds": ["ticket", "action", "observation"],
+        "mutedIds": ["verification", "gate"],
+        "values": {"state": "issue = config"},
+        "activeEdgeIds": ["observation-state"]
       },
       {
-        "label": "检查完成闸门",
-        "note": "修复后收到 200 OK 才能结束；若先撞到 max_turns，也要停在未完成状态。",
-        "activeIds": [
-          "gate"
-        ],
-        "doneIds": [
-          "ticket",
-          "action",
-          "observation",
-          "state"
-        ],
+        "label": "写入配置",
+        "note": "API_BASE_URL 已写入，状态发生了变化；写入动作仍不能代替健康检查。",
+        "activeIds": ["action", "state"],
+        "doneIds": ["ticket", "observation"],
+        "mutedIds": ["verification", "gate"],
+        "values": {"action": "set API_BASE_URL", "state": "API_BASE_URL = set"},
+        "activeEdgeIds": ["observation-state"]
+      },
+      {
+        "label": "重新健康检查",
+        "note": "第三轮才重新检查服务；新的回执回来之前，复查灯保持等待。",
+        "activeIds": ["verification"],
+        "doneIds": ["ticket", "action", "observation", "state"],
+        "mutedIds": ["gate"],
+        "values": {"verification": "等待 GET /health"},
+        "activeEdgeIds": ["state-verification"]
+      },
+      {
+        "label": "打开停止闸门",
+        "note": "新的健康检查返回 200 OK 才能标成成功；若先撞到 max_turns，也必须停在未完成。",
+        "activeIds": ["gate", "verification"],
+        "doneIds": ["ticket", "action", "observation", "state"],
         "mutedIds": [],
-        "values": {
-          "gate": "200 OK / max_turns"
-        },
-        "activeEdgeIds": [
-          "state-gate"
-        ]
+        "values": {"verification": "200 OK · verified", "gate": "200 OK / max_turns"},
+        "activeEdgeIds": ["verification-gate"]
       }
     ],
     "insight": "循环的关键不是调用次数，而是每次回执是否写回状态，并经过一个能区分成功、失败、取消和上限的停止闸门。",
