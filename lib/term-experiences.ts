@@ -27,6 +27,7 @@ const sceneKinds = [
   "magnet-drawer",
   "overlay-film",
   "triage-dial",
+  "relay-band",
 ] as const;
 
 const actorIcons = [

@@ -1,8 +1,7 @@
-import { ArrowDown, Check, X } from '@phosphor-icons/react/dist/ssr';
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
 import { ConceptHero } from './ConceptHero';
-import { ModelFallbackLesson } from './ModelDeliveryLessons';
 import { ModelRoutingHero, ModelRoutingLesson } from './ai-stack-lessons/model-routing';
+import { ModelFallbackHero, ModelFallbackLesson } from './ai-stack-lessons/model-fallback';
 import { PromptCachingHero, PromptCachingLesson } from './ai-stack-lessons/prompt-caching';
 import { routingSources, fallbackSources, promptCachingSources } from '@/lib/model-delivery-sources';
 import base from './EventConcepts.module.css';
@@ -42,7 +41,7 @@ export function ModelFallbackTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={fallbackSources}/>;
   return <ConceptArticle slug="model-fallback" title="备用模型" sources={fallbackSources} sections={[["replacement","主调用之后的备用路径"],["attempts","错误、兼容性与调用次数"],["policy","切换条件与停止条件"],["limits","接替后的结果仍要检查"]]}
     intro={<>备用模型是在主调用不可用或触发指定条件时，用来接替处理的候选。重试是再问同一个目标，备用是换一个目标；只在配置里写上另一个模型的名字还不够，系统还要决定哪些情况允许切换、备用能否接收相同任务，以及最多继续尝试多少次。</>}
-    hero={<ConceptHero slug="model-fallback" label="主调用收到429后，备用路径出现第二次调用并返回金额字段120"><div className={s.fallbackHero}><div><span>01 · 主调用</span><strong>429 <X size={19}/></strong></div><ArrowDown size={23}/><div><span>02 · 备用调用</span><strong><code>amount: 120</code><Check size={19}/></strong></div></div></ConceptHero>}>
+    hero={<ModelFallbackHero/>}>
     <ArticleSection id="replacement" title="主调用之后的备用路径"><Legacy slug="model-fallback" names={["question","definition"]}/>
       <p id="fallback-definition" className="vp-citation-target"><strong>备用路径在指定条件下，把任务交给另一个可用目标。</strong>LiteLLM 把可以互换的一组部署称为模型组，并区分同一模型组里的部署接替与跨模型组的 fallback：可以先尝试同模型的健康部署，再进入另一组。备用不必一定是能力较弱的模型，也可能是另一地区部署或另一提供方。<Cite id="fallback-definition"/></p>
       <p>同一目标重新尝试通常叫 <ConceptTerm slug="retry">重试</ConceptTerm>；换目标则是接替。二者可以配合，但每用一次就多一次调用。主服务已经过载时，无限制地重试再切换，可能把问题带到备用服务。</p>

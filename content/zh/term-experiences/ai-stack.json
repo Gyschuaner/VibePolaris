@@ -7644,155 +7644,158 @@
     "lead": "主模型2秒后返回429，备用模型接管时哪些状态必须显式改变？",
     "definition": "首选模型遇到超时、限流、不可用或不满足最低质量时，系统按预设条件切到备用模型并记录降级。",
     "boundary": "备用模型不是负载均衡，也不保证输出完全等价；能力、格式和上下文限制都要重新校验。",
-    "sceneKind": "branch",
-    "sceneTitle": "429让请求转入降级支路",
-    "actionLabel": "模拟失败类型",
+    "sceneKind": "relay-band",
+    "sceneTitle": "接力腕带记录错误、交接与核对",
+    "actionLabel": "改变回执条件",
     "actors": [
       {
-        "id": "request",
-        "label": "请求",
-        "detail": "生成订单摘要",
-        "icon": "message",
-        "group": "输入"
-      },
-      {
         "id": "primary",
-        "label": "主模型",
-        "detail": "等待中",
+        "label": "主调用扣",
+        "detail": "提取金额 120",
         "icon": "brain",
-        "group": "首选"
+        "group": "主路径"
       },
       {
-        "id": "error",
-        "label": "失败信号",
-        "detail": "HTTP 429",
-        "icon": "message",
-        "group": "触发"
+        "id": "policy",
+        "label": "策略闸",
+        "detail": "错误+能力+预算",
+        "icon": "shield",
+        "group": "检查"
       },
       {
         "id": "backup",
-        "label": "备用模型",
-        "detail": "能力较少",
+        "label": "备用扣",
+        "detail": "另一个调用目标",
         "icon": "robot",
-        "group": "降级"
+        "group": "接替"
       },
       {
-        "id": "response",
-        "label": "响应",
-        "detail": "附降级状态",
+        "id": "verify",
+        "label": "字段核对",
+        "detail": "amount = 120",
         "icon": "spark",
-        "group": "输出"
+        "group": "验收"
+      },
+      {
+        "id": "audit",
+        "label": "留痕扣",
+        "detail": "fallback 原因与次数",
+        "icon": "chart",
+        "group": "记录"
       }
     ],
-    "edges": [
-      {
-        "id": "r-p",
-        "from": "request",
-        "to": "primary",
-        "label": "首选"
-      },
-      {
-        "id": "p-e",
-        "from": "primary",
-        "to": "error",
-        "label": "失败"
-      },
-      {
-        "id": "e-b",
-        "from": "error",
-        "to": "backup",
-        "label": "回退"
-      },
-      {
-        "id": "b-r",
-        "from": "backup",
-        "to": "response",
-        "label": "返回"
-      }
-    ],
+    "edges": [],
     "frames": [
       {
-        "label": "走主路径",
-        "note": "请求先发给首选模型，备用模型没有参与。",
+        "label": "扣上主腕带",
+        "note": "先发起主调用，备用还没有拿到任务。",
         "activeIds": [
-          "request",
           "primary"
         ],
         "doneIds": [],
         "mutedIds": [
-          "error",
+          "policy",
           "backup",
-          "response"
+          "verify",
+          "audit"
         ],
         "values": {
-          "primary": "等待 0 → 2s"
+          "primary": "等待回执"
         },
-        "activeEdgeIds": [
-          "r-p"
-        ]
+        "activeEdgeIds": []
       },
       {
-        "label": "触发429",
-        "note": "主模型被限流，重试计数从0变为1。",
+        "label": "看见 429",
+        "note": "主调用回报限流；真实错误先留下，不能直接跳过策略检查。",
         "activeIds": [
-          "primary",
-          "error"
+          "primary"
         ],
-        "doneIds": [
-          "request"
-        ],
+        "doneIds": [],
         "mutedIds": [
+          "policy",
           "backup",
-          "response"
+          "verify",
+          "audit"
         ],
         "values": {
-          "error": "429",
-          "primary": "重试 1"
+          "primary": "429 · 重试 1"
         },
-        "activeEdgeIds": [
-          "p-e"
-        ]
+        "activeEdgeIds": []
       },
       {
-        "label": "转入备用",
-        "note": "规则允许在429后切换，能力标记full变为reduced。",
+        "label": "打开策略闸",
+        "note": "检查错误类型、备用能力和总尝试上限，决定腕带能否交接。",
         "activeIds": [
-          "error",
-          "backup"
+          "policy"
         ],
         "doneIds": [
-          "request",
           "primary"
         ],
         "mutedIds": [
-          "response"
+          "backup",
+          "verify",
+          "audit"
         ],
         "values": {
-          "backup": "reduced"
+          "policy": "允许一次接替"
         },
-        "activeEdgeIds": [
-          "e-b"
-        ]
+        "activeEdgeIds": []
       },
       {
-        "label": "带降级返回",
-        "note": "备用响应成功，同时保留回退原因。",
+        "label": "备用接住",
+        "note": "兼容的备用目标发起第二次调用；它不是主模型的无条件复制品。",
         "activeIds": [
-          "backup",
-          "response"
+          "backup"
         ],
         "doneIds": [
-          "request",
           "primary",
-          "error"
+          "policy"
+        ],
+        "mutedIds": [
+          "verify",
+          "audit"
+        ],
+        "values": {
+          "backup": "第 2 次 · fallback=429"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "核对 amount",
+        "note": "备用即使有回复，也要检查业务需要的字段是否真的存在。",
+        "activeIds": [
+          "verify"
+        ],
+        "doneIds": [
+          "primary",
+          "policy",
+          "backup"
+        ],
+        "mutedIds": [
+          "audit"
+        ],
+        "values": {
+          "verify": "amount = 120 · 通过"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "扣上留痕",
+        "note": "把触发原因、调用次数和核对结果一起记录，接替才可追踪。",
+        "activeIds": [
+          "audit"
+        ],
+        "doneIds": [
+          "primary",
+          "policy",
+          "backup",
+          "verify"
         ],
         "mutedIds": [],
         "values": {
-          "response": "成功 · fallback=429"
+          "audit": "fallback=429 · 2 次 · 通过"
         },
-        "activeEdgeIds": [
-          "b-r"
-        ]
+        "activeEdgeIds": []
       }
     ],
     "insight": "回退需要记录触发原因和能力差异，不能假设备用模型与主模型完全等价。",
