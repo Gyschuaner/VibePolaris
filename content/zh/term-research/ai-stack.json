@@ -2291,5 +2291,24 @@
       "guardrail",
       "constitutional-ai"
     ]
+  },
+  {
+    "slug": "prompt-chaining",
+    "mechanism": "提示链把任务拆成固定子任务，让前一步的结构化产物成为下一次调用的输入，并在连接处加入格式、事实或权限闸门。",
+    "misconception": "拆得越多不一定越好；前一步错误会传播，延迟、费用和状态管理会随链长度增加。",
+    "demoSignature": "4帧｜对象：原始材料、提纲卡、检查卡、正文卡、调用账本｜交互：拆卡、检查缺口、拼正文、查看成本｜变化：大提示→中间产物→闸门→正文与成本；非流程组合台。",
+    "sourceUrls": [
+      "https://www.anthropic.com/engineering/building-effective-agents",
+      "https://github.com/anthropics/claude-cookbooks/tree/main/patterns/agents",
+      "https://arxiv.org/abs/2203.06566",
+      "https://resources.anthropic.com/hubfs/Building%20Effective%20AI%20Agents-%20Architecture%20Patterns%20and%20Implementation%20Frameworks.pdf",
+      "https://doi.org/10.6028/NIST.AI.600-1"
+    ],
+    "rewriteRisk": "先证明子任务边界和中间 schema 有价值，再讨论调用次数；保留失败、预算和回退路径。",
+    "nearDuplicates": [
+      "agent-workflow",
+      "agent-orchestration",
+      "evaluator-optimizer"
+    ]
   }
 ]

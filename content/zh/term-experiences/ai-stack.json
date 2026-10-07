@@ -26048,5 +26048,176 @@
         "note": "治理、责任和控制边界"
       }
     ]
+  },
+  {
+    "slug": "prompt-chaining",
+    "lead": "一条提示塞不下任务时，为什么先产出结构，再让下一次调用使用它会更容易检查？",
+    "definition": "提示链把一个任务拆成固定的子任务，每次模型调用只负责一个较清楚的产物，例如先列提纲，再检查提纲，最后写正文。程序保存中间产物，并可在连接处加入格式或事实闸门；换来的可调试性伴随更多延迟、状态和失败接口。",
+    "boundary": "提示链适合边界稳定、输入输出可描述的工作，不是所有任务都值得拆成多次调用。前一步的错误会传给后一步，链越长成本越高；需要动态决定子任务时，固定链可能不如代理或一次简单调用。",
+    "sceneKind": "assembly",
+    "sceneTitle": "产物拼装台：接口清楚，下一块才接得上",
+    "actionLabel": "拼入下一块产物",
+    "actors": [
+      {
+        "id": "material",
+        "label": "原始材料",
+        "detail": "采访记录和事实卡",
+        "icon": "file",
+        "group": "输入"
+      },
+      {
+        "id": "outline",
+        "label": "提纲卡",
+        "detail": "固定字段的 JSON",
+        "icon": "layout",
+        "group": "中间产物"
+      },
+      {
+        "id": "check",
+        "label": "检查卡",
+        "detail": "缺口和格式闸门",
+        "icon": "shield",
+        "group": "中间产物"
+      },
+      {
+        "id": "draft",
+        "label": "正文卡",
+        "detail": "只接收合格提纲",
+        "icon": "file",
+        "group": "输出"
+      },
+      {
+        "id": "cost",
+        "label": "调用账本",
+        "detail": "延迟、费用和失败接口",
+        "icon": "chart",
+        "group": "代价"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "一块大提示",
+        "note": "资料直接变成正文，问题停在哪一层很难定位。",
+        "activeIds": [
+          "material",
+          "draft"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "outline",
+          "check",
+          "cost"
+        ],
+        "values": {
+          "draft": "完整文章 · 缺口未知"
+        }
+      },
+      {
+        "label": "拆出结构卡",
+        "note": "先规定下一步需要的字段和停止条件。",
+        "activeIds": [
+          "outline"
+        ],
+        "doneIds": [
+          "material"
+        ],
+        "mutedIds": [
+          "check",
+          "draft",
+          "cost"
+        ],
+        "values": {
+          "outline": "title / claims / sources"
+        }
+      },
+      {
+        "label": "加检查卡",
+        "note": "程序在交给写作调用前阻止缺字段的产物。",
+        "activeIds": [
+          "check"
+        ],
+        "doneIds": [
+          "material",
+          "outline"
+        ],
+        "mutedIds": [
+          "draft",
+          "cost"
+        ],
+        "values": {
+          "check": "缺 1 条来源 · 停止"
+        }
+      },
+      {
+        "label": "拼入正文卡",
+        "note": "中间产物可回放，但多一次调用和更多接口也要记账。",
+        "activeIds": [
+          "draft",
+          "cost"
+        ],
+        "doneIds": [
+          "material",
+          "outline",
+          "check"
+        ],
+        "mutedIds": [],
+        "values": {
+          "draft": "正文生成",
+          "cost": "3 calls · 1 gate"
+        }
+      }
+    ],
+    "insight": "提示链把大任务拆成可验收产物，也把每个连接处的成本和失败暴露出来。",
+    "quiz": {
+      "question": "提示链最值得先加哪一种闸门？",
+      "options": [
+        {
+          "label": "检查中间产物是否满足下一步所需的格式和条件",
+          "correct": true
+        },
+        {
+          "label": "让每一步重新读取所有历史文本",
+          "correct": false
+        },
+        {
+          "label": "把所有失败隐藏成成功",
+          "correct": false
+        }
+      ],
+      "success": "格式与条件闸门能在错误扩散前停住链条。",
+      "retry": "重复历史或隐藏失败只会增加成本；要明确输入、输出和停止条件。"
+    },
+    "prompt": {
+      "title": "把一个大提示拆成可验收的提示链",
+      "text": "请把任务拆成最少的固定子任务；为每次调用写输入、输出 schema、成功条件、失败处理和最大预算。说明每个中间产物如何被检查，以及何时应退回单次调用或交给人工，而不是为了形式增加步骤。"
+    },
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/engineering/building-effective-agents",
+        "label": "Anthropic · Building Effective AI Agents",
+        "note": "提示链的适用条件和代价"
+      },
+      {
+        "url": "https://github.com/anthropics/claude-cookbooks/tree/main/patterns/agents",
+        "label": "Anthropic Cookbooks · Agent patterns",
+        "note": "提示链的最小实现示例"
+      },
+      {
+        "url": "https://arxiv.org/abs/2203.06566",
+        "label": "PromptChainer",
+        "note": "可组合提示链与中间结果"
+      },
+      {
+        "url": "https://resources.anthropic.com/hubfs/Building%20Effective%20AI%20Agents-%20Architecture%20Patterns%20and%20Implementation%20Frameworks.pdf",
+        "label": "Anthropic · Agent patterns guide",
+        "note": "工作流复杂度与选择依据"
+      },
+      {
+        "url": "https://doi.org/10.6028/NIST.AI.600-1",
+        "label": "NIST · AI Risk Management Framework",
+        "note": "验证、记录和风险控制"
+      }
+    ]
   }
 ]
