@@ -13,7 +13,7 @@ function DomHero() {
   return <ConceptHero slug="dom" label="同一份 HTML 在浏览器里展开成节点树，当前被观察的文本节点留下亮点">
     <div className={styles.domHero}><div className={styles.domHeroBoard}>
       <div className={styles.domHeroHead}><TreeStructure size={19} /><span>DOCUMENT OBJECT MODEL</span><b>当前节点</b></div>
-      <div className={styles.domHeroTree}><div className={styles.domHeroRoot}><span>document</span><small>当前文档对象</small></div><div className={styles.domHeroBranch}><div><span>main</span><small>区域</small></div><div data-active="true"><span>h1</span><strong>周末活动</strong></div><div><span>button</span><strong>报名</strong></div></div></div>
+      <div className={styles.domHeroTree}><div className={styles.domHeroRoot}><span>document</span><small>当前文档对象</small></div><div className={styles.domHeroBranch}><div className={styles.domHeroMain}><span>main</span><small>区域</small><div className={styles.domHeroChildren}><div data-active="true"><span>h1</span><strong>周末活动</strong></div><div><span>button</span><strong>报名</strong></div></div></div></div></div>
       <div className={styles.domHeroLens}><MagnifyingGlass size={16} /><span>脚本观察</span><strong>h1.textContent</strong><CheckCircle size={15} /></div>
     </div></div>
   </ConceptHero>;

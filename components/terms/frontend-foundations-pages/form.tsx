@@ -32,15 +32,17 @@ function FormLab() {
   const validEmail = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!name.trim() || !validEmail) {
+    const missingName = !name.trim();
+    const invalidEmail = !validEmail;
+    if (missingName || invalidEmail) {
       setStatus("client");
-      requestAnimationFrame(() => (name.trim() ? emailInput : nameInput).current?.focus());
+      requestAnimationFrame(() => (missingName ? nameInput : emailInput).current?.focus());
       return;
     }
     if (registered) { setStatus("server"); return; }
     setStatus("success");
   }
-  const message = status === "client" ? "邮箱需要完整地址；姓名仍保留。" : status === "server" ? "这个邮箱已经报名过，请换一个或直接登录。" : status === "success" ? "报名成功，确认邮件会发到这个地址。" : "先填一项，再按提交观察检查位置。";
+  const message = status === "client" ? (!name.trim() && !validEmail ? "姓名和邮箱都需要补全；已有内容会保留。" : !name.trim() ? "姓名不能为空；邮箱格式已经通过。" : "邮箱需要完整地址；姓名仍保留。") : status === "server" ? "这个邮箱已经报名过，请换一个或直接登录。" : status === "success" ? "报名成功，确认邮件会发到这个地址。" : "先填一项，再按提交观察检查位置。";
   return <div className={styles.formLab} role="region" aria-label="表单客户端与服务端校验演示">
     <form className={styles.formCard} onSubmit={submit} noValidate>
       <div className={styles.formCardHead}><span>报名表</span><small>字段错误贴在字段旁</small></div>

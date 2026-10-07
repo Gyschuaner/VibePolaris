@@ -1,7 +1,7 @@
 "use client";
 
 import { BracketsCurly, CheckCircle, PaintBrush, SquaresFour, TextAa, WarningCircle } from "@phosphor-icons/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cssSources } from "@/lib/frontend-foundation-sources";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { ArticleAside, ArticleSection, ConceptTerm } from "../ConceptArticle";
@@ -24,6 +24,14 @@ function CssHero() {
 function CssLab() {
   const [target, setTarget] = useState<"cards" | "title">("cards");
   const [property, setProperty] = useState<CssProperty>("layout");
+  const [isNarrow, setIsNarrow] = useState(false);
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 600px)");
+    const update = () => setIsNarrow(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
   const active = target === "cards" && property === "layout";
   const propertyOptions: ReadonlyArray<readonly [CssProperty, string]> = target === "cards" ? [["layout", "排成卡片"], ["space", "拉开间距"]] : [["tone", "换颜色"]];
   const targetLabel = target === "cards" ? ".event-cards" : ".event-title";
@@ -39,9 +47,9 @@ function CssLab() {
     </div>
     <div className={styles.cssBoard} data-layout={active ? "grid" : "stack"} data-tone={target === "title" && property === "tone"} data-space={target === "cards" && property === "space"}>
       <div className={styles.cssRuleCard}><span>匹配的规则</span><code>{targetLabel} &#123;<br />&nbsp;&nbsp;{declaration};<br />&#125;</code><small>{target === "cards" ? "找到了容器" : "只找到了标题"}</small></div>
-      <div className={styles.cssPoster}><div className={styles.cssPosterTitle}>周末活动</div><div className={styles.cssCards}>{["河边市集", "露天放映", "旧书交换"].map(item => <span className={styles.cssCard} key={item}><strong>{item}</strong><small>周末 · 14:00</small></span>)}</div><p className={styles.cssProof}><CheckCircle size={16} /> HTML 文字没有改，当前计算值：<b>{active ? "display: grid" : target === "title" ? "color = accent" : "gap = 18px"}</b></p></div>
+      <div className={styles.cssPoster}><div className={styles.cssPosterTitle}>周末活动</div><div className={styles.cssCards}>{["河边市集", "露天放映", "旧书交换"].map(item => <span className={styles.cssCard} key={item}><strong>{item}</strong><small>周末 · 14:00</small></span>)}</div><p className={styles.cssProof}><CheckCircle size={16} /> HTML 文字没有改，当前计算值：<b>{active ? `display: grid · ${isNarrow ? "1 列（窄屏媒体规则）" : "3 列"}` : target === "title" ? "color = accent" : "gap = 18px"}</b></p></div>
     </div>
-    <p className={styles.cssLabNote} role="status">{active ? "容器规则命中，布局把三张卡片放到同一行。" : target === "cards" ? "同一个容器仍然被命中；这次只把卡片之间的 gap 拉开。" : "标题规则命中，只有标题换色，容器仍按原来的方式排列。"}</p>
+    <p className={styles.cssLabNote} role="status">{active ? (isNarrow ? "容器规则命中；窄屏媒体规则把三张卡片排成一列。" : "容器规则命中，布局把三张卡片放到同一行。") : target === "cards" ? "同一个容器仍然被命中；这次只把卡片之间的 gap 拉开。" : "标题规则命中，只有标题换色，容器仍按原来的方式排列。"}</p>
   </div>;
 }
 

@@ -33,7 +33,7 @@ function HtmlLab() {
   return <div className={styles.htmlLab} role="region" aria-label="HTML 原生元素与普通容器对照实验">
     <div className={styles.htmlLabControls}><span>让同一块内容换一种 HTML 元素</span><button type="button" aria-pressed={semantic} onClick={() => { setSemantic(value => !value); setLastInput("切换元素"); }}>{semantic ? "当前是 button" : "当前是 div"}</button></div>
     <div className={styles.htmlLabBoard} data-semantic={semantic}>
-      <div className={styles.htmlLabMarkup}><span>实际标签</span><code>{semantic ? "&lt;button&gt;" : "&lt;div&gt;"}</code><small>{semantic ? "浏览器知道它是操作控件" : "只是一块普通容器"}</small></div>
+      <div className={styles.htmlLabMarkup}><span>实际标签</span><code>{semantic ? "<button>" : "<div>"}</code><small>{semantic ? "浏览器知道它是操作控件" : "只是一块普通容器"}</small></div>
       <div className={styles.htmlLabAction}>
         {semantic ? <button type="button" onClick={() => activate("鼠标或键盘")}>更新读数</button> : <div onClick={() => activate("鼠标")}>更新读数</div>}
         <span className={styles.htmlLabHint}><Mouse size={15} />{semantic ? "Tab 后可按 Enter / Space" : "鼠标能点，Tab 不会自动停在这里"}</span>

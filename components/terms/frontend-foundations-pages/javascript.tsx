@@ -53,7 +53,7 @@ function JavascriptLab() {
     <div className={styles.javascriptBoard}>
       <div className={styles.javascriptStateCard}><span>JavaScript 变量</span><strong>{count}</strong><code>let count = {count}</code><small>{lastEvent}</small></div>
       <div className={styles.javascriptDomCard} data-linked={domLinked}><span>页面上的 DOM 文本</span><strong>{domCount}</strong><small>{domLinked ? "状态改变后同步读数" : "暂停写回，画面保留旧值"}</small></div>
-      <div className={styles.javascriptHostCard}><span>{host === "browser" ? "浏览器接口" : "Node.js 接口"}</span><div><b><CheckCircle size={15} />{browserApi ? "document.querySelector" : "fs.readFile"}</b><small>{browserApi ? "当前宿主提供" : "当前宿主不提供"}</small></div><div><b>{browserApi ? <WarningCircle size={15} /> : <CheckCircle size={15} />}{browserApi ? "fs.readFile" : "process"}</b><small>{browserApi ? "换到 Node.js 才能找" : "Node.js 全局能力"}</small></div></div>
+      <div className={styles.javascriptHostCard}><span>{host === "browser" ? "浏览器接口" : "Node.js 接口"}</span><div><b>{browserApi ? <CheckCircle size={15} /> : <WarningCircle size={15} />}{"document.querySelector"}</b><small>{browserApi ? "当前宿主提供" : "当前宿主不提供"}</small></div><div><b>{browserApi ? <WarningCircle size={15} /> : <CheckCircle size={15} />}{browserApi ? "fs.readFile" : "fs.readFile"}</b><small>{browserApi ? "切到 Node.js 才能找" : "当前宿主提供"}</small></div></div>
     </div>
     <p className={styles.javascriptLabNote} role="status">{domLinked ? "事件回调改了状态，演示把新值同步写进 DOM。" : <>状态已经是 <strong>{count}</strong>，但 DOM 仍显示 <strong>{domCount}</strong>；脚本有值不代表屏幕自动更新。</>}</p>
   </div>;
