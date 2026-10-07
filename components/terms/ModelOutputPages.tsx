@@ -3,6 +3,7 @@ import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptT
 import { ConceptHero } from './ConceptHero';
 import { StreamingOutputLesson, StructuredOutputLesson, FunctionCallingLesson } from './ModelOutputLessons';
 import { StreamingReceiptHero } from './ai-stack-lessons/streaming-output-hero';
+import { StructuredMoldHero } from './ai-stack-lessons/structured-output-hero';
 import { streamingSources, structuredSources, functionSources } from '@/lib/model-output-sources';
 import base from './EventConcepts.module.css';
 import s from './ModelOutputConcepts.module.css';
@@ -42,7 +43,7 @@ export function StructuredOutputTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={structuredSources}/>;
   return <ConceptArticle slug="structured-output" title="结构化输出" sources={structuredSources} sections={[["format","把结果交给程序读取"],["shape","候选约束与金额检查"],["generation","生成时就限制可选的内容"],["boundary","格式之外的正确性"]]}
     intro={<>结构化输出让模型按约定的字段和类型返回结果，便于程序直接读取。例如本例把金额写成不带小数的整数，放在 <code>amount</code> 字段里，而不是一段需要重新猜测含义的说明。格式可以受到约束，数据仍需要核对。</>}
-    hero={<ConceptHero slug="structured-output" label="整数格式保留120和999，排除字符串120，金额正确性仍需另外检查"><div className={s.shapeHero}><code>amount: integer</code><div><i>120</i><i>999</i><X size={20}/><code>"120"</code></div><p>类型相同，事实可能不同</p></div></ConceptHero>}>
+    hero={<ConceptHero slug="structured-output" label="amount 整数字段经过模具约束，再与原始金额核对"><StructuredMoldHero /></ConceptHero>}>
     <ArticleSection id="format" title="把结果交给程序读取"><Legacy slug="structured-output" names={["question","definition"]}/>
       <p id="structured-definition" className="vp-citation-target"><strong>结构化输出让结果遵从预先指定的数据形状。</strong>OpenAI 文档区分 JSON 模式与遵循 schema（对字段和类型的约定）的输出：能解析成 JSON，和字段、类型都满足约定，是两项不同的要求。哪些 schema 被支持、支持到什么程度，由具体模型和接口决定，不能推广成任意模型都能接受全部 schema。<Cite id="structured-definition"/></p>
       <p>原始资料说“金额 120”。如果程序收到“这次金额大约是 120”，需要再次提取；收到 <code>{'{"amount":"120"}'}</code> 后，解析器能把它读成一个 JSON 对象，但引号里的 <code>"120"</code> 仍是文字，不能直接当作本例要求的整数参与计算。明确输出字段，可以减少下游对自由文本的猜测。</p>
