@@ -34,7 +34,7 @@ const termSchema = z.object({
     label: z.string().min(1),
     value: z.string().min(1),
     note: z.string().min(1),
-  })).length(3),
+  })).min(1),
   quizQuestion: z.string().min(1),
   quizOptions: z.array(z.string().min(1)).length(3),
   correctText: z.string().min(1),
