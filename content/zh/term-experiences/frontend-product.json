@@ -17115,215 +17115,229 @@
   "promptTitle": "设计一次可恢复的保存反馈"
 },
   {
-    "slug": "loading-state",
-    "lead": "接口要等两秒，页面应该空白、转圈还是保留内容占位？",
-    "definition": "异步操作开始后，界面根据等待范围与可估计程度选择局部禁用、内容占位、确定进度或不确定指示，并在结果到达时转换到内容、空或错误状态。",
-    "boundary": "转圈不是通用答案；无限 spinner 会掩盖超时，内容占位也不适合所有短操作或结构未知的页面。",
-    "sceneKind": "timeline",
-    "sceneTitle": "同一列表在 100ms、2s、8s 与超时下的等待表现",
-    "actionLabel": "增加接口等待时间",
-    "actors": [
-      {
-        "id": "action",
-        "label": "刷新列表",
-        "detail": "用户主动请求",
-        "icon": "component",
-        "group": "触发"
-      },
-      {
-        "id": "timer",
-        "label": "等待计时",
-        "detail": "100ms → 8s",
-        "icon": "clock",
-        "group": "系统"
-      },
-      {
-        "id": "placeholder",
-        "label": "内容占位",
-        "detail": "保留列表结构",
-        "icon": "layout",
-        "group": "反馈"
-      },
-      {
-        "id": "progress",
-        "label": "进度与取消",
-        "detail": "长任务可估计",
-        "icon": "chart",
-        "group": "反馈"
-      },
-      {
-        "id": "result",
-        "label": "列表结果",
-        "detail": "内容、空或错误",
-        "icon": "file",
-        "group": "结果"
-      }
-    ],
-    "edges": [
-      {
-        "id": "action-timer",
-        "from": "action",
-        "to": "timer",
-        "label": "开始等待"
-      },
-      {
-        "id": "timer-placeholder",
-        "from": "timer",
-        "to": "placeholder",
-        "label": "超过短阈值"
-      },
-      {
-        "id": "timer-progress",
-        "from": "timer",
-        "to": "progress",
-        "label": "长任务"
-      },
-      {
-        "id": "timer-result",
-        "from": "timer",
-        "to": "result",
-        "label": "结束"
-      }
-    ],
-    "frames": [
-      {
-        "label": "100ms 内直接完成",
-        "note": "刷新很快返回，不闪现转圈或占位，列表内容直接更新。",
-        "activeIds": [
-          "action",
-          "timer",
-          "result"
-        ],
-        "doneIds": [
-          "action",
-          "timer"
-        ],
-        "mutedIds": [
-          "placeholder",
-          "progress"
-        ],
-        "values": {
-          "timer": "100 ms（示例）",
-          "result": "12 条内容"
-        },
-        "activeEdgeIds": [
-          "action-timer",
-          "timer-result"
-        ]
-      },
-      {
-        "label": "2s 显示结构占位",
-        "note": "延迟增加后，原列表位置出现对应行块，页面布局保持稳定。",
-        "activeIds": [
-          "timer",
-          "placeholder"
-        ],
-        "doneIds": [
-          "action"
-        ],
-        "mutedIds": [
-          "progress",
-          "result"
-        ],
-        "values": {
-          "timer": "2 s（示例）",
-          "placeholder": "5 行占位"
-        },
-        "activeEdgeIds": [
-          "timer-placeholder"
-        ]
-      },
-      {
-        "label": "8s 改为可估计进度",
-        "note": "任务能报告完成量，页面显示 60% 和取消入口，不让用户盯着无限转圈。",
-        "activeIds": [
-          "timer",
-          "progress"
-        ],
-        "doneIds": [
-          "action",
-          "placeholder"
-        ],
-        "mutedIds": [
-          "result"
-        ],
-        "values": {
-          "progress": "60% · 可取消"
-        },
-        "activeEdgeIds": [
-          "timer-progress"
-        ]
-      },
-      {
-        "label": "超时必须停止等待",
-        "note": "超过上限后进度停止，页面显示连接超时与重试，不能把空列表当作成功。",
-        "activeIds": [
-          "timer",
-          "progress",
-          "result"
-        ],
-        "doneIds": [
-          "action"
-        ],
-        "mutedIds": [
-          "placeholder"
-        ],
-        "values": {
-          "progress": "stopped",
-          "result": "连接超时 · 重试"
-        },
-        "activeEdgeIds": [
-          "timer-result"
-        ]
-      }
-    ],
-    "insight": "加载表现要对应等待长度、范围和可估计程度，结束时必须落到内容、空结果或明确错误。",
-    "quiz": {
-      "question": "加载失败后应怎样处理加载指示？",
-      "options": [
-        {
-          "label": "停止加载并显示失败结果和重试",
-          "correct": true
-        },
-        {
-          "label": "让转圈永久继续",
-          "correct": false
-        },
-        {
-          "label": "直接显示空列表且不解释",
-          "correct": false
-        }
+  "slug": "loading-state",
+  "lead": "等待不是一个无限转圈：时间变长时，界面要告诉用户还缺什么、已经完成多少、是否该重试。",
+  "definition": "加载状态是异步内容从发起到可用之间的临时界面模型。短操作可以直接完成，稍长的列表需要保留内容骨架，能估计总量时显示确定进度，超过合理等待则给出超时或重试出口。加载状态不是一个装饰 spinner，而是把未知的等待范围、已完成的工作和最终结果分开表达。",
+  "boundary": "骨架屏只能说明页面结构，不代表数据已经到达；进度条只有在系统知道工作总量时才应显示百分比；不确定指示器也不能无限掩盖网络失败。首次加载、增量加载、空结果和错误是不同状态，不能用同一段动画把它们混在一起。",
+  "sceneKind": "timeline",
+  "sceneTitle": "一条请求的时间预算如何改变等待证据",
+  "actionLabel": "拖动请求时间",
+  "actors": [
+    {
+      "id": "action",
+      "label": "刷新列表",
+      "detail": "用户主动请求",
+      "icon": "component",
+      "group": "触发"
+    },
+    {
+      "id": "timer",
+      "label": "等待计时",
+      "detail": "100ms → 8s",
+      "icon": "clock",
+      "group": "系统"
+    },
+    {
+      "id": "placeholder",
+      "label": "内容占位",
+      "detail": "保留列表结构",
+      "icon": "layout",
+      "group": "反馈"
+    },
+    {
+      "id": "progress",
+      "label": "进度与取消",
+      "detail": "长任务可估计",
+      "icon": "chart",
+      "group": "反馈"
+    },
+    {
+      "id": "result",
+      "label": "列表结果",
+      "detail": "内容、空或错误",
+      "icon": "file",
+      "group": "结果"
+    }
+  ],
+  "edges": [
+    {
+      "id": "action-timer",
+      "from": "action",
+      "to": "timer",
+      "label": "开始等待"
+    },
+    {
+      "id": "timer-placeholder",
+      "from": "timer",
+      "to": "placeholder",
+      "label": "超过短阈值"
+    },
+    {
+      "id": "timer-progress",
+      "from": "timer",
+      "to": "progress",
+      "label": "长任务"
+    },
+    {
+      "id": "timer-result",
+      "from": "timer",
+      "to": "result",
+      "label": "结束"
+    }
+  ],
+  "frames": [
+    {
+      "label": "短请求直接落地",
+      "note": "请求在 100ms 内完成，用户几乎只看到内容出现；为了这么短的等待再插入一个 spinner，反而会制造闪烁。",
+      "activeIds": [
+        "action",
+        "result"
       ],
-      "success": "失败是独立状态，需要明确说明。",
-      "retry": "永久加载或伪装为空数据都会误导用户。"
+      "doneIds": [],
+      "mutedIds": [
+        "timer",
+        "placeholder",
+        "progress"
+      ],
+      "values": {
+        "timer": "<100ms",
+        "result": "内容直接出现"
+      },
+      "activeEdgeIds": []
     },
-    "prompt": {
-      "title": "选择合适的加载表现",
-      "text": "请根据下面操作的等待时间、内容结构和是否保留旧数据，选择按钮加载、内容占位、进度条或局部提示，并补充超时、失败、空结果和取消。"
+    {
+      "label": "慢一点先守住结构",
+      "note": "等待超过感知阈值后，列表骨架保留标题、头像和行高，让用户知道内容会在哪里到达，空白不再冒充失败。",
+      "activeIds": [
+        "action",
+        "timer",
+        "placeholder"
+      ],
+      "doneIds": [
+        "action"
+      ],
+      "mutedIds": [
+        "progress",
+        "result"
+      ],
+      "values": {
+        "timer": "≈2s",
+        "placeholder": "结构占位"
+      },
+      "activeEdgeIds": [
+        "action-timer",
+        "timer-placeholder"
+      ]
     },
-    "sources": [
+    {
+      "label": "总量已知再给进度",
+      "note": "上传文件时系统知道总字节数，确定进度显示已完成 6/10；这个数字来自工作量，不是凭感觉加速的动画。",
+      "activeIds": [
+        "timer",
+        "placeholder",
+        "progress"
+      ],
+      "doneIds": [
+        "action"
+      ],
+      "mutedIds": [
+        "result"
+      ],
+      "values": {
+        "progress": "60% · 6/10",
+        "timer": "可估计"
+      },
+      "activeEdgeIds": [
+        "timer-progress"
+      ]
+    },
+    {
+      "label": "卡住后给出口",
+      "note": "超过服务端时间预算仍没有结果，进度停住并说明超时；重试或取消成为可见动作，页面不再用转圈要求用户盲等。",
+      "activeIds": [
+        "timer",
+        "progress",
+        "result"
+      ],
+      "doneIds": [
+        "placeholder"
+      ],
+      "mutedIds": [
+        "action"
+      ],
+      "values": {
+        "timer": ">8s",
+        "progress": "stalled",
+        "result": "超时 · 重试/取消"
+      },
+      "activeEdgeIds": [
+        "timer-result"
+      ]
+    },
+    {
+      "label": "结果、空态和错误分开",
+      "note": "请求回来后只替换对应占位：有数据显示列表，零条显示空态，失败保留错误和重试；加载动画在有证据时停止。",
+      "activeIds": [
+        "result"
+      ],
+      "doneIds": [
+        "action",
+        "timer",
+        "placeholder",
+        "progress"
+      ],
+      "mutedIds": [],
+      "values": {
+        "result": "data / empty / error 三选一"
+      },
+      "activeEdgeIds": []
+    }
+  ],
+  "insight": "等待反馈要跟着时间预算和可知工作量升级；状态有了可解释的出口，用户才知道是还在做、没有数据，还是已经失败。",
+  "quiz": {
+    "question": "什么时候适合显示确定百分比进度？",
+    "options": [
       {
-        "url": "https://www.nngroup.com/articles/progress-indicators/",
-        "label": "Nielsen Norman Group · Progress Indicators",
-        "note": "用户研究与等待提示"
+        "label": "系统知道可计算的总工作量",
+        "correct": true
       },
       {
-        "url": "https://www.nngroup.com/articles/designing-for-waits-and-interruptions/",
-        "label": "Nielsen Norman Group · Designing for Waits and Interruptions",
-        "note": "等待、打断与恢复"
+        "label": "任何请求一开始就显示 0% 到 100%",
+        "correct": false
       },
       {
-        "url": "https://m3.material.io/components/progress-indicators/overview",
-        "label": "Material Design · Progress indicators",
-        "note": "确定与不确定进度组件"
-      },
-      {
-        "url": "https://developer.apple.com/design/human-interface-guidelines/progress-indicators",
-        "label": "Apple HIG · Progress indicators",
-        "note": "短操作与长任务的进度表现"
+        "label": "当页面没有内容可显示时随便播放",
+        "correct": false
       }
-    ]
+    ],
+    "success": "百分比应该对应可估计的总量，否则只能诚实地显示不确定等待和超时出口。",
+    "retry": "伪造进度只会让等待看起来更长，也不能告诉用户请求是否真的向前推进。"
   },
+  "prompt": "请把请求分成短于 100ms、需要保留结构、可计算进度、超时和最终 data/empty/error 五种状态；为每一段写出显示对象、可操作动作、停止条件和键盘/读屏反馈，禁止用无限 spinner 掩盖失败。",
+  "sources": [
+    {
+      "url": "https://www.nngroup.com/articles/progress-indicators/",
+      "label": "NN/g · Progress indicators",
+      "note": "NN/g Progress Indicators：核对不确定与确定进度的使用条件和等待感受。"
+    },
+    {
+      "url": "https://www.nngroup.com/articles/designing-for-waits-and-interruptions/",
+      "label": "NN/g · Designing for waits",
+      "note": "NN/g Designing for Waits：核对等待过程、打断和恢复出口。"
+    },
+    {
+      "url": "https://m3.material.io/components/progress-indicators/overview",
+      "label": "Material 3 · Progress",
+      "note": "Material 3 Progress indicators：核对 determinate、indeterminate 和进度语义。"
+    },
+    {
+      "url": "https://developer.apple.com/design/human-interface-guidelines/progress-indicators",
+      "label": "Apple HIG · Progress",
+      "note": "Apple HIG Progress indicators：核对短操作、长任务和可取消进度的区别。"
+    }
+  ],
+  "promptTitle": "为异步内容画时间预算"
+},
   {
   "slug": "microinteraction",
   "lead": "收藏按钮的微小回弹不是装饰：它告诉用户按下被接收、数量变了、失败能撤回，而且不会把主任务拖走。",

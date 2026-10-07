@@ -982,19 +982,23 @@
   ]
 },
   {
-    "slug": "loading-state",
-    "mechanism": "异步操作开始后，界面根据等待范围与可估计程度选择局部禁用、内容占位、确定进度或不确定指示，并在结果到达时转换到内容、空或错误状态。",
-    "misconception": "转圈不是通用答案；无限 spinner 会掩盖超时，内容占位也不适合所有短操作或结构未知的页面。",
-    "demoSignature": "budget: 4 frames; actors=等待刻度/列表占位/确定进度/超时出口; phases=100ms直达→2s守住结构→8s显示完成量→超过上限停止并重试; action=拖长同一请求",
-    "sourceUrls": [
-      "https://www.nngroup.com/articles/progress-indicators/",
-      "https://www.nngroup.com/articles/designing-for-waits-and-interruptions/",
-      "https://m3.material.io/components/progress-indicators/overview",
-      "https://developer.apple.com/design/human-interface-guidelines/progress-indicators"
-    ],
-    "rewriteRisk": "high",
-    "nearDuplicates": ["feedback", "async-await", "fetch-api"]
-  },
+  "slug": "loading-state",
+  "mechanism": "加载状态是异步内容从发起到可用之间的临时界面模型。短操作可以直接完成，稍长的列表需要保留内容骨架，能估计总量时显示确定进度，超过合理等待则给出超时或重试出口。加载状态不是一个装饰 spinner，而是把未知的等待范围、已完成的工作和最终结果分开表达。",
+  "misconception": "骨架屏只能说明页面结构，不代表数据已经到达；进度条只有在系统知道工作总量时才应显示百分比；不确定指示器也不能无限掩盖网络失败。首次加载、增量加载、空结果和错误是不同状态，不能用同一段动画把它们混在一起。",
+  "demoSignature": "timeline: 5 frames; objects=动作/等待刻度/列表占位/确定进度/结果; change=短请求、慢请求、可估计进度、超时、结果或错误; evidence=结构占位、完成量与重试出口按时间出现",
+  "sourceUrls": [
+    "https://www.nngroup.com/articles/progress-indicators/",
+    "https://www.nngroup.com/articles/designing-for-waits-and-interruptions/",
+    "https://m3.material.io/components/progress-indicators/overview",
+    "https://developer.apple.com/design/human-interface-guidelines/progress-indicators"
+  ],
+  "rewriteRisk": "high",
+  "nearDuplicates": [
+    "feedback",
+    "async-await",
+    "fetch-api"
+  ]
+},
   {
   "slug": "microinteraction",
   "mechanism": "微交互是围绕单一任务发生的短状态变化：用户或系统触发动作，规则决定允许什么，局部反馈说明动作已被接收，持续状态记录结果，必要时还提供撤销。它可以有形变、颜色或触觉，但动效只是传达状态的手段；真正的对象是按钮、计数、请求结果和下一步操作之间的关系。",
