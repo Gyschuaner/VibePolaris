@@ -1945,6 +1945,33 @@
           "label": "授权检查",
           "value": "未执行"
         }
+      },
+      {
+        "label": "匹配成功仍可能无权访问",
+        "note": "路由已经提取 id=42，但对象级授权拒绝了当前用户；匹配路径不等于得到资源。",
+        "activeIds": [
+          "root-users",
+          "dynamic-id",
+          "id-check",
+          "authz-check"
+        ],
+        "doneIds": [
+          "dynamic-id",
+          "id-check"
+        ],
+        "mutedIds": [
+          "static-me"
+        ],
+        "values": {
+          "dynamic-id": "id=42",
+          "id-check": "整数通过",
+          "authz-check": "403 · 非本人对象"
+        },
+        "activeEdgeIds": [
+          "root-dynamic",
+          "dynamic-check",
+          "check-authz"
+        ]
       }
     ],
     "insight": "路径参数要同时设计路由优先级、解码规则、类型校验和对象授权。",
@@ -1973,14 +2000,74 @@
     },
     "sources": [
       {
-        "url": "https://spec.openapis.org/oas/latest.html",
-        "label": "OpenAPI Specification · Paths",
-        "note": "接口描述规范"
+        "url": "https://spec.openapis.org/oas/v3.1.1.html#path-templating",
+        "label": "OpenAPI · Path Templating",
+        "note": "路径模板和实际 URL 的区别"
       },
       {
         "url": "https://www.rfc-editor.org/rfc/rfc3986.html",
-        "label": "RFC 3986 · Path",
-        "note": "协议定义与报文语义"
+        "label": "RFC 3986 · URI Syntax",
+        "note": "路径分段与百分号编码"
+      },
+      {
+        "url": "https://fastapi.tiangolo.com/tutorial/path-params/",
+        "label": "FastAPI · Path Parameters",
+        "note": "路由变量的解析与类型校验示例"
+      },
+      {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
+        "label": "OWASP · Authorization Cheat Sheet",
+        "note": "逐请求授权检查"
+      },
+      {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Insecure_Direct_Object_Reference_Prevention_Cheat_Sheet.html",
+        "label": "OWASP · IDOR Prevention",
+        "note": "对象级引用不能代替授权"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent#exceptions",
+        "label": "MDN · decodeURIComponent()",
+        "note": "解码失败与非法编码"
+      }
+    ],
+    "teaching": [
+      {
+        "id": "path-template",
+        "title": "花括号是说明，不是实际网址",
+        "body": "接口文档里的 `/users/{id}` 是路径模板，告诉读者某一段会被变量替换；真正发出的请求是 `/users/42` 或 `/users/me`。把带花括号的模板直接复制进浏览器，通常不会匹配到想要的资源。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "path-match",
+        "title": "静态路由和变量路由会竞争",
+        "body": "如果同时存在 `/users/me` 和 `/users/{id}`，路由器需要有明确的匹配优先级，否则 `me` 可能被当成一个普通 id。静态段优先是常见约定，但具体框架仍应以自己的路由规则和测试为准。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "path-decoding",
+        "title": "解码可能改变路径边界",
+        "body": "`a%2Fb` 在解码后包含斜杠；如果路由器先解码再匹配，它可能不再是一个简单的 id。服务要明确允许的字符、解码时机和错误响应，不能让一个路径值偷偷变成两段路径。",
+        "sourceIndices": [
+          2,
+          5,
+          6
+        ]
+      },
+      {
+        "id": "path-access",
+        "title": "找到对象不等于允许访问",
+        "body": "路径参数只帮助程序定位对象，认证和授权还要判断当前用户能不能读取或修改它。用户把 `/users/42` 改成 `/users/43` 就能看到别人的资料，属于对象级授权缺失；隐藏编号不是防护。",
+        "sourceIndices": [
+          3,
+          4,
+          5
+        ]
       }
     ]
   },
