@@ -47,7 +47,7 @@
 - `npm run build`：通过，静态页面 1111/1111；构建前新闻校验为 published 725、drafts 869、pending 144。
 - `npm run audit:terms --silent`：372 个体验、372 个唯一 slug、372 条来源覆盖；流程视觉 44/372（11.8%）；重复场景、相邻同类场景和近重复对均为 0。全库保留 spectrum、compare、transform、layers、matrix、timeline、tree、network、assembly 等多种机制画面。
 - 真实浏览器在本地端口 3341 打开十条新路由，均返回 200；逐页检查了标题、定义、互动控件、参考资料和主体演示，未见 404 或构建错误。
-- 唯一 reviewer 子智能体负责本批独立复核，待其回报后记录最终结论。
+- 唯一 reviewer 子智能体独立复核 PASS：十条的数据、正文、来源、体验结构和全库比例均通过；复核指出的 `microinteraction` 页面帧数与计数漂移已修复并增量复核 PASS。其余专属页按实际机制保留比 canonical 台账更紧凑的局部阶段，不把 5 帧硬套成统一页面模板。
 
 ## 发布记录
 

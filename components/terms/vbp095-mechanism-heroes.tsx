@@ -114,20 +114,21 @@ export function LoadingStateMechanismHero() {
   </MechanismFrame>;
 }
 
-const microLabels = ["按下响应", "确认收藏", "进入撤销", "失败回到可信值"];
+const microLabels = ["未收藏", "按下进入 pending", "服务端确认", "撤销", "失败回滚"];
 const microCaptions = [
-  "先给即时按下反馈，但数量仍标成处理中，不能抢先宣布成功。",
-  "服务端确认后星标填充，计数从 24 变成 25，状态留在按钮旁。",
-  "再次点击是撤销请求，图标会回到轮廓，但仍等待结果确认。",
-  "请求失败时回到已确认的数量，并提供重试，而不是保留假成功。",
+  "空闲状态只说明当前事实：还没有收藏，计数是 12，按钮仍可由鼠标或键盘触发。",
+  "按下先给即时确认，图标进入 pending；计数可以乐观显示 13，但请求还没有被确认。",
+  "服务端确认后，实心星和 13 停住，局部消息把成功留在按钮旁。",
+  "再次点击发起撤销，图标回到轮廓，计数随撤销回到 12；这是另一条动作，不是倒放旧动画。",
+  "请求失败时回滚到 12，消息说明未保存并保留重试，界面不留下假成功。",
 ];
 export function MicrointeractionMechanismHero() {
   const scene = useScene(microLabels.length);
   const step = scene.step;
   return <MechanismFrame scene={scene} title="一枚星标怎样把触发和结果绑在一起" labels={microLabels} caption={microCaptions[step]}>
     <div className={styles.microScene} data-step={step}>
-      <div className={styles.microControl}><div className={styles.microStar} aria-hidden="true">{step === 1 || step === 2 ? "★" : "☆"}</div><strong>{step === 0 ? "收藏中…" : step === 1 ? "已收藏" : step === 2 ? "取消中…" : "已收藏"}</strong><small>轻微变化只解释这一件事</small></div>
-      <div className={styles.microLedger}><div data-on={step >= 0}><span>请求</span><strong>{step === 0 ? "pending" : step === 2 ? "undo" : step === 3 ? "failed" : "confirmed"}</strong></div><div data-on={step === 1 || step === 3}><span>收藏数</span><strong>{step === 1 || step === 3 ? "25" : step === 2 ? "24" : "24→?"}</strong></div><p>{step === 3 ? "失败：恢复服务端值 · 重试" : "反馈贴着触发点出现"}</p></div>
+      <div className={styles.microControl}><div className={styles.microStar} aria-hidden="true">{step === 2 ? "★" : "☆"}</div><strong>{step === 0 ? "未收藏" : step === 1 ? "保存中…" : step === 2 ? "已收藏" : step === 3 ? "已撤销" : "未保存"}</strong><small>轻微变化只解释这一件事</small></div>
+      <div className={styles.microLedger}><div data-on={step >= 1}><span>请求</span><strong>{step === 0 ? "idle" : step === 1 ? "pending" : step === 2 ? "saved" : step === 3 ? "undo" : "failed"}</strong></div><div data-on={step >= 1}><span>收藏数</span><strong>{step === 1 ? "12→13" : step === 2 ? "13" : step >= 3 ? "12" : "12"}</strong></div><p>{step === 4 ? "失败：回滚 12 · 未保存 · 重试" : step === 3 ? "撤销完成：12 · 反馈贴着触发点出现" : "反馈贴着触发点出现"}</p></div>
     </div>
   </MechanismFrame>;
 }

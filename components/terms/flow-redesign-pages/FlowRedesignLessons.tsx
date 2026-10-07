@@ -25,12 +25,19 @@ export function LoadingStateLesson() {
 }
 
 export function MicrointeractionLesson() {
-  const [state, setState] = useState<"pending" | "saved" | "undo" | "failed">("pending");
-  const labels = ["按下响应", "成功确认", "再次点击撤销", "失败撤回"];
-  const current = { pending: ["按下", "按钮先压缩，告诉用户请求已经发出。"], saved: ["确认", "图标填充、计数加一，状态留在按钮旁。"], undo: ["撤销", "再次点击进入取消请求，数量暂不擅自减一。"], failed: ["恢复", "服务端拒绝取消后回到可信状态，给出重试出口。"] }[state];
-  const order = ["pending", "saved", "undo", "failed"] as const;
-  function activate() { setState(state === "saved" ? "undo" : "pending"); }
-  return <div className={styles.lesson} role="region" aria-label="微交互状态回弹演示"><LessonTop label="一个小任务" title="收藏按钮的变化必须有含义" onReset={() => setState("pending")} resetLabel="重置微交互演示" /><div className={styles.lessonControls} role="group" aria-label="收藏状态"><button type="button" onClick={() => setState("pending")}>按下收藏</button><button type="button" onClick={() => setState("saved")} aria-pressed={state === "saved"}>确认成功</button><button type="button" onClick={() => setState("undo")} aria-pressed={state === "undo"}>再次点击撤销</button><button type="button" onClick={() => setState("failed")} aria-pressed={state === "failed"}>模拟失败</button></div><div className={styles.microBoard}><div className={styles.microButtonStage}><button className={styles.favoriteButton} type="button" data-state={state} aria-pressed={state === "saved"} onClick={activate}><Star className={styles.favoriteGlyph} weight={state === "saved" ? "fill" : "regular"} aria-hidden="true" /><small>{state === "saved" ? "已收藏 · 25" : state === "failed" ? "取消失败 · 25" : state === "undo" ? "取消中 · 25" : "处理中 · 24"}</small></button></div><div className={styles.microReadout}><small>{current[0]}</small><strong>{current[1]}</strong><p>动效只解释局部状态，不替代结果文字。</p><div className={styles.microTrail}>{labels.map((label, index) => <i data-on={order.indexOf(state) >= index} key={label}>{label}</i>)}</div></div></div><div className={styles.lessonStatus} role="status"><strong>{state === "failed" ? "状态回到服务端确认值" : state === "saved" ? "反馈和数据同时落地" : state === "undo" ? "撤销也要等服务端确认" : "触发 → 规则 → 局部反馈 → 持续状态"}</strong><span>失败时不让按钮停在“已取消”的假状态；减少动态时，颜色、文字和计数仍然要能说明发生了什么。</span></div></div>;
+  const [state, setState] = useState<"idle" | "pending" | "saved" | "undo" | "failed">("idle");
+  const labels = ["未收藏", "按下 pending", "确认成功", "撤销", "失败回滚"];
+  const current = {
+    idle: ["未收藏", "按钮保留 12 这个已确认的数量，等待一次明确触发。"],
+    pending: ["处理中", "按下先给局部确认，计数暂时从 12 乐观显示为 13。"],
+    saved: ["确认", "服务端确认后图标填充，13 和成功消息一起停住。"],
+    undo: ["撤销", "再次点击发起另一条动作，结果回到 12，不倒放旧动画。"],
+    failed: ["回滚", "请求失败时恢复 12，说明未保存，并把重试留在动作旁。"],
+  }[state];
+  const order = ["idle", "pending", "saved", "undo", "failed"] as const;
+  function activate() { setState(state === "idle" ? "pending" : state === "saved" ? "undo" : state); }
+  const count = state === "pending" ? "12→13" : state === "saved" ? "13" : "12";
+  return <div className={styles.lesson} role="region" aria-label="微交互状态回弹演示"><LessonTop label="一个小任务" title="收藏按钮的变化必须有含义" onReset={() => setState("idle")} resetLabel="重置微交互演示" /><div className={styles.lessonControls} role="group" aria-label="收藏状态"><button type="button" onClick={() => setState("idle")} aria-pressed={state === "idle"}>未收藏</button><button type="button" onClick={() => setState("pending")} aria-pressed={state === "pending"}>按下收藏</button><button type="button" onClick={() => setState("saved")} aria-pressed={state === "saved"}>确认成功</button><button type="button" onClick={() => setState("undo")} aria-pressed={state === "undo"}>再次点击撤销</button><button type="button" onClick={() => setState("failed")} aria-pressed={state === "failed"}>模拟失败</button></div><div className={styles.microBoard}><div className={styles.microButtonStage}><button className={styles.favoriteButton} type="button" data-state={state} aria-pressed={state === "saved"} onClick={activate}><Star className={styles.favoriteGlyph} weight={state === "saved" ? "fill" : "regular"} aria-hidden="true" /><small>{state === "idle" ? `未收藏 · ${count}` : state === "pending" ? `保存中 · ${count}` : state === "saved" ? `已收藏 · ${count}` : state === "undo" ? `已撤销 · ${count}` : `未保存 · ${count}`}</small></button></div><div className={styles.microReadout}><small>{current[0]}</small><strong>{current[1]}</strong><p>动效只解释局部状态，不替代结果文字。</p><div className={styles.microTrail}>{labels.map((label, index) => <i data-on={order.indexOf(state) >= index} key={label}>{label}</i>)}</div></div></div><div className={styles.lessonStatus} role="status"><strong>{state === "failed" ? "状态回到服务端确认值" : state === "saved" ? "反馈和数据同时落地" : state === "undo" ? "撤销结果已经回到 12" : state === "pending" ? "请求还在途中，不能提前宣布成功" : "先看清事实，再触发一次动作"}</strong><span>失败时不让按钮停在“已取消”的假状态；减少动态时，颜色、文字和计数仍然要能说明发生了什么。</span></div></div>;
 }
 
 export function ReducedMotionLesson() {

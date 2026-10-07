@@ -42,7 +42,7 @@ function LoadingHero() {
 }
 
 function MicroHero() {
-  return <HeroShell kind="micro" label="收藏按钮按下、回弹、填充并在失败时撤回"><div className={styles.heroFavorite}><Star size={28} weight="fill" aria-hidden="true" /><small>收藏</small></div><div className={styles.heroRecoil} aria-hidden="true" /><div className={styles.heroCounter}><small>计数</small><strong>24 → 25</strong></div><div className={styles.heroFailBadge}>失败 ↩</div></HeroShell>;
+  return <HeroShell kind="micro" label="收藏按钮从未收藏到 pending、确认、撤销，再在失败时回滚"><div className={styles.heroFavorite}><Star size={28} weight="fill" aria-hidden="true" /><small>收藏</small></div><div className={styles.heroRecoil} aria-hidden="true" /><div className={styles.heroCounter}><small>计数</small><strong>12 → 13 → 12</strong></div><div className={styles.heroFailBadge}>失败 ↩ 回滚</div></HeroShell>;
 }
 
 function MotionHero() {
