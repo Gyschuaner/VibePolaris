@@ -7840,218 +7840,173 @@
     "lead": "会话结束后，智能体怎样记住有用偏好，又不把整段聊天都带上？",
     "definition": "智能体记忆是应用保存下来、供后续调用的信息。应用先判断什么值得保存，按任务取回相关记录，并定好记录怎样纠正、何时失效、怎么删除。这个例子里，用户明确同意保存一条偏好，应用才写入。",
     "boundary": "工作记忆就是当前任务里的临时进度和中间结果，不会自动变成下次会话要用的偏好。保存下来的偏好存在应用的记录里，应用把它取回、放进这次发给 AI 的内容，AI 才会看到它。涉及隐私的内容，应用应先取得用户同意，并定好保存多久、何时删除。",
-    "sceneKind": "memory",
-    "sceneTitle": "一条代码偏好如何经过询问、取回和撤回",
-    "actionLabel": "沿着一条记录走一遍",
+    "sceneKind": "memory-drawer",
+    "sceneTitle": "记忆卡抽屉只把相关记录带进本轮",
+    "actionLabel": "打开下一格抽屉",
     "actors": [
       {
-        "id": "session-a",
-        "label": "会话 A",
-        "detail": "用户确认的偏好",
+        "id": "message",
+        "label": "用户偏好卡",
+        "detail": "代码示例用 TypeScript",
         "icon": "message",
         "group": "来源"
       },
       {
-        "id": "memory",
-        "label": "记忆库",
-        "detail": "保存带来源和时间的记录",
+        "id": "drawer",
+        "label": "记忆卡抽屉",
+        "detail": "按 scope 存放记录",
         "icon": "memory",
         "group": "存储"
       },
       {
-        "id": "session-b",
-        "label": "会话 B",
-        "detail": "当前编码任务",
-        "icon": "message",
-        "group": "使用"
+        "id": "task",
+        "label": "代码任务",
+        "detail": "登录接口示例",
+        "icon": "search",
+        "group": "取回"
       },
       {
-        "id": "example",
-        "label": "本次输出",
-        "detail": "按取回结果生成",
+        "id": "context",
+        "label": "本轮输入",
+        "detail": "明确放入的材料",
+        "icon": "file",
+        "group": "上下文"
+      },
+      {
+        "id": "history",
+        "label": "旧回答",
+        "detail": "TypeScript 已生成",
         "icon": "code",
-        "group": "输出"
+        "group": "边界"
       },
       {
-        "id": "delete",
+        "id": "control",
         "label": "管理入口",
-        "detail": "查看、纠正或删除",
+        "detail": "纠正或删除",
         "icon": "shield",
         "group": "控制"
-      },
-      {
-        "id": "next-example",
-        "label": "下一次输出",
-        "detail": "后续任务再生成",
-        "icon": "code",
-        "group": "结果"
       }
     ],
-    "edges": [
-      {
-        "id": "a-m",
-        "from": "session-a",
-        "to": "memory",
-        "label": "写入"
-      },
-      {
-        "id": "m-b",
-        "from": "memory",
-        "to": "session-b",
-        "label": "取回"
-      },
-      {
-        "id": "b-e",
-        "from": "session-b",
-        "to": "example",
-        "label": "应用偏好"
-      },
-      {
-        "id": "d-m",
-        "from": "delete",
-        "to": "memory",
-        "label": "管理"
-      },
-      {
-        "id": "d-n",
-        "from": "delete",
-        "to": "next-example",
-        "label": "下一次生效"
-      }
-    ],
+    "edges": [],
     "frames": [
       {
-        "label": "用户确认偏好",
-        "note": "会话 A 中，用户明确同意保存“代码示例用 TypeScript”；未确认的信息不写入。",
+        "label": "卡片等候同意",
+        "note": "当前消息可以影响眼前回答，但还没有进入长期抽屉。",
         "activeIds": [
-          "session-a"
+          "message"
         ],
         "doneIds": [],
         "mutedIds": [
-          "memory",
-          "session-b",
-          "example",
-          "delete",
-          "next-example"
+          "drawer",
+          "task",
+          "context",
+          "history",
+          "control"
         ],
         "values": {
-          "session-a": "已确认"
+          "message": "等待明确同意"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "写入可管理记录",
-        "note": "记忆库原有 1 条“食谱少放盐”的记录。应用新增这条代码偏好，来源记为会话 A、时间记为今天；应用也可以设定失效时间，到期不再取回。",
+        "label": "放入抽屉",
+        "note": "用户同意后，只写一张带来源和范围的偏好卡。",
         "activeIds": [
-          "memory"
+          "drawer"
         ],
         "doneIds": [
-          "session-a"
+          "message"
         ],
         "mutedIds": [
-          "session-b",
-          "example",
-          "delete",
-          "next-example"
+          "task",
+          "context",
+          "history",
+          "control"
         ],
         "values": {
-          "memory": "新增 1 条 · 会话 A · 今天"
+          "drawer": "2 条 · code 卡已存"
         },
-        "activeEdgeIds": [
-          "a-m"
-        ]
+        "activeEdgeIds": []
       },
       {
-        "label": "新任务取回相关记录",
-        "note": "记忆库一共 2 条。会话 B 要写代码，应用只取回代码偏好这 1 条，不带入食谱记录或全部旧聊天。",
+        "label": "抽出相关卡",
+        "note": "代码任务只抽出 code 范围的卡，食谱卡留在抽屉里。",
         "activeIds": [
-          "memory",
-          "session-b"
+          "drawer",
+          "task"
         ],
         "doneIds": [
-          "session-a"
+          "message"
         ],
         "mutedIds": [
-          "example",
-          "delete",
-          "next-example"
+          "context",
+          "history",
+          "control"
         ],
         "values": {
-          "memory": "共 2 条 · 取回 1"
+          "drawer": "命中 1 / 2"
         },
-        "activeEdgeIds": [
-          "m-b"
-        ]
+        "activeEdgeIds": []
       },
       {
-        "label": "使用取回的偏好",
-        "note": "应用把取回的偏好交给 AI，本次输出使用 TypeScript（一种编程语言）。用户随时可以通过管理入口纠正这条偏好。",
+        "label": "压进本轮输入",
+        "note": "取回只是应用拿到记录；放进本轮输入后模型才会看见。",
         "activeIds": [
-          "session-b",
-          "example"
+          "context"
         ],
         "doneIds": [
-          "session-a",
-          "memory"
+          "message",
+          "drawer",
+          "task"
         ],
         "mutedIds": [
-          "delete",
-          "next-example"
+          "history",
+          "control"
         ],
         "values": {
-          "example": "TypeScript"
+          "context": "language = TypeScript"
         },
-        "activeEdgeIds": [
-          "m-b",
-          "b-e"
-        ]
+        "activeEdgeIds": []
       },
       {
-        "label": "纠正一条记录",
-        "note": "用户把偏好从 TypeScript 改成 Python，记忆里存的值跟着变了；已经生成的回复保持原样。",
+        "label": "翻卡改成 Python",
+        "note": "纠正改变未来取回的值，已经生成的 TypeScript 输出不回写。",
         "activeIds": [
-          "memory",
-          "delete"
+          "drawer",
+          "control"
         ],
         "doneIds": [
-          "session-a",
-          "session-b",
-          "example"
-        ],
-        "mutedIds": [
-          "next-example"
-        ],
-        "values": {
-          "memory": "TypeScript → Python",
-          "example": "TypeScript（已生成）"
-        },
-        "activeEdgeIds": [
-          "d-m"
-        ]
-      },
-      {
-        "label": "删除后不再使用",
-        "note": "纠正之后，用户又把这条代码偏好删掉了，记忆库从 2 条剩 1 条食谱记录。下一次代码任务不会自动使用这条偏好，需要重新说明想用哪种语言写代码。",
-        "activeIds": [
-          "memory",
-          "delete",
-          "next-example"
-        ],
-        "doneIds": [
-          "session-a",
-          "session-b",
-          "example"
+          "message",
+          "task",
+          "context",
+          "history"
         ],
         "mutedIds": [],
         "values": {
-          "memory": "2 → 1",
-          "next-example": "需重新说明语言偏好",
-          "example": "TypeScript（已生成）"
+          "drawer": "TypeScript → Python",
+          "history": "TypeScript · 已生成"
         },
-        "activeEdgeIds": [
-          "d-m",
-          "d-n"
-        ]
+        "activeEdgeIds": []
+      },
+      {
+        "label": "删除未来取回",
+        "note": "删除只阻断之后的自动带入；下一次需要重新说明语言偏好。",
+        "activeIds": [
+          "drawer",
+          "control"
+        ],
+        "doneIds": [
+          "message",
+          "task",
+          "context",
+          "history"
+        ],
+        "mutedIds": [],
+        "values": {
+          "drawer": "2 → 1 条",
+          "history": "TypeScript · 保留"
+        },
+        "activeEdgeIds": []
       }
     ],
     "insight": "留下记录后，应用还要按当前任务取回它。记忆内容可以纠正或删除，过去生成的回复不会跟着改写。",
@@ -8104,8 +8059,7 @@
         "label": "OpenAI Agents SDK · Running agents",
         "note": "运行时状态与任务继续"
       }
-    ],
-    "demoSignature": "六段生命周期：请求同意、写入、取回、带入本轮、纠正偏好、删除；每个按钮都让记录或本轮输入出现可观察变化，未满足前置条件的操作保持禁用。"
+    ]
   },
   {
     "slug": "working-memory",

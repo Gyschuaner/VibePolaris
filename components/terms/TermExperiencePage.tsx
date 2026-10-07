@@ -100,6 +100,7 @@ const sceneCopy = {
   "overlay-film": { heading: "叠上便签，看哪一层还能复用", insight: "命中结论" },
   "triage-dial": { heading: "拨动分诊转盘，看看谁能承接", insight: "选择结论" },
   "relay-band": { heading: "扣上接力腕带，检查是否真的能交接", insight: "接替结论" },
+  "memory-drawer": { heading: "拉开记忆卡抽屉，只取这次有用的一张", insight: "记忆结论" },
 } satisfies Record<TermSceneKind, { heading: string; insight: string }>;
 
 type SceneControlKind = "range" | "select" | "step";

@@ -28,6 +28,7 @@ const sceneKinds = [
   "overlay-film",
   "triage-dial",
   "relay-band",
+  "memory-drawer",
 ] as const;
 
 const actorIcons = [
