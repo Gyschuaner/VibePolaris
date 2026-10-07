@@ -26219,5 +26219,177 @@
         "note": "验证、记录和风险控制"
       }
     ]
+  },
+  {
+    "slug": "evaluator-optimizer",
+    "lead": "模型写完第一稿以后，为什么要把“哪里不够好”单独交给一个评估器？",
+    "definition": "评估器—优化器模式把生成和评价分成两个职责：生成器先产出候选，评估器按预先写好的标准给出分数、缺口或修改意见，优化器据此形成下一版。它适合质量可以清楚描述、反馈确实能改善结果的任务，并需要最大轮数、成本和停止条件。",
+    "boundary": "评估器不能凭空创造可靠标准；rubric 含糊或评估器与生成器共享盲点时，循环只会把同一种错误润色得更像真的。通过评估也不等于事实或用户目标已满足，要保留版本、意见、人工抽查和未解决问题。",
+    "sceneKind": "matrix",
+    "sceneTitle": "双栏改稿台：分数上升，证据也必须跟着上升",
+    "actionLabel": "加入一条评估意见",
+    "actors": [
+      {
+        "id": "draft",
+        "label": "初稿",
+        "detail": "摘要漏掉时间限制",
+        "icon": "file",
+        "group": "生成"
+      },
+      {
+        "id": "rubric",
+        "label": "评分尺",
+        "detail": "事实覆盖、清晰度、风险边界",
+        "icon": "layout",
+        "group": "标准"
+      },
+      {
+        "id": "evaluator",
+        "label": "评估器",
+        "detail": "指出可复现缺口",
+        "icon": "search",
+        "group": "反馈"
+      },
+      {
+        "id": "optimizer",
+        "label": "优化器",
+        "detail": "只改允许范围",
+        "icon": "gear",
+        "group": "修订"
+      },
+      {
+        "id": "evidence",
+        "label": "证据账本",
+        "detail": "来源、未解决项和版本",
+        "icon": "shield",
+        "group": "停止"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "放入初稿",
+        "note": "把真实缺口写在草稿旁，不让总分遮住遗漏。",
+        "activeIds": [
+          "draft"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "rubric",
+          "evaluator",
+          "optimizer",
+          "evidence"
+        ],
+        "values": {
+          "draft": "120 字 · 漏时间限制"
+        }
+      },
+      {
+        "label": "打开评分尺",
+        "note": "评估器只能按被写出的标准观察，标准本身也要可审阅。",
+        "activeIds": [
+          "rubric"
+        ],
+        "doneIds": [
+          "draft"
+        ],
+        "mutedIds": [
+          "evaluator",
+          "optimizer",
+          "evidence"
+        ],
+        "values": {
+          "rubric": "事实 / 清晰 / 风险"
+        }
+      },
+      {
+        "label": "返回定向意见",
+        "note": "意见指向一处可修改内容，而不是泛泛说“更好一点”。",
+        "activeIds": [
+          "evaluator",
+          "optimizer"
+        ],
+        "doneIds": [
+          "draft",
+          "rubric"
+        ],
+        "mutedIds": [
+          "evidence"
+        ],
+        "values": {
+          "evaluator": "补 48 小时限制",
+          "optimizer": "允许范围内改写"
+        }
+      },
+      {
+        "label": "比较第二稿",
+        "note": "覆盖提高但仍有来源待核验，达到停止条件前保留未解决项。",
+        "activeIds": [
+          "draft",
+          "evidence"
+        ],
+        "doneIds": [
+          "rubric",
+          "evaluator",
+          "optimizer"
+        ],
+        "mutedIds": [],
+        "values": {
+          "draft": "覆盖提高",
+          "evidence": "1 条来源待核验"
+        }
+      }
+    ],
+    "insight": "评估器—优化器让反馈成为可回放的改稿证据，但不会凭空消除标准和事实盲点。",
+    "quiz": {
+      "question": "评估器—优化器循环什么时候应该停止？",
+      "options": [
+        {
+          "label": "满足可解释标准或达到预算/轮数上限，并保留未解决项",
+          "correct": true
+        },
+        {
+          "label": "直到评估器永远给满分",
+          "correct": false
+        },
+        {
+          "label": "只要文字更长就继续",
+          "correct": false
+        }
+      ],
+      "success": "停止条件要同时考虑质量标准、预算、轮数和剩余风险。",
+      "retry": "无限循环和满分都不是证据；要记录尚未完成的事实或人工判断。"
+    },
+    "prompt": {
+      "title": "设计一个评估器—优化器检查",
+      "text": "请写出可操作的 rubric、每项的证据要求、评估器输出格式、优化器可修改的范围、最大轮数与成本，以及达到标准后仍必须人工复核的风险。比较每一版的实际变化，不要把分数提升当成事实证明。"
+    },
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/engineering/building-effective-agents",
+        "label": "Anthropic · Building Effective AI Agents",
+        "note": "评估器—优化器的适用条件"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "label": "Anthropic · Demystifying evals",
+        "note": "评估输入、轨迹和评分证据"
+      },
+      {
+        "url": "https://github.com/anthropics/claude-cookbooks/tree/main/patterns/agents",
+        "label": "Anthropic Cookbooks · Agent patterns",
+        "note": "评估与优化的实现样例"
+      },
+      {
+        "url": "https://resources.anthropic.com/hubfs/Building%20Effective%20AI%20Agents-%20Architecture%20Patterns%20and%20Implementation%20Frameworks.pdf",
+        "label": "Anthropic · Agent patterns guide",
+        "note": "反馈循环和停止条件"
+      },
+      {
+        "url": "https://doi.org/10.6028/NIST.AI.600-1",
+        "label": "NIST · AI Risk Management Framework",
+        "note": "风险证据与人工监督"
+      }
+    ]
   }
 ]
