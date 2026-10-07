@@ -1684,6 +1684,28 @@
           "label": "自动类型转换",
           "value": "0 项"
         }
+      },
+      {
+        "label": "编码先还原，再谈业务值",
+        "note": "`%E6%B5%B7%E8%BE%B9` 只是 URI 中的编码文本；解析器还要决定字符集、重复键和空值怎样进入应用。",
+        "activeIds": [
+          "raw-query",
+          "parser-a",
+          "result-a"
+        ],
+        "doneIds": [
+          "parser-b",
+          "result-b"
+        ],
+        "mutedIds": [],
+        "values": {
+          "raw-query": "q=%E6%B5%B7%E8%BE%B9",
+          "result-a": "q=\"海边\""
+        },
+        "activeEdgeIds": [
+          "raw-a",
+          "a-result"
+        ]
       }
     ],
     "insight": "接口契约必须规定重复键、空值和类型，否则同一 URL 可能被不同运行时解释成不同输入。",
@@ -1712,9 +1734,68 @@
     },
     "sources": [
       {
-        "url": "https://www.rfc-editor.org/rfc/rfc3986.html",
-        "label": "RFC 3986 · Query Component",
-        "note": "协议定义与报文语义"
+        "url": "https://www.rfc-editor.org/rfc/rfc3986.html#section-3.4",
+        "label": "RFC 3986 · Query",
+        "note": "URI query 组件的通用语法"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams",
+        "label": "MDN · URLSearchParams",
+        "note": "查询参数的读取、编码与修改"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/getAll",
+        "label": "MDN · getAll()",
+        "note": "重复键的完整读取结果"
+      },
+      {
+        "url": "https://url.spec.whatwg.org/",
+        "label": "WHATWG · URL Standard",
+        "note": "URL 解析与百分号编码"
+      },
+      {
+        "url": "https://community.owasp.org/vulnerabilities/Information_exposure_through_query_strings_in_url",
+        "label": "OWASP · Query strings exposure",
+        "note": "查询字符串在日志和历史中的暴露风险"
+      }
+    ],
+    "teaching": [
+      {
+        "id": "query-component",
+        "title": "query 只有语法，没有业务字典",
+        "body": "问号后的部分是 URI 的 query 组件，规范允许它承载一串结构，但 HTTP 不规定 `q`、`page` 或 `tag` 的含义。接口文档和服务端解析代码才决定这些键代表搜索、分页还是别的条件。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "query-repeat",
+        "title": "重复键要看解析约定",
+        "body": "`tag=a&tag=b` 在原始 URI 中就是两个键值。一个框架可能返回数组，另一个只保留最后一个值；把逗号写进值里也不会让 URI 自动变成数组。演示并列两张解析表，是为了让这个差异可见。",
+        "sourceIndices": [
+          2,
+          3
+        ]
+      },
+      {
+        "id": "query-encoding",
+        "title": "网络上的值先是文本",
+        "body": "百分号编码用来把不方便直接放进 URI 的字节写成可传输字符。解析完成后，`page=0` 仍只是字符串，是否转换成数字、是否允许负数或空值，属于应用验证规则。",
+        "sourceIndices": [
+          1,
+          2,
+          4
+        ]
+      },
+      {
+        "id": "query-secrets",
+        "title": "地址栏不适合放秘密",
+        "body": "查询参数会出现在浏览历史、服务器日志、监控和可能的 Referer 中。登录令牌、密码或身份证号应采用适合的请求体和访问控制；把参数放在 HTTPS URL 里也不能阻止已经能看到 URL 的系统记录它。",
+        "sourceIndices": [
+          2,
+          5
+        ]
       }
     ]
   },
