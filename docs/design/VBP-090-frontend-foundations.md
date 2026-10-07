@@ -43,3 +43,18 @@
 2026-10-07 发布前实际打开线上 `responsive`：主体仍是视口/容器/卡片/操作五张通用卡，详细讲解只有定义与边界；本批本地页已改成可观察的容器回流、规则命中、字段反馈、语义树、状态/DOM、槽位骨架、时间面板、工具抽屉和宿主能力等专属机制。`demoSteps` 与 CSS 专用 foundation schema 的 `steps`、`chain` 都是可变长度（1–7），不存在用户规定的固定三步要求；旧台账已补齐 css、html、javascript 三条记录。本批专属页不把流程当作默认画法。
 
 Obsidian 配置指向的 `D:/Obsidian/gysnote` 在本机不存在，跳过；本文件保留代码相关记录，DP 保留实际研发状态。
+
+## 生产发布记录
+
+2026-10-07，本批通过 PR #443 合并到 `main`，合并提交为 `db5f7ff15a7a0cb935b1ac22d10c0c8e200d9d42`。按该提交构建的镜像 `vibepolaris:db5f7ff15a7a0cb935b1ac22d10c0c8e200d9d42` 已发布到 `https://vibe.chuansgu.top`；本地与服务器传输包 SHA-256 均为 `b19109da844312aca4ed8391fc1c5dc6d8f8fa964c05bdd70187d8b09f527a58`。
+
+- 当前发布目录：`/opt/vibepolaris/releases/20261007T144721Z-db5f7ff1`
+- 当前运行镜像：`vibepolaris:db5f7ff15a7a0cb935b1ac22d10c0c8e200d9d42`
+- 容器状态：`vibepolaris-web-1` healthy，`errors_5m=0`
+- 发布前备份：`/opt/vibepolaris/backups/20261007T144721Z-from-0f80bb6f22ec7d74d4e1162211da07d90c6a422b`
+- SQLite 在线备份：`xiaobei.sqlite`，`561152` bytes，数据卷未替换
+- 回滚脚本：`/opt/vibepolaris/releases/20261007T144721Z-db5f7ff1/rollback.sh`，恢复旧镜像 `vibepolaris:0f80bb6f22ec7d74d4e1162211da07d90c6a422b` 与旧 release
+
+生产冒烟检查覆盖首页、新闻、关于、sitemap、十个本批词条和 `/api/xiaobei/session`，全部返回 HTTP 200；`javascript`、`ssg-ssr`、`css`、`runtime` 的关键内容标记均命中。DP deployment `deploy-vbp090-frontend-foundations-prod-20261007`（记录 ID `beb51add-d1a8-4648-a316-b21a18bff115`）状态为 `released`；`VBP-090` 已转为 `ready_for_test`，研发任务 `0ee8f8f7-8d68-49b0-a011-d964bbbf4b5d` 已完成。远端当前没有 `dev` 分支，本次不虚构 dev 部署记录。
+
+这批仍遵循“少量流程图、其余概念专属空间演示”：全站台账 342 条中 50 条使用 `pipeline/route/loop`，比例 14.6%；本批十条为 0/10。演示帧数与 `demoSteps` 按概念自由设定，没有固定三步约束。
