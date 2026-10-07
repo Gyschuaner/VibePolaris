@@ -28938,5 +28938,287 @@
         "note": "说明编程任务中的 reward hacking 与受控后续错配评测之间的研究观察。"
       }
     ]
+  },
+  {
+    "slug": "agent-trajectory",
+    "lead": "智能体说“退款完成”只是结尾；把观察、调用、回执和重试摊开，才知道这次运行到底发生了什么。",
+    "definition": "智能体轨迹（agent trajectory）是一次 trial 从输入到结束的完整运行记录：包括模型看到的观察、输出的决策、工具调用与参数、工具返回、中间结果、环境状态变化以及最终结果。它让评测者可以回到某个时间点，问“当时依据是什么、哪次调用改变了状态、错误怎样传播或被修正”，而不是只凭最后一句话判断系统。轨迹是可审阅的运行证据，具体记录哪些思考内容仍取决于隐私、日志和产品策略。",
+    "boundary": "轨迹不是预先写好的 plan，也不是把一条消息或完整私有思维链自动公开；它是一次执行中实际留下的事件与状态记录。它和 outcome 的分工也不同：结果说明环境最后变成什么，轨迹说明中间发生了什么；一条漂亮的路径不能替代结果核验，一次成功结果也可能掩盖危险的工具调用。评测不应强迫所有 agent 走同一条路线，Anthropic 也提醒过度规定工具顺序会惩罚有效的创造性方案；更稳妥的是同时检查任务结果、关键行为、成本和失败恢复。在台账里，transcript/trace/trajectory 是事件记录，trial 是一次尝试，grader 是评分逻辑，agent harness 是让模型调用工具并推进状态的运行骨架；它们互相配合，却不是同一个对象。",
+    "sceneKind": "timeline",
+    "sceneTitle": "退款运行带：把每个观察、调用和回执钉回时间线上",
+    "actionLabel": "播放下一段记录",
+    "actors": [
+      {
+        "id": "task",
+        "label": "任务卡",
+        "detail": "退款金额与权限都要核对",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "observation-one",
+        "label": "观察 01",
+        "detail": "订单状态 = 已支付",
+        "icon": "browser",
+        "group": "观察"
+      },
+      {
+        "id": "action-one",
+        "label": "动作 01",
+        "detail": "查询订单退款资格",
+        "icon": "code",
+        "group": "决策"
+      },
+      {
+        "id": "tool-return",
+        "label": "工具回执",
+        "detail": "资格 true · 参数缺少 currency",
+        "icon": "database",
+        "group": "环境"
+      },
+      {
+        "id": "retry",
+        "label": "恢复分支",
+        "detail": "补 currency 后再次调用",
+        "icon": "gear",
+        "group": "决策"
+      },
+      {
+        "id": "observation-two",
+        "label": "观察 02",
+        "detail": "退款已创建 · request_id r-42",
+        "icon": "file",
+        "group": "环境"
+      },
+      {
+        "id": "outcome",
+        "label": "最终状态",
+        "detail": "订单状态已改变，可独立查询",
+        "icon": "spark",
+        "group": "结果"
+      },
+      {
+        "id": "grader",
+        "label": "评测切片",
+        "detail": "结果通过 · 首次调用无效 · 成本可见",
+        "icon": "chart",
+        "group": "审查"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "放入一次任务",
+        "note": "先写清输入和成功条件，轨迹才有边界；一堆没有任务编号的日志无法比较。",
+        "activeIds": [
+          "task"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "observation-one",
+          "action-one",
+          "tool-return",
+          "retry",
+          "observation-two",
+          "outcome",
+          "grader"
+        ],
+        "values": {
+          "task": "退款金额与权限都要核对"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "记录观察与动作",
+        "note": "把看到的订单状态和实际发出的工具调用并排记录，别让“模型想做什么”覆盖“系统做了什么”。",
+        "activeIds": [
+          "observation-one",
+          "action-one"
+        ],
+        "doneIds": [
+          "task"
+        ],
+        "mutedIds": [
+          "tool-return",
+          "retry",
+          "observation-two",
+          "outcome",
+          "grader"
+        ],
+        "values": {
+          "observation-one": "订单状态 = 已支付",
+          "action-one": "调用：查询退款资格"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "接回工具回执",
+        "note": "工具返回改变了下一步能做什么；参数缺口必须留在轨迹里，而不是只保存成功的最终文字。",
+        "activeIds": [
+          "tool-return",
+          "observation-one",
+          "action-one"
+        ],
+        "doneIds": [
+          "task"
+        ],
+        "mutedIds": [
+          "retry",
+          "observation-two",
+          "outcome",
+          "grader"
+        ],
+        "values": {
+          "tool-return": "资格 true · 缺少 currency"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "标出分支与恢复",
+        "note": "失败调用、补参数和重试都保留下来，审阅者才能判断恢复是否安全、是否重复扣款或越过权限。",
+        "activeIds": [
+          "retry",
+          "tool-return"
+        ],
+        "doneIds": [
+          "task",
+          "observation-one",
+          "action-one"
+        ],
+        "mutedIds": [
+          "observation-two",
+          "outcome",
+          "grader"
+        ],
+        "values": {
+          "retry": "补 currency · 第 2 次调用"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "把路径和结果一起评",
+        "note": "最终环境状态和中间行为分开计分：结果成功仍要看第一次无效调用、成本与恢复质量。",
+        "activeIds": [
+          "outcome",
+          "grader",
+          "observation-two"
+        ],
+        "doneIds": [
+          "task",
+          "observation-one",
+          "action-one",
+          "tool-return",
+          "retry"
+        ],
+        "mutedIds": [],
+        "values": {
+          "outcome": "退款已创建 · request_id r-42",
+          "grader": "结果通过 · 首次无效 · 成本可见"
+        },
+        "metric": {
+          "label": "运行证据",
+          "value": "结果 + 路径 + 恢复"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "轨迹的价值是把一次运行变成可回放的证据，而不是把所有 agent 绑在同一条脚本上；结果、关键行为和失败恢复应该分别可见。",
+    "quiz": {
+      "question": "一次运行最后显示“退款已完成”，审阅时还要看什么？",
+      "options": [
+        {
+          "label": "环境最终状态，以及工具调用、参数和恢复记录",
+          "correct": true
+        },
+        {
+          "label": "只看最后一句话是否自信",
+          "correct": false
+        },
+        {
+          "label": "是否逐字复制预先写好的参考轨迹",
+          "correct": false
+        }
+      ],
+      "success": "轨迹和结果互相校对，才能看见错误调用或危险恢复。",
+      "retry": "最终消息只是一个输出；回到环境状态和中间事件。"
+    },
+    "prompt": {
+      "title": "为一次智能体运行做轨迹审阅",
+      "text": "请把这次运行整理成时间序列：每项写出观察、模型决定、工具名称与参数、工具回执、环境状态和下一步依据。单独核对最终结果是否真的落在环境里，再标出第一次错误、重试是否安全、是否有越权或无效调用，并分别给结果、关键行为、延迟、成本和恢复能力打分。不要要求所有成功运行都复制同一条路径。"
+    },
+    "teaching": [
+      {
+        "id": "record",
+        "title": "轨迹记录的是一次 trial 的全貌",
+        "body": "Anthropic 将 transcript、trace 或 trajectory 定义为一次试验的完整记录：输出、工具调用、推理、途中结果和其他交互都在里面。产品实现时仍要按隐私与日志策略决定哪些字段可以保存或展示；轨迹不是默认公开的私有思考。",
+        "sourceIndices": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": "outcome",
+        "title": "结果和轨迹要分开核对",
+        "body": "智能体说“航班已订”不代表环境里真的有预订；真正的 outcome 是环境结束时的状态。轨迹能解释为什么失败或成功，却不能替代数据库、文件或页面的独立检查。",
+        "sourceIndices": [
+          1,
+          3
+        ]
+      },
+      {
+        "id": "recovery",
+        "title": "失败和重试也是证据",
+        "body": "多轮 agent 会调用工具、修改状态并根据中间结果调整，错误可能传播或叠加。把无效参数、拒绝、重试和恢复留在轨迹里，才能判断系统是否会重复动作、越过权限或把错误当成功。",
+        "sourceIndices": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": "long-horizon",
+        "title": "长任务要看轨迹的时间尺度",
+        "body": "AgentBench 用多个交互环境评估长期推理、决策和指令遵循；WebArena 则把购物、论坛、协作开发和内容管理放进可复现的网站环境。它们说明 agent 的能力不能只用一问一答的静态分数代替。",
+        "sourceIndices": [
+          2,
+          3
+        ]
+      },
+      {
+        "id": "grading",
+        "title": "不要把参考路径当成唯一答案",
+        "body": "Anthropic 提醒，要求 agent 严格按预设工具顺序走，容易把有效的创造性路线判错。更好的评测会对结果、关键行为、部分完成、成本和恢复分别设定检查；自动评估器也要用人工或确定性检查校准。",
+        "sourceIndices": [
+          1,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "label": "Anthropic · Demystifying evals for AI agents",
+        "note": "定义 trajectory/transcript、outcome、trial 与多轮 agent 评测的组成。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2308.03688",
+        "label": "Liu et al. · AgentBench",
+        "note": "用 8 类交互环境评估 LLM-as-Agent 的长期推理、决策和指令遵循。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2307.13854",
+        "label": "Zhou et al. · WebArena",
+        "note": "在真实可复现的网站环境中评估长程任务的功能正确性。"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/building-effective-agents",
+        "label": "Anthropic · Building effective agents",
+        "note": "说明 agent loop、工具调用与环境状态更新的运行结构。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2404.06474",
+        "label": "Pan et al. · Autonomous Evaluation and Refinement of Digital Agents",
+        "note": "比较自动评估器并用于 web/device agent 的评估和改进。"
+      }
+    ]
   }
 ]

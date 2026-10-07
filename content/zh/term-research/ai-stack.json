@@ -2487,5 +2487,25 @@
       "process-supervision",
       "safety-evaluation"
     ]
+  },
+  {
+    "slug": "agent-trajectory",
+    "mechanism": "智能体轨迹把一次 trial 的观察、模型决策、工具调用与参数、工具回执、环境状态、中间结果和最终 outcome 按时间保存，供回放、调试、行为评测和失败归因；它是运行证据而非预先规定的唯一路径。",
+    "misconception": "轨迹不等于 plan、最终答案或完整私有思维链；漂亮的路径不能替代环境状态核验，评测也不应要求所有成功 agent 复制同一串工具调用。",
+    "demoSignature": "5帧｜对象：任务卡、观察、动作、工具回执、恢复分支、第二次观察、最终状态、评测切片｜交互：放入任务、钉观察/动作、接回回执、保留错误重试、同时评分结果/路径/恢复｜变化：订单观察→工具调用→缺参数回执→安全重试→环境状态与轨迹并评；时间轨迹带，不是流程图。",
+    "sourceUrls": [
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "https://arxiv.org/abs/2308.03688",
+      "https://arxiv.org/abs/2307.13854",
+      "https://www.anthropic.com/engineering/building-effective-agents",
+      "https://arxiv.org/abs/2404.06474"
+    ],
+    "rewriteRisk": "不要把 trajectory 写成固定流程、完整思维链公开或最终答案的替代品；正文需区分 transcript/trace、outcome、trial、grader、agent harness，并说明路径评测要保留有效的创造性。",
+    "nearDuplicates": [
+      "agent-harness",
+      "eval",
+      "process-supervision",
+      "outcome-supervision"
+    ]
   }
 ]
