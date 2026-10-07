@@ -881,133 +881,191 @@
   },
   {
     "slug": "zero-shot-prompting",
-    "lead": "没有任何样例时，怎样让“登录后白屏”只落到三个标签之一？",
-    "definition": "零样本提示不放输入—输出示例，而是直接写目标、输入、允许输出、拒绝条件和输出格式，让模型完成一次推断。",
-    "boundary": "“零样本”只表示没有示例，不表示没有说明；复杂或容易歧义的任务可能需要示例、结构化约束或用测试样本评估。",
-    "sceneKind": "branch",
-    "sceneTitle": "任务说明直接驱动三选一",
-    "actionLabel": "删掉一条约束",
+    "lead": "没有校样时，怎样让一只指南针知道该停下还是落到一个标签？",
+    "definition": "零样本提示把示例数量设为 0，直接写目标、输入、允许输出、拒绝条件和输出格式，让模型完成一次推断。",
+    "boundary": "“零样本”只表示没有输入—输出示例，不表示没有说明；约束不能补齐缺失证据，复杂任务仍可能需要少样本、结构化输出或独立评估。",
+    "sceneKind": "matrix",
+    "sceneTitle": "一只没有校样的指南针怎样决定停不停",
+    "actionLabel": "切换任务牌或输入清晰度",
     "actors": [
       {
-        "id": "instruction",
-        "label": "任务说明",
-        "detail": "从前端/后端/网络中选一项；无法判断时拒绝给标签",
+        "id": "sample-box",
+        "label": "示例盒",
+        "detail": "0 张输入—输出校样",
+        "icon": "package",
+        "group": "缺省"
+      },
+      {
+        "id": "task-card",
+        "label": "任务牌",
+        "detail": "最先失败组件；不确定就补信息",
+        "icon": "file",
+        "group": "约束"
+      },
+      {
+        "id": "compass",
+        "label": "判断指南针",
+        "detail": "前端 / 后端 / 网络",
+        "icon": "search",
+        "group": "推断"
+      },
+      {
+        "id": "ticket",
+        "label": "当前输入",
+        "detail": "支付按钮无响应 / 突然不工作了",
         "icon": "message",
-        "group": "规则"
+        "group": "材料"
       },
       {
-        "id": "query",
-        "label": "故障描述",
-        "detail": "登录后白屏",
-        "icon": "user",
-        "group": "输入"
-      },
-      {
-        "id": "front",
-        "label": "前端",
-        "detail": "界面呈现问题",
-        "icon": "layout",
-        "group": "候选"
-      },
-      {
-        "id": "back",
-        "label": "后端",
-        "detail": "接口处理问题",
-        "icon": "server",
-        "group": "候选"
-      },
-      {
-        "id": "net",
-        "label": "网络",
-        "detail": "连接问题",
-        "icon": "network",
-        "group": "候选"
+        "id": "verdict",
+        "label": "停下或落位",
+        "detail": "前端 / 补充信息",
+        "icon": "spark",
+        "group": "输出"
       }
     ],
     "edges": [
       {
-        "id": "i-f",
-        "from": "instruction",
-        "to": "front",
-        "label": "允许标签"
+        "id": "card-compass",
+        "from": "task-card",
+        "to": "compass",
+        "label": "装入约束"
       },
       {
-        "id": "i-b",
-        "from": "instruction",
-        "to": "back",
-        "label": "允许标签"
+        "id": "ticket-compass",
+        "from": "ticket",
+        "to": "compass",
+        "label": "提供线索"
       },
       {
-        "id": "i-n",
-        "from": "instruction",
-        "to": "net",
-        "label": "允许标签"
+        "id": "compass-verdict",
+        "from": "compass",
+        "to": "verdict",
+        "label": "落位或停下"
       },
       {
-        "id": "q-f",
-        "from": "query",
-        "to": "front",
-        "label": "语义匹配"
+        "id": "box-card",
+        "from": "sample-box",
+        "to": "task-card",
+        "label": "保持为零"
       }
     ],
     "frames": [
       {
-        "label": "没有示例",
-        "note": "画面保留空示例区，只给任务、三个合法标签和无法判断时的拒绝条件。",
+        "label": "空白样本盒",
+        "note": "零样本先把示例数量归零；空的样本盒不等于空提示。",
         "activeIds": [
-          "instruction"
+          "sample-box"
         ],
         "doneIds": [],
         "mutedIds": [
-          "front",
-          "back",
-          "net"
+          "task-card",
+          "compass",
+          "ticket",
+          "verdict"
         ],
         "values": {
-          "instruction": "示例数 0"
+          "sample-box": "示例数 0"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "描述进入",
-        "note": "白屏与界面呈现更相关。",
+        "label": "任务牌亮起",
+        "note": "一张自然语言任务牌告诉模型要做什么，但还没有给出任何示例。",
         "activeIds": [
-          "query",
-          "front"
+          "task-card"
         ],
         "doneIds": [
-          "instruction"
+          "sample-box"
         ],
         "mutedIds": [
-          "back",
-          "net"
+          "compass",
+          "ticket",
+          "verdict"
         ],
         "values": {
-          "front": "当前首选"
+          "task-card": "1 张任务牌",
+          "sample-box": "仍为 0"
         },
         "activeEdgeIds": [
-          "q-f"
+          "box-card"
         ]
       },
       {
-        "label": "分支收束",
-        "note": "只输出允许列表中的“前端”。",
+        "label": "约束转盘",
+        "note": "补上允许标签、拒答条件和输出格式，选择的边界才有地方落脚。",
         "activeIds": [
-          "front"
+          "task-card",
+          "compass"
         ],
         "doneIds": [
-          "instruction",
-          "query"
+          "sample-box"
         ],
         "mutedIds": [
-          "back",
-          "net"
+          "ticket",
+          "verdict"
         ],
         "values": {
-          "front": "已选择"
+          "task-card": "允许 3 标签",
+          "compass": "等待线索",
+          "sample-box": "0"
         },
         "activeEdgeIds": [
-          "i-f"
+          "card-compass"
+        ],
+        "metric": {
+          "label": "示例数量",
+          "value": "0"
+        }
+      },
+      {
+        "label": "针落一格",
+        "note": "“支付按钮无响应”足够具体时，指针落到前端；这是一轮直接推断，不是示例匹配。",
+        "activeIds": [
+          "ticket",
+          "compass",
+          "verdict"
+        ],
+        "doneIds": [
+          "sample-box",
+          "task-card"
+        ],
+        "mutedIds": [],
+        "values": {
+          "ticket": "支付按钮无响应",
+          "compass": "前端",
+          "verdict": "单标签"
+        },
+        "activeEdgeIds": [
+          "ticket-compass",
+          "compass-verdict"
+        ],
+        "metric": {
+          "label": "示例数量",
+          "value": "0"
+        }
+      },
+      {
+        "label": "信息不足",
+        "note": "一句“突然不工作了”没有给出可判定线索，零样本应该停下提问。",
+        "activeIds": [
+          "ticket",
+          "compass",
+          "verdict"
+        ],
+        "doneIds": [
+          "sample-box",
+          "task-card"
+        ],
+        "mutedIds": [],
+        "values": {
+          "ticket": "线索不足",
+          "compass": "无法落位",
+          "verdict": "补充信息"
+        },
+        "activeEdgeIds": [
+          "ticket-compass",
+          "compass-verdict"
         ],
         "metric": {
           "label": "示例数量",
@@ -1015,29 +1073,29 @@
         }
       }
     ],
-    "insight": "零样本不是没有说明，而是没有输入—输出样例；任务边界仍要写清，并用自己的测试样本核验结果。",
+    "insight": "零样本不是没有说明，而是没有输入—输出校样；任务牌要写清边界，输入不够时指南针应该停下。",
     "quiz": {
-      "question": "这项任务何时不再是零样本？",
+      "question": "哪一项最能说明零样本提示仍然有任务定义？",
       "options": [
         {
-          "label": "提示中加入一条“故障→标签”示例",
+          "label": "写明目标、允许标签和拒答条件",
           "correct": true
         },
         {
-          "label": "把标签名称加粗",
+          "label": "把示例盒留空后不写任何说明",
           "correct": false
         },
         {
-          "label": "让模型只输出一个词",
+          "label": "让模型自动猜缺少的日志",
           "correct": false
         }
       ],
-      "success": "是否提供示例决定零样本与少样本。",
-      "retry": "输出简短不代表零样本。"
+      "success": "零样本省掉示例，但目标、边界和格式仍需写清。",
+      "retry": "示例数量为零不等于任务说明也为零。"
     },
     "prompt": {
-      "title": "写一条零样本任务说明",
-      "text": "请只写任务目标、输入、允许输出和拒绝条件，不提供示例；再列出需要用测试样本核验的边界。"
+      "title": "写一张零样本任务牌",
+      "text": "请只写任务目标、输入、允许输出、拒答条件和格式，不提供示例；再列出需要用独立样本核验的边界。"
     },
     "sources": [
       {
@@ -1046,24 +1104,24 @@
         "note": "无示例文本交互"
       },
       {
+        "url": "https://developers.openai.com/api/docs/guides/reasoning-best-practices",
+        "label": "OpenAI · Reasoning best practices",
+        "note": "直接提示与先试零样本"
+      },
+      {
+        "url": "https://ai.google.dev/gemini-api/docs/prompting-strategies",
+        "label": "Google · Prompt design strategies",
+        "note": "零样本、约束与输出格式"
+      },
+      {
         "url": "https://arxiv.org/abs/2205.11916",
         "label": "arXiv · Large Language Models are Zero-Shot Reasoners",
-        "note": "零样本指令实验"
+        "note": "零样本推理提示实验"
       },
       {
-        "url": "https://arxiv.org/abs/2206.07682",
-        "label": "arXiv · Emergent Abilities of Large Language Models",
-        "note": "能力与模型规模边界"
-      },
-      {
-        "url": "https://developers.openai.com/api/docs/guides/prompt-engineering",
-        "label": "OpenAI · Prompt engineering",
-        "note": "任务、约束与格式"
-      },
-      {
-        "url": "https://ai.google.dev/gemini-api/docs/prompting-strategies#zero-shot-vs-few-shot-prompts",
-        "label": "Google · Gemini prompting strategies",
-        "note": "zero/few-shot 定义"
+        "url": "https://arxiv.org/abs/2109.01652",
+        "label": "arXiv · Finetuned Language Models Are Zero-Shot Learners",
+        "note": "指令调优与零样本能力边界"
       }
     ]
   },

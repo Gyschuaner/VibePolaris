@@ -1,0 +1,110 @@
+.hero,
+.lab { position: relative; overflow: hidden; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 20px; background: linear-gradient(145deg, color-mix(in srgb, var(--paper) 82%, #e8eddf), var(--paper)); color: var(--ink); }
+.hero { display: grid; gap: 11px; padding: 17px 18px 15px; }
+.hero::before,
+.lab::before { content: ""; position: absolute; inset: 9px; border: 1px solid color-mix(in srgb, var(--accent-text) 16%, transparent); border-radius: 15px; pointer-events: none; }
+.heroTop,
+.labTop { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--muted); font: 10px ui-monospace, SFMono-Regular, monospace; letter-spacing: .05em; }
+.heroTop strong,
+.labTop strong { padding: 4px 7px; border-radius: 999px; background: color-mix(in srgb, var(--accent-text) 10%, transparent); color: var(--ink); font-size: 9px; }
+.hero :global(.sceneControls), .lab :global(.sceneControls) { position: relative; }
+
+.compassBoard { position: relative; display: grid; grid-template-columns: minmax(115px, .68fr) minmax(155px, 1fr) minmax(145px, .95fr); gap: 9px; align-items: stretch; min-height: 236px; padding: 7px 0 1px; }
+.sampleBox,
+.instructionColumn,
+.compassColumn { position: relative; min-width: 0; padding: 10px; border: 1px solid color-mix(in srgb, var(--ink) 13%, transparent); border-radius: 13px; background: color-mix(in srgb, var(--paper) 75%, transparent); }
+.sampleBox { display: grid; align-content: start; gap: 8px; }
+.boxTop,
+.cardTop { display: flex; align-items: center; gap: 5px; color: var(--muted); font-size: 9px; }
+.boxTop code,
+.cardTop code { margin-left: auto; color: var(--accent-text); font: 9px ui-monospace, SFMono-Regular, monospace; }
+.boxHollow { display: grid; place-items: center; gap: 6px; min-height: 108px; border: 1px dashed color-mix(in srgb, var(--ink) 19%, transparent); border-radius: 9px; color: var(--muted); font-size: 9px; text-align: center; }
+.hollowMark { color: color-mix(in srgb, var(--accent-text) 65%, var(--muted)); font: 32px Georgia, serif; line-height: 1; }
+.boxFoot { display: flex; align-items: center; gap: 5px; margin-top: auto; color: var(--muted); font: 9px ui-monospace, SFMono-Regular, monospace; }
+.boxDot { width: 7px; height: 7px; border: 1px solid var(--accent-text); border-radius: 50%; }
+
+.instructionColumn { display: grid; align-content: center; gap: 8px; }
+.instructionCard { display: grid; gap: 8px; padding: 11px 10px; border-left: 3px solid color-mix(in srgb, var(--ink) 28%, transparent); background: color-mix(in srgb, var(--ink) 4%, transparent); opacity: .48; transform: translateY(8px); transition: opacity .4s ease, transform .4s ease, border-color .35s ease; }
+.instructionCard[data-visible="true"] { opacity: 1; transform: translateY(0); border-color: var(--accent-text); }
+.cardTop > svg { color: var(--accent-text); }
+.instructionCard strong { overflow-wrap: anywhere; font-size: 12px; line-height: 1.4; }
+.cardRule { display: grid; gap: 2px; padding-top: 5px; border-top: 1px solid color-mix(in srgb, var(--ink) 10%, transparent); }
+.cardRule span { color: var(--muted); font-size: 9px; }
+.cardRule b { overflow-wrap: anywhere; color: var(--accent-text); font: 10px ui-monospace, SFMono-Regular, monospace; font-weight: 500; }
+.constraintStrip { display: flex; align-items: flex-start; gap: 5px; padding: 7px 8px; border-radius: 8px; background: color-mix(in srgb, var(--accent-text) 9%, transparent); color: var(--muted); font-size: 9px; line-height: 1.35; }
+.constraintStrip svg { flex: none; color: var(--accent-text); }
+.constraintStrip code { margin-left: auto; color: var(--accent-text); font: 8px ui-monospace, SFMono-Regular, monospace; }
+.ticket { display: grid; gap: 4px; padding: 8px 9px; border: 1px solid color-mix(in srgb, var(--accent-text) 28%, transparent); border-radius: 8px; background: color-mix(in srgb, var(--paper) 74%, transparent); }
+.ticket svg { color: var(--accent-text); }
+.ticket span { color: var(--muted); font-size: 9px; }
+.ticket strong { overflow-wrap: anywhere; font-size: 11px; line-height: 1.4; }
+.ticket[data-uncertain="true"] { border-color: #a65449; background: #f6e3dd; color: #8f3f35; }
+.ticket[data-uncertain="true"] svg { color: #a65449; }
+
+.compassColumn { display: grid; align-content: center; gap: 9px; }
+.compassWrap { display: grid; justify-items: center; gap: 6px; }
+.compassLabel { display: flex; justify-content: space-between; width: 100%; gap: 8px; color: var(--muted); font-size: 9px; }
+.compassLabel code { color: var(--accent-text); font: 9px ui-monospace, SFMono-Regular, monospace; }
+.compass { position: relative; width: min(145px, 90%); aspect-ratio: 1; border: 1px solid color-mix(in srgb, var(--accent-text) 30%, transparent); border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--paper) 80%, transparent) 0 39%, color-mix(in srgb, var(--accent-text) 8%, transparent) 40% 41%, transparent 42%), conic-gradient(from 0deg, color-mix(in srgb, var(--accent-text) 9%, transparent), transparent 25%, color-mix(in srgb, var(--accent-text) 5%, transparent) 50%, transparent 75%); box-shadow: inset 0 0 0 7px color-mix(in srgb, var(--paper) 60%, transparent), 0 7px 15px color-mix(in srgb, var(--ink) 8%, transparent); }
+.compassRing { position: absolute; inset: 18%; border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); border-radius: 50%; }
+.sector { position: absolute; z-index: 1; padding: 3px 5px; border-radius: 5px; color: var(--muted); font: 9px ui-monospace, SFMono-Regular, monospace; }
+.north { top: 8%; left: 50%; transform: translateX(-50%); }
+.east { top: 50%; right: 5%; transform: translateY(-50%); }
+.south { bottom: 8%; left: 50%; transform: translateX(-50%); }
+.compassCenter { position: absolute; z-index: 2; inset: 50% auto auto 50%; display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid var(--accent-text); border-radius: 50%; background: var(--paper); color: var(--accent-text); transform: translate(-50%, -50%); }
+.needle { position: absolute; z-index: 2; left: 50%; top: 17%; width: 3px; height: 34%; border-radius: 99px; background: var(--accent-text); transform-origin: 50% 100%; transform: translateX(-50%) rotate(0deg); transition: transform .55s cubic-bezier(.2,.8,.2,1), background .35s ease; }
+.needle::after { content: ""; position: absolute; left: 50%; top: 0; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 11px solid var(--accent-text); transform: translate(-50%, -4px); }
+.compassWrap[data-pointer="front"] .needle { transform: translateX(-50%) rotate(0deg); }
+.compassWrap[data-pointer="uncertain"] .needle { background: #a65449; transform: translateX(-50%) rotate(42deg); }
+.compassWrap[data-pointer="uncertain"] .needle::after { border-bottom-color: #a65449; }
+.compassHint { color: var(--muted); font: 9px ui-monospace, SFMono-Regular, monospace; }
+.resultCard { display: grid; gap: 5px; padding: 8px 9px; border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); border-radius: 8px; background: color-mix(in srgb, var(--paper) 74%, transparent); }
+.resultCard span { color: var(--muted); font-size: 9px; }
+.resultCard strong { overflow-wrap: anywhere; font-size: 12px; line-height: 1.4; }
+.resultCard code { color: var(--muted); font: 9px ui-monospace, SFMono-Regular, monospace; }
+.resultCard[data-ready="true"] { border-color: #73986d; background: #e7f0e1; }
+.resultCard[data-ready="true"] strong { color: #4e704a; }
+.resultCard[data-danger="true"] { border-color: #a65449; background: #f6e3dd; color: #8f3f35; }
+.resultCard[data-danger="true"] code { color: #a65449; }
+
+.heroNote,
+.labStatus { position: relative; display: flex; align-items: flex-start; gap: 7px; padding: 9px 10px; border-radius: 9px; background: color-mix(in srgb, var(--accent-text) 8%, transparent); color: var(--muted); font-size: 11px; line-height: 1.5; }
+.heroNote svg, .labStatus svg { flex: none; margin-top: 2px; color: var(--accent-text); }
+.heroNote[data-danger="true"], .labStatus[data-danger="true"] { background: #f6e3dd; color: #8f3f35; }
+.heroNote[data-danger="true"] svg, .labStatus[data-danger="true"] svg { color: #a65449; }
+.heroNote strong, .labStatus strong { color: var(--ink); }
+.heroNote[data-danger="true"] strong, .labStatus[data-danger="true"] strong { color: #8f3f35; }
+.hero figcaption { position: relative; color: var(--muted); font-size: 10px; line-height: 1.45; }
+
+.lab { display: grid; gap: 12px; margin: 25px 0 18px; padding: 17px 18px 16px; }
+.labControls { position: relative; display: flex; flex-wrap: wrap; gap: 6px; }
+.labControls button { border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent); border-radius: 999px; padding: 6px 9px; background: transparent; color: var(--muted); font: inherit; font-size: 10px; cursor: pointer; }
+.labControls button:hover, .labControls button[aria-pressed="true"] { border-color: var(--accent-text); background: color-mix(in srgb, var(--accent-text) 10%, var(--paper)); color: var(--ink); }
+.labBoard { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; align-items: stretch; }
+.labCard, .labNeedle, .labResult { min-width: 0; display: grid; align-content: center; gap: 6px; padding: 11px 10px; border-radius: 11px; background: color-mix(in srgb, var(--paper) 76%, transparent); }
+.labCard { border-left: 3px solid var(--accent-text); }
+.labCard span, .labNeedle span, .labResult span { color: var(--muted); font-size: 9px; }
+.labCard strong, .labNeedle strong, .labResult strong { overflow-wrap: anywhere; font-size: 12px; line-height: 1.4; }
+.labCard code, .labResult small { color: var(--accent-text); font: 9px ui-monospace, SFMono-Regular, monospace; }
+.labNeedle { border: 1px dashed color-mix(in srgb, var(--ink) 17%, transparent); }
+.labNeedle svg { color: var(--accent-text); }
+.labResult { border: 1px solid color-mix(in srgb, var(--accent-text) 25%, transparent); }
+.labResult[data-danger="true"] { border-color: #a65449; background: #f6e3dd; color: #8f3f35; }
+.labResult[data-danger="true"] small { color: #a65449; }
+
+@media (max-width: 900px) {
+  .compassBoard { grid-template-columns: minmax(105px, .6fr) minmax(150px, 1fr); }
+  .compassColumn { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(135px, .8fr) minmax(150px, 1fr); align-items: center; }
+  .labBoard { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .labResult { grid-column: 1 / -1; }
+}
+
+@media (max-width: 620px) {
+  .hero, .lab { padding-left: 14px; padding-right: 14px; }
+  .compassBoard, .compassColumn, .labBoard { grid-template-columns: 1fr; }
+  .compassColumn, .labResult { grid-column: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .instructionCard, .needle { transition: none; }
+}
