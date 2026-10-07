@@ -39,3 +39,14 @@
 ## 发布状态
 
 当前文档记录的是 feature 分支验收结果，已完成最终 review PASS。DP 需求 `VBP-091`、研发任务和部署对象按真实状态更新；Git 合并、生产镜像、发布目录、健康检查和回滚指针只填写实际执行结果。
+
+## 生产发布
+
+- PR #445：十条词条首次合入 `main`。
+- PR #446：上线前复核发现并修正 DPO reference model 不应随 policy 移动；reference 保持 0.52，重新构建并合入 `main`。
+- 最终生产提交：`bc802c90a423f12e030f012430ae33a791b8e817`；DP 需求 `VBP-091` 状态 `released`，研发任务状态 `done`。
+- DP deployment：`deploy-vbp091-ai-alignment-prod-20261007-bc802c90`，对象 `7900a8db-bc9c-4205-90fd-cdc5dc3ec452`，状态 `released`。
+- 镜像：`vibepolaris:bc802c90a423f12e030f012430ae33a791b8e817`，amd64，镜像清单 ID `sha256:01023fc77cb3e20ee41225b61b166c397a68a4b16365e1bbcceb670082008227`。
+- 发布目录：`/opt/vibepolaris/releases/20261007T163622Z-922b99ff`；`/opt/vibepolaris/current` 已原子切换；`vibepolaris-web-1` 为 `running healthy`。
+- 回滚：`/opt/vibepolaris/releases/20261007T163622Z-922b99ff/rollback.sh`；备份目录 `/opt/vibepolaris/backups/20261007T163622Z-from-db5f7ff15a7a0cb935b1ac22d10c0c8e200d9d42`，旧镜像和旧 release 均保留，SQLite 使用在线 backup。
+- 线上冒烟：`/`、`/news`、`/sitemap.xml`、`/xiaobei/activate` 和十条 VBP-091 路由均返回 HTTP 200；DPO HTML 含固定 `reference 0.52`。
