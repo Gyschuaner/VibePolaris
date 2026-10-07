@@ -1,6 +1,6 @@
 "use client";
 
-import { Brain, Calculator, ChartLine, CheckCircle, FileText, GitBranch, ShieldCheck, Stack, User, WarningCircle } from "@phosphor-icons/react";
+import { Brain, Calculator, ChartLine, CheckCircle, FileText, GitBranch, LockSimple, ShieldCheck, Stack, User, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./AiAlignmentSignatureHeroes.module.css";
 
@@ -157,5 +157,28 @@ export function RedTeamingSignatureHero() {
       </div>
     </div>
     <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 1 ? "红队先把授权、成功标准和停止条件写在边界里。" : fixed ? "修复后要用原样例和变体回归；一张截图不能代表系统安全。" : tested ? "发现要带着版本、约束和影响回到修复，而不是只收藏一个漂亮的攻击。" : "只有被选中的入口才进入测试，范围外的真实系统保持不动。"}</p></figcaption>
+  </figure>;
+}
+
+
+export function JailbreakSignatureHero() {
+  const scene = useScene(4);
+  const labels = ["放入正常请求", "改变包装类别", "检查边界是否松动", "记录安全回归"];
+  const pressure = scene.step >= 1;
+  const blocked = scene.step === 3;
+  return <figure ref={scene.ref} className={styles.hero} role="region" aria-label="越狱测试用抽象的包装类别检查安全边界，不展示危险载荷" data-step={scene.step}>
+    <SceneControls scene={scene} labels={labels} compact />
+    <div className={styles.canvas}>
+      <div className={styles.jailbreakBoard}>
+        <div className={styles.jailRequest} data-pressure={pressure}><Brain size={19} className={styles.icon} /><span>受控测试输入</span><strong>{pressure ? "包装类别：角色 / 编码 / 多轮" : "普通任务请求"}</strong><small>{pressure ? "只记录类别，不显示危险句子" : "先建立安全基线"}</small></div>
+        <div className={styles.boundaryDial} data-blocked={blocked}><div className={styles.dialRing}><i /><i /><i /><ShieldCheck size={23} /></div><strong>{blocked ? "仍然拦住" : scene.step < 2 ? "观察中" : "边界受压"}</strong><small>{blocked ? "策略 + 权限 + 过滤" : "不同模型和上下文会变化"}</small></div>
+        <div className={styles.jailChecks}>
+          <div data-on={scene.step >= 2}><LockSimple size={16} /><span>模型行为</span><b>{scene.step >= 2 ? "拒答 / 改写" : "待测"}</b></div>
+          <div data-on={scene.step >= 3}><CheckCircle size={16} /><span>回归记录</span><b>{blocked ? "原样例 + 变体" : "未完成"}</b></div>
+          <div data-warn={pressure && !blocked}><WarningCircle size={16} /><span>工具权限</span><b>{pressure && !blocked ? "另需闸门" : "最小授权"}</b></div>
+        </div>
+      </div>
+    </div>
+    <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 1 ? "先有一条正常基线，才知道包装变化后究竟松动了哪一层。" : blocked ? "安全结论来自跨版本、跨语言和多轮回归；测试类别不等于可滥用载荷。" : "越狱研究的是行为边界，输入来源、过滤和工具权限还要分别检查。"}</p></figcaption>
   </figure>;
 }
