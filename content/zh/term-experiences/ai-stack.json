@@ -31050,5 +31050,261 @@
         "note": "说明线性层的输入输出维度与仿射变换。"
       }
     ]
+  },
+  {
+    "slug": "positional-encoding",
+    "lead": "给内容贴上顺序标签，让模型分得出“猫追狗”和“狗追猫”。",
+    "definition": "位置编码把 token 在序列中的位置注入表示，使自注意力除了内容相似度之外，还能利用顺序。经典 Transformer 用不同频率的正弦和余弦生成固定位置向量并加到 token embedding 上；也有模型学习位置向量，或在注意力分数中使用相对位置关系。",
+    "boundary": "位置编码描述的是位置，不是词义，也不会自动修复错误的 tokenization、padding 或 causal mask。绝对位置、相对位置、可学习表和旋转位置嵌入的注入方式不同；训练长度之外能否外推取决于具体方法和实现，不能只凭“有位置编码”下结论。",
+    "sceneKind": "timeline",
+    "sceneTitle": "把位置贴在 token 旁边，而不是贴在词义上",
+    "actionLabel": "重排 token 顺序",
+    "actors": [
+      {
+        "id": "tokens",
+        "label": "Token 内容",
+        "detail": "猫 · 追 · 狗",
+        "icon": "message",
+        "group": "内容"
+      },
+      {
+        "id": "positions",
+        "label": "位置标签",
+        "detail": "0 · 1 · 2 · 3",
+        "icon": "clock",
+        "group": "顺序"
+      },
+      {
+        "id": "vectors",
+        "label": "位置向量",
+        "detail": "sin/cos 或 learned table",
+        "icon": "chart",
+        "group": "编码"
+      },
+      {
+        "id": "sum",
+        "label": "组合表示",
+        "detail": "token embedding + position",
+        "icon": "spark",
+        "group": "注入"
+      },
+      {
+        "id": "attention",
+        "label": "注意力比较",
+        "detail": "内容 + 顺序一起可见",
+        "icon": "network",
+        "group": "使用"
+      },
+      {
+        "id": "boundary",
+        "label": "长度/Mask边界",
+        "detail": "外推与可见范围另算",
+        "icon": "shield",
+        "group": "边界"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "内容先排成一列",
+        "note": "没有位置线索时，只有 token 内容；顺序还没有进入表示。",
+        "activeIds": [
+          "tokens"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "positions",
+          "vectors",
+          "sum",
+          "attention",
+          "boundary"
+        ],
+        "values": {
+          "tokens": "猫 · 追 · 狗"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "位置标签占好格子",
+        "note": "位置 0、1、2 与格子绑定，不跟着词的语义走。",
+        "activeIds": [
+          "positions",
+          "vectors"
+        ],
+        "doneIds": [
+          "tokens"
+        ],
+        "mutedIds": [
+          "sum",
+          "attention",
+          "boundary"
+        ],
+        "values": {
+          "positions": "0 · 1 · 2",
+          "vectors": "每个位置一条向量"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "内容和顺序合成表示",
+        "note": "经典 Transformer 把 token embedding 与位置向量相加，形成带顺序的输入。",
+        "activeIds": [
+          "sum"
+        ],
+        "doneIds": [
+          "tokens",
+          "positions",
+          "vectors"
+        ],
+        "mutedIds": [
+          "attention",
+          "boundary"
+        ],
+        "values": {
+          "sum": "e(token)+p(position)"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "交换词，位置仍在原格",
+        "note": "“狗追猫”不是“猫追狗”；内容和位置一起让注意力看到顺序变化。",
+        "activeIds": [
+          "tokens",
+          "positions",
+          "attention"
+        ],
+        "doneIds": [
+          "vectors",
+          "sum"
+        ],
+        "mutedIds": [
+          "boundary"
+        ],
+        "values": {
+          "tokens": "狗 · 追 · 猫",
+          "positions": "0 · 1 · 2",
+          "attention": "顺序关系发生变化"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "外推和 mask 另开一栏",
+        "note": "绝对、相对、旋转位置机制有不同长度和注入边界，padding 与 causal mask 也不能省略。",
+        "activeIds": [
+          "boundary"
+        ],
+        "doneIds": [
+          "tokens",
+          "positions",
+          "vectors",
+          "sum",
+          "attention"
+        ],
+        "mutedIds": [],
+        "values": {
+          "boundary": "位置线索 ≠ 可见范围 ≠ 长度保证"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "位置编码把“这是第几个”交给表示或注意力，让内容相同的 token 在不同顺序里产生不同关系。",
+    "quiz": {
+      "question": "为什么只把 token embedding 送进 self-attention 不够？",
+      "options": [
+        {
+          "label": "自注意力本身不自动知道 token 的先后，需要额外位置关系",
+          "correct": true
+        },
+        {
+          "label": "因为 embedding 不能表示任何词义",
+          "correct": false
+        },
+        {
+          "label": "因为所有 token 必须使用不同的词表",
+          "correct": false
+        }
+      ],
+      "success": "对，位置线索补的是顺序，不是词义字典。",
+      "retry": "交换“猫追狗”和“狗追猫”看差异：没有位置关系，注意力缺少这条线索。"
+    },
+    "prompt": {
+      "title": "比较两种位置编码",
+      "text": "用“猫追狗”和“狗追猫”做例子，分别写出 token embedding 与位置向量如何组合；比较固定正弦、可学习绝对位置和相对/旋转位置在注入位置、长度外推、padding 与 causal mask 上的边界。"
+    },
+    "teaching": [
+      {
+        "id": "content",
+        "title": "内容和位置是两层信息",
+        "body": "token embedding 说明“是什么”，位置编码说明“在哪个格子”。经典做法把两者相加；其他方法也可能把位置偏置加到注意力分数，关键是让顺序进入计算，而不是把位置当成新词义。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "sin",
+        "title": "正弦编码用多种频率写下坐标",
+        "body": "Transformer 论文用不同频率的 sin/cos 组成每个位置的向量。相邻位置的变化有规律，理论上可以表达相对偏移；实际能否外推到更长序列，还取决于训练长度和实现。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "learned",
+        "title": "可学习位置表更像一排抽屉",
+        "body": "BERT 等模型可以为每个绝对位置学习一个向量。它能适配训练范围内的分布，但超出最大位置时没有天然的新抽屉，扩展长度需要额外策略。",
+        "sourceIndices": [
+          3,
+          5
+        ]
+      },
+      {
+        "id": "relative",
+        "title": "相对位置关心相隔几格",
+        "body": "相对位置方法把距离或方向直接放进注意力关系，关注“这个 token 离那个 token 多远”。旋转位置嵌入是另一种把相对位置信息写入 Q/K 内积的做法，不能和绝对相加式编码混为一谈。",
+        "sourceIndices": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": "mask",
+        "title": "位置线索不等于可见范围",
+        "body": "padding mask、causal mask 和位置编码各自解决不同问题：一个标顺序，一个限制谁能看谁。把三者合并成“位置控制注意力”会掩盖泄漏和长度边界。",
+        "sourceIndices": [
+          1,
+          3,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/1706.03762",
+        "label": "Vaswani et al. · Attention Is All You Need",
+        "note": "提出 Transformer 的正弦位置编码并说明其加入输入表示。"
+      },
+      {
+        "url": "https://d2l.ai/chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html",
+        "label": "Dive into Deep Learning · Positional encoding",
+        "note": "推导正弦/余弦位置编码与序列顺序的作用。"
+      },
+      {
+        "url": "https://arxiv.org/abs/1810.04805",
+        "label": "Devlin et al. · BERT",
+        "note": "说明可学习绝对位置嵌入在 Transformer 编码器中的使用。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2104.09864",
+        "label": "Su et al. · RoFormer",
+        "note": "介绍把位置信息注入 Q/K 内积的旋转位置方法。"
+      },
+      {
+        "url": "https://pytorch.org/docs/stable/generated/torch.nn.Transformer.html",
+        "label": "PyTorch · Transformer",
+        "note": "展示 Transformer 的序列形状、mask 与位置信息需由模型/输入提供。"
+      }
+    ]
   }
 ]

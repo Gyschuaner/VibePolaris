@@ -2647,5 +2647,25 @@
       "activation-function",
       "residual-connection"
     ]
+  },
+  {
+    "slug": "positional-encoding",
+    "mechanism": "位置编码把序列索引注入 token 表示或注意力关系，使自注意力能够区分相同内容的不同顺序。",
+    "misconception": "位置编码不是额外词义、不是可见性 mask，也不自动保证训练长度之外的外推。",
+    "demoSignature": "5帧｜对象：token内容、位置标签、位置向量、组合表示、注意力比较、长度/Mask边界｜交互：重排token并切换位置机制｜变化：无顺序→贴位置→组合→交换词得不同关系→区分外推与mask；时序贴签台，不是流程图。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/1706.03762",
+      "https://d2l.ai/chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html",
+      "https://arxiv.org/abs/1810.04805",
+      "https://arxiv.org/abs/2104.09864",
+      "https://pytorch.org/docs/stable/generated/torch.nn.Transformer.html"
+    ],
+    "rewriteRisk": "不要把位置编码写成词义或 mask；需比较绝对/相对/旋转方法，并说明训练长度、padding、causal mask 的边界。",
+    "nearDuplicates": [
+      "transformer",
+      "attention",
+      "tokenization",
+      "embedding"
+    ]
   }
 ]

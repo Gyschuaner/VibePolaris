@@ -7475,5 +7475,65 @@
       "activation-function",
       "residual-connection"
     ]
+  },
+  {
+    "zh": "位置编码",
+    "en": "Positional Encoding",
+    "slug": "positional-encoding",
+    "cat": "AI·Agent",
+    "say": "给内容贴上顺序标签，让模型分得出“猫追狗”和“狗追猫”。",
+    "aliases": [
+      "Positional Encoding",
+      "位置嵌入",
+      "序列位置信息"
+    ],
+    "question": "注意力看到一袋 token，怎么知道谁在前、谁在后？",
+    "definition": "位置编码把 token 在序列中的位置注入表示，使自注意力除了内容相似度之外，还能利用顺序。经典 Transformer 用不同频率的正弦和余弦生成固定位置向量并加到 token embedding 上；也有模型学习位置向量，或在注意力分数中使用相对位置关系。",
+    "boundary": "位置编码描述的是位置，不是词义，也不会自动修复错误的 tokenization、padding 或 causal mask。绝对位置、相对位置、可学习表和旋转位置嵌入的注入方式不同；训练长度之外能否外推取决于具体方法和实现，不能只凭“有位置编码”下结论。",
+    "demoType": "comparison",
+    "demoTitle": "同一组词，换位置后为什么不再是同一句话",
+    "demoSteps": [
+      {
+        "label": "先把词和位置分开",
+        "value": "猫 · 追 · 狗　+　pos 0 · 1 · 2",
+        "note": "token embedding 负责内容，位置向量负责顺序线索。"
+      },
+      {
+        "label": "把位置贴回表示",
+        "value": "e(token) + p(position)",
+        "note": "加法让每个位置的表示带上内容和顺序；它不是给词换字典释义。"
+      },
+      {
+        "label": "交换两个词",
+        "value": "狗 · 追 · 猫　→　位置向量不随词走",
+        "note": "词的内容换了，位置标签仍在各自格子里，模型可以区分两种顺序。"
+      },
+      {
+        "label": "看长一点的序列",
+        "value": "pos 0…7 · 频率组合继续变化",
+        "note": "固定正弦编码有可计算的结构，但长度外推仍要看模型训练与实现边界。"
+      },
+      {
+        "label": "换成另一类位置机制",
+        "value": "absolute ≠ relative ≠ rotary",
+        "note": "它们都提供顺序线索，却在注入位置和长度行为上各有条件。"
+      }
+    ],
+    "quizQuestion": "为什么只把 token embedding 送进 self-attention 不够？",
+    "quizOptions": [
+      "自注意力本身不自动知道 token 的先后，需要额外位置关系",
+      "因为 embedding 不能表示任何词义",
+      "因为所有 token 必须使用不同的词表"
+    ],
+    "correctText": "位置编码或相对位置机制给注意力补上顺序线索；内容表示和位置表示是两件事。",
+    "wrongText": "先区分词的内容向量、位置线索与 mask；不能用一个概念替代另外两个。",
+    "promptTitle": "比较两种位置编码",
+    "prompt": "用“猫追狗”和“狗追猫”做例子，分别写出 token embedding 与位置向量如何组合；比较固定正弦、可学习绝对位置和相对/旋转位置在注入位置、长度外推、padding 与 causal mask 上的边界。",
+    "relatedSlugs": [
+      "transformer",
+      "attention",
+      "tokenization",
+      "embedding"
+    ]
   }
 ]
