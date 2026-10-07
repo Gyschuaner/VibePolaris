@@ -26350,8 +26350,8 @@
     "edges": [],
     "frames": [
       {
-        "label": "一块大提示",
-        "note": "资料直接变成正文，问题停在哪一层很难定位。",
+        "label": "放入原始材料",
+        "note": "材料先保持原样，问题暂时还没有被拆到某一层。",
         "activeIds": [
           "material",
           "draft"
@@ -26363,12 +26363,13 @@
           "cost"
         ],
         "values": {
-          "draft": "完整文章 · 缺口未知"
+          "material": "原始访谈 · 一整段材料",
+          "draft": "尚未拆分"
         }
       },
       {
-        "label": "拆出结构卡",
-        "note": "先规定下一步需要的字段和停止条件。",
+        "label": "切出中间卡",
+        "note": "中间卡规定下一步需要的字段，错误可以停在这一层。",
         "activeIds": [
           "outline"
         ],
@@ -26381,12 +26382,12 @@
           "cost"
         ],
         "values": {
-          "outline": "title / claims / sources"
+          "outline": "提纲卡 · 3 个主题 · 1 个待核事实"
         }
       },
       {
-        "label": "加检查卡",
-        "note": "程序在交给写作调用前阻止缺字段的产物。",
+        "label": "检查 schema",
+        "note": "schema 闸门在交给写作调用前挡住缺字段的产物。",
         "activeIds": [
           "check"
         ],
@@ -26399,12 +26400,12 @@
           "cost"
         ],
         "values": {
-          "check": "缺 1 条来源 · 停止"
+          "check": "缺 1 条来源 · STOP"
         }
       },
       {
-        "label": "拼入正文卡",
-        "note": "中间产物可回放，但多一次调用和更多接口也要记账。",
+        "label": "拼正文并记账",
+        "note": "闸门通过后才拼正文，同时留下调用成本、失败项和回退选择。",
         "activeIds": [
           "draft",
           "cost"
@@ -26416,7 +26417,7 @@
         ],
         "mutedIds": [],
         "values": {
-          "draft": "正文生成",
+          "draft": "正文卡 · 引用位置已保留",
           "cost": "3 calls · 1 gate"
         }
       }
