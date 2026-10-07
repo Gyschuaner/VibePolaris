@@ -26974,5 +26974,264 @@
         "note": "工具、资源和提示作为应用可连接的上下文来源"
       }
     ]
+  },
+  {
+    "slug": "query-rewriting",
+    "lead": "我明明问的是“它怎么坏了”，为什么检索器总在搜错东西？",
+    "definition": "查询改写是把用户当前的说法转换成检索器更容易匹配、又尽量保留原意的一条或多条查询。它常用于对话中补回指代，补齐实体、时间和限制，或把口语问题展开成更容易命中文档的词组；改写后的查询负责找材料，原问题仍然保留给回答者理解语境。",
+    "boundary": "查询改写不是替用户补写答案，也不是把模型记得的“可能事实”当成搜索事实。它不能保证检索结果相关、最新或正确；查询越具体，错把猜测写进去的代价也越高。它和相邻环节的分工不同：改写决定检索入口，retrieval 找候选材料，reranking 给候选排序，context engineering 组织最终输入；它可以服务于 RAG，却不等于 RAG 本身。多查询、query2doc 这类扩展可以增加召回，但会带来噪音和成本，最终仍要检查检索证据与原问题是否对得上。",
+    "sceneKind": "compare",
+    "sceneTitle": "同一个“它”，换一张检索卡就换了命中结果",
+    "actionLabel": "整理检索卡",
+    "actors": [
+      {
+        "id": "raw",
+        "label": "裸问题",
+        "detail": "它为什么没显示？",
+        "icon": "message",
+        "group": "原问"
+      },
+      {
+        "id": "context",
+        "label": "对话实体",
+        "detail": "Safari 17 · app.example · 按钮",
+        "icon": "file",
+        "group": "已知上下文"
+      },
+      {
+        "id": "terms",
+        "label": "检索词卡",
+        "detail": "button hidden · CSS display",
+        "icon": "search",
+        "group": "检索表达"
+      },
+      {
+        "id": "original",
+        "label": "原问题",
+        "detail": "为什么没显示？",
+        "icon": "message",
+        "group": "回答目标"
+      },
+      {
+        "id": "evidence",
+        "label": "返回证据",
+        "detail": "文档 / issue / 仍待确认",
+        "icon": "file",
+        "group": "核对"
+      },
+      {
+        "id": "gap",
+        "label": "信息缺口",
+        "detail": "CSS 还是权限？",
+        "icon": "spark",
+        "group": "边界"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "裸问题落台",
+        "note": "“它”没有指向对象；改写器若直接猜原因，检索入口就已经偏了。",
+        "activeIds": [
+          "raw"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "context",
+          "terms",
+          "original",
+          "evidence",
+          "gap"
+        ],
+        "values": {
+          "raw": "它为什么没显示？"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "接回已知上下文",
+        "note": "只把对话里已经出现的对象、环境和症状带回来，不替用户补写“是 CSS 问题”。",
+        "activeIds": [
+          "context",
+          "raw"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "terms",
+          "original",
+          "evidence",
+          "gap"
+        ],
+        "values": {
+          "context": "Safari 17 · app.example · 按钮"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "铺开检索词",
+        "note": "把实体、症状和技术术语并排放入查询卡，让词面匹配与语义匹配都有入口。",
+        "activeIds": [
+          "terms"
+        ],
+        "doneIds": [
+          "raw",
+          "context"
+        ],
+        "mutedIds": [
+          "original",
+          "evidence",
+          "gap"
+        ],
+        "values": {
+          "terms": "Safari 17 button hidden CSS display property"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "原问留在旁边",
+        "note": "改写卡去找材料，回答目标仍是“为什么”；两者混在一起就容易把检索词误当成结论。",
+        "activeIds": [
+          "original",
+          "terms"
+        ],
+        "doneIds": [
+          "raw",
+          "context"
+        ],
+        "mutedIds": [
+          "evidence",
+          "gap"
+        ],
+        "values": {
+          "original": "为什么没显示？",
+          "terms": "只用于检索"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "标出缺口",
+        "note": "如果对话没有说明是 CSS、权限还是网络，保留候选方向并先追问，别用流畅的查询掩盖未知。",
+        "activeIds": [
+          "gap",
+          "evidence"
+        ],
+        "doneIds": [
+          "raw",
+          "context",
+          "terms",
+          "original"
+        ],
+        "mutedIds": [],
+        "values": {
+          "gap": "CSS 还是权限？ · 待确认",
+          "evidence": "尚未足以定因"
+        },
+        "metric": {
+          "label": "检索卡状态",
+          "value": "可搜 · 未证明"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "查询改写把“检索器该找什么”单独摆出来，却不抹掉用户原本的问题；越具体的新增词，越要能指出它来自哪一句上下文或仍是待验证假设。",
+    "quiz": {
+      "question": "查询改写后，哪件事仍然必须做？",
+      "options": [
+        {
+          "label": "把返回证据和原问题逐项核对",
+          "correct": true
+        },
+        {
+          "label": "直接把改写句当成答案",
+          "correct": false
+        },
+        {
+          "label": "继续加入所有可能原因",
+          "correct": false
+        }
+      ],
+      "success": "改写只改善检索入口，证据仍要回到原问题核对。",
+      "retry": "更具体的查询不等于更真实的事实；保留来源和缺口。"
+    },
+    "prompt": {
+      "title": "写一张可回放的检索改写卡",
+      "text": "请先抄出用户原问，再列出对话中明确给出的实体、时间、环境和限制；写一条主查询与最多两条补充查询。每个新增词都标注“来自原文”还是“待验证假设”，并说明如何用检索结果回到原问题，哪些信息不足时应该先追问。"
+    },
+    "teaching": [
+      {
+        "id": "gap",
+        "title": "检索器读到的是词，不会自动读懂“它”",
+        "body": "对话里的人知道“它”指刚才提到的按钮，检索器却只看到当前字符串。查询改写先补回明确出现过的实体、环境和症状，解决的是表达与检索索引之间的词面缺口。不要把没有在对话中出现的原因一起补进去。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "expansion",
+        "title": "扩词能增加入口，也会增加噪音",
+        "body": "Query2doc 用模型生成伪文档，再把它和原查询拼在一起，实验中能帮助稀疏与稠密检索；这说明扩展词可以改善召回，但伪文档来自模型记忆，不能直接当外部证据。查询越长，排序、去重和成本也要跟着检查。",
+        "sourceIndices": [
+          2,
+          4
+        ]
+      },
+      {
+        "id": "preserve",
+        "title": "改写卡和原问题要并排保存",
+        "body": "Rewrite-Retrieve-Read 把改写放到检索之前，回答器仍拿原问题与返回文档来作答。保留原问，才能发现改写是否偷偷换了任务；发现查询只命中一个“听起来像”的方向时，应回到原问重新判断。",
+        "sourceIndices": [
+          1,
+          3,
+          4
+        ]
+      },
+      {
+        "id": "evidence",
+        "title": "检索命中只是候选材料",
+        "body": "RAG 把外部文档带入模型输入，却没有替应用完成来源、时间和权限核验。Anthropic 对上下文检索的说明也强调，词面 BM25 与语义向量各有盲点，重排和上下文能改善召回，不会把返回片段变成已证实答案。",
+        "sourceIndices": [
+          4,
+          5
+        ]
+      },
+      {
+        "id": "uncertainty",
+        "title": "不确定时，追问比硬改写更诚实",
+        "body": "对话省略、歧义和陌生领域会让改写器很容易把猜测写成关键词。结构化改写研究尝试先理解概念、识别问题类型和预期答案，目的正是减少事实错误；在关键实体仍缺失时，保留多个候选并向用户追问。",
+        "sourceIndices": [
+          3,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2305.14283",
+        "label": "Ma et al. · Query Rewriting for Retrieval-Augmented Large Language Models",
+        "note": "提出 Rewrite-Retrieve-Read，把查询重写置于检索前并用读者反馈调节"
+      },
+      {
+        "url": "https://arxiv.org/abs/2303.07678",
+        "label": "Wang et al. · Query2doc",
+        "note": "用模型生成伪文档扩展查询，改善稀疏与稠密检索"
+      },
+      {
+        "url": "https://arxiv.org/abs/2407.12529",
+        "label": "Baek et al. · Crafting the Path",
+        "note": "用概念理解、问题类型和预期答案组织结构化改写，减少陌生领域的事实错误"
+      },
+      {
+        "url": "https://arxiv.org/abs/2005.11401",
+        "label": "Lewis et al. · Retrieval-Augmented Generation",
+        "note": "检索器提供外部非参数记忆，回答器结合问题与文档生成答案"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/contextual-retrieval",
+        "label": "Anthropic · Contextual Retrieval",
+        "note": "比较语义向量与 BM25 的检索盲点，并说明上下文与重排的收益和边界"
+      }
+    ]
   }
 ]

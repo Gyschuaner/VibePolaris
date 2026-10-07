@@ -2348,5 +2348,25 @@
       "context-compaction",
       "retrieval"
     ]
+  },
+  {
+    "slug": "query-rewriting",
+    "mechanism": "查询改写位于用户问题与检索器之间：它把指代、口语、省略和任务限制重写成可搜索的实体、术语与关系，必要时生成一条或多条补充查询；原问题仍随证据交给回答器。",
+    "misconception": "改写会改变检索入口而不是证明答案。模型若把未验证的常识填进查询，召回会更具体也可能更偏；query2doc、重写和上下文检索还会增加调用、索引或排序成本。",
+    "demoSignature": "5帧｜对象：裸问题、会话实体、检索词卡、原问与改写双栏、缺口标记｜交互：接回上一句、切换检索词、查看证据边界｜变化：无实体→补回明确上下文→扩成可检索表达→仍保留原问→发现缺口先追问；对照工作台，不使用流程图。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/2305.14283",
+      "https://arxiv.org/abs/2303.07678",
+      "https://arxiv.org/abs/2407.12529",
+      "https://arxiv.org/abs/2005.11401",
+      "https://www.anthropic.com/engineering/contextual-retrieval"
+    ],
+    "rewriteRisk": "把改写写成自动补全答案会掩盖幻觉风险；正文要区分明确上下文、检索假设和返回证据，并保留原问题以便回查。明确 query rewriting 负责改写检索入口，retrieval 负责找候选材料，reranking 负责给候选排序，context engineering 负责组织最终输入；不要把其中任何一环写成完整的 RAG 或事实证明。",
+    "nearDuplicates": [
+      "retrieval",
+      "context-engineering",
+      "rag",
+      "reranking"
+    ]
   }
 ]
