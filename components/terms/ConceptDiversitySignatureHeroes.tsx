@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./ConceptDiversitySignatureHeroes.module.css";
 
-function SignatureFrame({
+export function SignatureFrame({
   scene,
   ariaLabel,
   labels,
@@ -75,4 +75,8 @@ export function FewShotPromptingSignatureHero() {
       </div>
     </SignatureFrame>
   );
+}
+
+export function BoardHeader({ eyebrow, title, status }: { eyebrow: string; title: string; status: string }) {
+  return <div className={styles.boardHeader}><div><span>{eyebrow}</span><strong>{title}</strong></div><b>{status}</b></div>;
 }
