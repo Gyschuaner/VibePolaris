@@ -1,0 +1,39 @@
+.hero { margin: 0; width: 100%; max-width: 360px; justify-self: end; padding: 14px 10px 8px; }
+.heroHeading { text-align: center; font-size: 16px; font-weight: 600; }
+.blank { display: inline-block; min-width: 3em; margin-left: 6px; color: var(--accent-text); border-bottom: 1px solid currentColor; }
+.wheelBoard { display: grid; grid-template-columns: minmax(0, 1fr) minmax(90px, .7fr); align-items: center; gap: 8px; width: 100%; }
+.wheel { position: relative; width: 100%; max-width: 210px; margin: auto; }
+.wheel svg { display: block; width: 100%; height: auto; }
+.ringBase { fill: none; stroke: var(--tint); stroke-width: 28px; }
+.sector { transition: stroke-dasharray .55s ease, stroke-dashoffset .55s ease; }
+.hub { fill: var(--paper); stroke: color-mix(in srgb, var(--ink) 12%, transparent); }
+.needle { transform-origin: 90px 90px; opacity: 0; transition: transform .7s ease, opacity .2s ease; }
+.needle[data-visible="true"] { opacity: 1; }
+.needle line { stroke: var(--ink); stroke-width: 2; }
+.needle circle { fill: var(--paper); stroke: var(--ink); stroke-width: 2; }
+.dialLabel { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: grid; justify-items: center; pointer-events: none; }
+.dialLabel span { color: var(--muted); font-size: 10px; }
+.dialLabel strong { font: 600 18px/1.2 ui-monospace, monospace; }
+.legend { display: grid; gap: 7px; }
+.legend > div { display: grid; grid-template-columns: 7px minmax(0, 1fr) auto; gap: 5px; align-items: center; border-radius: 7px; padding: 5px 4px; transition: background .25s; font-size: 12px; }
+.legend > div[data-picked="true"] { background: color-mix(in srgb, var(--candidate-color) 14%, transparent); font-weight: 600; }
+.legend i { width: 6px; height: 6px; background: var(--candidate-color); border-radius: 50%; }
+.legend code { font: 10px ui-monospace, monospace; color: var(--muted); }
+.drawResult { min-height: 1.6em; margin: 5px 0 9px; text-align: center; font-size: 12px; color: var(--accent-text); }
+.hero figcaption { margin-top: 6px; text-align: center; color: var(--muted); font-size: 10px; }
+.lab { margin: 26px 0; padding: 20px; border-radius: 16px; background: var(--tint); }
+.labHeading { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; }
+.labHeading strong { font-size: 20px; }
+.labHeading span { color: var(--muted); font-size: 11px; }
+.labControls, .labActions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.labControls button, .labActions button { min-height: 40px; padding: 8px 12px; border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent); border-radius: 8px; background: var(--paper); color: var(--ink); cursor: pointer; font: inherit; font-size: 13px; }
+.labControls button[aria-pressed="true"] { border-color: var(--accent-text); background: color-mix(in srgb, var(--accent-text) 12%, var(--paper)); }
+.labControls button:hover, .labActions button:hover { border-color: var(--accent-text); }
+.labControls button:focus-visible, .labActions button:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
+.lab .wheelBoard { max-width: 480px; margin: 8px auto 0; grid-template-columns: minmax(0, 1fr) minmax(100px, .7fr); }
+.lab .wheel { max-width: 250px; }
+.lab .legend > div { font-size: 15px; padding: 8px; }
+.lab .legend code { font-size: 12px; }
+.lab .drawResult { margin: 14px 0 0; }
+@media (max-width: 620px) { .hero { justify-self: center; } .lab { padding: 15px; } .lab .wheelBoard { grid-template-columns: minmax(0, 1fr) minmax(92px, .7fr); } .lab .legend > div { font-size: 13px; padding: 6px 3px; } .lab .legend code { font-size: 10px; } }
+@media (prefers-reduced-motion: reduce) { .sector, .needle, .legend > div { transition: none; } }

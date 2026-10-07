@@ -44,7 +44,7 @@ import { DatasetTermPage, QualityTermPage, LineageTermPage } from "@/components/
 
 import { FrameTermPage, FullTextTermPage, VectorDatabaseTermPage } from "@/components/terms/RetrievalConceptPages";
 
-import { GroundingTermPage, HallucinationTermPage, EvaluationTermPage } from '@/components/terms/QualityConceptPages';
+import { GroundingTermPage, EvaluationTermPage } from '@/components/terms/QualityConceptPages';
 import { BenchmarkTermPage, GraderTermPage, EvalDatasetTermPage, EvaluationRunTermPage, GradingRubricTermPage, RegressionEvaluationTermPage, SafetyEvaluationTermPage, CostEvaluationTermPage, LatencyEvaluationTermPage, HumanGraderTermPage, ModelGraderTermPage, PassFailGraderTermPage, ContextOverflowTermPage } from '@/components/terms/AssessmentConceptPages';
 
 import { ModelRoutingTermPage, ModelFallbackTermPage, PromptCachingTermPage } from '@/components/terms/ModelDeliveryPages';
@@ -55,7 +55,15 @@ import { LoadBalancerTermPage, AuthTermPage, AuthorizationTermPage } from '@/com
 import { SessionTermPage, JwtTermPage, OAuthTermPage } from '@/components/terms/IdentityConceptPages';
 import { SkillTermPage } from '@/components/terms/SkillConceptPages';
 import { AdaptiveLayoutTermPage, AppLifecycleTermPage, AppPermissionTermPage, BoxModelTermPage, CrossPlatformDevelopmentTermPage, CssSelectorTermPage, OfflineFirstTermPage, PushNotificationTermPage, SafeAreaTermPage, WebviewTermPage } from '@/components/terms/MobileCssConceptPages';
-import { ContainerImageTermPage, DependencyScanningTermPage, ObservabilityTermPage, PermissionBoundaryTermPage, SastTermPage, SecretScanningTermPage, ServiceDiscoveryTermPage, ThreatModelingTermPage, ToolApprovalTermPage, XssTermPage, ToolChoiceTermPage, ToolResultTermPage, PlanAndExecuteTermPage, AgentOrchestrationTermPage, HandoffTermPage, SubagentTermPage, HumanInTheLoopTermPage, GuardrailTermPage, ModerationTermPage, FineTuningTermPage, ContextWindowTermPage, AgentLoopTermPage, AgentMemoryTermPage, WorkingMemoryTermPage, ExecutionSandboxTermPage, EmbeddingTermPage, VectorStoreTermPage, RetrievalTermPage, ChunkingTermPage, RerankingTermPage, GenerativeAiTermPage, MultimodalTermPage, ReasoningModelTermPage, SystemPromptTermPage, FewShotPromptingTermPage, ZeroShotPromptingTermPage, TemperatureTermPage, TokenizationTermPage, PromptInjectionTermPage, CompilerTermPage, InterpreterTermPage, TranspilerTermPage, BuildToolTermPage, BundlerTermPage, DevServerTermPage, HotReloadTermPage, HmrTermPage, DependencyTermPage, SemanticVersioningTermPage, TransformerTermPage, AttentionTermPage, InferenceTermPage, PretrainingTermPage, KvCacheTermPage, AgentWorkflowTermPage, BackpressureTermPage, DeadLetterQueueTermPage, EventualConsistencyTermPage } from '@/components/terms/AiStackConceptPages';
+import { ContainerImageTermPage, DependencyScanningTermPage, ObservabilityTermPage, PermissionBoundaryTermPage, SastTermPage, SecretScanningTermPage, ServiceDiscoveryTermPage, ThreatModelingTermPage, ToolApprovalTermPage, XssTermPage, ToolChoiceTermPage, ToolResultTermPage, PlanAndExecuteTermPage, AgentOrchestrationTermPage, HandoffTermPage, SubagentTermPage, HumanInTheLoopTermPage, GuardrailTermPage, ModerationTermPage, FineTuningTermPage, AgentLoopTermPage, AgentMemoryTermPage, WorkingMemoryTermPage, ExecutionSandboxTermPage, EmbeddingTermPage, VectorStoreTermPage, RetrievalTermPage, ChunkingTermPage, RerankingTermPage, TemperatureTermPage, PromptInjectionTermPage, CompilerTermPage, InterpreterTermPage, TranspilerTermPage, BuildToolTermPage, BundlerTermPage, DevServerTermPage, HotReloadTermPage, HmrTermPage, DependencyTermPage, SemanticVersioningTermPage, TransformerTermPage, AttentionTermPage, InferenceTermPage, PretrainingTermPage, KvCacheTermPage, AgentWorkflowTermPage, BackpressureTermPage, DeadLetterQueueTermPage, EventualConsistencyTermPage } from '@/components/terms/AiStackConceptPages';
+import { ReasoningModelConceptTermPage } from '@/components/terms/ReasoningModelConceptPage';
+import { SystemPromptConceptTermPage } from '@/components/terms/SystemPromptConceptPage';
+import { FewShotPromptingConceptTermPage } from '@/components/terms/FewShotPromptingConceptPage';
+import { ZeroShotPromptingConceptTermPage } from '@/components/terms/ZeroShotPromptingConceptPage';
+import { TemperatureConceptTermPage } from '@/components/terms/TemperatureConceptPage';
+import { ContextWindowConceptTermPage } from '@/components/terms/ContextWindowConceptPage';
+import { TokenizationConceptTermPage } from '@/components/terms/TokenizationConceptPage';
+import { HallucinationConceptTermPage } from '@/components/terms/HallucinationConceptPage';
 import { ContainerTermPage, InfrastructureContainerImageTermPage, InfrastructureServiceDiscoveryTermPage, InfrastructureObservabilityTermPage, InfrastructureSastTermPage, InfrastructureSecretScanningTermPage, InfrastructureDependencyScanningTermPage, InfrastructureThreatModelingTermPage, InfrastructureToolApprovalTermPage, InfrastructureEvaluationDatasetTermPage } from '@/components/terms/control-redesign-pages/InfrastructureRedesignPages';
 import { BoundaryPermissionTermPage, BoundaryXssTermPage, BoundarySkillTermPage, BoundaryEvaluationRunTermPage, BoundarySafetyEvaluationTermPage, BoundaryCostEvaluationTermPage, BoundaryLatencyEvaluationTermPage, BoundaryPassFailGraderTermPage, BoundaryGradingRubricTermPage, BoundaryHumanGraderTermPage } from '@/components/terms/control-redesign-pages/BoundaryEvaluationRedesignPages';
 import { BranchTermPage, CheckoutSwitchTermPage, CdTermPage, CiTermPage, CloneTermPage, CodeReviewTermPage as GitCodeReviewTermPage, DiffTermPage, FetchTermPage as GitFetchTermPage, MergeConflictTermPage, MergeTermPage, PreviewDeploymentTermPage, PullRequestTermPage as GitPullRequestTermPage, PullTermPage, PushTermPage, RebaseTermPage as GitRebaseTermPage, RemoteTermPage, RepoCommitTermPage, RevertTermPage as GitRevertTermPage, RollbackTermPage, StashTermPage as GitStashTermPage, StagingAreaTermPage, WorkingTreeTermPage } from "@/components/terms/GitConceptPages";
@@ -97,6 +105,8 @@ import { HashingTermPage } from "@/components/terms/hashing-pages/hashing-page";
 import { InputValidationTermPage } from "@/components/terms/input-validation-pages/input-validation-page";
 import { EncryptionAtRestTermPage } from "@/components/terms/encryption-at-rest-pages/encryption-at-rest-page";
 import { EncryptionTransitTermPage } from "@/components/terms/EncryptionTransitConceptPage";
+import { GenerativeAiConceptTermPage } from "@/components/terms/GenerativeAiConceptPage";
+import { MultimodalConceptTermPage } from "@/components/terms/MultimodalConceptPage";
 import { FlexboxTermPage } from "@/components/terms/flexbox-pages/flexbox-page";
 import { CssGridTermPage } from "@/components/terms/css-grid-pages/css-grid-page";
 import { BreakpointTermPage } from "@/components/terms/breakpoint-pages/breakpoint-page";
@@ -227,7 +237,6 @@ const articleTermPages = {
   guardrail: GuardrailTermPage,
   moderation: ModerationTermPage,
   'fine-tuning': FineTuningTermPage,
-  'context-window': ContextWindowTermPage,
   'agent-loop': AgentLoopTermPage,
   'agent-memory': AgentMemoryTermPage,
   'working-memory': WorkingMemoryTermPage,
@@ -237,14 +246,15 @@ const articleTermPages = {
   'retrieval': RetrievalTermPage,
   'chunking': ChunkingTermPage,
   'reranking': RerankingTermPage,
-  'generative-ai': GenerativeAiTermPage,
-  multimodal: MultimodalTermPage,
-  'reasoning-model': ReasoningModelTermPage,
-  'system-prompt': SystemPromptTermPage,
-  'few-shot-prompting': FewShotPromptingTermPage,
-  'zero-shot-prompting': ZeroShotPromptingTermPage,
-  temperature: TemperatureTermPage,
-  tokenization: TokenizationTermPage,
+  'generative-ai': GenerativeAiConceptTermPage,
+  multimodal: MultimodalConceptTermPage,
+  'reasoning-model': ReasoningModelConceptTermPage,
+  'system-prompt': SystemPromptConceptTermPage,
+  'few-shot-prompting': FewShotPromptingConceptTermPage,
+  'zero-shot-prompting': ZeroShotPromptingConceptTermPage,
+  temperature: TemperatureConceptTermPage,
+  'context-window': ContextWindowConceptTermPage,
+  tokenization: TokenizationConceptTermPage,
   'prompt-injection': PromptInjectionTermPage,
   compiler: CompilerTermPage,
   interpreter: InterpreterTermPage,
@@ -366,7 +376,7 @@ const articleTermPages = {
   'model-grader': ModelGraderTermPage,
   'context-overflow': ContextOverflowTermPage,
   grounding: GroundingTermPage,
-  hallucination: HallucinationTermPage,
+  hallucination: HallucinationConceptTermPage,
   eval: EvaluationTermPage,
   "hybrid-search": HybridSearchTermPage,
   citation: CitationTermPage,

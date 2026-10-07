@@ -5,8 +5,8 @@
     "definition": "生成式 AI 根据输入和已训练的模型参数，逐步预测下一个片段（通常是一个词或符号）并生成新的内容；模型会按生成设置（例如温度）和采样方式，从候选片段中选出下一步，而不是直接取回一条现成答案。",
     "boundary": "它回答的是“怎样生成一段内容”，不是检索指定资料后返回已经核实的唯一答案；生成结果仍要按任务需要核对事实。",
     "sceneKind": "tree",
-    "sceneTitle": "一句提示如何长出不同文本",
-    "actionLabel": "再生成一次",
+    "sceneTitle": "一粒提示种子如何长出不同句子",
+    "actionLabel": "展开候选或清空提示",
     "actors": [
       {
         "id": "prompt",
@@ -72,93 +72,52 @@
     ],
     "frames": [
       {
-        "label": "提示固定",
-        "note": "三次运行使用完全相同的输入。",
-        "activeIds": [
-          "prompt"
-        ],
+        "label": "种子固定",
+        "note": "同一条提示先成为这次生成的条件。",
+        "activeIds": ["prompt"],
         "doneIds": [],
-        "mutedIds": [
-          "path-a",
-          "path-b",
-          "path-c"
-        ],
-        "values": {
-          "prompt": "同一提示 · 第1次"
-        },
+        "mutedIds": ["next", "path-a", "path-b", "path-c"],
+        "values": {"prompt": "为雨天写一句提醒 · fixed"},
         "activeEdgeIds": []
       },
       {
-        "label": "候选分叉",
-        "note": "模型为下一步形成候选分布；这里的比例合计 100%，只是教学示意，不是从固定答案库取一句。",
-        "activeIds": [
-          "next"
-        ],
-        "doneIds": [
-          "prompt"
-        ],
-        "mutedIds": [
-          "path-a",
-          "path-b",
-          "path-c"
-        ],
-        "values": {
-          "next": "46% / 31% / 12% / 其他 11%"
-        },
-        "activeEdgeIds": [
-          "p-n"
-        ],
-        "metric": {
-          "label": "候选词",
-          "value": "4 类候选"
-        }
+        "label": "候选长出来",
+        "note": "模型为下一步形成候选分布；比例是教学示意，不是固定答案库。",
+        "activeIds": ["next"],
+        "doneIds": ["prompt"],
+        "mutedIds": ["path-a", "path-b", "path-c"],
+        "values": {"next": "带伞 46% / 积水 31% / 防水鞋 12% / 其他 11%（未展开）"},
+        "activeEdgeIds": ["p-n"],
+        "metric": {"label": "候选片段", "value": "3 类"}
       },
       {
-        "label": "三路生成",
-        "note": "每次按候选概率进行一次采样，再沿选中的路径继续；三条文字逐步延伸，示意中的路径不是模型内部思维记录。",
-        "activeIds": [
-          "path-a",
-          "path-b",
-          "path-c"
-        ],
-        "doneIds": [
-          "prompt",
-          "next"
-        ],
-        "mutedIds": [],
-        "values": {
-          "path-a": "8 字",
-          "path-b": "8 字",
-          "path-c": "7 字"
-        },
-        "activeEdgeIds": [
-          "n-a",
-          "n-b",
-          "n-c"
-        ]
+        "label": "抽到一条路径",
+        "note": "一次采样选中一条句子路径，选中的片段会接回序列继续生成。",
+        "activeIds": ["path-a"],
+        "doneIds": ["prompt", "next"],
+        "mutedIds": ["path-b", "path-c"],
+        "values": {"path-a": "记得带伞，路上慢一点。"},
+        "activeEdgeIds": ["n-a"]
       },
       {
-        "label": "结果并排",
-        "note": "三条都符合提示，但措辞不同。",
-        "activeIds": [],
-        "doneIds": [
-          "prompt",
-          "next",
-          "path-a",
-          "path-b",
-          "path-c"
-        ],
+        "label": "三次各自长完",
+        "note": "同一任务可以长出不同措辞；变化本身不是事实证据。",
+        "activeIds": ["path-a", "path-b", "path-c"],
+        "doneIds": ["prompt", "next"],
         "mutedIds": [],
-        "values": {
-          "path-a": "完成",
-          "path-b": "完成",
-          "path-c": "完成"
-        },
+        "values": {"path-a": "记得带伞", "path-b": "留意积水", "path-c": "看一眼天气"},
+        "activeEdgeIds": ["n-a", "n-b", "n-c"],
+        "metric": {"label": "不同措辞", "value": "3 条"}
+      },
+      {
+        "label": "没有种子就停下",
+        "note": "清空提示后承认缺少任务条件，不用完整句子掩盖输入为空。",
+        "activeIds": ["prompt"],
+        "doneIds": [],
+        "mutedIds": ["next", "path-a", "path-b", "path-c"],
+        "values": {"prompt": "prompt = ∅ · stop"},
         "activeEdgeIds": [],
-        "metric": {
-          "label": "有效结果",
-          "value": "3 条"
-        }
+        "metric": {"label": "可生成结果", "value": "0 条"}
       }
     ],
     "insight": "生成式 AI 是根据输入和模型学到的分布逐步续出新内容；检索则从指定索引或资料库取回已有资料。两者可以在同一个应用里先后配合，但生成结果仍需核验。",
@@ -186,567 +145,452 @@
       "text": "请先写清目标、受众、格式和事实边界；如果内容需要真实数据，再列出来源与核验步骤。"
     },
     "sources": [
-      {
-        "url": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
-        "label": "NIST · NIST AI 600-1 Generative AI Profile",
-        "note": "生成式系统风险与评估"
-      },
-      {
-        "url": "https://arxiv.org/abs/1706.03762",
-        "label": "arXiv · Attention Is All You Need",
-        "note": "Transformer 架构边界"
-      },
-      {
-        "url": "https://arxiv.org/abs/2005.14165",
-        "label": "arXiv · Language Models are Few-Shot Learners",
-        "note": "自回归语言模型与上下文"
-      },
-      {
-        "url": "https://arxiv.org/abs/1904.09751",
-        "label": "arXiv · The Curious Case of Neural Text Degeneration",
-        "note": "解码策略与输出变化"
-      }
+      {"url": "https://doi.org/10.6028/NIST.AI.600-1", "label": "NIST · Artificial Intelligence Risk Management Framework: Generative AI Profile", "note": "生成式系统定义与风险"},
+      {"url": "https://platform.openai.com/docs/guides/text?api-mode=responses", "label": "OpenAI · Text generation", "note": "提示、模型与生成请求"},
+      {"url": "https://ai.google.dev/gemini-api/docs/text-generation", "label": "Google · Text generation with the Gemini API", "note": "文本生成配置"},
+      {"url": "https://arxiv.org/abs/2005.14165", "label": "Brown et al. · Language Models are Few-Shot Learners", "note": "提示与示例影响任务表现"},
+      {"url": "https://arxiv.org/abs/1706.03762", "label": "Vaswani et al. · Attention Is All You Need", "note": "序列中的注意力机制"}
     ]
   },
   {
     "slug": "multimodal",
-    "lead": "照片里有五只杯子，问题只问红色的，系统怎样把图和字对上？",
-    "definition": "多模态系统把文字、图片、音频或视频等不同类型的信息编码成模型可以一起处理的表示，再按具体模型和接口生成指定类型的结果。“表示”指模型内部可计算的信息，不是把图片自动变成一段可检索的文字。",
-    "boundary": "输入和输出模态由具体产品决定：有的接口接收图和文字并返回文字，有的还支持音频或图像输出。上传一份材料只授权使用这份材料，不等于访问设备上的其他文件；识别、计数和生成结果仍需核验。",
+    "lead": "我问票面上的日期，文字和图片怎样互相对上？",
+    "definition": "多模态系统让不同形式的输入在同一次任务里共同参与处理，例如文字问题和图片一起进入请求。模型会把它们转换成可计算的内部表示，再按具体接口生成回答；这不等于图片自动变成一段已经核验的文字。",
+    "boundary": "能接收图片、音频或视频的种类取决于具体模型和接口。图片没有提交、格式不支持或细节看不清时，回答范围就应缩小；上传一份材料也不等于授权读取设备里的其他文件。",
     "sceneKind": "layers",
-    "sceneTitle": "图像区域与文字条件如何汇合",
-    "actionLabel": "框选并计数",
+    "sceneTitle": "问题如何把取景框对准票面",
+    "actionLabel": "切换取景条件",
     "actors": [
-      {
-        "id": "image",
-        "label": "杯子照片",
-        "detail": "5只杯子，其中3只红色",
-        "icon": "file",
-        "group": "图像"
-      },
-      {
-        "id": "question",
-        "label": "文字问题",
-        "detail": "有几个红杯？",
-        "icon": "message",
-        "group": "文字"
-      },
-      {
-        "id": "regions",
-        "label": "视觉区域",
-        "detail": "候选 5 个",
-        "icon": "layout",
-        "group": "识别"
-      },
-      {
-        "id": "fusion",
-        "label": "条件对齐",
-        "detail": "对象=杯子，颜色=红",
-        "icon": "brain",
-        "group": "对齐"
-      },
-      {
-        "id": "answer",
-        "label": "回答",
-        "detail": "3 个",
-        "icon": "spark",
-        "group": "输出"
-      }
+      {"id": "question", "label": "文字问题", "detail": "读出日期 / 登机口", "icon": "message", "group": "条件"},
+      {"id": "ticket", "label": "票面图片", "detail": "日期、登机口、姓名", "icon": "file", "group": "材料"},
+      {"id": "lens", "label": "取景框", "detail": "当前关注字段", "icon": "search", "group": "对齐"},
+      {"id": "answer", "label": "可核对回答", "detail": "来自被圈出的像素", "icon": "spark", "group": "结果"}
     ],
     "edges": [
-      {
-        "id": "img-reg",
-        "from": "image",
-        "to": "regions",
-        "label": "检测区域"
-      },
-      {
-        "id": "q-fuse",
-        "from": "question",
-        "to": "fusion",
-        "label": "提取条件"
-      },
-      {
-        "id": "reg-fuse",
-        "from": "regions",
-        "to": "fusion",
-        "label": "逐项核对"
-      },
-      {
-        "id": "fuse-out",
-        "from": "fusion",
-        "to": "answer",
-        "label": "汇总"
-      }
+      {"id": "question-lens", "from": "question", "to": "lens", "label": "指定字段"},
+      {"id": "ticket-lens", "from": "ticket", "to": "lens", "label": "提供像素"},
+      {"id": "lens-answer", "from": "lens", "to": "answer", "label": "返回可核对值"}
     ],
     "frames": [
-      {
-        "label": "两路输入",
-        "note": "照片和问题分别进入，不把图片先写成长描述。",
-        "activeIds": [
-          "image",
-          "question"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "answer"
-        ],
-        "values": {
-          "image": "已提交图片",
-          "question": "颜色条件：红"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "框出对象",
-        "note": "画面里找到 5 只杯子，先不判断哪些该计入。",
-        "activeIds": [
-          "regions"
-        ],
-        "doneIds": [
-          "image"
-        ],
-        "mutedIds": [
-          "answer"
-        ],
-        "values": {
-          "regions": "5 个框"
-        },
-        "activeEdgeIds": [
-          "img-reg"
-        ],
-        "metric": {
-          "label": "候选区域",
-          "value": "5"
-        }
-      },
-      {
-        "label": "文字筛选",
-        "note": "问题中的“红色”筛掉2个不匹配区域。",
-        "activeIds": [
-          "fusion"
-        ],
-        "doneIds": [
-          "question",
-          "regions"
-        ],
-        "mutedIds": [
-          "answer"
-        ],
-        "values": {
-          "fusion": "5 → 3"
-        },
-        "activeEdgeIds": [
-          "q-fuse",
-          "reg-fuse"
-        ]
-      },
-      {
-        "label": "得到数量",
-        "note": "只对保留区域计数。",
-        "activeIds": [
-          "answer"
-        ],
-        "doneIds": [
-          "image",
-          "question",
-          "regions",
-          "fusion"
-        ],
-        "mutedIds": [],
-        "values": {
-          "answer": "3 个"
-        },
-        "activeEdgeIds": [
-          "fuse-out"
-        ],
-        "metric": {
-          "label": "红杯数量",
-          "value": "3"
-        }
-      }
+      {"label": "问题先到", "note": "文字里的“这张票”还没有对应图片。", "activeIds": ["question"], "doneIds": [], "mutedIds": ["ticket", "answer"], "values": {"question": "读出日期", "ticket": "input_image = ∅"}, "activeEdgeIds": []},
+      {"label": "票面进来", "note": "图片和文字在同一次请求中保留各自形态。", "activeIds": ["question", "ticket"], "doneIds": [], "mutedIds": ["answer"], "values": {"question": "读出日期", "ticket": "input_image · present"}, "activeEdgeIds": []},
+      {"label": "取景对准", "note": "问题把取景框移到 DATE 字段，其他像素仍是背景。", "activeIds": ["lens"], "doneIds": ["question", "ticket"], "mutedIds": ["answer"], "values": {"lens": "DATE · 2026 · 10 · 03"}, "activeEdgeIds": ["question-lens", "ticket-lens"]},
+      {"label": "回答有出处", "note": "结果回到被圈出的像素，读者可以沿原图核对。", "activeIds": ["answer"], "doneIds": ["question", "ticket", "lens"], "mutedIds": [], "values": {"answer": "2026 · 10 · 03"}, "activeEdgeIds": ["lens-answer"], "metric": {"label": "可定位字段", "value": "DATE"}},
+      {"label": "图片被拿掉", "note": "相同文字问题失去票面后，不再补出日期。", "activeIds": ["answer"], "doneIds": ["question"], "mutedIds": ["ticket", "lens"], "values": {"answer": "缺少图像证据"}, "activeEdgeIds": []}
     ],
-    "insight": "不同类型的信息要一起用上，才算多模态；能上传图片不等于会生成图片。",
+    "insight": "多模态的变化发生在输入材料和取景条件之间；图片进入请求不等于每个细节都已核对。",
     "quiz": {
-      "question": "这个演示中，哪一步体现了多模态？",
+      "question": "哪一项能让回答真正获得票面日期的依据？",
       "options": [
-        {
-          "label": "用文字条件筛选图像区域",
-          "correct": true
-        },
-        {
-          "label": "把照片压缩得更小",
-          "correct": false
-        },
-        {
-          "label": "连续生成三次答案",
-          "correct": false
-        }
+        {"label": "把票面图片和文字问题一起提交", "correct": true},
+        {"label": "只在文字里写“看这张票”", "correct": false},
+        {"label": "把图片文件名写进提示词", "correct": false}
       ],
-      "success": "关键是把文字条件用到了图像区域上。",
-      "retry": "只处理图片或只处理文字，都只用到一种模态。"
+      "success": "图片像素和文字条件都在请求里，回答才有可定位的材料。",
+      "retry": "文字里的指代不能替代图片本身；文件名也不是票面内容。"
     },
-    "prompt": {
-      "title": "设计一次多模态核对",
-      "text": "请分别写明提供了哪些输入、希望得到哪种输出；只根据已提交材料回答，看不清、没提供或无法确认的部分请指出。"
-    },
+    "prompt": {"title": "设计一次多模态核对", "text": "请列出实际提交的文字、图片或音频，并把回答定位到对应材料；缺少材料、格式不支持或看不清的部分请明确停下。"},
     "sources": [
-      {
-        "url": "https://arxiv.org/abs/2303.08774",
-        "label": "OpenAI · GPT-4 Technical Report",
-        "note": "图文输入与文本输出"
-      },
-      {
-        "url": "https://arxiv.org/abs/2103.00020",
-        "label": "OpenAI · CLIP",
-        "note": "图文表示对齐"
-      },
-      {
-        "url": "https://arxiv.org/abs/2204.14198",
-        "label": "DeepMind · Flamingo",
-        "note": "交错视觉与文本输入"
-      },
-      {
-        "url": "https://arxiv.org/abs/2312.11805",
-        "label": "Google · Gemini technical report",
-        "note": "多种输入模态范围"
-      },
-      {
-        "url": "https://developers.openai.com/api/docs/guides/images-vision",
-        "label": "OpenAI · Images and vision",
-        "note": "图片输入接口边界"
-      }
+      {"url": "https://platform.openai.com/docs/guides/images-vision", "label": "OpenAI · Images and vision", "note": "图片作为输入内容块提交"},
+      {"url": "https://ai.google.dev/gemini-api/docs/vision", "label": "Google · Image understanding", "note": "视觉任务与图片输入方式"},
+      {"url": "https://arxiv.org/abs/2103.00020", "label": "Radford et al. · CLIP", "note": "图片与文字表示匹配"},
+      {"url": "https://arxiv.org/abs/2204.14198", "label": "Alayrac et al. · Flamingo", "note": "视觉与语言模型的连接"},
+      {"url": "https://doi.org/10.6028/NIST.AI.600-1", "label": "NIST · Generative AI Profile", "note": "多模态风险与证据边界"}
     ]
   },
   {
     "slug": "reasoning-model",
-    "lead": "库存17件，先卖4件再卖6件，怎样让每一步都能检查？",
-    "definition": "推理模型或推理模式会为多步骤任务分配更多计算，用来推断、搜索或验证；演示中的检查步骤是人和程序都能复算的公开记录，不等于模型私有的思维过程。",
-    "boundary": "更多推理计算可能改善特定任务的完成率，但不是正确性证明；外部事实、数值和业务约束仍需要独立核验。",
-    "sceneKind": "timeline",
-    "sceneTitle": "库存数值沿步骤推进",
-    "actionLabel": "改变销量重算",
+    "lead": "这件商品能退款吗？怎样让结论先等条件落账？",
+    "definition": "推理模型或推理模式会为多步骤任务分配更多计算，用来拆分条件、比较路径或检查中间结果；这里公开的是可复算的条件账本，不是模型私有的思维过程。",
+    "boundary": "更多推理计算可能改善特定任务的完成率，但不是正确性证明；预算、外部事实和业务约束仍需要分别核验。",
+    "sceneKind": "spectrum",
+    "sceneTitle": "退款条件在预算光谱上逐项落账",
+    "actionLabel": "改变核对预算",
     "actors": [
       {
-        "id": "problem",
-        "label": "库存题",
-        "detail": "17件，卖4件，再卖6件",
+        "id": "question",
+        "label": "退款问题",
+        "detail": "这件商品能退款吗？",
         "icon": "message",
         "group": "输入"
       },
       {
-        "id": "stock",
-        "label": "库存牌",
-        "detail": "当前 17",
-        "icon": "chart",
-        "group": "状态"
+        "id": "conditions",
+        "label": "条件账本",
+        "detail": "未发货 · 12天 · 包装完整",
+        "icon": "file",
+        "group": "核对"
       },
       {
-        "id": "check",
-        "label": "约束检查",
-        "detail": "库存不得小于0",
-        "icon": "shield",
-        "group": "校验"
+        "id": "budget",
+        "label": "推理预算",
+        "detail": "还有多少计算可用",
+        "icon": "clock",
+        "group": "边界"
       },
       {
-        "id": "result",
-        "label": "结果",
-        "detail": "剩余 7",
+        "id": "verdict",
+        "label": "带条件的结论",
+        "detail": "可以退款 · 仅限未发货",
         "icon": "spark",
         "group": "输出"
       }
     ],
     "edges": [
       {
-        "id": "p-s",
-        "from": "problem",
-        "to": "stock",
-        "label": "读取操作"
+        "id": "q-c",
+        "from": "question",
+        "to": "conditions",
+        "label": "展开条件"
       },
       {
-        "id": "s-c",
-        "from": "stock",
-        "to": "check",
-        "label": "检查"
+        "id": "c-b",
+        "from": "conditions",
+        "to": "budget",
+        "label": "消耗计算"
       },
       {
-        "id": "c-r",
-        "from": "check",
-        "to": "result",
-        "label": "通过后输出"
+        "id": "b-v",
+        "from": "budget",
+        "to": "verdict",
+        "label": "完成后盖章"
       }
     ],
     "frames": [
       {
-        "label": "读取初值",
-        "note": "先把库存状态定为17。",
+        "label": "问题落下",
+        "note": "先看到退款问题，结论还没有条件托住。",
         "activeIds": [
-          "problem",
-          "stock"
+          "question"
         ],
         "doneIds": [],
         "mutedIds": [
-          "result"
+          "conditions",
+          "budget",
+          "verdict"
         ],
         "values": {
-          "stock": "17"
+          "verdict": "可以退款？"
         },
         "activeEdgeIds": [
-          "p-s"
+          "q-c"
         ]
       },
       {
-        "label": "第一次扣减",
-        "note": "卖出4件后，库存从17变为13。",
+        "label": "条件摊开",
+        "note": "问题被拆成未发货、30天内、包装完整三项。",
         "activeIds": [
-          "stock"
+          "conditions",
+          "budget"
         ],
         "doneIds": [
-          "problem"
+          "question"
         ],
         "mutedIds": [
-          "result"
+          "verdict"
         ],
         "values": {
-          "stock": "17 → 13"
+          "conditions": "3 项待核对",
+          "budget": "开始消耗"
         },
-        "activeEdgeIds": [],
+        "activeEdgeIds": [
+          "q-c",
+          "c-b"
+        ],
         "metric": {
-          "label": "当前库存",
-          "value": "13"
+          "label": "公开账本",
+          "value": "0 / 3"
         }
       },
       {
-        "label": "第二次扣减",
-        "note": "再卖6件，库存从13变为7。",
+        "label": "逐项配对",
+        "note": "前两项已落账，包装完整仍没有证据，天平不能盖章。",
         "activeIds": [
-          "stock"
+          "conditions",
+          "budget"
         ],
         "doneIds": [
-          "problem"
+          "question"
         ],
         "mutedIds": [
-          "result"
+          "verdict"
         ],
         "values": {
-          "stock": "13 → 7"
+          "conditions": "2 / 3 已核对",
+          "budget": "继续计算"
         },
-        "activeEdgeIds": [],
+        "activeEdgeIds": [
+          "c-b"
+        ],
         "metric": {
-          "label": "当前库存",
-          "value": "7"
+          "label": "天平状态",
+          "value": "未平衡"
         }
       },
       {
-        "label": "检查约束",
-        "note": "这是公开、可复算的业务规则检查；7 没有越过 0，结果可以交付。这里没有展示模型的私有思维过程。",
+        "label": "结论带条件",
+        "note": "三项条件都能回到输入，结论连同适用范围一起交付。",
         "activeIds": [
-          "check",
-          "result"
+          "verdict"
         ],
         "doneIds": [
-          "problem",
-          "stock"
+          "question",
+          "conditions",
+          "budget"
         ],
         "mutedIds": [],
         "values": {
-          "check": "通过",
-          "result": "7 件"
+          "budget": "完成",
+          "verdict": "可以退款 · 带条件"
         },
         "activeEdgeIds": [
-          "s-c",
-          "c-r"
-        ]
+          "b-v"
+        ],
+        "metric": {
+          "label": "已核对",
+          "value": "3 / 3"
+        }
+      },
+      {
+        "label": "预算耗尽",
+        "note": "只完成两项时，公开记录应保留未完成，不能把半截推理写成已验证。",
+        "activeIds": [
+          "budget",
+          "verdict"
+        ],
+        "doneIds": [
+          "question",
+          "conditions"
+        ],
+        "mutedIds": [],
+        "values": {
+          "budget": "到边",
+          "verdict": "未完成 · 不能盖章"
+        },
+        "activeEdgeIds": [
+          "c-b"
+        ],
+        "metric": {
+          "label": "已核对",
+          "value": "2 / 3"
+        }
       }
     ],
-    "insight": "演示把检查步骤写成公开、可复算的状态记录；它帮助人和程序核对结论，不是模型私有思维过程，也不是正确性证明。",
+    "insight": "演示把额外计算翻译成公开、可复算的条件账本；它帮助人和程序核对结论，不是模型私有思维过程，也不是正确性证明。",
     "quiz": {
-      "question": "若第二次销量改为16，最可靠的处理是什么？",
+      "question": "退款条件还缺一项时，最可靠的处理是什么？",
       "options": [
         {
-          "label": "重算到 -3 后触发库存约束",
+          "label": "保留未完成，补齐证据后再下结论",
           "correct": true
         },
         {
-          "label": "仍输出7件以保持答案稳定",
+          "label": "延长回答文字，直接盖章",
           "correct": false
         },
         {
-          "label": "只延长回答文字",
+          "label": "把缺失条件当成默认通过",
           "correct": false
         }
       ],
-      "success": "输入一变，就要重新过一遍库存计算和约束检查。",
-      "retry": "推理长度不能替代对中间数值的检查。"
+      "success": "条件不完整时，先留下边界，补齐证据再交付结论。",
+      "retry": "推理长度不能替代缺失条件和外部核验。"
     },
     "prompt": {
-      "title": "拆解一个多步判断",
-      "text": "请把多步骤任务拆成可检查的输入、约束和中间结果，并标出需要程序、工具或来源独立核验的结论。"
+      "title": "让结论先过条件账本",
+      "text": "请把这个多步骤判断拆成输入、约束、公开可复算的中间记录和预算边界，并标出需要工具、来源或人工独立核验的结论。"
     },
     "sources": [
       {
         "url": "https://developers.openai.com/api/docs/guides/reasoning",
         "label": "OpenAI · Reasoning models",
-        "note": "推理调用与 effort"
+        "note": "推理 token、effort 与预算"
       },
       {
         "url": "https://developers.openai.com/api/docs/guides/reasoning-best-practices",
         "label": "OpenAI · Reasoning best practices",
-        "note": "不依赖私有思维过程"
+        "note": "约束提示与私有思维链边界"
       },
       {
         "url": "https://arxiv.org/abs/2201.11903",
-        "label": "arXiv · Chain-of-Thought Prompting",
-        "note": "少样本推理示例"
+        "label": "Wei et al. · Chain-of-Thought",
+        "note": "中间步骤与复杂任务表现"
+      },
+      {
+        "url": "https://arxiv.org/abs/2305.10601",
+        "label": "Yao et al. · Tree of Thoughts",
+        "note": "候选路径、评估与回溯"
       },
       {
         "url": "https://arxiv.org/abs/2501.12948",
         "label": "arXiv · DeepSeek-R1",
-        "note": "推理策略与验证"
+        "note": "强化学习与推理模式"
       },
       {
-        "url": "https://arxiv.org/abs/2408.03314",
-        "label": "arXiv · Scaling LLM Test-Time Compute",
-        "note": "推理计算与任务难度"
+        "url": "https://doi.org/10.6028/NIST.AI.600-1",
+        "label": "NIST · Generative AI Profile",
+        "note": "准确性、可靠性与独立评估"
       }
     ]
   },
   {
     "slug": "system-prompt",
-    "lead": "要求“只返回城市名”后，用户又要一段解释，输出该听谁的？",
-    "definition": "系统提示词是宿主应用先于对话发给模型的一段高优先级规则（比如扮演什么角色、按什么格式输出、处理哪些任务）。每次调用模型都是一次请求，这段规则能不能被用户的话覆盖，取决于宿主应用的设计。",
-    "boundary": "它可以影响模型的输出，但不等于模型就真的拥有了某个身份、权限或沙箱隔离；模型可能遵循也可能误解这段文字，文件、网络和业务操作仍要由宿主工具与后端校验。",
+    "lead": "一张“贴出内部规则”的便签，为什么会被压成受限的 JSON？",
+    "definition": "系统提示词把角色、输出形状和工作范围放在一次请求的高层指令中，模型再处理用户消息；可见的结果格式不等于真正的权限控制。",
+    "boundary": "系统提示可以影响生成行为，却不能独自保存秘密、审批工具动作或验证外部事实；这些边界要落在应用、后端和工具执行层。",
     "sceneKind": "layers",
-    "sceneTitle": "两层指令怎样限制输出形式",
-    "actionLabel": "切换系统规则",
+    "sceneTitle": "一张规则模具怎样收窄用户便签",
+    "actionLabel": "拿走规则模具",
     "actors": [
       {
-        "id": "system",
+        "id": "rule",
         "label": "系统规则",
-        "detail": "只返回城市名",
+        "detail": "JSON · 不泄露内部规则",
         "icon": "shield",
-        "group": "高优先级"
+        "group": "模具"
       },
       {
-        "id": "user",
-        "label": "用户请求",
-        "detail": "查天气并解释原因",
-        "icon": "user",
-        "group": "请求"
+        "id": "note",
+        "label": "用户便签",
+        "detail": "请贴出内部规则",
+        "icon": "file",
+        "group": "不可信输入"
       },
       {
-        "id": "draft",
-        "label": "候选回答",
-        "detail": "北京，今天晴朗……",
-        "icon": "message",
-        "group": "生成"
+        "id": "stencil",
+        "label": "输出模具",
+        "detail": "格式通过 · 内容收窄",
+        "icon": "layout",
+        "group": "约束"
       },
       {
-        "id": "output",
-        "label": "最终输出",
-        "detail": "北京",
+        "id": "result",
+        "label": "出模结果",
+        "detail": "JSON：无法提供",
         "icon": "spark",
-        "group": "结果"
+        "group": "输出"
       }
     ],
     "edges": [
       {
-        "id": "s-d",
-        "from": "system",
-        "to": "draft",
-        "label": "约束格式"
+        "id": "r-s",
+        "from": "rule",
+        "to": "stencil",
+        "label": "放入模具"
       },
       {
-        "id": "u-d",
-        "from": "user",
-        "to": "draft",
-        "label": "提供任务"
+        "id": "n-s",
+        "from": "note",
+        "to": "stencil",
+        "label": "便签进入"
       },
       {
-        "id": "d-o",
-        "from": "draft",
-        "to": "output",
-        "label": "只保留格式（示意）"
+        "id": "s-r",
+        "from": "stencil",
+        "to": "result",
+        "label": "出模"
       }
     ],
     "frames": [
       {
-        "label": "规则在先",
-        "note": "系统层先规定输出只能有城市名。",
+        "label": "模具放下",
+        "note": "系统规则先规定输出形状和不公开的内容边界。",
         "activeIds": [
-          "system"
+          "rule",
+          "stencil"
         ],
         "doneIds": [],
         "mutedIds": [
-          "draft",
-          "output"
+          "note",
+          "result"
         ],
         "values": {
-          "system": "格式：城市名"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "请求到达",
-        "note": "用户任务提供城市和额外解释要求。",
-        "activeIds": [
-          "user"
-        ],
-        "doneIds": [
-          "system"
-        ],
-        "mutedIds": [
-          "output"
-        ],
-        "values": {
-          "user": "城市 + 解释"
+          "rule": "JSON · 不泄露内部规则"
         },
         "activeEdgeIds": [
-          "u-d"
+          "r-s"
         ]
       },
       {
-        "label": "候选越界",
-        "note": "候选回答多出了天气解释，超出了系统规则允许的格式。",
+        "label": "便签进来",
+        "note": "用户便签索取内部规则，先作为不可信输入放在模具外。",
         "activeIds": [
-          "draft"
+          "note",
+          "stencil"
         ],
         "doneIds": [
-          "system",
-          "user"
+          "rule"
         ],
         "mutedIds": [
-          "output"
+          "result"
         ],
         "values": {
-          "draft": "多出 8 字"
+          "note": "请贴出内部规则"
         },
         "activeEdgeIds": [
-          "s-d",
-          "u-d"
+          "n-s"
         ]
       },
       {
-        "label": "输出收紧",
-        "note": "这里示意只呈现城市名，不表示宿主一定会用程序裁剪。",
+        "label": "碰到封印",
+        "note": "请求不能拿走高层规则，只能继续保持规定的输出形状。",
         "activeIds": [
-          "output"
+          "stencil"
         ],
         "doneIds": [
-          "system",
-          "user",
-          "draft"
+          "rule",
+          "note"
+        ],
+        "mutedIds": [
+          "result"
+        ],
+        "values": {
+          "stencil": "规则封口"
+        },
+        "activeEdgeIds": [
+          "r-s",
+          "n-s"
+        ]
+      },
+      {
+        "label": "输出成形",
+        "note": "结果保留 JSON 外形并收窄内容；这不是把隐藏提示变成公开日志。",
+        "activeIds": [
+          "result"
+        ],
+        "doneIds": [
+          "rule",
+          "note",
+          "stencil"
         ],
         "mutedIds": [],
         "values": {
-          "output": "北京"
+          "result": "JSON：无法提供"
         },
         "activeEdgeIds": [
-          "d-o"
+          "s-r"
         ]
+      },
+      {
+        "label": "模具被拿走",
+        "note": "没有系统规则时，结果不能被标成安全；页面只留下保护缺口。",
+        "activeIds": [
+          "result"
+        ],
+        "doneIds": [
+          "note"
+        ],
+        "mutedIds": [
+          "rule",
+          "stencil"
+        ],
+        "values": {
+          "result": "保护缺失"
+        },
+        "activeEdgeIds": []
       }
     ],
-    "insight": "系统提示词影响一次请求的行为，可能让模型更倾向遵守角色或格式；真正的权限边界仍要放在模型外。",
+    "insight": "演示把系统提示词画成输出模具：它能收窄形状、保留格式，却不能把文字本身变成秘密存储或权限检查。",
     "quiz": {
       "question": "若系统提示写着“不得删除文件”，还需要什么？",
       "options": [
@@ -767,194 +611,245 @@
       "retry": "安全边界应由应用执行，而不是依赖模型记住一句话。"
     },
     "prompt": {
-      "title": "整理一段系统提示",
-      "text": "请区分行为说明、输出格式和真正的权限控制：把必须由后端或工具校验的条件单独列出。"
+      "title": "整理一块规则模具",
+      "text": "请把系统规则拆成角色、输出格式和工作边界，并标出必须由后端、存储或工具执行层独立校验的条件。"
     },
     "sources": [
       {
+        "url": "https://github.com/openai/model_spec/blob/main/model_spec.md",
+        "label": "OpenAI · Model Spec",
+        "note": "指令层级与 chain of command"
+      },
+      {
         "url": "https://developers.openai.com/api/docs/guides/prompt-engineering",
         "label": "OpenAI · Prompt engineering",
-        "note": "消息角色与指令"
+        "note": "结构化输出与提示编排"
       },
       {
-        "url": "https://model-spec.openai.com/",
-        "label": "OpenAI · Model Spec",
-        "note": "指令层级与行为原则"
+        "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices",
+        "label": "Anthropic · Prompting best practices",
+        "note": "system role 与清楚边界"
       },
       {
-        "url": "https://ai.google.dev/gemini-api/docs/text-generation",
-        "label": "Google · Gemini text generation",
-        "note": "system instruction"
+        "url": "https://ai.google.dev/gemini-api/docs/system-instructions",
+        "label": "Google · System instructions",
+        "note": "独立 system_instruction 参数"
       },
       {
-        "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview",
-        "label": "Anthropic · Prompt engineering overview",
-        "note": "提示编排"
-      },
-      {
-        "url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
-        "label": "OWASP · LLM01 Prompt Injection",
-        "note": "提示注入风险"
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+        "label": "OWASP · LLM Prompt Injection Prevention",
+        "note": "不可信数据分离与工具边界"
       }
     ]
   },
   {
     "slug": "few-shot-prompting",
-    "lead": "只给两条工单示例，新工单为什么更容易套进同一标签格式？",
-    "definition": "少样本提示把少量输入—输出示例放进当前请求，让模型在这次上下文中参照任务格式、边界和表达方式；模型参数是训练后保留的内部设置，放入示例不会更新它们。",
-    "boundary": "示例会占用上下文，示例里错误、片面或只覆盖部分情况的模式，也可能被带进新结果；示例数量没有跨模型通用的“正确值”，也不是越多越好。",
-    "sceneKind": "pipeline",
-    "sceneTitle": "两条例子怎样改变新样本的映射",
-    "actionLabel": "移除一条例子",
+    "lead": "只给两张工单小票，为什么新工单会沿用同一枚标签印章？",
+    "definition": "少样本提示把少量输入—输出示例放进当前请求，让模型在这次上下文中参照标签空间、输入样子和输出格式；示例不会更新模型参数。",
+    "boundary": "示例会占用上下文；错误、片面、格式不一致或彼此冲突的校样，也可能被带进新结果。示例数量没有跨模型通用的“正确值”，不是越多越好。",
+    "sceneKind": "assembly",
+    "sceneTitle": "一张校样台怎样给新工单盖标签",
+    "actionLabel": "加入相反校样",
     "actors": [
       {
-        "id": "examples",
-        "label": "示例对",
-        "detail": "支付失败→后端；按钮错位→前端",
+        "id": "sample-rack",
+        "label": "校样小票",
+        "detail": "登录页空白→前端；付款转圈→网络",
         "icon": "file",
-        "group": "上下文"
+        "group": "校样"
       },
       {
-        "id": "query",
+        "id": "label-dial",
+        "label": "标签盘",
+        "detail": "前端 / 后端 / 网络",
+        "icon": "layout",
+        "group": "版式"
+      },
+      {
+        "id": "new-ticket",
         "label": "新工单",
-        "detail": "付款页空白",
+        "detail": "导出按钮没反应",
         "icon": "message",
         "group": "输入"
       },
       {
-        "id": "labels",
-        "label": "标签候选",
-        "detail": "前端 / 后端 / 网络",
-        "icon": "layout",
-        "group": "判断"
+        "id": "stamp",
+        "label": "标签印章",
+        "detail": "前端 / 先修示例",
+        "icon": "spark",
+        "group": "输出"
       },
       {
-        "id": "result",
-        "label": "输出",
-        "detail": "前端",
-        "icon": "spark",
-        "group": "结果"
+        "id": "parameters",
+        "label": "模型参数",
+        "detail": "unchanged",
+        "icon": "brain",
+        "group": "边界"
       }
     ],
     "edges": [
       {
-        "id": "ex-l",
-        "from": "examples",
-        "to": "labels",
-        "label": "提供映射"
+        "id": "sample-dial",
+        "from": "sample-rack",
+        "to": "label-dial",
+        "label": "显出校样"
       },
       {
-        "id": "q-l",
-        "from": "query",
-        "to": "labels",
-        "label": "待分类"
+        "id": "ticket-dial",
+        "from": "new-ticket",
+        "to": "label-dial",
+        "label": "放上新票"
       },
       {
-        "id": "l-r",
-        "from": "labels",
-        "to": "result",
-        "label": "选择"
+        "id": "dial-stamp",
+        "from": "label-dial",
+        "to": "stamp",
+        "label": "盖出格式"
+      },
+      {
+        "id": "parameter-stamp",
+        "from": "parameters",
+        "to": "stamp",
+        "label": "不写回参数"
       }
     ],
     "frames": [
       {
-        "label": "示例先到",
-        "note": "两条输入—输出对定义了标签写法；“2 组”只是本次示意，不是通用标准。",
+        "label": "留白校样",
+        "note": "新工单已经摆上桌，但没有示例告诉它标签该长什么样。",
         "activeIds": [
-          "examples"
+          "new-ticket"
         ],
         "doneIds": [],
         "mutedIds": [
-          "result"
+          "sample-rack",
+          "label-dial",
+          "stamp"
         ],
         "values": {
-          "examples": "2 组"
+          "new-ticket": "待套用",
+          "parameters": "unchanged"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "新样本进入",
-        "note": "付款页空白没有现成答案，只能参照示例模式。",
+        "label": "示例贴上",
+        "note": "两张输入—输出小票进入这次请求；它们只是上下文里的校样，不会改模型参数。",
         "activeIds": [
-          "query"
+          "sample-rack",
+          "new-ticket"
         ],
         "doneIds": [
-          "examples"
+          "new-ticket"
         ],
         "mutedIds": [
-          "result"
+          "label-dial",
+          "stamp"
         ],
         "values": {
-          "query": "1 条待分类"
+          "sample-rack": "2 张校样",
+          "new-ticket": "等待匹配"
         },
         "activeEdgeIds": [
-          "q-l"
+          "sample-dial"
         ]
       },
       {
-        "label": "分数拉开",
-        "note": "0.34 → 0.72 是本次演示的示意数值，不是准确率；示例改变的是输出更贴近示范里的标签写法。",
+        "label": "标签显影",
+        "note": "示例先显出标签空间和固定格式，模型看到的是一个局部版式。",
         "activeIds": [
-          "labels"
+          "label-dial"
         ],
         "doneIds": [
-          "examples",
-          "query"
+          "sample-rack",
+          "new-ticket"
         ],
         "mutedIds": [
-          "result"
+          "stamp"
         ],
         "values": {
-          "labels": "示意：0.34 → 0.72"
+          "label-dial": "3 个标签 + 单标签格式"
         },
         "activeEdgeIds": [
-          "ex-l",
-          "q-l"
+          "sample-dial",
+          "ticket-dial"
         ]
       },
       {
-        "label": "格式复用",
-        "note": "结果沿用示例中的单标签格式。",
+        "label": "新票落位",
+        "note": "“导出按钮没反应”沿用同一行的标签写法；它是本次请求的推断结果。",
         "activeIds": [
-          "result"
+          "stamp"
         ],
         "doneIds": [
-          "examples",
-          "query",
-          "labels"
+          "sample-rack",
+          "new-ticket",
+          "label-dial"
         ],
         "mutedIds": [],
         "values": {
-          "result": "前端"
+          "stamp": "前端",
+          "parameters": "unchanged"
         },
         "activeEdgeIds": [
-          "l-r"
-        ]
+          "dial-stamp"
+        ],
+        "metric": {
+          "label": "当前上下文",
+          "value": "只在本轮有效"
+        }
+      },
+      {
+        "label": "反例打滑",
+        "note": "再贴一张相反标签，校样彼此打架；不稳定是示例问题，不是模型已经学会了新规则。",
+        "activeIds": [
+          "sample-rack",
+          "label-dial",
+          "stamp"
+        ],
+        "doneIds": [
+          "new-ticket"
+        ],
+        "mutedIds": [],
+        "values": {
+          "sample-rack": "3 张（含反例）",
+          "label-dial": "标签打架",
+          "stamp": "先修示例",
+          "parameters": "unchanged"
+        },
+        "activeEdgeIds": [
+          "sample-dial",
+          "dial-stamp"
+        ],
+        "metric": {
+          "label": "一致性",
+          "value": "冲突"
+        }
       }
     ],
-    "insight": "少样本提示是在上下文里示范做法，并没有更新模型参数。",
+    "insight": "少样本提示是在当前上下文里摆校样：它显出标签、输入分布和格式，却没有更新模型参数。",
     "quiz": {
-      "question": "换一批请求后仍要稳定分类，首先该检查什么？",
+      "question": "加入相反标签的小票后输出不稳定，首先该检查什么？",
       "options": [
         {
-          "label": "示例是否覆盖新请求且标签一致",
+          "label": "校样是否覆盖输入且标签、格式一致",
           "correct": true
         },
         {
-          "label": "示例文字是否足够长",
+          "label": "模型参数是否已经永久改写",
           "correct": false
         },
         {
-          "label": "模型参数是否已经被永久修改",
+          "label": "只要再增加几张无关小票",
           "correct": false
         }
       ],
-      "success": "少量示例的覆盖和质量决定它能示范什么。",
-      "retry": "少样本提示只在当前上下文生效。"
+      "success": "先修正示例的覆盖、标签和格式，再谈新工单的结果。",
+      "retry": "少样本提示只在当前上下文生效，冲突示例不会自动变成训练。"
     },
     "prompt": {
-      "title": "准备少样本示例",
-      "text": "请准备少量、覆盖正常与边界的输入—输出示例，并说明它们会占用多少上下文；不要把示例当作训练参数更新。"
+      "title": "摆一组可核对的校样",
+      "text": "请准备少量、覆盖正常与边界的输入—输出示例，统一标签与格式，标出它们占用的上下文；再用未出现在示例里的样本独立评测。"
     },
     "sources": [
       {
@@ -963,156 +858,214 @@
         "note": "上下文示例不更新参数"
       },
       {
-        "url": "https://arxiv.org/abs/2202.12837",
-        "label": "arXiv · Rethinking the Role of Demonstrations",
-        "note": "示例传递模式与输入分布"
-      },
-      {
-        "url": "https://developers.openai.com/api/docs/guides/prompt-engineering#few-shot-learning",
+        "url": "https://developers.openai.com/api/docs/guides/prompt-engineering",
         "label": "OpenAI · Prompt engineering · Few-shot learning",
         "note": "示例覆盖与格式"
       },
       {
-        "url": "https://arxiv.org/abs/2201.11903",
-        "label": "arXiv · Chain-of-Thought Prompting",
-        "note": "示范推理过程"
+        "url": "https://ai.google.dev/gemini-api/docs/prompting-strategies",
+        "label": "Google · Prompt design strategies",
+        "note": "示例数量、格式和覆盖"
       },
       {
-        "url": "https://ai.google.dev/gemini-api/docs/prompting-strategies",
-        "label": "Google · Gemini prompting strategies",
-        "note": "zero-shot/few-shot 对照"
+        "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview",
+        "label": "Anthropic · Prompt engineering overview",
+        "note": "先定义成功标准并做经验性评测"
+      },
+      {
+        "url": "https://arxiv.org/abs/2202.12837",
+        "label": "arXiv · Rethinking the Role of Demonstrations",
+        "note": "标签空间、输入分布与格式"
       }
     ]
   },
   {
     "slug": "zero-shot-prompting",
-    "lead": "没有任何样例时，怎样让“登录后白屏”只落到三个标签之一？",
-    "definition": "零样本提示不放输入—输出示例，而是直接写目标、输入、允许输出、拒绝条件和输出格式，让模型完成一次推断。",
-    "boundary": "“零样本”只表示没有示例，不表示没有说明；复杂或容易歧义的任务可能需要示例、结构化约束或用测试样本评估。",
-    "sceneKind": "branch",
-    "sceneTitle": "任务说明直接驱动三选一",
-    "actionLabel": "删掉一条约束",
+    "lead": "没有校样时，怎样让一只指南针知道该停下还是落到一个标签？",
+    "definition": "零样本提示把示例数量设为 0，直接写目标、输入、允许输出、拒绝条件和输出格式，让模型完成一次推断。",
+    "boundary": "“零样本”只表示没有输入—输出示例，不表示没有说明；约束不能补齐缺失证据，复杂任务仍可能需要少样本、结构化输出或独立评估。",
+    "sceneKind": "matrix",
+    "sceneTitle": "一只没有校样的指南针怎样决定停不停",
+    "actionLabel": "切换任务牌或输入清晰度",
     "actors": [
       {
-        "id": "instruction",
-        "label": "任务说明",
-        "detail": "从前端/后端/网络中选一项；无法判断时拒绝给标签",
+        "id": "sample-box",
+        "label": "示例盒",
+        "detail": "0 张输入—输出校样",
+        "icon": "package",
+        "group": "缺省"
+      },
+      {
+        "id": "task-card",
+        "label": "任务牌",
+        "detail": "最先失败组件；不确定就补信息",
+        "icon": "file",
+        "group": "约束"
+      },
+      {
+        "id": "compass",
+        "label": "判断指南针",
+        "detail": "前端 / 后端 / 网络",
+        "icon": "search",
+        "group": "推断"
+      },
+      {
+        "id": "ticket",
+        "label": "当前输入",
+        "detail": "支付按钮无响应 / 突然不工作了",
         "icon": "message",
-        "group": "规则"
+        "group": "材料"
       },
       {
-        "id": "query",
-        "label": "故障描述",
-        "detail": "登录后白屏",
-        "icon": "user",
-        "group": "输入"
-      },
-      {
-        "id": "front",
-        "label": "前端",
-        "detail": "界面呈现问题",
-        "icon": "layout",
-        "group": "候选"
-      },
-      {
-        "id": "back",
-        "label": "后端",
-        "detail": "接口处理问题",
-        "icon": "server",
-        "group": "候选"
-      },
-      {
-        "id": "net",
-        "label": "网络",
-        "detail": "连接问题",
-        "icon": "network",
-        "group": "候选"
+        "id": "verdict",
+        "label": "停下或落位",
+        "detail": "前端 / 补充信息",
+        "icon": "spark",
+        "group": "输出"
       }
     ],
     "edges": [
       {
-        "id": "i-f",
-        "from": "instruction",
-        "to": "front",
-        "label": "允许标签"
+        "id": "card-compass",
+        "from": "task-card",
+        "to": "compass",
+        "label": "装入约束"
       },
       {
-        "id": "i-b",
-        "from": "instruction",
-        "to": "back",
-        "label": "允许标签"
+        "id": "ticket-compass",
+        "from": "ticket",
+        "to": "compass",
+        "label": "提供线索"
       },
       {
-        "id": "i-n",
-        "from": "instruction",
-        "to": "net",
-        "label": "允许标签"
+        "id": "compass-verdict",
+        "from": "compass",
+        "to": "verdict",
+        "label": "落位或停下"
       },
       {
-        "id": "q-f",
-        "from": "query",
-        "to": "front",
-        "label": "语义匹配"
+        "id": "box-card",
+        "from": "sample-box",
+        "to": "task-card",
+        "label": "保持为零"
       }
     ],
     "frames": [
       {
-        "label": "没有示例",
-        "note": "画面保留空示例区，只给任务、三个合法标签和无法判断时的拒绝条件。",
+        "label": "空白样本盒",
+        "note": "零样本先把示例数量归零；空的样本盒不等于空提示。",
         "activeIds": [
-          "instruction"
+          "sample-box"
         ],
         "doneIds": [],
         "mutedIds": [
-          "front",
-          "back",
-          "net"
+          "task-card",
+          "compass",
+          "ticket",
+          "verdict"
         ],
         "values": {
-          "instruction": "示例数 0"
+          "sample-box": "示例数 0"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "描述进入",
-        "note": "白屏与界面呈现更相关。",
+        "label": "任务牌亮起",
+        "note": "一张自然语言任务牌告诉模型要做什么，但还没有给出任何示例。",
         "activeIds": [
-          "query",
-          "front"
+          "task-card"
         ],
         "doneIds": [
-          "instruction"
+          "sample-box"
         ],
         "mutedIds": [
-          "back",
-          "net"
+          "compass",
+          "ticket",
+          "verdict"
         ],
         "values": {
-          "front": "当前首选"
+          "task-card": "1 张任务牌",
+          "sample-box": "仍为 0"
         },
         "activeEdgeIds": [
-          "q-f"
+          "box-card"
         ]
       },
       {
-        "label": "分支收束",
-        "note": "只输出允许列表中的“前端”。",
+        "label": "约束转盘",
+        "note": "补上允许标签、拒答条件和输出格式，选择的边界才有地方落脚。",
         "activeIds": [
-          "front"
+          "task-card",
+          "compass"
         ],
         "doneIds": [
-          "instruction",
-          "query"
+          "sample-box"
         ],
         "mutedIds": [
-          "back",
-          "net"
+          "ticket",
+          "verdict"
         ],
         "values": {
-          "front": "已选择"
+          "task-card": "允许 3 标签",
+          "compass": "等待线索",
+          "sample-box": "0"
         },
         "activeEdgeIds": [
-          "i-f"
+          "card-compass"
+        ],
+        "metric": {
+          "label": "示例数量",
+          "value": "0"
+        }
+      },
+      {
+        "label": "针落一格",
+        "note": "“支付按钮无响应”足够具体时，指针落到前端；这是一轮直接推断，不是示例匹配。",
+        "activeIds": [
+          "ticket",
+          "compass",
+          "verdict"
+        ],
+        "doneIds": [
+          "sample-box",
+          "task-card"
+        ],
+        "mutedIds": [],
+        "values": {
+          "ticket": "支付按钮无响应",
+          "compass": "前端",
+          "verdict": "单标签"
+        },
+        "activeEdgeIds": [
+          "ticket-compass",
+          "compass-verdict"
+        ],
+        "metric": {
+          "label": "示例数量",
+          "value": "0"
+        }
+      },
+      {
+        "label": "信息不足",
+        "note": "一句“突然不工作了”没有给出可判定线索，零样本应该停下提问。",
+        "activeIds": [
+          "ticket",
+          "compass",
+          "verdict"
+        ],
+        "doneIds": [
+          "sample-box",
+          "task-card"
+        ],
+        "mutedIds": [],
+        "values": {
+          "ticket": "线索不足",
+          "compass": "无法落位",
+          "verdict": "补充信息"
+        },
+        "activeEdgeIds": [
+          "ticket-compass",
+          "compass-verdict"
         ],
         "metric": {
           "label": "示例数量",
@@ -1120,29 +1073,29 @@
         }
       }
     ],
-    "insight": "零样本不是没有说明，而是没有输入—输出样例；任务边界仍要写清，并用自己的测试样本核验结果。",
+    "insight": "零样本不是没有说明，而是没有输入—输出校样；任务牌要写清边界，输入不够时指南针应该停下。",
     "quiz": {
-      "question": "这项任务何时不再是零样本？",
+      "question": "哪一项最能说明零样本提示仍然有任务定义？",
       "options": [
         {
-          "label": "提示中加入一条“故障→标签”示例",
+          "label": "写明目标、允许标签和拒答条件",
           "correct": true
         },
         {
-          "label": "把标签名称加粗",
+          "label": "把示例盒留空后不写任何说明",
           "correct": false
         },
         {
-          "label": "让模型只输出一个词",
+          "label": "让模型自动猜缺少的日志",
           "correct": false
         }
       ],
-      "success": "是否提供示例决定零样本与少样本。",
-      "retry": "输出简短不代表零样本。"
+      "success": "零样本省掉示例，但目标、边界和格式仍需写清。",
+      "retry": "示例数量为零不等于任务说明也为零。"
     },
     "prompt": {
-      "title": "写一条零样本任务说明",
-      "text": "请只写任务目标、输入、允许输出和拒绝条件，不提供示例；再列出需要用测试样本核验的边界。"
+      "title": "写一张零样本任务牌",
+      "text": "请只写任务目标、输入、允许输出、拒答条件和格式，不提供示例；再列出需要用独立样本核验的边界。"
     },
     "sources": [
       {
@@ -1151,24 +1104,24 @@
         "note": "无示例文本交互"
       },
       {
+        "url": "https://developers.openai.com/api/docs/guides/reasoning-best-practices",
+        "label": "OpenAI · Reasoning best practices",
+        "note": "直接提示与先试零样本"
+      },
+      {
+        "url": "https://ai.google.dev/gemini-api/docs/prompting-strategies",
+        "label": "Google · Prompt design strategies",
+        "note": "零样本、约束与输出格式"
+      },
+      {
         "url": "https://arxiv.org/abs/2205.11916",
         "label": "arXiv · Large Language Models are Zero-Shot Reasoners",
-        "note": "零样本指令实验"
+        "note": "零样本推理提示实验"
       },
       {
-        "url": "https://arxiv.org/abs/2206.07682",
-        "label": "arXiv · Emergent Abilities of Large Language Models",
-        "note": "能力与模型规模边界"
-      },
-      {
-        "url": "https://developers.openai.com/api/docs/guides/prompt-engineering",
-        "label": "OpenAI · Prompt engineering",
-        "note": "任务、约束与格式"
-      },
-      {
-        "url": "https://ai.google.dev/gemini-api/docs/prompting-strategies#zero-shot-vs-few-shot-prompts",
-        "label": "Google · Gemini prompting strategies",
-        "note": "zero/few-shot 定义"
+        "url": "https://arxiv.org/abs/2109.01652",
+        "label": "arXiv · Finetuned Language Models Are Zero-Shot Learners",
+        "note": "指令调优与零样本能力边界"
       }
     ]
   },
@@ -1177,124 +1130,151 @@
     "lead": "把温度从低拖到高时，三个候选词的机会怎样变化？",
     "definition": "温度是解码参数：它重新分配模型为下一个小片段给出的候选概率，再由采样策略选出一个；高温通常让候选差距缩小，低温通常让最高候选更集中。",
     "boundary": "温度不是创造力、智力或准确率开关；是否支持、取值范围和默认值由具体模型与 API 决定，低温也不保证事实正确或完全复现。",
-    "sceneKind": "spectrum",
-    "sceneTitle": "温度如何拉平候选概率",
-    "actionLabel": "拖动温度",
+    "sceneKind": "transform",
+    "sceneTitle": "一枚抽签盘怎样把候选面积收尖或铺开",
+    "actionLabel": "逐帧看候选面积变化",
     "actors": [
       {
-        "id": "slider",
-        "label": "温度滑块",
-        "detail": "低 ←→ 高",
-        "icon": "gear",
-        "group": "控制"
+        "id": "prompt",
+        "label": "固定提示",
+        "detail": "写一句产品提醒",
+        "icon": "file",
+        "group": "输入"
       },
       {
-        "id": "clear",
-        "label": "简洁",
+        "id": "umbrella",
+        "label": "带伞",
         "detail": "原始 0.70",
         "icon": "chart",
         "group": "候选"
       },
       {
-        "id": "plain",
-        "label": "清楚",
+        "id": "slow",
+        "label": "慢走",
         "detail": "原始 0.20",
         "icon": "chart",
         "group": "候选"
       },
       {
-        "id": "lively",
-        "label": "灵动",
+        "id": "road",
+        "label": "看路",
         "detail": "原始 0.10",
         "icon": "chart",
         "group": "候选"
       },
       {
-        "id": "samples",
-        "label": "十次采样",
-        "detail": "词频待统计",
-        "icon": "spark",
-        "group": "结果"
+        "id": "evidence",
+        "label": "事实材料",
+        "detail": "当前为空",
+        "icon": "file",
+        "group": "边界"
       }
     ],
     "edges": [],
     "frames": [
       {
-        "label": "原始分布",
-        "note": "三个候选的概率差距较大；数字合计 1，只是教学示意。",
+        "label": "原来的机会",
+        "note": "同一句提示先分成三块候选面积；数字合计 1，只是教学示意。",
         "activeIds": [
-          "clear",
-          "plain",
-          "lively"
+          "umbrella",
+          "slow",
+          "road"
         ],
         "doneIds": [],
         "mutedIds": [
-          "samples"
+          "evidence"
         ],
         "values": {
-          "clear": "0.70",
-          "plain": "0.20",
-          "lively": "0.10"
+          "umbrella": "0.70",
+          "slow": "0.20",
+          "road": "0.10"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "低温收尖",
-        "note": "滑块向低移动，最高候选约升到 0.91；实际效果还受模型和其他采样设置影响。",
+        "label": "调低温度",
+        "note": "同一抽签盘降到 0.5，带伞的面积升到约 0.907；实际效果还受模型和其他采样设置影响。",
         "activeIds": [
-          "slider",
-          "clear"
+          "prompt",
+          "umbrella",
+          "slow",
+          "road"
         ],
         "doneIds": [],
         "mutedIds": [
-          "samples"
+          "evidence"
         ],
         "values": {
-          "clear": "0.91",
-          "plain": "0.07",
-          "lively": "0.02"
+          "umbrella": "0.907",
+          "slow": "0.074",
+          "road": "0.019"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "高温拉平",
-        "note": "滑块向高移动，低概率候选得到更多机会；数字是教学示意。",
+        "label": "抽到带伞",
+        "note": "同一落点 0.62 仍落在带伞区域；低温改变的是面积，未调用模型。",
         "activeIds": [
-          "slider",
-          "plain",
-          "lively"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "samples"
-        ],
-        "values": {
-          "clear": "0.52",
-          "plain": "0.28",
-          "lively": "0.20"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "重放十次",
-        "note": "频次会随分布改变，但单次结果仍可能不同；示例次数不是准确率。",
-        "activeIds": [
-          "samples"
+          "prompt",
+          "umbrella"
         ],
         "doneIds": [
-          "slider",
-          "clear",
-          "plain",
-          "lively"
+          "slow",
+          "road"
         ],
-        "mutedIds": [],
+        "mutedIds": [
+          "evidence"
+        ],
         "values": {
-          "samples": "示例：5 / 3 / 2"
+          "umbrella": "落点 0.62 → 带伞"
         },
         "activeEdgeIds": [],
         "metric": {
-          "label": "示例采样次数",
-          "value": "10"
+          "label": "本次取样",
+          "value": "带伞"
+        }
+      },
+      {
+        "label": "调高温度",
+        "note": "同一抽签盘升到 2.0，其他候选得到更大面积；数字来自本站固定示例。",
+        "activeIds": [
+          "prompt",
+          "umbrella",
+          "slow",
+          "road"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "evidence"
+        ],
+        "values": {
+          "umbrella": "0.523",
+          "slow": "0.279",
+          "road": "0.198"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "同一落点换词",
+        "note": "落点仍是 0.62，但高温后的面积边界已变，指针落进慢走区域；采样不会补空白证据。",
+        "activeIds": [
+          "slow"
+        ],
+        "doneIds": [
+          "prompt",
+          "umbrella",
+          "road"
+        ],
+        "mutedIds": [
+          "evidence"
+        ],
+        "values": {
+          "slow": "落点 0.62 → 慢走"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "本次取样",
+          "value": "慢走"
         }
       }
     ],
@@ -1324,19 +1304,24 @@
     },
     "sources": [
       {
-        "url": "https://developers.openai.com/api/reference/cli/resources/responses/methods/create",
-        "label": "OpenAI · Create a model response",
-        "note": "temperature 参数"
+        "url": "https://developers.openai.com/api/docs/guides/text",
+        "label": "OpenAI · Text generation",
+        "note": "生成设置与文本请求"
       },
       {
-        "url": "https://huggingface.co/docs/transformers/main/en/main_classes/text_generation#transformers.GenerationConfig",
+        "url": "https://ai.google.dev/gemini-api/docs/prompting-strategies",
+        "label": "Google · Prompt design strategies",
+        "note": "temperature 与 top-p/top-k"
+      },
+      {
+        "url": "https://ai.google.dev/api/models",
+        "label": "Google · Models",
+        "note": "默认值与模型上限"
+      },
+      {
+        "url": "https://huggingface.co/docs/transformers/main/en/main_classes/text_generation",
         "label": "Hugging Face · GenerationConfig",
-        "note": "概率重标定与采样"
-      },
-      {
-        "url": "https://ai.google.dev/gemini-api/docs/prompting-strategies#experiment-with-model-parameters",
-        "label": "Google · Gemini prompting strategies",
-        "note": "temperature 与 top-p"
+        "note": "temperature、top-k 与 top-p"
       },
       {
         "url": "https://arxiv.org/abs/1904.09751",
@@ -1350,26 +1335,26 @@
     "lead": "一段周末出游聊天越聊越长，最后那句“周日五点前到家”还在窗口里吗？",
     "definition": "上下文窗口是一次模型请求实际能接收和生成的 token 总量；系统规则、历史消息、工具结果与回答预留共同占用这份空间。",
     "boundary": "它不是跨会话长期记忆，也不保证放进去的每个位置都同样容易被模型找到；裁剪或压缩会改变本轮可见事实。",
-    "sceneKind": "assembly",
-    "sceneTitle": "一段出游聊天怎样从装得下走到必须整理",
-    "actionLabel": "把聊天放入窗口，再保住返程约束",
+    "sceneKind": "layers",
+    "sceneTitle": "一只 16k 旅行箱怎样装下重点又被闲聊顶满",
+    "actionLabel": "逐帧整理这只上下文旅行箱",
     "actors": [
       {
         "id": "window",
-        "label": "16k 工作台",
-        "detail": "输入与回答共用",
+        "label": "一次请求",
+        "detail": "输入、输出与工具共用",
         "icon": "layout",
         "group": "容量"
       },
       {
-        "id": "constraint",
+        "id": "deadline",
         "label": "返程约束",
         "detail": "周日 17:00 前到家",
         "icon": "clock",
         "group": "必须保留"
       },
       {
-        "id": "chat",
+        "id": "weather",
         "label": "旧天气闲聊",
         "detail": "10k token",
         "icon": "message",
@@ -1383,16 +1368,23 @@
         "group": "历史"
       },
       {
+        "id": "tools",
+        "label": "工具结果",
+        "detail": "刚查到的路况 · 4k",
+        "icon": "gear",
+        "group": "新增"
+      },
+      {
         "id": "summary",
-        "label": "压缩后的摘要",
-        "detail": "保留会改变答案的事实",
+        "label": "摘要折页",
+        "detail": "返程 · 地址 · 未完成动作",
         "icon": "spark",
         "group": "整理"
       },
       {
-        "id": "overflow",
-        "label": "超出警告",
-        "detail": "17k / 16k",
+        "id": "window-edge",
+        "label": "窗口边界",
+        "detail": "16k 上限",
         "icon": "shield",
         "group": "边界"
       }
@@ -1400,62 +1392,65 @@
     "edges": [],
     "frames": [
       {
-        "label": "先锁定返程约束",
+        "label": "先锁住返程",
         "note": "先把“周日 17:00 前到家”标成会改变行程的事实；它和回答预留一起进入同一份预算。",
         "activeIds": [
           "window",
-          "constraint"
+          "deadline"
         ],
         "doneIds": [],
         "mutedIds": [
-          "chat",
+          "weather",
           "address",
+          "tools",
           "summary",
-          "overflow"
+          "window-edge"
         ],
         "values": {
           "window": "2 / 16k",
-          "constraint": "必须保留"
+          "deadline": "必须保留"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "旧聊天继续加入",
+        "label": "聊天进箱",
         "note": "地址和天气闲聊一起进入历史，输入加回答预留到 13k；此时仍有空间，但关键约束已经被长段聊天包围。",
         "activeIds": [
           "window",
-          "chat",
+          "weather",
           "address",
-          "constraint"
+          "deadline"
         ],
         "doneIds": [],
         "mutedIds": [
           "summary",
-          "overflow"
+          "tools",
+          "window-edge"
         ],
         "values": {
           "window": "13 / 16k",
-          "chat": "10k"
+          "weather": "10k"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "关键约束被挤出",
+        "label": "窗口被顶开",
         "note": "历史再加工具结果后达到 17k，超过 16k；如果直接截短，最早或中间的约束可能离开本轮输入。",
         "activeIds": [
           "window",
-          "chat",
-          "overflow"
+          "weather",
+          "tools",
+          "window-edge"
         ],
         "doneIds": [],
         "mutedIds": [
-          "constraint",
+          "deadline",
           "address",
           "summary"
         ],
         "values": {
           "window": "17 / 16k · 溢出",
-          "overflow": "多出 1k"
+          "window-edge": "多出 1k"
         },
         "activeEdgeIds": [],
         "metric": {
@@ -1464,28 +1459,56 @@
         }
       },
       {
-        "label": "摘要留住会改变答案的事实",
+        "label": "折成摘要",
         "note": "把返程时间、地址和未完成动作写入摘要，移出天气闲聊；窗口回到 14k，但内容已经是整理后的版本。",
         "activeIds": [
           "window",
           "summary",
-          "constraint"
+          "deadline",
+          "address"
         ],
         "doneIds": [
-          "chat",
-          "overflow"
+          "weather",
+          "tools"
         ],
         "mutedIds": [
-          "address"
+          "window-edge"
         ],
         "values": {
           "window": "14 / 16k",
-          "summary": "返程约束仍在"
+          "summary": "返程 · 地址 · 未完成动作"
         },
         "activeEdgeIds": [],
         "metric": {
           "label": "整理",
-          "value": "留下 3 个事实"
+          "value": "折页留下 3 个事实"
+        }
+      },
+      {
+        "label": "重点回到可见处",
+        "note": "把关键约束和摘要放在这一轮会用到的位置；窗口变大不代表中间位置一样容易取回。",
+        "activeIds": [
+          "window",
+          "deadline",
+          "summary",
+          "address"
+        ],
+        "doneIds": [
+          "weather",
+          "tools"
+        ],
+        "mutedIds": [
+          "window-edge"
+        ],
+        "values": {
+          "window": "14 / 16k",
+          "deadline": "放在任务附近",
+          "summary": "可按需取回"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "本轮可见",
+          "value": "重点已定位"
         }
       }
     ],
@@ -1553,142 +1576,159 @@
   },
   {
     "slug": "tokenization",
-    "lead": "删掉一个空格，为什么模型收到的编号数量也可能变化？",
-    "definition": "分词器使用特定模型预先准备的词表和编码规则，把原始字符串切成 token（词、半个词、空格或符号等片段），再映射为模型接收的编号序列。",
-    "boundary": "token 不是固定的字、词或字符数；空格、语言、代码、emoji、模型版本和 tokenizer 都可能改变切分，示例编号不能跨模型套用。",
-    "sceneKind": "transform",
-    "sceneTitle": "字符串怎样变成 token 编号",
-    "actionLabel": "编辑原字符串",
+    "lead": "同一句“CSS 很好用”，为什么换一把编码器尺，模型收到的编号就换了？",
+    "definition": "tokenizer 按自己的词表和边界规则把字符串切成 token 片段，再为每个片段映射一个当前编码器里的编号；模型接收的是这串编号，而不是人眼看到的原始字符。",
+    "boundary": "token 不是固定的字、词或字符数；空格、语言、代码、emoji、词表和模型版本都可能改变边界，教学编号不能跨编码器套用。",
+    "sceneKind": "compare",
+    "sceneTitle": "一串字符串怎样被两把尺切开",
+    "actionLabel": "比较编码器",
     "actors": [
       {
         "id": "text",
-        "label": "原字符串",
+        "label": "原句",
         "detail": "CSS 很好用",
         "icon": "message",
         "group": "输入"
       },
       {
-        "id": "cuts",
-        "label": "切分结果",
-        "detail": "5 个 token（示意：词、半词、空格或符号片段）",
+        "id": "pieces",
+        "label": "压板片段",
+        "detail": "空格、子词、常见片段",
         "icon": "layout",
-        "group": "切分"
+        "group": "边界"
       },
       {
-        "id": "ids",
-        "label": "编号序列",
+        "id": "encoder",
+        "label": "编码器尺",
+        "detail": "BPE / 按词示意",
+        "icon": "gear",
+        "group": "规则"
+      },
+      {
+        "id": "sequence",
+        "label": "token 序列",
         "detail": "[示意编号…]",
         "icon": "code",
         "group": "模型输入"
-      },
-      {
-        "id": "edited",
-        "label": "去空格版本",
-        "detail": "CSS很好用",
-        "icon": "message",
-        "group": "对照"
       }
     ],
     "edges": [
       {
-        "id": "t-c",
+        "id": "text-pieces",
         "from": "text",
-        "to": "cuts",
-        "label": "编码"
+        "to": "pieces",
+        "label": "拆边界"
       },
       {
-        "id": "c-i",
-        "from": "cuts",
-        "to": "ids",
-        "label": "查词表"
+        "id": "pieces-encoder",
+        "from": "pieces",
+        "to": "encoder",
+        "label": "套规则"
       },
       {
-        "id": "e-c",
-        "from": "edited",
-        "to": "cuts",
-        "label": "重新编码"
+        "id": "pieces-sequence",
+        "from": "pieces",
+        "to": "sequence",
+        "label": "贴编号"
+      },
+      {
+        "id": "encoder-sequence",
+        "from": "encoder",
+        "to": "sequence",
+        "label": "换尺重算"
       }
     ],
     "frames": [
       {
-        "label": "字符不是 token",
-        "note": "原字符串一共有 7 个字符，包括中间那个空格。",
+        "label": "原句落台",
+        "note": "先保留原来的顺序；字符数还不能告诉我们 token 数。",
         "activeIds": [
           "text"
         ],
         "doneIds": [],
         "mutedIds": [
-          "edited",
-          "ids"
+          "pieces",
+          "encoder",
+          "sequence"
         ],
         "values": {
-          "text": "7 个字符"
+          "text": "CSS 很好用"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "分词器切分",
-        "note": "按词表切成示意的 5 个片段；片段可能是词、半个词、空格或符号。",
+        "label": "空格先露出来",
+        "note": "空格和符号也可能是边界的一部分，先得到一排还没有编号的片段。",
         "activeIds": [
-          "cuts"
+          "pieces"
         ],
         "doneIds": [
           "text"
         ],
         "mutedIds": [
-          "edited",
-          "ids"
+          "encoder",
+          "sequence"
         ],
         "values": {
-          "cuts": "5 个 token"
+          "pieces": "CSS · ␠ · 很 · 好 · 用"
         },
-        "activeEdgeIds": [
-          "t-c"
-        ]
+        "activeEdgeIds": ["text-pieces"]
       },
       {
-        "label": "变成编号",
-        "note": "每个片段查词表后成为模型接收的编号；编号大小只在这套 tokenizer 中有意义。",
+        "label": "常见片段合并",
+        "note": "BPE 示意会把常见的相邻片段压成更大的子词，边界因此发生变化。",
         "activeIds": [
-          "ids"
+          "pieces",
+          "encoder"
+        ],
+        "doneIds": [
+          "text"
+        ],
+        "mutedIds": [
+          "sequence"
+        ],
+        "values": {
+          "pieces": "CSS · ␠ · 很好 · 用",
+          "encoder": "BPE 示意"
+        },
+        "activeEdgeIds": ["text-pieces", "pieces-encoder"]
+      },
+      {
+        "label": "编号贴上",
+        "note": "片段查到词表里的编号后，才成为模型真正接收的序列；数字只在这套尺里有意义。",
+        "activeIds": [
+          "sequence"
         ],
         "doneIds": [
           "text",
-          "cuts"
-        ],
-        "mutedIds": [
-          "edited"
-        ],
-        "values": {
-          "ids": "长度 5"
-        },
-        "activeEdgeIds": [
-          "c-i"
-        ]
-      },
-      {
-        "label": "空格改变边界",
-        "note": "删除空格后要重新编码，片段可能合并或改换边界，不保证只少一个 token。",
-        "activeIds": [
-          "edited",
-          "cuts",
-          "ids"
-        ],
-        "doneIds": [
-          "text"
+          "pieces",
+          "encoder"
         ],
         "mutedIds": [],
         "values": {
-          "edited": "无空格",
-          "cuts": "4 个 token",
-          "ids": "长度 4"
+          "sequence": "[804, 220, 17732, 3912]"
         },
-        "activeEdgeIds": [
-          "e-c"
-        ]
+        "activeEdgeIds": ["pieces-sequence"]
+      },
+      {
+        "label": "换一把尺",
+        "note": "同一串文字换成按词示意，片段和编号一起重算，不能拿两套数量硬比较。",
+        "activeIds": [
+          "pieces",
+          "encoder",
+          "sequence"
+        ],
+        "doneIds": ["text"],
+        "mutedIds": [],
+        "values": {
+          "pieces": "CSS · ␠ · 很好用",
+          "encoder": "按词示意",
+          "sequence": "[804, 220, 19348]"
+        },
+        "activeEdgeIds": ["encoder-sequence"]
       }
     ],
-    "insight": "token 数取决于具体的分词器和文本形态，不能一概等同于一个字或一个单词。",
+    "insight": "token 数取决于具体编码器怎样切边界；同一字符串换尺后，片段、编号和预算都要重新看。",
     "quiz": {
       "question": "怎样最准确地估算一次请求的 token 数？",
       "options": [
@@ -1716,38 +1756,38 @@
       {
         "url": "https://github.com/openai/tiktoken",
         "label": "OpenAI · tiktoken",
-        "note": "BPE tokenizer 与 token ID"
+        "note": "BPE、编码器选择与 token ID"
       },
       {
-        "url": "https://arxiv.org/abs/1508.07909",
-        "label": "arXiv · Neural Machine Translation of Rare Words",
-        "note": "subword 与 BPE"
+        "url": "https://developers.openai.com/cookbook/examples/how_to_count_tokens_with_tiktoken",
+        "label": "OpenAI · How to count tokens",
+        "note": "按目标编码器统计输入"
+      },
+      {
+        "url": "https://huggingface.co/docs/transformers/main/en/tokenizer_summary",
+        "label": "Hugging Face · Tokenization algorithms",
+        "note": "BPE、Unigram、WordPiece 与子词边界"
       },
       {
         "url": "https://arxiv.org/abs/1808.06226",
         "label": "arXiv · SentencePiece",
-        "note": "语言无关分词"
+        "note": "空格与语言无关的子词边界"
       },
       {
-        "url": "https://huggingface.co/learn/llm-course/en/chapter2/4",
-        "label": "Hugging Face · Tokenizers course",
-        "note": "tokenization 与 IDs"
-      },
-      {
-        "url": "https://platform.claude.com/docs/en/build-with-claude/token-counting",
-        "label": "Anthropic · Token counting",
-        "note": "按目标模型计数"
+        "url": "https://arxiv.org/abs/1508.07909",
+        "label": "arXiv · Neural Machine Translation of Rare Words",
+        "note": "子词单元处理罕见词"
       }
     ]
   },
   {
     "slug": "hallucination",
-    "lead": "资料只写收入120万，却有人追问利润，系统该不该补一个数字？",
-    "definition": "模型可能生成语法流畅却无事实依据、与来源冲突或凭空补出的内容；它来自生成目标与事实核验之间的缺口。",
-    "boundary": "幻觉不只是“完全捏造”，错误归因、错引数字和把不确定内容说成确定也属于风险。",
+    "lead": "资料只写收入 120 万，却有人追问利润，系统该不该补一个数字？",
+    "definition": "生成器会把高概率的语言接续写成完整答案，却不自动保证每个数字、归因和引用都能回到输入资料；证据字段缺失时，流畅的补写就可能成为幻觉。",
+    "boundary": "幻觉不只是“完全捏造”：偏离输入、与来源冲突、把不确定说成确定，以及引用没有真正支持主张，都需要分别检查。",
     "sceneKind": "branch",
-    "sceneTitle": "答案中的数字是否有证据字段",
-    "actionLabel": "补入证据再回答",
+    "sceneTitle": "候选数字能不能在资料表落位",
+    "actionLabel": "补入证据字段",
     "actors": [
       {
         "id": "question",
@@ -1759,22 +1799,29 @@
       {
         "id": "evidence",
         "label": "资料表",
-        "detail": "收入 120 万；利润缺失",
+        "detail": "收入 120 万；利润空白",
         "icon": "file",
         "group": "证据"
       },
       {
         "id": "claim",
         "label": "候选数字",
-        "detail": "利润 30 万",
+        "detail": "利润 48 万？",
         "icon": "brain",
         "group": "候选"
       },
       {
+        "id": "gate",
+        "label": "证据闸门",
+        "detail": "支持字段？",
+        "icon": "shield",
+        "group": "核对"
+      },
+      {
         "id": "answer",
         "label": "最终回答",
-        "detail": "资料不足",
-        "icon": "shield",
+        "detail": "资料不足 / 48 万",
+        "icon": "message",
         "group": "结果"
       }
     ],
@@ -1792,16 +1839,28 @@
         "label": "核对字段"
       },
       {
+        "id": "c-g",
+        "from": "claim",
+        "to": "gate",
+        "label": "进入证据槽"
+      },
+      {
+        "id": "g-a",
+        "from": "gate",
+        "to": "answer",
+        "label": "放行回答"
+      },
+      {
         "id": "e-a",
         "from": "evidence",
         "to": "answer",
-        "label": "约束输出"
+        "label": "留下落点"
       }
     ],
     "frames": [
       {
-        "label": "问题越出资料",
-        "note": "问题要求利润，但证据只有收入。",
+        "label": "问题伸出资料表",
+        "note": "问题问利润，但眼前的表只填了收入；空白本身也是证据。",
         "activeIds": [
           "question",
           "evidence"
@@ -1809,16 +1868,17 @@
         "doneIds": [],
         "mutedIds": [
           "claim",
+          "gate",
           "answer"
         ],
         "values": {
-          "evidence": "利润 = 缺失"
+          "evidence": "收入 120 万；利润 = 缺失"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "候选没有落点",
-        "note": "“30万”找不到任何支持字段。",
+        "label": "顺口的数字飘进来",
+        "note": "语言可以很流畅，候选数字却还没有可绑定的字段。",
         "activeIds": [
           "claim",
           "evidence"
@@ -1827,10 +1887,11 @@
           "question"
         ],
         "mutedIds": [
+          "gate",
           "answer"
         ],
         "values": {
-          "claim": "支持项 0"
+          "claim": "利润 48 万？"
         },
         "activeEdgeIds": [
           "q-c",
@@ -1838,47 +1899,69 @@
         ]
       },
       {
-        "label": "阻断补写",
-        "note": "无依据候选被移除，回答改为资料不足。",
+        "label": "证据闸门关上",
+        "note": "找不到支持利润的原文，候选被挡在回答外，系统保留“资料不足”。",
         "activeIds": [
-          "answer"
+          "gate"
         ],
         "doneIds": [
           "question",
           "evidence",
           "claim"
         ],
-        "mutedIds": [],
+        "mutedIds": [
+          "answer"
+        ],
         "values": {
-          "answer": "不提供利润数字"
+          "gate": "证据槽为空"
         },
-        "activeEdgeIds": [
-          "e-a"
-        ]
+        "activeEdgeIds": ["c-g"]
       },
       {
-        "label": "证据补齐",
-        "note": "补入利润28万后，答案才更新。",
+        "label": "补入缺失字段",
+        "note": "财报补上一行“利润 48 万”，候选数字终于有了落点。",
         "activeIds": [
           "evidence",
-          "answer"
+          "claim"
         ],
         "doneIds": [
           "question"
         ],
         "mutedIds": [
-          "claim"
+          "gate",
+          "answer"
         ],
         "values": {
-          "evidence": "利润 28 万",
-          "answer": "28 万"
+          "evidence": "利润 48 万",
+          "claim": "已绑定财报第 3 行"
         },
         "activeEdgeIds": [
+          "e-c",
           "e-a"
+        ]
+      },
+      {
+        "label": "带着落点回答",
+        "note": "回答把数字和证据行绑在一起；引用让别人能回到原文检查。",
+        "activeIds": [
+          "answer"
+        ],
+        "doneIds": [
+          "question",
+          "evidence",
+          "claim",
+          "gate"
+        ],
+        "mutedIds": [],
+        "values": {
+          "answer": "利润是 48 万 · 引用第 3 行"
+        },
+        "activeEdgeIds": [
+          "g-a"
         ]
       }
     ],
-    "insight": "幻觉风险常出现在模型把资料里的空白补成了肯定答案。",
+    "insight": "幻觉风险常出现在模型把资料里的空白补成了肯定答案；证据字段和回答落点要一起检查。",
     "quiz": {
       "question": "资料没有利润字段时，哪种回答更可靠？",
       "options": [
@@ -1905,8 +1988,29 @@
     "sources": [
       {
         "url": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
-        "label": "NIST 出版物 · NIST.AI.600 1",
-        "note": "术语、风险与评估框架"
+        "label": "NIST · Generative AI Profile",
+        "note": "confabulation、错误内容与过度信任"
+      },
+      {
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations",
+        "label": "Anthropic · Reduce hallucinations",
+        "note": "允许不确定、摘录原文与逐条验证"
+      },
+      {
+        "url": "https://platform.claude.com/docs/en/build-with-claude/citations",
+        "label": "Anthropic · Citations",
+        "note": "引用指向文档中的具体位置"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/azure/well-architected/ai/grounding-data-design",
+        "label": "Microsoft Azure · Grounding Data Design",
+        "note": "查询、索引与 grounding 数据迭代"
+      },
+      {
+        "url": "https://arxiv.org/abs/2311.05232",
+        "label": "arXiv · Survey on Hallucination in LLMs",
+        "note": "幻觉分类、检测与缓解研究",
+        "date": "2024"
       }
     ]
   },
