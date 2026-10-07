@@ -1335,26 +1335,26 @@
     "lead": "一段周末出游聊天越聊越长，最后那句“周日五点前到家”还在窗口里吗？",
     "definition": "上下文窗口是一次模型请求实际能接收和生成的 token 总量；系统规则、历史消息、工具结果与回答预留共同占用这份空间。",
     "boundary": "它不是跨会话长期记忆，也不保证放进去的每个位置都同样容易被模型找到；裁剪或压缩会改变本轮可见事实。",
-    "sceneKind": "assembly",
-    "sceneTitle": "一段出游聊天怎样从装得下走到必须整理",
-    "actionLabel": "把聊天放入窗口，再保住返程约束",
+    "sceneKind": "layers",
+    "sceneTitle": "一只 16k 旅行箱怎样装下重点又被闲聊顶满",
+    "actionLabel": "逐帧整理这只上下文旅行箱",
     "actors": [
       {
         "id": "window",
-        "label": "16k 工作台",
-        "detail": "输入与回答共用",
+        "label": "一次请求",
+        "detail": "输入、输出与工具共用",
         "icon": "layout",
         "group": "容量"
       },
       {
-        "id": "constraint",
+        "id": "deadline",
         "label": "返程约束",
         "detail": "周日 17:00 前到家",
         "icon": "clock",
         "group": "必须保留"
       },
       {
-        "id": "chat",
+        "id": "weather",
         "label": "旧天气闲聊",
         "detail": "10k token",
         "icon": "message",
@@ -1368,16 +1368,23 @@
         "group": "历史"
       },
       {
+        "id": "tools",
+        "label": "工具结果",
+        "detail": "刚查到的路况 · 4k",
+        "icon": "gear",
+        "group": "新增"
+      },
+      {
         "id": "summary",
-        "label": "压缩后的摘要",
-        "detail": "保留会改变答案的事实",
+        "label": "摘要折页",
+        "detail": "返程 · 地址 · 未完成动作",
         "icon": "spark",
         "group": "整理"
       },
       {
-        "id": "overflow",
-        "label": "超出警告",
-        "detail": "17k / 16k",
+        "id": "window-edge",
+        "label": "窗口边界",
+        "detail": "16k 上限",
         "icon": "shield",
         "group": "边界"
       }
@@ -1385,62 +1392,65 @@
     "edges": [],
     "frames": [
       {
-        "label": "先锁定返程约束",
+        "label": "先锁住返程",
         "note": "先把“周日 17:00 前到家”标成会改变行程的事实；它和回答预留一起进入同一份预算。",
         "activeIds": [
           "window",
-          "constraint"
+          "deadline"
         ],
         "doneIds": [],
         "mutedIds": [
-          "chat",
+          "weather",
           "address",
+          "tools",
           "summary",
-          "overflow"
+          "window-edge"
         ],
         "values": {
           "window": "2 / 16k",
-          "constraint": "必须保留"
+          "deadline": "必须保留"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "旧聊天继续加入",
+        "label": "聊天进箱",
         "note": "地址和天气闲聊一起进入历史，输入加回答预留到 13k；此时仍有空间，但关键约束已经被长段聊天包围。",
         "activeIds": [
           "window",
-          "chat",
+          "weather",
           "address",
-          "constraint"
+          "deadline"
         ],
         "doneIds": [],
         "mutedIds": [
           "summary",
-          "overflow"
+          "tools",
+          "window-edge"
         ],
         "values": {
           "window": "13 / 16k",
-          "chat": "10k"
+          "weather": "10k"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "关键约束被挤出",
+        "label": "窗口被顶开",
         "note": "历史再加工具结果后达到 17k，超过 16k；如果直接截短，最早或中间的约束可能离开本轮输入。",
         "activeIds": [
           "window",
-          "chat",
-          "overflow"
+          "weather",
+          "tools",
+          "window-edge"
         ],
         "doneIds": [],
         "mutedIds": [
-          "constraint",
+          "deadline",
           "address",
           "summary"
         ],
         "values": {
           "window": "17 / 16k · 溢出",
-          "overflow": "多出 1k"
+          "window-edge": "多出 1k"
         },
         "activeEdgeIds": [],
         "metric": {
@@ -1449,28 +1459,56 @@
         }
       },
       {
-        "label": "摘要留住会改变答案的事实",
+        "label": "折成摘要",
         "note": "把返程时间、地址和未完成动作写入摘要，移出天气闲聊；窗口回到 14k，但内容已经是整理后的版本。",
         "activeIds": [
           "window",
           "summary",
-          "constraint"
+          "deadline",
+          "address"
         ],
         "doneIds": [
-          "chat",
-          "overflow"
+          "weather",
+          "tools"
         ],
         "mutedIds": [
-          "address"
+          "window-edge"
         ],
         "values": {
           "window": "14 / 16k",
-          "summary": "返程约束仍在"
+          "summary": "返程 · 地址 · 未完成动作"
         },
         "activeEdgeIds": [],
         "metric": {
           "label": "整理",
-          "value": "留下 3 个事实"
+          "value": "折页留下 3 个事实"
+        }
+      },
+      {
+        "label": "重点回到可见处",
+        "note": "把关键约束和摘要放在这一轮会用到的位置；窗口变大不代表中间位置一样容易取回。",
+        "activeIds": [
+          "window",
+          "deadline",
+          "summary",
+          "address"
+        ],
+        "doneIds": [
+          "weather",
+          "tools"
+        ],
+        "mutedIds": [
+          "window-edge"
+        ],
+        "values": {
+          "window": "14 / 16k",
+          "deadline": "放在任务附近",
+          "summary": "可按需取回"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "本轮可见",
+          "value": "重点已定位"
         }
       }
     ],
