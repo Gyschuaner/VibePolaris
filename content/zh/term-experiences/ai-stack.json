@@ -25877,5 +25877,176 @@
         "note": "对抗样本与攻击防护术语"
       }
     ]
+  },
+  {
+    "slug": "model-spec",
+    "lead": "用户、开发者和安全要求冲突时，模型凭什么判断哪条指令优先？",
+    "definition": "模型规范是一份描述模型期望行为的规则与原则文档，通常说明目标、指令层级、冲突处理、诚实性、安全边界和风格默认值。它把行为目标变成可讨论、可评测的材料，但实际产品行为还受训练、系统实现、工具权限和政策约束。",
+    "boundary": "规范是行为目标和评审依据，不是权限系统、完整安全政策，也不是对每个输入的穷尽程序。它会随反馈和部署经验演进，规则之间也需要判断；敏感操作仍必须放进真实授权、审计和工具闸门。",
+    "sceneKind": "layers",
+    "sceneTitle": "指令分层台：同一句话放在不同层，结论会变吗？",
+    "actionLabel": "翻开一层规则",
+    "actors": [
+      {
+        "id": "user",
+        "label": "用户请求",
+        "detail": "导出全部订单",
+        "icon": "user",
+        "group": "输入"
+      },
+      {
+        "id": "developer",
+        "label": "应用约束",
+        "detail": "只允许当前账户范围",
+        "icon": "code",
+        "group": "约束"
+      },
+      {
+        "id": "principles",
+        "label": "行为原则",
+        "detail": "隐私、诚实、可控",
+        "icon": "shield",
+        "group": "规范"
+      },
+      {
+        "id": "tool",
+        "label": "真实权限",
+        "detail": "服务器检查身份和范围",
+        "icon": "key",
+        "group": "执行"
+      },
+      {
+        "id": "response",
+        "label": "可审阅结果",
+        "detail": "拒绝越权并给合法路径",
+        "icon": "spark",
+        "group": "结果"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "只放用户愿望",
+        "note": "愿望说明目标，却没有证明身份、范围和允许的操作。",
+        "activeIds": [
+          "user"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "developer",
+          "principles",
+          "tool",
+          "response"
+        ],
+        "values": {
+          "user": "导出全部订单"
+        }
+      },
+      {
+        "label": "加入应用约束",
+        "note": "请求范围和账号权限先在应用层被收窄。",
+        "activeIds": [
+          "developer",
+          "tool"
+        ],
+        "doneIds": [
+          "user"
+        ],
+        "mutedIds": [
+          "principles",
+          "response"
+        ],
+        "values": {
+          "tool": "仅当前账户"
+        }
+      },
+      {
+        "label": "出现冲突",
+        "note": "用户要求泄露他人数据时，高层原则和真实权限不能被语气绕过。",
+        "activeIds": [
+          "principles",
+          "tool"
+        ],
+        "doneIds": [
+          "user",
+          "developer"
+        ],
+        "mutedIds": [
+          "response"
+        ],
+        "values": {
+          "principles": "隐私优先",
+          "tool": "拒绝越权"
+        }
+      },
+      {
+        "label": "留下可审阅结果",
+        "note": "结果说明缺少授权并给出合法路径，规范版本也要被记录。",
+        "activeIds": [
+          "response"
+        ],
+        "doneIds": [
+          "user",
+          "developer",
+          "principles",
+          "tool"
+        ],
+        "mutedIds": [],
+        "values": {
+          "response": "拒绝 + 申请授权"
+        }
+      }
+    ],
+    "insight": "模型规范提供行为层级和评审语言，权限与工具系统才真正控制资源。",
+    "quiz": {
+      "question": "模型规范与权限系统的关系是什么？",
+      "options": [
+        {
+          "label": "规范描述应有行为，权限系统真正限制资源访问",
+          "correct": true
+        },
+        {
+          "label": "规范一写好就能代替所有授权检查",
+          "correct": false
+        },
+        {
+          "label": "权限只负责改变模型语气",
+          "correct": false
+        }
+      ],
+      "success": "行为规范和资源权限是两层事实，不能互相冒充。",
+      "retry": "文字规则不能替代服务器授权、审计和工具执行前检查。"
+    },
+    "prompt": {
+      "title": "审阅一条模型行为规范",
+      "text": "请把规范中的每条原则改成可评测的输入—输出例子，标出指令层级、冲突处理、风险升级和版本变更；同时列出必须由应用权限、工具审批或人工判断承担的部分，不要把文字规范当作访问控制。"
+    },
+    "sources": [
+      {
+        "url": "https://openai.com/index/sharing-the-latest-model-spec/",
+        "label": "OpenAI · Sharing the latest Model Spec",
+        "note": "行为规范的目标与公开更新"
+      },
+      {
+        "url": "https://cdn.openai.com/spec/model-spec-2024-05-08.html",
+        "label": "OpenAI · Model Spec 2024",
+        "note": "指令冲突与行为原则框架"
+      },
+      {
+        "url": "https://github.com/openai/model_spec/blob/main/model_spec.md",
+        "label": "OpenAI · Model Spec source",
+        "note": "可审阅的规范文本"
+      },
+      {
+        "url": "https://alignment.openai.com/model-spec-evals",
+        "label": "OpenAI · Model Spec Evals",
+        "note": "用评测检查规范遵循"
+      },
+      {
+        "url": "https://doi.org/10.6028/NIST.AI.600-1",
+        "label": "NIST · AI Risk Management Framework",
+        "note": "治理、责任和控制边界"
+      }
+    ]
   }
 ]
