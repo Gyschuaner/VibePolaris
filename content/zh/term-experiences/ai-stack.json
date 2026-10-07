@@ -30540,5 +30540,259 @@
         "note": "用对照说明按 batch 统计的归一化与 LayerNorm 不同。"
       }
     ]
+  },
+  {
+    "slug": "residual-connection",
+    "lead": "给一层变换留一条原路，让网络只需学习“要补上的那一点”。",
+    "definition": "残差连接把一个子层的输出 F(x) 与原输入 x 相加，得到 y=F(x)+x；如果子层暂时学不会有用变化，网络仍可近似把输入原样传下去。ResNet 把这种结构用于视觉网络，Transformer 也在注意力和前馈子层周围使用残差路径。",
+    "boundary": "残差连接是逐元素相加，不是把两份向量拼接，也不是让信息无条件跳过所有计算。x 与 F(x) 必须形状兼容，通道或维度不一致时要用投影；加法仍可能放大数值或把错误一起带下去。它改善的是优化路径和表示更新的条件，不是深度越多就一定越准。",
+    "sceneKind": "overlay-film",
+    "sceneTitle": "透明叠片：旧表示和新修正怎样重合",
+    "actionLabel": "拖动增量大小",
+    "actors": [
+      {
+        "id": "input",
+        "label": "原输入 x",
+        "detail": "[1.0, 0.5, -0.2]",
+        "icon": "memory",
+        "group": "恒等支路"
+      },
+      {
+        "id": "block",
+        "label": "子层 F(x)",
+        "detail": "只计算要补的变化",
+        "icon": "gear",
+        "group": "变换支路"
+      },
+      {
+        "id": "projection",
+        "label": "形状适配",
+        "detail": "必要时先投影 x",
+        "icon": "layout",
+        "group": "尺寸"
+      },
+      {
+        "id": "sum",
+        "label": "逐元素相加",
+        "detail": "projection(x) + F(x)",
+        "icon": "spark",
+        "group": "叠加"
+      },
+      {
+        "id": "output",
+        "label": "新表示 y",
+        "detail": "旧信息 + 新修正",
+        "icon": "brain",
+        "group": "输出"
+      },
+      {
+        "id": "gradient",
+        "label": "反向通道",
+        "detail": "恒等路径保留梯度路",
+        "icon": "chart",
+        "group": "训练"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "先把旧表示放在底片上",
+        "note": "原输入 x 不消失，它构成残差块的恒等底片。",
+        "activeIds": [
+          "input"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "block",
+          "projection",
+          "sum",
+          "output",
+          "gradient"
+        ],
+        "values": {
+          "input": "x=[1.0,0.5,-0.2]"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "子层只画要改的笔画",
+        "note": "F(x) 给出相对输入的变化，不必从零重建整个表示。",
+        "activeIds": [
+          "block"
+        ],
+        "doneIds": [
+          "input"
+        ],
+        "mutedIds": [
+          "projection",
+          "sum",
+          "output",
+          "gradient"
+        ],
+        "values": {
+          "block": "F(x)=[0.1,-0.2,0.0]"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "先确认两张片能对齐",
+        "note": "维度一致时可直接相加；不一致就需要显式 projection。",
+        "activeIds": [
+          "projection"
+        ],
+        "doneIds": [
+          "input",
+          "block"
+        ],
+        "mutedIds": [
+          "sum",
+          "output",
+          "gradient"
+        ],
+        "values": {
+          "projection": "d_in=d_out · identity"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "透明叠片合成结果",
+        "note": "两份同形状向量逐元素相加，旧信息和新修正同时留下。",
+        "activeIds": [
+          "sum",
+          "output"
+        ],
+        "doneIds": [
+          "input",
+          "block",
+          "projection"
+        ],
+        "mutedIds": [
+          "gradient"
+        ],
+        "values": {
+          "sum": "[1.0,0.5,-0.2]+[0.1,-0.2,0]",
+          "output": "y=[1.1,0.3,-0.2]"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "梯度也有一条直路",
+        "note": "当 F(x) 接近 0 时，输出和梯度仍可沿恒等支路传递；这改善条件，不保证结果。",
+        "activeIds": [
+          "gradient"
+        ],
+        "doneIds": [
+          "input",
+          "block",
+          "projection",
+          "sum",
+          "output"
+        ],
+        "mutedIds": [],
+        "values": {
+          "gradient": "F(x)≈0 → y≈x · 梯度仍可回到输入"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "残差连接把“保留原表示”和“学习修正量”叠在一起，给深层网络留出更容易优化的恒等路径。",
+    "quiz": {
+      "question": "残差连接中的“残差”最接近哪种说法？",
+      "options": [
+        {
+          "label": "子层相对输入需要补上的变化 F(x)，最后与输入相加",
+          "correct": true
+        },
+        {
+          "label": "把两段序列首尾拼接成更长的向量",
+          "correct": false
+        },
+        {
+          "label": "把网络输出复制一份作为第二个样本",
+          "correct": false
+        }
+      ],
+      "success": "对，核心是同形状的增量与输入相加。",
+      "retry": "把残差块写成 y=F(x)+x；它是加法，不是拼接或复制。"
+    },
+    "prompt": {
+      "title": "检查一个残差块",
+      "text": "给出 x、子层输出 F(x)、归一化位置和张量形状，逐项算出 projection、相加结果与梯度路径；再构造 F(x)=0、维度不匹配和数值过大的三个边界例子，说明每个例子会发生什么。"
+    },
+    "teaching": [
+      {
+        "id": "equation",
+        "title": "它让子层回答“要改多少”",
+        "body": "普通堆叠要求子层直接给出下一层表示；残差块把目标改写成 F(x)=H(x)−x，子层只需学习相对恒等映射的变化。最后仍是 y=F(x)+x，不是两个结果并排保存。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "optimization",
+        "title": "恒等路给优化留了后门",
+        "body": "如果当前子层没有学到有用变化，F(x) 可以接近零，输出仍接近 x。反向传播也多了一条直接回到输入的路径，这有助于训练更深的网络，但不等于所有梯度问题都消失。",
+        "sourceIndices": [
+          1,
+          3
+        ]
+      },
+      {
+        "id": "shape",
+        "title": "加法先问形状能否对齐",
+        "body": "逐元素相加要求两路张量形状兼容。ResNet 在通道或步幅改变时用投影捷径；Transformer 通常让子层保持 model dimension，再把结果加回去。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "transformer",
+        "title": "注意力和 FFN 都能挂残差",
+        "body": "Transformer 的每个子层周围都有残差与归一化安排。把“有残差”写成“跳过注意力”会误导：子层仍执行，残差只是把输入叠回输出。",
+        "sourceIndices": [
+          3,
+          4
+        ]
+      },
+      {
+        "id": "limit",
+        "title": "保留旧信息也会保留旧错误",
+        "body": "残差连接改善路径，不替模型判断内容。错误的表示、过大的数值或不合适的归一化顺序仍可能被带进下一层，所以要结合训练曲线和边界样本检查。",
+        "sourceIndices": [
+          3,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/1512.03385",
+        "label": "He et al. · Deep Residual Learning for Image Recognition",
+        "note": "提出深度残差学习与恒等捷径，并讨论优化更深网络。"
+      },
+      {
+        "url": "https://d2l.ai/chapter_convolutional-modern/resnet.html",
+        "label": "Dive into Deep Learning · ResNet",
+        "note": "用残差块、投影捷径和形状变化解释实现。"
+      },
+      {
+        "url": "https://arxiv.org/abs/1706.03762",
+        "label": "Vaswani et al. · Attention Is All You Need",
+        "note": "展示 Transformer 子层周围的残差连接与归一化。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2003.04887",
+        "label": "Bai et al. · Deep Equilibrium Models",
+        "note": "从迭代与固定点角度讨论残差式更新的关系。"
+      },
+      {
+        "url": "https://arxiv.org/abs/1608.06993",
+        "label": "Huang et al. · Densely Connected Convolutional Networks",
+        "note": "对照残差相加与密集连接的不同信息组合方式。"
+      }
+    ]
   }
 ]

@@ -2607,5 +2607,25 @@
       "attention",
       "inference"
     ]
+  },
+  {
+    "slug": "residual-connection",
+    "mechanism": "Residual connection 计算 y=F(x)+x，让子层学习相对输入的增量；形状不同时先用投影把恒等支路对齐。",
+    "misconception": "残差连接不是把两个向量拼起来，也不是保证深层网络一定更准；它改善的是表示和梯度的可达路径。",
+    "demoSignature": "5帧｜对象：原输入、子层增量、形状适配、叠加结果、梯度通道｜交互：拖动增量并切换维度条件｜变化：保留底片→绘制修正→检查对齐→透明叠加→恒等梯度路；透明叠片，不是流程图。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/1512.03385",
+      "https://d2l.ai/chapter_convolutional-modern/resnet.html",
+      "https://arxiv.org/abs/1706.03762",
+      "https://arxiv.org/abs/2003.04887",
+      "https://arxiv.org/abs/1608.06993"
+    ],
+    "rewriteRisk": "不要把 residual 写成复制、拼接或无条件跳过子层；必须说明逐元素加法、形状适配和优化路径的边界。",
+    "nearDuplicates": [
+      "transformer",
+      "attention",
+      "layer-normalization",
+      "fine-tuning"
+    ]
   }
 ]
