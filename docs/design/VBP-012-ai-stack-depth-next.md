@@ -10,6 +10,12 @@
 
 流程图只用于确实有依赖顺序的 `plan-and-execute`；本批其余特色首图分别使用审批轨迹、控制权卡、人工闸门、规则扫描、编排台、纸带切割、证据架、向量账本和子任务契约。这样读者看到的是概念的工作对象和证据，而不是十张同样的“输入 → 中间节点 → 输出”图。
 
+## 既有词条的流程图比例修正
+
+复查既有词条后，发现问题不只在本批十页：通用演示渲染器会给所有有关系的场景加关系线和右箭头，旧 AI / 安全词条也有一组共用的三卡片首图。已把渲染规则改成两层：只有 `pipeline`、`route`、`branch`、`loop` 这四类确实表达有序交接的场景保留箭头式流程；其余场景改用关系牌、结构连线、对照、分层、矩阵或尺度空间。329 个经验中保留箭头式流程 68 个，占 20.7%；树、网络和状态机仍保留必要的结构连线，但不再附带统一的流程箭头。
+
+旧首图按词条机制重新分型：容器镜像、系统提示和多模态使用分层；XSS、重排序、少样本和零样本使用对照；温度、生成和嵌入使用概率场；推理和依赖扫描使用条件账本；服务发现和密钥扫描使用证据架；可观测性使用观察镜；分词使用切分带；沙箱和威胁建模使用边界环；只有 SAST、权限边界和工具审批保留闸门式顺序。每页仍保留自己的触发问题、改变条件和证据，不以一个新模板覆盖内容。
+
 ## 内容与演示变更
 
 - `moderation`：解释审核对象、规则范围、误杀/漏放和人工复核出口。
@@ -37,6 +43,7 @@
 ## 验证证据
 
 - `npm run audit:terms`：329 个 experience、329 个唯一 slug、sourceCoverage 329、duplicateSceneCount 0、nearDuplicatePairCount 0；场景类型覆盖 assembly、branch、compare、contract、layers、magnet-drawer、matrix、memory、network、pipeline、queue、route、spectrum、state-machine、tree 等，不是统一流程图。
+- 动画语法审计：`flowVisualCount=68`、`flowVisualRatio=0.207`；关系牌在通用演示、分层/对照/账本/证据架/边界环首图中通过真实页面抽查。
 - `npm run typecheck`：通过。
 - `npm run build`：通过，新闻校验为 725 篇 published，Next 生成 1071 个静态页。
 - 本地真实浏览器：检索六帧、向量存储四帧、规划五帧均逐步点击验证；三页 console error 为 0；规划页 `plan-limit` 仅一个锚点；390px fresh tab 复核 vector-store 账本无竖排/横向溢出。
