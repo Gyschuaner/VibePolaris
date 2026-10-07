@@ -19,7 +19,8 @@ export function PlanAndExecuteTermPage() {
     </ArticleSection>
 
     <ArticleSection id="plan-evidence" title="每一步都要有完成证据">
-      <p id="plan-loop" className="vp-citation-target">运行器会在模型输出、工具调用、工具结果和下一轮判断之间循环；只有得到最终输出或停止条件，循环才结束；运行器也要设置轮次上限，避免把重试误当成进展。<Cite id="plan-loop" sources={planAndExecuteSources} /><Cite id="plan-limit" sources={planAndExecuteSources} />“调用成功”只是工具有响应，不一定意味着目标已经完成。</p>
+      <p id="plan-loop" className="vp-citation-target">运行器会在模型输出、工具调用、工具结果和下一轮判断之间循环；只有得到最终输出或停止条件，循环才结束。<Cite id="plan-loop" sources={planAndExecuteSources} />“调用成功”只是工具有响应，不一定意味着目标已经完成。</p>
+      <p id="plan-limit" className="vp-citation-target">运行器还要设置轮次上限，避免把不断重试误当成进展；触及上限时应返回当前证据和停止原因，让人决定是否调整预算。<Cite id="plan-limit" sources={planAndExecuteSources} /></p>
       <p id="plan-react" className="vp-citation-target">ReAct 研究把推理与行动交替起来，行动返回的观察会影响后续步骤；它不是“先想一个永远正确的计划”。<Cite id="plan-react" sources={planAndExecuteSources} />如果测试告诉我们按钮仍然不可用，下一步就应当是修复或重新规划，而不是继续执行部署。</p>
       <p>因此“构建通过”只能解锁测试，“测试通过”才可能解锁部署。每个节点的状态、输入、输出和时间都应留在可核对的记录里，尤其要区分“尚未运行”“运行失败”“运行成功但未满足验收”。</p>
     </ArticleSection>
