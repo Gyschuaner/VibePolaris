@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ArrowRight, CheckCircle, Eye, Funnel, Warning } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "../HarnessStoryScenes";
+import { useResetOnSceneStart } from "../AgentConceptLessonShared";
 import styles from "../ModelOutputConcepts.module.css";
 
 type Queue = "展示" | "复核" | "隐藏";
@@ -18,6 +19,7 @@ function route(score: number, threshold: number): Queue {
 export function ModerationLesson() {
   const scene = useScene(steps.length);
   const [threshold, setThreshold] = useState(0.8);
+  useResetOnSceneStart(scene, () => setThreshold(0.8));
   const routed = scene.step >= 1;
   const changed = scene.step === 2;
   const queue = (score: number) => routed ? route(score, threshold) : "等待";

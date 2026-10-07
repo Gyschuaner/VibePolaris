@@ -11,6 +11,7 @@ const steps = ["客服接收", "整理交接包", "转移回复权", "接手或�
 export function HandoffLesson() {
   const scene = useScene(steps.length);
   const [complete, setComplete] = useState(true);
+  useResetOnSceneStart(scene, () => setComplete(true));
   const received = scene.step >= 1;
   const handed = scene.step >= 2;
   const returned = scene.step === 3 && !complete;

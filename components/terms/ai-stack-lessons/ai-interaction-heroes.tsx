@@ -18,7 +18,7 @@ export function PlanBlueprintHero() {
   return <div ref={scene.ref} className={styles.blueprintHero} data-step={scene.step} role="img" aria-label="蓝图上的构建、测试和部署被测试失败锁住，修复与复测步骤插入后才恢复">
     <div className={styles.blueprintTop}><span>RELEASE BLUEPRINT / 04</span><strong>{inserted ? "REPLAN" : scene.step >= 3 ? "BLOCKED" : "DRAFT"}</strong></div>
     <SceneControls scene={scene} labels={["列依赖", "构建盖章", "测试回执", "锁住部署", "插入修复"]} compact />
-    <div className={styles.blueprintMap}><span className={styles.blueprintGrid} aria-hidden="true" />{tiles.map((tile, index) => { const active = scene.step === index; const done = index === 0 ? scene.step >= 1 : index === 1 ? scene.step >= 2 && !(!inserted && scene.step >= 3) : index === 4 ? inserted : false; const locked = tile === "部署" && scene.step >= 3 && !inserted; const hidden = tile === "修复" && !inserted; return <div key={tile} className={styles.blueprintTile} data-active={active} data-done={done} data-locked={locked} data-hidden={hidden}><span>{String(index + 1).padStart(2, "0")}</span>{tile === "构建" ? <FileText size={16}/> : tile === "测试" || tile === "复测" ? <MagnifyingGlass size={16}/> : tile === "部署" ? <LockSimple size={16}/> : <Warning size={16}/>}<strong>{tile}</strong><small>{locked ? "锁定" : done ? "有证据" : hidden ? "待插入" : "待执行"}</small></div>; })}</div>
+    <div className={styles.blueprintMap}><span className={styles.blueprintGrid} aria-hidden="true" />{tiles.map((tile, index) => { const active = scene.step === index; const failed = tile === "测试" && scene.step >= 3 && !inserted; const done = index === 0 ? scene.step >= 1 : index === 1 ? scene.step >= 2 && !failed : index === 4 ? inserted : false; const locked = tile === "部署" && scene.step >= 3 && !inserted; const hidden = tile === "修复" && !inserted; const icon = failed ? <WarningCircle size={16}/> : tile === "构建" ? <FileText size={16}/> : tile === "测试" || tile === "复测" ? <MagnifyingGlass size={16}/> : tile === "部署" ? <LockSimple size={16}/> : <Warning size={16}/>; return <div key={tile} className={styles.blueprintTile} data-active={active} data-done={done} data-failed={failed} data-locked={locked} data-hidden={hidden}><span>{String(index + 1).padStart(2, "0")}</span>{icon}<strong>{tile}</strong><small>{failed ? "11/12 · 失败" : locked ? "锁定" : done ? "有证据" : hidden ? "待插入" : "待执行"}</small></div>; })}</div>
     <div className={styles.blueprintNote}>{scene.step >= 3 && !inserted ? <><WarningCircle size={14}/> 11/12 失败，后继步骤停在图纸上</> : inserted ? <><CheckCircle size={14}/> 修复 → 复测，部署重新获得入口</> : <><ClipboardText size={14}/> 每一块都等上一块回执</>}</div>
   </div>;
 }
@@ -49,14 +49,15 @@ export function ApprovalSealHero() {
 }
 
 export function GuardrailGateHero() {
-  const scene = AutoScene({ length: 4 });
+  const scene = AutoScene({ length: 5 });
   const scanned = scene.step >= 1;
-  const blocked = scene.step === 3;
-  return <div ref={scene.ref} className={styles.guardrailHero} data-step={scene.step} role="img" aria-label="带手机号的导出卡片经过扫描闸门，规则选择脱敏放行或阻断">
-    <div className={styles.guardrailTop}><span>EXPORT GATE / PII CHECK</span><strong>{blocked ? "BLOCK" : scanned ? "MASK" : "READY"}</strong></div>
-    <SceneControls scene={scene} labels={["送入闸口", "扫字段", "套规则", "放行或阻断"]} compact />
-    <div className={styles.guardrailLane}><div className={styles.guardrailCard}><FileText size={17}/><strong>客户表</strong><code>13800139021</code><small>12 条记录</small></div><div className={styles.guardrailScanner} data-scanned={scanned}><MagnifyingGlass size={18}/><strong>{scanned ? "命中手机号" : "扫描闸门"}</strong><span>{scanned ? "敏感字段" : "等待输入"}</span></div><div className={styles.guardrailOutput} data-blocked={blocked}><ShieldCheck size={18}/><strong>{blocked ? "出口关闭" : scanned ? "138****9021" : "结果出口"}</strong><small>{blocked ? "完整号码未交付" : scanned ? "脱敏放行" : "等规则"}</small></div></div>
-    <div className={styles.guardrailProof}>{blocked ? <><X size={14}/> 阻断是处置结果，权限仍由另一层检查</> : scanned ? <><CheckCircle size={14}/> 规则只改写这一处输出</> : <><ArrowRight size={14}/> 先把卡片送到规则边界</>}</div>
+  const masked = scene.step === 3;
+  const blocked = scene.step === 4;
+  return <div ref={scene.ref} className={styles.guardrailHero} data-step={scene.step} role="img" aria-label="带手机号的导出卡片经过扫描闸门，先演示脱敏放行，再演示命中即阻断">
+    <div className={styles.guardrailTop}><span>EXPORT GATE / PII CHECK</span><strong>{blocked ? "BLOCK" : masked ? "MASK" : scanned ? "MATCH" : "READY"}</strong></div>
+    <SceneControls scene={scene} labels={["送入闸口", "扫字段", "套规则", "脱敏放行", "命中阻断"]} compact />
+    <div className={styles.guardrailLane}><div className={styles.guardrailCard}><FileText size={17}/><strong>客户表</strong><code>13800139021</code><small>12 条记录</small></div><div className={styles.guardrailScanner} data-scanned={scanned}><MagnifyingGlass size={18}/><strong>{scanned ? "命中手机号" : "扫描闸门"}</strong><span>{scanned ? "敏感字段" : "等待输入"}</span></div><div className={styles.guardrailOutput} data-blocked={blocked} data-ready={masked}><ShieldCheck size={18}/><strong>{blocked ? "出口关闭" : masked ? "138****9021" : "结果出口"}</strong><small>{blocked ? "完整号码未交付" : masked ? "脱敏放行" : "等规则"}</small></div></div>
+    <div className={styles.guardrailProof}>{blocked ? <><X size={14}/> 阻断是处置结果，权限仍由另一层检查</> : masked ? <><CheckCircle size={14}/> 规则只改写这一处输出</> : <><ArrowRight size={14}/> 先把卡片送到规则边界</>}</div>
   </div>;
 }
 
@@ -68,7 +69,7 @@ export function ModerationConveyorHero() {
   return <div ref={scene.ref} className={styles.moderationHero} data-step={scene.step} role="img" aria-label="三条评论沿传送带经过风险分拣，阈值改变后复核与隐藏队列移动">
     <div className={styles.moderationTop}><span>CONTENT SORTER / POLICY 0.{threshold * 100}</span><strong>{routed ? "ROUTED" : "SCORING"}</strong></div>
     <SceneControls scene={scene} labels={["取得分数", "分到队列", "改变阈值"]} compact />
-    <div className={styles.moderationRail}>{scores.map((score, index) => { const status = !routed ? "等待" : score >= threshold ? "隐藏" : score >= threshold - 0.3 ? "复核" : "展示"; return <div key={score} className={styles.moderationSlip} data-status={status}><span>{String.fromCharCode(65 + index)}</span><strong>{score.toFixed(2)}</strong><small>{status}</small></div>; })}</div>
+    <div className={styles.moderationRail}>{scores.map((score, index) => { const status = !routed ? "等待" : score >= threshold ? "隐藏" : score >= threshold - 0.15 ? "复核" : "展示"; return <div key={score} className={styles.moderationSlip} data-status={status}><span>{String.fromCharCode(65 + index)}</span><strong>{score.toFixed(2)}</strong><small>{status}</small></div>; })}</div>
     <div className={styles.moderationQueues}><span>展示</span><span>复核</span><span>隐藏</span></div><div className={styles.moderationProof}>{scene.step === 2 ? <><Funnel size={14}/> 阈值 0.70，队列重新分配</> : <><CheckCircle size={14}/> 分数是信号，去向由产品规则决定</>}</div>
   </div>;
 }

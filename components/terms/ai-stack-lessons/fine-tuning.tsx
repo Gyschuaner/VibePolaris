@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ArrowRight, CheckCircle, LockSimple, Warning } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "../HarnessStoryScenes";
+import { useResetOnSceneStart } from "../AgentConceptLessonShared";
 import styles from "../ModelOutputConcepts.module.css";
 
 const steps = ["保留基线", "更新参数", "看验证曲线"];
@@ -16,6 +17,7 @@ const metrics = [
 export function FineTuningLesson() {
   const scene = useScene(steps.length);
   const [epoch, setEpoch] = useState(1);
+  useResetOnSceneStart(scene, () => setEpoch(1));
   const current = metrics[epoch - 1];
   const evaluating = scene.step === 2;
   const best = evaluating && epoch === 3;

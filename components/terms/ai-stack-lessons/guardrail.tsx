@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ArrowRight, CheckCircle, FileText, LockSimple, MagnifyingGlass, ShieldCheck, Warning, X } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "../HarnessStoryScenes";
+import { useResetOnSceneStart } from "../AgentConceptLessonShared";
 import styles from "../ModelOutputConcepts.module.css";
 
 type GuardrailMode = "mask" | "block";
@@ -12,6 +13,7 @@ const records = ["13800139021", "13911223344", "13699887766"];
 export function GuardrailLesson() {
   const scene = useScene(steps.length);
   const [mode, setMode] = useState<GuardrailMode>("mask");
+  useResetOnSceneStart(scene, () => setMode("mask"));
   const scanned = scene.step >= 1;
   const policyReady = scene.step >= 2;
   const handled = scene.step === 3;

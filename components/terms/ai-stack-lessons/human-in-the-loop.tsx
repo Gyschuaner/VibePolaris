@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ArrowRight, Check, CheckCircle, FileText, LockSimple, SealCheck, X } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "../HarnessStoryScenes";
+import { useResetOnSceneStart } from "../AgentConceptLessonShared";
 import styles from "../ModelOutputConcepts.module.css";
 
 type Decision = "pending" | "approve" | "modify" | "reject";
@@ -11,6 +12,7 @@ const steps = ["请求进入", "暂停等待", "人做决定", "执行结果"];
 export function HumanInTheLoopLesson() {
   const scene = useScene(steps.length);
   const [decision, setDecision] = useState<Decision>("pending");
+  useResetOnSceneStart(scene, () => setDecision("pending"));
   const decided = scene.step >= 2 && decision !== "pending";
   const approved = decided && (decision === "approve" || decision === "modify");
   const executed = scene.step === 3 && approved;
