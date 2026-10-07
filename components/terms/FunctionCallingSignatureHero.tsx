@@ -7,7 +7,7 @@ import styles from "./ConceptDiversitySignatureHeroes.module.css";
 
 export function FunctionCallingSignatureHero() {
   const scene = useScene(4);
-  const labels = ["递出请求牌", "核对参数", "打开只读柜", "配对回执"];
+  const labels = ["请求进入模型", "生成调用建议", "应用校验执行", "工具返回状态"];
   const executed = scene.step >= 2;
   const returned = scene.step === 3;
   return <SignatureFrame scene={scene} labels={labels} ariaLabel="函数调用由模型提出请求，应用核对后才执行并配对结果" caption={returned ? "回执带着同一个 call_id 回来，应用才知道这份结果属于哪一次请求。" : executed ? "参数和权限都通过后，应用才打开只读柜；模型提出请求不等于已经执行。" : "函数名和参数是一张请求牌，先放在桌上等待应用检查。"}>

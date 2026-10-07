@@ -253,7 +253,7 @@
     "slug": "function-calling",
     "mechanism": "模型根据工具定义生成函数名和结构化参数；宿主程序验证并执行函数，再把结果交回模型继续处理。",
     "misconception": "模型不会因为输出了调用参数就自动执行函数；函数调用也不等于MCP，更不等于完整智能体。",
-    "demoSignature": "输入：用户请求查订单A102；中间：模型返回call_01、函数名get_order和参数{order_id:A102}，应用依次检查注册名、唯一字段、格式与权限；输出：执行1次后回传{order_id:A102,status:shipped}并绑定同一call_id，未知函数、非法JSON、无权访问或查无订单均不执行或不通过。可视化：模型请求→应用注册表→执行回执三段轨迹；交互：切换未知函数、参数文本和权限，观察流程停点。",
+    "demoSignature": "call desk：4 帧把查订单 A102 的请求牌、调用建议、应用核对和工具回执摆在同一张桌上；结果带回同一个 call_id，未知函数、非法 JSON、无权访问或查无订单都停在执行边界。交互：切换参数与权限，观察请求如何停下，不把模型提案画成已经执行。",
     "sourceUrls": [
       "https://developers.openai.com/api/docs/guides/function-calling",
       "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
