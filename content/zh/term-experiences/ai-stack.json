@@ -27233,5 +27233,334 @@
         "note": "比较语义向量与 BM25 的检索盲点，并说明上下文与重排的收益和边界"
       }
     ]
+  },
+  {
+    "slug": "graph-rag",
+    "lead": "一堆文档明明都搜过了，为什么问“整体有哪些主题”还是答得零碎？",
+    "definition": "图检索增强生成（GraphRAG）把检索的单位从孤立文本块扩成一张关系地图。系统先从非结构化文档里抽取实体、关系和主张，再把相近实体组织成社区并生成分层摘要；提问时，可以沿着某个实体附近的原文做局部检索，也可以在社区报告上做全局归纳。它擅长处理“这个人和哪些项目有关”以及“整批材料反复出现哪些主题”这两种尺度不同的问题。",
+    "boundary": "GraphRAG 不只是给向量检索加几条边：图的实体合并、关系抽取、社区划分和摘要都可能出错，错误会在后续回答里被放大。全局搜索依赖预先生成的社区报告，速度和覆盖面上来了，原文细节却可能被压平；局部搜索更接近实体和片段，但不保证看见全库主题。它也不自动替代基础 RAG、来源核验或权限检查，索引阶段的模型调用、存储和更新成本必须算进去。向量数据库只是存储向量并做近邻检索的基础设施，query rewriting 改写检索入口，GraphRAG 负责关系与社区索引以及 local/global 查询；这里的 map-reduce 可以先理解成“让多个社区各自写一段，再把重要点汇总成回答”。",
+    "sceneKind": "network",
+    "sceneTitle": "同一批文档，平铺检索与关系地图看见什么不同",
+    "actionLabel": "展开关系地图",
+    "actors": [
+      {
+        "id": "corpus",
+        "label": "原文片段",
+        "detail": "12 段材料 · 人名与项目名散落",
+        "icon": "file",
+        "group": "输入"
+      },
+      {
+        "id": "alice",
+        "label": "Alice",
+        "detail": "维护者",
+        "icon": "user",
+        "group": "实体"
+      },
+      {
+        "id": "orion",
+        "label": "Orion",
+        "detail": "工具项目",
+        "icon": "component",
+        "group": "实体"
+      },
+      {
+        "id": "eval",
+        "label": "评测集",
+        "detail": "数据资源",
+        "icon": "database",
+        "group": "实体"
+      },
+      {
+        "id": "relation",
+        "label": "关系线",
+        "detail": "维护 · 使用 · 贡献",
+        "icon": "network",
+        "group": "结构"
+      },
+      {
+        "id": "community",
+        "label": "社区簇",
+        "detail": "工具链 / 评测 / 贡献者",
+        "icon": "layout",
+        "group": "摘要"
+      },
+      {
+        "id": "local",
+        "label": "局部问题",
+        "detail": "Orion 依赖谁？",
+        "icon": "search",
+        "group": "查询"
+      },
+      {
+        "id": "global",
+        "label": "全局问题",
+        "detail": "材料有哪些主题？",
+        "icon": "chart",
+        "group": "查询"
+      }
+    ],
+    "edges": [
+      {
+        "id": "alice-orion",
+        "from": "alice",
+        "to": "orion",
+        "label": "维护"
+      },
+      {
+        "id": "orion-eval",
+        "from": "orion",
+        "to": "eval",
+        "label": "使用"
+      },
+      {
+        "id": "alice-eval",
+        "from": "alice",
+        "to": "eval",
+        "label": "贡献"
+      },
+      {
+        "id": "alice-community",
+        "from": "alice",
+        "to": "community",
+        "label": "归入"
+      },
+      {
+        "id": "orion-community",
+        "from": "orion",
+        "to": "community",
+        "label": "归入"
+      },
+      {
+        "id": "eval-community",
+        "from": "eval",
+        "to": "community",
+        "label": "归入"
+      }
+    ],
+    "frames": [
+      {
+        "label": "一摞原文",
+        "note": "片段各自有相似度，却没有显式告诉我们 Alice、Orion 和评测集之间的关系。",
+        "activeIds": [
+          "corpus"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "alice",
+          "orion",
+          "eval",
+          "relation",
+          "community",
+          "local",
+          "global"
+        ],
+        "values": {
+          "corpus": "12 个片段 · 平铺"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "点出对象",
+        "note": "同一对象在不同片段里出现时，先被收拢成可复用的节点；节点还不是已经核验的事实。",
+        "activeIds": [
+          "alice",
+          "orion",
+          "eval"
+        ],
+        "doneIds": [
+          "corpus"
+        ],
+        "mutedIds": [
+          "relation",
+          "community",
+          "local",
+          "global"
+        ],
+        "values": {
+          "alice": "维护者",
+          "orion": "工具项目",
+          "eval": "数据资源"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "关系留下来",
+        "note": "关系线把分散片段里的“维护、使用、贡献”放在一起，读者可以沿关系回看原文。",
+        "activeIds": [
+          "relation",
+          "alice",
+          "orion",
+          "eval"
+        ],
+        "doneIds": [
+          "corpus"
+        ],
+        "mutedIds": [
+          "community",
+          "local",
+          "global"
+        ],
+        "values": {
+          "relation": "3 条关系 · 待回链原文"
+        },
+        "activeEdgeIds": [
+          "alice-orion",
+          "orion-eval",
+          "alice-eval"
+        ]
+      },
+      {
+        "label": "长出社区",
+        "note": "相近节点形成社区，社区报告提供全局归纳的中间材料；摘要越高层，细节越少。",
+        "activeIds": [
+          "community"
+        ],
+        "doneIds": [
+          "corpus",
+          "alice",
+          "orion",
+          "eval",
+          "relation"
+        ],
+        "mutedIds": [
+          "local",
+          "global"
+        ],
+        "values": {
+          "community": "工具链 · 评测 · 贡献者"
+        },
+        "activeEdgeIds": [
+          "alice-community",
+          "orion-community",
+          "eval-community"
+        ]
+      },
+      {
+        "label": "换两种问题",
+        "note": "局部问题看 Orion 附近的节点与片段，全局问题横看社区报告；两种答案都应能回到原始证据。",
+        "activeIds": [
+          "local",
+          "global"
+        ],
+        "doneIds": [
+          "corpus",
+          "alice",
+          "orion",
+          "eval",
+          "relation",
+          "community"
+        ],
+        "mutedIds": [],
+        "values": {
+          "local": "Orion 依赖谁？",
+          "global": "材料有哪些主题？"
+        },
+        "metric": {
+          "label": "回答入口",
+          "value": "局部事实 / 全局主题"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "GraphRAG 的关键不是把答案画成一张漂亮的网，而是让跨片段关系和跨社区主题有可选择的检索入口；关系、摘要和回答都要保留回到原文的路。",
+    "quiz": {
+      "question": "什么时候更适合先看 GraphRAG 的 global search？",
+      "options": [
+        {
+          "label": "问题要归纳整批材料的主题、趋势或共同模式",
+          "correct": true
+        },
+        {
+          "label": "只想查一个实体的一句原文",
+          "correct": false
+        },
+        {
+          "label": "任何问题都必须先跑全局搜索",
+          "correct": false
+        }
+      ],
+      "success": "全局搜索借助社区报告聚合整个数据集，适合需要跨库归纳的问题。",
+      "retry": "先看问题尺度：单个实体通常从 local search 开始，全库主题才需要 global 视角。"
+    },
+    "prompt": {
+      "title": "为一批文档设计局部与全局检索",
+      "text": "请先列出文档中需要追踪的实体、关系和可能的社区；为一个实体问题和一个全库主题问题分别选择 local 或 global 检索。说明每种模式会使用哪些原文或社区摘要、如何回链到证据、索引更新成本在哪里，以及抽取关系出错时如何人工复核。"
+    },
+    "teaching": [
+      {
+        "id": "why",
+        "title": "平铺相似片段答不好“整体”",
+        "body": "普通 RAG 以相似文本块为入口；当问题问整批材料的主题时，查询本身没有一个“主题”词能指向全库，返回的片段容易各说一角。GraphRAG 先把实体关系和社区结构整理出来，为全局归纳提供中间视角。",
+        "sourceIndices": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": "index",
+        "title": "图不是凭空长出来的",
+        "body": "GraphRAG 的索引包会从原文抽取实体、关系和主张，进行社区发现，生成多层社区摘要，同时保存文本块和向量。每一层都是模型加工过的材料，所以实体合并和摘要都要抽查。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "scale",
+        "title": "局部和全局是两种看法",
+        "body": "官方查询引擎把 local search 描述为实体知识图与原文片段的组合，把 global search 描述为对社区报告做 map-reduce。问“Orion 依赖谁”与问“整批文档有哪些主题”需要的证据尺度不同，不应硬塞进同一种检索。",
+        "sourceIndices": [
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "id": "evidence",
+        "title": "社区报告仍然要回链原文",
+        "body": "全局模式为了覆盖面会先看社区报告，较高层的报告更概括，也更可能丢掉细节。最终回答应保留报告所依据的片段、实体和关系，发现抽取冲突时回到原文修正。",
+        "sourceIndices": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": "cost",
+        "title": "地图有维护费用",
+        "body": "官方入门文档提醒 GraphRAG 会消耗较多 LLM 资源；索引、嵌入、社区摘要、更新和查询都要计入预算。数据变化频繁或问题只需一小段原文时，基础 RAG 可能更合适。",
+        "sourceIndices": [
+          2,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2404.16130",
+        "label": "Edge et al. · From Local to Global: A Graph RAG Approach to Query-Focused Summarization",
+        "note": "提出实体图、社区摘要以及 local/global GraphRAG，用于跨语料主题归纳"
+      },
+      {
+        "url": "https://microsoft.github.io/graphrag/index/overview/",
+        "label": "Microsoft GraphRAG · Indexing overview",
+        "note": "索引抽取实体、关系、主张，做社区发现、摘要和向量化"
+      },
+      {
+        "url": "https://microsoft.github.io/graphrag/query/overview/",
+        "label": "Microsoft GraphRAG · Query Engine overview",
+        "note": "区分 local、global、DRIFT 与 basic search 的问题尺度"
+      },
+      {
+        "url": "https://microsoft.github.io/graphrag/query/global_search/",
+        "label": "Microsoft GraphRAG · Global Search",
+        "note": "全局搜索在社区报告上做 map-reduce，回答整库主题问题"
+      },
+      {
+        "url": "https://microsoft.github.io/graphrag/get_started/",
+        "label": "Microsoft GraphRAG · Getting Started",
+        "note": "索引成本、输出和 local/global 查询的实践提醒"
+      }
+    ]
   }
 ]

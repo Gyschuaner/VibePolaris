@@ -2368,5 +2368,25 @@
       "rag",
       "reranking"
     ]
+  },
+  {
+    "slug": "graph-rag",
+    "mechanism": "GraphRAG 在索引阶段从文档抽取实体、关系与主张，进行社区发现并生成不同粒度的社区报告，同时保留文本块和向量；查询阶段可用 local search 组合实体邻域与原文，也可用 global search 对社区报告做 map-reduce 归纳。",
+    "misconception": "图结构不会自动变成真相。实体合并、关系抽取、社区层级、摘要损失、索引更新和 LLM 成本都可能改变答案；全局搜索适合跨库主题，局部搜索适合具体实体，不能用一种模式覆盖所有问题。",
+    "demoSignature": "5帧｜对象：原文片段、实体节点、关系线、社区簇、局部/全局问题与证据报告｜交互：点出节点、展开关系、聚合社区、切换问题尺度｜变化：平铺片段→关系地图→社区摘要→两种查询并排；关系网络，不是方向箭头流程。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/2404.16130",
+      "https://microsoft.github.io/graphrag/index/overview/",
+      "https://microsoft.github.io/graphrag/query/overview/",
+      "https://microsoft.github.io/graphrag/query/global_search/",
+      "https://microsoft.github.io/graphrag/get_started/"
+    ],
+    "rewriteRisk": "把 GraphRAG 写成“图数据库加向量检索就一定更准”会掩盖抽取、社区摘要、成本和证据回链风险；正文要区分向量数据库（存储与近邻检索）、query rewriting（改写入口）、GraphRAG 关系/社区索引，以及 local/global 查询。",
+    "nearDuplicates": [
+      "rag",
+      "retrieval",
+      "vector-database",
+      "knowledge-distillation"
+    ]
   }
 ]
