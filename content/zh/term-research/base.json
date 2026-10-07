@@ -127,7 +127,7 @@
     "slug": "dom",
     "mechanism": "浏览器拿到服务器上的 HTML 后建立 DOM：一棵就在屏幕后面的节点树和一组让脚本操作节点的方法。脚本可用 querySelector 找到第一个匹配元素、用 textContent 修改节点文本，浏览器再绘制当前页面。",
     "misconception": "DOM 不是服务器上的 HTML 源文件，也不是 JavaScript 语言本身；脚本修改的是屏幕后面的当前 DOM，不会自动改回服务器源文件。",
-    "demoSignature": "tree: 4 frames; actors=document/main/h1/Text 节点/脚本; phases=解析文档→查询标题→修改文本→重新呈现; action=执行脚本",
+    "demoSignature": "document-lens: compact DOM tree + selected-node editor + unchanged HTML source; interaction=点 h1/button/p 节点并写入 textContent; proof=当前页面读数改变而源片段不变，未匹配节点边界清楚; boundary=current DOM ≠ server HTML",
     "sourceUrls": [
       "https://dom.spec.whatwg.org/",
       "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/DOM_scripting",

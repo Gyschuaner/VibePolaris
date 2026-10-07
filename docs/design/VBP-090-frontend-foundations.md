@@ -32,6 +32,7 @@
 | form | MDN client validation/constraint→`form-definition`/`form-client`；W3C labels/errors→`form-label`/`form-error`；OWASP→`form-server`/`form-boundary` | 待 reviewer | 本地 3410：不完整邮箱保留姓名、已注册服务端分支、成功分支；焦点回邮箱已验证 | `tsc` 已过；build 待十条批量执行 | ac4be00d |
 | html | WHATWG HTML→`html-definition`/`html-structure`；MDN structuring→`html-structure`/`html-semantics`；MDN elements→`html-elements`/`html-native`；W3C relationships→`html-semantics`/`html-boundary` | 待 reviewer | 本地 3410：语义开关、原生 button 与 div 对照、鼠标激活；键盘待补 | `tsc` 已过；build 待十条批量执行 | 28cd0a21 |
 | javascript | MDN language overview→`javascript-definition`/`javascript-state`；MDN events→`javascript-events`；MDN client-side APIs→`javascript-dom`/`javascript-host`；TC39→`javascript-definition`/`javascript-boundary` | 待 reviewer | 本地 3410：状态/DOM 读数分离、浏览器/Node 宿主切换；键盘待补 | `tsc` 已过；build 待十条批量执行 | 待提交 |
+| dom | WHATWG DOM→`dom-definition`/`dom-tree`；MDN DOM scripting→`dom-tree`/`dom-current`；MDN querySelector→`dom-query`；MDN textContent→`dom-text`/`dom-boundary` | 待 reviewer | 本地 3410：节点树选择、当前文本写入、源 HTML 不变；键盘待补 | `tsc` 待本条完成；build 待十条批量执行 | 待提交 |
 
 ## 现状证据
 

@@ -36,3 +36,10 @@ export const javascriptSources = [
   source("MDN", "Introduction to client-side APIs", "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Client-side_APIs/Introduction", ["javascript-dom", "javascript-host"]),
   source("TC39", "ECMAScript language overview", "https://tc39.es/ecma262/2023/multipage/overview.html", ["javascript-definition", "javascript-boundary"]),
 ];
+
+export const domSources = [
+  source("WHATWG", "DOM Living Standard", "https://dom.spec.whatwg.org/", ["dom-definition", "dom-tree"]),
+  source("MDN", "DOM scripting introduction", "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/DOM_scripting", ["dom-tree", "dom-current"]),
+  source("MDN", "Document.querySelector", "https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector", ["dom-query"]),
+  source("MDN", "Node.textContent", "https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent", ["dom-text", "dom-boundary"]),
+];
