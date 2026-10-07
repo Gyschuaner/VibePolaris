@@ -6,6 +6,7 @@ import { cssSources } from "@/lib/frontend-foundation-sources";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { ArticleAside, ArticleSection, ConceptTerm } from "../ConceptArticle";
 import { ConceptHero } from "../ConceptHero";
+import type { BespokeTermPageProps } from "../BespokeTermScaffold";
 import styles from "./FrontendFoundations.module.css";
 
 type CssProperty = "layout" | "tone" | "space";
@@ -44,7 +45,7 @@ function CssLab() {
   </div>;
 }
 
-export function CssTermPage() {
+export function CssTermPage(_props: BespokeTermPageProps) {
   return <Article slug="css" title="CSS" subtitle="Cascading Style Sheets · 让规则决定页面长什么样" sources={cssSources} hero={<CssHero />} sections={[
     ["css-definition-section", "CSS 先找到谁，再决定怎么画"],
     ["css-cascade-section", "同一属性有几条声明，谁赢"],

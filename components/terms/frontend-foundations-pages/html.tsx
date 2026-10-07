@@ -6,6 +6,7 @@ import { htmlSources } from "@/lib/frontend-foundation-sources";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { ArticleAside, ArticleSection } from "../ConceptArticle";
 import { ConceptHero } from "../ConceptHero";
+import type { BespokeTermPageProps } from "../BespokeTermScaffold";
 import styles from "./FrontendFoundations.module.css";
 
 function HtmlHero() {
@@ -43,7 +44,7 @@ function HtmlLab() {
   </div>;
 }
 
-export function HtmlTermPage() {
+export function HtmlTermPage(_props: BespokeTermPageProps) {
   return <Article slug="html" title="HTML" subtitle="HyperText Markup Language · 给内容安排关系" sources={htmlSources} hero={<HtmlHero />} sections={[
     ["html-definition-section", "HTML 不负责把页面画漂亮"],
     ["html-structure-section", "先把文档的关系写出来"],

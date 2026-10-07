@@ -144,6 +144,7 @@ import { BeamSearchTermPage, ConfidenceCalibrationTermPage, DataContaminationTer
 import { CssTermPage } from "@/components/terms/frontend-foundations-pages/css";
 import { FormTermPage } from "@/components/terms/frontend-foundations-pages/form";
 import { HtmlTermPage } from "@/components/terms/frontend-foundations-pages/html";
+import { JavascriptTermPage } from "@/components/terms/frontend-foundations-pages/javascript";
 import { ResponsiveTermPage } from "@/components/terms/frontend-foundations-pages/responsive";
 
 const articleTermPages = {
@@ -151,6 +152,7 @@ const articleTermPages = {
   css: CssTermPage,
   form: FormTermPage,
   html: HtmlTermPage,
+  javascript: JavascriptTermPage,
   'offline-first': OfflineFirstTermPage,
   'adaptive-layout': AdaptiveLayoutTermPage,
   'safe-area': SafeAreaTermPage,
@@ -476,7 +478,6 @@ const articleTermPages = {
 
 const dedicatedTermPages = {
   ...articleTermPages,
-  javascript: TermDetailExperience,
 } satisfies Record<string, ComponentType<BespokeTermPageProps>>;
 
 export const dynamicParams = false;

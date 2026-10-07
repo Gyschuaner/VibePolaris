@@ -6,6 +6,7 @@ import { formSources } from "@/lib/frontend-foundation-sources";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { ArticleAside, ArticleSection } from "../ConceptArticle";
 import { ConceptHero } from "../ConceptHero";
+import type { BespokeTermPageProps } from "../BespokeTermScaffold";
 import styles from "./FrontendFoundations.module.css";
 
 function FormHero() {
@@ -52,7 +53,7 @@ function FormLab() {
   </div>;
 }
 
-export function FormTermPage() {
+export function FormTermPage(_props: BespokeTermPageProps) {
   return <Article slug="form" title="表单" subtitle="Form · 把输入、约束和反馈放在一起" sources={formSources} hero={<FormHero />} sections={[
     ["form-definition-section", "表单收集的不是一堆输入框"],
     ["form-label-section", "先让人知道每一格要填什么"],

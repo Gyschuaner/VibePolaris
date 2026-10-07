@@ -29,3 +29,10 @@ export const htmlSources = [
   source("MDN", "HTML elements reference", "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements", ["html-elements", "html-native"]),
   source("W3C WAI", "Info and relationships", "https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html", ["html-semantics", "html-boundary"]),
 ];
+
+export const javascriptSources = [
+  source("MDN", "JavaScript language overview", "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Language_overview", ["javascript-definition", "javascript-state"]),
+  source("MDN", "Introduction to events", "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Events", ["javascript-events"]),
+  source("MDN", "Introduction to client-side APIs", "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Client-side_APIs/Introduction", ["javascript-dom", "javascript-host"]),
+  source("TC39", "ECMAScript language overview", "https://tc39.es/ecma262/2023/multipage/overview.html", ["javascript-definition", "javascript-boundary"]),
+];

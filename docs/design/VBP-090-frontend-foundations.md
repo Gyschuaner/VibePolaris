@@ -27,10 +27,11 @@
 
 | 词条 | 已读来源与论断映射 | 审读 | 浏览器 | build/typecheck | 提交 |
 | --- | --- | --- | --- | --- | --- |
-| responsive | MDN RWD→`responsive-definition`/`responsive-rules`；web.dev→`responsive-breakpoint`/`responsive-content`；MDN Container Queries→`responsive-container`；W3C Reflow→`responsive-reflow`/`responsive-exception` | 待 reviewer 复核来源统一与标题修正 | 本地 3410：桌面首屏、缩窄 45%、固定三列失败态；键盘待补 | `tsc` 已过；build 待十条批量执行 | 44f9c271 + 修订待提交 |
-| css | MDN CSS basics→`css-definition`/`css-responsibility`；MDN Cascade + W3C CSS Cascade→`css-cascade`/`css-specificity`/`css-computed`；MDN Grid→`css-layout`；MDN Box→`css-box`；边界补充→`css-boundary` | 待 reviewer 复核交互与来源对齐 | 本地 3410：海报首图、容器布局/间距、标题换色；键盘待补 | `tsc` 已过；build 待十条批量执行 | a7c969db + 修订待提交 |
-| form | MDN client validation/constraint→`form-definition`/`form-client`；W3C labels/errors→`form-label`/`form-error`；OWASP→`form-server`/`form-boundary` | 待 reviewer | 本地 3410：不完整邮箱保留姓名、已注册服务端分支、成功分支；键盘待补 | `tsc` 已过；build 待十条批量执行 | 待提交 |
-| html | WHATWG HTML→`html-definition`/`html-structure`；MDN structuring→`html-structure`/`html-semantics`；MDN elements→`html-elements`/`html-native`；W3C relationships→`html-semantics`/`html-boundary` | 待 reviewer | 本地 3410：语义开关、原生 button 与 div 对照；键盘待补 | `tsc` 待本条完成；build 待十条批量执行 | 待提交 |
+| responsive | MDN RWD→`responsive-definition`/`responsive-rules`；web.dev→`responsive-breakpoint`/`responsive-content`；MDN Container Queries→`responsive-container`；W3C Reflow→`responsive-reflow`/`responsive-exception` | 待 reviewer 复核来源统一与标题修正 | 本地 3410：桌面首屏、缩窄 45%、固定三列失败态；键盘待补 | `tsc` 已过；build 待十条批量执行 | 44f9c271 + 90e4f069 |
+| css | MDN CSS basics→`css-definition`/`css-responsibility`；MDN Cascade + W3C CSS Cascade→`css-cascade`/`css-specificity`/`css-computed`；MDN Grid→`css-layout`；MDN Box→`css-box`；边界补充→`css-boundary` | 待 reviewer 复核交互与来源对齐 | 本地 3410：海报首图、容器布局/间距、标题换色；键盘待补 | `tsc` 已过；build 待十条批量执行 | a7c969db + 90e4f069 |
+| form | MDN client validation/constraint→`form-definition`/`form-client`；W3C labels/errors→`form-label`/`form-error`；OWASP→`form-server`/`form-boundary` | 待 reviewer | 本地 3410：不完整邮箱保留姓名、已注册服务端分支、成功分支；焦点回邮箱已验证 | `tsc` 已过；build 待十条批量执行 | ac4be00d |
+| html | WHATWG HTML→`html-definition`/`html-structure`；MDN structuring→`html-structure`/`html-semantics`；MDN elements→`html-elements`/`html-native`；W3C relationships→`html-semantics`/`html-boundary` | 待 reviewer | 本地 3410：语义开关、原生 button 与 div 对照、鼠标激活；键盘待补 | `tsc` 已过；build 待十条批量执行 | 28cd0a21 |
+| javascript | MDN language overview→`javascript-definition`/`javascript-state`；MDN events→`javascript-events`；MDN client-side APIs→`javascript-dom`/`javascript-host`；TC39→`javascript-definition`/`javascript-boundary` | 待 reviewer | 本地 3410：状态/DOM 读数分离、浏览器/Node 宿主切换；键盘待补 | `tsc` 已过；build 待十条批量执行 | 待提交 |
 
 ## 现状证据
 

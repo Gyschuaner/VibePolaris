@@ -6,6 +6,7 @@ import { responsiveSources } from "@/lib/frontend-foundation-sources";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { ArticleAside, ArticleSection, ConceptTerm } from "../ConceptArticle";
 import { ConceptHero } from "../ConceptHero";
+import type { BespokeTermPageProps } from "../BespokeTermScaffold";
 import styles from "./FrontendFoundations.module.css";
 
 function ResponsiveHero() {
@@ -46,7 +47,7 @@ function ResponsiveLab() {
   </div>;
 }
 
-export function ResponsiveTermPage() {
+export function ResponsiveTermPage(_props: BespokeTermPageProps) {
   return <Article slug="responsive" title="响应式布局" subtitle="Responsive design · 空间变了，内容重新站位" sources={responsiveSources} hero={<ResponsiveHero />} sections={[
     ["responsive-definition-section", "把窗口缩窄，页面该怎么办"],
     ["responsive-rules-section", "同一份内容，几条不同的摆放规则"],
