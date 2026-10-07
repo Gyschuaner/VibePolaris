@@ -26723,5 +26723,256 @@
         ]
       }
     ]
+  },
+  {
+    "slug": "context-engineering",
+    "lead": "资料越塞越多，为什么模型反而抓不住眼前要用的那一条？",
+    "definition": "上下文工程是为一次模型推理挑选、组织和更新实际输入的工作。它处理的不只是提示词句子，还包括系统规则、工具说明、检索结果、对话历史、当前任务和外部状态；目标是在有限上下文里留下足够有用、彼此不冲突的材料，让模型能据此作出下一步判断。",
+    "boundary": "上下文工程不等于把所有历史都粘进提示词，也不等于扩大模型的上下文窗口。材料能被放进输入，不代表模型一定正确使用；来源新旧、位置、顺序、权限和证据质量仍要单独检查。上下文里出现一份资料，也不代表应用已经授权模型执行资料中的动作。它与相邻概念的分工也不同：context window 是容量边界，context compaction 是维护历史的一种手段，retrieval 只是把外部材料找进来的一个来源；上下文工程要统筹这些材料最后怎样进入这一轮推理。",
+    "sceneKind": "layers",
+    "sceneTitle": "同一个问题，换一张上下文工作台",
+    "actionLabel": "调整上下文材料",
+    "actors": [
+      {
+        "id": "task",
+        "label": "当前任务",
+        "detail": "判断订单能否退款",
+        "icon": "message",
+        "group": "目标"
+      },
+      {
+        "id": "rules",
+        "label": "规则卡",
+        "detail": "退款期限与例外",
+        "icon": "shield",
+        "group": "约束"
+      },
+      {
+        "id": "order",
+        "label": "当前订单",
+        "detail": "下单日与付款状态",
+        "icon": "file",
+        "group": "事实"
+      },
+      {
+        "id": "old",
+        "label": "旧记录",
+        "detail": "上周已关闭的订单",
+        "icon": "clock",
+        "group": "历史"
+      },
+      {
+        "id": "tools",
+        "label": "可用工具",
+        "detail": "查询发票日期",
+        "icon": "gear",
+        "group": "能力"
+      },
+      {
+        "id": "gap",
+        "label": "缺失证据",
+        "detail": "尚未提供发票日期",
+        "icon": "search",
+        "group": "缺口"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "只放任务",
+        "note": "有问题，没有足够事实；模型不能从一句目标里凭空得到订单状态。",
+        "activeIds": [
+          "task"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "rules",
+          "order",
+          "old",
+          "tools",
+          "gap"
+        ],
+        "values": {
+          "task": "请判断退款条件"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "加入关键材料",
+        "note": "规则和当前订单一起出现，读者可以追问结论依据来自哪里。",
+        "activeIds": [
+          "rules",
+          "order"
+        ],
+        "doneIds": [
+          "task"
+        ],
+        "mutedIds": [
+          "old",
+          "tools",
+          "gap"
+        ],
+        "values": {
+          "rules": "退款期限 · 30 天",
+          "order": "订单 #184 · 下单 12 天"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "剪掉旧记录",
+        "note": "过期订单仍像相关资料，但它会把本次判断带向错误的时间线。",
+        "activeIds": [
+          "old"
+        ],
+        "doneIds": [
+          "task",
+          "rules",
+          "order"
+        ],
+        "mutedIds": [
+          "tools",
+          "gap"
+        ],
+        "values": {
+          "old": "移除 · 上周已关闭"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "排好输入顺序",
+        "note": "工具说明放在当前事实旁，模型知道缺什么以及能通过哪种动作补证据。",
+        "activeIds": [
+          "tools"
+        ],
+        "doneIds": [
+          "task",
+          "rules",
+          "order",
+          "old"
+        ],
+        "mutedIds": [
+          "gap"
+        ],
+        "values": {
+          "tools": "查询发票日期 · 只读"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "留下证据缺口",
+        "note": "没有发票日期就停在追问；“不知道”比带着旧记录猜一个日期更可核查。",
+        "activeIds": [
+          "gap"
+        ],
+        "doneIds": [
+          "task",
+          "rules",
+          "order",
+          "old",
+          "tools"
+        ],
+        "mutedIds": [],
+        "values": {
+          "gap": "先问：发票日期是什么？"
+        },
+        "metric": {
+          "label": "当前判断",
+          "value": "缺资料 · 不下结论"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "上下文工程把“这一轮模型到底看到了什么”变成可以审阅的输入选择；材料不足时，留下缺口也是正确状态。",
+    "quiz": {
+      "question": "哪种做法最像上下文工程？",
+      "options": [
+        {
+          "label": "根据本轮任务选择并维护实际输入材料",
+          "correct": true
+        },
+        {
+          "label": "只把系统提示词写得更长",
+          "correct": false
+        },
+        {
+          "label": "把所有聊天记录永远附在每次请求后",
+          "correct": false
+        }
+      ],
+      "success": "上下文工程关心一轮推理实际看到哪些信息、如何组织以及何时更新。",
+      "retry": "提示词只是上下文的一部分；无筛选的全量历史会带来噪音、冲突和容量成本。"
+    },
+    "prompt": {
+      "title": "整理一次可核查的上下文",
+      "text": "请把任务目标、硬性规则、当前事实、可用工具、历史摘要和缺失证据分开列出；说明每项为什么要放入或移除、来源和时间范围是什么，以及缺资料时应先追问什么。"
+    },
+    "teaching": [
+      {
+        "id": "definition",
+        "title": "上下文不只是一段提示词",
+        "body": "一轮推理实际接收的内容通常还包括系统规则、工具定义、检索结果、对话历史和外部状态。Anthropic 将上下文工程描述为持续策划“这次要送进模型的 token”，所以工作重点是选择和维护，而不只是把句子写得更漂亮。",
+        "sourceIndices": [
+          1,
+          2,
+          5
+        ]
+      },
+      {
+        "id": "selection",
+        "title": "材料要和这次任务对得上",
+        "body": "RAG 论文把模型参数里的知识与可外接的非参数记忆分开；应用仍要决定哪些检索结果与当前问题相关。把所有旧聊天、所有搜索结果都塞进输入，会增加噪音和冲突，也会让读者误以为“出现过”就等于“应该相信”。",
+        "sourceIndices": [
+          1,
+          3,
+          4
+        ]
+      },
+      {
+        "id": "position",
+        "title": "位置和长度也会改变能否用上",
+        "body": "Lost in the Middle 的实验把同一条答案放到上下文不同位置，观察到中间位置的使用效果可能下降。整理材料时要保留任务、证据和输出要求的清楚边界，并用代表性位置变化做检查，不能只看总 token 数。",
+        "sourceIndices": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": "boundary",
+        "title": "缺证据时让模型停在问题上",
+        "body": "工具和资源可以成为上下文来源，但它们带来的只是可读取材料或能力说明，不会自动授予业务权限。缺失发票日期、来源过期或规则互相冲突时，应把缺口写出来、请求下一份证据，再决定是否继续。",
+        "sourceIndices": [
+          1,
+          2,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+        "label": "Anthropic · Effective context engineering for AI agents",
+        "note": "上下文是有限输入资源，需持续策划与维护"
+      },
+      {
+        "url": "https://resources.anthropic.com/building-effective-ai-agents",
+        "label": "Anthropic · Building Effective AI Agents",
+        "note": "智能体架构与上下文管理的工程取舍"
+      },
+      {
+        "url": "https://arxiv.org/abs/2005.11401",
+        "label": "Lewis et al. · Retrieval-Augmented Generation",
+        "note": "参数记忆与外部非参数记忆如何组合"
+      },
+      {
+        "url": "https://arxiv.org/abs/2307.03172",
+        "label": "Liu et al. · Lost in the Middle",
+        "note": "相关信息在长上下文中的位置会影响使用效果"
+      },
+      {
+        "url": "https://ts.sdk.modelcontextprotocol.io/v2/",
+        "label": "Model Context Protocol · TypeScript SDK v2",
+        "note": "工具、资源和提示作为应用可连接的上下文来源"
+      }
+    ]
   }
 ]
