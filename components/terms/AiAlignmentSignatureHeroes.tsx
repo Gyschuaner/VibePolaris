@@ -208,3 +208,29 @@ export function ModelSpecSignatureHero() {
     <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 2 ? "规范先帮助解释指令冲突，读者能看到规则怎样影响行为目标。" : allowed ? "最后仍要经过真实工具授权；这两把锁同时满足，动作才可以发生。" : "模型规范不是权限系统，不能因为文字上“应该允许”就读取或发送真实数据。"}</p></figcaption>
   </figure>;
 }
+
+
+export function PromptChainingSignatureHero() {
+  const scene = useScene(4);
+  const labels = ["放入原始材料", "切出中间卡", "检查 schema", "拼正文并记账"];
+  const gate = scene.step >= 2;
+  const complete = scene.step === 3;
+  return <figure ref={scene.ref} className={styles.hero} role="region" aria-label="提示链把原始材料拆成可检查的中间产物" data-step={scene.step}>
+    <SceneControls scene={scene} labels={labels} compact />
+    <div className={styles.canvas}>
+      <div className={styles.promptChainBoard}>
+        <div className={styles.artifactCards}>
+          <span>中间产物 · 每张卡都能单独检查</span>
+          <div className={styles.artifactCard} data-active={scene.step === 0 || scene.step >= 1}><FileText size={16} /><strong>{scene.step < 1 ? "原始访谈" : "提纲卡"}</strong><small>{scene.step < 1 ? "一整段材料" : "3 个主题 · 1 个待核事实"}</small></div>
+          <div className={styles.artifactCard} data-active={scene.step >= 2} data-gated={gate}><ShieldCheck size={16} /><strong>检查卡</strong><small>{scene.step < 2 ? "还没生成" : gate ? "缺口已标记" : "等待输入"}</small></div>
+          <div className={styles.artifactCard} data-active={complete}><FileText size={16} /><strong>正文卡</strong><small>{complete ? "引用位置已保留" : "等闸门放行"}</small></div>
+        </div>
+        <div className={styles.chainLedgerSmall}>
+          <div className={styles.schemaGate} data-open={gate} data-good={complete}><ShieldCheck size={20} /><span>schema gate</span><strong>{scene.step < 2 ? "等待" : complete ? "PASS" : "STOP"}</strong><small>{scene.step < 2 ? "先说清下一步需要什么" : complete ? "格式、来源、失败项" : "缺 1 条来源"}</small></div>
+          <div className={styles.costLedger}><ChartLine size={17} /><span>调用账本</span><b>{complete ? "3 calls · 1 gate" : `${scene.step} call${scene.step === 1 ? "" : "s"}`}</b></div>
+        </div>
+      </div>
+    </div>
+    <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 2 ? "拆分不是把大提示切成几块，而是让下一步拿到一张有边界的中间卡。" : complete ? "闸门通过后才拼正文；调用次数、失败项和回退选择都留在账本里。" : "连接处发现缺口就停下，避免错误一路复制到最后一段文字。"}</p></figcaption>
+  </figure>;
+}
