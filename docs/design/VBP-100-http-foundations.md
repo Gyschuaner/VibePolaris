@@ -38,3 +38,14 @@
 - `npm run build`：通过，生成 1091 个静态页面。
 - `node scripts/audit-term-distinctiveness.mjs`：352 条体验、352 条来源覆盖；流程类 `pipeline/route/loop` 为 44 条，占 12.5%；重复、相邻同构和近重复均为 0。
 - 干净的本地浏览器会话逐条打开十条路由，桌面和 390px 视口均出现标题、首图、正文与参考资料；服务器的 8001 空端口分支实际显示连接失败。浏览器控制台没有新增 error 或 warning。
+
+## 生产发布记录（2026-10-08）
+
+- 内容 PR [#450](https://github.com/Gyschuaner/VibePolaris/pull/450) 已合入 `main`，生产源提交为 `1de99bfe7d1ee5c9e370d4d64f56f032da6eef3d`。
+- 本机构建的 `linux/amd64` 镜像为 `vibepolaris:1de99bfe7d1ee5c9e370d4d64f56f032da6eef3d`；构建中的 `news:validate`、Next 静态生成 1091 页和容器启动均通过。
+- 生产 release 为 `/opt/vibepolaris/releases/20261007T204157Z-1de99bfe`，`/opt/vibepolaris/current` 已原子切换到该目录；`vibepolaris-web-1` 使用新镜像并保持 `healthy`。
+- 切换前 release 为 `/opt/vibepolaris/releases/20261007T183915Z-4d913eab`，旧镜像为 `vibepolaris:4d913eab903f7bf773e4126caaaf06f2f28abdcb`；备份为 `/opt/vibepolaris/backups/20261007T204157Z-from-4d913eab`。备份包含旧 Compose、容器和镜像检查信息，以及通过 SQLite `VACUUM INTO` 完成的在线备份 `xiaobei.sqlite`；`vibepolaris_xiaobei_data` 数据卷未替换。
+- 生产机经 HTTPS server-local smoke 检查 `/`、`/news`、`/about`、`/sitemap.xml` 与本批十条 `/terms/*` 路由均返回 HTTP 200，十条页面的中文标题标记均命中；容器最近日志只有正常启动信息。
+- 回滚入口为 `/opt/vibepolaris/releases/20261007T204157Z-1de99bfe/rollback.sh`，可恢复旧 Compose、旧镜像和旧 release；回滚不删除或覆盖上线后新增的 Xiaobei 数据。
+- 按 `developer-platform-cli` 尝试以批次 `deploy-vbp100-http-foundations-prod-20261008` 记录生产 deployment，并用同一批次 ID 重试一次；两次均因 `SSL: UNEXPECTED_EOF_WHILE_READING` 未连接 DP。未伪造 deployment ID 或状态，待 DP 网络恢复后用同一批次 ID 补录并查询确认。
+- 当前机器不存在规则指定的 `D:/Obsidian/gysnote`，本批没有写入该库。
