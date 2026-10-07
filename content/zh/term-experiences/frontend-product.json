@@ -16280,220 +16280,243 @@
     ]
   },
   {
-    "slug": "sitemap",
-    "lead": "几十个页面应该怎样分组，用户才知道从哪里进入？",
-    "definition": "站点地图把页面组织为父子层级与交叉入口，用于检查孤立页面、层级深度和导航命名；它不规定用户必须按树形顺序操作。",
-    "boundary": "容易与 XML sitemap 或用户流程混淆；这里研究的是信息结构，不是搜索引擎文件或任务步骤。",
-    "sceneKind": "tree",
-    "sceneTitle": "十二个页面怎样按用户任务形成三层结构",
-    "actionLabel": "移动一个页面节点",
-    "actors": [
-      {
-        "id": "pages",
-        "label": "页面清单",
-        "detail": "12 个未分组页面",
-        "icon": "file",
-        "group": "输入"
-      },
-      {
-        "id": "root",
-        "label": "网站根节点",
-        "detail": "主导航起点",
-        "icon": "layout",
-        "group": "层级"
-      },
-      {
-        "id": "orders",
-        "label": "订单",
-        "detail": "列表、详情、退货",
-        "icon": "component",
-        "group": "一级栏目"
-      },
-      {
-        "id": "account",
-        "label": "账户",
-        "detail": "资料、地址、安全",
-        "icon": "component",
-        "group": "一级栏目"
-      },
-      {
-        "id": "orphan",
-        "label": "优惠说明",
-        "detail": "当前无入口",
-        "icon": "search",
-        "group": "待处理"
-      },
-      {
-        "id": "nav",
-        "label": "主导航",
-        "detail": "映射一级栏目",
-        "icon": "browser",
-        "group": "结果"
-      }
-    ],
-    "edges": [
-      {
-        "id": "root-orders",
-        "from": "root",
-        "to": "orders",
-        "label": "一级"
-      },
-      {
-        "id": "root-account",
-        "from": "root",
-        "to": "account",
-        "label": "一级"
-      },
-      {
-        "id": "orders-orphan",
-        "from": "orders",
-        "to": "orphan",
-        "label": "重新归属"
-      },
-      {
-        "id": "root-nav",
-        "from": "root",
-        "to": "nav",
-        "label": "生成主导航"
-      }
-    ],
-    "frames": [
-      {
-        "label": "页面先全部平铺",
-        "note": "十二个页面只有名称，没有父子关系，优惠说明也找不到入口。",
-        "activeIds": [
-          "pages",
-          "orphan"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "root",
-          "orders",
-          "account",
-          "nav"
-        ],
-        "values": {
-          "pages": "12 个平级节点",
-          "orphan": "无入口"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "按任务建立一级栏目",
-        "note": "订单任务和账户任务成为两个一级节点，相关页面落到对应分组。",
-        "activeIds": [
-          "pages",
-          "root",
-          "orders",
-          "account"
-        ],
-        "doneIds": [
-          "pages"
-        ],
-        "mutedIds": [
-          "orphan",
-          "nav"
-        ],
-        "values": {
-          "orders": "3 个子页面",
-          "account": "3 个子页面"
-        },
-        "activeEdgeIds": [
-          "root-orders",
-          "root-account"
-        ]
-      },
-      {
-        "label": "处理孤立页面",
-        "note": "优惠说明与订单优惠有关，被放入订单分组；没有任务归属的重复页被标为删除候选。",
-        "activeIds": [
-          "orders",
-          "orphan"
-        ],
-        "doneIds": [
-          "pages",
-          "root"
-        ],
-        "mutedIds": [
-          "account",
-          "nav"
-        ],
-        "values": {
-          "orphan": "订单 / 优惠说明"
-        },
-        "activeEdgeIds": [
-          "orders-orphan"
-        ]
-      },
-      {
-        "label": "一级结构映射导航",
-        "note": "主导航只显示订单和账户，详情页留在层级内，不把所有页面塞进菜单。",
-        "activeIds": [
-          "root",
-          "orders",
-          "account",
-          "nav"
-        ],
-        "doneIds": [
-          "pages",
-          "orphan"
-        ],
-        "mutedIds": [],
-        "values": {
-          "nav": "订单 · 账户"
-        },
-        "activeEdgeIds": [
-          "root-nav"
-        ]
-      }
-    ],
-    "insight": "站点地图表达页面归属和层级，导航只是从这套结构中选择可见入口。",
-    "quiz": {
-      "question": "站点地图最直接回答什么？",
-      "options": [
-        {
-          "label": "页面如何分组和形成层级",
-          "correct": true
-        },
-        {
-          "label": "按钮点击后的全部动画",
-          "correct": false
-        },
-        {
-          "label": "接口的数据库结构",
-          "correct": false
-        }
+  "slug": "sitemap",
+  "lead": "读者在站内迷路时，站点地图先把“页面属于哪一组、还有没有入口”摊在桌上。",
+  "definition": "站点地图是对网站信息结构的一张可检视模型：它把页面按用户任务组成父子层级，标出哪些页面进入主导航、哪些页面只在子层可达，也能另列一份供爬虫读取的 URL 清单。它帮助作者发现孤立页、层级过深和命名重复，但不会替用户规定唯一的阅读顺序。",
+  "boundary": "这里的站点地图讨论页面之间的归属和入口，不是 XML sitemap 文件本身，也不是“点击首页→列表→详情”的操作流程。XML 清单解决抓取发现，导航解决人的进入路径；两者可能共享 URL，却回答不同问题。地图也不能证明页面内容有用、链接可访问或搜索一定收录。",
+  "sceneKind": "tree",
+  "sceneTitle": "一组页面的归属、入口与 XML 清单分开看",
+  "actionLabel": "移动节点并切换观察层",
+  "actors": [
+    {
+      "id": "pages",
+      "label": "页面清单",
+      "detail": "12 个未分组页面",
+      "icon": "file",
+      "group": "输入"
+    },
+    {
+      "id": "root",
+      "label": "网站根节点",
+      "detail": "主导航起点",
+      "icon": "layout",
+      "group": "层级"
+    },
+    {
+      "id": "orders",
+      "label": "订单",
+      "detail": "列表、详情、退货",
+      "icon": "component",
+      "group": "一级栏目"
+    },
+    {
+      "id": "account",
+      "label": "账户",
+      "detail": "资料、地址、安全",
+      "icon": "component",
+      "group": "一级栏目"
+    },
+    {
+      "id": "orphan",
+      "label": "优惠说明",
+      "detail": "当前无入口",
+      "icon": "search",
+      "group": "待处理"
+    },
+    {
+      "id": "nav",
+      "label": "主导航",
+      "detail": "映射一级栏目",
+      "icon": "browser",
+      "group": "结果"
+    }
+  ],
+  "edges": [
+    {
+      "id": "root-orders",
+      "from": "root",
+      "to": "orders",
+      "label": "一级"
+    },
+    {
+      "id": "root-account",
+      "from": "root",
+      "to": "account",
+      "label": "一级"
+    },
+    {
+      "id": "orders-orphan",
+      "from": "orders",
+      "to": "orphan",
+      "label": "重新归属"
+    },
+    {
+      "id": "root-nav",
+      "from": "root",
+      "to": "nav",
+      "label": "生成主导航"
+    }
+  ],
+  "frames": [
+    {
+      "label": "页面先平铺",
+      "note": "十二个页面只有名称，没有父级；优惠说明没有任何入口。先暴露缺口，才不会用一条箭头假装结构已经存在。",
+      "activeIds": [
+        "pages",
+        "root",
+        "orphan"
       ],
-      "success": "它主要表达信息和页面的组织关系。",
-      "retry": "交互动效和数据库结构需要其他图示。"
+      "doneIds": [],
+      "mutedIds": [
+        "orders",
+        "account",
+        "nav"
+      ],
+      "values": {
+        "pages": "12 个未分组页面",
+        "orphan": "无入口"
+      },
+      "activeEdgeIds": []
     },
-    "prompt": {
-      "title": "整理网站页面层级",
-      "text": "请把下面页面清单按用户任务和内容归属整理成不超过三层的站点地图，标出重复、孤立和命名含糊的页面，并说明主导航对应哪些一级栏目。"
+    {
+      "label": "按任务分一级栏目",
+      "note": "把订单相关页面和账户相关页面分别放进栏目；根节点表达归属，主导航还没有被迫展示每个详情页。",
+      "activeIds": [
+        "pages",
+        "root",
+        "orders",
+        "account"
+      ],
+      "doneIds": [
+        "pages"
+      ],
+      "mutedIds": [
+        "orphan",
+        "nav"
+      ],
+      "values": {
+        "orders": "订单 · 3 个子页",
+        "account": "账户 · 3 个子页"
+      },
+      "activeEdgeIds": [
+        "root-orders",
+        "root-account"
+      ]
     },
-    "sources": [
+    {
+      "label": "检查层级和命名",
+      "note": "继续展开一层，确认列表、详情和退货页都能从所属任务到达；超过三层的路径先标成需要重组的信号。",
+      "activeIds": [
+        "root",
+        "orders",
+        "account"
+      ],
+      "doneIds": [
+        "pages"
+      ],
+      "mutedIds": [
+        "orphan",
+        "nav"
+      ],
+      "values": {
+        "orders": "列表 → 详情 · 深度 2",
+        "account": "资料 → 安全 · 深度 2"
+      },
+      "activeEdgeIds": [
+        "root-orders",
+        "root-account"
+      ]
+    },
+    {
+      "label": "把孤立页放回语境",
+      "note": "优惠说明与订单优惠有关，于是进入订单分组；若找不到真实任务归属，就应删除或重新定义，而不是偷偷藏在地图里。",
+      "activeIds": [
+        "orders",
+        "orphan"
+      ],
+      "doneIds": [
+        "pages",
+        "root",
+        "account"
+      ],
+      "mutedIds": [
+        "nav"
+      ],
+      "values": {
+        "orphan": "订单 / 优惠说明",
+        "orders": "入口已补"
+      },
+      "activeEdgeIds": [
+        "orders-orphan"
+      ]
+    },
+    {
+      "label": "导航和 XML 各自验收",
+      "note": "主导航只露出订单、账户两个入口；切到 XML 观察层时列出全部可抓取 URL。页面归属、人的入口和爬虫清单终于不再混成一张图。",
+      "activeIds": [
+        "root",
+        "orders",
+        "account",
+        "nav"
+      ],
+      "doneIds": [
+        "pages",
+        "orphan"
+      ],
+      "mutedIds": [],
+      "values": {
+        "nav": "导航：2 个入口 · XML：12 个 URL"
+      },
+      "activeEdgeIds": [
+        "root-nav"
+      ]
+    }
+  ],
+  "insight": "站点地图先表达页面的归属和到达关系，再分别检查人的导航入口与爬虫 URL 清单；它不是把所有点击步骤画成一条线。",
+  "quiz": {
+    "question": "一个页面出现在 XML sitemap 里，但主导航找不到它，最准确的判断是什么？",
+    "options": [
       {
-        "url": "https://www.w3.org/WAI/tutorials/page-structure/",
-        "label": "资料来源",
-        "note": "用于核对定义、边界与演示"
+        "label": "它可能可被搜索发现，但信息结构仍缺少面向人的入口",
+        "correct": true
       },
       {
-        "url": "https://www.w3.org/WAI/WCAG2/supplemental/patterns/o2p02-site-structure/",
-        "label": "资料来源",
-        "note": "用于核对定义、边界与演示"
+        "label": "它一定会出现在主导航的第一层",
+        "correct": false
       },
       {
-        "url": "https://guidance.publishing.service.gov.uk/writing-to-gov-uk-standards/plan-manage-content/plan-new-govuk-content/",
-        "label": "资料来源",
-        "note": "用于核对定义、边界与演示"
-      },
-      {
-        "url": "https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview",
-        "label": "资料来源",
-        "note": "用于核对定义、边界与演示"
+        "label": "它已经证明页面内容质量合格",
+        "correct": false
       }
-    ]
+    ],
+    "success": "XML 清单和主导航解决不同的发现问题，仍需检查页面是否属于某个用户任务。",
+    "retry": "把抓取清单、导航菜单和内容质量混为一谈，会看不见真正的孤立页。"
   },
+  "prompt": "请把页面按用户任务分组，标出每个页面的父级、主导航入口和 XML sitemap 状态；对孤立页、超过三层的路径和重复命名分别给出处理理由，不要把地图画成用户操作流程。",
+  "sources": [
+    {
+      "url": "https://www.w3.org/WAI/tutorials/page-structure/",
+      "label": "W3C · Page Structure",
+      "note": "W3C 页面结构：核对层级、标题和页面组织对可理解性的作用。"
+    },
+    {
+      "url": "https://www.w3.org/WAI/WCAG2/supplemental/patterns/o2p02-site-structure/",
+      "label": "W3C · Site Structure",
+      "note": "W3C site structure pattern：核对站点结构与导航入口的关系。"
+    },
+    {
+      "url": "https://guidance.publishing.service.gov.uk/writing-to-gov-uk-standards/plan-manage-content/plan-new-govuk-content/",
+      "label": "GOV.UK · Plan content",
+      "note": "GOV.UK 内容规划：核对按用户任务组织内容、发现孤立页面的做法。"
+    },
+    {
+      "url": "https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview",
+      "label": "Google · Sitemaps",
+      "note": "Google Search Central：核对 XML sitemap 只提供可抓取 URL 清单的边界。"
+    }
+  ],
+  "promptTitle": "审查一张站点地图"
+},
   {
     "slug": "design-token",
     "lead": "品牌主色改变时，怎样避免在几十个组件里逐个找颜色值？",
