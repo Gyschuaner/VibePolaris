@@ -2950,7 +2950,7 @@
     "lead": "用户说“查订单A102”后，究竟是谁真正访问了订单系统？",
     "definition": "模型根据工具定义生成函数名和结构化参数；宿主程序验证并执行函数，再把结果交回模型继续处理。",
     "boundary": "模型不会因为输出了调用参数就自动执行函数；函数调用也不等于MCP，更不等于完整智能体。",
-    "sceneKind": "pipeline",
+    "sceneKind": "state-machine",
     "sceneTitle": "模型建议调用，应用负责执行",
     "actionLabel": "清空订单号重试",
     "actors": [
@@ -3137,6 +3137,21 @@
         "url": "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
         "label": "MCP 规范 · tools",
         "note": "协议角色与消息行为"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/function-calling",
+        "label": "OpenAI · Function calling",
+        "note": "调用请求、执行与 call_id 回传"
+      },
+      {
+        "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+        "label": "Anthropic · Tool use",
+        "note": "tool_use 与 tool_result 的责任边界"
+      },
+      {
+        "url": "https://arxiv.org/abs/2302.04761",
+        "label": "Toolformer · Language Models Can Teach Themselves to Use Tools",
+        "note": "模型选择与调用 API 的原始研究"
       }
     ]
   },
@@ -3579,7 +3594,7 @@
     "lead": "发布前的健康检查还在 500，为什么不能只再按一次“修复”？",
     "definition": "智能体循环把当前状态、一个受控动作、外部结果、状态更新和停止判断连成多轮过程；每轮结果都要改变下一轮可见的状态。",
     "boundary": "一次工具调用或模型连续输出都不是循环。没有状态回写、完成判据和失败/取消/轮数上限出口，重复动作不能证明任务完成。",
-    "sceneKind": "loop",
+    "sceneKind": "memory",
     "sceneTitle": "维修工作台怎样把回执写回任务票",
     "actionLabel": "推进维修台并切换轮数上限",
     "actors": [
@@ -4371,7 +4386,7 @@
     "lead": "客服已经识别退款请求，为什么换到退款智能体后不用让用户重说？",
     "definition": "交接把继续任务所需的事实状态和下一步交给接手者，并把后续回复权一并转过去。",
     "boundary": "交接的重点是带齐接手所需的信息，不要求原样搬来整段聊天记录；实际传递多少由系统设计决定。它也不等于两个智能体并行协作，失败后要不要退回、怎么退，需要另行设计。",
-    "sceneKind": "route",
+    "sceneKind": "contract",
     "sceneTitle": "回复权与必要上下文一起转移",
     "actionLabel": "检查交接包",
     "actors": [
@@ -5034,7 +5049,7 @@
     "lead": "导出客户表时命中 12 个手机号字段，护栏怎样处理？",
     "definition": "护栏在输入、输出或工具动作前后执行检查，并按规则放行、拦截、改写或转人工处理。",
     "boundary": "护栏按预先写好的规则检查指定位置，不能保证模型绝不出错，也不能代替权限、内容审核或业务校验（例如金额上限、库存是否足够）。内容审核关注内容是否适合发布，权限决定能否访问资源，业务校验由后端规则判定。",
-    "sceneKind": "pipeline",
+    "sceneKind": "matrix",
     "sceneTitle": "敏感字段经过输出检查",
     "actionLabel": "选择检查步骤",
     "actors": [
@@ -5245,6 +5260,11 @@
         "url": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
         "label": "NIST AI 600-1 · Generative AI Profile",
         "note": "生成式 AI 风险与控制措施"
+      },
+      {
+        "url": "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+        "label": "OWASP · LLM applications",
+        "note": "输入、输出与工具边界的安全风险"
       }
     ]
   },
@@ -6423,7 +6443,7 @@
     "lead": "一万段文档里，为什么查询不必逐条比较完才返回前五段？",
     "definition": "向量存储保存向量及其原文标识和元数据，并建立近邻索引以便按相似度快速找候选。",
     "boundary": "它不是模型记忆，也不等于检索质量；切分、向量模型和过滤条件都会影响结果。",
-    "sceneKind": "route",
+    "sceneKind": "spectrum",
     "sceneTitle": "近邻索引缩小搜索范围",
     "actionLabel": "开关元数据过滤",
     "actors": [
@@ -8332,6 +8352,16 @@
         "url": "https://platform.openai.com/docs/guides/production-best-practices",
         "label": "OpenAI 官方文档 · production best practices",
         "note": "接口参数与调用行为"
+      },
+      {
+        "url": "https://arxiv.org/abs/2305.05176",
+        "label": "FrugalGPT · How to Use Large Language Models While Reducing Cost",
+        "note": "级联选择与成本质量权衡"
+      },
+      {
+        "url": "https://docs.litellm.ai/docs/routing",
+        "label": "LiteLLM · Router",
+        "note": "部署负载与路由策略"
       }
     ]
   },
@@ -9388,7 +9418,7 @@
     "lead": "一段 add(2, 3) 源码怎样经由中间表示，变成目标环境能执行的代码？",
     "definition": "编译器先解析源代码，形成语法树并检查语言规则，再转成中间表示、按需要优化，最后生成目标代码。生成后由运行时或操作系统执行，编译器本身不负责把结果跑起来。",
     "boundary": "编译负责把代码从一种形式转换成另一种形式，并检查语言规则；目标环境不兼容时仍需改写或调整目标；打包器组织模块与资源，构建工具把编译、打包等多个步骤按顺序组织起来。编译成功，也不能保证运行时一定不出错。",
-    "sceneKind": "pipeline",
+    "sceneKind": "tree",
     "sceneTitle": "源码经过四层表示",
     "actionLabel": "查看下一层",
     "actors": [
