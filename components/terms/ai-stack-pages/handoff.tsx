@@ -28,7 +28,7 @@ export function HandoffTermPage() {
     <ArticleSection id="handoff-history" title="历史不是越多越安全">
       <p>完整聊天记录可能包含重复确认、无关闲聊和不应暴露给接手者的个人信息。过滤历史时要留下能改变下一步的事实，并明确哪些内容被省略；否则接手者可能把缺失误解成“没有发生过”。</p>
       <p id="handoff-filter" className="vp-citation-target">OpenAI SDK 的输入过滤器可以决定接手者看到哪些历史项目；过滤器改变的是接收上下文，不会自动撤销已经发生的工具副作用。因此要在交接前完成敏感信息处理，并把过滤结果留在可追溯记录里。<Cite id="handoff-filter" sources={handoffSources} /></p>
-      <p id="handoff-history" className="vp-citation-target">多智能体研究把消息、角色和状态作为协作材料；应用仍需定义历史版本、重复消息和冲突字段如何处理。接手者看到的“最新状态”必须有来源和时间，不能只靠一段自然语言摘要。<Cite id="handoff-history" sources={handoffSources} /></p>
+      <p id="handoff-history-detail" className="vp-citation-target">多智能体研究把消息、角色和状态作为协作材料；应用仍需定义历史版本、重复消息和冲突字段如何处理。接手者看到的“最新状态”必须有来源和时间，不能只靠一段自然语言摘要。<Cite id="handoff-history-detail" sources={handoffSources} /></p>
     </ArticleSection>
 
     <ArticleSection id="handoff-boundary" title="交接失败要能退回">
