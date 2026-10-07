@@ -289,13 +289,13 @@
     "slug": "tool-result",
     "mechanism": "工具执行后的结构化结果被送回模型或应用，成为下一步判断的可观测状态；错误、空结果和元数据也属于结果。",
     "misconception": "工具结果不是最终回答，模型还可能误读它；应用应保留状态码、来源和校验信息。",
-    "demoSignature": "输入：库存查询sku=K7；中间：工具返回{stock:0,status:200}，模型候选“有货/缺货”→缺货；输出：“K7暂时缺货”。可视化：响应JSON字段高亮驱动答案状态切换。 建议4帧：查询参数发出、原始JSON返回、stock=0字段点亮、最终措辞切到缺货；交互：把stock改为8看答案状态翻转。",
+    "demoSignature": "inventory-flipbook: 4 frames; actors=库存查询票/原始JSON页/业务字段标签/回答贴纸; phases=查询票夹入→原始返回翻开→stock字段被抽出→回答贴纸改写; action=切换stock=0、stock=8、timeout并观察业务结论与传输状态分离",
     "sourceUrls": [
       "https://developers.openai.com/api/docs/guides/function-calling",
       "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
-      "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+      "https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works",
       "https://openai.github.io/openai-agents-python/tools/",
-      "https://openai.github.io/openai-agents-python/running_agents/"
+      "https://www.rfc-editor.org/rfc/rfc9110.html#name-200-ok"
     ],
     "rewriteRisk": "演示不可只放一段自然语言反馈，要显示原始结果字段如何改变下一步。",
     "nearDuplicates": [

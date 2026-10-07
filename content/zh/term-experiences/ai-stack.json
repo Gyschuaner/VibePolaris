@@ -3091,135 +3091,108 @@
     "lead": "库存工具返回stock=0后，最终回答是怎样从“有货”切成“缺货”的？",
     "definition": "工具执行后返回结构化数据、错误和元信息；应用用关联标识（例如 call_id）把结果对回发起它的那次调用，再决定下一步状态或回答。",
     "boundary": "HTTP 状态表示传输是否处理成功，不等于业务成功；结构正确也不等于事实可信。应用还要检查业务字段、来源、时效、权限、空结果和部分完成。",
-    "sceneKind": "state-machine",
-    "sceneTitle": "原始结果字段驱动回答状态",
-    "actionLabel": "修改 stock 值",
+    "sceneKind": "layers",
+    "sceneTitle": "库存翻页簿让原始字段推动措辞",
+    "actionLabel": "翻页或改写库存字段",
     "actors": [
       {
-        "id": "call",
-        "label": "库存查询",
+        "id": "query",
+        "label": "库存查询票",
         "detail": "call_id=inv-7 · sku=K7",
-        "icon": "gear",
-        "group": "请求"
+        "icon": "file",
+        "group": "夹入"
       },
       {
-        "id": "raw",
-        "label": "原始结果",
-        "detail": "{call_id:inv-7, stock:0, status:200}",
+        "id": "json",
+        "label": "原始 JSON 页",
+        "detail": "status=200 · stock=0",
         "icon": "code",
-        "group": "工具"
+        "group": "翻开"
       },
       {
-        "id": "state",
-        "label": "回答状态",
-        "detail": "未知",
-        "icon": "brain",
-        "group": "解释"
+        "id": "field",
+        "label": "stock 标签",
+        "detail": "业务字段",
+        "icon": "search",
+        "group": "抽出"
       },
       {
-        "id": "answer",
-        "label": "用户回答",
-        "detail": "待生成",
+        "id": "sticker",
+        "label": "回答贴纸",
+        "detail": "K7 暂时缺货",
         "icon": "message",
-        "group": "输出"
+        "group": "贴上"
+      },
+      {
+        "id": "error",
+        "label": "错误页",
+        "detail": "timeout / 空结果",
+        "icon": "shield",
+        "group": "分支"
       }
     ],
     "edges": [
       {
-        "id": "c-r",
-        "from": "call",
-        "to": "raw",
-        "label": "执行"
+        "id": "query-json",
+        "from": "query",
+        "to": "json",
+        "label": "回到同一 call_id"
       },
       {
-        "id": "r-s",
-        "from": "raw",
-        "to": "state",
-        "label": "读取字段"
+        "id": "json-field",
+        "from": "json",
+        "to": "field",
+        "label": "抽出业务字段"
       },
       {
-        "id": "s-a",
-        "from": "state",
-        "to": "answer",
-        "label": "生成措辞"
+        "id": "field-sticker",
+        "from": "field",
+        "to": "sticker",
+        "label": "改写措辞"
+      },
+      {
+        "id": "json-error",
+        "from": "json",
+        "to": "error",
+        "label": "错误分支"
       }
     ],
     "frames": [
       {
-        "label": "查询发出",
-        "note": "应用发出库存查询，并记下 call_id=inv-7，方便把返回结果对回这次请求。",
-        "activeIds": [
-          "call"
-        ],
+        "label": "查询票夹入页",
+        "note": "应用记下 call_id=inv-7 和 sku=K7，翻页簿先保留这次查询的身份。",
+        "activeIds": ["query"],
         "doneIds": [],
-        "mutedIds": [
-          "raw",
-          "state",
-          "answer"
-        ],
-        "values": {
-          "call": "inv-7 · K7"
-        },
+        "mutedIds": ["json", "field", "sticker", "error"],
+        "values": {"query": "inv-7 · K7"},
         "activeEdgeIds": []
       },
       {
-        "label": "结果返回",
-        "note": "HTTP 状态 200 只表示请求被处理；stock=0 才是业务字段。",
-        "activeIds": [
-          "raw"
-        ],
-        "doneIds": [
-          "call"
-        ],
-        "mutedIds": [
-          "state",
-          "answer"
-        ],
-        "values": {
-          "raw": "status 200 · stock 0"
-        },
-        "activeEdgeIds": [
-          "c-r"
-        ]
+        "label": "原始 JSON 页翻开",
+        "note": "status=200 和 stock=0 同时被保存；状态码只描述响应层，不替业务字段下结论。",
+        "activeIds": ["json"],
+        "doneIds": ["query"],
+        "mutedIds": ["field", "sticker", "error"],
+        "values": {"json": "status=200 · stock=0"},
+        "activeEdgeIds": ["query-json"]
       },
       {
-        "label": "状态翻转",
-        "note": "应用的解释层读取 stock=0，把回答状态从未知改为缺货；结果还要经过来源和时效检查。",
-        "activeIds": [
-          "state"
-        ],
-        "doneIds": [
-          "call",
-          "raw"
-        ],
-        "mutedIds": [
-          "answer"
-        ],
-        "values": {
-          "state": "未知 → 缺货"
-        },
-        "activeEdgeIds": [
-          "r-s"
-        ]
+        "label": "stock 标签被抽出",
+        "note": "解释层只把 stock=0 当作业务证据；来源、时效和字段校验仍要过一遍。",
+        "activeIds": ["field"],
+        "doneIds": ["query", "json"],
+        "mutedIds": ["sticker", "error"],
+        "values": {"field": "0 → 缺货"},
+        "activeEdgeIds": ["json-field"]
       },
       {
-        "label": "生成措辞",
-        "note": "最终回答说明暂时缺货，而不是把 200 误读成有货；错误、空结果、过期数据或部分完成应走失败分支。",
-        "activeIds": [
-          "answer"
-        ],
-        "doneIds": [
-          "call",
-          "raw",
-          "state"
-        ],
-        "mutedIds": [],
-        "values": {
-          "answer": "K7 暂时缺货"
-        },
-        "activeEdgeIds": [
-          "s-a"
-        ]
+        "label": "回答贴纸贴上去",
+        "note": "最终措辞是“K7 暂时缺货”；stock=8 会换成有货，timeout 则必须保留无法确认。",
+        "activeIds": ["sticker"],
+        "doneIds": ["query", "json", "field"],
+        "mutedIds": ["error"],
+        "values": {"sticker": "K7 暂时缺货"},
+        "activeEdgeIds": ["field-sticker"]
       }
     ],
     "insight": "工具结果是下一步的可观测状态，不是最终答案；状态码和业务字段要分别解释。",
@@ -3248,24 +3221,24 @@
     },
     "sources": [
       {
-        "url": "https://developers.openai.com/api/docs/guides/function-calling#tool-call-outputs",
-        "label": "OpenAI · Function calling · tool call outputs",
+        "url": "https://developers.openai.com/api/docs/guides/function-calling",
+        "label": "OpenAI · Function calling",
         "note": "call_id 与 function_call_output"
       },
       {
-        "url": "https://modelcontextprotocol.io/specification/2025-06-18/server/tools#tool-result",
-        "label": "MCP · Tools specification · tool result",
+        "url": "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+        "label": "MCP · Tools specification 2025-06-18",
         "note": "structuredContent 与 isError"
       },
       {
-        "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
-        "label": "Anthropic · Tool use with Claude",
+        "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works",
+        "label": "Anthropic · How tool use works",
         "note": "应用执行并回传结果"
       },
       {
-        "url": "https://arxiv.org/abs/2210.03629",
-        "label": "arXiv · ReAct",
-        "note": "action/observation 状态循环"
+        "url": "https://openai.github.io/openai-agents-python/tools/",
+        "label": "OpenAI Agents SDK · Tools",
+        "note": "工具输出回到运行器"
       },
       {
         "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-200-ok",
