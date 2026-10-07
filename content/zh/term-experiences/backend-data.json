@@ -7245,239 +7245,254 @@
     ]
   },
   {
-    "slug": "row",
-    "lead": "事务 A 已把余额改成 80，为什么事务 B 仍然读到 100？",
-    "definition": "行是一组按列结构保存的值；使用多版本并发控制时，同一逻辑行可以同时存在多个物理版本，由事务快照决定可见版本。",
-    "boundary": "行号不是稳定身份，当前读取值也不一定是全局最新值。主键标识逻辑行，事务可见性决定读到哪个版本。",
-    "sceneKind": "timeline",
-    "sceneTitle": "同一逻辑行在三个事务中的可见版本",
-    "actionLabel": "推进事务时间线",
-    "actors": [
-      {
-        "id": "txn-a",
-        "label": "事务 A",
-        "detail": "UPDATE balance=80",
-        "icon": "gear",
-        "group": "事务"
-      },
-      {
-        "id": "txn-b",
-        "label": "事务 B",
-        "detail": "已持有旧快照",
-        "icon": "search",
-        "group": "事务"
-      },
-      {
-        "id": "txn-c",
-        "label": "事务 C",
-        "detail": "提交后开始",
-        "icon": "search",
-        "group": "事务"
-      },
-      {
-        "id": "row-v1",
-        "label": "行版本 v1",
-        "detail": "id=7 · balance=100",
-        "icon": "component",
-        "group": "版本"
-      },
-      {
-        "id": "row-v2",
-        "label": "行版本 v2",
-        "detail": "id=7 · balance=80",
-        "icon": "component",
-        "group": "版本"
-      },
-      {
-        "id": "snapshot",
-        "label": "可见性规则",
-        "detail": "按快照选择版本",
-        "icon": "memory",
-        "group": "并发控制"
-      }
-    ],
-    "edges": [
-      {
-        "id": "a-v2",
-        "from": "txn-a",
-        "to": "row-v2",
-        "label": "创建新版本"
-      },
-      {
-        "id": "b-snapshot",
-        "from": "txn-b",
-        "to": "snapshot",
-        "label": "使用旧快照"
-      },
-      {
-        "id": "c-snapshot",
-        "from": "txn-c",
-        "to": "snapshot",
-        "label": "使用新快照"
-      },
-      {
-        "id": "snapshot-v1",
-        "from": "snapshot",
-        "to": "row-v1",
-        "label": "可见旧版"
-      },
-      {
-        "id": "snapshot-v2",
-        "from": "snapshot",
-        "to": "row-v2",
-        "label": "可见新版"
-      }
-    ],
-    "frames": [
-      {
-        "label": "A 创建未提交版本",
-        "note": "UPDATE 不覆盖所有读者正在使用的旧版本，v2 暂时只对 A 可见。",
-        "activeIds": [
-          "txn-a",
-          "row-v2"
-        ],
-        "doneIds": [
-          "txn-a"
-        ],
-        "mutedIds": [
-          "txn-b",
-          "txn-c",
-          "snapshot"
-        ],
-        "values": {
-          "row-v1": "balance=100 · committed",
-          "row-v2": "balance=80 · uncommitted"
-        },
-        "activeEdgeIds": [
-          "a-v2"
-        ]
-      },
-      {
-        "label": "B 的快照选择 v1",
-        "note": "B 在 A 提交前建立快照，因此继续读取已提交的旧版本。",
-        "activeIds": [
-          "txn-b",
-          "snapshot",
-          "row-v1"
-        ],
-        "doneIds": [
-          "txn-b"
-        ],
-        "mutedIds": [
-          "txn-a",
-          "txn-c",
-          "row-v2"
-        ],
-        "values": {
-          "txn-b": "reads 100",
-          "snapshot": "v1 visible"
-        },
-        "activeEdgeIds": [
-          "b-snapshot",
-          "snapshot-v1"
-        ]
-      },
-      {
-        "label": "A 提交 v2",
-        "note": "新版本进入已提交状态，但 B 的既有快照仍不自动改变。",
-        "activeIds": [
-          "txn-a",
-          "row-v2",
-          "snapshot"
-        ],
-        "doneIds": [
-          "row-v2"
-        ],
-        "mutedIds": [
-          "txn-c"
-        ],
-        "values": {
-          "row-v2": "committed",
-          "txn-b": "still 100"
-        },
-        "activeEdgeIds": [
-          "a-v2",
-          "b-snapshot",
-          "snapshot-v1"
-        ]
-      },
-      {
-        "label": "C 的新快照选择 v2",
-        "note": "提交后开始的事务看到 balance=80。",
-        "activeIds": [
-          "txn-c",
-          "snapshot",
-          "row-v2"
-        ],
-        "doneIds": [
-          "txn-c"
-        ],
-        "mutedIds": [
-          "txn-a",
-          "txn-b",
-          "row-v1"
-        ],
-        "values": {
-          "txn-c": "reads 80",
-          "snapshot": "v2 visible"
-        },
-        "activeEdgeIds": [
-          "c-snapshot",
-          "snapshot-v2"
-        ],
-        "metric": {
-          "label": "同一 id 的可见值",
-          "value": "B 100 · C 80"
-        }
-      }
-    ],
-    "insight": "并发读取的是事务快照中的行版本，不是一个不断被原地覆盖的单元格。",
-    "quiz": {
-      "question": "主键相同的两个行版本是否表示表中有两个逻辑对象？",
-      "options": [
-        {
-          "label": "不一定，它们可以是同一逻辑行的不同事务版本",
-          "correct": true
-        },
-        {
-          "label": "一定，版本数等于对象数",
-          "correct": false
-        },
-        {
-          "label": "主键在事务中不再有效",
-          "correct": false
-        }
+  "slug": "row",
+  "lead": "表里的一行不是会被原地覆盖的电子表格格子：并发事务可能各自看到同一逻辑行的不同版本。",
+  "definition": "行是按表的列结构保存的一组字段值，通常由主键识别一个逻辑对象。数据库采用多版本并发控制时，更新会产生可供事务判断的版本；一个已经开始的事务按自己的快照读到旧版本，提交后新开的事务才读到新版本。行的概念因此同时涉及字段结构、逻辑身份和读取时的可见性。",
+  "boundary": "行号或物理位置不是稳定身份，结果没有 ORDER BY 时也不能把第几行当作对象顺序。主键相同的版本不代表出现了两个客户；不同数据库的隔离级别、锁和版本清理策略不同，读到旧值也不等于所有写入都永远不可见。",
+  "sceneKind": "timeline",
+  "sceneTitle": "提交边界和快照决定读者看到哪一行",
+  "actionLabel": "推进事务时间线",
+  "actors": [
+    {
+      "id": "txn-a",
+      "label": "事务 A",
+      "detail": "UPDATE balance=80",
+      "icon": "gear",
+      "group": "事务"
+    },
+    {
+      "id": "txn-b",
+      "label": "事务 B",
+      "detail": "已持有旧快照",
+      "icon": "search",
+      "group": "事务"
+    },
+    {
+      "id": "txn-c",
+      "label": "事务 C",
+      "detail": "提交后开始",
+      "icon": "search",
+      "group": "事务"
+    },
+    {
+      "id": "row-v1",
+      "label": "行版本 v1",
+      "detail": "id=7 · balance=100",
+      "icon": "component",
+      "group": "版本"
+    },
+    {
+      "id": "row-v2",
+      "label": "行版本 v2",
+      "detail": "id=7 · balance=80",
+      "icon": "component",
+      "group": "版本"
+    },
+    {
+      "id": "snapshot",
+      "label": "可见性规则",
+      "detail": "按快照选择版本",
+      "icon": "memory",
+      "group": "并发控制"
+    }
+  ],
+  "edges": [
+    {
+      "id": "a-v2",
+      "from": "txn-a",
+      "to": "row-v2",
+      "label": "创建新版本"
+    },
+    {
+      "id": "b-snapshot",
+      "from": "txn-b",
+      "to": "snapshot",
+      "label": "使用旧快照"
+    },
+    {
+      "id": "c-snapshot",
+      "from": "txn-c",
+      "to": "snapshot",
+      "label": "使用新快照"
+    },
+    {
+      "id": "snapshot-v1",
+      "from": "snapshot",
+      "to": "row-v1",
+      "label": "可见旧版"
+    },
+    {
+      "id": "snapshot-v2",
+      "from": "snapshot",
+      "to": "row-v2",
+      "label": "可见新版"
+    }
+  ],
+  "frames": [
+    {
+      "label": "先有已提交行",
+      "note": "id=7 的逻辑行当前是 balance=100，v1 已提交；行的身份来自主键，不来自它在结果表里的位置。",
+      "activeIds": [
+        "row-v1",
+        "txn-a",
+        "txn-b",
+        "txn-c"
       ],
-      "success": "MVCC 可以为同一逻辑行保留多个物理版本，再按快照选择。",
-      "retry": "区分逻辑主键与并发控制产生的物理版本。"
+      "doneIds": [],
+      "mutedIds": [
+        "row-v2",
+        "snapshot"
+      ],
+      "values": {
+        "row-v1": "id=7 · balance=100 · committed"
+      },
+      "activeEdgeIds": []
     },
-    "prompt": {
-      "title": "分析一次并发行更新",
-      "text": "请画出各事务开始、读写和提交时刻，标出每个行版本的创建者与可见事务，并说明使用的隔离级别。"
+    {
+      "label": "A 写出未提交版本",
+      "note": "事务 A 把余额改成 80，形成 v2；在提交前，A 自己可以看到新值，其他事务仍按各自规则看到 v1。",
+      "activeIds": [
+        "txn-a",
+        "row-v1",
+        "row-v2"
+      ],
+      "doneIds": [
+        "txn-a"
+      ],
+      "mutedIds": [
+        "txn-b",
+        "txn-c",
+        "snapshot"
+      ],
+      "values": {
+        "row-v1": "balance=100",
+        "row-v2": "balance=80 · uncommitted"
+      },
+      "activeEdgeIds": [
+        "a-v2"
+      ]
     },
-    "sources": [
+    {
+      "label": "B 的旧快照继续读 v1",
+      "note": "B 在 A 提交前建立快照，所以读取仍是 100；这不是行拒绝更新，而是 B 的可见性规则没有跨到 v2。",
+      "activeIds": [
+        "txn-b",
+        "snapshot",
+        "row-v1"
+      ],
+      "doneIds": [
+        "txn-b"
+      ],
+      "mutedIds": [
+        "txn-a",
+        "txn-c",
+        "row-v2"
+      ],
+      "values": {
+        "txn-b": "reads 100",
+        "snapshot": "v1 visible"
+      },
+      "activeEdgeIds": [
+        "b-snapshot",
+        "snapshot-v1"
+      ]
+    },
+    {
+      "label": "A 提交 v2",
+      "note": "A 提交后，v2 成为已提交版本；B 的既有快照不会自动改写，因此它仍可能读到 100。",
+      "activeIds": [
+        "txn-a",
+        "row-v2",
+        "txn-b",
+        "snapshot"
+      ],
+      "doneIds": [
+        "row-v2"
+      ],
+      "mutedIds": [
+        "txn-c",
+        "row-v1"
+      ],
+      "values": {
+        "row-v2": "balance=80 · committed",
+        "txn-b": "still 100"
+      },
+      "activeEdgeIds": [
+        "a-v2",
+        "b-snapshot",
+        "snapshot-v1"
+      ]
+    },
+    {
+      "label": "C 新快照读 v2",
+      "note": "提交后才开始的事务 C 建立新快照，读到 80；两个读数对应同一个逻辑 id=7 的不同可见版本。",
+      "activeIds": [
+        "txn-c",
+        "snapshot",
+        "row-v2"
+      ],
+      "doneIds": [
+        "txn-a",
+        "txn-b",
+        "row-v1"
+      ],
+      "mutedIds": [],
+      "values": {
+        "txn-c": "reads 80",
+        "snapshot": "v2 visible",
+        "row-v2": "id=7"
+      },
+      "activeEdgeIds": [
+        "c-snapshot",
+        "snapshot-v2"
+      ]
+    }
+  ],
+  "insight": "行的逻辑身份由主键保持，读到哪一个版本由事务快照和隔离规则决定；不要把结果位置或一次读取当成永久事实。",
+  "quiz": {
+    "question": "主键相同的 v1 和 v2 是否说明表里有两个逻辑客户？",
+    "options": [
       {
-        "url": "https://www.postgresql.org/docs/current/ddl-basics.html",
-        "label": "PostgreSQL · Table Basics",
-        "note": "行列定义与未指定排序的边界"
+        "label": "不一定，它们可以是同一逻辑行的不同并发版本",
+        "correct": true
       },
       {
-        "url": "https://www.postgresql.org/docs/current/mvcc-intro.html",
-        "label": "PostgreSQL · Introduction to MVCC",
-        "note": "快照、已提交版本与并发读取"
+        "label": "一定，版本数就是对象数",
+        "correct": false
       },
       {
-        "url": "https://www.postgresql.org/docs/current/queries-order.html",
-        "label": "PostgreSQL · Sorting Rows",
-        "note": "ORDER BY 才能保证结果顺序"
-      },
-      {
-        "url": "https://www.sqlite.org/withoutrowid.html",
-        "label": "SQLite · WITHOUT ROWID",
-        "note": "rowid、主键与物理存储实现的区别"
+        "label": "主键在事务中会自动失效",
+        "correct": false
       }
-    ]
+    ],
+    "success": "MVCC 可以为同一逻辑行保留多个物理版本，再按事务快照选择可见值。",
+    "retry": "把物理版本当成逻辑对象，或把结果位置当成身份，都会误读并发行为。"
   },
+  "prompt": "请用 id=7、balance=100/80 和事务 A/B/C 写出未提交、旧快照、提交、新快照四个边界；说明每个事务能看到哪个版本、是否需要 ORDER BY 才能谈结果顺序，并区分逻辑主键与物理版本。",
+  "sources": [
+    {
+      "url": "https://www.postgresql.org/docs/current/ddl-basics.html",
+      "label": "PostgreSQL · Table basics",
+      "note": "PostgreSQL Table Basics：核对行列结构、主键身份和未指定排序的边界。"
+    },
+    {
+      "url": "https://www.postgresql.org/docs/current/mvcc-intro.html",
+      "label": "PostgreSQL · MVCC",
+      "note": "PostgreSQL MVCC introduction：核对快照、提交版本与并发读取。"
+    },
+    {
+      "url": "https://www.postgresql.org/docs/current/queries-order.html",
+      "label": "PostgreSQL · ORDER BY",
+      "note": "PostgreSQL ORDER BY：核对只有显式排序才能保证结果顺序。"
+    },
+    {
+      "url": "https://www.sqlite.org/withoutrowid.html",
+      "label": "SQLite · WITHOUT ROWID",
+      "note": "SQLite WITHOUT ROWID：核对 rowid、主键和物理存储实现的区别。"
+    }
+  ],
+  "promptTitle": "解释一次并发读取"
+},
   {
     "slug": "column",
     "lead": "金额都存成字符串，为什么排序结果会变成 10、2、9.5？",

@@ -825,14 +825,65 @@
     "promptTitle": "检查数据表", "prompt": "请检查这张表的列、类型、空值、主键和唯一约束，指出重复或混合职责的字段。", "relatedSlugs": ["row", "column", "database-schema", "primary-key"]
   },
   {
-    "zh": "行", "en": "Row", "slug": "row", "cat": "后端",
-    "say": "表中的一条完整记录，例如某个用户或某笔订单。", "aliases": ["记录", "数据行", "Tuple"],
-    "question": "修改一个用户邮箱时，数据库具体改的是哪里？", "definition": "行是关系表中按列结构保存的一组字段值，通常对应一个实体或事件。", "boundary": "行由表的列定义约束，不能随意增加表中不存在的字段。",
-    "demoType": "state", "demoTitle": "一行用户记录怎样被更新",
-    "demoSteps": [{"label":"旧版本","value":"id=7 · balance=100","note":"事务 B 看到已提交的旧版本。"},{"label":"未提交更新","value":"事务 A · balance=80","note":"A 未提交时，B 仍按隔离规则看到 100。"},{"label":"提交后读取","value":"COMMIT · C 读 80","note":"提交后新事务可见已提交版本。"}],
-    "quizQuestion": "更新指定行最常用什么来定位？", "quizOptions": ["主键或唯一条件", "页面背景色", "随机选择"], "correctText": "稳定且唯一的条件可避免误改多行。", "wrongText": "样式和随机选择都不能可靠定位记录。",
-    "promptTitle": "检查行级更新", "prompt": "请检查这条 UPDATE 的定位条件和受影响行数，说明如何避免误更新整张表。", "relatedSlugs": ["table", "column", "primary-key", "sql"]
-  },
+  "zh": "行",
+  "en": "Row",
+  "slug": "row",
+  "cat": "后端",
+  "say": "表里的一行不是会被原地覆盖的电子表格格子：并发事务可能各自看到同一逻辑行的不同版本。",
+  "aliases": [
+    "记录",
+    "数据行",
+    "Tuple"
+  ],
+  "question": "主键相同的行为什么能在不同事务里同时显示 100 和 80？",
+  "definition": "行是按表的列结构保存的一组字段值，通常由主键识别一个逻辑对象。数据库采用多版本并发控制时，更新会产生可供事务判断的版本；一个已经开始的事务按自己的快照读到旧版本，提交后新开的事务才读到新版本。行的概念因此同时涉及字段结构、逻辑身份和读取时的可见性。",
+  "boundary": "行号或物理位置不是稳定身份，结果没有 ORDER BY 时也不能把第几行当作对象顺序。主键相同的版本不代表出现了两个客户；不同数据库的隔离级别、锁和版本清理策略不同，读到旧值也不等于所有写入都永远不可见。",
+  "demoType": "lifecycle",
+  "demoTitle": "同一逻辑行怎样在三个事务里显示不同版本",
+  "demoSteps": [
+    {
+      "label": "先有已提交行",
+      "value": "id=7 · balance=100 · committed",
+      "note": "id=7 的逻辑行当前是 balance=100，v1 已提交；行的身份来自主键，不来自它在结果表里的位置。"
+    },
+    {
+      "label": "A 写出未提交版本",
+      "value": "balance=100 · balance=80 · uncommitted",
+      "note": "事务 A 把余额改成 80，形成 v2；在提交前，A 自己可以看到新值，其他事务仍按各自规则看到 v1。"
+    },
+    {
+      "label": "B 的旧快照继续读 v1",
+      "value": "reads 100 · v1 visible",
+      "note": "B 在 A 提交前建立快照，所以读取仍是 100；这不是行拒绝更新，而是 B 的可见性规则没有跨到 v2。"
+    },
+    {
+      "label": "A 提交 v2",
+      "value": "balance=80 · committed · still 100",
+      "note": "A 提交后，v2 成为已提交版本；B 的既有快照不会自动改写，因此它仍可能读到 100。"
+    },
+    {
+      "label": "C 新快照读 v2",
+      "value": "reads 80 · v2 visible · id=7",
+      "note": "提交后才开始的事务 C 建立新快照，读到 80；两个读数对应同一个逻辑 id=7 的不同可见版本。"
+    }
+  ],
+  "quizQuestion": "主键相同的 v1 和 v2 是否说明表里有两个逻辑客户？",
+  "quizOptions": [
+    "不一定，它们可以是同一逻辑行的不同并发版本",
+    "一定，版本数就是对象数",
+    "主键在事务中会自动失效"
+  ],
+  "correctText": "MVCC 可以为同一逻辑行保留多个物理版本，再按事务快照选择可见值。",
+  "wrongText": "把物理版本当成逻辑对象，或把结果位置当成身份，都会误读并发行为。",
+  "promptTitle": "解释一次并发读取",
+  "prompt": "请用 id=7、balance=100/80 和事务 A/B/C 写出未提交、旧快照、提交、新快照四个边界；说明每个事务能看到哪个版本、是否需要 ORDER BY 才能谈结果顺序，并区分逻辑主键与物理版本。",
+  "relatedSlugs": [
+    "table",
+    "column",
+    "primary-key",
+    "sql"
+  ]
+},
   {
     "zh": "列", "en": "Column", "slug": "column", "cat": "后端",
     "say": "表中同一类字段的定义，例如邮箱列规定每行邮箱怎样保存。", "aliases": ["字段", "数据列", "Column"],
