@@ -23,7 +23,7 @@
 
 ## 逐条证据
 
-仅当文章、来源、演示、审读、浏览器和构建完成，才写入下列记录；每条独立提交。当前已完成前 7 条，继续处理第 8 条。
+仅当文章、来源、演示、审读、浏览器和构建完成，才写入下列记录；每条独立提交。当前已完成前 8 条，继续处理第 9 条。
 
 | 词条 | 已读来源与论断映射 | 审读 | 浏览器 | build/typecheck | 提交 |
 | --- | --- | --- | --- | --- | --- |
@@ -34,6 +34,7 @@
 | javascript | MDN language overview→`javascript-definition`/`javascript-state`；MDN events→`javascript-events`；MDN client-side APIs→`javascript-dom`/`javascript-host`；TC39→`javascript-definition`/`javascript-boundary` | 待 reviewer | 本地 3410：状态/DOM 读数分离、浏览器/Node 宿主切换；键盘待补 | `tsc` 已过；build 待十条批量执行 | 28c39858 |
 | dom | WHATWG DOM→`dom-definition`/`dom-tree`；MDN DOM scripting→`dom-tree`/`dom-current`；MDN querySelector→`dom-query`；MDN textContent→`dom-text`/`dom-boundary` | 待 reviewer 复核来源台账 | 本地 3410：节点树选择、当前文本写入、源 HTML 不变；键盘待补 | `tsc` 已过；build 待十条批量执行 | 53e44986 + 897b6f4 |
 | framework | Next.js project structure→`framework-definition`/`framework-convention`；React describing UI→`framework-definition`/`framework-library`；Angular overview→`framework-convention`/`framework-library`；Next server/client→`framework-runtime`/`framework-boundary` | 待 reviewer | 本地 3410：框架模式切路径自动换页；库模式切路径后需主动 `render()`；键盘待补 | `tsc` 已过；build 待十条批量执行 | 待提交 |
+| ssg-ssr | Next.js SSG→`ssg-ssr-definition`/`ssg-ssr-static`；Next.js SSR→`ssg-ssr-definition`/`ssg-ssr-request`；Next.js ISR→`ssg-ssr-update`/`ssg-ssr-failure`；React hydrateRoot→`ssg-ssr-hydration`；MDN HTTP caching→`ssg-ssr-cache`/`ssg-ssr-choice` | 待 reviewer | 本地 3410：改票价后 SSG 复用旧票据、SSR 读取新票价；关闭数据源保留静态副本并显示 SSR 失败 | `tsc` 已过；build 待十条批量执行 | 待提交 |
 
 ## 现状证据
 

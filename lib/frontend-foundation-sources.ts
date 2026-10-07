@@ -50,3 +50,11 @@ export const frameworkSources = [
   source("Angular", "Overview", "https://angular.dev/overview", ["framework-convention", "framework-library"]),
   source("Next.js", "Server and Client Components", "https://nextjs.org/docs/app/getting-started/server-and-client-components", ["framework-runtime", "framework-boundary"]),
 ];
+
+export const ssgSsrSources = [
+  source("Next.js", "Static Site Generation (Pages Router)", "https://nextjs.org/docs/pages/building-your-application/rendering/static-site-generation", ["ssg-ssr-definition", "ssg-ssr-static"]),
+  source("Next.js", "Server-side Rendering (Pages Router)", "https://nextjs.org/docs/pages/building-your-application/rendering/server-side-rendering", ["ssg-ssr-definition", "ssg-ssr-request"]),
+  source("Next.js", "Incremental Static Regeneration", "https://nextjs.org/docs/pages/guides/incremental-static-regeneration", ["ssg-ssr-update", "ssg-ssr-failure"]),
+  source("React", "hydrateRoot", "https://react.dev/reference/react-dom/client/hydrateRoot", ["ssg-ssr-hydration"]),
+  source("MDN", "HTTP caching", "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching", ["ssg-ssr-cache", "ssg-ssr-choice"]),
+];

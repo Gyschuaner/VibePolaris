@@ -440,12 +440,13 @@
     "slug": "ssg-ssr",
     "mechanism": "SSG 在构建时或缓存失效后生成可复用 HTML，SSR 在请求到达时读取请求相关数据并生成 HTML；两者都可以先把 HTML 交给浏览器，客户端水合再负责接上交互。",
     "misconception": "SSG 不是永远不变，生成结果可以按时间或事件再验证；SSR 也不等于完全不缓存。选择要看数据是否随请求变化以及缓存边界。",
-    "demoSignature": "compare: 4 frames; actors=构建阶段/静态文件/文档访客/账户用户/请求时服务器/个性化 HTML; phases=提前生成文档→复用静态页→账户请求到达→请求时生成; action=发起访问",
+    "demoSignature": "time-panels: compact static snapshot + request-time ticket; interaction=改票价/切数据源/再次访问/重生成; proof=SSG 继续复用旧快照，SSR 读取本次数据，失败时保留旧副本; boundary=cache and hydration are separate decisions",
     "sourceUrls": [
-      "https://nextjs.org/docs/app/getting-started/linking-and-navigating",
-      "https://nextjs.org/docs/app/getting-started/revalidating",
+      "https://nextjs.org/docs/pages/building-your-application/rendering/static-site-generation",
+      "https://nextjs.org/docs/pages/building-your-application/rendering/server-side-rendering",
+      "https://nextjs.org/docs/pages/guides/incremental-static-regeneration",
       "https://react.dev/reference/react-dom/client/hydrateRoot",
-      "https://nextjs.org/docs/app/guides/cdn-caching"
+      "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching"
     ],
     "rewriteRisk": "正式页面需守住边界：SSG 结果可以再验证，SSR 也可能使用缓存；选择要看数据是否随请求变化以及缓存边界。",
     "nearDuplicates": [
