@@ -1462,9 +1462,76 @@
     },
     "sources": [
       {
-        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
-        "label": "RFC 9110 · HTTP Fields",
-        "note": "协议定义与报文语义"
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers",
+        "label": "MDN · HTTP headers",
+        "note": "头字段的通用语法与分类"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Accept",
+        "label": "MDN · Accept",
+        "note": "客户端可接受的表示类型"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Type",
+        "label": "MDN · Content-Type",
+        "note": "正文媒体类型声明"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Content_negotiation",
+        "label": "MDN · Content negotiation",
+        "note": "根据请求头选择表示"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html#section-12.5.5",
+        "label": "RFC 9110 · Vary",
+        "note": "缓存需要知道的选择字段"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Glossary/Forbidden_request_header",
+        "label": "MDN · Forbidden request header",
+        "note": "浏览器脚本不能任意设置的请求头"
+      }
+    ],
+    "teaching": [
+      {
+        "id": "header-field",
+        "title": "头字段是名字加值，不是魔法开关",
+        "body": "HTTP 头字段用名字和值补充消息的元数据，名字比较时不区分大小写，值的解释由具体字段定义。`Accept` 描述客户端愿意接收的表示，`Content-Type` 描述当前消息正文是什么，两者方向不同，不能互换。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "header-consumer",
+        "title": "同一字段可以被不同层消费",
+        "body": "缓存可能读取条件字段决定是否回 304，应用读取 Accept 选择表示，认证组件读取 Authorization 判断身份。字段经过代理并不代表每一层都使用它；演示把“转发”和“消费”分开，避免把一张牌画成只属于某个程序。",
+        "sourceIndices": [
+          1,
+          4,
+          5
+        ]
+      },
+      {
+        "id": "header-trust",
+        "title": "字段写进请求，不等于声明就是真的",
+        "body": "客户端可以自己写很多普通头，代理也可能改写或补充它们。Authorization 应由可信的认证边界验证，日志不应保存令牌原文；浏览器还会限制脚本设置某些 forbidden request header。",
+        "sourceIndices": [
+          1,
+          5,
+          6
+        ]
+      },
+      {
+        "id": "header-vary",
+        "title": "缓存还要知道哪些字段影响结果",
+        "body": "如果服务根据 Accept 返回不同表示，缓存只按 URL 保存就可能把 JSON 发给需要 HTML 的请求。`Vary: Accept` 把影响选择的字段写进缓存契约；它不会替应用验证内容，也不会自动解决所有缓存误配。",
+        "sourceIndices": [
+          1,
+          4,
+          5
+        ]
       }
     ]
   },
