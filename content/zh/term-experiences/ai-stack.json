@@ -3691,42 +3691,42 @@
     "lead": "检索与核对可以并行，为什么撰写还要等？",
     "definition": "智能体编排把任务分给不同的智能体、程序或工具，安排哪些步骤可以同时做、哪些必须等待，传递每步需要的材料和状态，并按规则处理冲突、超时和结果合并。",
     "boundary": "多个模型同时运行不等于编排；没有分工和汇总规则，只会增加调用和协调成本。负责调度的编排器可以是固定程序，也可以是智能体。简单任务用一个流程更容易核对。",
-    "sceneKind": "network",
-    "sceneTitle": "并行任务怎样等待依赖并合并结果",
-    "actionLabel": "切换串行与并行",
+    "sceneKind": "matrix",
+    "sceneTitle": "报告拼图桌怎样卡住冲突并合页",
+    "actionLabel": "切换翻牌方式并处理冲突",
     "actors": [
       {
         "id": "orchestrator",
-        "label": "编排器",
-        "detail": "管理依赖与状态",
+        "label": "编排台",
+        "detail": "依赖夹与状态",
         "icon": "network",
         "group": "控制"
       },
       {
         "id": "research",
-        "label": "检索",
+        "label": "检索磁片",
         "detail": "8 条证据",
         "icon": "search",
         "group": "任务"
       },
       {
         "id": "verify",
-        "label": "核对",
-        "detail": "逐条核对证据",
+        "label": "核对磁片",
+        "detail": "逐条对照",
         "icon": "chart",
         "group": "任务"
       },
       {
         "id": "write",
-        "label": "撰写",
-        "detail": "等待核对结果",
+        "label": "撰写夹",
+        "detail": "等待核对解锁",
         "icon": "file",
         "group": "任务"
       },
       {
         "id": "report",
-        "label": "合并报告",
-        "detail": "7 条证据",
+        "label": "报告合页",
+        "detail": "7 条一致证据",
         "icon": "spark",
         "group": "结果"
       }
@@ -3736,120 +3736,87 @@
         "id": "o-r",
         "from": "orchestrator",
         "to": "research",
-        "label": "分派"
+        "label": "发卡"
       },
       {
         "id": "o-v",
         "from": "orchestrator",
         "to": "verify",
-        "label": "分派"
+        "label": "发卡"
       },
       {
         "id": "r-v",
         "from": "research",
         "to": "verify",
-        "label": "交付证据"
+        "label": "递交磁片"
       },
       {
         "id": "v-w",
         "from": "verify",
         "to": "write",
-        "label": "通过才开始"
+        "label": "解锁"
       },
       {
         "id": "w-rep",
         "from": "write",
         "to": "report",
-        "label": "汇总"
+        "label": "扣合"
       }
     ],
     "frames": [
       {
         "label": "任务拆开",
-        "note": "编排器先写清三个任务，标出撰写要等核对结果。",
-        "activeIds": [
-          "orchestrator"
-        ],
+        "note": "编排台先把检索、核对和撰写放到拼图桌上，标出撰写要等核对。",
+        "activeIds": ["orchestrator"],
         "doneIds": [],
-        "mutedIds": [
-          "research",
-          "verify",
-          "write",
-          "report"
-        ],
-        "values": {
-          "orchestrator": "3任务 · 2依赖"
-        },
+        "mutedIds": ["research", "verify", "write", "report"],
+        "values": {"orchestrator": "3 块 · 2 依赖"},
         "activeEdgeIds": []
       },
       {
-        "label": "检索与核对启动",
-        "note": "检索找到 8 条，核对开始逐条对照。",
-        "activeIds": [
-          "research",
-          "verify"
-        ],
-        "doneIds": [
-          "orchestrator"
-        ],
-        "mutedIds": [
-          "write",
-          "report"
-        ],
-        "values": {
-          "research": "8 条",
-          "verify": "检查中"
-        },
-        "activeEdgeIds": [
-          "o-r",
-          "o-v",
-          "r-v"
-        ]
+        "label": "检索与核对翻牌",
+        "note": "并行模式让检索和核对同时开工；串行模式会让核对继续等检索。",
+        "activeIds": ["research", "verify"],
+        "doneIds": ["orchestrator"],
+        "mutedIds": ["write", "report"],
+        "values": {"research": "8 条", "verify": "翻牌中"},
+        "activeEdgeIds": ["o-r", "o-v", "r-v"]
       },
       {
-        "label": "冲突阻塞撰写",
-        "note": "核对发现 1 处冲突，按既定规则复核，撰写暂停，避免把矛盾结果写进报告。",
-        "activeIds": [
-          "verify",
-          "write"
-        ],
-        "doneIds": [
-          "orchestrator",
-          "research"
-        ],
-        "mutedIds": [
-          "report"
-        ],
-        "values": {
-          "verify": "冲突 1",
-          "write": "阻塞"
-        },
-        "activeEdgeIds": [
-          "r-v",
-          "v-w"
-        ]
+        "label": "冲突磁片露出",
+        "note": "核对发现 1 处冲突；证据还没有通过规则，撰写不能直接拿去合并。",
+        "activeIds": ["verify", "write"],
+        "doneIds": ["orchestrator", "research"],
+        "mutedIds": ["report"],
+        "values": {"verify": "冲突 1", "write": "锁住"},
+        "activeEdgeIds": ["r-v", "v-w"]
       },
       {
-        "label": "排除冲突证据后汇合",
-        "note": "7 条一致证据交给撰写，再由撰写合并进报告。",
-        "activeIds": [
-          "verify",
-          "write",
-          "report"
-        ],
-        "doneIds": [
-          "orchestrator",
-          "research"
-        ],
+        "label": "撰写夹保持锁住",
+        "note": "停止是编排规则的一部分：先保留冲突状态，不把矛盾材料写成一份完整报告。",
+        "activeIds": ["write"],
+        "doneIds": ["orchestrator", "research", "verify"],
+        "mutedIds": ["report"],
+        "values": {"write": "等待冲突处理"},
+        "activeEdgeIds": ["v-w"]
+      },
+      {
+        "label": "排除冲突磁片",
+        "note": "按规则排除冲突证据，撰写只接收 7 条一致材料，合页仍等待最后一扣。",
+        "activeIds": ["verify", "write"],
+        "doneIds": ["orchestrator", "research"],
+        "mutedIds": ["report"],
+        "values": {"verify": "冲突 0", "write": "7 条入稿"},
+        "activeEdgeIds": ["v-w"]
+      },
+      {
+        "label": "报告合页扣上",
+        "note": "7 条一致证据合并进报告；可交付来自合并规则，不来自同时运行的角色数量。",
+        "activeIds": ["report"],
+        "doneIds": ["orchestrator", "research", "verify", "write"],
         "mutedIds": [],
-        "values": {
-          "verify": "冲突 0",
-          "report": "7 条证据"
-        },
-        "activeEdgeIds": [
-          "v-w",
-          "w-rep"
-        ]
+        "values": {"report": "7 条一致证据"},
+        "activeEdgeIds": ["w-rep"]
       }
     ],
     "insight": "编排先管清楚谁做什么、谁要等谁；并行调用几个模型，不会自动解决冲突。",
@@ -3896,6 +3863,11 @@
         "url": "https://arxiv.org/abs/2308.08155",
         "label": "AutoGen · Multi-Agent Conversation",
         "note": "多智能体对话与可编排的交互模式"
+      },
+      {
+        "url": "https://openai.github.io/openai-agents-python/handoffs/",
+        "label": "OpenAI Agents SDK · handoffs",
+        "note": "交接回复权与上下文的实现边界"
       }
     ]
   },
