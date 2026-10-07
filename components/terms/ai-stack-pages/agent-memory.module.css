@@ -1,0 +1,125 @@
+.hero,
+.lab { box-sizing: border-box; min-width: 0; color: var(--ink); }
+
+:global(.vp-concept[data-concept="agent-memory"] .vp-hero h1) { font-size: clamp(42px, 4vw, 58px); letter-spacing: -2px; text-wrap: nowrap; }
+:global(.vp-concept[data-concept="agent-memory"] .vp-hero h1 span) { display: block; margin: 12px 0 0; white-space: normal; }
+
+.hero { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; width: 100%; max-width: 100%; margin: 0; padding: 12px; overflow: hidden; border-radius: 16px; background: radial-gradient(circle at 12% 18%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 38%), color-mix(in srgb, var(--accent-text) 5%, var(--paper)); }
+.heroTop,
+.labTop { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 11px; }
+.heroTop strong { color: var(--accent-text); font: 10px ui-monospace, monospace; }
+.hero figcaption { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.hero :global(.sceneControls),
+.lab :global(.sceneControls) { min-width: 0; }
+
+.desk { display: grid; gap: 9px; width: 100%; max-width: 100%; min-width: 0; padding: 11px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 14px; background: color-mix(in srgb, var(--paper) 94%, var(--accent) 6%); }
+.heroDesk { min-height: 310px; }
+.lessonDesk { min-height: 400px; padding: 16px; }
+.deskHeader { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 10px; }
+.deskHeader > span { display: inline-flex; align-items: center; gap: 5px; }
+.deskHeader svg { color: var(--accent-text); }
+.deskHeader code { color: var(--accent-text); font: 9px ui-monospace, monospace; }
+
+.drawerStage { display: grid; grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr); gap: 8px; min-width: 0; align-items: stretch; }
+.preferenceSlip,
+.drawer { min-width: 0; border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); border-radius: 11px; transition: transform .45s ease, opacity .35s ease, border-color .35s ease, background .35s ease; }
+.preferenceSlip { display: grid; align-content: start; gap: 6px; padding: 10px; background: color-mix(in srgb, var(--paper) 88%, #f1e0bd); }
+.preferenceSlip[data-state="outside"] { transform: translateY(3px) rotate(-1deg); }
+.preferenceSlip[data-state="stored"],
+.preferenceSlip[data-state="retrieved"],
+.preferenceSlip[data-state="inserted"],
+.preferenceSlip[data-state="corrected"] { border-color: color-mix(in srgb, var(--accent-text) 42%, transparent); background: color-mix(in srgb, var(--accent-text) 9%, var(--paper)); }
+.preferenceSlip[data-state="deleted"] { color: #9d4b40; border-color: #b45a47; background: color-mix(in srgb, #c96659 8%, var(--paper)); text-decoration: line-through; }
+.preferenceSlip > span { color: var(--muted); font-size: 9px; }
+.preferenceSlip > strong { font-size: 12px; line-height: 1.4; overflow-wrap: anywhere; }
+.preferenceSlip > small { color: var(--muted); font: 8px/1.4 ui-monospace, monospace; overflow-wrap: anywhere; }
+
+.drawer { display: grid; gap: 7px; padding: 9px; background: color-mix(in srgb, var(--paper) 86%, #e6eddc); }
+.drawer[data-open="false"] { opacity: .62; }
+.drawerHeader { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; color: var(--muted); font-size: 9px; }
+.drawerHeader strong { color: var(--accent-text); font: 9px ui-monospace, monospace; text-align: right; }
+.cards { display: grid; gap: 5px; min-width: 0; }
+.otherCard,
+.memoryCard { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 5px; min-width: 0; padding: 7px; border-radius: 8px; background: color-mix(in srgb, var(--ink) 5%, transparent); color: var(--muted); }
+.otherCard span { font-size: 9px; }
+.otherCard code { color: var(--muted); font: 8px ui-monospace, monospace; }
+.memoryCard { grid-template-columns: auto minmax(0, 1fr); color: var(--ink); border: 1px solid color-mix(in srgb, var(--accent-text) 26%, transparent); background: #e5efdc; transition: transform .45s ease, opacity .35s ease, background .35s ease, color .35s ease; }
+.memoryCard > svg { color: var(--accent-text); }
+.memoryCard > div { display: grid; gap: 3px; min-width: 0; }
+.memoryCard strong { min-width: 0; font-size: 9px; overflow-wrap: anywhere; }
+.memoryCard small { color: var(--muted); font: 8px/1.3 ui-monospace, monospace; overflow-wrap: anywhere; }
+.memoryCard[data-state="outside"] { opacity: .45; border-style: dashed; background: color-mix(in srgb, var(--paper) 80%, #f4dfbd); }
+.memoryCard[data-state="retrieved"] { transform: translateX(3px); }
+.memoryCard[data-state="inserted"] { transform: translateX(5px) rotate(-1deg); }
+.memoryCard[data-state="corrected"] { border-color: #c68a50; background: #f3e7cf; }
+.memoryCard[data-state="corrected"] > svg { color: #a7662d; }
+.memoryCard[data-state="deleted"] { opacity: .42; color: #9d4b40; border-color: #b45a47; background: #f8e2dc; text-decoration: line-through; }
+.memoryCard[data-state="deleted"] > svg { color: #a34b40; }
+.drawerSlot { display: flex; align-items: center; gap: 5px; min-width: 0; padding-top: 6px; border-top: 1px dashed color-mix(in srgb, var(--ink) 17%, transparent); color: var(--muted); font-size: 8px; line-height: 1.35; }
+.drawerSlot svg { flex: none; color: var(--accent-text); }
+.drawerSlot[data-filled="true"] { color: var(--accent-text); }
+
+.taskWindow { display: grid; gap: 7px; min-width: 0; padding: 9px; border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); border-radius: 11px; background: color-mix(in srgb, var(--paper) 88%, #e2e8f0); }
+.taskHeader { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 9px; }
+.taskHeader > span { display: inline-flex; align-items: center; gap: 5px; }
+.taskHeader svg { color: var(--accent-text); }
+.taskHeader code { color: var(--ink); font: 8px ui-monospace, monospace; overflow-wrap: anywhere; }
+.promptSlot,
+.outputSlot { display: grid; gap: 3px; min-width: 0; padding: 7px 8px; border-radius: 8px; background: color-mix(in srgb, var(--ink) 5%, transparent); transition: transform .4s ease, opacity .35s ease, background .35s ease; }
+.promptSlot span,
+.outputSlot span { color: var(--muted); font-size: 8px; }
+.promptSlot strong,
+.outputSlot strong { min-width: 0; font: 9px/1.4 ui-monospace, monospace; overflow-wrap: anywhere; }
+.promptSlot[data-filled="true"] { border-left: 2px solid var(--accent-text); background: color-mix(in srgb, var(--accent-text) 8%, var(--paper)); transform: translateX(3px); }
+.promptSlot[data-filled="true"] strong { color: var(--accent-text); }
+.outputSlot[data-stale="true"] { background: #f2e7d0; }
+.outputSlot[data-stale="true"] strong { color: #8b5e2e; }
+.desk > .status { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 7px; min-width: 0; padding: 8px 9px 2px; border-top: 1px dashed color-mix(in srgb, var(--ink) 21%, transparent); color: var(--muted); }
+.status > svg { margin-top: 1px; color: var(--accent-text); }
+.status > div { display: grid; gap: 2px; min-width: 0; }
+.status strong { color: var(--ink); font-size: 10px; overflow-wrap: anywhere; }
+.status span { font-size: 9px; line-height: 1.45; overflow-wrap: anywhere; }
+.status[data-status="inserted"],
+.status[data-status="corrected"] { color: var(--accent-text); }
+.status[data-status="inserted"] strong,
+.status[data-status="corrected"] strong { color: var(--accent-text); }
+.status[data-status="deleted"] { color: #9d4b40; }
+.status[data-status="deleted"] > svg,
+.status[data-status="deleted"] strong { color: #9d4b40; }
+
+.lab { display: grid; gap: 13px; width: 100%; max-width: 100%; margin: 26px 0 18px; padding: 17px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 16px; background: color-mix(in srgb, var(--accent-text) 5%, var(--paper)); }
+.labTop { font: 10px ui-monospace, monospace; }
+.labTop strong { font: 400 11px/1.4 inherit; }
+.controls { display: flex; flex-wrap: wrap; gap: 7px; }
+.controls button { display: inline-flex; align-items: center; gap: 5px; min-height: 34px; padding: 6px 10px; border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent); border-radius: 999px; background: var(--paper); color: var(--ink); font-size: 12px; cursor: pointer; }
+.controls button[aria-pressed="true"] { background: var(--accent-text); color: var(--paper); }
+.controls button:disabled { opacity: .4; cursor: not-allowed; }
+.controls button:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
+.reset { margin-left: auto; }
+.lessonNote { min-height: 25px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+.lessonNote[data-status="inserted"],
+.lessonNote[data-status="corrected"] { color: var(--accent-text); }
+.lessonNote[data-status="deleted"] { color: #9d4b40; }
+
+.hero .desk { gap: 7px; padding: 9px; }
+.hero .preferenceSlip { padding: 7px; }
+.hero .drawer { padding: 7px; }
+.hero .taskWindow { padding: 7px; }
+.hero .memoryCard strong { font-size: 8px; }
+.hero .memoryCard small { font-size: 7px; }
+
+@media (max-width: 600px) {
+  .hero { padding: 10px; }
+  .lessonDesk { padding: 12px; }
+  .drawerStage { grid-template-columns: minmax(0, .78fr) minmax(0, 1.22fr); gap: 6px; }
+  .preferenceSlip > strong { font-size: 11px; }
+  .reset { margin-left: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preferenceSlip,
+  .drawer,
+  .memoryCard,
+  .promptSlot,
+  .outputSlot { transition: none; }
+}

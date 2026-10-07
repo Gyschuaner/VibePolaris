@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, CheckCircle, Eye, FileText, Image as ImageIcon, MagnifyingGlass, TextT, WarningCircle, XCircle } from "@phosphor-icons/react";
+import { CheckCircle, Eye, Image as ImageIcon, TextT, WarningCircle, XCircle } from "@phosphor-icons/react";
 import { useState } from "react";
 
 import { Article, Cite } from "./AiStackConceptPageShared";
@@ -19,15 +19,17 @@ const frames = [
 
 function Ticket({ image, focus }: { image: boolean; focus: "none" | "date" | "gate" }) {
   return <div className={styles.ticket} data-visible={image} aria-label={image ? "票面图片" : "没有票面图片"}>
-    {image ? <>
+    <div className={styles.ticketInk} aria-hidden={!image}>
       <div className={styles.ticketTop}><span>BOARDING PASS</span><span>VBP 031</span></div>
       <div className={styles.ticketFields}>
         <div className={styles.ticketField} data-focus={focus === "date"}><small>DATE</small><strong>2026 · 10 · 03</strong></div>
         <div className={styles.ticketField} data-focus={focus === "gate"}><small>GATE</small><strong>A12</strong></div>
         <div className={styles.ticketField}><small>NAME</small><strong>READER</strong></div>
+        <div className={styles.fieldLens} data-focus={focus} aria-hidden="true"><i /><i /><i /><i /></div>
       </div>
       <div className={styles.ticketStripe} aria-hidden="true" />
-    </> : <div className={styles.ticketMissing}><ImageIcon size={22} aria-hidden="true" /><span>图片未提交</span><code>input_image = ∅</code></div>}
+    </div>
+    <div className={styles.ticketMissing} aria-hidden={image}><ImageIcon size={27} aria-hidden="true" /><span>还没有这张图片</span></div>
   </div>;
 }
 
@@ -35,24 +37,18 @@ function MultimodalHero() {
   const scene = useScene(frames.length);
   const current = frames[scene.step];
   return <figure ref={scene.ref} className={styles.hero} aria-label="文字问题如何在票面图片上找到对应证据的多模态演示">
-    <div className={styles.heroTop}><span>EVIDENCE LENS / MULTIMODAL INPUT</span><strong>{current.phase} · {scene.step + 1}/5</strong></div>
-    <SceneControls scene={scene} labels={frames.map((frame) => frame.label)} />
-    <div className={styles.lensBoard} data-phase={current.phase}>
-      <div className={styles.questionCard}>
-        <TextT size={19} aria-hidden="true" /><span>文字条件</span><strong>这张票上的日期是什么？</strong><code>input_text · present</code>
-      </div>
-      <div className={styles.lensColumn}>
-        <div className={styles.lensBeam} aria-hidden="true"><i /><ArrowRight size={19} /></div>
-        <div className={styles.lensLabel}><MagnifyingGlass size={14} aria-hidden="true" /><span>{current.focus === "date" ? "取景：DATE" : "等待对应像素"}</span></div>
-      </div>
-      <Ticket image={current.image} focus={current.focus} />
-      <div className={styles.resultCard} data-danger={current.phase === "MISSING"}>
-        {current.phase === "MISSING" ? <XCircle size={20} aria-hidden="true" /> : current.phase === "ANSWER" ? <CheckCircle size={20} aria-hidden="true" /> : <Eye size={20} aria-hidden="true" />}
-        <span>可核对的回答</span><strong>{current.result}</strong><code>{current.phase === "ANSWER" ? "来自票面像素" : current.phase === "MISSING" ? "证据范围收窄" : "尚未读取"}</code>
+    <div className={styles.heroTop}>让一句话找到图里的位置</div>
+    <SceneControls scene={scene} labels={frames.map((frame) => frame.label)} compact />
+    <div className={styles.viewfinderBoard} data-phase={current.phase}>
+      <div className={styles.cameraFrame} data-ready={current.image} data-focus={current.focus} aria-hidden="true"><span className={styles.cameraCrosshair} /><span className={styles.cameraScan} /></div>
+      <div className={styles.questionPin}><TextT size={15} aria-hidden="true" /><span>这张票的日期？</span></div>
+      <div className={styles.ticketSlot}><Ticket image={current.image} focus={current.focus} /></div>
+      <div className={styles.evidenceStamp} data-danger={!current.image} data-answer={current.phase === "ANSWER"}>
+        {!current.image ? <XCircle size={15} aria-hidden="true" /> : current.phase === "ANSWER" ? <CheckCircle size={15} aria-hidden="true" /> : <Eye size={15} aria-hidden="true" />}
+        <strong>{current.phase === "LENS" ? "锁定 DATE" : current.result}</strong>
       </div>
     </div>
-    <div className={styles.heroNote} data-danger={current.phase === "MISSING"} role="status" aria-live="polite"><span><strong>{current.label}</strong> · {current.note}</span></div>
-    <figcaption>多模态把不同形式的材料放进同一个任务；它扩大的是可读取的输入范围，不是替模型凭空补材料。</figcaption>
+    <figcaption aria-live="polite">{current.note}</figcaption>
   </figure>;
 }
 
@@ -66,18 +62,20 @@ function MultimodalLensLab() {
   const focus = imageInRequest && scene.step === 2 ? query : "none";
   const answer = !imageInRequest ? "无法从缺失图片读取" : scene.step < 2 ? "等待取景" : query === "date" ? "2026 · 10 · 03" : "A12";
   return <div ref={scene.ref} className={styles.lab} role="region" aria-label="多模态取景与证据范围实验">
-    <div className={styles.labTop}><span>LOCAL VIEWFINDER / NO MODEL CALL</span><strong>只模拟材料边界</strong></div>
-    <SceneControls scene={scene} labels={["问题进入", "带上票面", "对准字段"]} />
+    <div className={styles.labTop}><span>换个问题，取景框跟着移动</span><small>示意演示</small></div>
+    <SceneControls scene={scene} labels={["问题进入", "带上票面", "对准字段"]} compact />
     <div className={styles.labControls} role="group" aria-label="改变取景条件">
       <button type="button" aria-pressed={query === "date"} onClick={() => { setQuery("date"); scene.seek(2); }}>问日期</button>
       <button type="button" aria-pressed={query === "gate"} onClick={() => { setQuery("gate"); scene.seek(2); }}>问登机口</button>
       <button type="button" onClick={() => { setKeepImage((value) => !value); scene.seek(2); }}>{keepImage ? "移除票面" : "重新带上票面"}</button>
     </div>
-    <div className={styles.labBoard} data-missing={!imageInRequest}>
-      <div className={styles.labPrompt}><FileText size={20} aria-hidden="true" /><span>这次问题</span><strong>{query === "date" ? "读出日期" : "读出登机口"}</strong><code>input_text · present</code></div>
-      <div className={styles.labTicket}><Ticket image={imageInRequest} focus={focus} /></div>
-      <ArrowRight size={19} className={styles.labArrow} aria-hidden="true" />
-      <div className={styles.labAnswer} data-danger={!imageInRequest}><span>回答范围</span><strong>{answer}</strong><small>{!imageInRequest ? "没有对应像素，先补材料" : scene.step < 2 ? "问题和图片已进入，尚未取景" : "保留原图可复核这次读取"}</small></div>
+    <div className={styles.labViewfinder} data-missing={!imageInRequest}>
+      <div className={styles.cameraFrame} data-ready={imageInRequest} data-focus={focus} aria-hidden="true"><span className={styles.cameraCrosshair} /><span className={styles.cameraScan} /></div>
+      <div className={styles.questionPin}><TextT size={17} aria-hidden="true" /><span>{query === "date" ? "这张票的日期？" : "从哪个登机口上飞机？"}</span></div>
+      <div className={styles.ticketSlot}><Ticket image={imageInRequest} focus={focus} /></div>
+      <div className={styles.evidenceStamp} data-danger={!imageInRequest} data-answer={focus !== "none"}>
+        {!imageInRequest ? <XCircle size={17} aria-hidden="true" /> : focus === "none" ? <Eye size={17} aria-hidden="true" /> : <CheckCircle size={17} aria-hidden="true" />}<strong>{answer}</strong>
+      </div>
     </div>
     <div className={styles.labStatus} data-danger={!imageInRequest} role="status" aria-live="polite">{!imageInRequest ? <WarningCircle size={16} aria-hidden="true" /> : <CheckCircle size={16} aria-hidden="true" />}<span><strong>{!imageInRequest ? "证据不足" : "问题和图片共同决定取景"}</strong> · {!imageInRequest ? "文字里的“这张票”不能替代图片；模型应说明缺少什么。" : "换问题只移动取景框，移除图片则让回答回到可观察证据。"}</span></div>
   </div>;

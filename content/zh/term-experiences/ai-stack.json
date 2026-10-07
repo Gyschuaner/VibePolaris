@@ -2917,67 +2917,80 @@
     "lead": "“改会议时间”同时匹配三个工具时，为什么选中了更新工具却仍没有执行？",
     "definition": "应用先提供候选工具和选择策略，模型再提出本轮要不要调用、调用哪一个；auto、required、指定工具和 none 会改变可提出的选择。选出工具后，应用仍要检查参数、身份、权限和审批；写操作指会改变外部状态的调用。",
     "boundary": "选择不是执行，也不是授权；工具描述、allowlist 和策略只能缩小候选范围，不能替代业务权限、副作用控制或人工审批。",
-    "sceneKind": "route",
-    "sceneTitle": "工具相关性与审批条件分两次判断",
-    "actionLabel": "切换选择策略",
+    "sceneKind": "assembly",
+    "sceneTitle": "黄铜转盘把选择和执行分开",
+    "actionLabel": "切换选择策略并观察审批票",
     "actors": [
       {
         "id": "request",
-        "label": "请求",
+        "label": "任务票",
         "detail": "把会议改到周五",
         "icon": "user",
         "group": "输入"
       },
       {
+        "id": "dial",
+        "label": "选择针",
+        "detail": "auto / required / none",
+        "icon": "gear",
+        "group": "策略"
+      },
+      {
         "id": "read",
-        "label": "读取日历",
-        "detail": "相关性 0.42",
+        "label": "calendar_read",
+        "detail": "查空档",
         "icon": "clock",
-        "group": "候选"
+        "group": "筹码"
       },
       {
         "id": "update",
-        "label": "更新日历",
-        "detail": "相关性 0.91",
+        "label": "calendar_update",
+        "detail": "改时间",
         "icon": "gear",
-        "group": "候选"
+        "group": "筹码"
       },
       {
         "id": "search",
-        "label": "网页搜索",
-        "detail": "相关性 0.08",
+        "label": "web_search",
+        "detail": "找资料",
         "icon": "search",
-        "group": "候选"
+        "group": "筹码"
       },
       {
         "id": "approval",
-        "label": "写操作审批",
-        "detail": "待批准",
+        "label": "审批票",
+        "detail": "写操作暂停",
         "icon": "shield",
         "group": "闸门"
       }
     ],
     "edges": [
       {
-        "id": "r-read",
+        "id": "request-dial",
         "from": "request",
+        "to": "dial",
+        "label": "投递任务"
+      },
+      {
+        "id": "dial-read",
+        "from": "dial",
         "to": "read",
         "label": "候选"
       },
       {
-        "id": "r-up",
-        "from": "request",
+        "id": "dial-update",
+        "from": "dial",
         "to": "update",
         "label": "候选"
       },
       {
-        "id": "r-search",
-        "from": "request",
+        "id": "dial-search",
+        "from": "dial",
         "to": "search",
         "label": "候选"
       },
       {
-        "id": "up-ap",
+        "id": "update-approval",
         "from": "update",
         "to": "approval",
         "label": "写操作"
@@ -2985,84 +2998,40 @@
     ],
     "frames": [
       {
-        "label": "三个候选出现",
-        "note": "路由器先比较哪一个工具与请求相关；0.42、0.91、0.08 是教学示意，没有及格线，也不会自动放行。",
-        "activeIds": [
-          "request",
-          "read",
-          "update",
-          "search"
-        ],
+        "label": "任务票放上桌",
+        "note": "应用先接住“改会议时间”这张任务票；此刻没有工具被调用。",
+        "activeIds": ["request"],
         "doneIds": [],
-        "mutedIds": [
-          "approval"
-        ],
-        "values": {
-          "read": "0.42",
-          "update": "0.91",
-          "search": "0.08"
-        },
+        "mutedIds": ["dial", "read", "update", "search", "approval"],
+        "values": {"request": "把会议改到周五"},
         "activeEdgeIds": []
       },
       {
-        "label": "更新工具胜出",
-        "note": "最高分只是选择线索，模型提出“更新日历”的调用请求，尚未执行。",
-        "activeIds": [
-          "update"
-        ],
-        "doneIds": [
-          "request"
-        ],
-        "mutedIds": [
-          "read",
-          "search",
-          "approval"
-        ],
-        "values": {
-          "update": "已选择"
-        },
-        "activeEdgeIds": [
-          "r-up"
-        ]
+        "label": "三枚工具筹码露出",
+        "note": "选择针打开转盘，读取、更新和搜索只是候选能力，出现不等于执行。",
+        "activeIds": ["request", "dial", "read", "update", "search"],
+        "doneIds": ["request"],
+        "mutedIds": ["approval"],
+        "values": {"read": "查空档", "update": "改时间", "search": "找资料"},
+        "activeEdgeIds": ["request-dial", "dial-read", "dial-update", "dial-search"]
       },
       {
-        "label": "审批规则生效",
-        "note": "选择完成后，写操作仍停在审批闸门；审批通过前不会改变日历。",
-        "activeIds": [
-          "update",
-          "approval"
-        ],
-        "doneIds": [
-          "request"
-        ],
-        "mutedIds": [
-          "read",
-          "search"
-        ],
-        "values": {
-          "approval": "暂停"
-        },
-        "activeEdgeIds": [
-          "up-ap"
-        ]
+        "label": "选择针落在更新",
+        "note": "auto 或 required 可以让模型提出 calendar_update；这仍是一张待校验的调用票。",
+        "activeIds": ["dial", "update"],
+        "doneIds": ["request", "read", "search"],
+        "mutedIds": ["approval"],
+        "values": {"update": "PROPOSED"},
+        "activeEdgeIds": ["dial-update"]
       },
       {
-        "label": "改为禁止调用",
-        "note": "选择策略切到 none 后，三条工具路径全部关闭，只能生成文本回答。",
-        "activeIds": [
-          "request"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "read",
-          "update",
-          "search",
-          "approval"
-        ],
-        "values": {
-          "request": "仅文本回答"
-        },
-        "activeEdgeIds": []
+        "label": "写操作停在审批台",
+        "note": "审批通过前，calendar_update 不会改变日历；选择和执行是两道门。",
+        "activeIds": ["update", "approval"],
+        "doneIds": ["request", "dial", "read", "search"],
+        "mutedIds": [],
+        "values": {"approval": "NEEDS APPROVAL"},
+        "activeEdgeIds": ["update-approval"]
       }
     ],
     "insight": "工具选择决定模型提出哪个调用；能不能执行，是另一道由权限和审批做的判断。",
@@ -3091,24 +3060,29 @@
     },
     "sources": [
       {
-        "url": "https://developers.openai.com/api/docs/guides/function-calling#tool-choice",
-        "label": "OpenAI · Function calling · tool choice",
+        "url": "https://developers.openai.com/api/docs/guides/function-calling",
+        "label": "OpenAI · Function calling",
         "note": "auto/required/forced/none"
-      },
-      {
-        "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
-        "label": "Anthropic · Tool use with Claude",
-        "note": "模型提出调用与应用执行"
       },
       {
         "url": "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
         "label": "MCP · Tools specification 2025-06-18",
-        "note": "工具描述与 tools/call"
+        "note": "工具描述与输入 schema"
       },
       {
-        "url": "https://arxiv.org/abs/2302.04761",
-        "label": "arXiv · Toolformer",
-        "note": "模型学习调用工具"
+        "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works",
+        "label": "Anthropic · How tool use works",
+        "note": "模型提出调用与应用执行"
+      },
+      {
+        "url": "https://openai.github.io/openai-agents-python/tools/",
+        "label": "OpenAI Agents SDK · Tools",
+        "note": "运行器调用工具能力"
+      },
+      {
+        "url": "https://openai.github.io/openai-agents-python/human_in_the_loop/",
+        "label": "OpenAI Agents SDK · Human-in-the-loop",
+        "note": "高影响动作暂停审批"
       }
     ]
   },
@@ -3117,135 +3091,108 @@
     "lead": "库存工具返回stock=0后，最终回答是怎样从“有货”切成“缺货”的？",
     "definition": "工具执行后返回结构化数据、错误和元信息；应用用关联标识（例如 call_id）把结果对回发起它的那次调用，再决定下一步状态或回答。",
     "boundary": "HTTP 状态表示传输是否处理成功，不等于业务成功；结构正确也不等于事实可信。应用还要检查业务字段、来源、时效、权限、空结果和部分完成。",
-    "sceneKind": "state-machine",
-    "sceneTitle": "原始结果字段驱动回答状态",
-    "actionLabel": "修改 stock 值",
+    "sceneKind": "layers",
+    "sceneTitle": "库存翻页簿让原始字段推动措辞",
+    "actionLabel": "翻页或改写库存字段",
     "actors": [
       {
-        "id": "call",
-        "label": "库存查询",
+        "id": "query",
+        "label": "库存查询票",
         "detail": "call_id=inv-7 · sku=K7",
-        "icon": "gear",
-        "group": "请求"
+        "icon": "file",
+        "group": "夹入"
       },
       {
-        "id": "raw",
-        "label": "原始结果",
-        "detail": "{call_id:inv-7, stock:0, status:200}",
+        "id": "json",
+        "label": "原始 JSON 页",
+        "detail": "status=200 · stock=0",
         "icon": "code",
-        "group": "工具"
+        "group": "翻开"
       },
       {
-        "id": "state",
-        "label": "回答状态",
-        "detail": "未知",
-        "icon": "brain",
-        "group": "解释"
+        "id": "field",
+        "label": "stock 标签",
+        "detail": "业务字段",
+        "icon": "search",
+        "group": "抽出"
       },
       {
-        "id": "answer",
-        "label": "用户回答",
-        "detail": "待生成",
+        "id": "sticker",
+        "label": "回答贴纸",
+        "detail": "K7 暂时缺货",
         "icon": "message",
-        "group": "输出"
+        "group": "贴上"
+      },
+      {
+        "id": "error",
+        "label": "错误页",
+        "detail": "timeout / 空结果",
+        "icon": "shield",
+        "group": "分支"
       }
     ],
     "edges": [
       {
-        "id": "c-r",
-        "from": "call",
-        "to": "raw",
-        "label": "执行"
+        "id": "query-json",
+        "from": "query",
+        "to": "json",
+        "label": "回到同一 call_id"
       },
       {
-        "id": "r-s",
-        "from": "raw",
-        "to": "state",
-        "label": "读取字段"
+        "id": "json-field",
+        "from": "json",
+        "to": "field",
+        "label": "抽出业务字段"
       },
       {
-        "id": "s-a",
-        "from": "state",
-        "to": "answer",
-        "label": "生成措辞"
+        "id": "field-sticker",
+        "from": "field",
+        "to": "sticker",
+        "label": "改写措辞"
+      },
+      {
+        "id": "json-error",
+        "from": "json",
+        "to": "error",
+        "label": "错误分支"
       }
     ],
     "frames": [
       {
-        "label": "查询发出",
-        "note": "应用发出库存查询，并记下 call_id=inv-7，方便把返回结果对回这次请求。",
-        "activeIds": [
-          "call"
-        ],
+        "label": "查询票夹入页",
+        "note": "应用记下 call_id=inv-7 和 sku=K7，翻页簿先保留这次查询的身份。",
+        "activeIds": ["query"],
         "doneIds": [],
-        "mutedIds": [
-          "raw",
-          "state",
-          "answer"
-        ],
-        "values": {
-          "call": "inv-7 · K7"
-        },
+        "mutedIds": ["json", "field", "sticker", "error"],
+        "values": {"query": "inv-7 · K7"},
         "activeEdgeIds": []
       },
       {
-        "label": "结果返回",
-        "note": "HTTP 状态 200 只表示请求被处理；stock=0 才是业务字段。",
-        "activeIds": [
-          "raw"
-        ],
-        "doneIds": [
-          "call"
-        ],
-        "mutedIds": [
-          "state",
-          "answer"
-        ],
-        "values": {
-          "raw": "status 200 · stock 0"
-        },
-        "activeEdgeIds": [
-          "c-r"
-        ]
+        "label": "原始 JSON 页翻开",
+        "note": "status=200 和 stock=0 同时被保存；状态码只描述响应层，不替业务字段下结论。",
+        "activeIds": ["json"],
+        "doneIds": ["query"],
+        "mutedIds": ["field", "sticker", "error"],
+        "values": {"json": "status=200 · stock=0"},
+        "activeEdgeIds": ["query-json"]
       },
       {
-        "label": "状态翻转",
-        "note": "应用的解释层读取 stock=0，把回答状态从未知改为缺货；结果还要经过来源和时效检查。",
-        "activeIds": [
-          "state"
-        ],
-        "doneIds": [
-          "call",
-          "raw"
-        ],
-        "mutedIds": [
-          "answer"
-        ],
-        "values": {
-          "state": "未知 → 缺货"
-        },
-        "activeEdgeIds": [
-          "r-s"
-        ]
+        "label": "stock 标签被抽出",
+        "note": "解释层只把 stock=0 当作业务证据；来源、时效和字段校验仍要过一遍。",
+        "activeIds": ["field"],
+        "doneIds": ["query", "json"],
+        "mutedIds": ["sticker", "error"],
+        "values": {"field": "0 → 缺货"},
+        "activeEdgeIds": ["json-field"]
       },
       {
-        "label": "生成措辞",
-        "note": "最终回答说明暂时缺货，而不是把 200 误读成有货；错误、空结果、过期数据或部分完成应走失败分支。",
-        "activeIds": [
-          "answer"
-        ],
-        "doneIds": [
-          "call",
-          "raw",
-          "state"
-        ],
-        "mutedIds": [],
-        "values": {
-          "answer": "K7 暂时缺货"
-        },
-        "activeEdgeIds": [
-          "s-a"
-        ]
+        "label": "回答贴纸贴上去",
+        "note": "最终措辞是“K7 暂时缺货”；stock=8 会换成有货，timeout 则必须保留无法确认。",
+        "activeIds": ["sticker"],
+        "doneIds": ["query", "json", "field"],
+        "mutedIds": ["error"],
+        "values": {"sticker": "K7 暂时缺货"},
+        "activeEdgeIds": ["field-sticker"]
       }
     ],
     "insight": "工具结果是下一步的可观测状态，不是最终答案；状态码和业务字段要分别解释。",
@@ -3274,24 +3221,24 @@
     },
     "sources": [
       {
-        "url": "https://developers.openai.com/api/docs/guides/function-calling#tool-call-outputs",
-        "label": "OpenAI · Function calling · tool call outputs",
+        "url": "https://developers.openai.com/api/docs/guides/function-calling",
+        "label": "OpenAI · Function calling",
         "note": "call_id 与 function_call_output"
       },
       {
-        "url": "https://modelcontextprotocol.io/specification/2025-06-18/server/tools#tool-result",
-        "label": "MCP · Tools specification · tool result",
+        "url": "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+        "label": "MCP · Tools specification 2025-06-18",
         "note": "structuredContent 与 isError"
       },
       {
-        "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
-        "label": "Anthropic · Tool use with Claude",
+        "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works",
+        "label": "Anthropic · How tool use works",
         "note": "应用执行并回传结果"
       },
       {
-        "url": "https://arxiv.org/abs/2210.03629",
-        "label": "arXiv · ReAct",
-        "note": "action/observation 状态循环"
+        "url": "https://openai.github.io/openai-agents-python/tools/",
+        "label": "OpenAI Agents SDK · Tools",
+        "note": "工具输出回到运行器"
       },
       {
         "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-200-ok",
@@ -3306,19 +3253,19 @@
     "definition": "智能体循环把当前状态、一个受控动作、外部结果、状态更新和停止判断连成多轮过程；每轮结果都要改变下一轮可见的状态。",
     "boundary": "一次工具调用或模型连续输出都不是循环。没有状态回写、完成判据和失败/取消/轮数上限出口，重复动作不能证明任务完成。",
     "sceneKind": "loop",
-    "sceneTitle": "一张健康检查任务单怎样从 500 回到 200",
-    "actionLabel": "逐步推进检查并切换轮数上限",
+    "sceneTitle": "维修工作台怎样把回执写回任务票",
+    "actionLabel": "推进维修台并切换轮数上限",
     "actors": [
       {
         "id": "ticket",
-        "label": "任务单",
+        "label": "发布任务票",
         "detail": "GET /health → 500",
         "icon": "file",
         "group": "起点"
       },
       {
         "id": "action",
-        "label": "一次动作",
+        "label": "检修抽屉",
         "detail": "run_checks()",
         "icon": "gear",
         "group": "执行"
@@ -3332,14 +3279,21 @@
       },
       {
         "id": "state",
-        "label": "写回状态",
+        "label": "状态卡",
         "detail": "issue = config",
         "icon": "layout",
         "group": "状态"
       },
       {
+        "id": "verification",
+        "label": "复查灯",
+        "detail": "等待新的健康检查",
+        "icon": "chart",
+        "group": "验证"
+      },
+      {
         "id": "gate",
-        "label": "完成闸门",
+        "label": "停止闸门",
         "detail": "200 OK 或 max_turns",
         "icon": "shield",
         "group": "停止"
@@ -3350,128 +3304,96 @@
         "id": "ticket-action",
         "from": "ticket",
         "to": "action",
-        "label": "执行"
+        "label": "拉开"
       },
       {
         "id": "action-observation",
         "from": "action",
         "to": "observation",
-        "label": "返回"
+        "label": "带回"
       },
       {
         "id": "observation-state",
         "from": "observation",
         "to": "state",
-        "label": "写回"
+        "label": "贴回"
       },
       {
-        "id": "state-gate",
+        "id": "state-verification",
         "from": "state",
+        "to": "verification",
+        "label": "触发复查"
+      },
+      {
+        "id": "verification-gate",
+        "from": "verification",
         "to": "gate",
-        "label": "判断"
+        "label": "通过才开"
       }
     ],
     "frames": [
       {
-        "label": "接住失败任务单",
-        "note": "循环从可见的失败开始：GET /health 返回 500，状态里还有一个配置问题。",
-        "activeIds": [
-          "ticket"
-        ],
+        "label": "失败票钉上桌",
+        "note": "维修工作台从可见的失败开始：GET /health 返回 500，票面还标着一个配置问题。",
+        "activeIds": ["ticket"],
         "doneIds": [],
-        "mutedIds": [
-          "action",
-          "observation",
-          "state",
-          "gate"
-        ],
-        "values": {
-          "ticket": "500 · 1 项问题"
-        },
+        "mutedIds": ["action", "observation", "state", "verification", "gate"],
+        "values": {"ticket": "500 · 1 项问题"},
         "activeEdgeIds": []
       },
       {
-        "label": "发出一个动作",
-        "note": "只执行一次 run_checks()；工具没有回执前，不把等待写成通过。",
-        "activeIds": [
-          "action"
-        ],
-        "doneIds": [
-          "ticket"
-        ],
-        "mutedIds": [
-          "observation",
-          "state",
-          "gate"
-        ],
-        "values": {
-          "action": "running"
-        },
-        "activeEdgeIds": [
-          "ticket-action"
-        ]
+        "label": "拉开检修抽屉",
+        "note": "先读配置再决定怎么修；动作发出而回执未回时，任务仍然没有完成。",
+        "activeIds": ["action"],
+        "doneIds": ["ticket"],
+        "mutedIds": ["observation", "state", "verification", "gate"],
+        "values": {"action": "inspect_config()"},
+        "activeEdgeIds": ["ticket-action"]
       },
       {
-        "label": "读回原始结果",
-        "note": "工具带回 500 和缺失字段，结果本身成为下一轮的证据。",
-        "activeIds": [
-          "observation"
-        ],
-        "doneIds": [
-          "ticket",
-          "action"
-        ],
-        "mutedIds": [
-          "state",
-          "gate"
-        ],
-        "values": {
-          "observation": "500 · API_BASE_URL"
-        },
-        "activeEdgeIds": [
-          "action-observation"
-        ]
+        "label": "回执滑回来",
+        "note": "工具带回 500 和缺失字段，纸质回执本身成为下一轮的证据。",
+        "activeIds": ["observation"],
+        "doneIds": ["ticket", "action"],
+        "mutedIds": ["state", "verification", "gate"],
+        "values": {"observation": "500 · API_BASE_URL"},
+        "activeEdgeIds": ["action-observation"]
       },
       {
-        "label": "把结果写回状态",
-        "note": "状态从“未知问题”变成“配置待修复”；下一轮知道该改哪里，而不是盲目重试。",
-        "activeIds": [
-          "state"
-        ],
-        "doneIds": [
-          "ticket",
-          "action",
-          "observation"
-        ],
-        "mutedIds": [
-          "gate"
-        ],
-        "values": {
-          "state": "issue = config"
-        },
-        "activeEdgeIds": [
-          "observation-state"
-        ]
+        "label": "贴回状态卡",
+        "note": "把 issue = config 写回任务单，下一轮知道该改哪里，而不是盲目重试。",
+        "activeIds": ["state"],
+        "doneIds": ["ticket", "action", "observation"],
+        "mutedIds": ["verification", "gate"],
+        "values": {"state": "issue = config"},
+        "activeEdgeIds": ["observation-state"]
       },
       {
-        "label": "检查完成闸门",
-        "note": "修复后收到 200 OK 才能结束；若先撞到 max_turns，也要停在未完成状态。",
-        "activeIds": [
-          "gate"
-        ],
-        "doneIds": [
-          "ticket",
-          "action",
-          "observation",
-          "state"
-        ],
+        "label": "写入配置",
+        "note": "API_BASE_URL 已写入，状态发生了变化；写入动作仍不能代替健康检查。",
+        "activeIds": ["action", "state"],
+        "doneIds": ["ticket", "observation"],
+        "mutedIds": ["verification", "gate"],
+        "values": {"action": "set API_BASE_URL", "state": "API_BASE_URL = set"},
+        "activeEdgeIds": ["observation-state"]
+      },
+      {
+        "label": "重新健康检查",
+        "note": "第三轮才重新检查服务；新的回执回来之前，复查灯保持等待。",
+        "activeIds": ["verification"],
+        "doneIds": ["ticket", "action", "observation", "state"],
+        "mutedIds": ["gate"],
+        "values": {"verification": "等待 GET /health"},
+        "activeEdgeIds": ["state-verification"]
+      },
+      {
+        "label": "打开停止闸门",
+        "note": "新的健康检查返回 200 OK 才能标成成功；若先撞到 max_turns，也必须停在未完成。",
+        "activeIds": ["gate", "verification"],
+        "doneIds": ["ticket", "action", "observation", "state"],
         "mutedIds": [],
-        "values": {
-          "gate": "200 OK / max_turns"
-        },
-        "activeEdgeIds": [
-          "state-gate"
-        ]
+        "values": {"verification": "200 OK · verified", "gate": "200 OK / max_turns"},
+        "activeEdgeIds": ["verification-gate"]
       }
     ],
     "insight": "循环的关键不是调用次数，而是每次回执是否写回状态，并经过一个能区分成功、失败、取消和上限的停止闸门。",
@@ -3769,42 +3691,42 @@
     "lead": "检索与核对可以并行，为什么撰写还要等？",
     "definition": "智能体编排把任务分给不同的智能体、程序或工具，安排哪些步骤可以同时做、哪些必须等待，传递每步需要的材料和状态，并按规则处理冲突、超时和结果合并。",
     "boundary": "多个模型同时运行不等于编排；没有分工和汇总规则，只会增加调用和协调成本。负责调度的编排器可以是固定程序，也可以是智能体。简单任务用一个流程更容易核对。",
-    "sceneKind": "network",
-    "sceneTitle": "并行任务怎样等待依赖并合并结果",
-    "actionLabel": "切换串行与并行",
+    "sceneKind": "matrix",
+    "sceneTitle": "报告拼图桌怎样卡住冲突并合页",
+    "actionLabel": "切换翻牌方式并处理冲突",
     "actors": [
       {
         "id": "orchestrator",
-        "label": "编排器",
-        "detail": "管理依赖与状态",
+        "label": "编排台",
+        "detail": "依赖夹与状态",
         "icon": "network",
         "group": "控制"
       },
       {
         "id": "research",
-        "label": "检索",
+        "label": "检索磁片",
         "detail": "8 条证据",
         "icon": "search",
         "group": "任务"
       },
       {
         "id": "verify",
-        "label": "核对",
-        "detail": "逐条核对证据",
+        "label": "核对磁片",
+        "detail": "逐条对照",
         "icon": "chart",
         "group": "任务"
       },
       {
         "id": "write",
-        "label": "撰写",
-        "detail": "等待核对结果",
+        "label": "撰写夹",
+        "detail": "等待核对解锁",
         "icon": "file",
         "group": "任务"
       },
       {
         "id": "report",
-        "label": "合并报告",
-        "detail": "7 条证据",
+        "label": "报告合页",
+        "detail": "7 条一致证据",
         "icon": "spark",
         "group": "结果"
       }
@@ -3814,120 +3736,87 @@
         "id": "o-r",
         "from": "orchestrator",
         "to": "research",
-        "label": "分派"
+        "label": "发卡"
       },
       {
         "id": "o-v",
         "from": "orchestrator",
         "to": "verify",
-        "label": "分派"
+        "label": "发卡"
       },
       {
         "id": "r-v",
         "from": "research",
         "to": "verify",
-        "label": "交付证据"
+        "label": "递交磁片"
       },
       {
         "id": "v-w",
         "from": "verify",
         "to": "write",
-        "label": "通过才开始"
+        "label": "解锁"
       },
       {
         "id": "w-rep",
         "from": "write",
         "to": "report",
-        "label": "汇总"
+        "label": "扣合"
       }
     ],
     "frames": [
       {
         "label": "任务拆开",
-        "note": "编排器先写清三个任务，标出撰写要等核对结果。",
-        "activeIds": [
-          "orchestrator"
-        ],
+        "note": "编排台先把检索、核对和撰写放到拼图桌上，标出撰写要等核对。",
+        "activeIds": ["orchestrator"],
         "doneIds": [],
-        "mutedIds": [
-          "research",
-          "verify",
-          "write",
-          "report"
-        ],
-        "values": {
-          "orchestrator": "3任务 · 2依赖"
-        },
+        "mutedIds": ["research", "verify", "write", "report"],
+        "values": {"orchestrator": "3 块 · 2 依赖"},
         "activeEdgeIds": []
       },
       {
-        "label": "检索与核对启动",
-        "note": "检索找到 8 条，核对开始逐条对照。",
-        "activeIds": [
-          "research",
-          "verify"
-        ],
-        "doneIds": [
-          "orchestrator"
-        ],
-        "mutedIds": [
-          "write",
-          "report"
-        ],
-        "values": {
-          "research": "8 条",
-          "verify": "检查中"
-        },
-        "activeEdgeIds": [
-          "o-r",
-          "o-v",
-          "r-v"
-        ]
+        "label": "检索与核对翻牌",
+        "note": "并行模式让检索和核对同时开工；串行模式会让核对继续等检索。",
+        "activeIds": ["research", "verify"],
+        "doneIds": ["orchestrator"],
+        "mutedIds": ["write", "report"],
+        "values": {"research": "8 条", "verify": "翻牌中"},
+        "activeEdgeIds": ["o-r", "o-v", "r-v"]
       },
       {
-        "label": "冲突阻塞撰写",
-        "note": "核对发现 1 处冲突，按既定规则复核，撰写暂停，避免把矛盾结果写进报告。",
-        "activeIds": [
-          "verify",
-          "write"
-        ],
-        "doneIds": [
-          "orchestrator",
-          "research"
-        ],
-        "mutedIds": [
-          "report"
-        ],
-        "values": {
-          "verify": "冲突 1",
-          "write": "阻塞"
-        },
-        "activeEdgeIds": [
-          "r-v",
-          "v-w"
-        ]
+        "label": "冲突磁片露出",
+        "note": "核对发现 1 处冲突；证据还没有通过规则，撰写不能直接拿去合并。",
+        "activeIds": ["verify", "write"],
+        "doneIds": ["orchestrator", "research"],
+        "mutedIds": ["report"],
+        "values": {"verify": "冲突 1", "write": "锁住"},
+        "activeEdgeIds": ["r-v", "v-w"]
       },
       {
-        "label": "排除冲突证据后汇合",
-        "note": "7 条一致证据交给撰写，再由撰写合并进报告。",
-        "activeIds": [
-          "verify",
-          "write",
-          "report"
-        ],
-        "doneIds": [
-          "orchestrator",
-          "research"
-        ],
+        "label": "撰写夹保持锁住",
+        "note": "停止是编排规则的一部分：先保留冲突状态，不把矛盾材料写成一份完整报告。",
+        "activeIds": ["write"],
+        "doneIds": ["orchestrator", "research", "verify"],
+        "mutedIds": ["report"],
+        "values": {"write": "等待冲突处理"},
+        "activeEdgeIds": ["v-w"]
+      },
+      {
+        "label": "排除冲突磁片",
+        "note": "按规则排除冲突证据，撰写只接收 7 条一致材料，合页仍等待最后一扣。",
+        "activeIds": ["verify", "write"],
+        "doneIds": ["orchestrator", "research"],
+        "mutedIds": ["report"],
+        "values": {"verify": "冲突 0", "write": "7 条入稿"},
+        "activeEdgeIds": ["v-w"]
+      },
+      {
+        "label": "报告合页扣上",
+        "note": "7 条一致证据合并进报告；可交付来自合并规则，不来自同时运行的角色数量。",
+        "activeIds": ["report"],
+        "doneIds": ["orchestrator", "research", "verify", "write"],
         "mutedIds": [],
-        "values": {
-          "verify": "冲突 0",
-          "report": "7 条证据"
-        },
-        "activeEdgeIds": [
-          "v-w",
-          "w-rep"
-        ]
+        "values": {"report": "7 条一致证据"},
+        "activeEdgeIds": ["w-rep"]
       }
     ],
     "insight": "编排先管清楚谁做什么、谁要等谁；并行调用几个模型，不会自动解决冲突。",
@@ -3974,6 +3863,11 @@
         "url": "https://arxiv.org/abs/2308.08155",
         "label": "AutoGen · Multi-Agent Conversation",
         "note": "多智能体对话与可编排的交互模式"
+      },
+      {
+        "url": "https://openai.github.io/openai-agents-python/handoffs/",
+        "label": "OpenAI Agents SDK · handoffs",
+        "note": "交接回复权与上下文的实现边界"
       }
     ]
   },
@@ -6205,194 +6099,191 @@
   },
   {
     "slug": "retrieval",
-    "lead": "问“退款多久到账”时，检索为什么应该停在三段原文而不是直接给结论？",
+    "lead": "问“退款多久到账”时，检索为什么先把候选放进抽屉，再让来源闸门决定能否继续？",
     "definition": "检索根据查询从已有资料中返回一组候选内容，通常包含相关性分数和来源标识，供后续阅读、排序或生成使用。",
     "boundary": "检索只负责找候选，不会自动生成回答；RAG还包括把候选交给生成模型并约束回答。",
-    "sceneKind": "tree",
-    "sceneTitle": "查询从资料库召回候选",
-    "actionLabel": "调整 top-k",
+    "sceneKind": "magnet-drawer",
+    "sceneTitle": "查询磁贴怎样穿过相关性滑轨",
+    "actionLabel": "切换检索方式与来源闸门",
     "actors": [
       {
         "id": "query",
-        "label": "查询",
+        "label": "查询磁贴",
         "detail": "退款多久到账",
         "icon": "search",
         "group": "输入"
       },
       {
-        "id": "corpus",
-        "label": "资料库",
-        "detail": "200段",
+        "id": "drawer",
+        "label": "资料抽屉",
+        "detail": "200段候选范围",
         "icon": "database",
         "group": "来源"
       },
       {
-        "id": "doc-a",
-        "label": "候选 A",
-        "detail": "相关性0.82",
-        "icon": "file",
-        "group": "结果"
+        "id": "keyword-rail",
+        "label": "词项滑轨",
+        "detail": "退款 · 到账",
+        "icon": "chart",
+        "group": "排序"
       },
       {
-        "id": "doc-b",
-        "label": "候选 B",
-        "detail": "相关性0.76",
-        "icon": "file",
-        "group": "结果"
+        "id": "semantic-rail",
+        "label": "语义滑轨",
+        "detail": "意思相近",
+        "icon": "spark",
+        "group": "排序"
       },
       {
-        "id": "doc-c",
-        "label": "候选 C",
-        "detail": "相关性0.61",
+        "id": "card-policy",
+        "label": "退款政策",
+        "detail": "0.88 · policy-v3 §2",
         "icon": "file",
-        "group": "结果"
+        "group": "候选"
+      },
+      {
+        "id": "card-faq",
+        "label": "用户问答摘录",
+        "detail": "0.94 · 来源缺失",
+        "icon": "shield",
+        "group": "候选"
+      },
+      {
+        "id": "evidence-gate",
+        "label": "引用闸门",
+        "detail": "有来源才放行",
+        "icon": "shield",
+        "group": "核对"
       }
     ],
     "edges": [
       {
-        "id": "q-c",
+        "id": "q-drawer",
         "from": "query",
-        "to": "corpus",
-        "label": "搜索"
+        "to": "drawer",
+        "label": "拉开"
       },
       {
-        "id": "c-a",
-        "from": "corpus",
-        "to": "doc-a",
-        "label": "召回"
+        "id": "drawer-keyword",
+        "from": "drawer",
+        "to": "keyword-rail",
+        "label": "词项打分"
       },
       {
-        "id": "c-b",
-        "from": "corpus",
-        "to": "doc-b",
-        "label": "召回"
+        "id": "drawer-semantic",
+        "from": "drawer",
+        "to": "semantic-rail",
+        "label": "语义打分"
       },
       {
-        "id": "c-c",
-        "from": "corpus",
-        "to": "doc-c",
-        "label": "召回"
+        "id": "rail-card",
+        "from": "semantic-rail",
+        "to": "card-faq",
+        "label": "排到前面"
+      },
+      {
+        "id": "card-gate",
+        "from": "card-policy",
+        "to": "evidence-gate",
+        "label": "核对来源"
       }
     ],
     "frames": [
       {
-        "label": "查询进入",
-        "note": "检索接到查询，但还没有生成回答。",
-        "activeIds": [
-          "query"
-        ],
+        "label": "写下查询",
+        "note": "问题先成为查询磁贴，资料抽屉还没有打开。",
+        "activeIds": ["query"],
         "doneIds": [],
-        "mutedIds": [
-          "doc-a",
-          "doc-b",
-          "doc-c"
-        ],
-        "values": {
-          "query": "1条"
-        },
+        "mutedIds": ["drawer", "keyword-rail", "semantic-rail", "card-policy", "card-faq", "evidence-gate"],
+        "values": {"query": "1条"},
         "activeEdgeIds": []
       },
       {
-        "label": "全库打分",
-        "note": "200段资料被比较，形成相关候选。",
-        "activeIds": [
-          "corpus"
-        ],
-        "doneIds": [
-          "query"
-        ],
-        "mutedIds": [
-          "doc-a",
-          "doc-b",
-          "doc-c"
-        ],
-        "values": {
-          "corpus": "200 段"
-        },
-        "activeEdgeIds": [
-          "q-c"
-        ]
+        "label": "拉开抽屉",
+        "note": "查询打开200段资料的候选范围，但还没有生成答案。",
+        "activeIds": ["drawer"],
+        "doneIds": ["query"],
+        "mutedIds": ["keyword-rail", "semantic-rail", "card-policy", "card-faq", "evidence-gate"],
+        "values": {"drawer": "200段"},
+        "activeEdgeIds": ["q-drawer"]
       },
       {
-        "label": "召回前三",
-        "note": "三段原文和来源ID按0.82、0.76、0.61返回。",
-        "activeIds": [
-          "doc-a",
-          "doc-b",
-          "doc-c"
-        ],
-        "doneIds": [
-          "query",
-          "corpus"
-        ],
-        "mutedIds": [],
-        "values": {
-          "doc-a": "0.82",
-          "doc-b": "0.76",
-          "doc-c": "0.61"
-        },
-        "activeEdgeIds": [
-          "c-a",
-          "c-b",
-          "c-c"
-        ]
+        "label": "语义轨滑到前面",
+        "note": "语义分数把没有来源的问答摘录推到首位；相似度不是引用。",
+        "activeIds": ["semantic-rail", "card-faq"],
+        "doneIds": ["query", "drawer"],
+        "mutedIds": ["keyword-rail", "card-policy", "evidence-gate"],
+        "values": {"semantic-rail": "0.94", "card-faq": "首位"},
+        "activeEdgeIds": ["drawer-semantic", "rail-card"]
       },
       {
-        "label": "调小top-k",
-        "note": "top-k改为1后，只保留A，仍不生成结论。",
-        "activeIds": [
-          "doc-a"
-        ],
-        "doneIds": [
-          "query",
-          "corpus"
-        ],
-        "mutedIds": [
-          "doc-b",
-          "doc-c"
-        ],
-        "values": {
-          "doc-a": "Top 1"
-        },
-        "activeEdgeIds": [
-          "c-a"
-        ]
+        "label": "扩大 top-k",
+        "note": "top-k从1调到3会带回更多候选，仍然只交付原文卡片。",
+        "activeIds": ["card-faq", "card-policy"],
+        "doneIds": ["query", "drawer", "semantic-rail"],
+        "mutedIds": ["keyword-rail", "evidence-gate"],
+        "values": {"card-faq": "0.94", "card-policy": "0.88"},
+        "activeEdgeIds": ["rail-card"]
+      },
+      {
+        "label": "抽走无来源卡",
+        "note": "最高分卡没有来源ID，抽走后不能把它写成答案；政策原文留下来继续核对。",
+        "activeIds": ["card-policy", "evidence-gate"],
+        "doneIds": ["query", "drawer", "semantic-rail"],
+        "mutedIds": ["keyword-rail", "card-faq"],
+        "values": {"card-faq": "移出", "card-policy": "来源ID"},
+        "activeEdgeIds": ["card-gate"]
+      },
+      {
+        "label": "关上引用闸",
+        "note": "带来源的候选可以交给下一步核对；检索本身没有生成结论。",
+        "activeIds": ["evidence-gate"],
+        "doneIds": ["query", "drawer", "semantic-rail", "card-policy"],
+        "mutedIds": ["keyword-rail", "card-faq"],
+        "values": {"evidence-gate": "候选可核对"},
+        "activeEdgeIds": ["card-gate"]
       }
     ],
-    "insight": "检索的产物是候选资料；RAG还会把资料交给生成模型，引用则负责定位来源。",
+    "insight": "检索的产物是候选资料；相似度负责排序，来源字段负责让下一步回到原文，RAG还要继续生成和核对。",
     "quiz": {
-      "question": "系统只返回三段原文和来源ID，这一步属于什么？",
+      "question": "语义分数最高的卡片没有来源ID时，检索阶段能直接给出答案吗？",
       "options": [
-        {
-          "label": "检索",
-          "correct": true
-        },
-        {
-          "label": "完整的RAG回答",
-          "correct": false
-        },
-        {
-          "label": "引用正确性证明",
-          "correct": false
-        }
+        {"label": "不能，留下缺证据状态", "correct": true},
+        {"label": "能，分数就是事实证明", "correct": false},
+        {"label": "能，检索会自动补齐出处", "correct": false}
       ],
-      "success": "它停在候选资料，没有生成结论。",
-      "retry": "区分流程终点就能看清边界。"
+      "success": "检索只交付候选；没有可回查的来源，就不能越过引用闸门生成确定结论。",
+      "retry": "先看卡片有没有来源，再区分相似度和证据。"
     },
     "prompt": {
       "title": "设计一次资料检索",
-      "text": "写出查询、语料范围、召回方式、top-k、过滤条件和返回的来源字段，不要把最终回答塞进检索步骤。"
+      "text": "写出查询、语料范围、词项或语义方式、top-k、过滤条件和返回的来源字段；遇到无来源高分候选时，明确停在缺证据。"
     },
     "sources": [
       {
-        "url": "https://arxiv.org/abs/2004.04906",
-        "label": "原始论文 · 2004.04906",
-        "note": "原论文的方法与实验"
+        "url": "https://developers.openai.com/api/docs/guides/retrieval",
+        "label": "OpenAI 官方文档 · Retrieval",
+        "note": "检索、vector store 与语义搜索说明"
       },
       {
-        "url": "https://platform.openai.com/docs/guides/retrieval",
-        "label": "OpenAI 官方文档 · retrieval",
-        "note": "接口参数与调用行为"
+        "url": "https://arxiv.org/abs/2004.04906",
+        "label": "Karpukhin 等 · Dense Passage Retrieval",
+        "note": "用向量表示查询和段落的召回方法"
+      },
+      {
+        "url": "https://arxiv.org/abs/2005.11401",
+        "label": "Lewis 等 · Retrieval-Augmented Generation",
+        "note": "检索器与生成器的两阶段边界"
+      },
+      {
+        "url": "https://sbert.net/examples/sentence_transformer/applications/retrieve_rerank/README.html",
+        "label": "Sentence Transformers · Retrieve and rerank",
+        "note": "召回、重排与 top-k 的工程组合"
+      },
+      {
+        "url": "https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules-similarity.html",
+        "label": "Elastic · Similarity module",
+        "note": "词项相似度和相关性排序信号"
       }
     ]
   },
@@ -7184,154 +7075,197 @@
     "lead": "两次请求共享6000 token前缀，为什么第二次只改尾部问题就更快？",
     "definition": "服务端复用相同提示前缀的已处理计算，后续请求只需处理变化的尾部，从而降低首token延迟或计费输入。",
     "boundary": "缓存通常按前缀命中，不是把整段最终答案永久保存；改动前部内容可能让命中失效。",
-    "sceneKind": "layers",
-    "sceneTitle": "相同前缀被复用，尾部继续计算",
-    "actionLabel": "改动前缀位置",
+    "sceneKind": "overlay-film",
+    "sceneTitle": "透明底片叠上便签，缓存章只认连续前缀",
+    "actionLabel": "改变便签或底片",
     "actors": [
       {
-        "id": "prefix",
-        "label": "共享前缀",
-        "detail": "6000 token",
+        "id": "base-film",
+        "label": "稳定底片",
+        "detail": "规则 · 工具 · 格式",
         "icon": "memory",
-        "group": "缓存"
+        "group": "底片"
       },
       {
-        "id": "question-a",
-        "label": "首个问题",
-        "detail": "尾部 A",
+        "id": "system",
+        "label": "系统规则",
+        "detail": "用中文回答",
+        "icon": "gear",
+        "group": "固定层"
+      },
+      {
+        "id": "tools",
+        "label": "工具说明",
+        "detail": "billing.lookup",
+        "icon": "package",
+        "group": "固定层"
+      },
+      {
+        "id": "format",
+        "label": "输出格式",
+        "detail": "结论 + 原文位置",
+        "icon": "file",
+        "group": "固定层"
+      },
+      {
+        "id": "sticky",
+        "label": "问题便签",
+        "detail": "问题 A → 问题 B",
         "icon": "message",
-        "group": "请求1"
+        "group": "变化层"
       },
       {
-        "id": "question-b",
-        "label": "第二个问题",
-        "detail": "尾部 B",
-        "icon": "message",
-        "group": "请求2"
-      },
-      {
-        "id": "compute",
-        "label": "前缀计算",
-        "detail": "未命中",
-        "icon": "brain",
-        "group": "处理"
-      },
-      {
-        "id": "latency",
-        "label": "首token耗时",
-        "detail": "1.8s",
-        "icon": "clock",
-        "group": "结果"
+        "id": "cache-stamp",
+        "label": "缓存章",
+        "detail": "命中 0/4",
+        "icon": "spark",
+        "group": "证据"
       }
     ],
-    "edges": [
-      {
-        "id": "p-c",
-        "from": "prefix",
-        "to": "compute",
-        "label": "处理"
-      },
-      {
-        "id": "a-c",
-        "from": "question-a",
-        "to": "compute",
-        "label": "续算"
-      },
-      {
-        "id": "b-c",
-        "from": "question-b",
-        "to": "compute",
-        "label": "续算"
-      },
-      {
-        "id": "c-l",
-        "from": "compute",
-        "to": "latency",
-        "label": "计时"
-      }
-    ],
+    "edges": [],
     "frames": [
       {
-        "label": "首请求冷启动",
-        "note": "6000 token前缀首次处理，缓存命中为0。",
+        "label": "铺开底片",
+        "note": "稳定规则、工具和格式先排成连续前缀，问题便签还没有贴上去。",
         "activeIds": [
-          "prefix",
-          "question-a",
-          "compute"
+          "base-film",
+          "system",
+          "tools",
+          "format"
         ],
         "doneIds": [],
         "mutedIds": [
-          "question-b"
+          "sticky",
+          "cache-stamp"
         ],
         "values": {
-          "compute": "命中 0",
-          "latency": "1.8 s"
+          "base-film": "3 层固定输入",
+          "sticky": "待贴问题"
         },
-        "activeEdgeIds": [
-          "p-c",
-          "a-c",
-          "c-l"
-        ]
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "可复用前缀",
+          "value": "尚未处理"
+        }
       },
       {
-        "label": "前缀被缓存",
-        "note": "服务保存已处理的共同前缀，不保存最终答案。",
+        "label": "首轮叠印",
+        "note": "首轮读过底片后留下中间计算；缓存保存的不是最终回答。",
         "activeIds": [
-          "prefix"
+          "base-film",
+          "cache-stamp"
         ],
         "doneIds": [
-          "question-a",
-          "compute"
+          "system",
+          "tools",
+          "format"
         ],
         "mutedIds": [
-          "question-b"
+          "sticky"
         ],
         "values": {
-          "prefix": "缓存 6000 token"
+            "cache-stamp": "写入 3/4 层"
         },
-        "activeEdgeIds": []
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "缓存状态",
+          "value": "已盖章"
+        }
       },
       {
-        "label": "第二请求复用",
-        "note": "尾部B不同，但前6000 token完全相同。",
+        "label": "换问题便签",
+        "note": "只换尾部问题，前三层从开头连续相同，便签内容仍要重新参与生成。",
         "activeIds": [
-          "prefix",
-          "question-b",
-          "compute"
+          "base-film",
+          "sticky",
+          "cache-stamp"
         ],
         "doneIds": [
-          "question-a"
+          "system",
+          "tools",
+          "format"
         ],
         "mutedIds": [],
         "values": {
-          "compute": "命中 6000",
-          "latency": "0.7 s"
+          "sticky": "问题 B",
+          "cache-stamp": "命中 3/4 层"
         },
-        "activeEdgeIds": [
-          "p-c",
-          "b-c",
-          "c-l"
-        ]
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "前缀命中",
+          "value": "3 层"
+        }
       },
       {
-        "label": "改动开头失效",
-        "note": "把前缀首段改一个字，命中量从6000降为0。",
+        "label": "碰到底片",
+        "note": "工具说明一变，后面的格式也不再拥有相同前文，只剩第一层连续匹配。",
         "activeIds": [
-          "prefix",
-          "compute"
+          "base-film",
+          "tools",
+          "sticky",
+          "cache-stamp"
         ],
         "doneIds": [
-          "question-a",
-          "question-b"
+          "system"
+        ],
+        "mutedIds": [
+          "format"
+        ],
+        "values": {
+          "tools": "policy-v4",
+          "cache-stamp": "命中 1/4 层"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "前缀命中",
+          "value": "1 层"
+        }
+      },
+      {
+        "label": "切换模型",
+        "note": "相同文字放进另一模型，也不能拿旧模型的中间状态直接叠印。",
+        "activeIds": [
+          "base-film",
+          "sticky",
+          "cache-stamp"
+        ],
+        "doneIds": [
+          "system",
+          "tools",
+          "format"
         ],
         "mutedIds": [],
         "values": {
-          "prefix": "前部已变",
-          "compute": "命中 0"
+          "cache-stamp": "模型不一致 · 0/4"
         },
-        "activeEdgeIds": [
-          "p-c"
-        ]
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "可复用前缀",
+          "value": "0 层"
+        }
+      },
+      {
+        "label": "缓存章褪色",
+        "note": "缓存有有效期和资源边界；章褪色后，底片需要重新处理。",
+        "activeIds": [
+          "base-film",
+          "sticky",
+          "cache-stamp"
+        ],
+        "doneIds": [
+          "system",
+          "tools",
+          "format"
+        ],
+        "mutedIds": [],
+        "values": {
+          "cache-stamp": "TTL 失效 · 0/4"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "本次回答",
+          "value": "重新生成"
+        }
       }
     ],
     "insight": "提示缓存复用的是相同前缀的计算，不是把整份回答当作缓存值。",
@@ -7360,9 +7294,24 @@
     },
     "sources": [
       {
-        "url": "https://platform.openai.com/docs/guides/prompt-caching",
+        "url": "https://developers.openai.com/api/docs/guides/prompt-caching",
         "label": "OpenAI 官方文档 · prompt caching",
-        "note": "接口参数与调用行为"
+        "note": "中间计算复用与命中条件"
+      },
+      {
+        "url": "https://docs.vllm.ai/en/latest/design/prefix_caching/",
+        "label": "vLLM 文档 · Automatic Prefix Caching",
+        "note": "前缀连续匹配与块缓存"
+      },
+      {
+        "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+        "label": "Anthropic 文档 · prompt caching",
+        "note": "工具、系统提示与有效期边界"
+      },
+      {
+        "url": "https://papers.nips.cc/paper_files/paper/2024/file/724be4472168f31ba1c9ac630f15dec8-Paper-Conference.pdf",
+        "label": "SGLang 论文 · RadixAttention",
+        "note": "KV 状态复用与淘汰"
       }
     ]
   },
@@ -7556,156 +7505,101 @@
     "lead": "100个请求里70个是抽取、30个是复杂推理，怎样按任务把它们分给不同模型？",
     "definition": "路由器根据任务类型、质量要求、延迟、成本或实时状态，为每个请求选择合适模型。",
     "boundary": "模型路由不是失败后的备用切换；前者在请求前做选择，后者在首选模型失败后接管。",
-    "sceneKind": "route",
-    "sceneTitle": "请求特征在调用前决定模型",
-    "actionLabel": "调整质量权重",
+    "sceneKind": "triage-dial",
+    "sceneTitle": "工单在调用前经过分诊转盘",
+    "actionLabel": "拨动选择盘",
     "actors": [
       {
-        "id": "requests",
-        "label": "请求流",
-        "detail": "100个",
-        "icon": "queue",
+        "id": "ticket",
+        "label": "工单",
+        "detail": "提取金额",
+        "icon": "file",
         "group": "输入"
       },
       {
-        "id": "router",
-        "label": "路由器",
-        "detail": "任务+质量+成本",
+        "id": "dial",
+        "label": "分诊转盘",
+        "detail": "任务+门槛+可用性",
         "icon": "gear",
         "group": "决策"
       },
       {
-        "id": "light",
-        "label": "轻量模型",
-        "detail": "承接65个",
+        "id": "candidate-a",
+        "label": "模型 A",
+        "detail": "96 / 100 · 1单位",
         "icon": "robot",
-        "group": "路径A"
+        "group": "候选"
       },
       {
-        "id": "strong",
-        "label": "强模型",
-        "detail": "承接35个",
+        "id": "candidate-b",
+        "label": "模型 B",
+        "detail": "97 / 100 · 3单位",
         "icon": "brain",
-        "group": "路径B"
+        "group": "候选"
       },
       {
-        "id": "metrics",
-        "label": "汇总",
-        "detail": "成本0.07 · 质量90%",
-        "icon": "chart",
-        "group": "结果"
+        "id": "stop",
+        "label": "停在调用前",
+        "detail": "没有满足条件的模型",
+        "icon": "shield",
+        "group": "边界"
       }
     ],
-    "edges": [
-      {
-        "id": "r-ro",
-        "from": "requests",
-        "to": "router",
-        "label": "提取特征"
-      },
-      {
-        "id": "ro-l",
-        "from": "router",
-        "to": "light",
-        "label": "简单任务"
-      },
-      {
-        "id": "ro-s",
-        "from": "router",
-        "to": "strong",
-        "label": "复杂任务"
-      },
-      {
-        "id": "l-m",
-        "from": "light",
-        "to": "metrics",
-        "label": "汇总"
-      },
-      {
-        "id": "s-m",
-        "from": "strong",
-        "to": "metrics",
-        "label": "汇总"
-      }
-    ],
+    "edges": [],
     "frames": [
       {
-        "label": "请求着色",
-        "note": "100个请求按抽取和复杂推理标出不同特征。",
-        "activeIds": [
-          "requests"
-        ],
+        "label": "拆开工单",
+        "note": "只看任务需要什么；此时还没有调用模型。",
+        "activeIds": ["ticket"],
         "doneIds": [],
-        "mutedIds": [
-          "light",
-          "strong"
-        ],
-        "values": {
-          "requests": "70 简单 / 30 复杂"
-        },
+        "mutedIds": ["dial", "candidate-a", "candidate-b", "stop"],
+        "values": {"ticket": "提取订单金额"},
         "activeEdgeIds": []
       },
       {
-        "label": "路由打分",
-        "note": "路由器同时考虑质量门槛和示例成本。",
-        "activeIds": [
-          "router"
-        ],
-        "doneIds": [
-          "requests"
-        ],
-        "mutedIds": [
-          "light",
-          "strong"
-        ],
-        "values": {
-          "router": "质量权重 0.6"
-        },
-        "activeEdgeIds": [
-          "r-ro"
-        ]
+        "label": "拨到门槛",
+        "note": "同一把 90 分门槛先筛候选，再比较费用。",
+        "activeIds": ["dial"],
+        "doneIds": ["ticket"],
+        "mutedIds": ["candidate-a", "candidate-b", "stop"],
+        "values": {"dial": "门槛 90 / 100"},
+        "activeEdgeIds": []
       },
       {
-        "label": "两路分流",
-        "note": "边界样本使5个简单请求也进入强模型，最终65/35。",
-        "activeIds": [
-          "light",
-          "strong"
-        ],
-        "doneIds": [
-          "requests",
-          "router"
-        ],
-        "mutedIds": [],
-        "values": {
-          "light": "65",
-          "strong": "35"
-        },
-        "activeEdgeIds": [
-          "ro-l",
-          "ro-s"
-        ]
+        "label": "钉住 A",
+        "note": "提取金额时两者都达标，路由选择更省的 A；还没生成回答。",
+        "activeIds": ["candidate-a"],
+        "doneIds": ["ticket", "dial"],
+        "mutedIds": ["candidate-b", "stop"],
+        "values": {"candidate-a": "命中 · 96 / 100"},
+        "activeEdgeIds": []
       },
       {
-        "label": "汇总取舍",
-        "note": "示例平均成本从0.12降到0.07元，质量保持90%。",
-        "activeIds": [
-          "metrics"
-        ],
-        "doneIds": [
-          "requests",
-          "router",
-          "light",
-          "strong"
-        ],
-        "mutedIds": [],
-        "values": {
-          "metrics": "0.07元 · 90%"
-        },
-        "activeEdgeIds": [
-          "l-m",
-          "s-m"
-        ]
+        "label": "转向 B",
+        "note": "复杂条款让 A 低于门槛，B 才留下；任务难度改变了选择。",
+        "activeIds": ["candidate-b"],
+        "doneIds": ["ticket", "dial"],
+        "mutedIds": ["candidate-a", "stop"],
+        "values": {"candidate-b": "命中 · 92 / 100"},
+        "activeEdgeIds": []
+      },
+      {
+        "label": "遇到图片",
+        "note": "A 没有图片能力，B 以较高成本承接这类请求。",
+        "activeIds": ["candidate-b"],
+        "doneIds": ["ticket", "dial"],
+        "mutedIds": ["candidate-a", "stop"],
+        "values": {"candidate-a": "不支持图片", "candidate-b": "命中 · 94 / 100"},
+        "activeEdgeIds": []
+      },
+      {
+        "label": "没有可接候选",
+        "note": "门槛 98 高于两者分数，路由停在调用前而不是偷偷放宽条件。",
+        "activeIds": ["stop"],
+        "doneIds": ["ticket", "dial"],
+        "mutedIds": ["candidate-a", "candidate-b"],
+        "values": {"stop": "门槛 98 · 无候选"},
+        "activeEdgeIds": []
       }
     ],
     "insight": "模型路由是在请求前按目标选模型；备用模型是在首选失败后接管。",
@@ -7750,155 +7644,158 @@
     "lead": "主模型2秒后返回429，备用模型接管时哪些状态必须显式改变？",
     "definition": "首选模型遇到超时、限流、不可用或不满足最低质量时，系统按预设条件切到备用模型并记录降级。",
     "boundary": "备用模型不是负载均衡，也不保证输出完全等价；能力、格式和上下文限制都要重新校验。",
-    "sceneKind": "branch",
-    "sceneTitle": "429让请求转入降级支路",
-    "actionLabel": "模拟失败类型",
+    "sceneKind": "relay-band",
+    "sceneTitle": "接力腕带记录错误、交接与核对",
+    "actionLabel": "改变回执条件",
     "actors": [
       {
-        "id": "request",
-        "label": "请求",
-        "detail": "生成订单摘要",
-        "icon": "message",
-        "group": "输入"
-      },
-      {
         "id": "primary",
-        "label": "主模型",
-        "detail": "等待中",
+        "label": "主调用扣",
+        "detail": "提取金额 120",
         "icon": "brain",
-        "group": "首选"
+        "group": "主路径"
       },
       {
-        "id": "error",
-        "label": "失败信号",
-        "detail": "HTTP 429",
-        "icon": "message",
-        "group": "触发"
+        "id": "policy",
+        "label": "策略闸",
+        "detail": "错误+能力+预算",
+        "icon": "shield",
+        "group": "检查"
       },
       {
         "id": "backup",
-        "label": "备用模型",
-        "detail": "能力较少",
+        "label": "备用扣",
+        "detail": "另一个调用目标",
         "icon": "robot",
-        "group": "降级"
+        "group": "接替"
       },
       {
-        "id": "response",
-        "label": "响应",
-        "detail": "附降级状态",
+        "id": "verify",
+        "label": "字段核对",
+        "detail": "amount = 120",
         "icon": "spark",
-        "group": "输出"
+        "group": "验收"
+      },
+      {
+        "id": "audit",
+        "label": "留痕扣",
+        "detail": "fallback 原因与次数",
+        "icon": "chart",
+        "group": "记录"
       }
     ],
-    "edges": [
-      {
-        "id": "r-p",
-        "from": "request",
-        "to": "primary",
-        "label": "首选"
-      },
-      {
-        "id": "p-e",
-        "from": "primary",
-        "to": "error",
-        "label": "失败"
-      },
-      {
-        "id": "e-b",
-        "from": "error",
-        "to": "backup",
-        "label": "回退"
-      },
-      {
-        "id": "b-r",
-        "from": "backup",
-        "to": "response",
-        "label": "返回"
-      }
-    ],
+    "edges": [],
     "frames": [
       {
-        "label": "走主路径",
-        "note": "请求先发给首选模型，备用模型没有参与。",
+        "label": "扣上主腕带",
+        "note": "先发起主调用，备用还没有拿到任务。",
         "activeIds": [
-          "request",
           "primary"
         ],
         "doneIds": [],
         "mutedIds": [
-          "error",
+          "policy",
           "backup",
-          "response"
+          "verify",
+          "audit"
         ],
         "values": {
-          "primary": "等待 0 → 2s"
+          "primary": "等待回执"
         },
-        "activeEdgeIds": [
-          "r-p"
-        ]
+        "activeEdgeIds": []
       },
       {
-        "label": "触发429",
-        "note": "主模型被限流，重试计数从0变为1。",
+        "label": "看见 429",
+        "note": "主调用回报限流；真实错误先留下，不能直接跳过策略检查。",
         "activeIds": [
-          "primary",
-          "error"
+          "primary"
         ],
-        "doneIds": [
-          "request"
-        ],
+        "doneIds": [],
         "mutedIds": [
+          "policy",
           "backup",
-          "response"
+          "verify",
+          "audit"
         ],
         "values": {
-          "error": "429",
-          "primary": "重试 1"
+          "primary": "429 · 重试 1"
         },
-        "activeEdgeIds": [
-          "p-e"
-        ]
+        "activeEdgeIds": []
       },
       {
-        "label": "转入备用",
-        "note": "规则允许在429后切换，能力标记full变为reduced。",
+        "label": "打开策略闸",
+        "note": "检查错误类型、备用能力和总尝试上限，决定腕带能否交接。",
         "activeIds": [
-          "error",
-          "backup"
+          "policy"
         ],
         "doneIds": [
-          "request",
           "primary"
         ],
         "mutedIds": [
-          "response"
+          "backup",
+          "verify",
+          "audit"
         ],
         "values": {
-          "backup": "reduced"
+          "policy": "允许一次接替"
         },
-        "activeEdgeIds": [
-          "e-b"
-        ]
+        "activeEdgeIds": []
       },
       {
-        "label": "带降级返回",
-        "note": "备用响应成功，同时保留回退原因。",
+        "label": "备用接住",
+        "note": "兼容的备用目标发起第二次调用；它不是主模型的无条件复制品。",
         "activeIds": [
-          "backup",
-          "response"
+          "backup"
         ],
         "doneIds": [
-          "request",
           "primary",
-          "error"
+          "policy"
+        ],
+        "mutedIds": [
+          "verify",
+          "audit"
+        ],
+        "values": {
+          "backup": "第 2 次 · fallback=429"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "核对 amount",
+        "note": "备用即使有回复，也要检查业务需要的字段是否真的存在。",
+        "activeIds": [
+          "verify"
+        ],
+        "doneIds": [
+          "primary",
+          "policy",
+          "backup"
+        ],
+        "mutedIds": [
+          "audit"
+        ],
+        "values": {
+          "verify": "amount = 120 · 通过"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "扣上留痕",
+        "note": "把触发原因、调用次数和核对结果一起记录，接替才可追踪。",
+        "activeIds": [
+          "audit"
+        ],
+        "doneIds": [
+          "primary",
+          "policy",
+          "backup",
+          "verify"
         ],
         "mutedIds": [],
         "values": {
-          "response": "成功 · fallback=429"
+          "audit": "fallback=429 · 2 次 · 通过"
         },
-        "activeEdgeIds": [
-          "b-r"
-        ]
+        "activeEdgeIds": []
       }
     ],
     "insight": "回退需要记录触发原因和能力差异，不能假设备用模型与主模型完全等价。",
@@ -7943,218 +7840,173 @@
     "lead": "会话结束后，智能体怎样记住有用偏好，又不把整段聊天都带上？",
     "definition": "智能体记忆是应用保存下来、供后续调用的信息。应用先判断什么值得保存，按任务取回相关记录，并定好记录怎样纠正、何时失效、怎么删除。这个例子里，用户明确同意保存一条偏好，应用才写入。",
     "boundary": "工作记忆就是当前任务里的临时进度和中间结果，不会自动变成下次会话要用的偏好。保存下来的偏好存在应用的记录里，应用把它取回、放进这次发给 AI 的内容，AI 才会看到它。涉及隐私的内容，应用应先取得用户同意，并定好保存多久、何时删除。",
-    "sceneKind": "memory",
-    "sceneTitle": "一条代码偏好如何经过询问、取回和撤回",
-    "actionLabel": "沿着一条记录走一遍",
+    "sceneKind": "memory-drawer",
+    "sceneTitle": "记忆卡抽屉只把相关记录带进本轮",
+    "actionLabel": "打开下一格抽屉",
     "actors": [
       {
-        "id": "session-a",
-        "label": "会话 A",
-        "detail": "用户确认的偏好",
+        "id": "message",
+        "label": "用户偏好卡",
+        "detail": "代码示例用 TypeScript",
         "icon": "message",
         "group": "来源"
       },
       {
-        "id": "memory",
-        "label": "记忆库",
-        "detail": "保存带来源和时间的记录",
+        "id": "drawer",
+        "label": "记忆卡抽屉",
+        "detail": "按 scope 存放记录",
         "icon": "memory",
         "group": "存储"
       },
       {
-        "id": "session-b",
-        "label": "会话 B",
-        "detail": "当前编码任务",
-        "icon": "message",
-        "group": "使用"
+        "id": "task",
+        "label": "代码任务",
+        "detail": "登录接口示例",
+        "icon": "search",
+        "group": "取回"
       },
       {
-        "id": "example",
-        "label": "本次输出",
-        "detail": "按取回结果生成",
+        "id": "context",
+        "label": "本轮输入",
+        "detail": "明确放入的材料",
+        "icon": "file",
+        "group": "上下文"
+      },
+      {
+        "id": "history",
+        "label": "旧回答",
+        "detail": "TypeScript 已生成",
         "icon": "code",
-        "group": "输出"
+        "group": "边界"
       },
       {
-        "id": "delete",
+        "id": "control",
         "label": "管理入口",
-        "detail": "查看、纠正或删除",
+        "detail": "纠正或删除",
         "icon": "shield",
         "group": "控制"
-      },
-      {
-        "id": "next-example",
-        "label": "下一次输出",
-        "detail": "后续任务再生成",
-        "icon": "code",
-        "group": "结果"
       }
     ],
-    "edges": [
-      {
-        "id": "a-m",
-        "from": "session-a",
-        "to": "memory",
-        "label": "写入"
-      },
-      {
-        "id": "m-b",
-        "from": "memory",
-        "to": "session-b",
-        "label": "取回"
-      },
-      {
-        "id": "b-e",
-        "from": "session-b",
-        "to": "example",
-        "label": "应用偏好"
-      },
-      {
-        "id": "d-m",
-        "from": "delete",
-        "to": "memory",
-        "label": "管理"
-      },
-      {
-        "id": "d-n",
-        "from": "delete",
-        "to": "next-example",
-        "label": "下一次生效"
-      }
-    ],
+    "edges": [],
     "frames": [
       {
-        "label": "用户确认偏好",
-        "note": "会话 A 中，用户明确同意保存“代码示例用 TypeScript”；未确认的信息不写入。",
+        "label": "卡片等候同意",
+        "note": "当前消息可以影响眼前回答，但还没有进入长期抽屉。",
         "activeIds": [
-          "session-a"
+          "message"
         ],
         "doneIds": [],
         "mutedIds": [
-          "memory",
-          "session-b",
-          "example",
-          "delete",
-          "next-example"
+          "drawer",
+          "task",
+          "context",
+          "history",
+          "control"
         ],
         "values": {
-          "session-a": "已确认"
+          "message": "等待明确同意"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "写入可管理记录",
-        "note": "记忆库原有 1 条“食谱少放盐”的记录。应用新增这条代码偏好，来源记为会话 A、时间记为今天；应用也可以设定失效时间，到期不再取回。",
+        "label": "放入抽屉",
+        "note": "用户同意后，只写一张带来源和范围的偏好卡。",
         "activeIds": [
-          "memory"
+          "drawer"
         ],
         "doneIds": [
-          "session-a"
+          "message"
         ],
         "mutedIds": [
-          "session-b",
-          "example",
-          "delete",
-          "next-example"
+          "task",
+          "context",
+          "history",
+          "control"
         ],
         "values": {
-          "memory": "新增 1 条 · 会话 A · 今天"
+          "drawer": "2 条 · code 卡已存"
         },
-        "activeEdgeIds": [
-          "a-m"
-        ]
+        "activeEdgeIds": []
       },
       {
-        "label": "新任务取回相关记录",
-        "note": "记忆库一共 2 条。会话 B 要写代码，应用只取回代码偏好这 1 条，不带入食谱记录或全部旧聊天。",
+        "label": "抽出相关卡",
+        "note": "代码任务只抽出 code 范围的卡，食谱卡留在抽屉里。",
         "activeIds": [
-          "memory",
-          "session-b"
+          "drawer",
+          "task"
         ],
         "doneIds": [
-          "session-a"
+          "message"
         ],
         "mutedIds": [
-          "example",
-          "delete",
-          "next-example"
+          "context",
+          "history",
+          "control"
         ],
         "values": {
-          "memory": "共 2 条 · 取回 1"
+          "drawer": "命中 1 / 2"
         },
-        "activeEdgeIds": [
-          "m-b"
-        ]
+        "activeEdgeIds": []
       },
       {
-        "label": "使用取回的偏好",
-        "note": "应用把取回的偏好交给 AI，本次输出使用 TypeScript（一种编程语言）。用户随时可以通过管理入口纠正这条偏好。",
+        "label": "压进本轮输入",
+        "note": "取回只是应用拿到记录；放进本轮输入后模型才会看见。",
         "activeIds": [
-          "session-b",
-          "example"
+          "context"
         ],
         "doneIds": [
-          "session-a",
-          "memory"
+          "message",
+          "drawer",
+          "task"
         ],
         "mutedIds": [
-          "delete",
-          "next-example"
+          "history",
+          "control"
         ],
         "values": {
-          "example": "TypeScript"
+          "context": "language = TypeScript"
         },
-        "activeEdgeIds": [
-          "m-b",
-          "b-e"
-        ]
+        "activeEdgeIds": []
       },
       {
-        "label": "纠正一条记录",
-        "note": "用户把偏好从 TypeScript 改成 Python，记忆里存的值跟着变了；已经生成的回复保持原样。",
+        "label": "翻卡改成 Python",
+        "note": "纠正改变未来取回的值，已经生成的 TypeScript 输出不回写。",
         "activeIds": [
-          "memory",
-          "delete"
+          "drawer",
+          "control"
         ],
         "doneIds": [
-          "session-a",
-          "session-b",
-          "example"
-        ],
-        "mutedIds": [
-          "next-example"
-        ],
-        "values": {
-          "memory": "TypeScript → Python",
-          "example": "TypeScript（已生成）"
-        },
-        "activeEdgeIds": [
-          "d-m"
-        ]
-      },
-      {
-        "label": "删除后不再使用",
-        "note": "纠正之后，用户又把这条代码偏好删掉了，记忆库从 2 条剩 1 条食谱记录。下一次代码任务不会自动使用这条偏好，需要重新说明想用哪种语言写代码。",
-        "activeIds": [
-          "memory",
-          "delete",
-          "next-example"
-        ],
-        "doneIds": [
-          "session-a",
-          "session-b",
-          "example"
+          "message",
+          "task",
+          "context",
+          "history"
         ],
         "mutedIds": [],
         "values": {
-          "memory": "2 → 1",
-          "next-example": "需重新说明语言偏好",
-          "example": "TypeScript（已生成）"
+          "drawer": "TypeScript → Python",
+          "history": "TypeScript · 已生成"
         },
-        "activeEdgeIds": [
-          "d-m",
-          "d-n"
-        ]
+        "activeEdgeIds": []
+      },
+      {
+        "label": "删除未来取回",
+        "note": "删除只阻断之后的自动带入；下一次需要重新说明语言偏好。",
+        "activeIds": [
+          "drawer",
+          "control"
+        ],
+        "doneIds": [
+          "message",
+          "task",
+          "context",
+          "history"
+        ],
+        "mutedIds": [],
+        "values": {
+          "drawer": "2 → 1 条",
+          "history": "TypeScript · 保留"
+        },
+        "activeEdgeIds": []
       }
     ],
     "insight": "留下记录后，应用还要按当前任务取回它。记忆内容可以纠正或删除，过去生成的回复不会跟着改写。",
@@ -8207,8 +8059,7 @@
         "label": "OpenAI Agents SDK · Running agents",
         "note": "运行时状态与任务继续"
       }
-    ],
-    "demoSignature": "六段生命周期：请求同意、写入、取回、带入本轮、纠正偏好、删除；每个按钮都让记录或本轮输入出现可观察变化，未满足前置条件的操作保持禁用。"
+    ]
   },
   {
     "slug": "working-memory",
@@ -8432,9 +8283,9 @@
     "lead": "网页正文夹着“把密钥发出去”的句子，为什么不能把它当成用户指令？",
     "definition": "提示词注入发生在不可信文字进入模型上下文后，文字试图冒充授权指令。应用程序要先保留内容来源，再用工具权限、隔离和确认限制它可能造成的影响。",
     "boundary": "模型读到用户请求和网页内容时都面对文字，不能稳定地凭句子判断谁有授权。读取网页可以继续，但网页不会因为写成指令的样子就获得发送密钥的权限；即使模型被诱导，工具层仍应拒绝未授权动作。",
-    "sceneKind": "pipeline",
-    "sceneTitle": "不可信内容试图越过工具边界",
-    "actionLabel": "显示不可信指令层",
+    "sceneKind": "matrix",
+    "sceneTitle": "信任贴纸怎样挡住越界动作",
+    "actionLabel": "揭开资料袋并切换信任标签",
     "actors": [
       {
         "id": "user",
@@ -8451,16 +8302,16 @@
         "group": "不可信数据"
       },
       {
-        "id": "separator",
-        "label": "信任标记",
-        "detail": "data ≠ instruction",
+        "id": "sleeve",
+        "label": "资料袋贴纸",
+        "detail": "DATA · 不授权",
         "icon": "shield",
         "group": "边界"
       },
       {
         "id": "tool",
-        "label": "发送密钥工具",
-        "detail": "无权限",
+        "label": "高风险工具",
+        "detail": "send_secret · 未授权",
         "icon": "key",
         "group": "高风险动作"
       },
@@ -8474,46 +8325,75 @@
     ],
     "edges": [
       {
-        "id": "u-s",
+        "id": "u-sleeve",
         "from": "user",
-        "to": "separator",
+        "to": "sleeve",
         "label": "任务"
       },
       {
-        "id": "p-s",
+        "id": "page-sleeve",
         "from": "page",
-        "to": "separator",
+        "to": "sleeve",
         "label": "标记数据"
       },
       {
-        "id": "s-t",
-        "from": "separator",
+        "id": "sleeve-tool",
+        "from": "sleeve",
         "to": "tool",
         "label": "权限检查"
       },
       {
-        "id": "s-sum",
-        "from": "separator",
+        "id": "sleeve-summary",
+        "from": "sleeve",
         "to": "summary",
-        "label": "正常处理"
+        "label": "继续原任务"
       }
     ],
     "frames": [
       {
-        "label": "两路内容进入",
-        "note": "程序保留来源：用户目标是请求，网页正文是不可信数据；两者都能被读取，但权限不同。"
+        "label": "任务和资料摆上桌",
+        "note": "用户目标与网页正文同时可见，但来源还没有被混成同一种授权。",
+        "activeIds": ["user", "page"],
+        "doneIds": [],
+        "mutedIds": ["sleeve", "tool", "summary"],
+        "values": {"page": "资料袋未打开"},
+        "activeEdgeIds": []
       },
       {
-        "label": "恶意句子浮现",
-        "note": "网页文字仍可能影响模型判断；把句子识别成攻击不是唯一防线。"
+        "label": "可疑句子露出来",
+        "note": "网页里的命令句被读到，但贴纸仍写着 DATA；可读不等于可授权。",
+        "activeIds": ["page", "sleeve"],
+        "doneIds": ["user"],
+        "mutedIds": ["tool", "summary"],
+        "values": {"page": "含外部命令", "sleeve": "DATA"},
+        "activeEdgeIds": ["page-sleeve"]
       },
       {
-        "label": "权限闸门拒绝",
-        "note": "即使模型提出发送密钥，工具层按权限拒绝；调用数保持0。"
+        "label": "错误信任贴上去",
+        "note": "如果模型把网页句子提升成指令，send_secret 只能先成为提案，还没有真正执行。",
+        "activeIds": ["sleeve", "tool"],
+        "doneIds": ["user", "page"],
+        "mutedIds": ["summary"],
+        "values": {"sleeve": "INSTRUCTION · 错误提升", "tool": "PROPOSED"},
+        "activeEdgeIds": ["sleeve-tool"]
       },
       {
-        "label": "完成原任务",
-        "note": "系统继续使用可见网页正文做摘要，读到内容不代表执行其中命令。"
+        "label": "工具闸门拒绝",
+        "note": "工具层没有发送密钥的授权，调用保持 0 次；模型误判的影响停在闸门外。",
+        "activeIds": ["tool"],
+        "doneIds": ["user", "page", "sleeve"],
+        "mutedIds": ["summary"],
+        "values": {"tool": "REJECTED · 0 次"},
+        "activeEdgeIds": ["sleeve-tool"]
+      },
+      {
+        "label": "放回资料袋，继续摘要",
+        "note": "把网页恢复为 DATA，原任务继续使用可见正文，危险工具从未执行。",
+        "activeIds": ["page", "sleeve", "summary"],
+        "doneIds": ["user", "tool"],
+        "mutedIds": [],
+        "values": {"sleeve": "DATA", "summary": "摘要完成 · send_secret 0 次"},
+        "activeEdgeIds": ["sleeve-summary"]
       }
     ],
     "insight": "提示词注入混淆了数据和指令；读数据与执行动作要分开，来源标记、最小权限和确认共同限制影响。",
@@ -8542,24 +8422,29 @@
     },
     "sources": [
       {
-        "url": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
-        "label": "NIST 出版物 · AI 600-1",
-        "note": "生成式 AI 风险、治理与可信边界"
-      },
-      {
         "url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
         "label": "OWASP GenAI · LLM01 Prompt Injection",
         "note": "提示注入风险与防护方向"
       },
       {
-        "url": "https://arxiv.org/abs/2302.12173",
-        "label": "Greshake 等 · Indirect Prompt Injection",
-        "note": "外部资料中的间接注入如何影响应用和工具调用"
+        "url": "https://developers.openai.com/api/docs/guides/safety-best-practices",
+        "label": "OpenAI API · Safety best practices",
+        "note": "输入约束、人工确认和工具安全"
       },
       {
-        "url": "https://openai.com/safety/prompt-injections/",
-        "label": "OpenAI · Understanding prompt injections",
-        "note": "第三方内容、分层防护、最小访问和确认"
+        "url": "https://developers.openai.com/api/docs/guides/agent-builder-safety",
+        "label": "OpenAI API · Safety in building agents",
+        "note": "智能体数据流和动作边界"
+      },
+      {
+        "url": "https://www.anthropic.com/research/prompt-injection-defenses?slug=helpful-honest-harmless-ai",
+        "label": "Anthropic · Mitigating prompt injections in browser use",
+        "note": "浏览器代理的外部内容攻击面和分层防护"
+      },
+      {
+        "url": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
+        "label": "NIST 出版物 · AI 600-1",
+        "note": "生成式 AI 风险、治理与可信边界"
       }
     ]
   },

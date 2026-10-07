@@ -24,6 +24,11 @@ const sceneKinds = [
   "spectrum",
   "assembly",
   "terminal",
+  "magnet-drawer",
+  "overlay-film",
+  "triage-dial",
+  "relay-band",
+  "memory-drawer",
 ] as const;
 
 const actorIcons = [

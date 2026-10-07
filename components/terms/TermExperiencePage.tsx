@@ -96,6 +96,11 @@ const sceneCopy = {
   spectrum: { heading: "拖动尺度，观察差异", insight: "尺度结论" },
   assembly: { heading: "把各部分装到一起", insight: "组合结论" },
   terminal: { heading: "逐条执行并看输出", insight: "执行结论" },
+  "magnet-drawer": { heading: "拉开抽屉，检查哪张卡能被引用", insight: "证据结论" },
+  "overlay-film": { heading: "叠上便签，看哪一层还能复用", insight: "命中结论" },
+  "triage-dial": { heading: "拨动分诊转盘，看看谁能承接", insight: "选择结论" },
+  "relay-band": { heading: "扣上接力腕带，检查是否真的能交接", insight: "接替结论" },
+  "memory-drawer": { heading: "拉开记忆卡抽屉，只取这次有用的一张", insight: "记忆结论" },
 } satisfies Record<TermSceneKind, { heading: string; insight: string }>;
 
 type SceneControlKind = "range" | "select" | "step";
