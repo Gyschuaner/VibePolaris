@@ -24862,5 +24862,177 @@
         "note": "验证、风险和人类监督边界"
       }
     ]
+  },
+  {
+    "slug": "self-consistency",
+    "lead": "同一道题多算几遍，为什么要看答案的交集，而不是迷信第一条推理路径？",
+    "definition": "自洽性采样对同一个问题生成多条可能的推理路径，把路径最后得到的答案归并，再选择出现更稳定的答案。它利用路径间的共识，不会更新模型参数；只有答案空间清楚且能独立核对时，共识才有意义。",
+    "boundary": "多数票不是事实证明。输入歧义、共享错误前提或没有唯一答案时，更多样本只会制造确定感；必须记录采样设置、归并规则和外部核验，不把票数当通用置信度。",
+    "sceneKind": "matrix",
+    "sceneTitle": "答案棋盘：路径各自书写，最后才在同一列归票",
+    "actionLabel": "摆下一组路径",
+    "actors": [
+      {
+        "id": "question",
+        "label": "同一道题",
+        "detail": "24 个苹果分给 6 人",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "path-a",
+        "label": "路径 A",
+        "detail": "24 ÷ 6 = 4",
+        "icon": "code",
+        "group": "样本"
+      },
+      {
+        "id": "path-b",
+        "label": "路径 B",
+        "detail": "4 × 6 = 24，所以每人 4",
+        "icon": "code",
+        "group": "样本"
+      },
+      {
+        "id": "path-c",
+        "label": "路径 C",
+        "detail": "12 ÷ 3 = 4",
+        "icon": "code",
+        "group": "样本"
+      },
+      {
+        "id": "votes",
+        "label": "答案棋盘",
+        "detail": "把最终答案归在同一格",
+        "icon": "chart",
+        "group": "共识"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "固定输入",
+        "note": "所有路径拿到同一问题，先隔离输入差异。",
+        "activeIds": [
+          "question"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "path-a",
+          "path-b",
+          "path-c",
+          "votes"
+        ],
+        "values": {
+          "question": "24 ÷ 6"
+        }
+      },
+      {
+        "label": "摆出三条路径",
+        "note": "写法不同，但三条路径都落在候选答案 4。",
+        "activeIds": [
+          "path-a",
+          "path-b",
+          "path-c"
+        ],
+        "doneIds": [
+          "question"
+        ],
+        "mutedIds": [
+          "votes"
+        ],
+        "values": {
+          "path-a": "4",
+          "path-b": "4",
+          "path-c": "4"
+        }
+      },
+      {
+        "label": "按答案归拢",
+        "note": "归并的是最终答案，不比较哪段文字更像人类。",
+        "activeIds": [
+          "votes"
+        ],
+        "doneIds": [
+          "question",
+          "path-a",
+          "path-b",
+          "path-c"
+        ],
+        "mutedIds": [],
+        "values": {
+          "votes": "4 · 3 票"
+        }
+      },
+      {
+        "label": "放入噪声路径",
+        "note": "一条错误路径不会被隐藏；共识仍要回到题目检查。",
+        "activeIds": [
+          "path-c",
+          "votes"
+        ],
+        "doneIds": [
+          "question",
+          "path-a",
+          "path-b"
+        ],
+        "mutedIds": [],
+        "values": {
+          "path-c": "5 · 1 票",
+          "votes": "4 · 2 票 / 5 · 1 票"
+        }
+      }
+    ],
+    "insight": "自洽性把多个路径的稳定交集显出来，但共识仍需要标准答案和外部证据。",
+    "quiz": {
+      "question": "自洽性采样最适合先用在哪类问题上？",
+      "options": [
+        {
+          "label": "答案空间清楚、可以独立核对的推理题",
+          "correct": true
+        },
+        {
+          "label": "没有唯一标准的价值判断",
+          "correct": false
+        },
+        {
+          "label": "所有路径只能复制同一段提示",
+          "correct": false
+        }
+      ],
+      "success": "明确答案与独立核验让票数有可解释的意义。",
+      "retry": "开放判断或共享错误前提不能只靠多数票。"
+    },
+    "prompt": {
+      "title": "设计一次自洽性采样检查",
+      "text": "请固定输入和目标，生成若干独立答案路径；只抽取每条路径的最终答案并记录采样设置、归并规则和票数。再用一份外部可核对的标准答案检查多数票，明确差异来自路径还是题目歧义。"
+    },
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2203.11171",
+        "label": "Wang et al. · Self-Consistency",
+        "note": "多路径采样与答案归并"
+      },
+      {
+        "url": "https://arxiv.org/abs/2201.11903",
+        "label": "Wei et al. · Chain-of-Thought Prompting",
+        "note": "路径式推理的研究基础"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/reasoning",
+        "label": "OpenAI · Reasoning models",
+        "note": "推理设置和结果解释边界"
+      },
+      {
+        "url": "https://ai.google.dev/gemini-api/docs/prompting-strategies",
+        "label": "Google · Prompting strategies",
+        "note": "提示策略与任务适配"
+      },
+      {
+        "url": "https://doi.org/10.6028/NIST.AI.600-1",
+        "label": "NIST · AI Risk Management Framework",
+        "note": "评测和不确定性治理"
+      }
+    ]
   }
 ]
