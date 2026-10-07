@@ -2527,5 +2527,205 @@
       "prompt-injection",
       "tool-schema"
     ]
+  },
+  {
+    "slug": "logit",
+    "mechanism": "Logit 是输出头在 softmax 前给候选类别或 token 的未归一化分数；温度、mask 和采样器会在后续改变它如何进入选择分布。",
+    "misconception": "logit 不是概率、事实可信度或跨模型公共量表；绝对值和不同位置之间的差异不能脱离归一化与词表直接解释。",
+    "demoSignature": "5帧｜对象：候选片段、原始 logit、温度、mask、归一化分布、事实核验｜交互：摆分数、调温度、遮候选、查看总和为1、把生成选择与核验分开｜变化：原始分数→尖锐程度改变→雪离开集合→雨/伞成分布→事实仍待来源；频谱台，不是流程图。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/1706.03762",
+      "https://docs.pytorch.org/docs/stable/generated/torch.nn.functional.softmax.html",
+      "https://docs.pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html",
+      "https://huggingface.co/docs/transformers/main/en/generation_strategies",
+      "https://d2l.ai/chapter_attention-mechanisms-and-transformers/attention-scoring-functions.html"
+    ],
+    "rewriteRisk": "先区分原始分数、归一化概率、采样结果和外部证据；不要把一个候选的 logit 或概率写成事实正确率。二元 logistic 的 log-odds 是特例，不能把“对数几率”当作多分类 logit 的通用别名。",
+    "nearDuplicates": [
+      "temperature",
+      "transformer",
+      "confidence-calibration",
+      "inference"
+    ]
+  },
+  {
+    "slug": "softmax",
+    "mechanism": "Softmax 对一组 logits 取指数并除以指数总和，生成依赖候选集合的归一化选择分布；temperature 和 mask 会在此之前改变输入或可见集合。",
+    "misconception": "softmax 的数值不是跨任务固定的事实正确率；加入候选、改变温度或更换模型都会改变它。",
+    "demoSignature": "5帧｜对象：原始logits、稳定平移、低温分布、高温分布、候选集合、事实核验｜交互：平移数值、切换温度、加入候选、分开事实核验｜变化：原始相对分数→稳定计算→尖分布/平分布→分母重算→百分比仍非证据；双分布对照，不是流程图。",
+    "sourceUrls": [
+      "https://docs.pytorch.org/docs/stable/generated/torch.nn.functional.softmax.html",
+      "https://docs.pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html",
+      "https://arxiv.org/abs/1706.03762",
+      "https://huggingface.co/docs/transformers/main/en/generation_strategies",
+      "https://d2l.ai/chapter_linear-classification/softmax-regression.html"
+    ],
+    "rewriteRisk": "不要把 softmax 写成事实概率或万能置信度；要交代候选集合、T>0、数值稳定性和校准边界。",
+    "nearDuplicates": [
+      "logit",
+      "temperature",
+      "transformer",
+      "inference"
+    ]
+  },
+  {
+    "slug": "activation-function",
+    "mechanism": "激活函数逐点变换线性层输出，打破多层线性变换可合并的限制；不同函数决定信号保留、截断或饱和的形状。",
+    "misconception": "激活函数不是模型自动学习的规则本身，也不保证某一种函数总是更好；它与架构、初始化和任务共同决定训练结果。",
+    "demoSignature": "5帧｜对象：线性输出、ReLU、GELU、Sigmoid、梯度形状、任务评测｜交互：切换逐点变换｜变化：原始z→硬门槛→软门槛→饱和两端→把曲线结论交回评测；函数变形台，不是流程图。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/1802.09417",
+      "https://pytorch.org/docs/stable/generated/torch.nn.ReLU.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.GELU.html",
+      "https://d2l.ai/chapter_multilayer-perceptrons/mlp.html",
+      "https://www.deeplearningbook.org/contents/mlp.html"
+    ],
+    "rewriteRisk": "不要把激活函数写成训练算法或注意力；要讲清无非线性时的可合并性，以及 ReLU/GELU/饱和的条件差异。",
+    "nearDuplicates": [
+      "transformer",
+      "fine-tuning",
+      "embedding",
+      "inference"
+    ]
+  },
+  {
+    "slug": "layer-normalization",
+    "mechanism": "LayerNorm 沿每个样本的指定特征维度计算均值和方差，标准化后再用可学习的 weight/bias 调整尺度；它不依赖 batch 中其他样本。",
+    "misconception": "LayerNorm 不是把整批样本混在一起，也不是单纯缩小数值；统计轴与放置位置决定行为。",
+    "demoSignature": "5帧｜对象：token特征行、均值/方差、标准化、γ/β、Batch统计、输出表示｜交互：逐行测量并切换统计轴｜变化：原始行→各自统计→共同刻度→可学习恢复→换轴产生另一概念；分层测量台，不是流程图。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/1607.06450",
+      "https://pytorch.org/docs/stable/generated/torch.nn.LayerNorm.html",
+      "https://arxiv.org/abs/1706.03762",
+      "https://arxiv.org/abs/2002.04745",
+      "https://d2l.ai/chapter_convolutional-modern/batch-norm.html"
+    ],
+    "rewriteRisk": "不要只写“把数据标准化”；必须交代 normalized_shape、统计轴、γ/β、epsilon，以及它与 BatchNorm 和 pre/post-LN 的边界。",
+    "nearDuplicates": [
+      "transformer",
+      "embedding",
+      "attention",
+      "inference"
+    ]
+  },
+  {
+    "slug": "residual-connection",
+    "mechanism": "Residual connection 计算 y=F(x)+x，让子层学习相对输入的增量；形状不同时先用投影把恒等支路对齐。",
+    "misconception": "残差连接不是把两个向量拼起来，也不是保证深层网络一定更准；它改善的是表示和梯度的可达路径。",
+    "demoSignature": "5帧｜对象：原输入、子层增量、形状适配、叠加结果、梯度通道｜交互：拖动增量并切换维度条件｜变化：保留底片→绘制修正→检查对齐→透明叠加→恒等梯度路；透明叠片，不是流程图。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/1512.03385",
+      "https://d2l.ai/chapter_convolutional-modern/resnet.html",
+      "https://arxiv.org/abs/1706.03762",
+      "https://arxiv.org/abs/2003.04887",
+      "https://arxiv.org/abs/1608.06993"
+    ],
+    "rewriteRisk": "不要把 residual 写成复制、拼接或无条件跳过子层；必须说明逐元素加法、形状适配和优化路径的边界。",
+    "nearDuplicates": [
+      "transformer",
+      "attention",
+      "layer-normalization",
+      "fine-tuning"
+    ]
+  },
+  {
+    "slug": "feed-forward-network",
+    "mechanism": "Transformer FFN 对每个 token 独立应用两层线性变换与激活，先从 d_model 扩到 d_ff，再投回 d_model；参数在位置间共享。",
+    "misconception": "position-wise 不表示每个位置有独立参数，也不表示 FFN 负责跨 token 关系；那是另一个子层的职责。",
+    "demoSignature": "5帧｜对象：token矩阵、扩维层、激活/门控、压回层、共享参数、attention边界｜交互：查看不同token独立列｜变化：逐列输入→扩宽→非线性→压回→同参异出；矩阵工作台，不是流程图。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/1706.03762",
+      "https://pytorch.org/docs/stable/generated/torch.nn.TransformerEncoderLayer.html",
+      "https://d2l.ai/chapter_attention-mechanisms-and-transformers/transformer.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.GELU.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.Linear.html"
+    ],
+    "rewriteRisk": "不要把 FFN 写成注意力或序列循环；需明确 d_model/d_ff、逐位置共享参数、激活/门控和回到主干尺寸。",
+    "nearDuplicates": [
+      "transformer",
+      "attention",
+      "activation-function",
+      "residual-connection"
+    ]
+  },
+  {
+    "slug": "positional-encoding",
+    "mechanism": "位置编码把序列索引注入 token 表示或注意力关系，使自注意力能够区分相同内容的不同顺序。",
+    "misconception": "位置编码不是额外词义、不是可见性 mask，也不自动保证训练长度之外的外推。",
+    "demoSignature": "5帧｜对象：token内容、位置标签、位置向量、组合表示、注意力比较、长度/Mask边界｜交互：重排token并切换位置机制｜变化：无顺序→贴位置→组合→交换词得不同关系→区分外推与mask；时序贴签台，不是流程图。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/1706.03762",
+      "https://d2l.ai/chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html",
+      "https://arxiv.org/abs/1810.04805",
+      "https://arxiv.org/abs/2104.09864",
+      "https://pytorch.org/docs/stable/generated/torch.nn.Transformer.html"
+    ],
+    "rewriteRisk": "不要把位置编码写成词义或 mask；需比较绝对/相对/旋转方法，并说明训练长度、padding、causal mask 的边界。",
+    "nearDuplicates": [
+      "transformer",
+      "attention",
+      "tokenization",
+      "embedding"
+    ]
+  },
+  {
+    "slug": "rotary-position-embedding",
+    "mechanism": "RoPE 按位置旋转 Q/K 的二维维度对，使注意力内积包含相对位置角差；频率 base 与 scaling 决定长度边界。",
+    "misconception": "RoPE 不是简单相加式绝对位置编码，也不是所有向量都旋转；它不会自动解决超长上下文。",
+    "demoSignature": "5帧｜对象：Q/K坐标对、位置角度、旋转Q、旋转K、内积、未旋转V｜交互：拖动位置间距并切换长上下文参数｜变化：原坐标→分配角度→Q/K旋转→内积读相对角→长上下文另验；旋转坐标对照，不是流程图。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/2104.09864",
+      "https://d2l.ai/chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html",
+      "https://arxiv.org/abs/2307.09288",
+      "https://huggingface.co/docs/transformers/main/en/internal/rope_utils",
+      "https://arxiv.org/abs/1706.03762"
+    ],
+    "rewriteRisk": "不要把 RoPE 说成给所有 hidden state 加位置向量或保证无限上下文；必须区分 Q/K/V、二维分量、频率与 scaling。",
+    "nearDuplicates": [
+      "positional-encoding",
+      "attention",
+      "transformer",
+      "inference"
+    ]
+  },
+  {
+    "slug": "attention-head",
+    "mechanism": "每个 attention head 在独立 Q/K/V 投影子空间中计算权重并汇总 V，多头结果拼接后再投影回 model dimension。",
+    "misconception": "头不是硬编码的语法模块，热力图也不是稳定解释；头的数量、mask、投影和输入共同决定一次权重。",
+    "demoSignature": "5帧｜对象：token矩阵、Head A、Head B、mask、拼接多头、输出投影｜交互：切换观察头并改变可见范围｜变化：共享输入→两张权重表→mask约束→拼接→回到主干；双热力矩阵，不是流程图。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/1706.03762",
+      "https://d2l.ai/chapter_attention-mechanisms-and-transformers/multihead-attention.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.MultiheadAttention.html",
+      "https://arxiv.org/abs/1806.05152",
+      "https://arxiv.org/abs/1905.09418"
+    ],
+    "rewriteRisk": "不要给注意力头预设人类语义，也不要把热力图写成模型解释的充分证据；需交代 Q/K/V、mask、拼接和冗余边界。",
+    "nearDuplicates": [
+      "attention",
+      "transformer",
+      "tokenization",
+      "embedding"
+    ]
+  },
+  {
+    "slug": "sequence-to-sequence",
+    "mechanism": "Seq2Seq 用 encoder 表示源序列，decoder 结合已生成前缀和交叉注意力逐步产生目标序列；源/目标长度可以不同。",
+    "misconception": "训练时的 teacher forcing 不等于推理行为，源目标也不需要一一对齐；停止、搜索和长度策略是独立边界。",
+    "demoSignature": "6帧｜对象：源序列、Encoder表示、目标前缀、交叉注意力、下一个token、停止条件｜交互：逐步推进输出并切换teacher forcing/free running｜变化：源带→编码→目标前缀→查源→长度分叉→EOS收住；双带组装台，不是流程图。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/1409.3215",
+      "https://arxiv.org/abs/1409.0473",
+      "https://arxiv.org/abs/1706.03762",
+      "https://huggingface.co/docs/transformers/main/en/tasks/translation",
+      "https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html"
+    ],
+    "rewriteRisk": "不要把 Seq2Seq 写成复制或固定长度分类；必须区分 encoder/decoder、teacher forcing、自由生成、交叉注意力与 EOS。",
+    "nearDuplicates": [
+      "transformer",
+      "attention",
+      "tokenization",
+      "inference"
+    ]
   }
 ]

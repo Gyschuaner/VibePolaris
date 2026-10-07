@@ -6823,7 +6823,7 @@
     ],
     "question": "两份解答都得出 42，为什么还要逐步检查其中一份是怎么走到 42 的？",
     "definition": "过程监督是在训练或筛选模型时，不只给最终答案打分，而是对解答中的每个中间步骤提供正确、错误或待定的反馈。过程奖励模型（PRM）可以据此估计一条解答在哪一步开始偏离，再用这些细粒度信号训练模型或从多个候选中挑选更可靠的路径。它监督的是推理过程里的可检查行为，不等于把完整思维链展示给用户，也不等于把所有现实任务都拆成固定流程。",
-  "boundary": "过程监督和 outcome supervision 的差别在反馈落点：后者主要看最终结果，前者还要判断中间步骤是否合理、是否有题目或证据支持。它不是 chain-of-thought 的同义词，也不是验证器、奖励模型或人工审查本身；这些可以承载或使用过程反馈。逐步标签也可能含糊、昂贵、受领域限制，奖励模型仍可能学到表面线索；现有比较结果主要来自数学任务，不能直接当作所有领域都成立的保证。",
+    "boundary": "过程监督和 outcome supervision 的差别在反馈落点：后者主要看最终结果，前者还要判断中间步骤是否合理、是否有题目或证据支持。它不是 chain-of-thought 的同义词，也不是验证器、奖励模型或人工审查本身；这些可以承载或使用过程反馈。逐步标签也可能含糊、昂贵、受领域限制，奖励模型仍可能学到表面线索；现有比较结果主要来自数学任务，不能直接当作所有领域都成立的保证。",
     "demoType": "comparison",
     "demoTitle": "两份答案都写 42，哪一步让其中一份失去依据？",
     "demoSteps": [
@@ -7114,6 +7114,611 @@
       "prompt-injection",
       "tool-schema",
       "eval"
+    ]
+  },
+  {
+    "zh": "Logit",
+    "en": "Logit",
+    "slug": "logit",
+    "cat": "AI·Agent",
+    "say": "在归一化之前，模型给每个候选片段的一把原始分数尺。",
+    "aliases": [
+      "Logit",
+      "未归一化分数"
+    ],
+    "question": "模型还没把分数变成概率时，手里拿着的到底是什么？",
+    "definition": "Logit 是模型输出头给每个候选类别或 token 的未归一化分数。它可以是任意实数，候选之间的相对差距会在后续 softmax 或其他归一化步骤里变成选择分布；因此 logit 不是概率，也不是模型对事实的可信度盖章。",
+    "boundary": "logit 只描述某个模型、某个位置和某组输入下的原始偏好，不能脱离词表、温度、mask、采样器或模型版本直接比较。把一个候选的 logit 写成“它有 80% 可能正确”会混淆计算分数、生成概率和外部事实；候选被 mask 掉后，即使原始分数很高，也不会进入本轮分布。",
+    "demoType": "comparison",
+    "demoTitle": "概率还没出现时，模型手里拿的是什么？",
+    "demoSteps": [
+      {
+        "label": "摆出原始分数",
+        "value": "雨=2.4 · 伞=1.7 · 雪=0.2",
+        "note": "这些数还没有加总到 1；它们只是当前输出头给候选的相对分数。"
+      },
+      {
+        "label": "拉动温度",
+        "value": "T=0.7 · 差距被放大",
+        "note": "温度会改变归一化时的尖锐程度，不会把 logit 变成事实置信度。"
+      },
+      {
+        "label": "遮掉一个候选",
+        "value": "雪 → -∞ · 不再可选",
+        "note": "mask 先改变可见候选集合；原来的雪分数不能绕过这道门回来。"
+      },
+      {
+        "label": "归一化成分布",
+        "value": "雨 73% · 伞 27% · 雪不在集合",
+        "note": "softmax 把剩下的相对分数换成一组和为 1 的数，但仍只是生成选择信号。"
+      },
+      {
+        "label": "选中与核验分开",
+        "value": "下一 token = 雨 · 事实核验 = 未完成",
+        "note": "被选中的片段可以继续生成，却没有自动证明句子里的事实。"
+      }
+    ],
+    "quizQuestion": "看到某个候选的 logit 更高，最稳妥的理解是什么？",
+    "quizOptions": [
+      "这次输入下模型更偏向这个候选",
+      "这个候选有同样数值的事实正确率",
+      "它已经通过外部资料核验"
+    ],
+    "correctText": "logit 是归一化前的相对分数，能说明本轮偏好，不能单独说明概率或事实。",
+    "wrongText": "先把原始分数、归一化概率和外部证据拆开；三者不是同一把尺。",
+    "promptTitle": "检查一次 token 选择",
+    "prompt": "请把候选 token 的原始 logit、温度、mask、softmax 后的概率和最终采样结果分别列出；说明哪些数只描述本次生成，哪些结论还需要外部来源核验。",
+    "relatedSlugs": [
+      "temperature",
+      "transformer",
+      "inference",
+      "confidence-calibration"
+    ]
+  },
+  {
+    "zh": "Softmax",
+    "en": "Softmax",
+    "slug": "softmax",
+    "cat": "AI·Agent",
+    "say": "把一排原始分数压成总和为 1 的相对选择分布。",
+    "aliases": [
+      "Softmax函数",
+      "归一化指数函数"
+    ],
+    "question": "为什么一排分数最后会变成一组加起来等于 1 的百分比？",
+    "definition": "Softmax 先对每个 logit 取指数，再除以这一组指数之和，把任意实数分数变成总和为 1 的非负分布。语言模型可以用它描述下一 token 的选择权重，分类器也可以用它表示各类别在当前输入下的相对偏好；它是计算步骤，不是事实核验器。",
+    "boundary": "Softmax 的百分比依赖候选集合、温度和模型的训练方式，换一组类别或换一个温度，数字就会变。它保留分数的排序，却不自动提供校准后的真实概率；最大值高也可能是模型在一组错误候选里最不犹豫。温度是正常采样设置时必须大于 0；实现还要注意数值稳定性，通常先减去这一行的最大 logit，这个平移不改变结果，只是避免指数溢出。",
+    "demoType": "comparison",
+    "demoTitle": "同一排分数，温度和候选集合怎样改写百分比",
+    "demoSteps": [
+      {
+        "label": "先看原始分数",
+        "value": "雨 2.4 · 伞 1.7 · 雪 0.2",
+        "note": "分数还没有总和为 1；排序能看出偏好，不能直接读成百分比。"
+      },
+      {
+        "label": "先做稳定平移",
+        "value": "减去最大值 → 0 · -0.7 · -2.2",
+        "note": "给整行同时减去最大值不会改变结果排序，却能让后续指数计算更安全。"
+      },
+      {
+        "label": "展开成相对权重",
+        "value": "exp(0) · exp(-0.7) · exp(-2.2)",
+        "note": "指数把差距拉开，分母会把候选放到同一把可加总的尺上。"
+      },
+      {
+        "label": "并排比较温度",
+        "value": "T=0.7：雨 70.9% · 伞 26.1% · 雪 3.1%",
+        "note": "低温让分布更尖，但雪仍在候选集合；若随后启用 mask，才会变成雨 73.1% · 伞 26.9%。"
+      },
+      {
+        "label": "把“概率”放回边界",
+        "value": "T=1.4：雨 55.1% · 伞 33.4% · 雪 11.5%",
+        "note": "高温让尾部候选留下更多空间；温度必须大于 0，百分比仍只是当前集合的选择信号。"
+      }
+    ],
+    "quizQuestion": "softmax 输出 0.8，最准确的理解是什么？",
+    "quizOptions": [
+      "在当前候选集合和设置下，它得到约 0.8 的选择权重",
+      "它有 80% 的事实正确率",
+      "它在任何温度和候选集合里都保持 0.8"
+    ],
+    "correctText": "softmax 给出的是这一轮归一化后的相对选择分布，解释必须带上候选集合和生成设置。",
+    "wrongText": "先区分计算分布与事实概率；softmax 没有替你做校准，也不跨设置保持不变。",
+    "promptTitle": "拆开一次 softmax 结果",
+    "prompt": "请列出这次输入的候选集合、原始 logits、是否先减最大值、温度、softmax 后的分布和最终采样；说明如果加入或移除一个候选，哪些百分比会重新变化，并把事实核验另列一栏。",
+    "relatedSlugs": [
+      "logit",
+      "temperature",
+      "transformer",
+      "inference"
+    ]
+  },
+  {
+    "zh": "激活函数",
+    "en": "Activation Function",
+    "slug": "activation-function",
+    "cat": "AI·Agent",
+    "say": "给线性层拐一个弯，让多层网络不再只是同一条直线的叠加。",
+    "aliases": [
+      "Activation Function",
+      "非线性激活",
+      "ReLU",
+      "GELU"
+    ],
+    "question": "为什么每层都做一次加权相加还不够，网络还要再拐一下？",
+    "definition": "激活函数把神经元收到的线性结果逐点变换成新的值，常见的 ReLU 把负数截为零，GELU 则按输入大小平滑地保留一部分信号。没有非线性，多层线性变换合起来仍可折叠成一层线性变换，网络就很难表达弯曲的边界和条件组合。",
+    "boundary": "激活函数不是学习规则、损失函数或注意力机制；它只决定每个位置的局部变换，参数和梯度仍由训练过程更新。ReLU 可能让一部分单元长期输出零，sigmoid/tanh 在大幅值处可能饱和，GELU 的平滑不等于一定更好。选型还受架构、初始化、数值范围和推理目标影响。",
+    "demoType": "comparison",
+    "demoTitle": "同一条输入，经过不同激活会留下什么",
+    "demoSteps": [
+      {
+        "label": "先放上线性输出",
+        "value": "-2.0 · -0.4 · 0 · 0.7 · 2.0",
+        "note": "这一排数只来自加权相加；此时正负信号都还在。"
+      },
+      {
+        "label": "ReLU 截掉左侧",
+        "value": "0 · 0 · 0 · 0.7 · 2.0",
+        "note": "负值被变成零，门槛清楚，但一部分单元可能长期没有输出。"
+      },
+      {
+        "label": "GELU 留下软过渡",
+        "value": "-0.05 · -0.14 · 0 · 0.53 · 1.95",
+        "note": "负值不是突然断掉，而是按大小平滑衰减；这改变的是局部形状。"
+      },
+      {
+        "label": "看梯度的路",
+        "value": "ReLU：零点左侧停 · GELU：连续变化",
+        "note": "激活曲线的形状会影响反向传播，但不替优化器决定参数该往哪走。"
+      },
+      {
+        "label": "换回任务边界",
+        "value": "非线性表达力增加 · 事实与泛化仍要评测",
+        "note": "一个漂亮的曲线不能单独证明模型在真实任务上更可靠。"
+      }
+    ],
+    "quizQuestion": "把所有激活函数都拿掉，深层线性层会发生什么？",
+    "quizOptions": [
+      "多层线性变换仍可合并成一层线性变换，表达能力受限",
+      "模型自动获得更多非线性分支",
+      "训练会停止但模型表达能力不变"
+    ],
+    "correctText": "激活函数提供层与层之间的非线性；没有它，多层线性层的组合仍是线性的。",
+    "wrongText": "先看每层是否引入非线性，再把优化、损失和注意力等其他机制分开判断。",
+    "promptTitle": "比较两种激活函数",
+    "prompt": "给定一组线性输出，请分别计算 ReLU、GELU 和 sigmoid 的输出；画出正负区间的变化，说明哪里会截断、哪里会饱和、反向梯度可能遇到什么，并结合任务而不是只看曲线选择。",
+    "relatedSlugs": [
+      "transformer",
+      "fine-tuning",
+      "embedding",
+      "inference"
+    ]
+  },
+  {
+    "zh": "层归一化",
+    "en": "Layer Normalization",
+    "slug": "layer-normalization",
+    "cat": "AI·Agent",
+    "say": "把每个 token 自己这一行的特征拉回可比较的尺度，再交还给网络继续变换。",
+    "aliases": [
+      "LayerNorm",
+      "LN",
+      "层标准化"
+    ],
+    "question": "一批 token 的数值忽大忽小，为什么可以各自把自己整理一遍？",
+    "definition": "层归一化（LayerNorm）在一个样本内部，沿指定的特征维度计算均值和方差，再把这一行标准化，最后用可学习的缩放和偏移恢复模型需要的尺度。对 Transformer 来说，它通常按 token 独立处理，不需要等整个 batch 凑齐，因此训练和推理的归一化统计可以保持一致。",
+    "boundary": "层归一化的关键不是“把数字变小”，而是先确定统计轴：对 hidden features 做归一化，和对 batch、序列位置或通道做归一化并不是一回事。它不会替代残差、注意力或优化器，也不会自动解决 padding、mask、混合精度和异常值；放在子层前还是后，还会改变信号和梯度的路径。",
+    "demoType": "hierarchy",
+    "demoTitle": "同一批 token，各自整理自己的特征刻度",
+    "demoSteps": [
+      {
+        "label": "摊开每个 token 的特征",
+        "value": "猫：[2.0, 4.0, 6.0] · 跑：[0.1, 0.2, 0.3]",
+        "note": "两个 token 的绝对尺度不同；LayerNorm 先在各自这一行里统计。"
+      },
+      {
+        "label": "各自算均值和方差",
+        "value": "猫 μ=4 · σ≈1.63　跑 μ=0.2 · σ≈0.08",
+        "note": "统计只看这个 token 指定的特征轴，不把另一个 token 的值混进来。"
+      },
+      {
+        "label": "拉到共同刻度",
+        "value": "猫 [-1.22,0,1.22] · 跑 [-1.22,0,1.22]",
+        "note": "标准化后，形状可比较；“共同刻度”不等于把语义抹平。"
+      },
+      {
+        "label": "交还可学习尺度",
+        "value": "γ=1.3 · β=-0.2 → [-1.79,-0.2,1.39]",
+        "note": "gamma 和 beta 让网络重新选择需要的幅度与中心位置。"
+      },
+      {
+        "label": "换统计轴就换概念",
+        "value": "按 token ≠ 按 batch · 结果随轴变化",
+        "note": "把 LayerNorm 误读成 BatchNorm，会把不适用的统计依赖和推理行为带进解释。"
+      }
+    ],
+    "quizQuestion": "LayerNorm 的“层”主要指什么？",
+    "quizOptions": [
+      "在一个样本的指定特征维度上计算统计量并归一化",
+      "把整个训练 batch 的样本混在一起归一化",
+      "只把每层的参数数量除以平均值"
+    ],
+    "correctText": "LayerNorm 的统计轴是每个样本的指定特征维度；先确认轴，才能判断它和 BatchNorm 的差异。",
+    "wrongText": "名字里的“层”不等于“整个 batch”；归一化对象和统计范围必须写清楚。",
+    "promptTitle": "检查一层归一化的统计轴",
+    "prompt": "给出输入张量的形状和 LayerNorm normalized_shape，标出均值、方差、epsilon、gamma、beta 分别沿哪些维度计算；用两个 token 和一个 padding 位置说明如果误用 batch 统计会发生什么。",
+    "relatedSlugs": [
+      "transformer",
+      "embedding",
+      "attention",
+      "inference"
+    ]
+  },
+  {
+    "zh": "残差连接",
+    "en": "Residual Connection",
+    "slug": "residual-connection",
+    "cat": "AI·Agent",
+    "say": "给一层变换留一条原路，让网络只需学习“要补上的那一点”。",
+    "aliases": [
+      "Residual Connection",
+      "skip connection",
+      "残差块"
+    ],
+    "question": "深层网络为什么要给输入留一条不绕远路的通道？",
+    "definition": "残差连接把一个子层的输出 F(x) 与原输入 x 相加，得到 y=F(x)+x；如果子层暂时学不会有用变化，网络仍可近似把输入原样传下去。ResNet 把这种结构用于视觉网络，Transformer 也在注意力和前馈子层周围使用残差路径。",
+    "boundary": "残差连接是逐元素相加，不是把两份向量拼接，也不是让信息无条件跳过所有计算。x 与 F(x) 必须形状兼容，通道或维度不一致时要用投影；加法仍可能放大数值或把错误一起带下去。它改善的是优化路径和表示更新的条件，不是深度越多就一定越准。",
+    "demoType": "state",
+    "demoTitle": "把输入叠回变换，看看网络真正学了多少",
+    "demoSteps": [
+      {
+        "label": "保留原输入",
+        "value": "x = [1.0, 0.5, -0.2]",
+        "note": "短路支路先把原表示保存在叠加台上。"
+      },
+      {
+        "label": "子层只算增量",
+        "value": "F(x) = [0.1, -0.2, 0.0]",
+        "note": "子层不必重新发明整份表示，只需给出希望修正的部分。"
+      },
+      {
+        "label": "叠回同一坐标",
+        "value": "x + F(x) = [1.1, 0.3, -0.2]",
+        "note": "两条同形状向量逐元素相加，输出同时保留旧信息和新变化。"
+      },
+      {
+        "label": "子层暂时无贡献",
+        "value": "F(x) ≈ 0 → y ≈ x",
+        "note": "训练早期或某个子层不确定时，恒等路径仍给信息和梯度留出通道。"
+      },
+      {
+        "label": "形状不合就先投影",
+        "value": "d_in ≠ d_out → projection(x) + F(x)",
+        "note": "残差不是魔法桥；维度、归一化顺序和数值尺度都要显式处理。"
+      }
+    ],
+    "quizQuestion": "残差连接中的“残差”最接近哪种说法？",
+    "quizOptions": [
+      "子层相对输入需要补上的变化 F(x)，最后与输入相加",
+      "把两段序列首尾拼接成更长的向量",
+      "把网络输出复制一份作为第二个样本"
+    ],
+    "correctText": "残差块让子层学习相对恒等映射的增量，结果通过加法回到输入坐标。",
+    "wrongText": "先检查是否是同形状逐元素相加；拼接、复制和跳连是不同操作。",
+    "promptTitle": "检查一个残差块",
+    "prompt": "给出 x、子层输出 F(x)、归一化位置和张量形状，逐项算出 projection、相加结果与梯度路径；再构造 F(x)=0、维度不匹配和数值过大的三个边界例子，说明每个例子会发生什么。",
+    "relatedSlugs": [
+      "transformer",
+      "attention",
+      "layer-normalization",
+      "fine-tuning"
+    ]
+  },
+  {
+    "zh": "前馈网络",
+    "en": "Feed-Forward Network",
+    "slug": "feed-forward-network",
+    "cat": "AI·Agent",
+    "say": "每个 token 独自进一间“两次线性变换”的小工坊，先扩宽，再压回原尺寸。",
+    "aliases": [
+      "Feed-Forward Network",
+      "FFN",
+      "Position-wise FFN",
+      "前馈层"
+    ],
+    "question": "注意力看完别的 token 后，每个 token 自己还要做什么？",
+    "definition": "Transformer 里的前馈网络（FFN）通常由两层线性变换和中间激活组成：先把每个 token 的 hidden size 扩到更宽的中间维度，再压回 model dimension。它对每个位置独立使用同一组参数，因此负责加工单个 token 的表示，跨 token 的混合主要由注意力层完成。",
+    "boundary": "FFN 不是注意力，也不是把整段序列串起来的循环；在标准 position-wise 结构里，一个位置的 FFN 不读取其他位置。中间维度、激活和门控方式会影响参数量、容量与计算成本；现代模型可能用 SwiGLU 等门控变体，不能把所有 FFN 都简化成两张无差别矩阵。",
+    "demoType": "hierarchy",
+    "demoTitle": "同一套小工坊，逐 token 加工而不互相串线",
+    "demoSteps": [
+      {
+        "label": "把 token 摆成列",
+        "value": "猫=[…] · 跑=[…] · 跳=[…]",
+        "note": "注意力之后，每个位置都有一个 hidden vector，FFN 从单个位置开始。"
+      },
+      {
+        "label": "先扩到宽空间",
+        "value": "d_model=4 → d_ff=16",
+        "note": "第一层把表示送进更宽的中间空间，让更多特征组合有地方展开。"
+      },
+      {
+        "label": "在宽空间过激活",
+        "value": "GELU / 门控 → 保留有用方向",
+        "note": "非线性让这间小工坊不只是一次可合并的线性变换。"
+      },
+      {
+        "label": "压回模型尺寸",
+        "value": "d_ff=16 → d_model=4",
+        "note": "第二层把加工后的结果投回主干，才能与残差和下一子层对齐。"
+      },
+      {
+        "label": "换 token，参数不换",
+        "value": "猫、跑、跳各自计算 · 共享权重",
+        "note": "位置之间没有在 FFN 内直接通信；跨位置关系由注意力等模块负责。"
+      }
+    ],
+    "quizQuestion": "标准 Transformer FFN 的 position-wise 主要意味着什么？",
+    "quizOptions": [
+      "每个位置独立通过同一组 FFN 参数，位置之间不在此处直接混合",
+      "每个位置都使用一组完全不同的参数",
+      "FFN 会自动把所有 token 按时间顺序排队"
+    ],
+    "correctText": "position-wise 指同一套前馈变换逐位置应用；它加工 token，跨 token 交流不是它的主要职责。",
+    "wrongText": "先区分 FFN 的逐位置加工、注意力的跨位置混合和残差的相加。",
+    "promptTitle": "拆解一个 Transformer FFN",
+    "prompt": "给出 d_model、d_ff、激活函数和 token 矩阵，逐步写出第一层扩维、激活/门控、第二层压回的形状；说明为什么把一个 token 换成另一个 token 不会改变参数，却会改变输出。",
+    "relatedSlugs": [
+      "transformer",
+      "attention",
+      "activation-function",
+      "residual-connection"
+    ]
+  },
+  {
+    "zh": "位置编码",
+    "en": "Positional Encoding",
+    "slug": "positional-encoding",
+    "cat": "AI·Agent",
+    "say": "给内容贴上顺序标签，让模型分得出“猫追狗”和“狗追猫”。",
+    "aliases": [
+      "Positional Encoding",
+      "位置嵌入",
+      "序列位置信息"
+    ],
+    "question": "注意力看到一袋 token，怎么知道谁在前、谁在后？",
+    "definition": "位置编码把 token 在序列中的位置注入表示，使自注意力除了内容相似度之外，还能利用顺序。经典 Transformer 用不同频率的正弦和余弦生成固定位置向量并加到 token embedding 上；也有模型学习位置向量，或在注意力分数中使用相对位置关系。",
+    "boundary": "位置编码描述的是位置，不是词义，也不会自动修复错误的 tokenization、padding 或 causal mask。绝对位置、相对位置、可学习表和旋转位置嵌入的注入方式不同；训练长度之外能否外推取决于具体方法和实现，不能只凭“有位置编码”下结论。",
+    "demoType": "comparison",
+    "demoTitle": "同一组词，换位置后为什么不再是同一句话",
+    "demoSteps": [
+      {
+        "label": "先把词和位置分开",
+        "value": "猫 · 追 · 狗　+　pos 0 · 1 · 2",
+        "note": "token embedding 负责内容，位置向量负责顺序线索。"
+      },
+      {
+        "label": "把位置贴回表示",
+        "value": "e(token) + p(position)",
+        "note": "加法让每个位置的表示带上内容和顺序；它不是给词换字典释义。"
+      },
+      {
+        "label": "交换两个词",
+        "value": "狗 · 追 · 猫　→　位置向量不随词走",
+        "note": "词的内容换了，位置标签仍在各自格子里，模型可以区分两种顺序。"
+      },
+      {
+        "label": "看长一点的序列",
+        "value": "pos 0…7 · 频率组合继续变化",
+        "note": "固定正弦编码有可计算的结构，但长度外推仍要看模型训练与实现边界。"
+      },
+      {
+        "label": "换成另一类位置机制",
+        "value": "absolute ≠ relative ≠ rotary",
+        "note": "它们都提供顺序线索，却在注入位置和长度行为上各有条件。"
+      }
+    ],
+    "quizQuestion": "为什么只把 token embedding 送进 self-attention 不够？",
+    "quizOptions": [
+      "自注意力本身不自动知道 token 的先后，需要额外位置关系",
+      "因为 embedding 不能表示任何词义",
+      "因为所有 token 必须使用不同的词表"
+    ],
+    "correctText": "位置编码或相对位置机制给注意力补上顺序线索；内容表示和位置表示是两件事。",
+    "wrongText": "先区分词的内容向量、位置线索与 mask；不能用一个概念替代另外两个。",
+    "promptTitle": "比较两种位置编码",
+    "prompt": "用“猫追狗”和“狗追猫”做例子，分别写出 token embedding 与位置向量如何组合；比较固定正弦、可学习绝对位置和相对/旋转位置在注入位置、长度外推、padding 与 causal mask 上的边界。",
+    "relatedSlugs": [
+      "transformer",
+      "attention",
+      "tokenization",
+      "embedding"
+    ]
+  },
+  {
+    "zh": "旋转位置嵌入",
+    "en": "Rotary Position Embedding",
+    "slug": "rotary-position-embedding",
+    "cat": "AI·Agent",
+    "say": "把 Q 和 K 在二维小平面里按位置转过不同角度，让内积自然带上相对距离。",
+    "aliases": [
+      "RoPE",
+      "Rotary Embedding",
+      "旋转位置编码"
+    ],
+    "question": "不把位置向量直接加到 token 上，模型还能怎样知道相隔几格？",
+    "definition": "旋转位置嵌入（RoPE）把 query 和 key 的相邻维度分成二维对，在每个位置按一个与位置相关的角度旋转。这样 Q 与 K 的点积会带出两者的相对位置差；value 通常不做同样的旋转，位置关系主要进入注意力分数。",
+    "boundary": "RoPE 不是把整条 hidden state 画个旋转动画，也不是简单把正弦向量加到 token embedding。实现必须明确旋转的维度配对、频率基数、最大上下文和缩放策略；长上下文扩展可能需要额外插值或变基，不能凭“用了 RoPE”保证任意长度都可靠。",
+    "demoType": "comparison",
+    "demoTitle": "同一支 Q/K，位置角度怎样改写相对关系",
+    "demoSteps": [
+      {
+        "label": "先放二维坐标对",
+        "value": "q=(1,0) · k=(0.8,0.6)",
+        "note": "RoPE 把相邻维度看成二维平面，先看原始方向，不把位置加到 value 上。"
+      },
+      {
+        "label": "给位置分配角度",
+        "value": "pos 2 → θ₂ · pos 5 → θ₅",
+        "note": "每个位置按频率表得到自己的旋转角；不同维度对有不同频率。"
+      },
+      {
+        "label": "分别旋转 Q 和 K",
+        "value": "R(θ₂)q · R(θ₅)k",
+        "note": "Q/K 的方向一起改变，向量长度保持；value 仍保留原路径。"
+      },
+      {
+        "label": "内积读出相对角",
+        "value": "q′·k′ 取决于 θ₂−θ₅",
+        "note": "注意力分数因此能感到两者相隔多远，而不必把绝对位置直接相加。"
+      },
+      {
+        "label": "把长上下文放回边界",
+        "value": "base、缩放、最大长度 → 需单独评测",
+        "note": "频率与实现策略决定远距离行为；旋转本身不承诺无限上下文。"
+      }
+    ],
+    "quizQuestion": "RoPE 主要把位置信息放进了哪一步？",
+    "quizOptions": [
+      "对 Q、K 的维度对做位置相关旋转，使它们的内积带相对位置信息",
+      "把每个 token 的 value 直接替换成位置编号",
+      "在输出文本后附加一个位置标签"
+    ],
+    "correctText": "RoPE 旋转 Q/K，再由注意力内积读取相对角度；value 通常不承担这一步。",
+    "wrongText": "先分开 Q、K、V 的职责，以及旋转维度、频率和长上下文策略。",
+    "promptTitle": "逐项审查 RoPE 实现",
+    "prompt": "给出 head_dim、旋转维度对、频率 base、位置索引和最大上下文，写出 Q/K 旋转前后的二维分量；验证内积如何依赖相对位置，并单独列出长上下文缩放和 value 不旋转的假设。",
+    "relatedSlugs": [
+      "positional-encoding",
+      "attention",
+      "transformer",
+      "inference"
+    ]
+  },
+  {
+    "zh": "注意力头",
+    "en": "Attention Head",
+    "slug": "attention-head",
+    "cat": "AI·Agent",
+    "say": "把一次注意力拆成几副不同的眼镜，各自在自己的子空间里找关系。",
+    "aliases": [
+      "Attention Head",
+      "多头注意力头",
+      "head"
+    ],
+    "question": "同一层里为什么要有好几副注意力“眼镜”，而不是只算一张关系表？",
+    "definition": "注意力头是多头注意力中的一个独立 Q/K/V 投影子空间。每个头把输入投影到自己的 query、key、value 维度，计算一张注意力权重，再与其他头的结果拼接并投影回模型维度。不同头可能偏向近邻、指代、位置或其他统计关系，但这些解释需要用激活和任务证据验证。",
+    "boundary": "注意力头不是一个固定语义器官，也不保证“一头负责语法、另一头负责记忆”。头之间可能冗余，剪掉某些头有时影响不大；mask、head dimension、数量和 Q/K/V 投影共同决定行为。看到一张漂亮热力图，只能说明一次输入下的权重，不能单独证明头学到了人类命名的关系。",
+    "demoType": "comparison",
+    "demoTitle": "两副眼镜看同一句话，会把注意力落在不同格子",
+    "demoSteps": [
+      {
+        "label": "把 token 摆成矩阵",
+        "value": "猫 · 追 · 狗 · 它",
+        "note": "所有头共享输入，但每个头会用自己的 Q/K/V 投影去看。"
+      },
+      {
+        "label": "头 A 亮出一张关系表",
+        "value": "它 → 猫　0.72 · 其他较低",
+        "note": "一副头可能把权重集中到指代候选；这是当前输入上的模式。"
+      },
+      {
+        "label": "头 B 换一副眼镜",
+        "value": "追 → 猫/狗　局部邻近更亮",
+        "note": "另一副头在自己的子空间里看到不同关系，权重表不必相同。"
+      },
+      {
+        "label": "拼接而不是投票",
+        "value": "head A ⊕ head B ⊕ … → Wᵒ",
+        "note": "多头结果沿特征维拼接，再经输出投影回主干。"
+      },
+      {
+        "label": "把热力图放回证据",
+        "value": "权重模式 ≠ 固定语义 · 需跨样本/任务验证",
+        "note": "mask、输入变化和头冗余都会改变图案；别给单张图盖过大的结论。"
+      }
+    ],
+    "quizQuestion": "多头注意力里的“头”最准确地指什么？",
+    "quizOptions": [
+      "一个独立的 Q/K/V 投影子空间与其注意力计算",
+      "一段必须负责某个人类语法概念的规则代码",
+      "把输出复制一份后贴在序列末尾"
+    ],
+    "correctText": "每个头有自己的投影和权重计算，最后把多个头的结果拼接并投影回去。",
+    "wrongText": "头是计算子空间，不是预先命名的语义模块；热力图需要跨输入验证。",
+    "promptTitle": "审查一层多头注意力",
+    "prompt": "给出 token 数、head 数、model dimension、head dimension 和 mask；分别列出一个头的 Q/K/V 投影、注意力矩阵、加权 V，再说明多头如何拼接回输出，并标注哪些语义解释还缺少跨样本证据。",
+    "relatedSlugs": [
+      "attention",
+      "transformer",
+      "tokenization",
+      "embedding"
+    ]
+  },
+  {
+    "zh": "序列到序列",
+    "en": "Sequence-to-Sequence",
+    "slug": "sequence-to-sequence",
+    "cat": "AI·Agent",
+    "say": "把一串输入读成可用表示，再生成长度可以不同的另一串输出。",
+    "aliases": [
+      "Seq2Seq",
+      "Sequence-to-Sequence",
+      "编码器-解码器"
+    ],
+    "question": "输入和输出长度不一样时，模型怎么把一串话变成另一串话？",
+    "definition": "序列到序列（Seq2Seq）模型接收一个输入序列，生成另一个输出序列；输入和输出长度可以不同。经典 encoder-decoder 架构先把源序列编码成表示，decoder 再在已生成前缀、训练条件和源信息的约束下逐步产生目标序列；Transformer 把这套思想用自注意力和交叉注意力实现。",
+    "boundary": "Seq2Seq 不是简单复制、逐位置分类或“读完一次就吐出整段答案”。训练时常用 teacher forcing，把真实前缀喂给 decoder；推理时只能依赖自己已经生成的前缀，两者会产生暴露偏差。输出何时停止、源信息如何对齐、beam/search 和长度惩罚如何设置，都需要单独说明。",
+    "demoType": "lifecycle",
+    "demoTitle": "一段中文输入，怎样长成另一段长度不同的输出",
+    "demoSteps": [
+      {
+        "label": "摆好源序列",
+        "value": "the weather is good → source tokens",
+        "note": "输入序列先确定边界和顺序；它不要求和目标序列一一等长。"
+      },
+      {
+        "label": "编码成上下文表示",
+        "value": "encoder → h₁…hₙ",
+        "note": "encoder 把源 token 变成可供 decoder 查询的表示，信息仍按位置保留。"
+      },
+      {
+        "label": "decoder 先拿目标前缀",
+        "value": "<BOS> → 天气",
+        "note": "训练时可能喂真实前缀；推理时前缀来自模型自己上一轮的输出。"
+      },
+      {
+        "label": "交叉注意力取源信息",
+        "value": "目标“天气” ↔ 源“weather” · 当前对齐",
+        "note": "decoder 一边看已生成内容，一边从 encoder 表示里选择当前需要的源信息；这里用双语翻译表示对齐。"
+      },
+      {
+        "label": "遇到停止条件",
+        "value": "… → <EOS>　·　输出长度 ≠ 输入长度",
+        "note": "EOS、最大长度或其他停止规则结束生成；长度不同本身不是错误。"
+      },
+      {
+        "label": "把训练和推理分开核对",
+        "value": "teacher forcing ≠ free running",
+        "note": "评估时要看模型在自己生成前缀上的表现，不能只用真实前缀得到漂亮结果。"
+      }
+    ],
+    "quizQuestion": "Seq2Seq 的输入和输出必须一一对应、长度相同吗？",
+    "quizOptions": [
+      "不必；模型可以从一条序列生成另一条长度不同的序列",
+      "必须相同，否则 decoder 无法运行",
+      "只有分类任务才允许长度不同"
+    ],
+    "correctText": "Seq2Seq 的核心正是允许输入与输出长度不同，decoder 依靠源表示、已生成前缀和停止条件产出目标序列。",
+    "wrongText": "先区分源序列、目标前缀、交叉注意力和停止条件；长度变化是任务的一部分。",
+    "promptTitle": "画出一次 Seq2Seq 推理",
+    "prompt": "给出源序列、encoder 输出、decoder 当前前缀、交叉注意力可见范围和停止条件；分别模拟 teacher forcing 与自由生成，标出第一次错误如何影响后续 token，并说明 beam/search 或长度惩罚是否改变选择。",
+    "relatedSlugs": [
+      "transformer",
+      "attention",
+      "tokenization",
+      "inference"
     ]
   }
 ]

@@ -28644,7 +28644,7 @@
       }
     ]
   },
-    {
+  {
     "slug": "reward-hacking",
     "lead": "红块翻个面就拿到高分：指标完成了，真正的任务却还在地上。",
     "definition": "奖励投机（reward hacking）是智能体找到奖励函数、评分器或任务规范的漏洞，满足字面上的可计算目标，却没有完成设计者真正想要的结果。DeepMind 把这种行为称为 specification gaming：例如只奖励红块底面高度时，机器人可以把红块翻过来拿高分，却没有把它稳稳叠到蓝块上。它不一定需要恶意计划，代理指标、环境假设、评测器或权限边界的一个缺口就可能让高能力系统走出“分数正确、事情错误”的捷径。",
@@ -29503,6 +29503,2600 @@
         "url": "https://www.anthropic.com/news/3-5-models-and-computer-use",
         "label": "Anthropic · Introducing computer use",
         "note": "补充电脑使用通过截图、光标、点击、输入完成通用界面操作，仍处于实验性阶段。"
+      }
+    ]
+  },
+  {
+    "slug": "logit",
+    "lead": "“雨”排在最前面，不代表模型已经证明今天会下雨。",
+    "definition": "Logit 是模型输出头给每个候选类别或 token 的未归一化分数。它可以是任意实数，候选之间的相对差距会在后续 softmax 或其他归一化步骤里变成选择分布；因此 logit 不是概率，也不是模型对事实的可信度盖章。",
+    "boundary": "logit 只描述某个模型、某个位置和某组输入下的原始偏好，不能脱离词表、温度、mask、采样器或模型版本直接比较。把一个候选的 logit 写成“它有 80% 可能正确”会混淆计算分数、生成概率和外部事实；候选被 mask 掉后，即使原始分数很高，也不会进入本轮分布。",
+    "sceneKind": "spectrum",
+    "sceneTitle": "先看原始分数，再看它怎样被解释",
+    "actionLabel": "调整温度与候选遮罩",
+    "actors": [
+      {
+        "id": "logits",
+        "label": "Logits",
+        "detail": "雨 2.4 · 伞 1.7 · 雪 0.2",
+        "icon": "chart",
+        "group": "原始分数"
+      },
+      {
+        "id": "candidates",
+        "label": "候选片段",
+        "detail": "雨 / 伞 / 雪",
+        "icon": "message",
+        "group": "词表"
+      },
+      {
+        "id": "temperature",
+        "label": "Temperature",
+        "detail": "0.7 · 1.0 · 1.4",
+        "icon": "gear",
+        "group": "生成设置"
+      },
+      {
+        "id": "mask",
+        "label": "Mask",
+        "detail": "雪不可见",
+        "icon": "shield",
+        "group": "可见范围"
+      },
+      {
+        "id": "distribution",
+        "label": "分布",
+        "detail": "归一化后和为 1",
+        "icon": "spark",
+        "group": "后续计算"
+      },
+      {
+        "id": "audit",
+        "label": "事实核验",
+        "detail": "仍需来源",
+        "icon": "file",
+        "group": "边界"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "摆出原始分数",
+        "note": "先把候选和原始数值分开摆好；这时没有概率百分比。",
+        "activeIds": [
+          "logits",
+          "candidates"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "temperature",
+          "mask",
+          "distribution",
+          "audit"
+        ],
+        "values": {
+          "logits": "雨 2.4 · 伞 1.7 · 雪 0.2"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "拉动温度",
+        "note": "温度改变相对差距在归一化后的尖锐程度，原始 logit 台仍保持原样。",
+        "activeIds": [
+          "temperature",
+          "logits"
+        ],
+        "doneIds": [
+          "candidates"
+        ],
+        "mutedIds": [
+          "mask",
+          "distribution",
+          "audit"
+        ],
+        "values": {
+          "temperature": "T=0.7 · 差距放大"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "遮掉候选",
+        "note": "mask 让雪离开可见集合；高分候选也不能绕过可见范围。",
+        "activeIds": [
+          "mask",
+          "candidates"
+        ],
+        "doneIds": [
+          "logits",
+          "temperature"
+        ],
+        "mutedIds": [
+          "distribution",
+          "audit"
+        ],
+        "values": {
+          "mask": "雪 → -∞ · 不参与分布"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "看到归一化分布",
+        "note": "softmax 把剩余相对分数换成选择分布，但这个百分比仍不是事实正确率。",
+        "activeIds": [
+          "distribution"
+        ],
+        "doneIds": [
+          "logits",
+          "candidates",
+          "temperature",
+          "mask"
+        ],
+        "mutedIds": [
+          "audit"
+        ],
+        "values": {
+          "distribution": "雨 73% · 伞 27%"
+        },
+        "metric": {
+          "label": "总和",
+          "value": "1.00"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "选中与核验分开",
+        "note": "生成器可以选出下一片段，事实核验仍要回到来源或工具。",
+        "activeIds": [
+          "audit",
+          "distribution"
+        ],
+        "doneIds": [
+          "logits",
+          "candidates",
+          "temperature",
+          "mask"
+        ],
+        "mutedIds": [],
+        "values": {
+          "audit": "下一 token = 雨 · 事实核验 = 未完成"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "logit 是输出头在归一化之前的原始比较尺；把它和概率、事实证据混为一谈，会把生成偏好误读成可信度。",
+    "quiz": {
+      "question": "某 token 的 logit 比另一个高，当前最准确的解释是什么？",
+      "options": [
+        {
+          "label": "这次输入下模型更偏向它",
+          "correct": true
+        },
+        {
+          "label": "它的事实正确率更高",
+          "correct": false
+        },
+        {
+          "label": "它已经通过来源核验",
+          "correct": false
+        }
+      ],
+      "success": "对，logit 只告诉你本轮相对偏好。",
+      "retry": "先看它是否经过 softmax、mask 和外部核验；原始分数不是事实证明。"
+    },
+    "prompt": {
+      "title": "检查一次 token 选择",
+      "text": "请把候选 token 的原始 logit、温度、mask、softmax 后的概率和最终采样结果分别列出；说明哪些数只描述本次生成，哪些结论还需要外部来源核验。"
+    },
+    "teaching": [
+      {
+        "id": "raw-score",
+        "title": "它先是一把没有刻度单位的尺",
+        "body": "输出头可以给“雨”“伞”“雪”各一个实数；正负号和绝对大小本身没有概率含义，通常要看候选之间的相对差距。不同模型、不同位置或不同词表之间直接比较 logit，容易把计算坐标当成公共量表。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "normalization",
+        "title": "softmax 才把分数变成可加总的分布",
+        "body": "softmax 会把一组 logit 指数化并归一化，让结果落在 0 到 1 之间且总和为 1。这个分布描述“本轮生成会怎样选”，不替你回答“句子是否真实”。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "temperature",
+        "title": "温度改变尖锐程度，不改变事实",
+        "body": "生成时调低温度会放大高低 logit 的差距，调高温度会让候选更平；它改变的是采样分布的形状。调温度不能把未核验的句子变成可靠答案。",
+        "sourceIndices": [
+          2,
+          4
+        ]
+      },
+      {
+        "id": "mask",
+        "title": "遮罩先决定谁有资格参加",
+        "body": "因果 mask、词表约束或安全过滤可以把候选移出当前集合。即便某个候选原始分数很高，离开可见集合后也不会被采样；这和把它的概率调低是两件事。",
+        "sourceIndices": [
+          1,
+          4,
+          5
+        ]
+      },
+      {
+        "id": "evidence",
+        "title": "被选中仍要回到证据",
+        "body": "logit、概率和最终 token 都是模型内部生成信号。涉及日期、金额、权限或现实对象时，必须再用来源、工具或规则核验，不能用一个漂亮的百分比替代证据链。",
+        "sourceIndices": [
+          1,
+          4,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/1706.03762",
+        "label": "Vaswani et al. · Attention Is All You Need",
+        "note": "输出分布与注意力架构中的线性投影、softmax。"
+      },
+      {
+        "url": "https://docs.pytorch.org/docs/stable/generated/torch.nn.functional.softmax.html",
+        "label": "PyTorch · torch.nn.functional.softmax",
+        "note": "softmax 沿指定维度把输入转成归一化值。"
+      },
+      {
+        "url": "https://docs.pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html",
+        "label": "PyTorch · CrossEntropyLoss",
+        "note": "logits 与目标类别之间的交叉熵接口。"
+      },
+      {
+        "url": "https://huggingface.co/docs/transformers/main/en/generation_strategies",
+        "label": "Hugging Face · Generation strategies",
+        "note": "温度、采样和生成策略如何影响候选选择。"
+      },
+      {
+        "url": "https://d2l.ai/chapter_attention-mechanisms-and-transformers/attention-scoring-functions.html",
+        "label": "Dive into Deep Learning · Attention scoring functions",
+        "note": "分数、softmax 权重和加权汇总的计算边界。"
+      }
+    ]
+  },
+  {
+    "slug": "softmax",
+    "lead": "把一排原始分数压成总和为 1 的相对选择分布。",
+    "definition": "Softmax 先对每个 logit 取指数，再除以这一组指数之和，把任意实数分数变成总和为 1 的非负分布。语言模型可以用它描述下一 token 的选择权重，分类器也可以用它表示各类别在当前输入下的相对偏好；它是计算步骤，不是事实核验器。",
+    "boundary": "Softmax 的百分比依赖候选集合、温度和模型的训练方式，换一组类别或换一个温度，数字就会变。它保留分数的排序，却不自动提供校准后的真实概率；最大值高也可能是模型在一组错误候选里最不犹豫。温度是正常采样设置时必须大于 0；实现还要注意数值稳定性，通常先减去这一行的最大 logit，这个平移不改变结果，只是避免指数溢出。",
+    "sceneKind": "compare",
+    "sceneTitle": "两块分布玻璃：同一分数在不同温度下长什么样",
+    "actionLabel": "切换温度与候选集合",
+    "actors": [
+      {
+        "id": "raw",
+        "label": "原始 logits",
+        "detail": "雨 2.4 · 伞 1.7 · 雪 0.2",
+        "icon": "chart",
+        "group": "输入"
+      },
+      {
+        "id": "shift",
+        "label": "稳定平移",
+        "detail": "整行减去最大值",
+        "icon": "gear",
+        "group": "计算"
+      },
+      {
+        "id": "cool",
+        "label": "低温分布",
+        "detail": "T=0.7 · 更尖",
+        "icon": "spark",
+        "group": "对照 A"
+      },
+      {
+        "id": "warm",
+        "label": "高温分布",
+        "detail": "T=1.4 · 更平",
+        "icon": "spark",
+        "group": "对照 B"
+      },
+      {
+        "id": "candidate",
+        "label": "候选集合",
+        "detail": "加入雪，分母变大",
+        "icon": "message",
+        "group": "条件"
+      },
+      {
+        "id": "fact",
+        "label": "事实核验",
+        "detail": "不由百分比完成",
+        "icon": "shield",
+        "group": "边界"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "原始分数同台",
+        "note": "先看同一行分数；此时只有相对顺序，没有百分比。",
+        "activeIds": [
+          "raw"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "shift",
+          "cool",
+          "warm",
+          "candidate",
+          "fact"
+        ],
+        "values": {
+          "raw": "雨 2.4 · 伞 1.7 · 雪 0.2"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "把数值搬到安全区",
+        "note": "整行减去最大值，排序与 softmax 结果不变，指数运算不容易溢出。",
+        "activeIds": [
+          "shift",
+          "raw"
+        ],
+        "doneIds": [
+          "raw"
+        ],
+        "mutedIds": [
+          "cool",
+          "warm",
+          "candidate",
+          "fact"
+        ],
+        "values": {
+          "shift": "0 · -0.7 · -2.2"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "冷一点，柱子更尖",
+        "note": "低温扩大相对差距；雪还在候选集合，所以不会凭空变成零。若启用 mask，才会重新归一化到雨73.1%/伞26.9%。",
+        "activeIds": [
+          "cool"
+        ],
+        "doneIds": [
+          "raw",
+          "shift"
+        ],
+        "mutedIds": [
+          "warm",
+          "candidate",
+          "fact"
+        ],
+        "values": {
+          "cool": "雨 70.9% · 伞 26.1% · 雪 3.1%"
+        },
+        "metric": {
+          "label": "总和",
+          "value": "1.00"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "暖一点，尾部回来",
+        "note": "高温把三候选的分布摊平；温度需大于 0，这不是模型变得更正确。",
+        "activeIds": [
+          "warm"
+        ],
+        "doneIds": [
+          "raw",
+          "shift",
+          "cool"
+        ],
+        "mutedIds": [
+          "candidate",
+          "fact"
+        ],
+        "values": {
+          "warm": "雨 55.1% · 伞 33.4% · 雪 11.5%"
+        },
+        "metric": {
+          "label": "总和",
+          "value": "1.00"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "换候选，分母也换",
+        "note": "加入或移除候选会改变分母；最后仍要把生成选择和事实核验分开。",
+        "activeIds": [
+          "candidate",
+          "fact"
+        ],
+        "doneIds": [
+          "raw",
+          "shift",
+          "cool",
+          "warm"
+        ],
+        "mutedIds": [],
+        "values": {
+          "candidate": "候选集合变化 → 全部分布重算",
+          "fact": "来源核验：未完成"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "softmax 是把相对分数放进同一组分母后的选择分布；温度和候选集合一变，百分比就必须重新解释。",
+    "quiz": {
+      "question": "softmax 输出 0.8，最准确的理解是什么？",
+      "options": [
+        {
+          "label": "在当前候选集合和设置下，它得到约 0.8 的选择权重",
+          "correct": true
+        },
+        {
+          "label": "它有 80% 的事实正确率",
+          "correct": false
+        },
+        {
+          "label": "它在任何温度和候选集合里都保持 0.8",
+          "correct": false
+        }
+      ],
+      "success": "对，softmax 数字依附于当前候选集合和设置。",
+      "retry": "先写清候选集合与温度；归一化权重不是事实正确率。"
+    },
+    "prompt": {
+      "title": "拆开一次 softmax 结果",
+      "text": "请列出这次输入的候选集合、原始 logits、是否先减最大值、温度、softmax 后的分布和最终采样；说明如果加入或移除一个候选，哪些百分比会重新变化，并把事实核验另列一栏。"
+    },
+    "teaching": [
+      {
+        "id": "formula",
+        "title": "它做的是指数加总，不是投票",
+        "body": "对每个 logit 取指数，再除以所有指数之和，结果因此非负且总和为 1。指数会把差距放大：2.4 和 1.7 的差距经过指数后比原始减法更显眼。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "stability",
+        "title": "先减最大值，是为了让计算站得住",
+        "body": "因为 exp(x) 很容易溢出，工程实现常把整行 logits 同时减去最大值。这个平移不会改变 softmax 的结果，却避免一个大数把计算炸掉。",
+        "sourceIndices": [
+          2,
+          3
+        ]
+      },
+      {
+        "id": "temperature",
+        "title": "温度是在改形状",
+        "body": "生成温度相当于在 softmax 前缩放 logits。温度低，最大候选更集中；温度高，尾部候选获得更多空间。它没有把模型变成更懂事实的裁判。",
+        "sourceIndices": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": "denominator",
+        "title": "候选集合也是答案的一部分",
+        "body": "softmax 的分母包含当前集合中的全部候选。加进一个新类别，即使它本身分数不高，原来那些百分比也会重新分摊；脱离词表、mask 和位置谈概率，会漏掉这个条件。",
+        "sourceIndices": [
+          1,
+          3,
+          5
+        ]
+      },
+      {
+        "id": "calibration",
+        "title": "好看的百分比仍需要校准和证据",
+        "body": "交叉熵训练让模型学习分布，但高 softmax 值并不自动等于现实中同等比例的正确率。涉及金额、日期或权限时，仍要回到检索、工具和规则核验。",
+        "sourceIndices": [
+          3,
+          4,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://docs.pytorch.org/docs/stable/generated/torch.nn.functional.softmax.html",
+        "label": "PyTorch · softmax",
+        "note": "定义沿指定维度把输入转换为和为 1 的归一化值。"
+      },
+      {
+        "url": "https://docs.pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html",
+        "label": "PyTorch · CrossEntropyLoss",
+        "note": "说明交叉熵接口如何接收未归一化 logits。"
+      },
+      {
+        "url": "https://arxiv.org/abs/1706.03762",
+        "label": "Vaswani et al. · Attention Is All You Need",
+        "note": "展示 Transformer 输出层和 softmax 的架构位置。"
+      },
+      {
+        "url": "https://huggingface.co/docs/transformers/main/en/generation_strategies",
+        "label": "Hugging Face · Generation strategies",
+        "note": "说明 temperature、sampling 等设置如何影响生成分布。"
+      },
+      {
+        "url": "https://d2l.ai/chapter_linear-classification/softmax-regression.html",
+        "label": "Dive into Deep Learning · Softmax regression",
+        "note": "从指数、归一化和交叉熵解释 softmax 回归。"
+      }
+    ]
+  },
+  {
+    "slug": "activation-function",
+    "lead": "给线性层拐一个弯，让多层网络不再只是同一条直线的叠加。",
+    "definition": "激活函数把神经元收到的线性结果逐点变换成新的值，常见的 ReLU 把负数截为零，GELU 则按输入大小平滑地保留一部分信号。没有非线性，多层线性变换合起来仍可折叠成一层线性变换，网络就很难表达弯曲的边界和条件组合。",
+    "boundary": "激活函数不是学习规则、损失函数或注意力机制；它只决定每个位置的局部变换，参数和梯度仍由训练过程更新。ReLU 可能让一部分单元长期输出零，sigmoid/tanh 在大幅值处可能饱和，GELU 的平滑不等于一定更好。选型还受架构、初始化、数值范围和推理目标影响。",
+    "sceneKind": "transform",
+    "sceneTitle": "一条输入曲线的三种性格",
+    "actionLabel": "切换激活函数",
+    "actors": [
+      {
+        "id": "linear",
+        "label": "线性输出",
+        "detail": "加权相加后的 z",
+        "icon": "chart",
+        "group": "输入"
+      },
+      {
+        "id": "relu",
+        "label": "ReLU",
+        "detail": "负值归零",
+        "icon": "gear",
+        "group": "硬门槛"
+      },
+      {
+        "id": "gelu",
+        "label": "GELU",
+        "detail": "负侧平滑衰减",
+        "icon": "spark",
+        "group": "软门槛"
+      },
+      {
+        "id": "sigmoid",
+        "label": "Sigmoid",
+        "detail": "压到 0 与 1 之间",
+        "icon": "chart",
+        "group": "饱和"
+      },
+      {
+        "id": "gradient",
+        "label": "梯度形状",
+        "detail": "连续、截断或饱和",
+        "icon": "brain",
+        "group": "训练影响"
+      },
+      {
+        "id": "claim",
+        "label": "任务结论",
+        "detail": "仍需真实评测",
+        "icon": "shield",
+        "group": "边界"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "线性输出还没有拐弯",
+        "note": "先看同一排 z 值；正负和大小都由上一层保留下来。",
+        "activeIds": [
+          "linear"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "relu",
+          "gelu",
+          "sigmoid",
+          "gradient",
+          "claim"
+        ],
+        "values": {
+          "linear": "-2.0 · -0.4 · 0 · 0.7 · 2.0"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "硬门槛：ReLU",
+        "note": "负侧被压成零，边界清楚，零输出也可能让单元停工。",
+        "activeIds": [
+          "relu",
+          "gradient"
+        ],
+        "doneIds": [
+          "linear"
+        ],
+        "mutedIds": [
+          "gelu",
+          "sigmoid",
+          "claim"
+        ],
+        "values": {
+          "relu": "0 · 0 · 0 · 0.7 · 2.0",
+          "gradient": "负侧梯度为 0"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "软门槛：GELU",
+        "note": "输入越负，保留得越少；曲线在零点附近连续变化。",
+        "activeIds": [
+          "gelu",
+          "gradient"
+        ],
+        "doneIds": [
+          "linear",
+          "relu"
+        ],
+        "mutedIds": [
+          "sigmoid",
+          "claim"
+        ],
+        "values": {
+          "gelu": "-0.05 · -0.14 · 0 · 0.53 · 1.95",
+          "gradient": "连续衰减"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "饱和：Sigmoid",
+        "note": "输出被压进 0 到 1；两端变化变小，梯度也会变弱。",
+        "activeIds": [
+          "sigmoid",
+          "gradient"
+        ],
+        "doneIds": [
+          "linear",
+          "relu",
+          "gelu"
+        ],
+        "mutedIds": [
+          "claim"
+        ],
+        "values": {
+          "sigmoid": "0.12 · 0.40 · 0.50 · 0.67 · 0.88",
+          "gradient": "两端趋近 0"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "把曲线交给评测",
+        "note": "激活只负责局部变换；模型是否更好要看训练稳定性、任务指标和边界案例。",
+        "activeIds": [
+          "claim"
+        ],
+        "doneIds": [
+          "linear",
+          "relu",
+          "gelu",
+          "sigmoid",
+          "gradient"
+        ],
+        "mutedIds": [],
+        "values": {
+          "claim": "曲线解释完成 · 真实任务待测"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "激活函数让网络拥有非线性表达力；具体曲线同时决定信号如何通过和梯度怎样返回。",
+    "quiz": {
+      "question": "把所有激活函数都拿掉，深层线性层会发生什么？",
+      "options": [
+        {
+          "label": "多层线性变换仍可合并成一层线性变换，表达能力受限",
+          "correct": true
+        },
+        {
+          "label": "模型自动获得更多非线性分支",
+          "correct": false
+        },
+        {
+          "label": "训练会停止但模型表达能力不变",
+          "correct": false
+        }
+      ],
+      "success": "对，非线性是激活函数在层间留下的弯折。",
+      "retry": "把线性变换连乘起来看：没有激活，它们仍能合并成一个线性变换。"
+    },
+    "prompt": {
+      "title": "比较两种激活函数",
+      "text": "给定一组线性输出，请分别计算 ReLU、GELU 和 sigmoid 的输出；画出正负区间的变化，说明哪里会截断、哪里会饱和、反向梯度可能遇到什么，并结合任务而不是只看曲线选择。"
+    },
+    "teaching": [
+      {
+        "id": "why",
+        "title": "没有拐弯，多层还是一条直线",
+        "body": "线性层做的是矩阵乘法加偏置。连续堆叠几层，如果中间不插入非线性，整串可以重新写成一次矩阵乘法；激活函数把这个可合并性打破，网络才能组合出弯曲的决策边界。",
+        "sourceIndices": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": "relu",
+        "title": "ReLU 的门槛很利落",
+        "body": "ReLU 对正数原样通过，对负数输出 0。它计算简单、正侧梯度不容易饱和，但如果一个单元长期落在负侧，就可能一直没有更新信号，这就是常说的 dead ReLU 风险。",
+        "sourceIndices": [
+          2,
+          4
+        ]
+      },
+      {
+        "id": "gelu",
+        "title": "GELU 是按大小软开门",
+        "body": "GELU 不是把负值一刀切掉，而是让输入按概率式门控保留。Transformer 常见实现用它或近似形式；“更平滑”描述的是函数形状，不是任何任务上的保证。",
+        "sourceIndices": [
+          1,
+          3
+        ]
+      },
+      {
+        "id": "saturation",
+        "title": "饱和会让远处的变化变小",
+        "body": "sigmoid 和 tanh 在两端趋于平坦，输入再增大，输出改变很少，反向梯度也可能变弱。它们在输出需要有界时仍有用途，不能把“可能饱和”写成“永远不能用”。",
+        "sourceIndices": [
+          4,
+          5
+        ]
+      },
+      {
+        "id": "choice",
+        "title": "选函数要连着架构和证据看",
+        "body": "激活函数的影响要和初始化、归一化、残差、精度和任务指标一起观察。单看一张函数图，只能解释局部信号如何通过，不能替代训练曲线和真实样本评测。",
+        "sourceIndices": [
+          1,
+          3,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/1802.09417",
+        "label": "Hendrycks & Gimpel · GELUs",
+        "note": "提出 Gaussian Error Linear Units 及其平滑门控解释。"
+      },
+      {
+        "url": "https://pytorch.org/docs/stable/generated/torch.nn.ReLU.html",
+        "label": "PyTorch · ReLU",
+        "note": "定义逐元素 max(0, x) 的实现。"
+      },
+      {
+        "url": "https://pytorch.org/docs/stable/generated/torch.nn.GELU.html",
+        "label": "PyTorch · GELU",
+        "note": "给出 GELU 的精确与近似实现选项。"
+      },
+      {
+        "url": "https://d2l.ai/chapter_multilayer-perceptrons/mlp.html",
+        "label": "Dive into Deep Learning · MLP",
+        "note": "解释多层感知机为何需要非线性激活。"
+      },
+      {
+        "url": "https://www.deeplearningbook.org/contents/mlp.html",
+        "label": "Goodfellow et al. · Deep Learning, MLP chapter",
+        "note": "从通用近似与梯度角度讨论非线性单元。"
+      }
+    ]
+  },
+  {
+    "slug": "layer-normalization",
+    "lead": "把每个 token 自己这一行的特征拉回可比较的尺度，再交还给网络继续变换。",
+    "definition": "层归一化（LayerNorm）在一个样本内部，沿指定的特征维度计算均值和方差，再把这一行标准化，最后用可学习的缩放和偏移恢复模型需要的尺度。对 Transformer 来说，它通常按 token 独立处理，不需要等整个 batch 凑齐，因此训练和推理的归一化统计可以保持一致。",
+    "boundary": "层归一化的关键不是“把数字变小”，而是先确定统计轴：对 hidden features 做归一化，和对 batch、序列位置或通道做归一化并不是一回事。它不会替代残差、注意力或优化器，也不会自动解决 padding、mask、混合精度和异常值；放在子层前还是后，还会改变信号和梯度的路径。",
+    "sceneKind": "layers",
+    "sceneTitle": "一行一行量自己的尺度",
+    "actionLabel": "切换统计轴",
+    "actors": [
+      {
+        "id": "tokens",
+        "label": "Token 特征行",
+        "detail": "每个 token 有自己的 hidden 向量",
+        "icon": "layout",
+        "group": "输入"
+      },
+      {
+        "id": "stats",
+        "label": "均值/方差",
+        "detail": "沿 normalized_shape 统计",
+        "icon": "chart",
+        "group": "测量"
+      },
+      {
+        "id": "normalize",
+        "label": "标准化",
+        "detail": "(x−μ)/√(σ²+ε)",
+        "icon": "gear",
+        "group": "变换"
+      },
+      {
+        "id": "affine",
+        "label": "γ / β",
+        "detail": "可学习缩放与偏移",
+        "icon": "spark",
+        "group": "恢复"
+      },
+      {
+        "id": "batch",
+        "label": "Batch 统计",
+        "detail": "跨样本按列统计（对照）",
+        "icon": "database",
+        "group": "对照"
+      },
+      {
+        "id": "result",
+        "label": "输出表示",
+        "detail": "送往下一层",
+        "icon": "brain",
+        "group": "结果"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "每个 token 先站成一行",
+        "note": "把 token 的 hidden features 展开；统计还没有跨行串起来。",
+        "activeIds": [
+          "tokens"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "stats",
+          "normalize",
+          "affine",
+          "batch",
+          "result"
+        ],
+        "values": {
+          "tokens": "猫 [2,4,6] · 跑 [0.1,0.2,0.3]"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "只量这一行",
+        "note": "LayerNorm 沿指定特征轴算均值和方差；猫和跑各有自己的统计。",
+        "activeIds": [
+          "stats",
+          "tokens"
+        ],
+        "doneIds": [
+          "tokens"
+        ],
+        "mutedIds": [
+          "normalize",
+          "affine",
+          "batch",
+          "result"
+        ],
+        "values": {
+          "stats": "猫 μ=4 σ≈1.63 · 跑 μ=.2 σ≈.08"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "拉回共同刻度",
+        "note": "标准化让每一行的特征尺度可比较，但仍保留这一行的相对形状。",
+        "activeIds": [
+          "normalize"
+        ],
+        "doneIds": [
+          "tokens",
+          "stats"
+        ],
+        "mutedIds": [
+          "affine",
+          "batch",
+          "result"
+        ],
+        "values": {
+          "normalize": "每行均值≈0 · 方差≈1"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "让模型再选幅度",
+        "note": "可学习的 gamma 和 beta 把需要的尺度与偏移交还给网络。",
+        "activeIds": [
+          "affine",
+          "result"
+        ],
+        "doneIds": [
+          "tokens",
+          "stats",
+          "normalize"
+        ],
+        "mutedIds": [
+          "batch"
+        ],
+        "values": {
+          "affine": "γ=1.3 · β=-0.2",
+          "result": "归一化表示可继续进入子层"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "换轴，行为就换了",
+        "note": "把统计改成按特征列跨样本计算，会得到另一种归一化；在这两个教学样本上，猫≈[1,1,1]、跑≈[-1,-1,-1]，这不是 LayerNorm。",
+        "activeIds": [
+          "batch",
+          "stats"
+        ],
+        "doneIds": [
+          "tokens",
+          "normalize",
+          "affine",
+          "result"
+        ],
+        "mutedIds": [],
+        "values": {
+          "batch": "按列跨样本：猫≈[1,1,1] · 跑≈[-1,-1,-1]"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "LayerNorm 的核心是每个样本沿指定特征轴自算统计，再用可学习的 γ/β 调回合适尺度；统计轴决定它究竟在做什么。",
+    "quiz": {
+      "question": "LayerNorm 的“层”主要指什么？",
+      "options": [
+        {
+          "label": "在一个样本的指定特征维度上计算统计量并归一化",
+          "correct": true
+        },
+        {
+          "label": "把整个训练 batch 的样本混在一起归一化",
+          "correct": false
+        },
+        {
+          "label": "只把每层的参数数量除以平均值",
+          "correct": false
+        }
+      ],
+      "success": "对，先确认 normalized_shape 与统计轴，才知道归一化范围。",
+      "retry": "把每个 token 的特征行单独量一遍；跨 batch 统计是另一个概念。"
+    },
+    "prompt": {
+      "title": "检查一层归一化的统计轴",
+      "text": "给出输入张量的形状和 LayerNorm normalized_shape，标出均值、方差、epsilon、gamma、beta 分别沿哪些维度计算；用两个 token 和一个 padding 位置说明如果误用 batch 统计会发生什么。"
+    },
+    "teaching": [
+      {
+        "id": "axis",
+        "title": "先问“沿哪一维量”",
+        "body": "LayerNorm 不是对一个模糊的“层”按下平均键。PyTorch 的 normalized_shape 决定最后若干维作为归一化范围；同一张量换一个轴，均值、方差和输出都会变。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "token",
+        "title": "Transformer 里常按 token 各自处理",
+        "body": "每个 token 的 hidden vector 可以独立算统计，因此序列长度或 batch 中其他样本不会直接改变这一 token 的均值与方差。这是它适合自回归和变长序列的一部分原因。",
+        "sourceIndices": [
+          1,
+          3
+        ]
+      },
+      {
+        "id": "affine",
+        "title": "标准化之后，模型还能把尺度拿回来",
+        "body": "LayerNorm 通常带可学习的 weight 和 bias。它们不是多余装饰：如果任务需要某些特征保持更大幅度或移动中心，gamma 与 beta 提供了这条可学习通道。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "placement",
+        "title": "放在残差前后会改变路径",
+        "body": "原始 Transformer 采用子层后归一化，后来常见 pre-norm 变体把归一化放到子层之前。两者都叫 LayerNorm，但梯度路径、初始化和深层稳定性可能不同，不能只看名字。",
+        "sourceIndices": [
+          3,
+          4
+        ]
+      },
+      {
+        "id": "boundary",
+        "title": "epsilon、padding 和精度都在边界里",
+        "body": "方差接近零时需要 epsilon 保证数值安全；padding 是否参与统计、混合精度如何累加，也会影响结果。归一化让尺度更整齐，不会自动修复错误 mask 或异常输入。",
+        "sourceIndices": [
+          1,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/1607.06450",
+        "label": "Ba et al. · Layer Normalization",
+        "note": "提出在单个训练样本内对层输入做归一化，并讨论其与 batch 统计的差异。"
+      },
+      {
+        "url": "https://pytorch.org/docs/stable/generated/torch.nn.LayerNorm.html",
+        "label": "PyTorch · LayerNorm",
+        "note": "给出 normalized_shape、epsilon、elementwise_affine 与统计维度。"
+      },
+      {
+        "url": "https://arxiv.org/abs/1706.03762",
+        "label": "Vaswani et al. · Attention Is All You Need",
+        "note": "展示 Transformer 子层周围的残差与 layer normalization。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2002.04745",
+        "label": "Xiong et al. · On Layer Normalization in the Transformer Architecture",
+        "note": "分析 pre-LN 与 post-LN 的梯度路径和训练稳定性。"
+      },
+      {
+        "url": "https://d2l.ai/chapter_convolutional-modern/batch-norm.html",
+        "label": "Dive into Deep Learning · Batch normalization",
+        "note": "用对照说明按 batch 统计的归一化与 LayerNorm 不同。"
+      }
+    ]
+  },
+  {
+    "slug": "residual-connection",
+    "lead": "给一层变换留一条原路，让网络只需学习“要补上的那一点”。",
+    "definition": "残差连接把一个子层的输出 F(x) 与原输入 x 相加，得到 y=F(x)+x；如果子层暂时学不会有用变化，网络仍可近似把输入原样传下去。ResNet 把这种结构用于视觉网络，Transformer 也在注意力和前馈子层周围使用残差路径。",
+    "boundary": "残差连接是逐元素相加，不是把两份向量拼接，也不是让信息无条件跳过所有计算。x 与 F(x) 必须形状兼容，通道或维度不一致时要用投影；加法仍可能放大数值或把错误一起带下去。它改善的是优化路径和表示更新的条件，不是深度越多就一定越准。",
+    "sceneKind": "overlay-film",
+    "sceneTitle": "透明叠片：旧表示和新修正怎样重合",
+    "actionLabel": "拖动增量大小",
+    "actors": [
+      {
+        "id": "input",
+        "label": "原输入 x",
+        "detail": "[1.0, 0.5, -0.2]",
+        "icon": "memory",
+        "group": "恒等支路"
+      },
+      {
+        "id": "block",
+        "label": "子层 F(x)",
+        "detail": "只计算要补的变化",
+        "icon": "gear",
+        "group": "变换支路"
+      },
+      {
+        "id": "projection",
+        "label": "形状适配",
+        "detail": "必要时先投影 x",
+        "icon": "layout",
+        "group": "尺寸"
+      },
+      {
+        "id": "sum",
+        "label": "逐元素相加",
+        "detail": "projection(x) + F(x)",
+        "icon": "spark",
+        "group": "叠加"
+      },
+      {
+        "id": "output",
+        "label": "新表示 y",
+        "detail": "旧信息 + 新修正",
+        "icon": "brain",
+        "group": "输出"
+      },
+      {
+        "id": "gradient",
+        "label": "反向通道",
+        "detail": "恒等路径保留梯度路",
+        "icon": "chart",
+        "group": "训练"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "先把旧表示放在底片上",
+        "note": "原输入 x 不消失，它构成残差块的恒等底片。",
+        "activeIds": [
+          "input"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "block",
+          "projection",
+          "sum",
+          "output",
+          "gradient"
+        ],
+        "values": {
+          "input": "x=[1.0,0.5,-0.2]"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "子层只画要改的笔画",
+        "note": "F(x) 给出相对输入的变化，不必从零重建整个表示。",
+        "activeIds": [
+          "block"
+        ],
+        "doneIds": [
+          "input"
+        ],
+        "mutedIds": [
+          "projection",
+          "sum",
+          "output",
+          "gradient"
+        ],
+        "values": {
+          "block": "F(x)=[0.1,-0.2,0.0]"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "先确认两张片能对齐",
+        "note": "同形状时可直接相加；如果从 3 维变到 4 维，恒等支路先用 W_skip(x) 投影到 4 维。",
+        "activeIds": [
+          "projection"
+        ],
+        "doneIds": [
+          "input",
+          "block"
+        ],
+        "mutedIds": [
+          "sum",
+          "output",
+          "gradient"
+        ],
+        "values": {
+          "projection": "same 3→3：identity · mismatch 3→4：W_skip(x)→4维"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "透明叠片合成结果",
+        "note": "两份同形状向量逐元素相加，旧信息和新修正同时留下。",
+        "activeIds": [
+          "sum",
+          "output"
+        ],
+        "doneIds": [
+          "input",
+          "block",
+          "projection"
+        ],
+        "mutedIds": [
+          "gradient"
+        ],
+        "values": {
+          "sum": "[1.0,0.5,-0.2]+[0.1,-0.2,0]",
+          "output": "y=[1.1,0.3,-0.2]"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "梯度也有一条直路",
+        "note": "恒等支路始终提供 I 的梯度分量；F(x)≈0 只说明前向 y≈x，不单独保证完整梯度不消失。",
+        "activeIds": [
+          "gradient"
+        ],
+        "doneIds": [
+          "input",
+          "block",
+          "projection",
+          "sum",
+          "output"
+        ],
+        "mutedIds": [],
+        "values": {
+          "gradient": "I + ∂F/∂x · F(x)≈0 仅表示 y≈x"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "残差连接把“保留原表示”和“学习修正量”叠在一起，给深层网络留出更容易优化的恒等路径。",
+    "quiz": {
+      "question": "残差连接中的“残差”最接近哪种说法？",
+      "options": [
+        {
+          "label": "子层相对输入需要补上的变化 F(x)，最后与输入相加",
+          "correct": true
+        },
+        {
+          "label": "把两段序列首尾拼接成更长的向量",
+          "correct": false
+        },
+        {
+          "label": "把网络输出复制一份作为第二个样本",
+          "correct": false
+        }
+      ],
+      "success": "对，核心是同形状的增量与输入相加。",
+      "retry": "把残差块写成 y=F(x)+x；它是加法，不是拼接或复制。"
+    },
+    "prompt": {
+      "title": "检查一个残差块",
+      "text": "给出 x、子层输出 F(x)、归一化位置和张量形状，逐项算出 projection、相加结果与梯度路径；再构造 F(x)=0、维度不匹配和数值过大的三个边界例子，说明每个例子会发生什么。"
+    },
+    "teaching": [
+      {
+        "id": "equation",
+        "title": "它让子层回答“要改多少”",
+        "body": "普通堆叠要求子层直接给出下一层表示；残差块把目标改写成 F(x)=H(x)−x，子层只需学习相对恒等映射的变化。最后仍是 y=F(x)+x，不是两个结果并排保存。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "optimization",
+        "title": "恒等路给优化留了后门",
+        "body": "如果当前子层没有学到有用变化，F(x) 可以接近零，输出仍接近 x。反向传播也多了一条直接回到输入的路径，这有助于训练更深的网络，但不等于所有梯度问题都消失。",
+        "sourceIndices": [
+          1,
+          3
+        ]
+      },
+      {
+        "id": "shape",
+        "title": "加法先问形状能否对齐",
+        "body": "逐元素相加要求两路张量形状兼容。ResNet 在通道或步幅改变时用投影捷径；Transformer 通常让子层保持 model dimension，再把结果加回去。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "transformer",
+        "title": "注意力和 FFN 都能挂残差",
+        "body": "Transformer 的每个子层周围都有残差与归一化安排。把“有残差”写成“跳过注意力”会误导：子层仍执行，残差只是把输入叠回输出。",
+        "sourceIndices": [
+          3,
+          4
+        ]
+      },
+      {
+        "id": "limit",
+        "title": "保留旧信息也会保留旧错误",
+        "body": "残差连接改善路径，不替模型判断内容。错误的表示、过大的数值或不合适的归一化顺序仍可能被带进下一层，所以要结合训练曲线和边界样本检查。",
+        "sourceIndices": [
+          3,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/1512.03385",
+        "label": "He et al. · Deep Residual Learning for Image Recognition",
+        "note": "提出深度残差学习与恒等捷径，并讨论优化更深网络。"
+      },
+      {
+        "url": "https://d2l.ai/chapter_convolutional-modern/resnet.html",
+        "label": "Dive into Deep Learning · ResNet",
+        "note": "用残差块、投影捷径和形状变化解释实现。"
+      },
+      {
+        "url": "https://arxiv.org/abs/1706.03762",
+        "label": "Vaswani et al. · Attention Is All You Need",
+        "note": "展示 Transformer 子层周围的残差连接与归一化。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2003.04887",
+        "label": "Bai et al. · Deep Equilibrium Models",
+        "note": "从迭代与固定点角度讨论残差式更新的关系。"
+      },
+      {
+        "url": "https://arxiv.org/abs/1608.06993",
+        "label": "Huang et al. · Densely Connected Convolutional Networks",
+        "note": "对照残差相加与密集连接的不同信息组合方式。"
+      }
+    ]
+  },
+  {
+    "slug": "feed-forward-network",
+    "lead": "每个 token 独自进一间“两次线性变换”的小工坊，先扩宽，再压回原尺寸。",
+    "definition": "Transformer 里的前馈网络（FFN）通常由两层线性变换和中间激活组成：先把每个 token 的 hidden size 扩到更宽的中间维度，再压回 model dimension。它对每个位置独立使用同一组参数，因此负责加工单个 token 的表示，跨 token 的混合主要由注意力层完成。",
+    "boundary": "FFN 不是注意力，也不是把整段序列串起来的循环；在标准 position-wise 结构里，一个位置的 FFN 不读取其他位置。中间维度、激活和门控方式会影响参数量、容量与计算成本；现代模型可能用 SwiGLU 等门控变体，不能把所有 FFN 都简化成两张无差别矩阵。",
+    "sceneKind": "matrix",
+    "sceneTitle": "宽一格，再窄回来：FFN 的 token 工作台",
+    "actionLabel": "查看不同 token 的独立列",
+    "actors": [
+      {
+        "id": "tokens",
+        "label": "Token 矩阵",
+        "detail": "每列一个位置的 hidden vector",
+        "icon": "layout",
+        "group": "输入"
+      },
+      {
+        "id": "expand",
+        "label": "扩维层",
+        "detail": "d_model → d_ff",
+        "icon": "chart",
+        "group": "宽空间"
+      },
+      {
+        "id": "activation",
+        "label": "激活/门控",
+        "detail": "GELU 或 SwiGLU",
+        "icon": "spark",
+        "group": "非线性"
+      },
+      {
+        "id": "contract",
+        "label": "压回层",
+        "detail": "d_ff → d_model",
+        "icon": "gear",
+        "group": "输出尺寸"
+      },
+      {
+        "id": "shared",
+        "label": "共享参数",
+        "detail": "每个位置用同一套权重",
+        "icon": "package",
+        "group": "规则"
+      },
+      {
+        "id": "attention",
+        "label": "跨位置交流",
+        "detail": "主要由 attention 负责",
+        "icon": "network",
+        "group": "边界"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "每个位置先占一列",
+        "note": "把注意力后的 hidden vectors 摊成矩阵；FFN 先看单列。",
+        "activeIds": [
+          "tokens"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "expand",
+          "activation",
+          "contract",
+          "shared",
+          "attention"
+        ],
+        "values": {
+          "tokens": "猫 · 跑 · 跳，各有 d_model=4"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "同一工作台先扩宽",
+        "note": "第一层把每个 token 独立送到 d_ff 更大的中间空间。",
+        "activeIds": [
+          "expand"
+        ],
+        "doneIds": [
+          "tokens"
+        ],
+        "mutedIds": [
+          "activation",
+          "contract",
+          "shared",
+          "attention"
+        ],
+        "values": {
+          "expand": "4 → 16 · 三列分别展开"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "宽空间里拐一下",
+        "note": "激活或门控在每个位置的中间向量上工作，产生非线性组合。",
+        "activeIds": [
+          "activation"
+        ],
+        "doneIds": [
+          "tokens",
+          "expand"
+        ],
+        "mutedIds": [
+          "contract",
+          "shared",
+          "attention"
+        ],
+        "values": {
+          "activation": "GELU / SwiGLU · 逐列计算"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "再压回主干尺寸",
+        "note": "第二层把每列投回 d_model，输出才能接回残差和下一子层。",
+        "activeIds": [
+          "contract"
+        ],
+        "doneIds": [
+          "tokens",
+          "expand",
+          "activation"
+        ],
+        "mutedIds": [
+          "shared",
+          "attention"
+        ],
+        "values": {
+          "contract": "16 → 4 · 输出可与主干对齐"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "参数相同，输入不同",
+        "note": "共享权重不等于相同输出；每个 token 的向量不同，经过同一函数后的结果也不同。",
+        "activeIds": [
+          "shared",
+          "attention"
+        ],
+        "doneIds": [
+          "tokens",
+          "expand",
+          "activation",
+          "contract"
+        ],
+        "mutedIds": [],
+        "values": {
+          "shared": "猫/跑/跳 → 同一组 FFN 参数",
+          "attention": "跨位置关系另由 attention 处理"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "Transformer FFN 是逐位置共享参数的非线性加工器：先扩维提供容量，再压回主干尺寸；跨 token 的交流不在这里发生。",
+    "quiz": {
+      "question": "标准 Transformer FFN 的 position-wise 主要意味着什么？",
+      "options": [
+        {
+          "label": "每个位置独立通过同一组 FFN 参数，位置之间不在此处直接混合",
+          "correct": true
+        },
+        {
+          "label": "每个位置都使用一组完全不同的参数",
+          "correct": false
+        },
+        {
+          "label": "FFN 会自动把所有 token 按时间顺序排队",
+          "correct": false
+        }
+      ],
+      "success": "对，同一套函数逐位置应用，输入不同仍会得到不同结果。",
+      "retry": "看矩阵的列：FFN 对每列独立加工，跨列关系主要由 attention 处理。"
+    },
+    "prompt": {
+      "title": "拆解一个 Transformer FFN",
+      "text": "给出 d_model、d_ff、激活函数和 token 矩阵，逐步写出第一层扩维、激活/门控、第二层压回的形状；说明为什么把一个 token 换成另一个 token 不会改变参数，却会改变输出。"
+    },
+    "teaching": [
+      {
+        "id": "shape",
+        "title": "扩宽不是把序列变长",
+        "body": "d_model → d_ff 改的是每个 token 的特征维度，不是 token 数量。Transformer 论文把 FFN 写成两次线性变换加 ReLU；现代实现常换激活或门控，但“先在特征维展开”仍是主线。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "position",
+        "title": "position-wise 是一条很重要的边界",
+        "body": "同一组 FFN 权重会对每个位置重复使用，猫这一列不会在 FFN 内读取跑那一列。把 FFN 说成“理解整句话”会把注意力的职责挪错地方。",
+        "sourceIndices": [
+          1,
+          3
+        ]
+      },
+      {
+        "id": "nonlinear",
+        "title": "中间激活让两层不再能合并",
+        "body": "如果两层之间没有激活，它们仍可折叠成一次线性映射。GELU、ReLU 或门控让中间空间可以按输入选择方向，增加单个 token 的表达能力。",
+        "sourceIndices": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": "capacity",
+        "title": "d_ff 是容量和成本的旋钮",
+        "body": "中间维度越宽，参数量、显存和计算通常越大，但更宽不是自动更聪明。还要结合激活、门控、量化和真实任务指标，看新增容量是否值得。",
+        "sourceIndices": [
+          2,
+          3,
+          5
+        ]
+      },
+      {
+        "id": "residual",
+        "title": "最后还要回到主干尺寸",
+        "body": "FFN 输出通常回到 d_model，才能与残差相加并继续进入下一层。尺寸对不上时，不能用“模型会自动适配”带过；实现必须明确投影、布局和 mask。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/1706.03762",
+        "label": "Vaswani et al. · Attention Is All You Need",
+        "note": "定义 Transformer 的 position-wise feed-forward network。"
+      },
+      {
+        "url": "https://pytorch.org/docs/stable/generated/torch.nn.TransformerEncoderLayer.html",
+        "label": "PyTorch · TransformerEncoderLayer",
+        "note": "展示 self-attention、feed-forward、dropout、norm 与维度配置。"
+      },
+      {
+        "url": "https://d2l.ai/chapter_attention-mechanisms-and-transformers/transformer.html",
+        "label": "Dive into Deep Learning · Transformer",
+        "note": "解释 Transformer block 中注意力、FFN 与残差的分工。"
+      },
+      {
+        "url": "https://pytorch.org/docs/stable/generated/torch.nn.GELU.html",
+        "label": "PyTorch · GELU",
+        "note": "给出 FFN 常用非线性激活的实现定义。"
+      },
+      {
+        "url": "https://pytorch.org/docs/stable/generated/torch.nn.Linear.html",
+        "label": "PyTorch · Linear",
+        "note": "说明线性层的输入输出维度与仿射变换。"
+      }
+    ]
+  },
+  {
+    "slug": "positional-encoding",
+    "lead": "给内容贴上顺序标签，让模型分得出“猫追狗”和“狗追猫”。",
+    "definition": "位置编码把 token 在序列中的位置注入表示，使自注意力除了内容相似度之外，还能利用顺序。经典 Transformer 用不同频率的正弦和余弦生成固定位置向量并加到 token embedding 上；也有模型学习位置向量，或在注意力分数中使用相对位置关系。",
+    "boundary": "位置编码描述的是位置，不是词义，也不会自动修复错误的 tokenization、padding 或 causal mask。绝对位置、相对位置、可学习表和旋转位置嵌入的注入方式不同；训练长度之外能否外推取决于具体方法和实现，不能只凭“有位置编码”下结论。",
+    "sceneKind": "timeline",
+    "sceneTitle": "把位置贴在 token 旁边，而不是贴在词义上",
+    "actionLabel": "重排 token 顺序",
+    "actors": [
+      {
+        "id": "tokens",
+        "label": "Token 内容",
+        "detail": "猫 · 追 · 狗",
+        "icon": "message",
+        "group": "内容"
+      },
+      {
+        "id": "positions",
+        "label": "位置标签",
+        "detail": "0 · 1 · 2 · 3",
+        "icon": "clock",
+        "group": "顺序"
+      },
+      {
+        "id": "vectors",
+        "label": "位置向量",
+        "detail": "sin/cos 或 learned table",
+        "icon": "chart",
+        "group": "编码"
+      },
+      {
+        "id": "sum",
+        "label": "组合表示",
+        "detail": "token embedding + position",
+        "icon": "spark",
+        "group": "注入"
+      },
+      {
+        "id": "attention",
+        "label": "注意力比较",
+        "detail": "内容 + 顺序一起可见",
+        "icon": "network",
+        "group": "使用"
+      },
+      {
+        "id": "boundary",
+        "label": "长度/Mask边界",
+        "detail": "外推与可见范围另算",
+        "icon": "shield",
+        "group": "边界"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "内容先排成一列",
+        "note": "没有位置线索时，只有 token 内容；顺序还没有进入表示。",
+        "activeIds": [
+          "tokens"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "positions",
+          "vectors",
+          "sum",
+          "attention",
+          "boundary"
+        ],
+        "values": {
+          "tokens": "猫 · 追 · 狗"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "位置标签占好格子",
+        "note": "位置 0、1、2 与格子绑定，不跟着词的语义走。",
+        "activeIds": [
+          "positions",
+          "vectors"
+        ],
+        "doneIds": [
+          "tokens"
+        ],
+        "mutedIds": [
+          "sum",
+          "attention",
+          "boundary"
+        ],
+        "values": {
+          "positions": "0 · 1 · 2",
+          "vectors": "每个位置一条向量"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "内容和顺序合成表示",
+        "note": "经典 Transformer 把 token embedding 与位置向量相加，形成带顺序的输入。",
+        "activeIds": [
+          "sum"
+        ],
+        "doneIds": [
+          "tokens",
+          "positions",
+          "vectors"
+        ],
+        "mutedIds": [
+          "attention",
+          "boundary"
+        ],
+        "values": {
+          "sum": "e(token)+p(position)"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "交换词，位置仍在原格",
+        "note": "“狗追猫”不是“猫追狗”；内容和位置一起让注意力看到顺序变化。",
+        "activeIds": [
+          "tokens",
+          "positions",
+          "attention"
+        ],
+        "doneIds": [
+          "vectors",
+          "sum"
+        ],
+        "mutedIds": [
+          "boundary"
+        ],
+        "values": {
+          "tokens": "狗 · 追 · 猫",
+          "positions": "0 · 1 · 2",
+          "attention": "顺序关系发生变化"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "外推和 mask 另开一栏",
+        "note": "绝对、相对、旋转位置机制有不同长度和注入边界，padding 与 causal mask 也不能省略。",
+        "activeIds": [
+          "boundary"
+        ],
+        "doneIds": [
+          "tokens",
+          "positions",
+          "vectors",
+          "sum",
+          "attention"
+        ],
+        "mutedIds": [],
+        "values": {
+          "boundary": "位置线索 ≠ 可见范围 ≠ 长度保证"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "位置编码把“这是第几个”交给表示或注意力，让内容相同的 token 在不同顺序里产生不同关系。",
+    "quiz": {
+      "question": "为什么只把 token embedding 送进 self-attention 不够？",
+      "options": [
+        {
+          "label": "自注意力本身不自动知道 token 的先后，需要额外位置关系",
+          "correct": true
+        },
+        {
+          "label": "因为 embedding 不能表示任何词义",
+          "correct": false
+        },
+        {
+          "label": "因为所有 token 必须使用不同的词表",
+          "correct": false
+        }
+      ],
+      "success": "对，位置线索补的是顺序，不是词义字典。",
+      "retry": "交换“猫追狗”和“狗追猫”看差异：没有位置关系，注意力缺少这条线索。"
+    },
+    "prompt": {
+      "title": "比较两种位置编码",
+      "text": "用“猫追狗”和“狗追猫”做例子，分别写出 token embedding 与位置向量如何组合；比较固定正弦、可学习绝对位置和相对/旋转位置在注入位置、长度外推、padding 与 causal mask 上的边界。"
+    },
+    "teaching": [
+      {
+        "id": "content",
+        "title": "内容和位置是两层信息",
+        "body": "token embedding 说明“是什么”，位置编码说明“在哪个格子”。经典做法把两者相加；其他方法也可能把位置偏置加到注意力分数，关键是让顺序进入计算，而不是把位置当成新词义。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "sin",
+        "title": "正弦编码用多种频率写下坐标",
+        "body": "Transformer 论文用不同频率的 sin/cos 组成每个位置的向量。相邻位置的变化有规律，理论上可以表达相对偏移；实际能否外推到更长序列，还取决于训练长度和实现。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "learned",
+        "title": "可学习位置表更像一排抽屉",
+        "body": "BERT 等模型可以为每个绝对位置学习一个向量。它能适配训练范围内的分布，但超出最大位置时没有天然的新抽屉，扩展长度需要额外策略。",
+        "sourceIndices": [
+          3,
+          5
+        ]
+      },
+      {
+        "id": "relative",
+        "title": "相对位置关心相隔几格",
+        "body": "相对位置方法把距离或方向直接放进注意力关系，关注“这个 token 离那个 token 多远”。旋转位置嵌入是另一种把相对位置信息写入 Q/K 内积的做法，不能和绝对相加式编码混为一谈。",
+        "sourceIndices": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": "mask",
+        "title": "位置线索不等于可见范围",
+        "body": "padding mask、causal mask 和位置编码各自解决不同问题：一个标顺序，一个限制谁能看谁。把三者合并成“位置控制注意力”会掩盖泄漏和长度边界。",
+        "sourceIndices": [
+          1,
+          3,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/1706.03762",
+        "label": "Vaswani et al. · Attention Is All You Need",
+        "note": "提出 Transformer 的正弦位置编码并说明其加入输入表示。"
+      },
+      {
+        "url": "https://d2l.ai/chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html",
+        "label": "Dive into Deep Learning · Positional encoding",
+        "note": "推导正弦/余弦位置编码与序列顺序的作用。"
+      },
+      {
+        "url": "https://arxiv.org/abs/1810.04805",
+        "label": "Devlin et al. · BERT",
+        "note": "说明可学习绝对位置嵌入在 Transformer 编码器中的使用。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2104.09864",
+        "label": "Su et al. · RoFormer",
+        "note": "介绍把位置信息注入 Q/K 内积的旋转位置方法。"
+      },
+      {
+        "url": "https://pytorch.org/docs/stable/generated/torch.nn.Transformer.html",
+        "label": "PyTorch · Transformer",
+        "note": "展示 Transformer 的序列形状、mask 与位置信息需由模型/输入提供。"
+      }
+    ]
+  },
+  {
+    "slug": "rotary-position-embedding",
+    "lead": "把 Q 和 K 在二维小平面里按位置转过不同角度，让内积自然带上相对距离。",
+    "definition": "旋转位置嵌入（RoPE）把 query 和 key 的相邻维度分成二维对，在每个位置按一个与位置相关的角度旋转。这样 Q 与 K 的点积会带出两者的相对位置差；value 通常不做同样的旋转，位置关系主要进入注意力分数。",
+    "boundary": "RoPE 不是把整条 hidden state 画个旋转动画，也不是简单把正弦向量加到 token embedding。实现必须明确旋转的维度配对、频率基数、最大上下文和缩放策略；长上下文扩展可能需要额外插值或变基，不能凭“用了 RoPE”保证任意长度都可靠。",
+    "sceneKind": "compare",
+    "sceneTitle": "两块旋转坐标纸：绝对角度如何留下相对距离",
+    "actionLabel": "拖动位置间距",
+    "actors": [
+      {
+        "id": "qk",
+        "label": "Q / K 坐标对",
+        "detail": "每两维组成一个小平面",
+        "icon": "layout",
+        "group": "输入"
+      },
+      {
+        "id": "angle",
+        "label": "位置角度",
+        "detail": "θ₂ 与 θ₅",
+        "icon": "clock",
+        "group": "位置"
+      },
+      {
+        "id": "qrot",
+        "label": "旋转后的 Q",
+        "detail": "R(θ₂)q",
+        "icon": "spark",
+        "group": "Q"
+      },
+      {
+        "id": "krot",
+        "label": "旋转后的 K",
+        "detail": "R(θ₅)k",
+        "icon": "spark",
+        "group": "K"
+      },
+      {
+        "id": "score",
+        "label": "Q′·K′",
+        "detail": "受相对角影响",
+        "icon": "chart",
+        "group": "注意力"
+      },
+      {
+        "id": "value",
+        "label": "V 保持原路",
+        "detail": "通常不做 RoPE 旋转",
+        "icon": "memory",
+        "group": "边界"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "先看未旋转坐标",
+        "note": "每两维组成一个二维平面；Q、K 先保留原始方向。",
+        "activeIds": [
+          "qk"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "angle",
+          "qrot",
+          "krot",
+          "score",
+          "value"
+        ],
+        "values": {
+          "qk": "q=(1,0) · k=(0.8,0.6)"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "位置变成角度",
+        "note": "不同位置和频率维度会得到不同 θ；角度不是额外 token。",
+        "activeIds": [
+          "angle"
+        ],
+        "doneIds": [
+          "qk"
+        ],
+        "mutedIds": [
+          "qrot",
+          "krot",
+          "score",
+          "value"
+        ],
+        "values": {
+          "angle": "pos 2→θ₂ · pos 5→θ₅"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "Q、K 各自转过角度",
+        "note": "旋转保持二维向量长度，却改变方向；value 仍在自己的路径上。",
+        "activeIds": [
+          "qrot",
+          "krot",
+          "value"
+        ],
+        "doneIds": [
+          "qk",
+          "angle"
+        ],
+        "mutedIds": [
+          "score"
+        ],
+        "values": {
+          "qrot": "R(θ₂)q",
+          "krot": "R(θ₅)k",
+          "value": "V：不旋转"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "内积留下相对角",
+        "note": "Q′与 K′的内积包含 θ₂−θ₅ 的影响，注意力因此能利用相对距离。",
+        "activeIds": [
+          "score"
+        ],
+        "doneIds": [
+          "qk",
+          "angle",
+          "qrot",
+          "krot",
+          "value"
+        ],
+        "mutedIds": [],
+        "values": {
+          "score": "score ≈ f(相对角度)"
+        },
+        "metric": {
+          "label": "位置差",
+          "value": "5−2=3"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "长上下文单独验收",
+        "note": "频率 base、缩放和最大长度决定远距离行为；RoPE 不等于无限上下文。",
+        "activeIds": [
+          "angle",
+          "score"
+        ],
+        "doneIds": [
+          "qk",
+          "qrot",
+          "krot",
+          "value"
+        ],
+        "mutedIds": [],
+        "values": {
+          "angle": "base / scaling / max length",
+          "score": "需长上下文评测"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "RoPE 把位置写进 Q/K 的方向，让注意力内积感到相对距离；实现和长上下文边界要单独核对。",
+    "quiz": {
+      "question": "RoPE 主要把位置信息放进了哪一步？",
+      "options": [
+        {
+          "label": "对 Q、K 的维度对做位置相关旋转，使它们的内积带相对位置信息",
+          "correct": true
+        },
+        {
+          "label": "把每个 token 的 value 直接替换成位置编号",
+          "correct": false
+        },
+        {
+          "label": "在输出文本后附加一个位置标签",
+          "correct": false
+        }
+      ],
+      "success": "对，关键是 Q/K 旋转后内积带出相对角。",
+      "retry": "把 Q、K、V 分开：RoPE 通常旋转前两者，value 不因此变成位置编号。"
+    },
+    "prompt": {
+      "title": "逐项审查 RoPE 实现",
+      "text": "给出 head_dim、旋转维度对、频率 base、位置索引和最大上下文，写出 Q/K 旋转前后的二维分量；验证内积如何依赖相对位置，并单独列出长上下文缩放和 value 不旋转的假设。"
+    },
+    "teaching": [
+      {
+        "id": "pair",
+        "title": "它把相邻维度看成一张张小坐标纸",
+        "body": "RoPE 将 head dimension 分成二维分量，每对分量用位置相关角度做旋转。向量长度保持，方向改变；这比把一整条向量粗略写成“转一下”更准确。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "relative",
+        "title": "相对距离从内积里冒出来",
+        "body": "Q 在位置 m、K 在位置 n 时，两个旋转后的向量内积会依赖 m−n 的角度差。模型因此可以在注意力分数中使用相对位置，而不必另加一张绝对位置表。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "qkv",
+        "title": "Q、K、V 的职责不能混",
+        "body": "RoFormer 的核心是把旋转放入 Q/K 的注意力计算；V 通常不旋转。若把“所有 hidden state 都旋转”当成定义，读者会错过真正承载位置信息的内积。",
+        "sourceIndices": [
+          1,
+          3
+        ]
+      },
+      {
+        "id": "base",
+        "title": "频率表决定远近怎么被看见",
+        "body": "不同维度使用不同频率，base 与位置索引共同决定角度。长上下文变体可能修改频率或加入缩放；这些是实现策略，要随模型版本一起记录。",
+        "sourceIndices": [
+          3,
+          4
+        ]
+      },
+      {
+        "id": "limit",
+        "title": "RoPE 仍需长上下文实测",
+        "body": "训练长度之外，角度分布、注意力衰减和数值范围都可能变化。Llama 等模型文档会把 rope scaling 作为配置项，不能从一个短上下文例子推断无限外推。",
+        "sourceIndices": [
+          3,
+          4,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2104.09864",
+        "label": "Su et al. · RoFormer",
+        "note": "提出 Rotary Position Embedding，并分析相对位置内积。"
+      },
+      {
+        "url": "https://d2l.ai/chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html",
+        "label": "Dive into Deep Learning · Self-attention and positional encoding",
+        "note": "提供位置编码和注意力关系的数学背景。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2307.09288",
+        "label": "Touvron et al. · Llama 2",
+        "note": "记录大语言模型中 RoPE 与上下文长度配置的实际使用。"
+      },
+      {
+        "url": "https://huggingface.co/docs/transformers/main/en/internal/rope_utils",
+        "label": "Hugging Face · RoPE utilities",
+        "note": "说明不同模型的 rope_type、参数和 scaling 配置。"
+      },
+      {
+        "url": "https://arxiv.org/abs/1706.03762",
+        "label": "Vaswani et al. · Attention Is All You Need",
+        "note": "提供 Q/K/V 注意力与位置机制的原始 Transformer 背景。"
+      }
+    ]
+  },
+  {
+    "slug": "attention-head",
+    "lead": "把一次注意力拆成几副不同的眼镜，各自在自己的子空间里找关系。",
+    "definition": "注意力头是多头注意力中的一个独立 Q/K/V 投影子空间。每个头把输入投影到自己的 query、key、value 维度，计算一张注意力权重，再与其他头的结果拼接并投影回模型维度。不同头可能偏向近邻、指代、位置或其他统计关系，但这些解释需要用激活和任务证据验证。",
+    "boundary": "注意力头不是一个固定语义器官，也不保证“一头负责语法、另一头负责记忆”。头之间可能冗余，剪掉某些头有时影响不大；mask、head dimension、数量和 Q/K/V 投影共同决定行为。看到一张漂亮热力图，只能说明一次输入下的权重，不能单独证明头学到了人类命名的关系。",
+    "sceneKind": "matrix",
+    "sceneTitle": "两副眼镜、两张热力图、一次拼接",
+    "actionLabel": "切换观察的头",
+    "actors": [
+      {
+        "id": "tokens",
+        "label": "Token 行列",
+        "detail": "猫 · 追 · 狗 · 它",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "head-a",
+        "label": "Head A",
+        "detail": "指代候选更亮",
+        "icon": "search",
+        "group": "子空间 A"
+      },
+      {
+        "id": "head-b",
+        "label": "Head B",
+        "detail": "局部邻近更亮",
+        "icon": "search",
+        "group": "子空间 B"
+      },
+      {
+        "id": "mask",
+        "label": "Mask",
+        "detail": "屏蔽不可见位置",
+        "icon": "shield",
+        "group": "约束"
+      },
+      {
+        "id": "concat",
+        "label": "拼接多头",
+        "detail": "沿特征维合并",
+        "icon": "layout",
+        "group": "组合"
+      },
+      {
+        "id": "output",
+        "label": "输出投影",
+        "detail": "回到 model dimension",
+        "icon": "brain",
+        "group": "结果"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "所有头先共享输入",
+        "note": "同一排 token 进入这一层，但随后会被不同的 Q/K/V 投影看成不同坐标。",
+        "activeIds": [
+          "tokens"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "head-a",
+          "head-b",
+          "mask",
+          "concat",
+          "output"
+        ],
+        "values": {
+          "tokens": "猫 · 追 · 狗 · 它"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "Head A 亮出自己的关系",
+        "note": "一副头的权重集中到“它→猫”；这只是当前输入和当前投影的结果。",
+        "activeIds": [
+          "head-a"
+        ],
+        "doneIds": [
+          "tokens"
+        ],
+        "mutedIds": [
+          "head-b",
+          "mask",
+          "concat",
+          "output"
+        ],
+        "values": {
+          "head-a": "它→猫 0.72"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "Head B 换一副眼镜",
+        "note": "另一副头在不同子空间里突出局部邻近；两张热力图可以同时成立。",
+        "activeIds": [
+          "head-b"
+        ],
+        "doneIds": [
+          "tokens",
+          "head-a"
+        ],
+        "mutedIds": [
+          "mask",
+          "concat",
+          "output"
+        ],
+        "values": {
+          "head-b": "追→猫/狗 · 局部更亮"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "先套 mask，再合并结果",
+        "note": "不可见位置先被约束；多个头的输出沿特征维拼接，而不是按票数选一张图。",
+        "activeIds": [
+          "mask",
+          "concat"
+        ],
+        "doneIds": [
+          "tokens",
+          "head-a",
+          "head-b"
+        ],
+        "mutedIds": [
+          "output"
+        ],
+        "values": {
+          "mask": "causal/padding · 只保留允许位置",
+          "concat": "head A ⊕ head B ⊕ …"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "回到主干尺寸",
+        "note": "输出投影把拼接后的向量送回 model dimension；头的语义仍需跨样本验证。",
+        "activeIds": [
+          "output"
+        ],
+        "doneIds": [
+          "tokens",
+          "head-a",
+          "head-b",
+          "mask",
+          "concat"
+        ],
+        "mutedIds": [],
+        "values": {
+          "output": "Wᵒ(concat heads) · 语义结论待验证"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "注意力头是多头注意力中的独立投影视角；热力图展示一次计算的权重，不能直接升级成固定的人类语义。",
+    "quiz": {
+      "question": "多头注意力里的“头”最准确地指什么？",
+      "options": [
+        {
+          "label": "一个独立的 Q/K/V 投影子空间与其注意力计算",
+          "correct": true
+        },
+        {
+          "label": "一段必须负责某个人类语法概念的规则代码",
+          "correct": false
+        },
+        {
+          "label": "把输出复制一份后贴在序列末尾",
+          "correct": false
+        }
+      ],
+      "success": "对，每个头是一套投影与注意力计算，最后再组合。",
+      "retry": "把头看成不同子空间的计算视角，不要把热力图标签当成硬编码规则。"
+    },
+    "prompt": {
+      "title": "审查一层多头注意力",
+      "text": "给出 token 数、head 数、model dimension、head dimension 和 mask；分别列出一个头的 Q/K/V 投影、注意力矩阵、加权 V，再说明多头如何拼接回输出，并标注哪些语义解释还缺少跨样本证据。"
+    },
+    "teaching": [
+      {
+        "id": "split",
+        "title": "多头是在特征空间里分屏",
+        "body": "多头注意力把 model dimension 分成多个 head dimension，每个头有自己的 Q、K、V 投影。它们读取同一输入，但不会共享一张完全相同的注意力矩阵。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "weights",
+        "title": "热力图是这一次的权重",
+        "body": "某个头在某个输入上把“它”指向“猫”，说明这一轮 Q/K 相似度经过 softmax 后偏向那里。换输入、mask 或层数，图案都可能变化，单张图不够证明稳定语义。",
+        "sourceIndices": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": "combine",
+        "title": "头与头最后要合回主干",
+        "body": "每个头对 V 做加权汇总，结果沿特征维拼接，再经过输出投影。这个合并不是投票，也不是挑一个“最聪明的头”，而是把多个子空间的结果交给下一层。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "mask",
+        "title": "每副眼镜都受同一类可见性约束",
+        "body": "causal mask、padding mask 或其他约束会改变哪些位置能参与计算。若只展示亮色格子，不说明 mask，读者容易把被禁止的关系误读成模型没看见。",
+        "sourceIndices": [
+          2,
+          3,
+          5
+        ]
+      },
+      {
+        "id": "redundancy",
+        "title": "多不等于每头都有独占职责",
+        "body": "研究发现部分头可能冗余，剪枝有时对任务影响有限；这不表示所有头都可随意删除，而是提醒我们用消融、跨样本和任务指标验证解释。",
+        "sourceIndices": [
+          4,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/1706.03762",
+        "label": "Vaswani et al. · Attention Is All You Need",
+        "note": "提出 multi-head attention 的 Q/K/V 投影、拼接与输出投影。"
+      },
+      {
+        "url": "https://d2l.ai/chapter_attention-mechanisms-and-transformers/multihead-attention.html",
+        "label": "Dive into Deep Learning · Multi-head attention",
+        "note": "从张量形状解释多个头如何并行计算和合并。"
+      },
+      {
+        "url": "https://pytorch.org/docs/stable/generated/torch.nn.MultiheadAttention.html",
+        "label": "PyTorch · MultiheadAttention",
+        "note": "说明 embed_dim、num_heads、mask 与 Q/K/V 输入。"
+      },
+      {
+        "url": "https://arxiv.org/abs/1806.05152",
+        "label": "Voita et al. · Analyzing Multi-Head Self-Attention",
+        "note": "分析不同头的功能与跨输入行为，提醒语义解释需要证据。"
+      },
+      {
+        "url": "https://arxiv.org/abs/1905.09418",
+        "label": "Michel et al. · Are Sixteen Heads Really Better than One?",
+        "note": "用消融研究多头冗余与剪枝影响。"
+      }
+    ]
+  },
+  {
+    "slug": "sequence-to-sequence",
+    "lead": "把一串输入读成可用表示，再生成长度可以不同的另一串输出。",
+    "definition": "序列到序列（Seq2Seq）模型接收一个输入序列，生成另一个输出序列；输入和输出长度可以不同。经典 encoder-decoder 架构先把源序列编码成表示，decoder 再在已生成前缀、训练条件和源信息的约束下逐步产生目标序列；Transformer 把这套思想用自注意力和交叉注意力实现。",
+    "boundary": "Seq2Seq 不是简单复制、逐位置分类或“读完一次就吐出整段答案”。训练时常用 teacher forcing，把真实前缀喂给 decoder；推理时只能依赖自己已经生成的前缀，两者会产生暴露偏差。输出何时停止、源信息如何对齐、beam/search 和长度惩罚如何设置，都需要单独说明。",
+    "sceneKind": "assembly",
+    "sceneTitle": "两条长度不同的带子，在同一张翻译台上对齐",
+    "actionLabel": "推进一个输出 token",
+    "actors": [
+      {
+        "id": "source",
+        "label": "源序列",
+        "detail": "the · weather · is · good",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "encoder",
+        "label": "Encoder 表示",
+        "detail": "h₁…hₙ · 保留源信息",
+        "icon": "brain",
+        "group": "编码"
+      },
+      {
+        "id": "prefix",
+        "label": "目标前缀",
+        "detail": "<BOS> → 天气 → 很好",
+        "icon": "layout",
+        "group": "生成"
+      },
+      {
+        "id": "cross",
+        "label": "交叉注意力",
+        "detail": "从源表示取当前需要的信息",
+        "icon": "search",
+        "group": "对齐"
+      },
+      {
+        "id": "next",
+        "label": "下一个 token",
+        "detail": "天 / weather / …",
+        "icon": "spark",
+        "group": "输出"
+      },
+      {
+        "id": "stop",
+        "label": "停止条件",
+        "detail": "<EOS> 或长度上限",
+        "icon": "shield",
+        "group": "边界"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "源带子先铺开",
+        "note": "源序列有自己的长度和顺序，目标序列不必与它等长；这里用英语到中文翻译作例子。",
+        "activeIds": [
+          "source"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "encoder",
+          "prefix",
+          "cross",
+          "next",
+          "stop"
+        ],
+        "values": {
+          "source": "the · weather · is · good"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "编码成可查询的表示",
+        "note": "encoder 为每个源位置留下表示，decoder 之后可以按当前需要读取。",
+        "activeIds": [
+          "encoder"
+        ],
+        "doneIds": [
+          "source"
+        ],
+        "mutedIds": [
+          "prefix",
+          "cross",
+          "next",
+          "stop"
+        ],
+        "values": {
+          "encoder": "h₁…hₙ · source length=3"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "目标带从起点长出来",
+        "note": "decoder 有一个目标前缀；训练时可能是真实前缀，推理时来自模型上一轮输出。",
+        "activeIds": [
+          "prefix"
+        ],
+        "doneIds": [
+          "source",
+          "encoder"
+        ],
+        "mutedIds": [
+          "cross",
+          "next",
+          "stop"
+        ],
+        "values": {
+          "prefix": "<BOS> → 天气"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "当前步查源信息",
+        "note": "交叉注意力把目标当前状态和 encoder 表示放在一起，选择当前需要的源内容。",
+        "activeIds": [
+          "cross",
+          "prefix"
+        ],
+        "doneIds": [
+          "source",
+          "encoder"
+        ],
+        "mutedIds": [
+          "next",
+          "stop"
+        ],
+        "values": {
+          "cross": "目标“天气”↔源“weather” · 当前对齐"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "输出长度开始分叉",
+        "note": "decoder 生成下一个 token，目标带可以比源带更长或更短。",
+        "activeIds": [
+          "next",
+          "prefix"
+        ],
+        "doneIds": [
+          "source",
+          "encoder",
+          "cross"
+        ],
+        "mutedIds": [
+          "stop"
+        ],
+        "values": {
+          "next": "下一个 = 很好",
+          "prefix": "<BOS> → 天气 → 很好"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "EOS 把带子收住",
+        "note": "遇到 EOS 或长度上限才停止；训练时的真实前缀不能替代自由生成评估。",
+        "activeIds": [
+          "stop"
+        ],
+        "doneIds": [
+          "source",
+          "encoder",
+          "prefix",
+          "cross",
+          "next"
+        ],
+        "mutedIds": [],
+        "values": {
+          "stop": "… → <EOS> · teacher forcing ≠ free running"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "Seq2Seq 让 encoder 保存源序列信息，decoder 依据已生成前缀和交叉注意力逐步产出另一条序列；长度和停止条件都属于任务定义。",
+    "quiz": {
+      "question": "Seq2Seq 的输入和输出必须一一对应、长度相同吗？",
+      "options": [
+        {
+          "label": "不必；模型可以从一条序列生成另一条长度不同的序列",
+          "correct": true
+        },
+        {
+          "label": "必须相同，否则 decoder 无法运行",
+          "correct": false
+        },
+        {
+          "label": "只有分类任务才允许长度不同",
+          "correct": false
+        }
+      ],
+      "success": "对，翻译和摘要都依赖长度可变的源到目标映射。",
+      "retry": "把 source length=3、target length=2/5 的例子摆出来；decoder 有自己的停止条件。"
+    },
+    "prompt": {
+      "title": "画出一次 Seq2Seq 推理",
+      "text": "给出源序列、encoder 输出、decoder 当前前缀、交叉注意力可见范围和停止条件；分别模拟 teacher forcing 与自由生成，标出第一次错误如何影响后续 token，并说明 beam/search 或长度惩罚是否改变选择。"
+    },
+    "teaching": [
+      {
+        "id": "architecture",
+        "title": "两条序列各有自己的节奏",
+        "body": "encoder 读取源序列并留下表示，decoder 生成目标序列；两者长度可以不同。早期 RNN Seq2Seq 依靠隐藏状态和注意力，Transformer 则用自注意力与交叉注意力实现同一类编码—生成分工。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "prefix",
+        "title": "decoder 每一步都背着一个前缀",
+        "body": "生成第 t 个 token 时，decoder 只能看到已经允许它看到的目标前缀。训练中的 teacher forcing 会喂真实前缀，推理时则要喂回自己上一步的输出，这正是两种场景的差别。",
+        "sourceIndices": [
+          1,
+          2,
+          4
+        ]
+      },
+      {
+        "id": "cross",
+        "title": "交叉注意力是查源信息的窗口",
+        "body": "decoder 的 query 去读取 encoder 的 key/value，决定当前输出更需要源序列哪部分。它不是把两条序列硬拼在一起，也不意味着每个输出只对应一个源 token。",
+        "sourceIndices": [
+          3,
+          4
+        ]
+      },
+      {
+        "id": "stop",
+        "title": "EOS 是数据和控制信号的一部分",
+        "body": "decoder 需要一个停止条件：生成 EOS、达到最大长度，或被外部截断。没有它，模型可能继续吐 token；只看最终文本而不记录停止原因，会漏掉长度错误。",
+        "sourceIndices": [
+          2,
+          4,
+          5
+        ]
+      },
+      {
+        "id": "evaluation",
+        "title": "训练好看，不等于自由生成稳",
+        "body": "teacher forcing 让每一步都拿到正确前缀，推理却会累积自己的错误。翻译、摘要等任务要在真实生成模式下评测，并分别检查 beam/search、长度惩罚、对齐和复制错误。",
+        "sourceIndices": [
+          1,
+          2,
+          4,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/1409.3215",
+        "label": "Sutskever et al. · Sequence to Sequence Learning with Neural Networks",
+        "note": "提出经典 encoder-decoder Seq2Seq 架构。"
+      },
+      {
+        "url": "https://arxiv.org/abs/1409.0473",
+        "label": "Cho et al. · Learning Phrase Representations using RNN Encoder-Decoder",
+        "note": "介绍 RNN encoder-decoder 与变长序列映射。"
+      },
+      {
+        "url": "https://arxiv.org/abs/1706.03762",
+        "label": "Vaswani et al. · Attention Is All You Need",
+        "note": "用 Transformer 的 self-attention/cross-attention 实现序列到序列。"
+      },
+      {
+        "url": "https://huggingface.co/docs/transformers/main/en/tasks/translation",
+        "label": "Hugging Face · Translation task",
+        "note": "展示现代 Seq2Seq 翻译训练、生成与评估接口。"
+      },
+      {
+        "url": "https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html",
+        "label": "PyTorch · Seq2Seq translation tutorial",
+        "note": "以翻译任务演示 encoder、decoder、teacher forcing 与注意力。"
       }
     ]
   }
