@@ -34,7 +34,7 @@ export function SignatureFrame({
 export function FewShotPromptingSignatureHero() {
   const scene = useScene(4);
   const conflict = scene.step === 3;
-  const labels = ["摆上新工单", "放入两张校样", "显出标签版式", "加入相反校样"];
+  const labels = ["摆上新工单", "放入两张校样", "显出标签版式", "反例让印章停下"];
   return (
     <SignatureFrame
       scene={scene}
