@@ -97,6 +97,7 @@ import { HashingTermPage } from "@/components/terms/hashing-pages/hashing-page";
 import { InputValidationTermPage } from "@/components/terms/input-validation-pages/input-validation-page";
 import { EncryptionAtRestTermPage } from "@/components/terms/encryption-at-rest-pages/encryption-at-rest-page";
 import { EncryptionTransitTermPage } from "@/components/terms/EncryptionTransitConceptPage";
+import { GenerativeAiConceptTermPage } from "@/components/terms/GenerativeAiConceptPage";
 import { FlexboxTermPage } from "@/components/terms/flexbox-pages/flexbox-page";
 import { CssGridTermPage } from "@/components/terms/css-grid-pages/css-grid-page";
 import { BreakpointTermPage } from "@/components/terms/breakpoint-pages/breakpoint-page";
@@ -237,7 +238,7 @@ const articleTermPages = {
   'retrieval': RetrievalTermPage,
   'chunking': ChunkingTermPage,
   'reranking': RerankingTermPage,
-  'generative-ai': GenerativeAiTermPage,
+  'generative-ai': GenerativeAiConceptTermPage,
   multimodal: MultimodalTermPage,
   'reasoning-model': ReasoningModelTermPage,
   'system-prompt': SystemPromptTermPage,

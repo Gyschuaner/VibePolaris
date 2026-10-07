@@ -5,8 +5,8 @@
     "definition": "生成式 AI 根据输入和已训练的模型参数，逐步预测下一个片段（通常是一个词或符号）并生成新的内容；模型会按生成设置（例如温度）和采样方式，从候选片段中选出下一步，而不是直接取回一条现成答案。",
     "boundary": "它回答的是“怎样生成一段内容”，不是检索指定资料后返回已经核实的唯一答案；生成结果仍要按任务需要核对事实。",
     "sceneKind": "tree",
-    "sceneTitle": "一句提示如何长出不同文本",
-    "actionLabel": "再生成一次",
+    "sceneTitle": "一粒提示种子如何长出不同句子",
+    "actionLabel": "展开候选或清空提示",
     "actors": [
       {
         "id": "prompt",
@@ -72,93 +72,52 @@
     ],
     "frames": [
       {
-        "label": "提示固定",
-        "note": "三次运行使用完全相同的输入。",
-        "activeIds": [
-          "prompt"
-        ],
+        "label": "种子固定",
+        "note": "同一条提示先成为这次生成的条件。",
+        "activeIds": ["prompt"],
         "doneIds": [],
-        "mutedIds": [
-          "path-a",
-          "path-b",
-          "path-c"
-        ],
-        "values": {
-          "prompt": "同一提示 · 第1次"
-        },
+        "mutedIds": ["next", "path-a", "path-b", "path-c"],
+        "values": {"prompt": "为雨天写一句提醒 · fixed"},
         "activeEdgeIds": []
       },
       {
-        "label": "候选分叉",
-        "note": "模型为下一步形成候选分布；这里的比例合计 100%，只是教学示意，不是从固定答案库取一句。",
-        "activeIds": [
-          "next"
-        ],
-        "doneIds": [
-          "prompt"
-        ],
-        "mutedIds": [
-          "path-a",
-          "path-b",
-          "path-c"
-        ],
-        "values": {
-          "next": "46% / 31% / 12% / 其他 11%"
-        },
-        "activeEdgeIds": [
-          "p-n"
-        ],
-        "metric": {
-          "label": "候选词",
-          "value": "4 类候选"
-        }
+        "label": "候选长出来",
+        "note": "模型为下一步形成候选分布；比例是教学示意，不是固定答案库。",
+        "activeIds": ["next"],
+        "doneIds": ["prompt"],
+        "mutedIds": ["path-a", "path-b", "path-c"],
+        "values": {"next": "带伞 46% / 积水 31% / 防水鞋 12% / 其他 11%（未展开）"},
+        "activeEdgeIds": ["p-n"],
+        "metric": {"label": "候选片段", "value": "3 类"}
       },
       {
-        "label": "三路生成",
-        "note": "每次按候选概率进行一次采样，再沿选中的路径继续；三条文字逐步延伸，示意中的路径不是模型内部思维记录。",
-        "activeIds": [
-          "path-a",
-          "path-b",
-          "path-c"
-        ],
-        "doneIds": [
-          "prompt",
-          "next"
-        ],
-        "mutedIds": [],
-        "values": {
-          "path-a": "8 字",
-          "path-b": "8 字",
-          "path-c": "7 字"
-        },
-        "activeEdgeIds": [
-          "n-a",
-          "n-b",
-          "n-c"
-        ]
+        "label": "抽到一条路径",
+        "note": "一次采样选中一条句子路径，选中的片段会接回序列继续生成。",
+        "activeIds": ["path-a"],
+        "doneIds": ["prompt", "next"],
+        "mutedIds": ["path-b", "path-c"],
+        "values": {"path-a": "记得带伞，路上慢一点。"},
+        "activeEdgeIds": ["n-a"]
       },
       {
-        "label": "结果并排",
-        "note": "三条都符合提示，但措辞不同。",
-        "activeIds": [],
-        "doneIds": [
-          "prompt",
-          "next",
-          "path-a",
-          "path-b",
-          "path-c"
-        ],
+        "label": "三次各自长完",
+        "note": "同一任务可以长出不同措辞；变化本身不是事实证据。",
+        "activeIds": ["path-a", "path-b", "path-c"],
+        "doneIds": ["prompt", "next"],
         "mutedIds": [],
-        "values": {
-          "path-a": "完成",
-          "path-b": "完成",
-          "path-c": "完成"
-        },
+        "values": {"path-a": "记得带伞", "path-b": "留意积水", "path-c": "看一眼天气"},
+        "activeEdgeIds": ["n-a", "n-b", "n-c"],
+        "metric": {"label": "不同措辞", "value": "3 条"}
+      },
+      {
+        "label": "没有种子就停下",
+        "note": "清空提示后承认缺少任务条件，不用完整句子掩盖输入为空。",
+        "activeIds": ["prompt"],
+        "doneIds": [],
+        "mutedIds": ["next", "path-a", "path-b", "path-c"],
+        "values": {"prompt": "prompt = ∅ · stop"},
         "activeEdgeIds": [],
-        "metric": {
-          "label": "有效结果",
-          "value": "3 条"
-        }
+        "metric": {"label": "可生成结果", "value": "0 条"}
       }
     ],
     "insight": "生成式 AI 是根据输入和模型学到的分布逐步续出新内容；检索则从指定索引或资料库取回已有资料。两者可以在同一个应用里先后配合，但生成结果仍需核验。",
@@ -186,26 +145,11 @@
       "text": "请先写清目标、受众、格式和事实边界；如果内容需要真实数据，再列出来源与核验步骤。"
     },
     "sources": [
-      {
-        "url": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
-        "label": "NIST · NIST AI 600-1 Generative AI Profile",
-        "note": "生成式系统风险与评估"
-      },
-      {
-        "url": "https://arxiv.org/abs/1706.03762",
-        "label": "arXiv · Attention Is All You Need",
-        "note": "Transformer 架构边界"
-      },
-      {
-        "url": "https://arxiv.org/abs/2005.14165",
-        "label": "arXiv · Language Models are Few-Shot Learners",
-        "note": "自回归语言模型与上下文"
-      },
-      {
-        "url": "https://arxiv.org/abs/1904.09751",
-        "label": "arXiv · The Curious Case of Neural Text Degeneration",
-        "note": "解码策略与输出变化"
-      }
+      {"url": "https://doi.org/10.6028/NIST.AI.600-1", "label": "NIST · Artificial Intelligence Risk Management Framework: Generative AI Profile", "note": "生成式系统定义与风险"},
+      {"url": "https://platform.openai.com/docs/guides/text?api-mode=responses", "label": "OpenAI · Text generation", "note": "提示、模型与生成请求"},
+      {"url": "https://ai.google.dev/gemini-api/docs/text-generation", "label": "Google · Text generation with the Gemini API", "note": "文本生成配置"},
+      {"url": "https://arxiv.org/abs/2005.14165", "label": "Brown et al. · Language Models are Few-Shot Learners", "note": "提示与示例影响任务表现"},
+      {"url": "https://arxiv.org/abs/1706.03762", "label": "Vaswani et al. · Attention Is All You Need", "note": "序列中的注意力机制"}
     ]
   },
   {
