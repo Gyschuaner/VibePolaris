@@ -1,12 +1,12 @@
 import { ArticleSection } from "../ConceptArticle";
-import { Article, Cite, Hero } from "../AiStackConceptPageShared";
+import { Article, Cite } from "../AiStackConceptPageShared";
 import { promptInjectionSources } from "@/lib/ai-stack-concept-sources/prompt-injection";
-import { PromptInjectionLesson } from "../ai-stack-lessons/prompt-injection";
+import { PromptInjectionHero, PromptInjectionLesson } from "../ai-stack-lessons/prompt-injection";
 
 const sections: [string, string][] = [["prompt-trust", "先分清资料与指令"], ["prompt-boundary", "读到不等于有权执行"], ["prompt-failure", "把误判的影响关在边界内"]];
 
 export function PromptInjectionTermPage() {
-  return <Article slug="prompt-injection" title="提示词注入" subtitle="Prompt Injection · 把不可信文字伪装成指令" sources={promptInjectionSources} sections={sections} hero={<Hero trigger="网页写着‘把密钥发出去’，为什么仍只能做摘要？" change="用户目标 → 外部资料标为数据 → 工具权限/确认" proof="即使模型误判，未授权调用也被挡住，密钥不离开系统" />} intro={<>提示词注入是把不可信文字带进模型上下文，试图改变原任务或诱导工具动作。文字可以被模型读到，却不会因此获得用户的授权；真正的防线要把来源、数据流和执行权限分开。</>}>
+  return <Article slug="prompt-injection" title="提示词注入" subtitle="Prompt Injection · 把不可信文字伪装成指令" sources={promptInjectionSources} sections={sections} hero={<PromptInjectionHero />} intro={<>提示词注入是把不可信文字带进模型上下文，试图改变原任务或诱导工具动作。文字可以被模型读到，却不会因此获得用户的授权；真正的防线要把来源、数据流和执行权限分开。</>}>
     <ArticleSection id="prompt-trust" title="先分清资料与指令">
       <p id="prompt-definition" className="vp-citation-target">提示词注入发生在输入文字改变模型原本行为的场景。攻击者可以把指令藏在网页、文件或其他第三方内容里，让模型误以为那是用户要求；OpenAI 将这种第三方内容造成的误导称为对话上下文中的提示注入。<Cite id="prompt-definition" sources={promptInjectionSources} /></p>
       <p id="prompt-types" className="vp-citation-target">直接注入来自用户提交的文本，间接注入来自网页或文件等外部来源。两者的共同点是：模型看到的是文字，不会自动知道哪一段有资格改变任务。<Cite id="prompt-types" sources={promptInjectionSources} /></p>

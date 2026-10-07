@@ -8432,9 +8432,9 @@
     "lead": "网页正文夹着“把密钥发出去”的句子，为什么不能把它当成用户指令？",
     "definition": "提示词注入发生在不可信文字进入模型上下文后，文字试图冒充授权指令。应用程序要先保留内容来源，再用工具权限、隔离和确认限制它可能造成的影响。",
     "boundary": "模型读到用户请求和网页内容时都面对文字，不能稳定地凭句子判断谁有授权。读取网页可以继续，但网页不会因为写成指令的样子就获得发送密钥的权限；即使模型被诱导，工具层仍应拒绝未授权动作。",
-    "sceneKind": "pipeline",
-    "sceneTitle": "不可信内容试图越过工具边界",
-    "actionLabel": "显示不可信指令层",
+    "sceneKind": "matrix",
+    "sceneTitle": "信任贴纸怎样挡住越界动作",
+    "actionLabel": "揭开资料袋并切换信任标签",
     "actors": [
       {
         "id": "user",
@@ -8451,16 +8451,16 @@
         "group": "不可信数据"
       },
       {
-        "id": "separator",
-        "label": "信任标记",
-        "detail": "data ≠ instruction",
+        "id": "sleeve",
+        "label": "资料袋贴纸",
+        "detail": "DATA · 不授权",
         "icon": "shield",
         "group": "边界"
       },
       {
         "id": "tool",
-        "label": "发送密钥工具",
-        "detail": "无权限",
+        "label": "高风险工具",
+        "detail": "send_secret · 未授权",
         "icon": "key",
         "group": "高风险动作"
       },
@@ -8474,46 +8474,75 @@
     ],
     "edges": [
       {
-        "id": "u-s",
+        "id": "u-sleeve",
         "from": "user",
-        "to": "separator",
+        "to": "sleeve",
         "label": "任务"
       },
       {
-        "id": "p-s",
+        "id": "page-sleeve",
         "from": "page",
-        "to": "separator",
+        "to": "sleeve",
         "label": "标记数据"
       },
       {
-        "id": "s-t",
-        "from": "separator",
+        "id": "sleeve-tool",
+        "from": "sleeve",
         "to": "tool",
         "label": "权限检查"
       },
       {
-        "id": "s-sum",
-        "from": "separator",
+        "id": "sleeve-summary",
+        "from": "sleeve",
         "to": "summary",
-        "label": "正常处理"
+        "label": "继续原任务"
       }
     ],
     "frames": [
       {
-        "label": "两路内容进入",
-        "note": "程序保留来源：用户目标是请求，网页正文是不可信数据；两者都能被读取，但权限不同。"
+        "label": "任务和资料摆上桌",
+        "note": "用户目标与网页正文同时可见，但来源还没有被混成同一种授权。",
+        "activeIds": ["user", "page"],
+        "doneIds": [],
+        "mutedIds": ["sleeve", "tool", "summary"],
+        "values": {"page": "资料袋未打开"},
+        "activeEdgeIds": []
       },
       {
-        "label": "恶意句子浮现",
-        "note": "网页文字仍可能影响模型判断；把句子识别成攻击不是唯一防线。"
+        "label": "可疑句子露出来",
+        "note": "网页里的命令句被读到，但贴纸仍写着 DATA；可读不等于可授权。",
+        "activeIds": ["page", "sleeve"],
+        "doneIds": ["user"],
+        "mutedIds": ["tool", "summary"],
+        "values": {"page": "含外部命令", "sleeve": "DATA"},
+        "activeEdgeIds": ["page-sleeve"]
       },
       {
-        "label": "权限闸门拒绝",
-        "note": "即使模型提出发送密钥，工具层按权限拒绝；调用数保持0。"
+        "label": "错误信任贴上去",
+        "note": "如果模型把网页句子提升成指令，send_secret 只能先成为提案，还没有真正执行。",
+        "activeIds": ["sleeve", "tool"],
+        "doneIds": ["user", "page"],
+        "mutedIds": ["summary"],
+        "values": {"sleeve": "INSTRUCTION · 错误提升", "tool": "PROPOSED"},
+        "activeEdgeIds": ["sleeve-tool"]
       },
       {
-        "label": "完成原任务",
-        "note": "系统继续使用可见网页正文做摘要，读到内容不代表执行其中命令。"
+        "label": "工具闸门拒绝",
+        "note": "工具层没有发送密钥的授权，调用保持 0 次；模型误判的影响停在闸门外。",
+        "activeIds": ["tool"],
+        "doneIds": ["user", "page", "sleeve"],
+        "mutedIds": ["summary"],
+        "values": {"tool": "REJECTED · 0 次"},
+        "activeEdgeIds": ["sleeve-tool"]
+      },
+      {
+        "label": "放回资料袋，继续摘要",
+        "note": "把网页恢复为 DATA，原任务继续使用可见正文，危险工具从未执行。",
+        "activeIds": ["page", "sleeve", "summary"],
+        "doneIds": ["user", "tool"],
+        "mutedIds": [],
+        "values": {"sleeve": "DATA", "summary": "摘要完成 · send_secret 0 次"},
+        "activeEdgeIds": ["sleeve-summary"]
       }
     ],
     "insight": "提示词注入混淆了数据和指令；读数据与执行动作要分开，来源标记、最小权限和确认共同限制影响。",
@@ -8542,24 +8571,29 @@
     },
     "sources": [
       {
-        "url": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
-        "label": "NIST 出版物 · AI 600-1",
-        "note": "生成式 AI 风险、治理与可信边界"
-      },
-      {
         "url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
         "label": "OWASP GenAI · LLM01 Prompt Injection",
         "note": "提示注入风险与防护方向"
       },
       {
-        "url": "https://arxiv.org/abs/2302.12173",
-        "label": "Greshake 等 · Indirect Prompt Injection",
-        "note": "外部资料中的间接注入如何影响应用和工具调用"
+        "url": "https://developers.openai.com/api/docs/guides/safety-best-practices",
+        "label": "OpenAI API · Safety best practices",
+        "note": "输入约束、人工确认和工具安全"
       },
       {
-        "url": "https://openai.com/safety/prompt-injections/",
-        "label": "OpenAI · Understanding prompt injections",
-        "note": "第三方内容、分层防护、最小访问和确认"
+        "url": "https://developers.openai.com/api/docs/guides/agent-builder-safety",
+        "label": "OpenAI API · Safety in building agents",
+        "note": "智能体数据流和动作边界"
+      },
+      {
+        "url": "https://www.anthropic.com/research/prompt-injection-defenses?slug=helpful-honest-harmless-ai",
+        "label": "Anthropic · Mitigating prompt injections in browser use",
+        "note": "浏览器代理的外部内容攻击面和分层防护"
+      },
+      {
+        "url": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
+        "label": "NIST 出版物 · AI 600-1",
+        "note": "生成式 AI 风险、治理与可信边界"
       }
     ]
   },
