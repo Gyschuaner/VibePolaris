@@ -58,3 +58,18 @@ export const ssgSsrSources = [
   source("React", "hydrateRoot", "https://react.dev/reference/react-dom/client/hydrateRoot", ["ssg-ssr-hydration"]),
   source("MDN", "HTTP caching", "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching", ["ssg-ssr-cache", "ssg-ssr-choice"]),
 ];
+
+export const librarySources = [
+  source("MDN", "Intl.DateTimeFormat", "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat", ["library-definition", "library-native"]),
+  source("React", "Describing the UI", "https://react.dev/learn/describing-the-ui", ["library-definition", "library-interface"]),
+  source("npm Docs", "dependencies and devDependencies", "https://docs.npmjs.com/specifying-dependencies-and-devdependencies-in-a-package-json-file", ["library-dependency", "library-boundary"]),
+  source("npm Docs", "About audit reports", "https://docs.npmjs.com/about-audit-reports", ["library-security", "library-boundary"]),
+];
+
+export const runtimeSources = [
+  source("MDN", "JavaScript execution model", "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Execution_model", ["runtime-definition", "runtime-language"]),
+  source("ECMA International", "ECMAScript Language Specification", "https://tc39.es/ecma262/", ["runtime-language", "runtime-version"]),
+  source("Node.js", "Globals", "https://nodejs.org/api/globals.html", ["runtime-host", "runtime-version"]),
+  source("Node.js", "File system", "https://nodejs.org/api/fs.html", ["runtime-node"]),
+  source("MDN", "Document", "https://developer.mozilla.org/en-US/docs/Web/API/Document", ["runtime-browser", "runtime-boundary"]),
+];

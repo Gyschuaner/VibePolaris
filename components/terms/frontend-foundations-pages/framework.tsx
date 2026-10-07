@@ -59,7 +59,7 @@ export function FrameworkTermPage(_props: BespokeTermPageProps) {
     </ArticleSection>
     <ArticleSection id="framework-convention-section" title="约定会替你放置一些东西">
       <p id="framework-convention" className="vp-citation-target">以文件型路由为例，框架可以把目录和文件名解释成 URL，把特定文件名解释成布局、加载状态或错误边界。约定减少了配置，但也意味着文件移动、导出方式和运行位置会影响结果。<Cite id="framework-convention" sources={frameworkSources} /></p>
-      <p>切换下面的路径。框架模式里，选择路径后页面插槽自动换内容；这不是某个组件自己监听 select，而是框架约定在入口处接过了这件事。切到库模式，路径已经改变，页面要等应用代码主动调用 <code>render()</code>。</p>
+      <p>切换下面的路径。演示把两种控制权压缩成一个小实验：框架模式里，选择路径后页面插槽自动换内容，代表框架约定替应用接好入口；库模式里，路径已经改变，页面要等应用代码主动调用 <code>render()</code>。真实框架的接线由它自己的路由和生命周期实现，这个控件只呈现结果差异。</p>
       <FrameworkLab />
       <p>约定的好处是团队有共同地图，代价是你要读懂这张地图。遇到“文件明明存在却没有页面”时，先查框架要求的目录、导出和运行环境，不要只在组件里加更多代码。</p>
     </ArticleSection>
