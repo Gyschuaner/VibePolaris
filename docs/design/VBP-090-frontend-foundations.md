@@ -23,14 +23,16 @@
 
 ## 逐条证据
 
-仅当文章、来源、演示、审读、浏览器和构建完成，才写入下列记录；每条独立提交。当前仍在实现第 1 条。
+仅当文章、来源、演示、审读、浏览器和构建完成，才写入下列记录；每条独立提交。当前已完成前 3 条，继续处理第 4 条。
 
 | 词条 | 已读来源与论断映射 | 审读 | 浏览器 | build/typecheck | 提交 |
 | --- | --- | --- | --- | --- | --- |
-| responsive | MDN RWD→`responsive-definition`/`responsive-rules`；web.dev→`responsive-breakpoint`/`responsive-content`；MDN Container Queries→`responsive-container`；W3C Reflow→`responsive-reflow`/`responsive-exception` | 待唯一 reviewer | 本地 3410：桌面首屏、缩窄 45%、固定三列失败态；键盘待补 | `tsc` 已过；build 待十条批量执行 | 待提交 |
+| responsive | MDN RWD→`responsive-definition`/`responsive-rules`；web.dev→`responsive-breakpoint`/`responsive-content`；MDN Container Queries→`responsive-container`；W3C Reflow→`responsive-reflow`/`responsive-exception` | 待 reviewer 复核来源统一与标题修正 | 本地 3410：桌面首屏、缩窄 45%、固定三列失败态；键盘待补 | `tsc` 已过；build 待十条批量执行 | 44f9c271 + 修订待提交 |
+| css | MDN CSS basics→`css-definition`/`css-responsibility`；MDN Cascade + W3C CSS Cascade→`css-cascade`/`css-specificity`/`css-computed`；MDN Grid→`css-layout`；MDN Box→`css-box`；边界补充→`css-boundary` | 待 reviewer 复核交互与来源对齐 | 本地 3410：海报首图、容器布局/间距、标题换色；键盘待补 | `tsc` 已过；build 待十条批量执行 | a7c969db + 修订待提交 |
+| form | MDN client validation/constraint→`form-definition`/`form-client`；W3C labels/errors→`form-label`/`form-error`；OWASP→`form-server`/`form-boundary` | 待 reviewer | 本地 3410：不完整邮箱保留姓名、已注册服务端分支、成功分支；键盘待补 | `tsc` 已过；build 待十条批量执行 | 待提交 |
 
 ## 现状证据
 
-2026-10-07 实际打开线上 `responsive`：主体仍是视口/容器/卡片/操作五张通用卡，详细讲解只有定义与边界。当前 `demoSteps` schema 已为 `.min(1)`，不存在固定三步的词库要求；CSS 的旧专用 foundation schema 仍有 `.length(3)`，处理 CSS 时解除演示相关的固定长度。其余与本批无关的字段不扩大修改。
+2026-10-07 实际打开线上 `responsive`：主体仍是视口/容器/卡片/操作五张通用卡，详细讲解只有定义与边界。当前 `demoSteps` 与 CSS 专用 foundation schema 的 `steps`、`chain` 都已改为可变长度（1–7），不存在用户规定的固定三步要求；本批专属页也不把流程当作默认画法。其余与本批无关的字段不扩大修改。
 
 Obsidian 配置指向的 `D:/Obsidian/gysnote` 在本机不存在，跳过；本文件保留代码相关记录，DP 保留实际研发状态。

@@ -24,18 +24,23 @@ function CssLab() {
   const [target, setTarget] = useState<"cards" | "title">("cards");
   const [property, setProperty] = useState<CssProperty>("layout");
   const active = target === "cards" && property === "layout";
+  const propertyOptions: ReadonlyArray<readonly [CssProperty, string]> = target === "cards" ? [["layout", "排成卡片"], ["space", "拉开间距"]] : [["tone", "换颜色"]];
   const targetLabel = target === "cards" ? ".event-cards" : ".event-title";
   const declaration = property === "layout" ? "display: grid" : property === "tone" ? "color: var(--accent-text)" : "gap: 18px";
+  function chooseTarget(nextTarget: "cards" | "title") {
+    setTarget(nextTarget);
+    setProperty(nextTarget === "cards" ? "layout" : "tone");
+  }
   return <div className={styles.cssLab} role="region" aria-label="CSS 规则命中与计算值实验">
     <div className={styles.cssLabControls}>
-      <fieldset><legend>选择器</legend><button type="button" aria-pressed={target === "cards"} onClick={() => setTarget("cards")}>.event-cards</button><button type="button" aria-pressed={target === "title"} onClick={() => setTarget("title")}>.event-title</button></fieldset>
-      <fieldset><legend>声明</legend>{([["layout", "排成卡片"], ["tone", "换颜色"], ["space", "拉开间距"]] as const).map(([key, label]) => <button type="button" key={key} aria-pressed={property === key} onClick={() => setProperty(key)}>{label}</button>)}</fieldset>
+      <fieldset><legend>选择器</legend><button type="button" aria-pressed={target === "cards"} onClick={() => chooseTarget("cards")}>.event-cards</button><button type="button" aria-pressed={target === "title"} onClick={() => chooseTarget("title")}>.event-title</button></fieldset>
+      <fieldset><legend>声明</legend>{propertyOptions.map(([key, label]) => <button type="button" key={key} aria-pressed={property === key} onClick={() => setProperty(key)}>{label}</button>)}</fieldset>
     </div>
     <div className={styles.cssBoard} data-layout={active ? "grid" : "stack"} data-tone={target === "title" && property === "tone"} data-space={target === "cards" && property === "space"}>
       <div className={styles.cssRuleCard}><span>匹配的规则</span><code>{targetLabel} &#123;<br />&nbsp;&nbsp;{declaration};<br />&#125;</code><small>{target === "cards" ? "找到了容器" : "只找到了标题"}</small></div>
-      <div className={styles.cssPoster}><div className={styles.cssPosterTitle}>周末活动</div><div className={styles.cssCards}>{["河边市集", "露天放映", "旧书交换"].map(item => <span className={styles.cssCard} key={item}><strong>{item}</strong><small>周末 · 14:00</small></span>)}</div><p className={styles.cssProof}><CheckCircle size={16} /> HTML 文字没有改，当前计算值：<b>{active ? "display: grid" : target === "title" && property === "tone" ? "color = accent" : property === "space" ? "gap = 18px" : "display = block"}</b></p></div>
+      <div className={styles.cssPoster}><div className={styles.cssPosterTitle}>周末活动</div><div className={styles.cssCards}>{["河边市集", "露天放映", "旧书交换"].map(item => <span className={styles.cssCard} key={item}><strong>{item}</strong><small>周末 · 14:00</small></span>)}</div><p className={styles.cssProof}><CheckCircle size={16} /> HTML 文字没有改，当前计算值：<b>{active ? "display: grid" : target === "title" ? "color = accent" : "gap = 18px"}</b></p></div>
     </div>
-    <p className={styles.cssLabNote} role="status">{active ? "容器规则命中，布局把三张卡片放到同一行。" : target === "title" && property === "tone" ? "只给标题换色，容器仍按原来的方式排列。" : property === "space" ? "间距改变了，但 gap 只有在布局上下文允许时才有预期效果。" : "这条声明没有把容器变成网格；先确认选择器找到了谁。"}</p>
+    <p className={styles.cssLabNote} role="status">{active ? "容器规则命中，布局把三张卡片放到同一行。" : target === "cards" ? "同一个容器仍然被命中；这次只把卡片之间的 gap 拉开。" : "标题规则命中，只有标题换色，容器仍按原来的方式排列。"}</p>
   </div>;
 }
 
@@ -76,7 +81,8 @@ export function CssTermPage() {
       <p>上面最后一条规则改变的是小屏时的列数；它没有改 HTML，也没有把卡片复制成另一套内容。真正的结果还要在实际窗口、长标题和更大字号下检查。</p>
     </ArticleSection>
     <ArticleSection id="css-boundary-section" title="CSS 的手伸不到哪里">
-      <p id="css-responsibility" className="vp-citation-target">CSS 可以控制可见呈现与布局，却不能替 HTML 赋予正确的内容语义，也不能替 JavaScript 保存购物车数量或响应点击，更不能替服务端验证“这个人有没有权限”。把按钮画得像按钮，不会自动得到按钮的键盘行为。<Cite id="css-responsibility" sources={cssSources} /></p>
+      <p id="css-responsibility" className="vp-citation-target">CSS 可以控制可见呈现与布局。<Cite id="css-responsibility" sources={cssSources} /></p>
+      <p id="css-boundary" className="vp-citation-target">它不能替 HTML 赋予正确的内容语义，也不能替 JavaScript 保存购物车数量或响应点击，更不能替服务端验证“这个人有没有权限”。把按钮画得像按钮，不会自动得到按钮的键盘行为。<Cite id="css-boundary" sources={cssSources} /></p>
       <p id="css-box" className="vp-citation-target">盒模型描述内容、内边距、边框和外边距怎样组成一个元素的尺寸。一个卡片“看起来超出容器”，可能是宽度、padding、border 或 box-sizing 的组合结果，不是单纯把字体调小就能修。<Cite id="css-box" sources={cssSources} /></p>
       <p>如果你的问题是“点击后数字要加一”，去看 JavaScript 和 DOM；如果问题是“标题在窄屏要换行”，再回到 CSS 与响应式。把职责放对地方，改动会小很多。</p>
     </ArticleSection>

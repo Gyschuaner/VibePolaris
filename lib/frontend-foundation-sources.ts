@@ -8,9 +8,17 @@ export const responsiveSources = [
 ];
 
 export const cssSources = [
-  source("MDN", "CSS first steps", "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics", ["css-definition", "css-responsibility"]),
+  source("MDN", "CSS first steps", "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics", ["css-definition", "css-responsibility", "css-boundary"]),
   source("MDN", "Cascade layers and the cascade", "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Cascade", ["css-cascade", "css-specificity"]),
   source("W3C CSS Working Group", "CSS Cascading and Inheritance Level 5", "https://www.w3.org/TR/css-cascade-5/", ["css-cascade", "css-computed"]),
-  source("MDN", "CSS grid layout: Basic concepts", "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout/Basic_concepts", ["css-layout", "css-boundary"]),
-  source("MDN", "CSS box model", "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics/Box_model", ["css-box", "css-boundary"]),
+  source("MDN", "CSS grid layout: Basic concepts", "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout/Basic_concepts", ["css-layout"]),
+  source("MDN", "CSS box model", "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics/Box_model", ["css-box"]),
+];
+
+export const formSources = [
+  source("MDN", "Client-side form validation", "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Form_validation", ["form-definition", "form-client"]),
+  source("MDN", "Constraint validation", "https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Constraint_validation", ["form-client", "form-boundary"]),
+  source("W3C WAI", "Labels or Instructions", "https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions.html", ["form-label"]),
+  source("W3C WAI", "Error Identification", "https://www.w3.org/WAI/WCAG22/Understanding/error-identification.html", ["form-error"]),
+  source("OWASP", "Input Validation Cheat Sheet", "https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html", ["form-boundary", "form-server"]),
 ];

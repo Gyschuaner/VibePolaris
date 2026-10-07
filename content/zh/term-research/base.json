@@ -23,10 +23,11 @@
     "misconception": "CSS 不只是给 HTML 表面加颜色；声明要先匹配再经过层叠，计算值还会参与盒模型和 Grid/Flex 等布局。",
     "demoSignature": "poster-studio: compact CSS rule shelf + selectable target; interaction=选择元素/属性; proof=同一海报由 display、color 或 gap 改变且 HTML 文本不动; boundary=selector match→cascade winner→computed value→layout",
     "sourceUrls": [
+      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics",
       "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Cascade",
       "https://www.w3.org/TR/css-cascade-5/",
-      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics/Box_model",
-      "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout/Basic_concepts"
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout/Basic_concepts",
+      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics/Box_model"
     ],
     "rewriteRisk": "不要把 CSS 讲成属性清单或把 specificity 写成唯一决定因素；正式页面要同时说明规则匹配、层叠、计算值、盒模型和布局结果。",
     "nearDuplicates": [
@@ -93,9 +94,9 @@
     "demoSignature": "responsive-lab: compact shrinking frame + container query cards; interaction=拖动容器宽度/切换坚持三列; proof=同一组活动卡在2/3/1列间重排且字号与链接保留; failure=固定三列在窄容器内挤坏",
     "sourceUrls": [
       "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design",
-      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Media_queries",
-      "https://www.w3.org/TR/css-contain-3/",
-      "https://www.w3.org/WAI/WCAG21/Understanding/reflow"
+      "https://web.dev/articles/responsive-web-design-basics",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Containment/Container_queries",
+      "https://www.w3.org/WAI/WCAG22/Understanding/reflow.html"
     ],
     "rewriteRisk": "正式页面要把视口查询与容器查询区分开，并说明断点是内容失效点；不能把 WCAG 的回流要求写成所有二维内容都必须取消横向滚动。",
     "nearDuplicates": [
@@ -108,7 +109,7 @@
     "slug": "form",
     "mechanism": "表单先用可见标签把输入和含义对应起来，再用约束做客户端即时检查；通过后提交，服务端把输入当作不可信数据重新验证，并把错误关联回字段或整表结果。",
     "misconception": "浏览器校验只负责尽快反馈；有人可以用别的工具直接向服务端发请求，不走这个页面，所以服务端仍要按业务规则重新验证。占位文字只是示例，不能代替始终可见的字段标签。",
-    "demoSignature": "state-machine: 6 frames; actors=姓名/邮箱/浏览器校验/服务端校验/报名结果; phases=填写表单→前端拦截→用户修正→服务端检查→服务端拒绝→改正后成功; action=尝试提交",
+    "demoSignature": "form-card: inline form with real fields; interaction=填写姓名/邮箱/切换服务端已注册条件/提交; proof=错误贴回具体字段且已有姓名保留，格式通过后再出现业务结果; boundary=client hint ≠ server trust",
     "sourceUrls": [
       "https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Constraint_validation",
       "https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions",
