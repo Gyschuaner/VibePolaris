@@ -1900,5 +1900,59 @@
       "idempotency",
       "retry"
     ]
+  },
+  {
+    "slug": "context-compaction",
+    "mechanism": "上下文压缩在窗口接近容量时，把旧材料转成摘要或结构化状态，明确保留当前目标、关键证据和未完成动作，并保留回查原文的路径。",
+    "misconception": "压缩不是无损存档、简单删掉最早消息或自动理解重要性；摘要错误会改变后续决策，需要可回查和核对。",
+    "demoSignature": "4帧｜对象：24k 托盘、旧对话、关键证据、未完成动作｜交互：推进装入→溢出→标记→压缩核对｜变化：26k/24k 变为 11k/24k，旧话变摘要，目标和动作仍可见｜结果：容量释放与信息损失边界同时出现。",
+    "sourceUrls": [
+      "https://docs.anthropic.com/en/docs/build-with-claude/context-windows",
+      "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+      "https://docs.langchain.com/oss/python/langchain/short-term-memory",
+      "https://learn.microsoft.com/en-us/semantic-kernel/concepts/ai-services/chat-completion/chat-history"
+    ],
+    "rewriteRisk": "高：必须把窗口容量、保留选择、有损摘要、回查和核对写成一条可观察链路，不能只说“总结历史”。",
+    "nearDuplicates": [
+      "context-window",
+      "memory",
+      "tokenization"
+    ]
+  },
+  {
+    "slug": "tool-schema",
+    "mechanism": "工具 Schema 把工具名称、输入对象和字段约束写成机器可验证的契约；模型只能提出调用，执行器在授权和副作用之前先检查结构。",
+    "misconception": "Schema 通过不代表请求有权限、参数语义正确或外部结果可信；它也不能替代超时、幂等和错误处理。",
+    "demoSignature": "4帧｜对象：模型提议、schema、校验器、天气工具｜交互：切换有效/缺少 city 并推进提议→读取→校验→执行｜变化：invalid args 在副作用前 BLOCK，正确 city 才返回 24°C｜结果：结构闸门与业务授权分离。",
+    "sourceUrls": [
+      "https://platform.openai.com/docs/guides/function-calling",
+      "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+      "https://json-schema.org/draft/2020-12/json-schema-validation",
+      "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+    ],
+    "rewriteRisk": "高：必须让结构校验在副作用前出现，并明确它不等于授权、幂等或结果核验。",
+    "nearDuplicates": [
+      "tools",
+      "json-schema",
+      "function-calling"
+    ]
+  },
+  {
+    "slug": "latency-budget",
+    "mechanism": "延迟预算把端到端目标拆成阶段份额，用分段测量和尾延迟指标定位超预算原因，再决定优化、并行、降级或改变体验目标。",
+    "misconception": "预算不是平均响应时间、单个服务 SLA 或加载动画；它不保证每次请求一样快，必须说明 p95/p99、重试和用户感知边界。",
+    "demoSignature": "4帧｜对象：800ms 总账、DNS/TLS、队列、模型｜交互：切换模型 280/560ms 并推进分配→计时→慢段→取舍｜变化：570ms 变 850ms，模型条变红，结果要求优化或重新定义体验｜证据：每段时间份额与总预算同屏。",
+    "sourceUrls": [
+      "https://sre.google/sre-book/handling-overload/",
+      "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/",
+      "https://opentelemetry.io/docs/specs/semconv/http/http-metrics/",
+      "https://cloud.google.com/architecture/framework/performance-optimization"
+    ],
+    "rewriteRisk": "高：必须把端到端目标、分段测量、尾延迟、重试放大和产品取舍连起来，不能只展示一个毫秒数字。",
+    "nearDuplicates": [
+      "timeout",
+      "inference",
+      "loading-state"
+    ]
   }
 ]

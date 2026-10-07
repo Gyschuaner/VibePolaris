@@ -1,0 +1,73 @@
+.hero { display: grid; gap: 11px; min-height: 244px; padding: 16px 17px 14px; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 18px; background: linear-gradient(145deg, color-mix(in srgb, var(--paper) 82%, #e9eee4), var(--paper)); overflow: hidden; color: var(--ink); }
+.heroTop { display: flex; justify-content: space-between; gap: 10px; align-items: center; color: var(--muted); font: 10px ui-monospace, SFMono-Regular, monospace; letter-spacing: .05em; }
+.heroTop strong { padding: 4px 7px; border-radius: 999px; background: color-mix(in srgb, var(--accent-text) 11%, transparent); color: var(--ink); font-size: 9px; }
+.stage { display: grid; grid-template-columns: minmax(0, .95fr) minmax(110px, .8fr) minmax(0, .95fr); gap: 9px; align-items: center; min-height: 132px; }
+.requestCard, .toolCard { display: grid; gap: 6px; min-width: 0; min-height: 95px; align-content: center; padding: 10px; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 13px; background: color-mix(in srgb, var(--paper) 70%, transparent); transition: border-color .35s, background .35s, transform .45s, opacity .35s; }
+.requestCard[data-invalid="true"] { border-color: color-mix(in srgb, #a8584e 60%, transparent); background: color-mix(in srgb, #a8584e 8%, var(--paper)); transform: translateX(3px); }
+.requestCard[data-passed="true"] { border-color: color-mix(in srgb, var(--accent-text) 50%, transparent); background: color-mix(in srgb, var(--accent-text) 8%, var(--paper)); }
+.toolCard[data-disabled="true"] { opacity: .52; }
+.toolCard[data-passed="true"] { border-color: color-mix(in srgb, var(--accent-text) 50%, transparent); background: color-mix(in srgb, var(--accent-text) 8%, var(--paper)); transform: translateX(-2px); }
+.cardLabel { display: flex; gap: 5px; align-items: center; color: var(--muted); font: 9px ui-monospace, SFMono-Regular, monospace; }
+.cardLabel svg { color: var(--accent-text); }
+.requestCard code { color: var(--accent-text); font: 10px ui-monospace, SFMono-Regular, monospace; overflow-wrap: anywhere; }
+.requestCard strong, .toolCard strong { font-size: 12px; overflow-wrap: anywhere; }
+.requestCard small, .toolCard small { color: var(--muted); font: 9px ui-monospace, SFMono-Regular, monospace; line-height: 1.35; }
+.lockAssembly { position: relative; display: grid; place-items: center; min-height: 126px; transition: transform .45s; }
+.lockAssembly[data-invalid="true"] { transform: translateY(3px); }
+.lockHalo { position: absolute; width: 89px; height: 89px; border: 1px dashed color-mix(in srgb, var(--accent-text) 48%, transparent); border-radius: 50%; opacity: .72; transition: border-color .35s, transform .45s; }
+.lockAssembly[data-invalid="true"] .lockHalo { border-color: color-mix(in srgb, #a8584e 62%, transparent); transform: scale(1.07); }
+.lockAssembly[data-passed="true"] .lockHalo { border-style: solid; transform: scale(1.08); }
+.lockBody { position: relative; z-index: 1; display: grid; gap: 3px; width: 104px; padding: 10px 9px 9px; border: 1px solid color-mix(in srgb, var(--accent-text) 48%, transparent); border-radius: 13px; background: var(--paper); box-shadow: 0 10px 22px color-mix(in srgb, var(--ink) 8%, transparent); text-align: center; transition: border-color .35s, box-shadow .35s; }
+.lockBody svg { margin: 0 auto; color: var(--accent-text); }
+.lockBody span { color: var(--muted); font: 8px ui-monospace, SFMono-Regular, monospace; letter-spacing: .07em; }
+.lockBody strong { font: 600 10px ui-monospace, SFMono-Regular, monospace; }
+.lockBody small { color: var(--muted); font-size: 8px; }
+.lockAssembly[data-invalid="true"] .lockBody { border-color: color-mix(in srgb, #a8584e 60%, transparent); box-shadow: 0 10px 22px color-mix(in srgb, #a8584e 12%, transparent); }
+.lockAssembly[data-passed="true"] .lockBody { border-color: color-mix(in srgb, var(--accent-text) 68%, transparent); }
+.lockSlot { position: absolute; top: 2px; right: -15px; display: grid; place-items: center; width: 35px; height: 35px; border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent); border-radius: 50%; background: color-mix(in srgb, var(--paper) 75%, transparent); transition: border-color .35s; }
+.lockAssembly[data-invalid="true"] .lockSlot { border-color: #a8584e; }
+.payloadChip { display: grid; place-items: center; min-width: 25px; height: 19px; padding: 0 4px; border-radius: 5px; background: var(--tint); color: var(--accent-text); font: 9px ui-monospace, SFMono-Regular, monospace; transition: transform .5s, background .35s, color .35s; }
+.lockAssembly[data-invalid="true"] .payloadChip { background: color-mix(in srgb, #a8584e 14%, transparent); color: #93473f; transform: translateX(-4px) rotate(-8deg); }
+.lockAssembly[data-passed="true"] .payloadChip { background: color-mix(in srgb, var(--accent-text) 14%, transparent); transform: translateX(-5px); }
+.lockVerdict { position: absolute; z-index: 2; bottom: -1px; display: inline-flex; gap: 4px; align-items: center; padding: 4px 7px; border-radius: 999px; background: var(--paper); color: var(--accent-text); box-shadow: 0 3px 10px color-mix(in srgb, var(--ink) 9%, transparent); font: 9px ui-monospace, SFMono-Regular, monospace; }
+.lockAssembly[data-invalid="true"] .lockVerdict { color: #93473f; }
+.receipt { display: flex; gap: 8px; align-items: center; min-height: 28px; padding: 7px 9px; border-left: 2px solid var(--accent-text); background: color-mix(in srgb, var(--accent-text) 7%, transparent); opacity: .35; transform: translateY(4px); transition: opacity .35s, transform .4s, border-color .35s, background .35s; }
+.receipt[data-visible="true"] { opacity: 1; transform: translateY(0); }
+.receipt[data-error="true"] { border-left-color: #a8584e; background: color-mix(in srgb, #a8584e 8%, transparent); color: #93473f; }
+.receipt span { color: var(--muted); font-size: 10px; }
+.receipt code { min-width: 0; color: inherit; font: 9px ui-monospace, SFMono-Regular, monospace; overflow-wrap: anywhere; }
+.controls { display: flex; flex-wrap: wrap; gap: 5px; }
+.controls button, .labActions button, .scenario button { display: inline-flex; align-items: center; gap: 4px; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 999px; padding: 5px 8px; background: transparent; color: var(--muted); font: inherit; font-size: 10px; cursor: pointer; }
+.controls button:hover, .controls button[aria-pressed="true"], .labActions button:hover, .scenario button:hover, .scenario button[aria-pressed="true"] { border-color: var(--accent-text); background: var(--tint); color: var(--accent-text); }
+.caption { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.45; }
+.lab { display: grid; gap: 11px; margin: 24px 0 20px; padding: 15px; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 15px; background: color-mix(in srgb, var(--paper) 82%, #e9eee4); }
+.labHeader { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.labHeader span { color: var(--muted); font: 9px ui-monospace, SFMono-Regular, monospace; letter-spacing: .08em; }
+.labHeader strong { font-size: 14px; }
+.scenario { display: flex; flex-wrap: wrap; gap: 6px; }
+.authToggle { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; color: var(--muted); font-size: 10px; }
+.authToggle input { accent-color: var(--accent-text); }
+.authToggle small { color: var(--muted); font: 9px ui-monospace, SFMono-Regular, monospace; }
+.labBoard { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(135px, .85fr) minmax(0, .9fr); gap: 7px; align-items: stretch; }
+.labRequest, .labLock, .labTool { display: grid; gap: 6px; align-content: center; min-width: 0; min-height: 82px; padding: 10px; border-radius: 10px; background: var(--paper); }
+.labRequest { border-left: 3px solid color-mix(in srgb, var(--accent-text) 60%, transparent); }
+.labRequest span, .labLock small, .labTool small { color: var(--muted); font-size: 9px; }
+.labRequest code { color: var(--accent-text); font: 10px ui-monospace, SFMono-Regular, monospace; overflow-wrap: anywhere; }
+.labRequest small, .labLock small, .labTool small { font: 9px ui-monospace, SFMono-Regular, monospace; line-height: 1.35; }
+.labLock { border: 1px dashed color-mix(in srgb, var(--accent-text) 50%, transparent); text-align: center; }
+.labLock svg { margin: 0 auto; color: var(--accent-text); }
+.labLock strong { font: 600 10px ui-monospace, SFMono-Regular, monospace; }
+.labLock[data-blocked="true"] { border-color: #a8584e; background: color-mix(in srgb, #a8584e 8%, var(--paper)); }
+.labLock[data-blocked="true"] svg { color: #a8584e; }
+.labTool { border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); }
+.labTool svg { color: var(--muted); }
+.labTool span { font-size: 11px; font-weight: 650; }
+.labTool[data-executed="true"] { border-color: color-mix(in srgb, var(--accent-text) 52%, transparent); background: color-mix(in srgb, var(--accent-text) 8%, var(--paper)); }
+.labTool[data-executed="true"] svg { color: var(--accent-text); }
+.labActions { display: flex; flex-wrap: wrap; gap: 6px; }
+.labStatus { display: grid; gap: 3px; padding: 9px 10px; border-left: 2px solid var(--accent-text); background: color-mix(in srgb, var(--accent-text) 7%, transparent); font-size: 11px; line-height: 1.45; }
+.labStatus[data-error="true"] { border-left-color: #a8584e; background: color-mix(in srgb, #a8584e 8%, transparent); }
+.labStatus[data-success="true"] { border-left-color: var(--accent-text); }
+.labStatus span { color: var(--muted); }
+@media (max-width: 600px) { .hero { min-height: 350px; } .stage { grid-template-columns: 1fr; gap: 7px; } .requestCard, .toolCard { min-height: 70px; } .lockAssembly { min-height: 100px; } .lockSlot { right: 21%; } .labBoard { grid-template-columns: 1fr; } .labRequest, .labLock, .labTool { min-height: 62px; } }
+@media (prefers-reduced-motion: reduce) { .requestCard, .toolCard, .lockAssembly, .lockHalo, .lockBody, .lockSlot, .payloadChip, .receipt { transition: none; } }

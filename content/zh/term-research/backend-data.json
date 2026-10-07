@@ -53,7 +53,7 @@
   {"slug":"unique-constraint","mechanism":"唯一约束禁止指定列组合出现重复非空值；NULL 是否互相视为相同取决于数据库与约束配置。","misconception":"唯一约束不等于主键：表可有多个唯一约束，通常允许 NULL，也不会自动表达大小写无关的业务唯一性。","demoSignature":"5帧｜对象：users(email) 列、标准 UNIQUE 与 NULLS NOT DISTINCT 开关｜交互：插入 a@x、A@x、null、null，再切换 lower(email) 唯一索引｜变化：重复判定规则逐帧变化｜结果：分别显示 4 行、3 行或大小写冲突。","sourceUrls":["https://www.postgresql.org/docs/current/ddl-constraints.html","https://www.postgresql.org/docs/current/indexes-unique.html"],"rewriteRisk":"高：NULL 与大小写是最容易被省略的边界。","nearDuplicates":["primary-key","index","data-validation"]},
   {"slug":"join","mechanism":"JOIN 按连接条件组合两个输入关系；INNER、LEFT、RIGHT、FULL 决定未匹配行是否保留，错误基数估计会影响执行计划。","misconception":"JOIN 不是把两张表永久合并，也不要求有外键；遗漏或写错连接条件可能产生笛卡尔积和重复行。","demoSignature":"6帧｜对象：3 位用户与 4 个订单的可移动行卡、连接条件 user.id=order.user_id｜交互：在 INNER、LEFT、无 ON 三种模式切换｜变化：匹配线连接、未匹配用户补 NULL、无条件时扩成 12 个组合｜结果：行数从 3 到 4 到 12。","sourceUrls":["https://www.postgresql.org/docs/current/queries-table-expressions.html"],"rewriteRisk":"中：演示应突出结果基数而非只画两圈维恩图。","nearDuplicates":["foreign-key","sql","orm"]},
   {"slug":"transaction","mechanism":"事务把多条操作组织成一个提交或回滚单元；隔离级别控制并发事务看见哪些中间结果，但不能自动保证所有业务不变量。","misconception":"事务不是锁住整个数据库，也不保证跨外部服务原子；提交成功前的超时还可能让调用方不知道最终结果。","demoSignature":"7帧｜对象：A/B 两个转账事务、账户 100/100、锁与提交点｜交互：交错执行 A 减 30、B 减 50、读余额、提交/回滚｜变化：不同隔离级别下可见值与阻塞线变化｜结果：最终余额、等待时长和是否出现写偏差明确列出。","sourceUrls":["https://www.postgresql.org/docs/current/tutorial-transactions.html","https://www.postgresql.org/docs/current/transaction-iso.html"],"rewriteRisk":"高：需区分原子提交、隔离级别和分布式边界。","nearDuplicates":["acid","idempotency","database-migration"]},
-  {"slug":"acid","mechanism":"ACID 描述事务处理的四类属性：原子性控制全成或全败，一致性依赖约束与正确事务，隔离性约束并发可见性，持久性约束提交后的恢复。","misconception":"ACID 不是一个开关，也不保证业务规则天然正确；隔离通常有级别，持久性也受同步提交和存储配置影响。","demoSignature":"3帧｜对象：转账事务、并发读取、WAL 与重启恢复｜交互：依次观察原子性、隔离性、持久性｜变化：断电时回滚半笔转账，并发读取遵守可见性，提交记录可被恢复｜结果：三项承诺各自对应一种失败问题；未声明的业务规则不会自动出现。","sourceUrls":["https://www.postgresql.org/docs/current/tutorial-transactions.html","https://www.postgresql.org/docs/current/wal-intro.html","https://research.ibm.com/publications/principles-of-transaction-oriented-database-recovery","https://learn.microsoft.com/en-us/sql/relational-databases/sql-server-transaction-locking-and-row-versioning-guide"],"rewriteRisk":"高：say 与 definition 极易同义重复，应改用四个独立可证伪场景。","nearDuplicates":["transaction","replication","backup"]},
+  {"slug":"acid","mechanism":"ACID 描述事务处理的四类属性：原子性控制全成或全败，一致性依赖约束与正确事务，隔离性约束并发可见性，持久性约束提交后的恢复。","misconception":"ACID 不是一个开关，也不保证业务规则天然正确；隔离通常有级别，持久性也受同步提交和存储配置影响。","demoSignature":"4帧｜对象：转账单、四枚属性封条、并发读取、WAL 与重启恢复｜交互：依次盖上 A/C/I/D 封条并观察对应失败证据｜变化：第二笔失败整单回滚、约束决定负余额、读取遵守可见性、提交记录可被恢复｜结果：四项承诺各自对应一种失败问题；未声明的业务规则不会自动出现。","sourceUrls":["https://www.postgresql.org/docs/current/tutorial-transactions.html","https://www.postgresql.org/docs/current/wal-intro.html","https://research.ibm.com/publications/principles-of-transaction-oriented-database-recovery","https://learn.microsoft.com/en-us/sql/relational-databases/sql-server-transaction-locking-and-row-versioning-guide"],"rewriteRisk":"高：say 与 definition 极易同义重复，应改用四个独立可证伪场景。","nearDuplicates":["transaction","replication","backup"]},
   {"slug":"database-migration","mechanism":"数据库迁移以可追踪步骤修改结构或数据；生产变更常采用扩展—回填—切换—收缩，保证新旧应用版本短期兼容。","misconception":"迁移不是直接改表，也不必然能在一次事务中安全回滚；大表加列、建索引或类型转换可能持锁并阻塞流量。","demoSignature":"7帧｜对象：v1/v2 应用、users.name、first_name/last_name 三列、流量滑杆｜交互：依次执行加列、双写、批量回填、读切换、停旧写、删旧列｜变化：兼容区间逐帧缩小｜结果：每帧显示 v1/v2 读写是否成功与锁等待 0ms/8s。","sourceUrls":["https://www.postgresql.org/docs/current/ddl-alter.html","https://www.postgresql.org/docs/current/sql-createindex.html"],"rewriteRisk":"高：若只画版本号递增，会忽略在线变更与应用兼容。","nearDuplicates":["database-schema","transaction","backup"]},
   {"slug":"orm","mechanism":"ORM 把对象操作映射为 SQL 和结果对象，并管理身份映射、关系加载、会话与事务；生成的查询仍受数据库执行计划约束。","misconception":"ORM 不是‘不用懂 SQL’，也不会自动消除 N+1、错误事务边界或低效加载。","demoSignature":"5帧｜对象：10 个 Author 对象、每人 books 关系、SQL 日志计数器｜交互：点击 lazy load 再切换 joinedload｜变化：首次渲染触发 1+10 条查询，预加载后折叠成 1 条 JOIN｜结果：查询数 11→1，传输行数同步显示。","sourceUrls":["https://docs.sqlalchemy.org/en/20/orm/quickstart.html","https://docs.sqlalchemy.org/en/20/orm/queryguide/relationships.html"],"rewriteRisk":"中：需展示对象便利性与隐藏查询成本，而非只说‘表转对象’。","nearDuplicates":["sql","database-schema","relational-database"]},
   {"slug":"connection-pool","mechanism":"连接池预先维护有限数据库连接，借出给并发请求并在使用后归还；池大小、排队上限、连接寿命和事务清理共同决定行为。","misconception":"池越大不一定越快；超过数据库容量会增加上下文切换，未回滚的事务或会话状态还可能污染下一个借用者。","demoSignature":"6帧｜对象：20 个请求、5 个连接槽、等待队列、数据库 active_connections 曲线｜交互：把池大小从 2 拖到 5 再到 20，并故意泄漏一个连接｜变化：排队先下降，数据库延迟后上升，泄漏槽持续变红｜结果：吞吐、P95 与超时数实时更新。","sourceUrls":["https://www.pgbouncer.org/usage.html","https://www.postgresql.org/docs/current/runtime-config-connection.html"],"rewriteRisk":"高：不能把它画成无成本复用；队列、数据库上限和状态复位是核心。","nearDuplicates":["timeout","server","relational-database"]},
@@ -268,7 +268,7 @@
   "slug": "encryption-in-transit",
   "mechanism": "传输中加密用 TLS 在每一对通信端点之间协商协议与密钥、验证服务身份，并用记录层保护后续应用数据；代理终止 TLS 后，下一跳需要自己的协议和证书边界。",
   "misconception": "浏览器有 HTTPS 小锁不代表整条服务链路都保持密文；证书签名可信不等于主机名匹配，TLS 终止后的内部 HTTP 也不会因为外层加密自动获得保护。",
-  "demoSignature": "6帧｜对象：浏览器、CDN、负载均衡、应用、三段链路、Authorization、抓包视图、SAN 身份｜交互：推进待出发、握手、3/3 TLS、CDN 终止导致内部明文、SAN mismatch 阻断、恢复下一跳｜变化：ciphertext→Authorization 可见→0 B blocked→ciphertext；结果：逐段画出 TLS 的真实保护范围。",
+  "demoSignature": "5帧｜对象：一份订单包裹、三枚跳点封条、TLS record、Authorization、证书 SAN｜交互：推进第一段封条、核对身份、展示代理打开、重新盖下一枚封条、身份不匹配时停下｜变化：ciphertext→握手检查→Authorization 可见→重新变回 ciphertext→0 B blocked；结果：用每一跳的封条显示 TLS 的真实保护范围。",
   "sourceUrls": [
     "https://www.rfc-editor.org/rfc/rfc8446.html",
     "https://www.rfc-editor.org/rfc/rfc9525.html",
@@ -306,6 +306,42 @@
       "authorization",
       "rate-limiting",
       "api-gateway"
+    ]
+  },
+  {
+    "slug": "circuit-breaker",
+    "mechanism": "熔断器在闭合、打开和半开之间转换：失败计数达到条件后快速拒绝，冷却后用有限探针判断恢复。",
+    "misconception": "熔断器不是重试器、健康修复器或永久封禁；打开只改变后续调用路径，阈值和探针仍需按依赖行为配置。",
+    "demoSignature": "4帧｜对象：调用方、熔断器、支付服务、恢复探针｜交互：推进正常→失败累积→OPEN→HALF-OPEN，并切换依赖健康/故障｜变化：请求从到达 503 变成 0 个打到故障依赖，探针成功才恢复｜结果：保护、冷却和恢复证据分开。",
+    "sourceUrls": [
+      "https://learn.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker",
+      "https://martinfowler.com/bliki/CircuitBreaker.html",
+      "https://resilience4j.readme.io/docs/circuitbreaker",
+      "https://www.pollydocs.org/strategies/circuit-breaker.html"
+    ],
+    "rewriteRisk": "高：必须展示状态转换、失败阈值、冷却、半开探针和快速失败，不能写成“服务挂了就重试”。",
+    "nearDuplicates": [
+      "retry",
+      "timeout",
+      "api-gateway"
+    ]
+  },
+  {
+    "slug": "data-contract",
+    "mechanism": "数据契约把生产者输出和消费者依赖写成版本化约定，在字段变化进入发布前检查类型、语义、质量和兼容策略。",
+    "misconception": "契约不是字段表、数据质量报告或自动迁移器；同样的字符串类型也可能因语义改名而破坏下游。",
+    "demoSignature": "4帧｜对象：生产者 v1、契约、消费者、兼容性闸门｜交互：推进发布、读取、提出新增/改名、裁决｜变化：新增可选字段 PASS，直接移除旧字段 BLOCK｜结果：破坏性变化在运行前暴露。",
+    "sourceUrls": [
+      "https://spec.openapis.org/oas/latest.html",
+      "https://json-schema.org/understanding-json-schema/reference/object",
+      "https://docs.pact.io/",
+      "https://buf.build/docs/breaking/"
+    ],
+    "rewriteRisk": "高：必须把字段语义、所有者、版本、兼容性和迁移边界拆开，不能写成“上下游约定字段”。",
+    "nearDuplicates": [
+      "data-pipeline",
+      "data-validation",
+      "database-schema"
     ]
   }
 ]

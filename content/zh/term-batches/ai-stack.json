@@ -5215,5 +5215,152 @@
       "idempotency",
       "retry"
     ]
+  },
+  {
+    "zh": "上下文压缩",
+    "en": "Context Compaction",
+    "slug": "context-compaction",
+    "cat": "AI·Agent",
+    "say": "在有限上下文里压缩旧材料，保留目标、证据和未完成动作。",
+    "aliases": [
+      "Context Compaction",
+      "上下文整理",
+      "对话压缩"
+    ],
+    "question": "对话太长时，为什么不能把前面全部塞给模型？",
+    "definition": "上下文压缩把一段过长的历史或工具记录缩成更短的表示，在有限窗口里保留当前目标、关键证据和未完成动作，让后续调用还能继续执行。",
+    "boundary": "摘要可能丢失细节、顺序或否定条件；压缩不是无损存档，也不是把所有历史平均删短。压缩后要重新核对关键信息，并能回到原始记录。",
+    "demoType": "state",
+    "demoTitle": "容量见顶后先标记再压缩",
+    "demoSteps": [
+      {
+        "label": "装入对话",
+        "value": "系统目标 · 历史 · 工具回执",
+        "note": "每一段材料都占用有限窗口。"
+      },
+      {
+        "label": "标记保留",
+        "value": "目标 · 证据 · 未完成动作",
+        "note": "先确定继续任务真正需要什么。"
+      },
+      {
+        "label": "压缩核对",
+        "value": "旧对话摘要 · 11k / 24k",
+        "note": "释放空间后检查关键状态有没有留下。"
+      }
+    ],
+    "quizQuestion": "上下文压缩最应该先保留什么？",
+    "quizOptions": [
+      "当前目标、关键证据和未完成动作",
+      "所有旧消息的原始措辞",
+      "只保留最后一句话"
+    ],
+    "correctText": "压缩服务于继续完成任务，必须保留会影响下一步的状态。",
+    "wrongText": "原文存档和运行时上下文是两种用途，不能互相替代。",
+    "promptTitle": "设计一次安全的上下文压缩",
+    "prompt": "请列出必须保留的目标、事实、证据、未完成动作和可回查的原文位置，再定义摘要失败时的恢复策略。",
+    "relatedSlugs": [
+      "context-window",
+      "memory",
+      "tokenization"
+    ]
+  },
+  {
+    "zh": "工具 Schema",
+    "en": "Tool Schema",
+    "slug": "tool-schema",
+    "cat": "AI·Agent",
+    "say": "描述工具名称、参数形状和必填条件，让模型提议的调用先通过结构检查。",
+    "aliases": [
+      "Tool Schema",
+      "工具参数模式",
+      "工具契约"
+    ],
+    "question": "模型说要调用工具，怎样知道它传的参数能执行？",
+    "definition": "工具 Schema 用结构化规则描述工具名称、参数类型、必填字段和允许值；模型可以提出调用，但执行层先校验形状，再决定是否授权和运行。",
+    "boundary": "Schema 只检查结构和部分值域，不证明用户有权限，也不保证外部结果正确。版本变化、拒绝处理、超时和副作用仍需要独立设计。",
+    "demoType": "state",
+    "demoTitle": "工具调用先过参数闸门",
+    "demoSteps": [
+      {
+        "label": "提出调用",
+        "value": "get_weather(city: 上海)",
+        "note": "模型输出的是待检查的调用请求。"
+      },
+      {
+        "label": "校验形状",
+        "value": "city:string · required",
+        "note": "缺少必填字段时停在执行前。"
+      },
+      {
+        "label": "执行工具",
+        "value": "通过 → 24°C",
+        "note": "结构有效不等于授权完成，仍要检查权限和结果。"
+      }
+    ],
+    "quizQuestion": "工具 Schema 主要保证什么？",
+    "quizOptions": [
+      "调用参数符合约定的结构",
+      "调用方一定拥有业务权限",
+      "外部系统一定返回正确事实"
+    ],
+    "correctText": "Schema 先挡住结构错误，再把请求交给授权和执行层。",
+    "wrongText": "权限和外部结果属于另外的边界。",
+    "promptTitle": "为一个工具写调用契约",
+    "prompt": "请列出工具名称、必填参数、类型、枚举或范围、错误返回、权限判断、超时和副作用确认。",
+    "relatedSlugs": [
+      "tools",
+      "json-schema",
+      "function-calling"
+    ]
+  },
+  {
+    "zh": "延迟预算",
+    "en": "Latency Budget",
+    "slug": "latency-budget",
+    "cat": "AI·Agent",
+    "say": "给一次完整请求规定总时间，再把时间份额分给每一段并用证据取舍。",
+    "aliases": [
+      "Latency Budget",
+      "响应时间预算",
+      "延迟配额"
+    ],
+    "question": "页面感觉慢，究竟是哪一段花掉了时间？",
+    "definition": "延迟预算把用户可感知的一次请求拆成 DNS、连接、排队、模型和渲染等时间份额；总预算超出时，团队可以依据测量决定减少哪一段或改变体验目标。",
+    "boundary": "预算是目标和分配方法，不是一次测量结果，也不保证每个请求都达到固定时长。必须区分平均值、尾延迟、采样范围和用户感知阶段。",
+    "demoType": "flow",
+    "demoTitle": "一条请求怎样吃完 800ms",
+    "demoSteps": [
+      {
+        "label": "分配预算",
+        "value": "DNS 80 · TLS 120 · 模型 280",
+        "note": "先把用户可感知的总目标写出来。"
+      },
+      {
+        "label": "逐段计时",
+        "value": "80 + 120 + 90 + 280 = 570ms",
+        "note": "每一段时间都有归属，才知道优化对象。"
+      },
+      {
+        "label": "出现慢段",
+        "value": "模型 560ms → 850ms",
+        "note": "总预算被吃完，必须做取舍。"
+      }
+    ],
+    "quizQuestion": "延迟预算最有用的作用是什么？",
+    "quizOptions": [
+      "把完整请求的时间目标拆成可测的份额",
+      "只看某个接口的平均响应时间",
+      "保证每次请求都恰好一样快"
+    ],
+    "correctText": "预算让不同环节和用户体验目标能放在同一张账上讨论。",
+    "wrongText": "平均值和一次成功请求都不能替代尾延迟与分段测量。",
+    "promptTitle": "写一份端到端延迟预算",
+    "prompt": "请从用户可感知结果出发拆分 DNS、连接、排队、服务计算、模型和渲染，给每段预算、p95/p99 目标和超预算后的取舍。",
+    "relatedSlugs": [
+      "timeout",
+      "inference",
+      "loading-state"
+    ]
   }
 ]
