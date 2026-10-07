@@ -644,161 +644,212 @@
   },
   {
     "slug": "few-shot-prompting",
-    "lead": "只给两条工单示例，新工单为什么更容易套进同一标签格式？",
-    "definition": "少样本提示把少量输入—输出示例放进当前请求，让模型在这次上下文中参照任务格式、边界和表达方式；模型参数是训练后保留的内部设置，放入示例不会更新它们。",
-    "boundary": "示例会占用上下文，示例里错误、片面或只覆盖部分情况的模式，也可能被带进新结果；示例数量没有跨模型通用的“正确值”，也不是越多越好。",
-    "sceneKind": "pipeline",
-    "sceneTitle": "两条例子怎样改变新样本的映射",
-    "actionLabel": "移除一条例子",
+    "lead": "只给两张工单小票，为什么新工单会沿用同一枚标签印章？",
+    "definition": "少样本提示把少量输入—输出示例放进当前请求，让模型在这次上下文中参照标签空间、输入样子和输出格式；示例不会更新模型参数。",
+    "boundary": "示例会占用上下文；错误、片面、格式不一致或彼此冲突的校样，也可能被带进新结果。示例数量没有跨模型通用的“正确值”，不是越多越好。",
+    "sceneKind": "assembly",
+    "sceneTitle": "一张校样台怎样给新工单盖标签",
+    "actionLabel": "加入相反校样",
     "actors": [
       {
-        "id": "examples",
-        "label": "示例对",
-        "detail": "支付失败→后端；按钮错位→前端",
+        "id": "sample-rack",
+        "label": "校样小票",
+        "detail": "登录页空白→前端；付款转圈→网络",
         "icon": "file",
-        "group": "上下文"
+        "group": "校样"
       },
       {
-        "id": "query",
+        "id": "label-dial",
+        "label": "标签盘",
+        "detail": "前端 / 后端 / 网络",
+        "icon": "layout",
+        "group": "版式"
+      },
+      {
+        "id": "new-ticket",
         "label": "新工单",
-        "detail": "付款页空白",
+        "detail": "导出按钮没反应",
         "icon": "message",
         "group": "输入"
       },
       {
-        "id": "labels",
-        "label": "标签候选",
-        "detail": "前端 / 后端 / 网络",
-        "icon": "layout",
-        "group": "判断"
+        "id": "stamp",
+        "label": "标签印章",
+        "detail": "前端 / 先修示例",
+        "icon": "spark",
+        "group": "输出"
       },
       {
-        "id": "result",
-        "label": "输出",
-        "detail": "前端",
-        "icon": "spark",
-        "group": "结果"
+        "id": "parameters",
+        "label": "模型参数",
+        "detail": "unchanged",
+        "icon": "brain",
+        "group": "边界"
       }
     ],
     "edges": [
       {
-        "id": "ex-l",
-        "from": "examples",
-        "to": "labels",
-        "label": "提供映射"
+        "id": "sample-dial",
+        "from": "sample-rack",
+        "to": "label-dial",
+        "label": "显出校样"
       },
       {
-        "id": "q-l",
-        "from": "query",
-        "to": "labels",
-        "label": "待分类"
+        "id": "ticket-dial",
+        "from": "new-ticket",
+        "to": "label-dial",
+        "label": "放上新票"
       },
       {
-        "id": "l-r",
-        "from": "labels",
-        "to": "result",
-        "label": "选择"
+        "id": "dial-stamp",
+        "from": "label-dial",
+        "to": "stamp",
+        "label": "盖出格式"
+      },
+      {
+        "id": "parameter-stamp",
+        "from": "parameters",
+        "to": "stamp",
+        "label": "不写回参数"
       }
     ],
     "frames": [
       {
-        "label": "示例先到",
-        "note": "两条输入—输出对定义了标签写法；“2 组”只是本次示意，不是通用标准。",
+        "label": "留白校样",
+        "note": "新工单已经摆上桌，但没有示例告诉它标签该长什么样。",
         "activeIds": [
-          "examples"
+          "new-ticket"
         ],
         "doneIds": [],
         "mutedIds": [
-          "result"
+          "sample-rack",
+          "label-dial",
+          "stamp"
         ],
         "values": {
-          "examples": "2 组"
+          "new-ticket": "待套用",
+          "parameters": "unchanged"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "新样本进入",
-        "note": "付款页空白没有现成答案，只能参照示例模式。",
+        "label": "示例贴上",
+        "note": "两张输入—输出小票进入这次请求；它们只是上下文里的校样，不会改模型参数。",
         "activeIds": [
-          "query"
+          "sample-rack",
+          "new-ticket"
         ],
         "doneIds": [
-          "examples"
+          "new-ticket"
         ],
         "mutedIds": [
-          "result"
+          "label-dial",
+          "stamp"
         ],
         "values": {
-          "query": "1 条待分类"
+          "sample-rack": "2 张校样",
+          "new-ticket": "等待匹配"
         },
         "activeEdgeIds": [
-          "q-l"
+          "sample-dial"
         ]
       },
       {
-        "label": "分数拉开",
-        "note": "0.34 → 0.72 是本次演示的示意数值，不是准确率；示例改变的是输出更贴近示范里的标签写法。",
+        "label": "标签显影",
+        "note": "示例先显出标签空间和固定格式，模型看到的是一个局部版式。",
         "activeIds": [
-          "labels"
+          "label-dial"
         ],
         "doneIds": [
-          "examples",
-          "query"
+          "sample-rack",
+          "new-ticket"
         ],
         "mutedIds": [
-          "result"
+          "stamp"
         ],
         "values": {
-          "labels": "示意：0.34 → 0.72"
+          "label-dial": "3 个标签 + 单标签格式"
         },
         "activeEdgeIds": [
-          "ex-l",
-          "q-l"
+          "sample-dial",
+          "ticket-dial"
         ]
       },
       {
-        "label": "格式复用",
-        "note": "结果沿用示例中的单标签格式。",
+        "label": "新票落位",
+        "note": "“导出按钮没反应”沿用同一行的标签写法；它是本次请求的推断结果。",
         "activeIds": [
-          "result"
+          "stamp"
         ],
         "doneIds": [
-          "examples",
-          "query",
-          "labels"
+          "sample-rack",
+          "new-ticket",
+          "label-dial"
         ],
         "mutedIds": [],
         "values": {
-          "result": "前端"
+          "stamp": "前端",
+          "parameters": "unchanged"
         },
         "activeEdgeIds": [
-          "l-r"
-        ]
+          "dial-stamp"
+        ],
+        "metric": {
+          "label": "当前上下文",
+          "value": "只在本轮有效"
+        }
+      },
+      {
+        "label": "反例打滑",
+        "note": "再贴一张相反标签，校样彼此打架；不稳定是示例问题，不是模型已经学会了新规则。",
+        "activeIds": [
+          "sample-rack",
+          "label-dial",
+          "stamp"
+        ],
+        "doneIds": [
+          "new-ticket"
+        ],
+        "mutedIds": [],
+        "values": {
+          "sample-rack": "3 张（含反例）",
+          "label-dial": "标签打架",
+          "stamp": "先修示例",
+          "parameters": "unchanged"
+        },
+        "activeEdgeIds": [
+          "sample-dial",
+          "dial-stamp"
+        ],
+        "metric": {
+          "label": "一致性",
+          "value": "冲突"
+        }
       }
     ],
-    "insight": "少样本提示是在上下文里示范做法，并没有更新模型参数。",
+    "insight": "少样本提示是在当前上下文里摆校样：它显出标签、输入分布和格式，却没有更新模型参数。",
     "quiz": {
-      "question": "换一批请求后仍要稳定分类，首先该检查什么？",
+      "question": "加入相反标签的小票后输出不稳定，首先该检查什么？",
       "options": [
         {
-          "label": "示例是否覆盖新请求且标签一致",
+          "label": "校样是否覆盖输入且标签、格式一致",
           "correct": true
         },
         {
-          "label": "示例文字是否足够长",
+          "label": "模型参数是否已经永久改写",
           "correct": false
         },
         {
-          "label": "模型参数是否已经被永久修改",
+          "label": "只要再增加几张无关小票",
           "correct": false
         }
       ],
-      "success": "少量示例的覆盖和质量决定它能示范什么。",
-      "retry": "少样本提示只在当前上下文生效。"
+      "success": "先修正示例的覆盖、标签和格式，再谈新工单的结果。",
+      "retry": "少样本提示只在当前上下文生效，冲突示例不会自动变成训练。"
     },
     "prompt": {
-      "title": "准备少样本示例",
-      "text": "请准备少量、覆盖正常与边界的输入—输出示例，并说明它们会占用多少上下文；不要把示例当作训练参数更新。"
+      "title": "摆一组可核对的校样",
+      "text": "请准备少量、覆盖正常与边界的输入—输出示例，统一标签与格式，标出它们占用的上下文；再用未出现在示例里的样本独立评测。"
     },
     "sources": [
       {
@@ -807,24 +858,24 @@
         "note": "上下文示例不更新参数"
       },
       {
-        "url": "https://arxiv.org/abs/2202.12837",
-        "label": "arXiv · Rethinking the Role of Demonstrations",
-        "note": "示例传递模式与输入分布"
-      },
-      {
-        "url": "https://developers.openai.com/api/docs/guides/prompt-engineering#few-shot-learning",
+        "url": "https://developers.openai.com/api/docs/guides/prompt-engineering",
         "label": "OpenAI · Prompt engineering · Few-shot learning",
         "note": "示例覆盖与格式"
       },
       {
-        "url": "https://arxiv.org/abs/2201.11903",
-        "label": "arXiv · Chain-of-Thought Prompting",
-        "note": "示范推理过程"
+        "url": "https://ai.google.dev/gemini-api/docs/prompting-strategies",
+        "label": "Google · Prompt design strategies",
+        "note": "示例数量、格式和覆盖"
       },
       {
-        "url": "https://ai.google.dev/gemini-api/docs/prompting-strategies",
-        "label": "Google · Gemini prompting strategies",
-        "note": "zero-shot/few-shot 对照"
+        "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview",
+        "label": "Anthropic · Prompt engineering overview",
+        "note": "先定义成功标准并做经验性评测"
+      },
+      {
+        "url": "https://arxiv.org/abs/2202.12837",
+        "label": "arXiv · Rethinking the Role of Demonstrations",
+        "note": "标签空间、输入分布与格式"
       }
     ]
   },

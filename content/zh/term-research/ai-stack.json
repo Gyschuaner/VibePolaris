@@ -75,17 +75,17 @@
   },
   {
     "slug": "few-shot-prompting",
-    "mechanism": "少样本提示把少量输入—输出示例放进当前上下文，模型据此推断任务格式或局部边界，不更新模型参数。",
-    "misconception": "示例不是训练，也不是事实数据库；示例覆盖不足或互相冲突时，结果会随上下文变化。",
-    "demoSignature": "一致工单示例把新故障归为前端；加入互相冲突的示例后标签显示不稳定。证据：示例卡和新输出同步改变。",
+    "mechanism": "少样本提示把少量输入—输出校样放进当前上下文，让模型在这次请求里参照标签空间、输入分布和输出版式；它不会更新模型参数。",
+    "misconception": "示例不是训练，也不是事实数据库；它们只把局部版式摆到当前请求里，覆盖不足、格式混乱或标签冲突都可能被带进新结果。",
+    "demoSignature": "一张校样台先显出两张工单小票、标签盘和单标签格式；新工单落位后盖出前端，加入相反标签后印章改为先修示例。证据：校样卡、标签空间、模型参数 unchanged 和冲突输出同步变化；不画流程节点。",
     "sourceUrls": [
       "https://arxiv.org/abs/2005.14165",
-      "https://platform.openai.com/docs/guides/prompt-engineering",
+      "https://developers.openai.com/api/docs/guides/prompt-engineering",
       "https://ai.google.dev/gemini-api/docs/prompting-strategies",
       "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview",
       "https://arxiv.org/abs/2202.12837"
     ],
-    "rewriteRisk": "先解释示例改变的是当前上下文，再说明覆盖边界和冲突风险，避免把少样本写成微调。",
+    "rewriteRisk": "先解释示例改变的是当前上下文，再说明标签空间、输入分布和格式如何显影；必须把示例校样与微调、事实核验和独立评测分开。",
     "nearDuplicates": [
       "zero-shot-prompting",
       "fine-tuning"
