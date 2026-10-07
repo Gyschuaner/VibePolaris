@@ -4,6 +4,7 @@ import { ConceptHero } from './ConceptHero';
 import { StreamingOutputLesson, StructuredOutputLesson, FunctionCallingLesson } from './ModelOutputLessons';
 import { StreamingReceiptHero } from './ai-stack-lessons/streaming-output-hero';
 import { StructuredMoldHero } from './ai-stack-lessons/structured-output-hero';
+import { FunctionCounterHero } from './ai-stack-lessons/function-calling-hero';
 import { streamingSources, structuredSources, functionSources } from '@/lib/model-output-sources';
 import base from './EventConcepts.module.css';
 import s from './ModelOutputConcepts.module.css';
@@ -72,7 +73,7 @@ export function FunctionCallingTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={functionSources}/>;
   return <ConceptArticle slug="function-calling" title="函数调用" sources={functionSources} sections={[["request","函数名称与参数构成请求"],["dispatch","应用检查后执行查询"],["result","把结果交回对应的调用"],["responsibility","工具选择与执行责任"]]}
     intro={<>函数调用让模型依据工具定义，返回函数名称和参数。应用接到这份请求后，找到对应代码、检查参数与访问权限，再决定执行。函数结果可以回到模型输入，供它继续回答或提出下一请求。</>}
-    hero={<ConceptHero slug="function-calling" label="函数名get_order匹配应用注册表，执行后返回call_01对应订单状态"><div className={s.functionHero}><div><Function size={27}/><code>get_order</code><code>order_id: A102</code></div><ArrowRight size={23}/><div><Code size={27}/><code>注册函数</code><Check size={18}/></div><p><code>call_01 → status: shipped</code></p></div></ConceptHero>}>
+    hero={<ConceptHero slug="function-calling" label="函数调用先递出带编号的请求，再由应用检查注册表与权限，最后返回对应订单结果"><FunctionCounterHero /></ConceptHero>}>
     <ArticleSection id="request" title="函数名称与参数构成请求"><Legacy slug="function-calling" names={["question","definition"]}/>
       <p id="function-definition" className="vp-citation-target"><strong>模型返回的函数调用是一份请求，执行由应用代码完成。</strong>OpenAI 文档把用户自定义函数的流程拆成提供定义、接收调用、应用执行、返回结果和再次生成。模型回复中出现 <code>get_order</code>，本身不能证明订单系统已被查询。<Cite id="function-definition"/></p>
       <p>订单助手要回答“A102 发货了吗”。应用先告诉模型：有一个 <code>get_order</code> 函数，用途是读取订单状态，参数 <code>order_id</code> 为字符串。模型可以据此提出名称与参数。函数说明是可用能力的描述，不是业务数据，也不是授权凭证。</p>

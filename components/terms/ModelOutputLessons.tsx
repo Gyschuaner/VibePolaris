@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { ArrowCounterClockwise, ArrowRight, Check, Pause, Play, Stop, X } from '@phosphor-icons/react';
+import { ArrowCounterClockwise, ArrowRight, Check, Function, Pause, Play, Stop, X } from '@phosphor-icons/react';
 import { Reveal, States } from './ExtendedConceptLessons';
 import { useScene } from './HarnessStoryScenes';
 import { streamEvents, receiveEvents, outputCandidates, constrainedCandidate, attemptOutput, functionRequest, executeFunction, type StreamKind, type OutputMode, type OutputEnd } from '@/lib/model-output-teaching';
@@ -39,11 +39,11 @@ export function FunctionCallingLesson() {
   const [open, setOpen] = useState(false), [executed, setExecuted] = useState(false), [run, setRun] = useState(0);
   const [request, setRequest] = useState(functionRequest(name,args,allowed)), [result, setResult] = useState(executeFunction(request));
   const invalidate = () => { setOpen(false); setExecuted(false); };
-  return <div className={`${base.lab} ${s.lab}`} aria-label="实验：接到函数请求后再执行">
+  return <div className={`${base.lab} ${s.lab} ${s.counterLab}`} aria-label="实验：接到函数请求后再执行">
     <div className={s.controls}><label>请求函数<select value={name} onChange={e => { setName(e.target.value); invalidate(); }}><option value="get_order">get_order（已注册）</option><option value="unknown_function">unknown_function（未注册）</option></select></label><label className={s.check}><input type="checkbox" checked={allowed} onChange={e => { setAllowed(e.target.checked); invalidate(); }}/>本次可查询订单</label></div>
     <label className={s.arguments}>请求参数<textarea value={args} onChange={e => { setArgs(e.target.value); invalidate(); }} spellCheck={false}/></label>
     <button disabled={open} onClick={() => { setRequest(functionRequest(name,args,allowed)); setRun(n => n + 1); setExecuted(false); setOpen(true); }}>收到这份函数请求<ArrowRight size={18}/></button>
-    <Reveal open={open}><div key={run} className={s.functionDesk}><div className={s.request}><span>模型返回的请求</span><pre>{JSON.stringify({call_id:request.call_id,name:request.name,arguments:request.arguments},null,2)}</pre><p>收到这份请求时，函数尚未执行。</p></div><div className={s.executor}><h3>应用的函数注册表</h3><code>get_order(order_id)</code><p>注册名 → 参数 → 访问权</p><button disabled={!open || executed} onClick={() => { setResult(executeFunction(request)); setExecuted(true); }}>检查并执行函数<ArrowRight size={18}/></button></div><Reveal open={executed}><div className={s.functionResult} role="status"><h3>{result.reason}</h3><p>函数执行 {result.executions} 次</p><pre>{result.response || '没有业务结果'}</pre><code>对应调用：{result.call_id}</code></div></Reveal></div></Reveal>
+    <Reveal open={open}><div key={run} className={s.counterDesk}><div className={s.counterRequest}><span>模型递来的取号牌</span><strong>{request.name}</strong><code>编号 · {request.call_id}</code><pre>{request.arguments}</pre><p>牌子到了，订单柜还没有打开。</p></div><div className={s.counterExecutor}><h3>应用的柜台</h3><div className={s.counterRegister}><Function size={19}/><code>get_order(order_id)</code><span>注册名 · 参数 · 访问权</span></div><button disabled={!open || executed} onClick={() => { setResult(executeFunction(request)); setExecuted(true); }}>检查并开柜<ArrowRight size={18}/></button></div><Reveal open={executed}><div className={s.counterResult} role="status"><h3>{result.reason}</h3><p>函数执行 {result.executions} 次</p><pre>{result.response || '没有业务结果'}</pre><code>对应取号牌：{result.call_id}</code></div></Reveal></div></Reveal>
     <button className={base.reset} onClick={() => { setName('get_order'); setArgs('{"order_id":"A102"}'); setAllowed(true); invalidate(); }}><ArrowCounterClockwise size={17}/>重置函数请求</button>
   </div>;
 }
