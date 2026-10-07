@@ -49,12 +49,17 @@ function GenerationLab() {
   function visit() {
     const nextRequest = request + 1;
     setRequest(nextRequest);
+    setRegenerationFailed(false);
     setStaticResult({ price: snapshot, request: nextRequest });
     setServerResult(available ? { price, request: nextRequest } : "error");
   }
   function regenerate() {
-    setRegenerationFailed(!available);
-    if (available) setSnapshot(price);
+    if (available) {
+      setSnapshot(price);
+      setRegenerationFailed(false);
+    } else {
+      setRegenerationFailed(true);
+    }
   }
   return <div className={styles.renderLab} role="region" aria-label="同一票价在静态生成和请求时生成中的快照实验">
     <div className={styles.renderControls}>
