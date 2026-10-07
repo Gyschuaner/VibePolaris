@@ -1,6 +1,6 @@
 "use client";
 
-import { Calculator, ChartLine, CheckCircle, FileText, GitBranch, WarningCircle } from "@phosphor-icons/react";
+import { Calculator, ChartLine, CheckCircle, FileText, GitBranch, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./AiAlignmentSignatureHeroes.module.css";
 
@@ -52,5 +52,33 @@ export function SelfConsistencySignatureHero() {
       </div>
     </div>
     <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 2 ? "先让路径各自走，不要把第一条写得更长就当成共识。" : noisy ? "票数只能说明路径一致；共同的错误前提仍要用外部检查拆开。" : "归并最后答案可以减少单一路径的偶然性，但要记录采样条件。"}</p></figcaption>
+  </figure>;
+}
+
+
+export function ConstitutionalAiSignatureHero() {
+  const scene = useScene(4);
+  const labels = ["放入候选回答", "挂上原则卡", "写出批评", "改写并留痕"];
+  const revised = scene.step === 3;
+  return <figure ref={scene.ref} className={styles.hero} role="region" aria-label="宪法式 AI 用原则卡批评并改写候选回答" data-step={scene.step}>
+    <SceneControls scene={scene} labels={labels} compact />
+    <div className={styles.canvas}>
+      <div className={styles.constitutionBoard}>
+        <div className={styles.principleCards}>
+          <span>可审阅的原则卡</span>
+          <div className={styles.principleCard} data-active={scene.step >= 1}><ShieldCheck size={16} /><strong>帮助用户</strong><small>回答要解决实际问题</small></div>
+          <div className={styles.principleCard} data-active={scene.step >= 1}><ShieldCheck size={16} /><strong>不泄露隐私</strong><small>不要带出他人的订单</small></div>
+        </div>
+        <div className={styles.answerCard} data-revised={revised}>
+          <span>候选回答</span><FileText size={19} className={styles.icon} />
+          <strong>{revised ? "我可以解释流程，但不会展示他人的订单信息。" : "我把上一位客户的订单也贴给你参考。"}</strong>
+          <small>{scene.step < 2 ? "等待按原则检查" : revised ? "修订后 · 保留可帮助部分" : "违反隐私原则"}</small>
+        </div>
+        <div className={styles.critiqueNote} data-visible={scene.step >= 2} data-good={revised}>
+          {revised ? <CheckCircle size={18} /> : <WarningCircle size={18} />}<strong>{scene.step < 2 ? "还没有批评" : revised ? "批评已落实" : "指出：泄露他人信息"}</strong><small>{scene.step < 2 ? "先让原则成为判断依据" : revised ? "仍需独立评测和人工治理" : "不是把整段回答都删掉"}</small>
+        </div>
+      </div>
+    </div>
+    <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 2 ? "原则卡先把“什么算合适”写得具体，避免只剩一句口号。" : revised ? "批评、改写和剩余风险都被留下；原则不是权限系统或自动正确的法律。" : "先指出哪条原则被触犯，再谈怎样改写，不能把模型自评当成证明。"}</p></figcaption>
   </figure>;
 }
