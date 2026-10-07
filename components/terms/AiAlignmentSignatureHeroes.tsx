@@ -1,6 +1,6 @@
 "use client";
 
-import { Brain, Calculator, ChartLine, CheckCircle, FileText, GitBranch, LockSimple, ShieldCheck, Stack, User, WarningCircle } from "@phosphor-icons/react";
+import { Brain, Calculator, ChartLine, CheckCircle, FileText, Gauge, GitBranch, LockSimple, ShieldCheck, Stack, User, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./AiAlignmentSignatureHeroes.module.css";
 
@@ -232,5 +232,32 @@ export function PromptChainingSignatureHero() {
       </div>
     </div>
     <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 2 ? "拆分不是把大提示切成几块，而是让下一步拿到一张有边界的中间卡。" : complete ? "闸门通过后才拼正文；调用次数、失败项和回退选择都留在账本里。" : "连接处发现缺口就停下，避免错误一路复制到最后一段文字。"}</p></figcaption>
+  </figure>;
+}
+
+
+export function EvaluatorOptimizerSignatureHero() {
+  const scene = useScene(4);
+  const labels = ["放入初稿", "打开 rubric", "写出定向意见", "比较第二稿"];
+  const improved = scene.step === 3;
+  return <figure ref={scene.ref} className={styles.hero} role="region" aria-label="评估器和优化器对照初稿、评分标准与未解决证据" data-step={scene.step}>
+    <SceneControls scene={scene} labels={labels} compact />
+    <div className={styles.canvas}>
+      <div className={styles.evaluatorBoard}>
+        <div className={styles.draftStack}>
+          <span>草稿对照</span>
+          <div className={styles.draftCard} data-current={!improved}><FileText size={17} /><strong>{improved ? "第二稿" : "初稿"}</strong><small>{improved ? "补上 48 小时限制" : "摘要漏掉时间限制"}</small></div>
+          <div className={styles.draftDelta} data-visible={improved}><ChartLine size={16} /><span>{improved ? "覆盖提高" : "等待下一版"}</span><b>{improved ? "+1 条条件" : "—"}</b></div>
+        </div>
+        <div className={styles.rubricScale}>
+          <span>rubric · 评估器能观察什么</span>
+          {["事实覆盖", "表达清晰", "风险边界"].map((label, index) => <div className={styles.rubricRow} key={label} data-active={scene.step >= 1}><span>{label}</span><i style={{ width: `${scene.step < 1 ? 22 : index === 0 && improved ? 86 : index === 1 ? 72 : 48}%` }} /><b>{scene.step < 1 ? "—" : index === 0 && improved ? "86" : index === 1 ? "72" : "48"}</b></div>)}
+        </div>
+        <div className={styles.feedbackCard} data-visible={scene.step >= 2} data-good={improved}>
+          {improved ? <CheckCircle size={18} /> : <WarningCircle size={18} />}<strong>{scene.step < 2 ? "还没有具体意见" : improved ? "优化器只改允许范围" : "请补 48 小时限制"}</strong><small>{scene.step < 2 ? "先写标准，再指出缺口" : improved ? "仍留 1 条来源待核验" : "不能只说“再好一点”"}</small>
+        </div>
+      </div>
+    </div>
+    <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 2 ? "评估器要拿到可执行的 rubric，才能把“哪里不好”变成一条可回放的意见。" : improved ? "分数上升也要把来源和未解决项留下，达到停止条件后还可能需要人工抽查。" : "先定标准，再给定向反馈；循环不能靠文字变长证明自己变好了。"}</p></figcaption>
   </figure>;
 }
