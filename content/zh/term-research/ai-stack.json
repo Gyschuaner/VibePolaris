@@ -2627,5 +2627,25 @@
       "layer-normalization",
       "fine-tuning"
     ]
+  },
+  {
+    "slug": "feed-forward-network",
+    "mechanism": "Transformer FFN 对每个 token 独立应用两层线性变换与激活，先从 d_model 扩到 d_ff，再投回 d_model；参数在位置间共享。",
+    "misconception": "position-wise 不表示每个位置有独立参数，也不表示 FFN 负责跨 token 关系；那是另一个子层的职责。",
+    "demoSignature": "5帧｜对象：token矩阵、扩维层、激活/门控、压回层、共享参数、attention边界｜交互：查看不同token独立列｜变化：逐列输入→扩宽→非线性→压回→同参异出；矩阵工作台，不是流程图。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/1706.03762",
+      "https://pytorch.org/docs/stable/generated/torch.nn.TransformerEncoderLayer.html",
+      "https://d2l.ai/chapter_attention-mechanisms-and-transformers/transformer.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.GELU.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.Linear.html"
+    ],
+    "rewriteRisk": "不要把 FFN 写成注意力或序列循环；需明确 d_model/d_ff、逐位置共享参数、激活/门控和回到主干尺寸。",
+    "nearDuplicates": [
+      "transformer",
+      "attention",
+      "activation-function",
+      "residual-connection"
+    ]
   }
 ]

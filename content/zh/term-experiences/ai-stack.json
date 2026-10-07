@@ -30794,5 +30794,261 @@
         "note": "对照残差相加与密集连接的不同信息组合方式。"
       }
     ]
+  },
+  {
+    "slug": "feed-forward-network",
+    "lead": "每个 token 独自进一间“两次线性变换”的小工坊，先扩宽，再压回原尺寸。",
+    "definition": "Transformer 里的前馈网络（FFN）通常由两层线性变换和中间激活组成：先把每个 token 的 hidden size 扩到更宽的中间维度，再压回 model dimension。它对每个位置独立使用同一组参数，因此负责加工单个 token 的表示，跨 token 的混合主要由注意力层完成。",
+    "boundary": "FFN 不是注意力，也不是把整段序列串起来的循环；在标准 position-wise 结构里，一个位置的 FFN 不读取其他位置。中间维度、激活和门控方式会影响参数量、容量与计算成本；现代模型可能用 SwiGLU 等门控变体，不能把所有 FFN 都简化成两张无差别矩阵。",
+    "sceneKind": "matrix",
+    "sceneTitle": "宽一格，再窄回来：FFN 的 token 工作台",
+    "actionLabel": "查看不同 token 的独立列",
+    "actors": [
+      {
+        "id": "tokens",
+        "label": "Token 矩阵",
+        "detail": "每列一个位置的 hidden vector",
+        "icon": "layout",
+        "group": "输入"
+      },
+      {
+        "id": "expand",
+        "label": "扩维层",
+        "detail": "d_model → d_ff",
+        "icon": "chart",
+        "group": "宽空间"
+      },
+      {
+        "id": "activation",
+        "label": "激活/门控",
+        "detail": "GELU 或 SwiGLU",
+        "icon": "spark",
+        "group": "非线性"
+      },
+      {
+        "id": "contract",
+        "label": "压回层",
+        "detail": "d_ff → d_model",
+        "icon": "gear",
+        "group": "输出尺寸"
+      },
+      {
+        "id": "shared",
+        "label": "共享参数",
+        "detail": "每个位置用同一套权重",
+        "icon": "package",
+        "group": "规则"
+      },
+      {
+        "id": "attention",
+        "label": "跨位置交流",
+        "detail": "主要由 attention 负责",
+        "icon": "network",
+        "group": "边界"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "每个位置先占一列",
+        "note": "把注意力后的 hidden vectors 摊成矩阵；FFN 先看单列。",
+        "activeIds": [
+          "tokens"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "expand",
+          "activation",
+          "contract",
+          "shared",
+          "attention"
+        ],
+        "values": {
+          "tokens": "猫 · 跑 · 跳，各有 d_model=4"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "同一工作台先扩宽",
+        "note": "第一层把每个 token 独立送到 d_ff 更大的中间空间。",
+        "activeIds": [
+          "expand"
+        ],
+        "doneIds": [
+          "tokens"
+        ],
+        "mutedIds": [
+          "activation",
+          "contract",
+          "shared",
+          "attention"
+        ],
+        "values": {
+          "expand": "4 → 16 · 三列分别展开"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "宽空间里拐一下",
+        "note": "激活或门控在每个位置的中间向量上工作，产生非线性组合。",
+        "activeIds": [
+          "activation"
+        ],
+        "doneIds": [
+          "tokens",
+          "expand"
+        ],
+        "mutedIds": [
+          "contract",
+          "shared",
+          "attention"
+        ],
+        "values": {
+          "activation": "GELU / SwiGLU · 逐列计算"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "再压回主干尺寸",
+        "note": "第二层把每列投回 d_model，输出才能接回残差和下一子层。",
+        "activeIds": [
+          "contract"
+        ],
+        "doneIds": [
+          "tokens",
+          "expand",
+          "activation"
+        ],
+        "mutedIds": [
+          "shared",
+          "attention"
+        ],
+        "values": {
+          "contract": "16 → 4 · 输出可与主干对齐"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "参数相同，输入不同",
+        "note": "共享权重不等于相同输出；每个 token 的向量不同，经过同一函数后的结果也不同。",
+        "activeIds": [
+          "shared",
+          "attention"
+        ],
+        "doneIds": [
+          "tokens",
+          "expand",
+          "activation",
+          "contract"
+        ],
+        "mutedIds": [],
+        "values": {
+          "shared": "猫/跑/跳 → 同一组 FFN 参数",
+          "attention": "跨位置关系另由 attention 处理"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "Transformer FFN 是逐位置共享参数的非线性加工器：先扩维提供容量，再压回主干尺寸；跨 token 的交流不在这里发生。",
+    "quiz": {
+      "question": "标准 Transformer FFN 的 position-wise 主要意味着什么？",
+      "options": [
+        {
+          "label": "每个位置独立通过同一组 FFN 参数，位置之间不在此处直接混合",
+          "correct": true
+        },
+        {
+          "label": "每个位置都使用一组完全不同的参数",
+          "correct": false
+        },
+        {
+          "label": "FFN 会自动把所有 token 按时间顺序排队",
+          "correct": false
+        }
+      ],
+      "success": "对，同一套函数逐位置应用，输入不同仍会得到不同结果。",
+      "retry": "看矩阵的列：FFN 对每列独立加工，跨列关系主要由 attention 处理。"
+    },
+    "prompt": {
+      "title": "拆解一个 Transformer FFN",
+      "text": "给出 d_model、d_ff、激活函数和 token 矩阵，逐步写出第一层扩维、激活/门控、第二层压回的形状；说明为什么把一个 token 换成另一个 token 不会改变参数，却会改变输出。"
+    },
+    "teaching": [
+      {
+        "id": "shape",
+        "title": "扩宽不是把序列变长",
+        "body": "d_model → d_ff 改的是每个 token 的特征维度，不是 token 数量。Transformer 论文把 FFN 写成两次线性变换加 ReLU；现代实现常换激活或门控，但“先在特征维展开”仍是主线。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "position",
+        "title": "position-wise 是一条很重要的边界",
+        "body": "同一组 FFN 权重会对每个位置重复使用，猫这一列不会在 FFN 内读取跑那一列。把 FFN 说成“理解整句话”会把注意力的职责挪错地方。",
+        "sourceIndices": [
+          1,
+          3
+        ]
+      },
+      {
+        "id": "nonlinear",
+        "title": "中间激活让两层不再能合并",
+        "body": "如果两层之间没有激活，它们仍可折叠成一次线性映射。GELU、ReLU 或门控让中间空间可以按输入选择方向，增加单个 token 的表达能力。",
+        "sourceIndices": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": "capacity",
+        "title": "d_ff 是容量和成本的旋钮",
+        "body": "中间维度越宽，参数量、显存和计算通常越大，但更宽不是自动更聪明。还要结合激活、门控、量化和真实任务指标，看新增容量是否值得。",
+        "sourceIndices": [
+          2,
+          3,
+          5
+        ]
+      },
+      {
+        "id": "residual",
+        "title": "最后还要回到主干尺寸",
+        "body": "FFN 输出通常回到 d_model，才能与残差相加并继续进入下一层。尺寸对不上时，不能用“模型会自动适配”带过；实现必须明确投影、布局和 mask。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/1706.03762",
+        "label": "Vaswani et al. · Attention Is All You Need",
+        "note": "定义 Transformer 的 position-wise feed-forward network。"
+      },
+      {
+        "url": "https://pytorch.org/docs/stable/generated/torch.nn.TransformerEncoderLayer.html",
+        "label": "PyTorch · TransformerEncoderLayer",
+        "note": "展示 self-attention、feed-forward、dropout、norm 与维度配置。"
+      },
+      {
+        "url": "https://d2l.ai/chapter_attention-mechanisms-and-transformers/transformer.html",
+        "label": "Dive into Deep Learning · Transformer",
+        "note": "解释 Transformer block 中注意力、FFN 与残差的分工。"
+      },
+      {
+        "url": "https://pytorch.org/docs/stable/generated/torch.nn.GELU.html",
+        "label": "PyTorch · GELU",
+        "note": "给出 FFN 常用非线性激活的实现定义。"
+      },
+      {
+        "url": "https://pytorch.org/docs/stable/generated/torch.nn.Linear.html",
+        "label": "PyTorch · Linear",
+        "note": "说明线性层的输入输出维度与仿射变换。"
+      }
+    ]
   }
 ]

@@ -7414,5 +7414,66 @@
       "layer-normalization",
       "fine-tuning"
     ]
+  },
+  {
+    "zh": "前馈网络",
+    "en": "Feed-Forward Network",
+    "slug": "feed-forward-network",
+    "cat": "AI·Agent",
+    "say": "每个 token 独自进一间“两次线性变换”的小工坊，先扩宽，再压回原尺寸。",
+    "aliases": [
+      "Feed-Forward Network",
+      "FFN",
+      "Position-wise FFN",
+      "前馈层"
+    ],
+    "question": "注意力看完别的 token 后，每个 token 自己还要做什么？",
+    "definition": "Transformer 里的前馈网络（FFN）通常由两层线性变换和中间激活组成：先把每个 token 的 hidden size 扩到更宽的中间维度，再压回 model dimension。它对每个位置独立使用同一组参数，因此负责加工单个 token 的表示，跨 token 的混合主要由注意力层完成。",
+    "boundary": "FFN 不是注意力，也不是把整段序列串起来的循环；在标准 position-wise 结构里，一个位置的 FFN 不读取其他位置。中间维度、激活和门控方式会影响参数量、容量与计算成本；现代模型可能用 SwiGLU 等门控变体，不能把所有 FFN 都简化成两张无差别矩阵。",
+    "demoType": "hierarchy",
+    "demoTitle": "同一套小工坊，逐 token 加工而不互相串线",
+    "demoSteps": [
+      {
+        "label": "把 token 摆成列",
+        "value": "猫=[…] · 跑=[…] · 跳=[…]",
+        "note": "注意力之后，每个位置都有一个 hidden vector，FFN 从单个位置开始。"
+      },
+      {
+        "label": "先扩到宽空间",
+        "value": "d_model=4 → d_ff=16",
+        "note": "第一层把表示送进更宽的中间空间，让更多特征组合有地方展开。"
+      },
+      {
+        "label": "在宽空间过激活",
+        "value": "GELU / 门控 → 保留有用方向",
+        "note": "非线性让这间小工坊不只是一次可合并的线性变换。"
+      },
+      {
+        "label": "压回模型尺寸",
+        "value": "d_ff=16 → d_model=4",
+        "note": "第二层把加工后的结果投回主干，才能与残差和下一子层对齐。"
+      },
+      {
+        "label": "换 token，参数不换",
+        "value": "猫、跑、跳各自计算 · 共享权重",
+        "note": "位置之间没有在 FFN 内直接通信；跨位置关系由注意力等模块负责。"
+      }
+    ],
+    "quizQuestion": "标准 Transformer FFN 的 position-wise 主要意味着什么？",
+    "quizOptions": [
+      "每个位置独立通过同一组 FFN 参数，位置之间不在此处直接混合",
+      "每个位置都使用一组完全不同的参数",
+      "FFN 会自动把所有 token 按时间顺序排队"
+    ],
+    "correctText": "position-wise 指同一套前馈变换逐位置应用；它加工 token，跨 token 交流不是它的主要职责。",
+    "wrongText": "先区分 FFN 的逐位置加工、注意力的跨位置混合和残差的相加。",
+    "promptTitle": "拆解一个 Transformer FFN",
+    "prompt": "给出 d_model、d_ff、激活函数和 token 矩阵，逐步写出第一层扩维、激活/门控、第二层压回的形状；说明为什么把一个 token 换成另一个 token 不会改变参数，却会改变输出。",
+    "relatedSlugs": [
+      "transformer",
+      "attention",
+      "activation-function",
+      "residual-connection"
+    ]
   }
 ]
