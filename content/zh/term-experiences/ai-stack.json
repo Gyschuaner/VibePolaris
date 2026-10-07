@@ -25534,5 +25534,176 @@
         "note": "训练目标与部署风险边界"
       }
     ]
+  },
+  {
+    "slug": "red-teaming",
+    "lead": "正常样例都通过了，为什么还要故意把系统推向最容易失守的角落？",
+    "definition": "红队测试站到攻击者或滥用者的位置，主动设计对抗、异常和高风险输入，观察模型、工具链和产品边界是否失守。它关注普通质量测试可能漏掉的失败模式，并把可复现证据交回修复与回归评测。",
+    "boundary": "红队不是随意攻击，也不是找一个漂亮的越狱就结束；授权、范围、数据保护、成功标准和修复闭环必须先约定。一次没有复现或没有覆盖真实部署路径的攻击，不能代表系统安全。",
+    "sceneKind": "matrix",
+    "sceneTitle": "攻击面矩阵：同一系统，换入口就换一组风险",
+    "actionLabel": "点亮一个攻击面",
+    "actors": [
+      {
+        "id": "chat",
+        "label": "聊天入口",
+        "detail": "文本、角色和多轮上下文",
+        "icon": "message",
+        "group": "入口"
+      },
+      {
+        "id": "file",
+        "label": "文件入口",
+        "detail": "上传内容和解析器",
+        "icon": "file",
+        "group": "入口"
+      },
+      {
+        "id": "tool",
+        "label": "工具入口",
+        "detail": "参数、身份与副作用",
+        "icon": "gear",
+        "group": "入口"
+      },
+      {
+        "id": "attack",
+        "label": "对抗样例",
+        "detail": "越权、恶意文件、参数篡改",
+        "icon": "key",
+        "group": "测试"
+      },
+      {
+        "id": "evidence",
+        "label": "证据格",
+        "detail": "复现、影响与修复状态",
+        "icon": "shield",
+        "group": "结果"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "铺开入口",
+        "note": "模型本身和外围入口分开看，攻击面不只是一句提示。",
+        "activeIds": [
+          "chat",
+          "file",
+          "tool"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "attack",
+          "evidence"
+        ],
+        "values": {
+          "chat": "text",
+          "file": "upload",
+          "tool": "call"
+        }
+      },
+      {
+        "label": "放入对抗样例",
+        "note": "每个格子记录前置条件、输入和预期安全结果。",
+        "activeIds": [
+          "attack"
+        ],
+        "doneIds": [
+          "chat",
+          "file",
+          "tool"
+        ],
+        "mutedIds": [
+          "evidence"
+        ],
+        "values": {
+          "attack": "3 类变体"
+        }
+      },
+      {
+        "label": "标记失守格",
+        "note": "报告指向具体证据，而不是给整个系统一个印象分。",
+        "activeIds": [
+          "tool",
+          "evidence"
+        ],
+        "doneIds": [
+          "chat",
+          "file",
+          "attack"
+        ],
+        "mutedIds": [],
+        "values": {
+          "evidence": "未授权执行 · 可复现"
+        }
+      },
+      {
+        "label": "补回归样例",
+        "note": "修复后保留原攻击和相邻变体，检查防护是否泛化。",
+        "activeIds": [
+          "evidence",
+          "attack"
+        ],
+        "doneIds": [
+          "chat",
+          "file",
+          "tool"
+        ],
+        "mutedIds": [],
+        "values": {
+          "evidence": "回归加入评测集"
+        }
+      }
+    ],
+    "insight": "红队把异常输入变成可复现的风险证据，价值在闭环而不在攻击姿势本身。",
+    "quiz": {
+      "question": "一次红队报告至少要让人知道什么？",
+      "options": [
+        {
+          "label": "攻击前提、复现输入、实际影响和修复状态",
+          "correct": true
+        },
+        {
+          "label": "只有攻击者身份和一个总分",
+          "correct": false
+        },
+        {
+          "label": "证明系统在所有输入上绝对安全",
+          "correct": false
+        }
+      ],
+      "success": "可复现的前提、输入、影响和修复状态才能形成工程闭环。",
+      "retry": "红队证据有范围，不能升级成全局安全证明。"
+    },
+    "prompt": {
+      "title": "编写一次有授权的红队计划",
+      "text": "请限定测试资产、授权范围、风险等级和停止条件；按入口列出对抗样例、预期安全行为、实际证据、影响、修复负责人和回归样例。不要测试不属于你的系统，也不要把未复现的猜测写成漏洞。"
+    },
+    "sources": [
+      {
+        "url": "https://developers.openai.com/api/docs/guides/red-teaming",
+        "label": "OpenAI API · Red teaming",
+        "note": "授权测试、风险探测与评测边界"
+      },
+      {
+        "url": "https://www.anthropic.com/research/red-teaming-language-models-to-reduce-harm",
+        "label": "Anthropic · Red teaming language models",
+        "note": "红队与危害发现研究"
+      },
+      {
+        "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+        "label": "NIST · AI RMF",
+        "note": "风险识别、测量与治理"
+      },
+      {
+        "url": "https://genai.owasp.org/llm-top-10/",
+        "label": "OWASP · LLM Top 10",
+        "note": "常见生成式 AI 风险类别"
+      },
+      {
+        "url": "https://arxiv.org/abs/2505.04806",
+        "label": "Pathade · Red Teaming the Mind of the Machine",
+        "note": "越狱与提示注入系统评估"
+      }
+    ]
   }
 ]
