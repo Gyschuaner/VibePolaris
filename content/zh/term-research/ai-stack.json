@@ -147,9 +147,9 @@
   },
   {
     "slug": "tokenization",
-    "mechanism": "分词器按具体词表和规则把字符串切成 token 片段并映射为编号，模型接收编号序列而不是原始字符。",
-    "misconception": "token 不是固定一个字或一个词；语言、空格、符号和编码器都会影响数量。",
-    "demoSignature": "“CSS 很好用”在 BPE 示意与按词示意下显示不同 token 数和编号；正文强调示意不能替代目标模型实测。",
+    "mechanism": "tokenizer 先把原始字符串按词表和边界规则切成片段，再把每个片段映射成当前编码器的编号序列；空格、语言、代码和词表都会改变这组片段。",
+    "misconception": "token 不是固定一个字或一个词，编号也没有跨编码器的通用含义；教学示意只能帮助理解，不能代替目标模型实测。",
+    "demoSignature": "字符串压缩机 5 帧：原句落台→标出空格边界→合并常见片段→贴上示意编号→并排换编码器；用户切换字符串与示意尺，观察 token 片段和序列实际变化。",
     "sourceUrls": [
       "https://github.com/openai/tiktoken",
       "https://developers.openai.com/cookbook/examples/how_to_count_tokens_with_tiktoken",
@@ -157,7 +157,7 @@
       "https://arxiv.org/abs/1808.06226",
       "https://arxiv.org/abs/1508.07909"
     ],
-    "rewriteRisk": "始终绑定具体编码器，避免把字符、词和 token 当成同一层单位。",
+    "rewriteRisk": "正文要解释子词、空格和编号的关系，并始终绑定具体编码器；不要把本站固定片段或数字写成厂商词表事实。",
     "nearDuplicates": [
       "context-window"
     ]

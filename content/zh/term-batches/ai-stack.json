@@ -397,32 +397,32 @@
     "en": "Tokenization",
     "slug": "tokenization",
     "cat": "AI·Agent",
-    "say": "把文本拆成模型处理的 token；token 不一定等于一个汉字或一个单词。",
+    "say": "把字符串按具体 tokenizer 的尺切成 token 片段，再贴上模型接收的编号。",
     "aliases": [
       "tokenizer",
       "分词器",
       "token 切分"
     ],
-    "question": "同样字数的中英文为什么 token 数量不同？",
-    "definition": "分词器使用特定模型预先准备的词表和编码规则，把原始字符串切成 token（词、半个词、空格或符号等片段），再映射为模型接收的编号序列。",
-    "boundary": "token 不是固定的字、词或字符数；空格、语言、代码、emoji、模型版本和 tokenizer 都可能改变切分，示例编号不能跨模型套用。",
+    "question": "同一句“CSS 很好用”，为什么换一把编码器尺，编号就换了？",
+    "definition": "tokenizer 按自己的词表和边界规则把字符串切成 token 片段，再为每个片段映射一个当前编码器里的编号；模型接收的是这串编号，而不是人眼看到的原始字符。",
+    "boundary": "token 不是固定的字、词或字符数；空格、语言、代码、emoji、词表和模型版本都可能改变边界，教学编号不能跨编码器套用。",
     "demoType": "comparison",
-    "demoTitle": "换编码器后 token 边界改变",
+    "demoTitle": "字符串压缩机：换一把尺，边界就变",
     "demoSteps": [
       {
-        "label": "字符串",
+        "label": "原句落台",
         "value": "CSS 很好用",
-        "note": "输入先是普通字符串。"
+        "note": "先保留原顺序，字符数还不能告诉我们 token 数。"
       },
       {
-        "label": "BPE",
-        "value": "CSS · 很 · 好 · 用 → 4 个示意 token",
-        "note": "子词边界由具体词表决定。"
+        "label": "片段合并",
+        "value": "CSS · ␠ · 很好 · 用 → 4 个示意 token",
+        "note": "BPE 示意把常见相邻片段压成更大的子词。"
       },
       {
-        "label": "换编码器",
-        "value": "CSS · 很好用 → 2 个示意 token",
-        "note": "不同编码器不能直接比较 token 数。"
+        "label": "编号贴上",
+        "value": "BPE [804, 220, 17732, 3912] → 换按词示意",
+        "note": "编号只在当前编码器里有意义，换尺后要重新编码。"
       }
     ],
     "quizQuestion": "token 与字数是什么关系？",
