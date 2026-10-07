@@ -30030,5 +30030,261 @@
         "note": "从指数、归一化和交叉熵解释 softmax 回归。"
       }
     ]
+  },
+  {
+    "slug": "activation-function",
+    "lead": "给线性层拐一个弯，让多层网络不再只是同一条直线的叠加。",
+    "definition": "激活函数把神经元收到的线性结果逐点变换成新的值，常见的 ReLU 把负数截为零，GELU 则按输入大小平滑地保留一部分信号。没有非线性，多层线性变换合起来仍可折叠成一层线性变换，网络就很难表达弯曲的边界和条件组合。",
+    "boundary": "激活函数不是学习规则、损失函数或注意力机制；它只决定每个位置的局部变换，参数和梯度仍由训练过程更新。ReLU 可能让一部分单元长期输出零，sigmoid/tanh 在大幅值处可能饱和，GELU 的平滑不等于一定更好。选型还受架构、初始化、数值范围和推理目标影响。",
+    "sceneKind": "transform",
+    "sceneTitle": "一条输入曲线的三种性格",
+    "actionLabel": "切换激活函数",
+    "actors": [
+      {
+        "id": "linear",
+        "label": "线性输出",
+        "detail": "加权相加后的 z",
+        "icon": "chart",
+        "group": "输入"
+      },
+      {
+        "id": "relu",
+        "label": "ReLU",
+        "detail": "负值归零",
+        "icon": "gear",
+        "group": "硬门槛"
+      },
+      {
+        "id": "gelu",
+        "label": "GELU",
+        "detail": "负侧平滑衰减",
+        "icon": "spark",
+        "group": "软门槛"
+      },
+      {
+        "id": "sigmoid",
+        "label": "Sigmoid",
+        "detail": "压到 0 与 1 之间",
+        "icon": "chart",
+        "group": "饱和"
+      },
+      {
+        "id": "gradient",
+        "label": "梯度形状",
+        "detail": "连续、截断或饱和",
+        "icon": "brain",
+        "group": "训练影响"
+      },
+      {
+        "id": "claim",
+        "label": "任务结论",
+        "detail": "仍需真实评测",
+        "icon": "shield",
+        "group": "边界"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "线性输出还没有拐弯",
+        "note": "先看同一排 z 值；正负和大小都由上一层保留下来。",
+        "activeIds": [
+          "linear"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "relu",
+          "gelu",
+          "sigmoid",
+          "gradient",
+          "claim"
+        ],
+        "values": {
+          "linear": "-2.0 · -0.4 · 0 · 0.7 · 2.0"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "硬门槛：ReLU",
+        "note": "负侧被压成零，边界清楚，零输出也可能让单元停工。",
+        "activeIds": [
+          "relu",
+          "gradient"
+        ],
+        "doneIds": [
+          "linear"
+        ],
+        "mutedIds": [
+          "gelu",
+          "sigmoid",
+          "claim"
+        ],
+        "values": {
+          "relu": "0 · 0 · 0 · 0.7 · 2.0",
+          "gradient": "负侧梯度为 0"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "软门槛：GELU",
+        "note": "输入越负，保留得越少；曲线在零点附近连续变化。",
+        "activeIds": [
+          "gelu",
+          "gradient"
+        ],
+        "doneIds": [
+          "linear",
+          "relu"
+        ],
+        "mutedIds": [
+          "sigmoid",
+          "claim"
+        ],
+        "values": {
+          "gelu": "-0.05 · -0.14 · 0 · 0.53 · 1.95",
+          "gradient": "连续衰减"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "饱和：Sigmoid",
+        "note": "输出被压进 0 到 1；两端变化变小，梯度也会变弱。",
+        "activeIds": [
+          "sigmoid",
+          "gradient"
+        ],
+        "doneIds": [
+          "linear",
+          "relu",
+          "gelu"
+        ],
+        "mutedIds": [
+          "claim"
+        ],
+        "values": {
+          "sigmoid": "0.12 · 0.40 · 0.50 · 0.67 · 0.88",
+          "gradient": "两端趋近 0"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "把曲线交给评测",
+        "note": "激活只负责局部变换；模型是否更好要看训练稳定性、任务指标和边界案例。",
+        "activeIds": [
+          "claim"
+        ],
+        "doneIds": [
+          "linear",
+          "relu",
+          "gelu",
+          "sigmoid",
+          "gradient"
+        ],
+        "mutedIds": [],
+        "values": {
+          "claim": "曲线解释完成 · 真实任务待测"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "激活函数让网络拥有非线性表达力；具体曲线同时决定信号如何通过和梯度怎样返回。",
+    "quiz": {
+      "question": "把所有激活函数都拿掉，深层线性层会发生什么？",
+      "options": [
+        {
+          "label": "多层线性变换仍可合并成一层线性变换，表达能力受限",
+          "correct": true
+        },
+        {
+          "label": "模型自动获得更多非线性分支",
+          "correct": false
+        },
+        {
+          "label": "训练会停止但模型表达能力不变",
+          "correct": false
+        }
+      ],
+      "success": "对，非线性是激活函数在层间留下的弯折。",
+      "retry": "把线性变换连乘起来看：没有激活，它们仍能合并成一个线性变换。"
+    },
+    "prompt": {
+      "title": "比较两种激活函数",
+      "text": "给定一组线性输出，请分别计算 ReLU、GELU 和 sigmoid 的输出；画出正负区间的变化，说明哪里会截断、哪里会饱和、反向梯度可能遇到什么，并结合任务而不是只看曲线选择。"
+    },
+    "teaching": [
+      {
+        "id": "why",
+        "title": "没有拐弯，多层还是一条直线",
+        "body": "线性层做的是矩阵乘法加偏置。连续堆叠几层，如果中间不插入非线性，整串可以重新写成一次矩阵乘法；激活函数把这个可合并性打破，网络才能组合出弯曲的决策边界。",
+        "sourceIndices": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": "relu",
+        "title": "ReLU 的门槛很利落",
+        "body": "ReLU 对正数原样通过，对负数输出 0。它计算简单、正侧梯度不容易饱和，但如果一个单元长期落在负侧，就可能一直没有更新信号，这就是常说的 dead ReLU 风险。",
+        "sourceIndices": [
+          2,
+          4
+        ]
+      },
+      {
+        "id": "gelu",
+        "title": "GELU 是按大小软开门",
+        "body": "GELU 不是把负值一刀切掉，而是让输入按概率式门控保留。Transformer 常见实现用它或近似形式；“更平滑”描述的是函数形状，不是任何任务上的保证。",
+        "sourceIndices": [
+          1,
+          3
+        ]
+      },
+      {
+        "id": "saturation",
+        "title": "饱和会让远处的变化变小",
+        "body": "sigmoid 和 tanh 在两端趋于平坦，输入再增大，输出改变很少，反向梯度也可能变弱。它们在输出需要有界时仍有用途，不能把“可能饱和”写成“永远不能用”。",
+        "sourceIndices": [
+          4,
+          5
+        ]
+      },
+      {
+        "id": "choice",
+        "title": "选函数要连着架构和证据看",
+        "body": "激活函数的影响要和初始化、归一化、残差、精度和任务指标一起观察。单看一张函数图，只能解释局部信号如何通过，不能替代训练曲线和真实样本评测。",
+        "sourceIndices": [
+          1,
+          3,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/1802.09417",
+        "label": "Hendrycks & Gimpel · GELUs",
+        "note": "提出 Gaussian Error Linear Units 及其平滑门控解释。"
+      },
+      {
+        "url": "https://pytorch.org/docs/stable/generated/torch.nn.ReLU.html",
+        "label": "PyTorch · ReLU",
+        "note": "定义逐元素 max(0, x) 的实现。"
+      },
+      {
+        "url": "https://pytorch.org/docs/stable/generated/torch.nn.GELU.html",
+        "label": "PyTorch · GELU",
+        "note": "给出 GELU 的精确与近似实现选项。"
+      },
+      {
+        "url": "https://d2l.ai/chapter_multilayer-perceptrons/mlp.html",
+        "label": "Dive into Deep Learning · MLP",
+        "note": "解释多层感知机为何需要非线性激活。"
+      },
+      {
+        "url": "https://www.deeplearningbook.org/contents/mlp.html",
+        "label": "Goodfellow et al. · Deep Learning, MLP chapter",
+        "note": "从通用近似与梯度角度讨论非线性单元。"
+      }
+    ]
   }
 ]

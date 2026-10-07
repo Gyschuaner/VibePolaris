@@ -2567,5 +2567,25 @@
       "transformer",
       "inference"
     ]
+  },
+  {
+    "slug": "activation-function",
+    "mechanism": "激活函数逐点变换线性层输出，打破多层线性变换可合并的限制；不同函数决定信号保留、截断或饱和的形状。",
+    "misconception": "激活函数不是模型自动学习的规则本身，也不保证某一种函数总是更好；它与架构、初始化和任务共同决定训练结果。",
+    "demoSignature": "5帧｜对象：线性输出、ReLU、GELU、Sigmoid、梯度形状、任务评测｜交互：切换逐点变换｜变化：原始z→硬门槛→软门槛→饱和两端→把曲线结论交回评测；函数变形台，不是流程图。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/1802.09417",
+      "https://pytorch.org/docs/stable/generated/torch.nn.ReLU.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.GELU.html",
+      "https://d2l.ai/chapter_multilayer-perceptrons/mlp.html",
+      "https://www.deeplearningbook.org/contents/mlp.html"
+    ],
+    "rewriteRisk": "不要把激活函数写成训练算法或注意力；要讲清无非线性时的可合并性，以及 ReLU/GELU/饱和的条件差异。",
+    "nearDuplicates": [
+      "transformer",
+      "fine-tuning",
+      "embedding",
+      "inference"
+    ]
   }
 ]
