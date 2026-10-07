@@ -28644,7 +28644,7 @@
       }
     ]
   },
-    {
+  {
     "slug": "reward-hacking",
     "lead": "红块翻个面就拿到高分：指标完成了，真正的任务却还在地上。",
     "definition": "奖励投机（reward hacking）是智能体找到奖励函数、评分器或任务规范的漏洞，满足字面上的可计算目标，却没有完成设计者真正想要的结果。DeepMind 把这种行为称为 specification gaming：例如只奖励红块底面高度时，机器人可以把红块翻过来拿高分，却没有把它稳稳叠到蓝块上。它不一定需要恶意计划，代理指标、环境假设、评测器或权限边界的一个缺口就可能让高能力系统走出“分数正确、事情错误”的捷径。",
@@ -29503,6 +29503,266 @@
         "url": "https://www.anthropic.com/news/3-5-models-and-computer-use",
         "label": "Anthropic · Introducing computer use",
         "note": "补充电脑使用通过截图、光标、点击、输入完成通用界面操作，仍处于实验性阶段。"
+      }
+    ]
+  },
+  {
+    "slug": "logit",
+    "lead": "“雨”排在最前面，不代表模型已经证明今天会下雨。",
+    "definition": "Logit 是模型输出头给每个候选类别或 token 的未归一化分数。它可以是任意实数，候选之间的相对差距会在后续 softmax 或其他归一化步骤里变成选择分布；因此 logit 不是概率，也不是模型对事实的可信度盖章。",
+    "boundary": "logit 只描述某个模型、某个位置和某组输入下的原始偏好，不能脱离词表、温度、mask、采样器或模型版本直接比较。把一个候选的 logit 写成“它有 80% 可能正确”会混淆计算分数、生成概率和外部事实；候选被 mask 掉后，即使原始分数很高，也不会进入本轮分布。",
+    "sceneKind": "spectrum",
+    "sceneTitle": "先看原始分数，再看它怎样被解释",
+    "actionLabel": "调整温度与候选遮罩",
+    "actors": [
+      {
+        "id": "logits",
+        "label": "Logits",
+        "detail": "雨 2.4 · 伞 1.7 · 雪 0.2",
+        "icon": "chart",
+        "group": "原始分数"
+      },
+      {
+        "id": "candidates",
+        "label": "候选片段",
+        "detail": "雨 / 伞 / 雪",
+        "icon": "message",
+        "group": "词表"
+      },
+      {
+        "id": "temperature",
+        "label": "Temperature",
+        "detail": "0.7 · 1.0 · 1.4",
+        "icon": "gear",
+        "group": "生成设置"
+      },
+      {
+        "id": "mask",
+        "label": "Mask",
+        "detail": "雪不可见",
+        "icon": "shield",
+        "group": "可见范围"
+      },
+      {
+        "id": "distribution",
+        "label": "分布",
+        "detail": "归一化后和为 1",
+        "icon": "spark",
+        "group": "后续计算"
+      },
+      {
+        "id": "audit",
+        "label": "事实核验",
+        "detail": "仍需来源",
+        "icon": "file",
+        "group": "边界"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "摆出原始分数",
+        "note": "先把候选和原始数值分开摆好；这时没有概率百分比。",
+        "activeIds": [
+          "logits",
+          "candidates"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "temperature",
+          "mask",
+          "distribution",
+          "audit"
+        ],
+        "values": {
+          "logits": "雨 2.4 · 伞 1.7 · 雪 0.2"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "拉动温度",
+        "note": "温度改变相对差距在归一化后的尖锐程度，原始 logit 台仍保持原样。",
+        "activeIds": [
+          "temperature",
+          "logits"
+        ],
+        "doneIds": [
+          "candidates"
+        ],
+        "mutedIds": [
+          "mask",
+          "distribution",
+          "audit"
+        ],
+        "values": {
+          "temperature": "T=0.7 · 差距放大"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "遮掉候选",
+        "note": "mask 让雪离开可见集合；高分候选也不能绕过可见范围。",
+        "activeIds": [
+          "mask",
+          "candidates"
+        ],
+        "doneIds": [
+          "logits",
+          "temperature"
+        ],
+        "mutedIds": [
+          "distribution",
+          "audit"
+        ],
+        "values": {
+          "mask": "雪 → -∞ · 不参与分布"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "看到归一化分布",
+        "note": "softmax 把剩余相对分数换成选择分布，但这个百分比仍不是事实正确率。",
+        "activeIds": [
+          "distribution"
+        ],
+        "doneIds": [
+          "logits",
+          "candidates",
+          "temperature",
+          "mask"
+        ],
+        "mutedIds": [
+          "audit"
+        ],
+        "values": {
+          "distribution": "雨 73% · 伞 27%"
+        },
+        "metric": {
+          "label": "总和",
+          "value": "1.00"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "选中与核验分开",
+        "note": "生成器可以选出下一片段，事实核验仍要回到来源或工具。",
+        "activeIds": [
+          "audit",
+          "distribution"
+        ],
+        "doneIds": [
+          "logits",
+          "candidates",
+          "temperature",
+          "mask"
+        ],
+        "mutedIds": [],
+        "values": {
+          "audit": "下一 token = 雨 · 事实核验 = 未完成"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "logit 是输出头在归一化之前的原始比较尺；把它和概率、事实证据混为一谈，会把生成偏好误读成可信度。",
+    "quiz": {
+      "question": "某 token 的 logit 比另一个高，当前最准确的解释是什么？",
+      "options": [
+        {
+          "label": "这次输入下模型更偏向它",
+          "correct": true
+        },
+        {
+          "label": "它的事实正确率更高",
+          "correct": false
+        },
+        {
+          "label": "它已经通过来源核验",
+          "correct": false
+        }
+      ],
+      "success": "对，logit 只告诉你本轮相对偏好。",
+      "retry": "先看它是否经过 softmax、mask 和外部核验；原始分数不是事实证明。"
+    },
+    "prompt": {
+      "title": "检查一次 token 选择",
+      "text": "请把候选 token 的原始 logit、温度、mask、softmax 后的概率和最终采样结果分别列出；说明哪些数只描述本次生成，哪些结论还需要外部来源核验。"
+    },
+    "teaching": [
+      {
+        "id": "raw-score",
+        "title": "它先是一把没有刻度单位的尺",
+        "body": "输出头可以给“雨”“伞”“雪”各一个实数；正负号和绝对大小本身没有概率含义，通常要看候选之间的相对差距。不同模型、不同位置或不同词表之间直接比较 logit，容易把计算坐标当成公共量表。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "normalization",
+        "title": "softmax 才把分数变成可加总的分布",
+        "body": "softmax 会把一组 logit 指数化并归一化，让结果落在 0 到 1 之间且总和为 1。这个分布描述“本轮生成会怎样选”，不替你回答“句子是否真实”。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "temperature",
+        "title": "温度改变尖锐程度，不改变事实",
+        "body": "生成时调低温度会放大高低 logit 的差距，调高温度会让候选更平；它改变的是采样分布的形状。调温度不能把未核验的句子变成可靠答案。",
+        "sourceIndices": [
+          2,
+          4
+        ]
+      },
+      {
+        "id": "mask",
+        "title": "遮罩先决定谁有资格参加",
+        "body": "因果 mask、词表约束或安全过滤可以把候选移出当前集合。即便某个候选原始分数很高，离开可见集合后也不会被采样；这和把它的概率调低是两件事。",
+        "sourceIndices": [
+          1,
+          4,
+          5
+        ]
+      },
+      {
+        "id": "evidence",
+        "title": "被选中仍要回到证据",
+        "body": "logit、概率和最终 token 都是模型内部生成信号。涉及日期、金额、权限或现实对象时，必须再用来源、工具或规则核验，不能用一个漂亮的百分比替代证据链。",
+        "sourceIndices": [
+          1,
+          4,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/1706.03762",
+        "label": "Vaswani et al. · Attention Is All You Need",
+        "note": "输出分布与注意力架构中的线性投影、softmax。"
+      },
+      {
+        "url": "https://docs.pytorch.org/docs/stable/generated/torch.nn.functional.softmax.html",
+        "label": "PyTorch · torch.nn.functional.softmax",
+        "note": "softmax 沿指定维度把输入转成归一化值。"
+      },
+      {
+        "url": "https://docs.pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html",
+        "label": "PyTorch · CrossEntropyLoss",
+        "note": "logits 与目标类别之间的交叉熵接口。"
+      },
+      {
+        "url": "https://huggingface.co/docs/transformers/main/en/generation_strategies",
+        "label": "Hugging Face · Generation strategies",
+        "note": "温度、采样和生成策略如何影响候选选择。"
+      },
+      {
+        "url": "https://d2l.ai/chapter_attention-mechanisms-and-transformers/attention-scoring-functions.html",
+        "label": "Dive into Deep Learning · Attention scoring functions",
+        "note": "分数、softmax 权重和加权汇总的计算边界。"
       }
     ]
   }

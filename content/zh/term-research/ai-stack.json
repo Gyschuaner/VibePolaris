@@ -2527,5 +2527,25 @@
       "prompt-injection",
       "tool-schema"
     ]
+  },
+  {
+    "slug": "logit",
+    "mechanism": "Logit 是输出头在 softmax 前给候选类别或 token 的未归一化分数；温度、mask 和采样器会在后续改变它如何进入选择分布。",
+    "misconception": "logit 不是概率、事实可信度或跨模型公共量表；绝对值和不同位置之间的差异不能脱离归一化与词表直接解释。",
+    "demoSignature": "5帧｜对象：候选片段、原始 logit、温度、mask、归一化分布、事实核验｜交互：摆分数、调温度、遮候选、查看总和为1、把生成选择与核验分开｜变化：原始分数→尖锐程度改变→雪离开集合→雨/伞成分布→事实仍待来源；频谱台，不是流程图。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/1706.03762",
+      "https://docs.pytorch.org/docs/stable/generated/torch.nn.functional.softmax.html",
+      "https://docs.pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html",
+      "https://huggingface.co/docs/transformers/main/en/generation_strategies",
+      "https://d2l.ai/chapter_attention-mechanisms-and-transformers/attention-scoring-functions.html"
+    ],
+    "rewriteRisk": "先区分原始分数、归一化概率、采样结果和外部证据；不要把一个候选的 logit 或概率写成事实正确率。二元 logistic 的 log-odds 是特例，不能把“对数几率”当作多分类 logit 的通用别名。",
+    "nearDuplicates": [
+      "temperature",
+      "transformer",
+      "confidence-calibration",
+      "inference"
+    ]
   }
 ]
