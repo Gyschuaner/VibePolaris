@@ -285,9 +285,19 @@ export function CsrSignatureHero() {
   const showContent = step >= 3;
   return <SignatureFrame scene={scene} title="浏览器里的空挂载点怎样长成页面" labels={csrLabels} caption={csrCaptions[step]}>
     <div className={styles.csrSignature} data-step={step}>
-      <div className={styles.browserCanvas}><div className={styles.browserBar}><Browser size={15} /><span>app.example</span></div><div className={styles.mountPoint}>{showContent ? <><strong>订单列表</strong><span>数据已经进入 DOM</span><button type="button">查看详情</button></> : <><span id="app">&lt;div id=&quot;app&quot; /&gt;</span><small>{step === 0 ? "空挂载点" : step === 1 ? "运行时建立中" : "等待 API"}</small></>}</div></div>
-      <div className={styles.csrLayers}><div data-active={step >= 0}><Browser size={14} /><span>HTML 壳</span><b>{step >= 0 ? "到达" : "等待"}</b></div><div data-active={step >= 1}><Code size={14} /><span>JavaScript</span><b>{step >= 1 ? "执行" : "等待"}</b></div><div data-active={step >= 2}><Database size={14} /><span>API 数据</span><b>{step >= 2 ? "200 OK" : "等待"}</b></div><div data-active={showContent}><Stack size={14} /><span>DOM</span><b>{showContent ? "填充" : "空"}</b></div></div>
-      <div className={styles.csrProof} role="status"><ArrowRight size={16} /><strong>{showContent ? step === 4 ? "可交互" : "内容已出现" : "还在浏览器链条中"}</strong><span>{step === 1 ? "CPU 解析也算等待" : step === 2 ? "数据请求是另一段等待" : "CSR 不等于没有服务器"}</span></div>
+      <div className={styles.browserCanvas}>
+        <div className={styles.browserBar}><Browser size={15} /><span>app.example</span><i data-live={showContent} /></div>
+        <div className={styles.mountPoint} data-ready={showContent} data-interactive={step === 4}>
+          {showContent ? <div className={styles.mountCard}><span>今日订单</span><strong>3 件待处理</strong><div className={styles.orderRows}><i /><i /><i /></div><button type="button">{step === 4 ? "查看详情" : "等待事件"}</button></div> : <><span id="app">&lt;div id=&quot;app&quot; /&gt;</span><small>{step === 0 ? "空挂载点" : step === 1 ? "运行时建立中" : "等待 API"}</small></>}
+          <span className={styles.mountCursor} data-on={step === 4} aria-hidden="true" />
+        </div>
+        <div className={styles.csrPackets} aria-label="进入浏览器的材料">
+          <span className={styles.csrPacket} data-kind="shell" data-arrived={step >= 0}><Browser size={12} /><b>壳</b></span>
+          <span className={styles.csrPacket} data-kind="script" data-arrived={step >= 1}><Code size={12} /><b>JS</b></span>
+          <span className={styles.csrPacket} data-kind="data" data-arrived={step >= 2}><Database size={12} /><b>API</b></span>
+        </div>
+      </div>
+      <div className={styles.csrProof} role="status"><span className={styles.csrPulse} data-on={showContent} aria-hidden="true" /><strong>{showContent ? step === 4 ? "内容已接上事件" : "数据长进挂载点" : "先只有一个空位置"}</strong><span>{step === 1 ? "脚本还在浏览器里执行" : step === 2 ? "数据回来前，空位仍然是空位" : "CSR 不等于没有服务器"}</span></div>
     </div>
   </SignatureFrame>;
 }
