@@ -45,13 +45,13 @@ test("核心词库保持在约 300 条且标识唯一", () => {
   }
 });
 
-test("迁移底稿保留完整字段、旧三步演示和项目检查", () => {
+test("迁移底稿保留完整字段、可变长度演示和项目检查", () => {
   for (const term of allTerms) {
     for (const key of ["question", "definition", "boundary", "demoTitle", "quizQuestion", "correctText", "wrongText", "promptTitle", "prompt"]) {
       assert.ok(typeof term[key] === "string" && term[key].trim(), `${term.slug} 缺少 ${key}`);
     }
     assert.ok(demoTypes.has(term.demoType), `${term.slug} 动画类型无效`);
-    assert.equal(term.demoSteps?.length, 3, `${term.slug} 必须有三步动画`);
+    assert.ok(Array.isArray(term.demoSteps) && term.demoSteps.length >= 1, `${term.slug} 至少需要一个演示状态`);
     assert.equal(term.quizOptions?.length, 3, `${term.slug} 必须有三个检查选项`);
     assert.ok(term.relatedSlugs?.length >= 2 && term.relatedSlugs.length <= 8, `${term.slug} 相关词数量无效`);
     for (const step of term.demoSteps) {
