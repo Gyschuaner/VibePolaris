@@ -2707,5 +2707,25 @@
       "tokenization",
       "embedding"
     ]
+  },
+  {
+    "slug": "sequence-to-sequence",
+    "mechanism": "Seq2Seq 用 encoder 表示源序列，decoder 结合已生成前缀和交叉注意力逐步产生目标序列；源/目标长度可以不同。",
+    "misconception": "训练时的 teacher forcing 不等于推理行为，源目标也不需要一一对齐；停止、搜索和长度策略是独立边界。",
+    "demoSignature": "6帧｜对象：源序列、Encoder表示、目标前缀、交叉注意力、下一个token、停止条件｜交互：逐步推进输出并切换teacher forcing/free running｜变化：源带→编码→目标前缀→查源→长度分叉→EOS收住；双带组装台，不是流程图。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/1409.3215",
+      "https://arxiv.org/abs/1409.0473",
+      "https://arxiv.org/abs/1706.03762",
+      "https://huggingface.co/docs/transformers/main/en/tasks/translation",
+      "https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html"
+    ],
+    "rewriteRisk": "不要把 Seq2Seq 写成复制或固定长度分类；必须区分 encoder/decoder、teacher forcing、自由生成、交叉注意力与 EOS。",
+    "nearDuplicates": [
+      "transformer",
+      "attention",
+      "tokenization",
+      "inference"
+    ]
   }
 ]

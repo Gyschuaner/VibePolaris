@@ -7655,5 +7655,70 @@
       "tokenization",
       "embedding"
     ]
+  },
+  {
+    "zh": "序列到序列",
+    "en": "Sequence-to-Sequence",
+    "slug": "sequence-to-sequence",
+    "cat": "AI·Agent",
+    "say": "把一串输入读成可用表示，再生成长度可以不同的另一串输出。",
+    "aliases": [
+      "Seq2Seq",
+      "Sequence-to-Sequence",
+      "编码器-解码器"
+    ],
+    "question": "输入和输出长度不一样时，模型怎么把一串话变成另一串话？",
+    "definition": "序列到序列（Seq2Seq）模型接收一个输入序列，生成另一个输出序列；输入和输出长度可以不同。经典 encoder-decoder 架构先把源序列编码成表示，decoder 再在已生成前缀、训练条件和源信息的约束下逐步产生目标序列；Transformer 把这套思想用自注意力和交叉注意力实现。",
+    "boundary": "Seq2Seq 不是简单复制、逐位置分类或“读完一次就吐出整段答案”。训练时常用 teacher forcing，把真实前缀喂给 decoder；推理时只能依赖自己已经生成的前缀，两者会产生暴露偏差。输出何时停止、源信息如何对齐、beam/search 和长度惩罚如何设置，都需要单独说明。",
+    "demoType": "lifecycle",
+    "demoTitle": "一段中文输入，怎样长成另一段长度不同的输出",
+    "demoSteps": [
+      {
+        "label": "摆好源序列",
+        "value": "天气 很 好 → source tokens",
+        "note": "输入序列先确定边界和顺序；它不要求和目标序列一一等长。"
+      },
+      {
+        "label": "编码成上下文表示",
+        "value": "encoder → h₁…hₙ",
+        "note": "encoder 把源 token 变成可供 decoder 查询的表示，信息仍按位置保留。"
+      },
+      {
+        "label": "decoder 先拿目标前缀",
+        "value": "<BOS> → 今",
+        "note": "训练时可能喂真实前缀；推理时前缀来自模型自己上一轮的输出。"
+      },
+      {
+        "label": "交叉注意力取源信息",
+        "value": "今 → 天　·　天气 → weather",
+        "note": "decoder 一边看已生成内容，一边从 encoder 表示里选择当前需要的源信息。"
+      },
+      {
+        "label": "遇到停止条件",
+        "value": "… → <EOS>　·　输出长度 ≠ 输入长度",
+        "note": "EOS、最大长度或其他停止规则结束生成；长度不同本身不是错误。"
+      },
+      {
+        "label": "把训练和推理分开核对",
+        "value": "teacher forcing ≠ free running",
+        "note": "评估时要看模型在自己生成前缀上的表现，不能只用真实前缀得到漂亮结果。"
+      }
+    ],
+    "quizQuestion": "Seq2Seq 的输入和输出必须一一对应、长度相同吗？",
+    "quizOptions": [
+      "不必；模型可以从一条序列生成另一条长度不同的序列",
+      "必须相同，否则 decoder 无法运行",
+      "只有分类任务才允许长度不同"
+    ],
+    "correctText": "Seq2Seq 的核心正是允许输入与输出长度不同，decoder 依靠源表示、已生成前缀和停止条件产出目标序列。",
+    "wrongText": "先区分源序列、目标前缀、交叉注意力和停止条件；长度变化是任务的一部分。",
+    "promptTitle": "画出一次 Seq2Seq 推理",
+    "prompt": "给出源序列、encoder 输出、decoder 当前前缀、交叉注意力可见范围和停止条件；分别模拟 teacher forcing 与自由生成，标出第一次错误如何影响后续 token，并说明 beam/search 或长度惩罚是否改变选择。",
+    "relatedSlugs": [
+      "transformer",
+      "attention",
+      "tokenization",
+      "inference"
+    ]
   }
 ]

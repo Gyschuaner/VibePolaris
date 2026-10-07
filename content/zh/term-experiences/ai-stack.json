@@ -31821,5 +31821,283 @@
         "note": "用消融研究多头冗余与剪枝影响。"
       }
     ]
+  },
+  {
+    "slug": "sequence-to-sequence",
+    "lead": "把一串输入读成可用表示，再生成长度可以不同的另一串输出。",
+    "definition": "序列到序列（Seq2Seq）模型接收一个输入序列，生成另一个输出序列；输入和输出长度可以不同。经典 encoder-decoder 架构先把源序列编码成表示，decoder 再在已生成前缀、训练条件和源信息的约束下逐步产生目标序列；Transformer 把这套思想用自注意力和交叉注意力实现。",
+    "boundary": "Seq2Seq 不是简单复制、逐位置分类或“读完一次就吐出整段答案”。训练时常用 teacher forcing，把真实前缀喂给 decoder；推理时只能依赖自己已经生成的前缀，两者会产生暴露偏差。输出何时停止、源信息如何对齐、beam/search 和长度惩罚如何设置，都需要单独说明。",
+    "sceneKind": "assembly",
+    "sceneTitle": "两条长度不同的带子，在同一张翻译台上对齐",
+    "actionLabel": "推进一个输出 token",
+    "actors": [
+      {
+        "id": "source",
+        "label": "源序列",
+        "detail": "天气 · 很 · 好",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "encoder",
+        "label": "Encoder 表示",
+        "detail": "h₁…hₙ · 保留源信息",
+        "icon": "brain",
+        "group": "编码"
+      },
+      {
+        "id": "prefix",
+        "label": "目标前缀",
+        "detail": "<BOS> → 今 → 今天",
+        "icon": "layout",
+        "group": "生成"
+      },
+      {
+        "id": "cross",
+        "label": "交叉注意力",
+        "detail": "从源表示取当前需要的信息",
+        "icon": "search",
+        "group": "对齐"
+      },
+      {
+        "id": "next",
+        "label": "下一个 token",
+        "detail": "天 / weather / …",
+        "icon": "spark",
+        "group": "输出"
+      },
+      {
+        "id": "stop",
+        "label": "停止条件",
+        "detail": "<EOS> 或长度上限",
+        "icon": "shield",
+        "group": "边界"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "源带子先铺开",
+        "note": "源序列有自己的长度和顺序，目标序列不必与它等长。",
+        "activeIds": [
+          "source"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "encoder",
+          "prefix",
+          "cross",
+          "next",
+          "stop"
+        ],
+        "values": {
+          "source": "天气 · 很 · 好"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "编码成可查询的表示",
+        "note": "encoder 为每个源位置留下表示，decoder 之后可以按当前需要读取。",
+        "activeIds": [
+          "encoder"
+        ],
+        "doneIds": [
+          "source"
+        ],
+        "mutedIds": [
+          "prefix",
+          "cross",
+          "next",
+          "stop"
+        ],
+        "values": {
+          "encoder": "h₁…hₙ · source length=3"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "目标带从起点长出来",
+        "note": "decoder 有一个目标前缀；训练时可能是真实前缀，推理时来自模型上一轮输出。",
+        "activeIds": [
+          "prefix"
+        ],
+        "doneIds": [
+          "source",
+          "encoder"
+        ],
+        "mutedIds": [
+          "cross",
+          "next",
+          "stop"
+        ],
+        "values": {
+          "prefix": "<BOS> → 今"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "当前步查源信息",
+        "note": "交叉注意力把目标当前状态和 encoder 表示放在一起，选择当前需要的源内容。",
+        "activeIds": [
+          "cross",
+          "prefix"
+        ],
+        "doneIds": [
+          "source",
+          "encoder"
+        ],
+        "mutedIds": [
+          "next",
+          "stop"
+        ],
+        "values": {
+          "cross": "今 → 天气/很/好 · 当前对齐"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "输出长度开始分叉",
+        "note": "decoder 生成下一个 token，目标带可以比源带更长或更短。",
+        "activeIds": [
+          "next",
+          "prefix"
+        ],
+        "doneIds": [
+          "source",
+          "encoder",
+          "cross"
+        ],
+        "mutedIds": [
+          "stop"
+        ],
+        "values": {
+          "next": "下一个 = 天",
+          "prefix": "<BOS> → 今 → 今天"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "EOS 把带子收住",
+        "note": "遇到 EOS 或长度上限才停止；训练时的真实前缀不能替代自由生成评估。",
+        "activeIds": [
+          "stop"
+        ],
+        "doneIds": [
+          "source",
+          "encoder",
+          "prefix",
+          "cross",
+          "next"
+        ],
+        "mutedIds": [],
+        "values": {
+          "stop": "… → <EOS> · teacher forcing ≠ free running"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "Seq2Seq 让 encoder 保存源序列信息，decoder 依据已生成前缀和交叉注意力逐步产出另一条序列；长度和停止条件都属于任务定义。",
+    "quiz": {
+      "question": "Seq2Seq 的输入和输出必须一一对应、长度相同吗？",
+      "options": [
+        {
+          "label": "不必；模型可以从一条序列生成另一条长度不同的序列",
+          "correct": true
+        },
+        {
+          "label": "必须相同，否则 decoder 无法运行",
+          "correct": false
+        },
+        {
+          "label": "只有分类任务才允许长度不同",
+          "correct": false
+        }
+      ],
+      "success": "对，翻译和摘要都依赖长度可变的源到目标映射。",
+      "retry": "把 source length=3、target length=2/5 的例子摆出来；decoder 有自己的停止条件。"
+    },
+    "prompt": {
+      "title": "画出一次 Seq2Seq 推理",
+      "text": "给出源序列、encoder 输出、decoder 当前前缀、交叉注意力可见范围和停止条件；分别模拟 teacher forcing 与自由生成，标出第一次错误如何影响后续 token，并说明 beam/search 或长度惩罚是否改变选择。"
+    },
+    "teaching": [
+      {
+        "id": "architecture",
+        "title": "两条序列各有自己的节奏",
+        "body": "encoder 读取源序列并留下表示，decoder 生成目标序列；两者长度可以不同。早期 RNN Seq2Seq 依靠隐藏状态和注意力，Transformer 则用自注意力与交叉注意力实现同一类编码—生成分工。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "prefix",
+        "title": "decoder 每一步都背着一个前缀",
+        "body": "生成第 t 个 token 时，decoder 只能看到已经允许它看到的目标前缀。训练中的 teacher forcing 会喂真实前缀，推理时则要喂回自己上一步的输出，这正是两种场景的差别。",
+        "sourceIndices": [
+          1,
+          2,
+          4
+        ]
+      },
+      {
+        "id": "cross",
+        "title": "交叉注意力是查源信息的窗口",
+        "body": "decoder 的 query 去读取 encoder 的 key/value，决定当前输出更需要源序列哪部分。它不是把两条序列硬拼在一起，也不意味着每个输出只对应一个源 token。",
+        "sourceIndices": [
+          3,
+          4
+        ]
+      },
+      {
+        "id": "stop",
+        "title": "EOS 是数据和控制信号的一部分",
+        "body": "decoder 需要一个停止条件：生成 EOS、达到最大长度，或被外部截断。没有它，模型可能继续吐 token；只看最终文本而不记录停止原因，会漏掉长度错误。",
+        "sourceIndices": [
+          2,
+          4,
+          5
+        ]
+      },
+      {
+        "id": "evaluation",
+        "title": "训练好看，不等于自由生成稳",
+        "body": "teacher forcing 让每一步都拿到正确前缀，推理却会累积自己的错误。翻译、摘要等任务要在真实生成模式下评测，并分别检查 beam/search、长度惩罚、对齐和复制错误。",
+        "sourceIndices": [
+          1,
+          2,
+          4,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/1409.3215",
+        "label": "Sutskever et al. · Sequence to Sequence Learning with Neural Networks",
+        "note": "提出经典 encoder-decoder Seq2Seq 架构。"
+      },
+      {
+        "url": "https://arxiv.org/abs/1409.0473",
+        "label": "Cho et al. · Learning Phrase Representations using RNN Encoder-Decoder",
+        "note": "介绍 RNN encoder-decoder 与变长序列映射。"
+      },
+      {
+        "url": "https://arxiv.org/abs/1706.03762",
+        "label": "Vaswani et al. · Attention Is All You Need",
+        "note": "用 Transformer 的 self-attention/cross-attention 实现序列到序列。"
+      },
+      {
+        "url": "https://huggingface.co/docs/transformers/main/en/tasks/translation",
+        "label": "Hugging Face · Translation task",
+        "note": "展示现代 Seq2Seq 翻译训练、生成与评估接口。"
+      },
+      {
+        "url": "https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html",
+        "label": "PyTorch · Seq2Seq translation tutorial",
+        "note": "以翻译任务演示 encoder、decoder、teacher forcing 与注意力。"
+      }
+    ]
   }
 ]
