@@ -68,3 +68,15 @@
 ## 状态限制
 
 DP CLI 在本轮仍因 TLS `UNEXPECTED_EOF_WHILE_READING` 无法稳定连接；没有伪造需求、任务、测试或 deployment 写入，以上 Git、构建、浏览器和服务器证据为实际执行记录。当前机器不存在 `D:/Obsidian/gysnote`，未创建空 Obsidian 记录。
+
+## 本次演示语法修正上线记录
+
+本次修正对应功能提交 `efceb7a5`，经 PR [#438](https://github.com/Gyschuaner/VibePolaris/pull/438) 合入 dev，再经发布 PR [#439](https://github.com/Gyschuaner/VibePolaris/pull/439) 合入 main，main 最终提交为 `410bdfb8f072a2d389dcd82c544c879148ec5f94`。修正后的生产规则为：只有 `pipeline`、`route`、`branch`、`loop` 使用箭头式有序交接；其余词条按概念使用分层、对照、账本、证据架、边界环、观察镜、切分带等演示。生产构建中的 flow visual 计数为 68/329（20.7%）。
+
+- 镜像：`vibepolaris:410bdfb8f072a2d389dcd82c544c879148ec5f94`。
+- 镜像 manifest / image id：`sha256:fac5dbeaeeb98788dbea90ef57cb96cb6d12372a3d1c57a69a407ee119b10764`。
+- 传输包 SHA-256：`2980e990f7ba3681c152ec8ac72910a45ed1eedd9ad3aa89b7a014b08a3d0d09`。
+- 当前 release：`/opt/vibepolaris/releases/20261007T110855Z-r1-410bdfb8`；`/opt/vibepolaris/current` 已原子切换到该目录。
+- 切换前 release：`/opt/vibepolaris/releases/20261007T101904Z-d6e022ba`；备份：`/opt/vibepolaris/backups/20261007T110855Z-r1-from-d6e022baa04ae8a6ab0743f5286cac0a13f1898f`。
+- 备份包含旧 compose、容器与镜像 inspect、`xiaobei.sqlite` 快照；数据卷 `vibepolaris_xiaobei_data` 未替换。新 release 的 `rollback.sh` 可恢复上一 release 与旧镜像。
+- 线上冒烟：`/`、`/news`、`/terms/reasoning-model`、`/terms/container-image`、`/terms/xss`、`/terms/sast`、`/sitemap.xml` 均返回 HTTP 200；容器状态为 `running/healthy`。
