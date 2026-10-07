@@ -27824,5 +27824,278 @@
         "note": "检索把外部材料带入推理，可作为减少长上下文搜索范围的策略"
       }
     ]
+  },
+  {
+    "slug": "memory-consolidation",
+    "lead": "聊天记录越来越多，智能体怎样留下规律，又不把一次误会写成永久事实？",
+    "definition": "记忆巩固是智能体把一段段带时间和来源的经历，筛选、合并、抽象成更耐用的记忆表示，再供以后检索。它可以把“周一报错、周三又报错”整理成一条待验证的模式，也可以保留原始事件，让未来回答既能快速拿到规律，又能回查是哪几次经历支持了它。巩固发生在存储和取回之间，核心是决定什么值得长期保留、怎样改写以及何时失效。",
+    "boundary": "记忆巩固不是把所有聊天永久保存，也不是一次总结就变成事实。摘要、反思和合并可能丢掉时间、条件、否定或例外；模型还可能把推测写进记忆，之后每次取回都会重复这个错误。它和 agent-memory 的关系是：agent-memory 是可被后续调用的记录体系，consolidation 是更新这套体系的整理动作；retrieval 负责找卡片，context compaction 负责当前窗口的历史压缩，三者都不能替代来源、同意和删除规则。 context-engineering 负责这一轮推理的输入编排，记忆巩固负责长期记忆体系的更新；前者决定现在给模型看什么，后者决定以后还能取回什么。",
+    "sceneKind": "memory",
+    "sceneTitle": "一叠经历怎样压成一张可回查的记忆卡",
+    "actionLabel": "整理记忆卡",
+    "actors": [
+      {
+        "id": "event-one",
+        "label": "原始经历 A",
+        "detail": "周一 · 登录超时 · 日志 #17",
+        "icon": "file",
+        "group": "观察"
+      },
+      {
+        "id": "event-two",
+        "label": "原始经历 B",
+        "detail": "周三 · 登录超时 · 日志 #23",
+        "icon": "file",
+        "group": "观察"
+      },
+      {
+        "id": "cue",
+        "label": "当前线索",
+        "detail": "同一服务 · 高峰时段？",
+        "icon": "search",
+        "group": "召回"
+      },
+      {
+        "id": "pattern",
+        "label": "暂定模式",
+        "detail": "可能存在高峰期超时",
+        "icon": "memory",
+        "group": "抽象"
+      },
+      {
+        "id": "sources",
+        "label": "支持记录",
+        "detail": "2 条原始日志 · 可回查",
+        "icon": "file",
+        "group": "证据"
+      },
+      {
+        "id": "counter",
+        "label": "反例",
+        "detail": "周五 · 非高峰也超时",
+        "icon": "spark",
+        "group": "修正"
+      },
+      {
+        "id": "memory",
+        "label": "长期记忆卡",
+        "detail": "范围与可信度可变",
+        "icon": "layout",
+        "group": "存储"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "留下原始经历",
+        "note": "先保留发生了什么、何时发生和证据在哪里；一条事件还不构成长期规律。",
+        "activeIds": [
+          "event-one"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "event-two",
+          "cue",
+          "pattern",
+          "sources",
+          "counter",
+          "memory"
+        ],
+        "values": {
+          "event-one": "周一 · 超时 · 日志 #17"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "按线索召回",
+        "note": "同一服务的第二次经历被放在旁边，时间与环境仍然可见。",
+        "activeIds": [
+          "cue",
+          "event-two",
+          "event-one"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "pattern",
+          "sources",
+          "counter",
+          "memory"
+        ],
+        "values": {
+          "cue": "同一服务 · 高峰时段？",
+          "event-two": "周三 · 超时 · 日志 #23"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "写出暂定模式",
+        "note": "可以提出“可能存在高峰期超时”，但把观察和推断分开，可信度仍待验证。",
+        "activeIds": [
+          "pattern"
+        ],
+        "doneIds": [
+          "event-one",
+          "event-two",
+          "cue"
+        ],
+        "mutedIds": [
+          "sources",
+          "counter",
+          "memory"
+        ],
+        "values": {
+          "pattern": "暂定 · 2 条经历支持"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "保留回查入口",
+        "note": "抽象卡与支持它的原始记录一起存；未来发现反例时，才能知道该改哪一张卡。",
+        "activeIds": [
+          "memory",
+          "sources"
+        ],
+        "doneIds": [
+          "event-one",
+          "event-two",
+          "cue",
+          "pattern"
+        ],
+        "mutedIds": [
+          "counter"
+        ],
+        "values": {
+          "memory": "高峰期超时 · 待核",
+          "sources": "日志 #17 / #23"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "遇到反例就改",
+        "note": "非高峰也超时会削弱旧模式，长期记忆可以降级、拆分或删除，而不是只进不出。",
+        "activeIds": [
+          "counter",
+          "memory"
+        ],
+        "doneIds": [
+          "event-one",
+          "event-two",
+          "cue",
+          "pattern",
+          "sources"
+        ],
+        "mutedIds": [],
+        "values": {
+          "counter": "周五 · 非高峰超时",
+          "memory": "可信度下降 · 重新调查"
+        },
+        "metric": {
+          "label": "记忆状态",
+          "value": "可回查 · 可修正"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "记忆巩固的产物不是一段更顺口的总结，而是一张带来源、范围、可信度和失效入口的长期卡；把不确定性一起存下来，未来才有机会纠正。",
+    "quiz": {
+      "question": "长期记忆卡发现反例时，最合理的动作是什么？",
+      "options": [
+        {
+          "label": "降低或拆分旧抽象，回到原始经历重新核对",
+          "correct": true
+        },
+        {
+          "label": "删除反例，保持原来的总结稳定",
+          "correct": false
+        },
+        {
+          "label": "把反例直接追加到摘要，不记录来源",
+          "correct": false
+        }
+      ],
+      "success": "巩固是可修正的状态更新，反例要能改变旧记忆。",
+      "retry": "不记录反例和来源，会让错误记忆越用越牢。"
+    },
+    "prompt": {
+      "title": "设计一张可撤回的长期记忆卡",
+      "text": "请把经历按时间、参与者、环境、结果和来源列出；区分原始观察、模型推断和用户确认。只在重复证据足够时生成高层记忆，给它记录支持它的事件、适用范围、反例、失效条件、纠正和删除方式，并说明下一次检索应优先取原文还是摘要。"
+    },
+    "teaching": [
+      {
+        "id": "raw",
+        "title": "先存经历，再谈规律",
+        "body": "Generative Agents 把观察写进带时间的 memory stream，再动态取回用于计划；它还把多次经历合成为更高层的 reflection。这个顺序提醒我们：抽象应该能回到事件，而不是取代事件。",
+        "sourceIndices": [
+          2,
+          1
+        ]
+      },
+      {
+        "id": "cue",
+        "title": "召回线索决定哪段过去被看见",
+        "body": "记忆系统通常不会把全部历史塞进当前窗口，而是根据线索、相关性、时间或重要性挑候选。当前任务能找到什么，决定了巩固会看到哪些证据；没被召回的反例不会因为“存过”就自动参与判断。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "abstract",
+        "title": "抽象要标注它是推断",
+        "body": "记忆巩固把重复经历压成模式或规则，省下下次读取成本；但摘要、reflection 和合并都会改变原始表达。把支持事件、适用范围和“不确定”一起写入，才能避免模型把推断当成用户确认过的事实。",
+        "sourceIndices": [
+          1,
+          2,
+          5
+        ]
+      },
+      {
+        "id": "repair",
+        "title": "反例是修正入口，不是噪音",
+        "body": "记忆模块的结构和检索方法会影响不同任务，混合结构或迭代检索也不等于所有场景都更好。新事件与旧卡冲突时，应该降级、拆分、标记过期或删除，并留下变更记录。",
+        "sourceIndices": [
+          3,
+          5
+        ]
+      },
+      {
+        "id": "privacy",
+        "title": "长期记忆还要服从控制",
+        "body": "这些论文说明持久记忆会改变后续取回和行为，但它们并不替应用决定个人信息的保存范围或用户权利。产品落地时，应把是否写入、保存多久、如何纠正和删除列成独立的治理规则；这是工程要求，不能冒充成论文默认提供的隐私保证。",
+        "sourceIndices": [
+          1,
+          3,
+          4
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2404.00573",
+        "label": "Hou et al. · Dynamic Human-like Memory Recall and Consolidation in LLM Agents",
+        "note": "用线索召回与动态巩固量化对话记忆的长期价值"
+      },
+      {
+        "url": "https://arxiv.org/abs/2304.03442",
+        "label": "Park et al. · Generative Agents",
+        "note": "memory stream、reflection 与动态检索共同支持长期行为"
+      },
+      {
+        "url": "https://arxiv.org/abs/2404.13501",
+        "label": "Zhang et al. · A Survey on the Memory Mechanism of LLM-based Agents",
+        "note": "比较记忆模块的结构、写入、检索与评估问题"
+      },
+      {
+        "url": "https://arxiv.org/abs/2303.11366",
+        "label": "Shinn et al. · Reflexion",
+        "note": "通过语言反馈形成可供后续尝试使用的动态记忆"
+      },
+      {
+        "url": "https://arxiv.org/abs/2412.15266",
+        "label": "Zeng et al. · On the Structural Memory of LLM Agents",
+        "note": "比较块、事实、三元组、摘要和混合记忆及检索方法"
+      }
+    ]
   }
 ]
