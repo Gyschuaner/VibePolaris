@@ -2,6 +2,9 @@ import { ArrowRight, Check, Code, Function, X } from '@phosphor-icons/react/dist
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
 import { ConceptHero } from './ConceptHero';
 import { StreamingOutputLesson, StructuredOutputLesson, FunctionCallingLesson } from './ModelOutputLessons';
+import { StreamingReceiptHero } from './ai-stack-lessons/streaming-output-hero';
+import { StructuredMoldHero } from './ai-stack-lessons/structured-output-hero';
+import { FunctionCounterHero } from './ai-stack-lessons/function-calling-hero';
 import { streamingSources, structuredSources, functionSources } from '@/lib/model-output-sources';
 import base from './EventConcepts.module.css';
 import s from './ModelOutputConcepts.module.css';
@@ -11,7 +14,7 @@ export function StreamingOutputTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={streamingSources}/>;
   return <ConceptArticle slug="streaming-output" title="流式输出" sources={streamingSources} sections={[["increment","生成与接收交错进行"],["events","文字增量与完成事件"],["framing","传输片段和语义事件"],["interruption","中断、取消与部分回答"]]}
     intro={<>流式输出让接收方在整个结果生成完之前，先拿到已经产生的部分。聊天界面可以先显示第一段，再接上后面的内容；程序也可以逐步处理。接收到文字与确认整次响应完成，是两件不同的事。</>}
-    hero={<ConceptHero slug="streaming-output" label="三个文字片段依次出现并组成回答，最后出现完成标记"><div className={s.streamHero}><div><i>订单</i><i>已发货</i><i>明天送达</i><ArrowRight size={20}/></div><p><span>订单已发货，明天送达。</span></p><span><Check size={14}/> 收到完成事件</span></div></ConceptHero>}>
+    hero={<ConceptHero slug="streaming-output" label="配送收据逐段打印，响应完成后才盖章，中断时留下断口"><StreamingReceiptHero /></ConceptHero>}>
     <ArticleSection id="increment" title="生成与接收交错进行"><Legacy slug="streaming-output" names={["question","definition"]}/>
       <p id="stream-definition" className="vp-citation-target"><strong>流式输出把已有的部分结果先交给接收方，后续内容继续产生和传送。</strong>这里的“增量”就是已经产生的一小段结果；OpenAI 的流式文档就是这样解释长回答的：开始显示文字时，整份输出还可能在生成。本页只讲模型回复的增量接收；流式传输本身不限于某一种接口。<Cite id="stream-definition"/></p>
       <p>假设订单助手要回复一段配送说明。一次性返回时，界面等待完整结果；流式返回时，先收到“订单 A102”，再收到“已发货”，随后补上预计日期。接收程序把增量按顺序加入一个暂存这些片段的缓冲区，界面呈现当前已有的文字。</p>
@@ -41,7 +44,7 @@ export function StructuredOutputTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={structuredSources}/>;
   return <ConceptArticle slug="structured-output" title="结构化输出" sources={structuredSources} sections={[["format","把结果交给程序读取"],["shape","候选约束与金额检查"],["generation","生成时就限制可选的内容"],["boundary","格式之外的正确性"]]}
     intro={<>结构化输出让模型按约定的字段和类型返回结果，便于程序直接读取。例如本例把金额写成不带小数的整数，放在 <code>amount</code> 字段里，而不是一段需要重新猜测含义的说明。格式可以受到约束，数据仍需要核对。</>}
-    hero={<ConceptHero slug="structured-output" label="整数格式保留120和999，排除字符串120，金额正确性仍需另外检查"><div className={s.shapeHero}><code>amount: integer</code><div><i>120</i><i>999</i><X size={20}/><code>"120"</code></div><p>类型相同，事实可能不同</p></div></ConceptHero>}>
+    hero={<ConceptHero slug="structured-output" label="amount 整数字段经过模具约束，再与原始金额核对"><StructuredMoldHero /></ConceptHero>}>
     <ArticleSection id="format" title="把结果交给程序读取"><Legacy slug="structured-output" names={["question","definition"]}/>
       <p id="structured-definition" className="vp-citation-target"><strong>结构化输出让结果遵从预先指定的数据形状。</strong>OpenAI 文档区分 JSON 模式与遵循 schema（对字段和类型的约定）的输出：能解析成 JSON，和字段、类型都满足约定，是两项不同的要求。哪些 schema 被支持、支持到什么程度，由具体模型和接口决定，不能推广成任意模型都能接受全部 schema。<Cite id="structured-definition"/></p>
       <p>原始资料说“金额 120”。如果程序收到“这次金额大约是 120”，需要再次提取；收到 <code>{'{"amount":"120"}'}</code> 后，解析器能把它读成一个 JSON 对象，但引号里的 <code>"120"</code> 仍是文字，不能直接当作本例要求的整数参与计算。明确输出字段，可以减少下游对自由文本的猜测。</p>
@@ -70,7 +73,7 @@ export function FunctionCallingTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={functionSources}/>;
   return <ConceptArticle slug="function-calling" title="函数调用" sources={functionSources} sections={[["request","函数名称与参数构成请求"],["dispatch","应用检查后执行查询"],["result","把结果交回对应的调用"],["responsibility","工具选择与执行责任"]]}
     intro={<>函数调用让模型依据工具定义，返回函数名称和参数。应用接到这份请求后，找到对应代码、检查参数与访问权限，再决定执行。函数结果可以回到模型输入，供它继续回答或提出下一请求。</>}
-    hero={<ConceptHero slug="function-calling" label="函数名get_order匹配应用注册表，执行后返回call_01对应订单状态"><div className={s.functionHero}><div><Function size={27}/><code>get_order</code><code>order_id: A102</code></div><ArrowRight size={23}/><div><Code size={27}/><code>注册函数</code><Check size={18}/></div><p><code>call_01 → status: shipped</code></p></div></ConceptHero>}>
+    hero={<ConceptHero slug="function-calling" label="函数调用先递出带编号的请求，再由应用检查注册表与权限，最后返回对应订单结果"><FunctionCounterHero /></ConceptHero>}>
     <ArticleSection id="request" title="函数名称与参数构成请求"><Legacy slug="function-calling" names={["question","definition"]}/>
       <p id="function-definition" className="vp-citation-target"><strong>模型返回的函数调用是一份请求，执行由应用代码完成。</strong>OpenAI 文档把用户自定义函数的流程拆成提供定义、接收调用、应用执行、返回结果和再次生成。模型回复中出现 <code>get_order</code>，本身不能证明订单系统已被查询。<Cite id="function-definition"/></p>
       <p>订单助手要回答“A102 发货了吗”。应用先告诉模型：有一个 <code>get_order</code> 函数，用途是读取订单状态，参数 <code>order_id</code> 为字符串。模型可以据此提出名称与参数。函数说明是可用能力的描述，不是业务数据，也不是授权凭证。</p>

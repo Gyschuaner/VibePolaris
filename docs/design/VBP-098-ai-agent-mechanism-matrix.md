@@ -30,3 +30,11 @@
 - 去掉文字标签后，读者仍能从对象、空间关系和状态变化看出十种不同机制。
 - 动画只服务于对象变化；窄列、390px 视口和 `prefers-reduced-motion` 仍能读到完整结论。
 - 正文段落的 citation id 与对应来源台账一一对应；机制矩阵只记录设计依据，不替代正文引用。
+
+## 实际集成与生产记录
+
+- 功能分支 `feat/VBP-098-ai-agent-next` 从 `origin/main` 的 `353aa8f2` 创建；十条词条分别提交，后续的多模态与 CSR 视觉修正也各自提交。dev PR [#421](https://github.com/Gyschuaner/VibePolaris/pull/421) 合并提交为 `82ebcaec7bb78448d485dcc68830212f737667b2`；main PR [#422](https://github.com/Gyschuaner/VibePolaris/pull/422) 合并提交为 `040d2e462b8889e5cdee20f1530eb195d526f85b`。
+- 本地 dev 预览 `http://127.0.0.1:3308` 逐条打开十个路由；十条首图和关键分支均可操作。`npm run typecheck`、`npm run build`、`npm run audit:terms` 通过；机制测试 44/44 通过。默认视口与 390px 视口的 `scrollWidth` 均等于视口宽度。
+- 生产镜像 `vibepolaris:040d2e462b8889e5cdee20f1530eb195d526f85b`，镜像 ID `sha256:66aee742ea83058abb8dce232b089dd5f0e95fd9d8fce35ef101144a68d20160`；本地与服务器传输包 SHA-256 均为 `c99f8354081d8abea531406abb59d8c1225bffa6dbb148b1db53ef382c2e72d6`。生产 release `/opt/vibepolaris/releases/20261007T063538Z-040d2e46` 已切换到 `/opt/vibepolaris/current`，容器保持 `healthy`。
+- 生产服务器内 HTTPS 冒烟：`/`、`/news`、`/about`、`/sitemap.xml` 和十条词条路由均返回 200；提示词注入、CSR、多模态首图标记均在 HTML 中可见。回滚备份为 `/opt/vibepolaris/backups/20261007T063538Z-from-4b7ca56b`，Xiaobei 持久化卷 `vibepolaris_xiaobei_data` 未替换。
+- Developer Platform CLI 在查询和写入时均返回 TLS `UNEXPECTED_EOF_WHILE_READING`，因此未伪造需求、任务或 deployment 状态；服务恢复后补录 `deploy-vbp098-ai-agent-concepts-prod-20261007` 的真实记录。当前机器不存在 `D:/Obsidian/gysnote`，未创建空的 Obsidian 记录。
