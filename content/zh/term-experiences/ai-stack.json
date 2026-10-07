@@ -24703,5 +24703,2008 @@
         "note": "补充模型卡之外仍需持续治理和监控。"
       }
     ]
+  },
+  {
+    "slug": "chain-of-thought",
+    "lead": "一笔退款为什么算错？把条件和算式放到同一张账本上，错误才有地方可找。",
+    "definition": "思维链提示让模型把复杂回答拆成中间推理步骤，再给出最后结论。对可计算任务，这些步骤能把输入条件、运算和暂时结论摊开，方便定位漏算；它改变的是本次请求的推理呈现，不是模型参数。",
+    "boundary": "草稿可读不等于前提正确，也不等于事实已核验。生产系统应保留适合审阅的摘要、证据和检查结果，不把私有思维过程或未经验证的猜测当成证明。",
+    "sceneKind": "layers",
+    "sceneTitle": "条件账本：先把输入铺平，再看结论是否站得住",
+    "actionLabel": "展开一层",
+    "actors": [
+      {
+        "id": "question",
+        "label": "退款问题",
+        "detail": "原价 60 元，退货费未知",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "facts",
+        "label": "条件卡",
+        "detail": "原价、费用、资格",
+        "icon": "file",
+        "group": "证据"
+      },
+      {
+        "id": "scratchpad",
+        "label": "中间账本",
+        "detail": "把算式和假设写开",
+        "icon": "code",
+        "group": "推理"
+      },
+      {
+        "id": "answer",
+        "label": "最终结论",
+        "detail": "退款金额 42 元",
+        "icon": "spark",
+        "group": "输出"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "放入条件",
+        "note": "先把三个条件放入账本，退款结论暂时留空。",
+        "activeIds": [
+          "answer"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "question",
+          "facts",
+          "scratchpad"
+        ],
+        "values": {
+          "facts": "商品价 ¥120 · 运费 −¥12 · 已用优惠 −¥20",
+          "answer": "退款结论 ?"
+        }
+      },
+      {
+        "label": "展开算式",
+        "note": "算式展开后，数字来源和关系都能对上。",
+        "activeIds": [
+          "question",
+          "facts"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "scratchpad",
+          "answer"
+        ],
+        "values": {
+          "facts": "商品价 ¥120 · 运费 −¥12 · 已用优惠 −¥20",
+          "scratchpad": "120 − 12 − 20 = 88",
+          "answer": "退款结论 ¥88"
+        }
+      },
+      {
+        "label": "检查中间值",
+        "note": "中间账本可以检查，但前提和外部证据还需另核。",
+        "activeIds": [
+          "scratchpad"
+        ],
+        "doneIds": [
+          "facts"
+        ],
+        "mutedIds": [
+          "answer"
+        ],
+        "values": {
+          "scratchpad": "120 − 12 − 20 = 88",
+          "answer": "退款结论 ¥88 · 中间账本已核对"
+        }
+      },
+      {
+        "label": "删掉一项再看",
+        "note": "只删掉一个条件，结果变为 108，差异有地方可追。",
+        "activeIds": [
+          "scratchpad",
+          "answer"
+        ],
+        "doneIds": [
+          "facts"
+        ],
+        "mutedIds": [
+          "question"
+        ],
+        "values": {
+          "scratchpad": "120 − 12 = 108",
+          "answer": "退款结论 ¥108"
+        }
+      }
+    ],
+    "insight": "中间步骤的价值是让条件和变化可检查，不是让更长的文字自动变成真相。",
+    "quiz": {
+      "question": "一条看起来完整的思维链，最不能替代什么？",
+      "options": [
+        {
+          "label": "核对前提和外部证据",
+          "correct": true
+        },
+        {
+          "label": "把中间步骤写得更长",
+          "correct": false
+        },
+        {
+          "label": "把最终答案加粗",
+          "correct": false
+        }
+      ],
+      "success": "思维链把推理摊开，但前提和证据仍要单独核对。",
+      "retry": "先回到输入和证据；步骤多不等于前提正确。"
+    },
+    "prompt": {
+      "title": "把复杂判断改成可检查账本",
+      "text": "请把这个问题拆成最少的可核对条件：列出每个输入的来源、需要执行的运算、暂时结论和仍未验证的假设。不要把猜测写成事实；最后给出不泄露私有思维过程的结果摘要，并标出需要人工或工具复核的位置。"
+    },
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2201.11903",
+        "label": "Wei et al. · Chain-of-Thought Prompting",
+        "note": "中间推理步骤与复杂任务表现"
+      },
+      {
+        "url": "https://arxiv.org/abs/2205.11916",
+        "label": "Kojima et al. · Zero-shot-CoT",
+        "note": "零样本触发推理步骤的研究"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/reasoning",
+        "label": "OpenAI · Reasoning models",
+        "note": "推理预算与可公开结果的边界"
+      },
+      {
+        "url": "https://platform.openai.com/docs/guides/prompt-engineering",
+        "label": "OpenAI · Prompt engineering",
+        "note": "把任务与约束写清的官方指南"
+      },
+      {
+        "url": "https://doi.org/10.6028/NIST.AI.600-1",
+        "label": "NIST · AI Risk Management Framework",
+        "note": "验证、风险和人类监督边界"
+      }
+    ],
+    "teaching": [
+      {
+        "id": "ledger",
+        "title": "先把“为什么”变成可核对的账本",
+        "body": "假设退款金额要扣掉运费和已用优惠。模型若只报一个总数，你看不出它漏了哪一项；把条件、每一步算式和暂时结果摊开，读者就能在错误第一次出现的位置停下来。这里的步骤是审阅用的中间产物，不是凭格式自动获得的答案。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "not-proof",
+        "title": "能读懂推理，不等于前提是真的",
+        "body": "思维链可能把错误的订单状态、单位或日期算得很顺。真正需要交付的地方，要把外部资料、程序计算或结构化检查单独列出来；“推理写得很长”只说明过程更可见，不能替代证据核验。",
+        "sourceIndices": [
+          4,
+          5
+        ]
+      },
+      {
+        "id": "fit",
+        "title": "什么时候值得让它写出中间步骤",
+        "body": "步骤对数学、规划和排错这类有明确中间状态的任务更有用；若任务只是从一组标签里选一个，强行展开只会增加阅读和泄露风险。先比较结果是否更容易检查，再决定保留完整过程还是只展示经过核验的摘要。",
+        "sourceIndices": [
+          1,
+          3
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "self-consistency",
+    "lead": "同一道题多算几遍，为什么要看答案的交集，而不是迷信第一条推理路径？",
+    "definition": "自洽性采样对同一个问题生成多条可能的推理路径，把路径最后得到的答案归并，再选择出现更稳定的答案。它利用路径间的共识，不会更新模型参数；只有答案空间清楚且能独立核对时，共识才有意义。",
+    "boundary": "多数票不是事实证明。输入歧义、共享错误前提或没有唯一答案时，更多样本只会制造确定感；必须记录采样设置、归并规则和外部核验，不把票数当通用置信度。",
+    "sceneKind": "matrix",
+    "sceneTitle": "答案棋盘：路径各自书写，最后才在同一列归票",
+    "actionLabel": "摆下一组路径",
+    "actors": [
+      {
+        "id": "question",
+        "label": "同一道题",
+        "detail": "24 个苹果分给 6 人",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "path-a",
+        "label": "路径 A",
+        "detail": "24 ÷ 6 = 4",
+        "icon": "code",
+        "group": "样本"
+      },
+      {
+        "id": "path-b",
+        "label": "路径 B",
+        "detail": "4 × 6 = 24，所以每人 4",
+        "icon": "code",
+        "group": "样本"
+      },
+      {
+        "id": "path-c",
+        "label": "路径 C",
+        "detail": "12 ÷ 3 = 4",
+        "icon": "code",
+        "group": "样本"
+      },
+      {
+        "id": "votes",
+        "label": "答案棋盘",
+        "detail": "把最终答案归在同一格",
+        "icon": "chart",
+        "group": "共识"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "摆出同一道题",
+        "note": "问题固定，先不让答案被上一条路径带偏。",
+        "activeIds": [
+          "question"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "path-a",
+          "path-b",
+          "path-c",
+          "votes"
+        ],
+        "values": {
+          "question": "同一个问题 · 等待采样"
+        }
+      },
+      {
+        "label": "采样三条路径",
+        "note": "三条路径各自作答，答案和文字暂时分开看。",
+        "activeIds": [
+          "path-a",
+          "path-b",
+          "path-c"
+        ],
+        "doneIds": [
+          "question"
+        ],
+        "mutedIds": [
+          "votes"
+        ],
+        "values": {
+          "path-a": "路径 A · 42",
+          "path-b": "路径 B · 43",
+          "path-c": "路径 C · 42"
+        }
+      },
+      {
+        "label": "只取最后答案",
+        "note": "归并的是最后答案，不比较哪段推理更像人。",
+        "activeIds": [
+          "votes"
+        ],
+        "doneIds": [
+          "question",
+          "path-a",
+          "path-b",
+          "path-c"
+        ],
+        "mutedIds": [],
+        "values": {
+          "votes": "42 · 2 票 / 43 · 1 票"
+        }
+      },
+      {
+        "label": "加入共同误读",
+        "note": "多数也可能共享错误前提，共识仍要回到题目核对。",
+        "activeIds": [
+          "path-c",
+          "votes"
+        ],
+        "doneIds": [
+          "question",
+          "path-a",
+          "path-b"
+        ],
+        "mutedIds": [],
+        "values": {
+          "path-b": "路径 B · 42 · 共同读错单位",
+          "votes": "42 · 3 票"
+        }
+      }
+    ],
+    "insight": "自洽性把多个路径的稳定交集显出来，但共识仍需要标准答案和外部证据。",
+    "quiz": {
+      "question": "自洽性采样最适合先用在哪类问题上？",
+      "options": [
+        {
+          "label": "答案空间清楚、可以独立核对的推理题",
+          "correct": true
+        },
+        {
+          "label": "没有唯一标准的价值判断",
+          "correct": false
+        },
+        {
+          "label": "所有路径只能复制同一段提示",
+          "correct": false
+        }
+      ],
+      "success": "明确答案与独立核验让票数有可解释的意义。",
+      "retry": "开放判断或共享错误前提不能只靠多数票。"
+    },
+    "prompt": {
+      "title": "设计一次自洽性采样检查",
+      "text": "请固定输入和目标，生成若干独立答案路径；只抽取每条路径的最终答案并记录采样设置、归并规则和票数。再用一份外部可核对的标准答案检查多数票，明确差异来自路径还是题目歧义。"
+    },
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2203.11171",
+        "label": "Wang et al. · Self-Consistency",
+        "note": "多路径采样与答案归并"
+      },
+      {
+        "url": "https://arxiv.org/abs/2201.11903",
+        "label": "Wei et al. · Chain-of-Thought Prompting",
+        "note": "路径式推理的研究基础"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/reasoning",
+        "label": "OpenAI · Reasoning models",
+        "note": "推理设置和结果解释边界"
+      },
+      {
+        "url": "https://ai.google.dev/gemini-api/docs/prompting-strategies",
+        "label": "Google · Prompting strategies",
+        "note": "提示策略与任务适配"
+      },
+      {
+        "url": "https://doi.org/10.6028/NIST.AI.600-1",
+        "label": "NIST · AI Risk Management Framework",
+        "note": "评测和不确定性治理"
+      }
+    ],
+    "teaching": [
+      {
+        "id": "paths",
+        "title": "它收集的是答案，不是把一条思路写得更长",
+        "body": "同一道题可以采样多条不同的推理路径。程序把每条路径最后落到的答案拿出来归并，例如五次得到“42”三次、“43”两次，才得到一个路径层面的多数；中间文字不能直接当作票数。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "shared-error",
+        "title": "大家答得一样，也可能一起错",
+        "body": "如果所有样本都读错了题目里的单位，投票只会把共同误读放大。输入歧义、温度设置、答案归并规则和样本数量都会改变结果，所以要保存这些条件，并用独立计算或资料检查多数答案。",
+        "sourceIndices": [
+          1,
+          5
+        ]
+      },
+      {
+        "id": "cost",
+        "title": "共识有价格，也有不适用的题",
+        "body": "每多采一条路径，就多一次延迟和费用；开放式创作、没有唯一答案的判断和会共享同一外部错误的任务，不适合把票数包装成置信度。先问“答案能否被归并、能否被核对”，再决定是否采样。",
+        "sourceIndices": [
+          3,
+          4
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "constitutional-ai",
+    "lead": "没有人逐句标注每个回答时，模型如何用一组原则批评并改写自己的答案？",
+    "definition": "宪法式 AI 把一组关于有用、诚实、无害等行为的原则写成可审阅的 constitution，让模型依据原则批评和修订候选回答，再把这些改写或偏好用于训练。监督信号的一部分从逐条人工标签移到了原则集合与模型辅助反馈。",
+    "boundary": "原则不是自动正确的法律，也不是运行时权限或防火墙；谁写原则、怎样解释冲突、如何抽样评估都会改变结果。训练之后仍需政策、工具权限、红队和人工升级，不能把一段 constitution 当成完整安全系统。",
+    "sceneKind": "contract",
+    "sceneTitle": "原则卡与修订台：规则改变时，答案的取舍也显形",
+    "actionLabel": "挂上一张原则卡",
+    "actors": [
+      {
+        "id": "request",
+        "label": "用户请求",
+        "detail": "索取客户私人地址",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "constitution",
+        "label": "原则卡",
+        "detail": "尊重隐私、提供安全替代",
+        "icon": "file",
+        "group": "标准"
+      },
+      {
+        "id": "draft",
+        "label": "原回答",
+        "detail": "直接贴出地址",
+        "icon": "robot",
+        "group": "候选"
+      },
+      {
+        "id": "critique",
+        "label": "自评意见",
+        "detail": "指出隐私风险和缺少授权",
+        "icon": "search",
+        "group": "检查"
+      },
+      {
+        "id": "revision",
+        "label": "修订回答",
+        "detail": "拒绝地址并提供合法联系办法",
+        "icon": "shield",
+        "group": "结果"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "放入候选回答",
+        "note": "先看候选回答本身，它只表现出完成请求的一面。",
+        "activeIds": [
+          "request",
+          "draft"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "constitution",
+          "critique",
+          "revision"
+        ],
+        "values": {
+          "draft": "上一位客户的订单也贴给你参考"
+        }
+      },
+      {
+        "label": "挂上原则卡",
+        "note": "原则卡成为可审阅的评判尺，而不是隐藏开关。",
+        "activeIds": [
+          "constitution"
+        ],
+        "doneIds": [
+          "request"
+        ],
+        "mutedIds": [
+          "critique",
+          "revision"
+        ],
+        "values": {
+          "constitution": "帮助用户 · 不泄露隐私"
+        }
+      },
+      {
+        "label": "写出批评",
+        "note": "批评先指出具体冲突，避免把整段回答一并删掉。",
+        "activeIds": [
+          "critique",
+          "revision"
+        ],
+        "doneIds": [
+          "request",
+          "constitution",
+          "draft"
+        ],
+        "mutedIds": [],
+        "values": {
+          "critique": "指出：泄露他人信息"
+        }
+      },
+      {
+        "label": "改写并留痕",
+        "note": "改写保留可帮助部分，同时留下仍需独立评测的风险。",
+        "activeIds": [
+          "constitution",
+          "critique"
+        ],
+        "doneIds": [
+          "request"
+        ],
+        "mutedIds": [
+          "revision"
+        ],
+        "values": {
+          "revision": "我可以解释流程，但不会展示他人的订单信息。"
+        }
+      }
+    ],
+    "insight": "宪法式 AI 把监督原则变成可检查材料，但原则来源和冲突处理仍需人负责。",
+    "quiz": {
+      "question": "宪法式 AI 中最需要公开讨论的部分是什么？",
+      "options": [
+        {
+          "label": "原则由谁写、怎样解释和评估",
+          "correct": true
+        },
+        {
+          "label": "把所有拒答写成同一句话",
+          "correct": false
+        },
+        {
+          "label": "只看模型是否记住原则名称",
+          "correct": false
+        }
+      ],
+      "success": "原则的来源、解释、冲突与评估决定监督信号。",
+      "retry": "复述原则名字不能证明模型在情境中按原则行动。"
+    },
+    "prompt": {
+      "title": "审阅一组 AI 行为原则",
+      "text": "请把这组原则改写成可观察的行为标准：每条给出适用情境、允许回答、应拒绝的边界、与其他原则冲突时的优先级和可由人工复核的测试例子。标明哪些价值判断仍需要负责人批准。"
+    },
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback",
+        "label": "Anthropic · Constitutional AI",
+        "note": "原则、自评与 AI 反馈训练"
+      },
+      {
+        "url": "https://arxiv.org/abs/2212.08073",
+        "label": "Bai et al. · Constitutional AI",
+        "note": "宪法式无害化方法原始论文"
+      },
+      {
+        "url": "https://www.anthropic.com/research/specific-versus-general-principles-for-constitutional-ai",
+        "label": "Anthropic · Specific vs general principles",
+        "note": "原则粒度与行为泛化"
+      },
+      {
+        "url": "https://www.anthropic.com/research/collective-constitutional-ai-aligning-a-language-model-with-public-input",
+        "label": "Anthropic · Collective Constitutional AI",
+        "note": "原则来源和公共输入边界"
+      },
+      {
+        "url": "https://doi.org/10.6028/NIST.AI.600-1",
+        "label": "NIST · AI Risk Management Framework",
+        "note": "治理、风险与人工监督"
+      }
+    ],
+    "teaching": [
+      {
+        "id": "principles",
+        "title": "原则卡不是一句“要安全”",
+        "body": "一张可用的 constitution 要把冲突说具体，例如既要帮助用户，又不能泄露他人的隐私。模型先看到候选回答和原则，再按原则指出问题；原则的措辞、来源和适用范围决定了它到底会批评什么。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "critique-revise",
+        "title": "批评和改写是两次不同的动作",
+        "body": "先指出哪一条原则被触犯，再给出修订版本，才能看出模型是否真的改变了风险点。随后这些偏好或改写可以成为训练信号，但训练完成后仍要用新的输入、红队样例和人工抽查验证，不能把自评当成通过证明。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "governance",
+        "title": "原则冲突时，仍需要人来定方向",
+        "body": "谁参与制定原则、哪些声音被纳入、相互冲突的价值如何排序，都会改变最终行为。公开征集和集体修订能让原则更可讨论，却不会消除治理决策；权限、工具审批和升级路径仍要在系统外明确。",
+        "sourceIndices": [
+          3,
+          4,
+          5
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "rlhf",
+    "lead": "人类没有替模型写出每个答案，模型为什么仍会朝某种偏好方向移动？",
+    "definition": "RLHF 通常先收集示范或成对偏好，让奖励模型学习哪些输出更符合标注者的判断，再用奖励信号优化语言模型。它把“哪一个更好”的比较变成可训练的代理目标，从而改变一类任务上的行为倾向。",
+    "boundary": "奖励模型只是特定标注者、规范和数据上的近似判断，不等于完整的人类价值或事实正确性。标注偏差、奖励投机、分布变化和评测盲点可能保留，训练后仍要做独立的安全、事实和场景测试。",
+    "sceneKind": "spectrum",
+    "sceneTitle": "偏好标尺：奖励是近似尺，不是事实秤",
+    "actionLabel": "移动偏好刻度",
+    "actors": [
+      {
+        "id": "prompt",
+        "label": "同一请求",
+        "detail": "解释一项退款政策",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "answer-a",
+        "label": "回答 A",
+        "detail": "快但漏掉限制",
+        "icon": "file",
+        "group": "候选"
+      },
+      {
+        "id": "answer-b",
+        "label": "回答 B",
+        "detail": "慢但说明边界",
+        "icon": "file",
+        "group": "候选"
+      },
+      {
+        "id": "human",
+        "label": "人类偏好",
+        "detail": "标注 B 更合适",
+        "icon": "user",
+        "group": "反馈"
+      },
+      {
+        "id": "reward",
+        "label": "奖励尺",
+        "detail": "近似排序，不是事实证明",
+        "icon": "chart",
+        "group": "代理目标"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "摆出两个回答",
+        "note": "先比较具体回答，不急着给一个脱离标准的总分。",
+        "activeIds": [
+          "prompt",
+          "answer-a",
+          "answer-b"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "human",
+          "reward"
+        ],
+        "values": {
+          "answer-a": "A · 礼貌但漏了日期",
+          "answer-b": "B · 说明限制和日期"
+        }
+      },
+      {
+        "label": "人类做比较",
+        "note": "偏好数据表达这组标注标准下的相对选择。",
+        "activeIds": [
+          "human"
+        ],
+        "doneIds": [
+          "prompt",
+          "answer-a",
+          "answer-b"
+        ],
+        "mutedIds": [
+          "reward"
+        ],
+        "values": {
+          "human": "人类偏好 B"
+        }
+      },
+      {
+        "label": "奖励尺学到偏好",
+        "note": "奖励模型学习近似排序，不是发现绝对真理。",
+        "activeIds": [
+          "reward"
+        ],
+        "doneIds": [
+          "prompt",
+          "answer-a",
+          "answer-b",
+          "human"
+        ],
+        "mutedIds": [],
+        "values": {
+          "reward": "0.78 · 更偏向 B"
+        }
+      },
+      {
+        "label": "换一题再核对",
+        "note": "奖励变高不等于事实正确，换题和独立检查仍然必要。",
+        "activeIds": [
+          "answer-a",
+          "reward"
+        ],
+        "doneIds": [
+          "prompt",
+          "answer-b",
+          "human"
+        ],
+        "mutedIds": [],
+        "values": {
+          "answer-a": "奖励 0.91 · 事实仍待核验"
+        }
+      }
+    ],
+    "insight": "RLHF 把偏好变成代理奖励，代理奖励上升不等于事实、安全和公平都被证明。",
+    "quiz": {
+      "question": "RLHF 的奖励模型最容易被误解成什么？",
+      "options": [
+        {
+          "label": "人类价值和事实正确性的完整替身",
+          "correct": false
+        },
+        {
+          "label": "一组偏好数据上的近似评判器",
+          "correct": true
+        },
+        {
+          "label": "只负责统计训练步数的计数器",
+          "correct": false
+        }
+      ],
+      "success": "奖励模型近似特定标注标准下的偏好，不能替代事实和安全验收。",
+      "retry": "奖励高只说明更像标注偏好；新场景仍需独立检查。"
+    },
+    "prompt": {
+      "title": "检查一个 RLHF 数据集的偏好尺",
+      "text": "请把每条偏好拆成提示、两个候选、标注规则、标注者分歧和未覆盖的失败类型；说明奖励模型学到的代理目标，列出它不能证明的事实、安全与公平结论，并设计一组独立留出评测。"
+    },
+    "sources": [
+      {
+        "url": "https://huggingface.co/blog/rlhf",
+        "label": "Hugging Face · Illustrating RLHF",
+        "note": "人类偏好、奖励模型与策略优化概览"
+      },
+      {
+        "url": "https://arxiv.org/abs/2203.02155",
+        "label": "Ouyang et al. · InstructGPT",
+        "note": "RLHF 训练与限制"
+      },
+      {
+        "url": "https://huggingface.co/docs/trl/main/en/ppo_trainer",
+        "label": "Hugging Face TRL · PPO Trainer",
+        "note": "偏好奖励进入 PPO 的实现参考"
+      },
+      {
+        "url": "https://arxiv.org/abs/1706.03741",
+        "label": "Christiano et al. · Deep RL from Human Preferences",
+        "note": "偏好反馈强化学习原始研究"
+      },
+      {
+        "url": "https://doi.org/10.6028/NIST.AI.600-1",
+        "label": "NIST · AI Risk Management Framework",
+        "note": "代理目标和风险治理边界"
+      }
+    ],
+    "teaching": [
+      {
+        "id": "stages",
+        "title": "人类反馈先被整理成可学习的比较",
+        "body": "常见做法是先让人写示范或比较回答 A、B，再用这些判断训练一个奖励模型。奖励模型学到的是“在这批任务和标注标准下，哪种回答更像被选中的”，而不是一张完整的人类价值表。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "proxy",
+        "title": "奖励是代理尺，不是事实裁判",
+        "body": "如果标注者偏爱礼貌而忽略事实，模型就可能学会更像样的语气，却没有更可靠的内容。奖励投机、标注分歧和分布变化都需要单独检查，因此高奖励不能替代事实核验、安全评测或真实用户场景。",
+        "sourceIndices": [
+          1,
+          2,
+          5
+        ]
+      },
+      {
+        "id": "evaluation",
+        "title": "训练结束还要把尺子拿开再测一次",
+        "body": "独立测试要换一批问题、标注规则和失败条件，观察模型是否只记住了奖励模型熟悉的表面信号。把训练数据、奖励模型版本、偏好分布和未解决案例留下，后续才知道一次回归究竟改进了什么。",
+        "sourceIndices": [
+          3,
+          4,
+          5
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "direct-preference-optimization",
+    "lead": "已经有“回答 A 比 B 好”的数据，为什么可以直接调整模型而不先单独训练奖励模型？",
+    "definition": "DPO 使用成对的 chosen/rejected 回答和参考模型，把偏好优化改写成直接的分类损失：提高被选回答相对于参考模型的概率，压低被拒回答。它省去显式奖励模型与在线策略采样这层工程，但仍依赖偏好数据、参考模型和训练设置。",
+    "boundary": "训练路径更短不等于对齐风险更少；偏好标签有偏、chosen 只是更讨喜、参考模型不合适时，DPO 仍会放大错误方向。DPO 不是推理时安全过滤器，部署前要做独立评测和运行时控制。",
+    "sceneKind": "compare",
+    "sceneTitle": "成对偏好台：一边升一点，另一边就要相对退后",
+    "actionLabel": "移动偏好刻度",
+    "actors": [
+      {
+        "id": "chosen",
+        "label": "被选回答",
+        "detail": "说明边界和不确定性",
+        "icon": "spark",
+        "group": "偏好"
+      },
+      {
+        "id": "rejected",
+        "label": "被拒回答",
+        "detail": "只给漂亮结论",
+        "icon": "file",
+        "group": "偏好"
+      },
+      {
+        "id": "reference",
+        "label": "参考模型",
+        "detail": "保留原有分布锚点",
+        "icon": "brain",
+        "group": "对照"
+      },
+      {
+        "id": "policy",
+        "label": "当前模型",
+        "detail": "比较两份回答的相对倾向",
+        "icon": "chart",
+        "group": "更新"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "放入成对回答",
+        "note": "先把一对回答放到同一张偏好板上，不假装有绝对分数。",
+        "activeIds": [
+          "chosen",
+          "rejected"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "reference",
+          "policy"
+        ],
+        "values": {
+          "chosen": "chosen · 说明限制",
+          "rejected": "rejected · 只给结论"
+        }
+      },
+      {
+        "label": "看参考模型",
+        "note": "参考模型和当前策略先给出相对倾向，仍未完成优化。",
+        "activeIds": [
+          "reference",
+          "policy"
+        ],
+        "doneIds": [
+          "chosen",
+          "rejected"
+        ],
+        "mutedIds": [],
+        "values": {
+          "reference": "reference 0.52",
+          "policy": "policy 0.55"
+        }
+      },
+      {
+        "label": "移动相对概率",
+        "note": "分类目标把 chosen 和 rejected 的相对差距拉开，不需要独立奖励网络。",
+        "activeIds": [
+          "chosen",
+          "rejected",
+          "policy"
+        ],
+        "doneIds": [
+          "reference"
+        ],
+        "mutedIds": [],
+        "values": {
+          "reference": "reference 0.44",
+          "policy": "policy 0.71 · chosen 相对提高"
+        }
+      },
+      {
+        "label": "换坏标签试试",
+        "note": "错误偏好也会被有效放大，链路更短不替你判断标签质量。",
+        "activeIds": [
+          "chosen",
+          "policy"
+        ],
+        "doneIds": [
+          "reference"
+        ],
+        "mutedIds": [
+          "rejected"
+        ],
+        "values": {
+          "chosen": "chosen · 套话很多",
+          "rejected": "rejected · 事实更完整",
+          "policy": "0.78 · 错误偏好也会被放大"
+        }
+      }
+    ],
+    "insight": "DPO 简化了偏好训练的工程链路，却没有简化数据质量和独立评测。",
+    "quiz": {
+      "question": "DPO 省掉了哪一层显式组件？",
+      "options": [
+        {
+          "label": "单独训练并调用的奖励模型与强化学习采样环节",
+          "correct": true
+        },
+        {
+          "label": "所有偏好数据和参考模型",
+          "correct": false
+        },
+        {
+          "label": "上线后的安全评测和权限控制",
+          "correct": false
+        }
+      ],
+      "success": "DPO 把目标重写成直接偏好分类损失，但仍需数据和验收。",
+      "retry": "它不是无数据训练，也不替代参考模型与安全控制。"
+    },
+    "prompt": {
+      "title": "审阅一份 DPO 偏好数据",
+      "text": "请逐条检查 chosen 与 rejected 是否只差一个可解释的行为维度，记录参考模型、截断长度、偏好来源和标注分歧；找出“更讨喜但不正确”的样本，并设计训练外的事实、安全和泛化评测。"
+    },
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2305.18290",
+        "label": "Rafailov et al. · Direct Preference Optimization",
+        "note": "DPO 原始方法和与 RLHF 的差异"
+      },
+      {
+        "url": "https://huggingface.co/docs/trl/en/dpo_trainer",
+        "label": "Hugging Face TRL · DPO Trainer",
+        "note": "DPO 数据格式和训练实现"
+      },
+      {
+        "url": "https://huggingface.co/blog/dpo-trl",
+        "label": "Hugging Face · DPO with TRL",
+        "note": "DPO 数据与训练实践"
+      },
+      {
+        "url": "https://arxiv.org/abs/2203.02155",
+        "label": "Ouyang et al. · InstructGPT",
+        "note": "RLHF 参考流程和局限"
+      },
+      {
+        "url": "https://doi.org/10.6028/NIST.AI.600-1",
+        "label": "NIST · AI Risk Management Framework",
+        "note": "训练目标与部署风险边界"
+      }
+    ],
+    "teaching": [
+      {
+        "id": "pairs",
+        "title": "DPO 先问“这两个回答谁更合适”",
+        "body": "每条训练样本有一个 chosen 和一个 rejected，另有一份 reference model 作为相对基线。损失函数推动当前策略更偏向 chosen、远离 rejected；它不是把一条回答直接标成绝对真理，而是在一对样本里学习方向。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "shorter",
+        "title": "少一层奖励模型，不等于少一层判断",
+        "body": "DPO 把偏好优化写成直接的分类式目标，工程链路比显式奖励模型加在线策略采样更短。但偏好数据怎么来的、reference 是否合适、训练后是否过拟合，仍然决定它会把什么方向放大。",
+        "sourceIndices": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": "limits",
+        "title": "训练目标之外的风险不会自动消失",
+        "body": "如果 chosen 只是更讨喜、标签本身有偏，DPO 会很有效地学会这个偏好。部署前仍要做事实、安全、拒答和分布外评测，并在运行时保留权限、过滤和人工升级；DPO 不是请求到来时才启动的安全闸门。",
+        "sourceIndices": [
+          2,
+          5
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "red-teaming",
+    "lead": "正常样例都通过了，为什么还要故意把系统推向最容易失守的角落？",
+    "definition": "红队测试站到攻击者或滥用者的位置，主动设计对抗、异常和高风险输入，观察模型、工具链和产品边界是否失守。它关注普通质量测试可能漏掉的失败模式，并把可复现证据交回修复与回归评测。",
+    "boundary": "红队不是随意攻击，也不是找一个漂亮的越狱就结束；授权、范围、数据保护、成功标准和修复闭环必须先约定。一次没有复现或没有覆盖真实部署路径的攻击，不能代表系统安全。",
+    "sceneKind": "matrix",
+    "sceneTitle": "攻击面矩阵：同一系统，换入口就换一组风险",
+    "actionLabel": "点亮一个攻击面",
+    "actors": [
+      {
+        "id": "chat",
+        "label": "聊天入口",
+        "detail": "文本、角色和多轮上下文",
+        "icon": "message",
+        "group": "入口"
+      },
+      {
+        "id": "file",
+        "label": "文件入口",
+        "detail": "上传内容和解析器",
+        "icon": "file",
+        "group": "入口"
+      },
+      {
+        "id": "tool",
+        "label": "工具入口",
+        "detail": "参数、身份与副作用",
+        "icon": "gear",
+        "group": "入口"
+      },
+      {
+        "id": "attack",
+        "label": "对抗样例",
+        "detail": "越权、恶意文件、参数篡改",
+        "icon": "key",
+        "group": "测试"
+      },
+      {
+        "id": "evidence",
+        "label": "证据格",
+        "detail": "复现、影响与修复状态",
+        "icon": "shield",
+        "group": "结果"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "圈定授权范围",
+        "note": "先把资产、授权和停止条件写在边界里，范围外不触碰。",
+        "activeIds": [
+          "chat",
+          "file",
+          "tool"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "attack",
+          "evidence"
+        ],
+        "values": {
+          "chat": "聊天入口 · 待选",
+          "file": "上传文件 · 待选",
+          "tool": "工具调用 · 待选"
+        }
+      },
+      {
+        "label": "点亮一个入口",
+        "note": "只让被选中的入口进入测试，其他入口保持范围外。",
+        "activeIds": [
+          "attack"
+        ],
+        "doneIds": [
+          "chat",
+          "file",
+          "tool"
+        ],
+        "mutedIds": [
+          "evidence"
+        ],
+        "values": {
+          "chat": "聊天入口 · 可探测"
+        }
+      },
+      {
+        "label": "放入对抗变体",
+        "note": "每个样例带着前置条件和证据进入修复，而不是只报印象分。",
+        "activeIds": [
+          "tool",
+          "evidence"
+        ],
+        "doneIds": [
+          "chat",
+          "file",
+          "attack"
+        ],
+        "mutedIds": [],
+        "values": {
+          "evidence": "发现可复现缺口 · 输入、版本、工具回执"
+        }
+      },
+      {
+        "label": "留下回归证据",
+        "note": "修复后保留原样例与相邻变体，检查防护是否泛化。",
+        "activeIds": [
+          "evidence",
+          "attack"
+        ],
+        "doneIds": [
+          "chat",
+          "file",
+          "tool"
+        ],
+        "mutedIds": [],
+        "values": {
+          "evidence": "回归记录已补齐 · 原样例 + 2 个变体"
+        }
+      }
+    ],
+    "insight": "红队把异常输入变成可复现的风险证据，价值在闭环而不在攻击姿势本身。",
+    "quiz": {
+      "question": "一次红队报告至少要让人知道什么？",
+      "options": [
+        {
+          "label": "攻击前提、复现输入、实际影响和修复状态",
+          "correct": true
+        },
+        {
+          "label": "只有攻击者身份和一个总分",
+          "correct": false
+        },
+        {
+          "label": "证明系统在所有输入上绝对安全",
+          "correct": false
+        }
+      ],
+      "success": "可复现的前提、输入、影响和修复状态才能形成工程闭环。",
+      "retry": "红队证据有范围，不能升级成全局安全证明。"
+    },
+    "prompt": {
+      "title": "编写一次有授权的红队计划",
+      "text": "请限定测试资产、授权范围、风险等级和停止条件；按入口列出对抗样例、预期安全行为、实际证据、影响、修复负责人和回归样例。不要测试不属于你的系统，也不要把未复现的猜测写成漏洞。"
+    },
+    "sources": [
+      {
+        "url": "https://developers.openai.com/api/docs/guides/red-teaming",
+        "label": "OpenAI API · Red teaming",
+        "note": "授权测试、风险探测与评测边界"
+      },
+      {
+        "url": "https://www.nist.gov/publications/adversarial-machine-learning-taxonomy-and-terminology-attacks-and-mitigations",
+        "label": "NIST · Adversarial ML taxonomy",
+        "note": "对抗测试的攻击与缓解术语"
+      },
+      {
+        "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+        "label": "NIST · AI RMF",
+        "note": "风险识别、测量与治理"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/safety-best-practices",
+        "label": "OpenAI API · Safety best practices",
+        "note": "安全测试与生产防护建议"
+      },
+      {
+        "url": "https://arxiv.org/abs/2505.04806",
+        "label": "Pathade · Red Teaming the Mind of the Machine",
+        "note": "越狱与提示注入系统评估"
+      }
+    ],
+    "teaching": [
+      {
+        "id": "surface",
+        "title": "先画授权范围，再找容易失守的入口",
+        "body": "红队要先写清测试资产、允许的输入、工具权限、成功标准和停止条件，再从聊天、文件、检索、插件等入口设计异常或对抗样例。这样测到的是一次可复现的产品风险，而不是把“我试出了一个怪答案”当成系统结论。",
+        "sourceIndices": [
+          1,
+          2,
+          5
+        ]
+      },
+      {
+        "id": "evidence",
+        "title": "一条样例要变成能修复的证据",
+        "body": "记录完整输入、模型版本、系统约束、工具回执、实际影响和复现次数；修复后用同一个样例回归，再加变体检查是否只是换了表面。红队的价值在于把发现交回训练、策略、权限或界面修复，而不是收藏一张截图。",
+        "sourceIndices": [
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "id": "safe",
+        "title": "攻击者视角不等于无授权攻击",
+        "body": "高风险测试需要隔离环境、最小数据和明确联系人；涉及真实用户或外部系统时，要先得到授权并限制副作用。研究报告应描述类别、条件和防护结果，避免把可滥用载荷变成公开教程。",
+        "sourceIndices": [
+          1,
+          5
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "jailbreak",
+    "lead": "同一条危险请求换一层角色和格式，为什么可能让模型忘记原来的限制？",
+    "definition": "越狱提示试图绕过模型既定的安全策略、行为规范或拒答边界。它可能利用指令冲突、角色扮演、编码、上下文拼接或多轮诱导，把高风险目标包装成看似无害的任务；研究越狱是为了发现和修复安全训练的泛化缺口。",
+    "boundary": "越狱不是普通的提示优化，也不等于所有拒答失败都来自一条神奇字符串。模型版本、系统提示、工具权限、输入输出过滤和应用上下文共同决定风险；测试必须有授权，不应把危险载荷写成可直接滥用的教程。",
+    "sceneKind": "branch",
+    "sceneTitle": "边界压力计：改写请求，观察安全判断是否还站得住",
+    "actionLabel": "改变请求包装",
+    "actors": [
+      {
+        "id": "request",
+        "label": "原始请求",
+        "detail": "高风险目标",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "wrapper",
+        "label": "包装层",
+        "detail": "角色、编码、多轮分片",
+        "icon": "file",
+        "group": "变体"
+      },
+      {
+        "id": "boundary",
+        "label": "安全边界",
+        "detail": "策略、权限和风险分类",
+        "icon": "shield",
+        "group": "判断"
+      },
+      {
+        "id": "response",
+        "label": "模型回应",
+        "detail": "拒绝、替代或失守",
+        "icon": "robot",
+        "group": "结果"
+      },
+      {
+        "id": "record",
+        "label": "回归记录",
+        "detail": "抽象类别与防护证据",
+        "icon": "file",
+        "group": "后续"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "放入正常请求",
+        "note": "先建立一条正常基线，目标是理解安全边界而不是生成危险载荷。",
+        "activeIds": [
+          "request",
+          "boundary",
+          "response"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "wrapper",
+          "record"
+        ],
+        "values": {
+          "response": "普通任务请求 · 安全解释"
+        }
+      },
+      {
+        "label": "改变包装类别",
+        "note": "只改变抽象包装类别，不能自动改变更高优先级的安全约束。",
+        "activeIds": [
+          "wrapper",
+          "boundary"
+        ],
+        "doneIds": [
+          "request"
+        ],
+        "mutedIds": [
+          "response",
+          "record"
+        ],
+        "values": {
+          "wrapper": "包装类别：角色 / 编码 / 多轮"
+        }
+      },
+      {
+        "label": "检查边界是否松动",
+        "note": "越狱要同时观察模型行为和工具权限，不能把一次回答当成系统结论。",
+        "activeIds": [
+          "wrapper",
+          "response"
+        ],
+        "doneIds": [
+          "request",
+          "boundary"
+        ],
+        "mutedIds": [
+          "record"
+        ],
+        "values": {
+          "wrapper": "包装类别仍受控",
+          "response": "边界受压 · 拒答 / 改写"
+        }
+      },
+      {
+        "label": "记录安全回归",
+        "note": "跨版本、多轮和相邻变体都要留下证据，不传播可滥用载荷。",
+        "activeIds": [
+          "response",
+          "record"
+        ],
+        "doneIds": [
+          "request",
+          "wrapper",
+          "boundary"
+        ],
+        "mutedIds": [],
+        "values": {
+          "response": "仍然拦住 · 策略 + 权限 + 过滤",
+          "record": "原样例 + 变体"
+        }
+      }
+    ],
+    "insight": "越狱测试关注安全判断在变体和上下文中的稳定性，不是收集炫技字符串。",
+    "quiz": {
+      "question": "看到一次越狱成功，最正确的工程反应是什么？",
+      "options": [
+        {
+          "label": "抽象成风险类别并加入授权回归与变体评测",
+          "correct": true
+        },
+        {
+          "label": "把成功载荷直接放进产品示例",
+          "correct": false
+        },
+        {
+          "label": "只换系统提示一句就宣布修复",
+          "correct": false
+        }
+      ],
+      "success": "抽象类别、控制传播并做变体回归，才能检查防护是否泛化。",
+      "retry": "传播载荷或只改一句提示不能证明同类变体已被挡住。"
+    },
+    "prompt": {
+      "title": "审阅一次越狱风险而不传播载荷",
+      "text": "请用抽象类别描述输入变体、前置条件、模型和工具权限，记录预期拒答与实际行为；删除可直接复用的危险细节，补充同类变体、日志、修复措施和回归结果，并明确测试授权和停止条件。"
+    },
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2307.02483",
+        "label": "Wei et al. · Jailbroken",
+        "note": "安全训练失效模式与越狱研究"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/red-teaming",
+        "label": "OpenAI API · Red teaming",
+        "note": "授权探测与安全评测"
+      },
+      {
+        "url": "https://www.anthropic.com/research/next-generation-constitutional-classifiers",
+        "label": "Anthropic · Constitutional Classifiers",
+        "note": "对抗测试与越狱防护边界"
+      },
+      {
+        "url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
+        "label": "OWASP · Prompt Injection",
+        "note": "提示注入与越狱风险分类"
+      },
+      {
+        "url": "https://www.nist.gov/publications/adversarial-machine-learning-taxonomy-and-terminology-attacks-and-mitigations",
+        "label": "NIST · Adversarial ML taxonomy",
+        "note": "对抗攻击与缓解术语"
+      }
+    ],
+    "teaching": [
+      {
+        "id": "difference",
+        "title": "越狱针对的是行为边界，提示注入针对的是指令来源",
+        "body": "越狱通常试图让模型绕过既定的安全或拒答规则；提示注入则常把不可信文本伪装成高优先级指令，影响模型如何使用上下文或工具。两者可以同时出现，但排查时要分别看模型行为边界、输入来源和工具权限。",
+        "sourceIndices": [
+          1,
+          2,
+          4
+        ]
+      },
+      {
+        "id": "abstract",
+        "title": "测试可以研究类别，不必传播危险句子",
+        "body": "把包装、角色冲突、编码、上下文拼接等当作测试类别，记录“在什么约束下发生了什么”，就足够比较防护是否改进。具体载荷、真实目标和可复制的滥用步骤不属于面向读者的教学材料。",
+        "sourceIndices": [
+          1,
+          3,
+          5
+        ]
+      },
+      {
+        "id": "defense",
+        "title": "防护要在多个边界同时收紧",
+        "body": "系统提示或安全训练只是一层；还要检查输入输出过滤、工具最小权限、敏感动作确认、日志和人工升级。修复后要跨模型版本、不同语言和多轮上下文回归，因为一次拒答成功不能证明泛化已经可靠。",
+        "sourceIndices": [
+          2,
+          3,
+          4,
+          5
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "model-spec",
+    "lead": "用户、开发者和安全要求冲突时，模型凭什么判断哪条指令优先？",
+    "definition": "模型规范是一份描述模型期望行为的规则与原则文档，通常说明目标、指令层级、冲突处理、诚实性、安全边界和风格默认值。它把行为目标变成可讨论、可评测的材料，但实际产品行为还受训练、系统实现、工具权限和政策约束。",
+    "boundary": "规范是行为目标和评审依据，不是权限系统、完整安全政策，也不是对每个输入的穷尽程序。它会随反馈和部署经验演进，规则之间也需要判断；敏感操作仍必须放进真实授权、审计和工具闸门。",
+    "sceneKind": "layers",
+    "sceneTitle": "指令分层台：同一句话放在不同层，结论会变吗？",
+    "actionLabel": "翻开一层规则",
+    "actors": [
+      {
+        "id": "user",
+        "label": "用户请求",
+        "detail": "导出全部订单",
+        "icon": "user",
+        "group": "输入"
+      },
+      {
+        "id": "developer",
+        "label": "应用约束",
+        "detail": "只允许当前账户范围",
+        "icon": "code",
+        "group": "约束"
+      },
+      {
+        "id": "principles",
+        "label": "行为原则",
+        "detail": "隐私、诚实、可控",
+        "icon": "shield",
+        "group": "规范"
+      },
+      {
+        "id": "tool",
+        "label": "真实权限",
+        "detail": "服务器检查身份和范围",
+        "icon": "key",
+        "group": "执行"
+      },
+      {
+        "id": "response",
+        "label": "可审阅结果",
+        "detail": "拒绝越权并给合法路径",
+        "icon": "spark",
+        "group": "结果"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "收到用户愿望",
+        "note": "愿望说明目标，却没有证明身份、范围和允许的操作。",
+        "activeIds": [
+          "user"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "developer",
+          "principles",
+          "tool",
+          "response"
+        ],
+        "values": {
+          "user": "帮我导出客户名单"
+        }
+      },
+      {
+        "label": "叠开发者约束",
+        "note": "应用约束先把请求范围收窄，模型规范不能替应用权限开门。",
+        "activeIds": [
+          "developer",
+          "tool"
+        ],
+        "doneIds": [
+          "user"
+        ],
+        "mutedIds": [
+          "principles",
+          "response"
+        ],
+        "values": {
+          "developer": "只处理已授权记录",
+          "tool": "仅当前账户"
+        }
+      },
+      {
+        "label": "遇到安全冲突",
+        "note": "高层原则影响行为方向，但真实工具仍要独立检查权限。",
+        "activeIds": [
+          "principles",
+          "tool"
+        ],
+        "doneIds": [
+          "user",
+          "developer"
+        ],
+        "mutedIds": [
+          "response"
+        ],
+        "values": {
+          "principles": "隐私边界不能被绕过",
+          "tool": "拒绝越权"
+        }
+      },
+      {
+        "label": "检查真实权限",
+        "note": "规范和真实权限同时满足时才执行这个受限动作；结果仍需留痕。",
+        "activeIds": [
+          "response"
+        ],
+        "doneIds": [
+          "user",
+          "developer",
+          "principles",
+          "tool"
+        ],
+        "mutedIds": [],
+        "values": {
+          "response": "只读沙盒 · 允许"
+        }
+      }
+    ],
+    "insight": "模型规范提供行为层级和评审语言，权限与工具系统才真正控制资源。",
+    "quiz": {
+      "question": "模型规范与权限系统的关系是什么？",
+      "options": [
+        {
+          "label": "规范描述应有行为，权限系统真正限制资源访问",
+          "correct": true
+        },
+        {
+          "label": "规范一写好就能代替所有授权检查",
+          "correct": false
+        },
+        {
+          "label": "权限只负责改变模型语气",
+          "correct": false
+        }
+      ],
+      "success": "行为规范和资源权限是两层事实，不能互相冒充。",
+      "retry": "文字规则不能替代服务器授权、审计和工具执行前检查。"
+    },
+    "prompt": {
+      "title": "审阅一条模型行为规范",
+      "text": "请把规范中的每条原则改成可评测的输入—输出例子，标出指令层级、冲突处理、风险升级和版本变更；同时列出必须由应用权限、工具审批或人工判断承担的部分，不要把文字规范当作访问控制。"
+    },
+    "sources": [
+      {
+        "url": "https://model-spec.openai.com/",
+        "label": "OpenAI · Model Spec",
+        "note": "当前公开的行为规范文本"
+      },
+      {
+        "url": "https://cdn.openai.com/spec/model-spec-2024-05-08.html",
+        "label": "OpenAI · Model Spec 2024",
+        "note": "指令冲突与行为原则框架"
+      },
+      {
+        "url": "https://github.com/openai/model_spec/blob/main/model_spec.md",
+        "label": "OpenAI · Model Spec source",
+        "note": "可审阅的规范文本"
+      },
+      {
+        "url": "https://alignment.openai.com/model-spec-evals",
+        "label": "OpenAI · Model Spec Evals",
+        "note": "用评测检查规范遵循"
+      },
+      {
+        "url": "https://doi.org/10.6028/NIST.AI.600-1",
+        "label": "NIST · AI Risk Management Framework",
+        "note": "治理、责任和控制边界"
+      }
+    ],
+    "teaching": [
+      {
+        "id": "hierarchy",
+        "title": "规范先把“谁的话更优先”写出来",
+        "body": "当用户要求、应用约束和安全原则冲突时，模型规范提供一套可讨论的优先级和行为目标。它帮助评审者解释为什么某个请求应被遵循、改写或拒绝，但规则文字本身还要在训练、评测和产品实现里兑现。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "permission",
+        "title": "行为规则和资源权限是两把不同的锁",
+        "body": "规范可以要求模型谨慎处理删除、隐私或高风险请求，却不能凭空授予文件读取、付款或发邮件的权限。真正的工具调用仍需 schema、授权、确认、审计和失败处理；把两者混成一把锁会留下明显的越权缺口。",
+        "sourceIndices": [
+          1,
+          3,
+          5
+        ]
+      },
+      {
+        "id": "version",
+        "title": "规范要和版本、评测结果一起看",
+        "body": "公开规范会根据反馈和部署经验修订，评测页则把某些行为目标变成可重复检查的案例。记录采用的版本、冲突条件和未覆盖的边界，才能判断“现在符合”究竟针对哪一版目标，而不是把文档当成永远不变的保证。",
+        "sourceIndices": [
+          1,
+          4,
+          5
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "prompt-chaining",
+    "lead": "一条提示塞不下任务时，为什么先产出结构，再让下一次调用使用它会更容易检查？",
+    "definition": "提示链把一个任务拆成固定的子任务，每次模型调用只负责一个较清楚的产物，例如先列提纲，再检查提纲，最后写正文。程序保存中间产物，并可在连接处加入格式或事实闸门；换来的可调试性伴随更多延迟、状态和失败接口。",
+    "boundary": "提示链适合边界稳定、输入输出可描述的工作，不是所有任务都值得拆成多次调用。前一步的错误会传给后一步，链越长成本越高；需要动态决定子任务时，固定链可能不如代理或一次简单调用。",
+    "sceneKind": "assembly",
+    "sceneTitle": "产物拼装台：接口清楚，下一块才接得上",
+    "actionLabel": "拼入下一块产物",
+    "actors": [
+      {
+        "id": "material",
+        "label": "原始材料",
+        "detail": "采访记录和事实卡",
+        "icon": "file",
+        "group": "输入"
+      },
+      {
+        "id": "outline",
+        "label": "提纲卡",
+        "detail": "固定字段的 JSON",
+        "icon": "layout",
+        "group": "中间产物"
+      },
+      {
+        "id": "check",
+        "label": "检查卡",
+        "detail": "缺口和格式闸门",
+        "icon": "shield",
+        "group": "中间产物"
+      },
+      {
+        "id": "draft",
+        "label": "正文卡",
+        "detail": "只接收合格提纲",
+        "icon": "file",
+        "group": "输出"
+      },
+      {
+        "id": "cost",
+        "label": "调用账本",
+        "detail": "延迟、费用和失败接口",
+        "icon": "chart",
+        "group": "代价"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "放入原始材料",
+        "note": "材料先保持原样，问题暂时还没有被拆到某一层。",
+        "activeIds": [
+          "material",
+          "draft"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "outline",
+          "check",
+          "cost"
+        ],
+        "values": {
+          "material": "原始访谈 · 一整段材料",
+          "draft": "尚未拆分"
+        }
+      },
+      {
+        "label": "切出中间卡",
+        "note": "中间卡规定下一步需要的字段，错误可以停在这一层。",
+        "activeIds": [
+          "outline"
+        ],
+        "doneIds": [
+          "material"
+        ],
+        "mutedIds": [
+          "check",
+          "draft",
+          "cost"
+        ],
+        "values": {
+          "outline": "提纲卡 · 3 个主题 · 1 个待核事实"
+        }
+      },
+      {
+        "label": "检查 schema",
+        "note": "schema 闸门在交给写作调用前挡住缺字段的产物。",
+        "activeIds": [
+          "check"
+        ],
+        "doneIds": [
+          "material",
+          "outline"
+        ],
+        "mutedIds": [
+          "draft",
+          "cost"
+        ],
+        "values": {
+          "check": "缺 1 条来源 · STOP"
+        }
+      },
+      {
+        "label": "拼正文并记账",
+        "note": "闸门通过后才拼正文，同时留下调用成本、失败项和回退选择。",
+        "activeIds": [
+          "draft",
+          "cost"
+        ],
+        "doneIds": [
+          "material",
+          "outline",
+          "check"
+        ],
+        "mutedIds": [],
+        "values": {
+          "draft": "正文卡 · 引用位置已保留",
+          "cost": "3 calls · 1 gate"
+        }
+      }
+    ],
+    "insight": "提示链把大任务拆成可验收产物，也把每个连接处的成本和失败暴露出来。",
+    "quiz": {
+      "question": "提示链最值得先加哪一种闸门？",
+      "options": [
+        {
+          "label": "检查中间产物是否满足下一步所需的格式和条件",
+          "correct": true
+        },
+        {
+          "label": "让每一步重新读取所有历史文本",
+          "correct": false
+        },
+        {
+          "label": "把所有失败隐藏成成功",
+          "correct": false
+        }
+      ],
+      "success": "格式与条件闸门能在错误扩散前停住链条。",
+      "retry": "重复历史或隐藏失败只会增加成本；要明确输入、输出和停止条件。"
+    },
+    "prompt": {
+      "title": "把一个大提示拆成可验收的提示链",
+      "text": "请把任务拆成最少的固定子任务；为每次调用写输入、输出 schema、成功条件、失败处理和最大预算。说明每个中间产物如何被检查，以及何时应退回单次调用或交给人工，而不是为了形式增加步骤。"
+    },
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/engineering/building-effective-agents",
+        "label": "Anthropic · Building Effective AI Agents",
+        "note": "提示链的适用条件和代价"
+      },
+      {
+        "url": "https://github.com/anthropics/claude-cookbooks/tree/main/patterns/agents",
+        "label": "Anthropic Cookbooks · Agent patterns",
+        "note": "提示链的最小实现示例"
+      },
+      {
+        "url": "https://arxiv.org/abs/2203.06566",
+        "label": "PromptChainer",
+        "note": "可组合提示链与中间结果"
+      },
+      {
+        "url": "https://resources.anthropic.com/hubfs/Building%20Effective%20AI%20Agents-%20Architecture%20Patterns%20and%20Implementation%20Frameworks.pdf",
+        "label": "Anthropic · Agent patterns guide",
+        "note": "工作流复杂度与选择依据"
+      },
+      {
+        "url": "https://doi.org/10.6028/NIST.AI.600-1",
+        "label": "NIST · AI Risk Management Framework",
+        "note": "验证、记录和风险控制"
+      }
+    ],
+    "teaching": [
+      {
+        "id": "artifacts",
+        "title": "链条的价值在中间产物，而不是调用次数",
+        "body": "把原始材料先变成提纲，再交给检查器，最后生成正文，只有当每一张中间卡都有清楚的输入、输出和失败条件时，拆分才带来可调试性。下一步不应重新猜上一阶段发生了什么，而应读取结构化产物。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "cost",
+        "title": "每个连接处都可能传播错误并增加账单",
+        "body": "提纲漏掉一个限定条件，后面的检查和写作可能一起放大它；每多一次模型调用，也多一段延迟、状态和重试成本。把 schema、预算、超时和回退路径写进链条，才能知道什么时候停在当前产物。",
+        "sourceIndices": [
+          1,
+          4,
+          5
+        ]
+      },
+      {
+        "id": "choice",
+        "title": "先证明拆分有收益，再考虑更复杂的编排",
+        "body": "边界稳定、能写出固定验收标准的任务适合提示链；需要动态选择工具、分解未知子任务时，固定链可能会变成僵硬的脚本。若一次调用已经足够可检查，就不必为了“像工作流”硬塞更多步骤。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "evaluator-optimizer",
+    "lead": "模型写完第一稿以后，为什么要把“哪里不够好”单独交给一个评估器？",
+    "definition": "评估器—优化器模式把生成和评价分成两个职责：生成器先产出候选，评估器按预先写好的标准给出分数、缺口或修改意见，优化器据此形成下一版。它适合质量可以清楚描述、反馈确实能改善结果的任务，并需要最大轮数、成本和停止条件。",
+    "boundary": "评估器不能凭空创造可靠标准；rubric 含糊或评估器与生成器共享盲点时，循环只会把同一种错误润色得更像真的。通过评估也不等于事实或用户目标已满足，要保留版本、意见、人工抽查和未解决问题。",
+    "sceneKind": "matrix",
+    "sceneTitle": "双栏改稿台：分数上升，证据也必须跟着上升",
+    "actionLabel": "加入一条评估意见",
+    "actors": [
+      {
+        "id": "draft",
+        "label": "初稿",
+        "detail": "摘要漏掉时间限制",
+        "icon": "file",
+        "group": "生成"
+      },
+      {
+        "id": "rubric",
+        "label": "评分尺",
+        "detail": "事实覆盖、清晰度、风险边界",
+        "icon": "layout",
+        "group": "标准"
+      },
+      {
+        "id": "evaluator",
+        "label": "评估器",
+        "detail": "指出可复现缺口",
+        "icon": "search",
+        "group": "反馈"
+      },
+      {
+        "id": "optimizer",
+        "label": "优化器",
+        "detail": "只改允许范围",
+        "icon": "gear",
+        "group": "修订"
+      },
+      {
+        "id": "evidence",
+        "label": "证据账本",
+        "detail": "来源、未解决项和版本",
+        "icon": "shield",
+        "group": "停止"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "放入初稿",
+        "note": "先把真实缺口写在草稿旁，不让总分遮住遗漏。",
+        "activeIds": [
+          "draft"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "rubric",
+          "evaluator",
+          "optimizer",
+          "evidence"
+        ],
+        "values": {
+          "draft": "初稿 · 摘要漏掉时间限制"
+        }
+      },
+      {
+        "label": "打开 rubric",
+        "note": "评估器只能按写出的标准观察，rubric 本身也要可审阅。",
+        "activeIds": [
+          "rubric"
+        ],
+        "doneIds": [
+          "draft"
+        ],
+        "mutedIds": [
+          "evaluator",
+          "optimizer",
+          "evidence"
+        ],
+        "values": {
+          "rubric": "事实覆盖 / 表达清晰 / 风险边界"
+        }
+      },
+      {
+        "label": "写出定向意见",
+        "note": "意见要指向一处可修改内容，而不是泛泛说“再好一点”。",
+        "activeIds": [
+          "evaluator",
+          "optimizer"
+        ],
+        "doneIds": [
+          "draft",
+          "rubric"
+        ],
+        "mutedIds": [
+          "evidence"
+        ],
+        "values": {
+          "evaluator": "请补 48 小时限制"
+        }
+      },
+      {
+        "label": "比较第二稿",
+        "note": "分数上升仍要留下未解决证据，达到停止条件前不能只看漂亮措辞。",
+        "activeIds": [
+          "draft",
+          "evidence"
+        ],
+        "doneIds": [
+          "rubric",
+          "evaluator",
+          "optimizer"
+        ],
+        "mutedIds": [],
+        "values": {
+          "draft": "第二稿 · 补上 48 小时限制",
+          "evidence": "覆盖提高 · 仍留 1 条来源待核验"
+        }
+      }
+    ],
+    "insight": "评估器—优化器让反馈成为可回放的改稿证据，但不会凭空消除标准和事实盲点。",
+    "quiz": {
+      "question": "评估器—优化器循环什么时候应该停止？",
+      "options": [
+        {
+          "label": "满足可解释标准或达到预算/轮数上限，并保留未解决项",
+          "correct": true
+        },
+        {
+          "label": "直到评估器永远给满分",
+          "correct": false
+        },
+        {
+          "label": "只要文字更长就继续",
+          "correct": false
+        }
+      ],
+      "success": "停止条件要同时考虑质量标准、预算、轮数和剩余风险。",
+      "retry": "无限循环和满分都不是证据；要记录尚未完成的事实或人工判断。"
+    },
+    "prompt": {
+      "title": "设计一个评估器—优化器检查",
+      "text": "请写出可操作的 rubric、每项的证据要求、评估器输出格式、优化器可修改的范围、最大轮数与成本，以及达到标准后仍必须人工复核的风险。比较每一版的实际变化，不要把分数提升当成事实证明。"
+    },
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/engineering/building-effective-agents",
+        "label": "Anthropic · Building Effective AI Agents",
+        "note": "评估器—优化器的适用条件"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "label": "Anthropic · Demystifying evals",
+        "note": "评估输入、轨迹和评分证据"
+      },
+      {
+        "url": "https://github.com/anthropics/claude-cookbooks/tree/main/patterns/agents",
+        "label": "Anthropic Cookbooks · Agent patterns",
+        "note": "评估与优化的实现样例"
+      },
+      {
+        "url": "https://resources.anthropic.com/hubfs/Building%20Effective%20AI%20Agents-%20Architecture%20Patterns%20and%20Implementation%20Frameworks.pdf",
+        "label": "Anthropic · Agent patterns guide",
+        "note": "反馈循环和停止条件"
+      },
+      {
+        "url": "https://doi.org/10.6028/NIST.AI.600-1",
+        "label": "NIST · AI Risk Management Framework",
+        "note": "风险证据与人工监督"
+      }
+    ],
+    "teaching": [
+      {
+        "id": "rubric",
+        "title": "评估器先要拿到一把写得出来的尺",
+        "body": "“更好”不是可执行标准。要把事实覆盖、结构清晰、风险边界等拆成可观察条目，说明每项需要什么证据、允许哪些修改，并让评估器指出具体缺口，而不是只给一个漂亮分数。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "feedback",
+        "title": "优化器只能改它被允许改的地方",
+        "body": "评估器发现“漏了 48 小时限制”，优化器才有明确的修订动作；它不该趁机编造来源、改写用户目标或把未解决项藏起来。保留每版草稿、意见、变更和来源，才能回放分数为何变化。",
+        "sourceIndices": [
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "id": "stop",
+        "title": "达到停止条件，也要留下没解决的事",
+        "body": "循环可以在满足 rubric、达到最大轮数或用完预算时停下。评分上升不等于事实已经正确，评估器和生成器还可能共享盲点；高风险场景应把人工抽查、独立证据和剩余问题带出循环。",
+        "sourceIndices": [
+          1,
+          2,
+          5
+        ]
+      }
+    ]
   }
 ]

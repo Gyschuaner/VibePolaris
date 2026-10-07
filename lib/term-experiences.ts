@@ -87,6 +87,13 @@ const frameSchema = z.object({
   }).optional(),
 });
 
+const teachingSchema = z.array(z.object({
+  id: z.string().regex(/^[a-z0-9-]+$/),
+  title: z.string().min(1),
+  body: z.string().min(1),
+  sourceIndices: z.array(z.number().int().min(1)).max(15),
+})).min(2).max(8).optional().default([]);
+
 export const termExperienceSchema = z.object({
   slug: z.string().regex(/^[a-z0-9-]+$/),
   lead: z.string().min(1),
@@ -112,6 +119,7 @@ export const termExperienceSchema = z.object({
     title: z.string().min(1),
     text: z.string().min(1),
   }),
+  teaching: teachingSchema,
   sources: z.array(z.object({
     url: z.string().url().startsWith("https://"),
     label: z.string().min(1),
@@ -170,6 +178,12 @@ for (const experience of termExperiences) {
 
   if (experience.quiz.options.filter((option) => option.correct).length !== 1) {
     throw new Error(`词条 ${experience.slug} 的边界题必须且只能有一个正确选项`);
+  }
+
+  for (const lesson of experience.teaching) {
+    if (lesson.sourceIndices.some((index) => index > experience.sources.length)) {
+      throw new Error(`词条 ${experience.slug} 的教学段落引用了不存在的来源`);
+    }
   }
 
   for (const frame of experience.frames) {

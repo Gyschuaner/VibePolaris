@@ -41,6 +41,7 @@ import { flowSceneKinds, topologySceneKinds, type TermActorIcon, type TermExperi
 import { DesignSystemSignatureHero, MvpSignatureHero, PackageSignatureHero, RuntimeSignatureHero, TypeScriptSignatureHero } from "./ProductCoreSignatureHeroes";
 import { AppManifestSignatureHero, CodeSigningSignatureHero, DeepLinkSignatureHero, EmulatorSignatureHero, GestureSignatureHero, HapticFeedbackSignatureHero, SemanticHtmlSignatureHero, TouchTargetSignatureHero } from "./FrontendInteractionSignatureHeroes";
 import { CircuitBreakerSignatureHero, ContextCompactionSignatureHero, DataContractSignatureHero, DebounceSignatureHero, OptimisticUpdateSignatureHero, LatencyBudgetSignatureHero, ToolSchemaSignatureHero } from "./vbp096-expansion-heroes";
+import { ChainOfThoughtSignatureHero, ConstitutionalAiSignatureHero, DirectPreferenceOptimizationSignatureHero, EvaluatorOptimizerSignatureHero, JailbreakSignatureHero, ModelSpecSignatureHero, PromptChainingSignatureHero, RedTeamingSignatureHero, RlhfSignatureHero, SelfConsistencySignatureHero } from "./AiAlignmentSignatureHeroes";
 
 type TermExperiencePageProps = {
   term: Term;
@@ -175,6 +176,15 @@ function CopyAction({ text, label }: { text: string; label: string }) {
   }
 
   return <button className="term-experience-copy" type="button" onClick={copy}>{copied ? "已复制" : label}</button>;
+}
+
+function TeachingCitation({ term, experience, indices }: { term: Term; experience: TermExperience; indices: number[] }) {
+  const uniqueIndices = [...new Set(indices)];
+  if (!uniqueIndices.length) return null;
+  return <sup className="vp-citation term-experience-citation">{uniqueIndices.map((index) => {
+    const source = experience.sources[index - 1];
+    return source ? <a href={`#term-source-${term.slug}-${index}`} key={index} aria-label={`参考来源 ${index}：${source.label}`}>[{index}]</a> : null;
+  })}</sup>;
 }
 
 function TermScene({ experience }: { experience: TermExperience }) {
@@ -378,9 +388,23 @@ export function TermExperiencePage({ term, experience, previous, next, related }
           <p>{experience.boundary}</p>
         </section>
 
+        {experience.teaching.length ? (
+          <section className="term-teaching" aria-labelledby={`${term.slug}-teaching-heading`}>
+            <div className="term-section-heading"><span>拆开看</span><h2 id={`${term.slug}-teaching-heading`}>先把关键关系讲清楚</h2></div>
+            <div className="term-teaching-grid">
+              {experience.teaching.map((lesson) => (
+                <article key={lesson.id}>
+                  <h3>{lesson.title}</h3>
+                  <p id={`${term.slug}-${lesson.id}`} className="vp-citation-target">{lesson.body}<TeachingCitation term={term} experience={experience} indices={lesson.sourceIndices} /></p>
+                </article>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
         <section className="term-explainer term-experience-explainer" aria-labelledby={`${term.slug}-scene-heading`}>
           <div className="term-section-heading"><span>01</span><h2 id={`${term.slug}-scene-heading`}>{copy.heading}</h2></div>
-          {term.slug === "runtime" ? <RuntimeSignatureHero /> : term.slug === "package" ? <PackageSignatureHero /> : term.slug === "typescript" ? <TypeScriptSignatureHero /> : term.slug === "mvp" ? <MvpSignatureHero /> : term.slug === "design-system" ? <DesignSystemSignatureHero /> : term.slug === "semantic-html" ? <SemanticHtmlSignatureHero /> : term.slug === "deep-link" ? <DeepLinkSignatureHero /> : term.slug === "app-manifest" ? <AppManifestSignatureHero /> : term.slug === "emulator" ? <EmulatorSignatureHero /> : term.slug === "code-signing" ? <CodeSigningSignatureHero /> : term.slug === "gesture" ? <GestureSignatureHero /> : term.slug === "haptic-feedback" ? <HapticFeedbackSignatureHero /> : term.slug === "touch-target" ? <TouchTargetSignatureHero /> : term.slug === "debounce" ? <DebounceSignatureHero /> : term.slug === "optimistic-update" ? <OptimisticUpdateSignatureHero /> : term.slug === "circuit-breaker" ? <CircuitBreakerSignatureHero /> : term.slug === "data-contract" ? <DataContractSignatureHero /> : term.slug === "context-compaction" ? <ContextCompactionSignatureHero /> : term.slug === "tool-schema" ? <ToolSchemaSignatureHero /> : term.slug === "latency-budget" ? <LatencyBudgetSignatureHero /> : <TermScene experience={experience} />}
+          {term.slug === "chain-of-thought" ? <ChainOfThoughtSignatureHero /> : term.slug === "self-consistency" ? <SelfConsistencySignatureHero /> : term.slug === "constitutional-ai" ? <ConstitutionalAiSignatureHero /> : term.slug === "rlhf" ? <RlhfSignatureHero /> : term.slug === "direct-preference-optimization" ? <DirectPreferenceOptimizationSignatureHero /> : term.slug === "red-teaming" ? <RedTeamingSignatureHero /> : term.slug === "jailbreak" ? <JailbreakSignatureHero /> : term.slug === "model-spec" ? <ModelSpecSignatureHero /> : term.slug === "prompt-chaining" ? <PromptChainingSignatureHero /> : term.slug === "evaluator-optimizer" ? <EvaluatorOptimizerSignatureHero /> : term.slug === "runtime" ? <RuntimeSignatureHero /> : term.slug === "package" ? <PackageSignatureHero /> : term.slug === "typescript" ? <TypeScriptSignatureHero /> : term.slug === "mvp" ? <MvpSignatureHero /> : term.slug === "design-system" ? <DesignSystemSignatureHero /> : term.slug === "semantic-html" ? <SemanticHtmlSignatureHero /> : term.slug === "deep-link" ? <DeepLinkSignatureHero /> : term.slug === "app-manifest" ? <AppManifestSignatureHero /> : term.slug === "emulator" ? <EmulatorSignatureHero /> : term.slug === "code-signing" ? <CodeSigningSignatureHero /> : term.slug === "gesture" ? <GestureSignatureHero /> : term.slug === "haptic-feedback" ? <HapticFeedbackSignatureHero /> : term.slug === "touch-target" ? <TouchTargetSignatureHero /> : term.slug === "debounce" ? <DebounceSignatureHero /> : term.slug === "optimistic-update" ? <OptimisticUpdateSignatureHero /> : term.slug === "circuit-breaker" ? <CircuitBreakerSignatureHero /> : term.slug === "data-contract" ? <DataContractSignatureHero /> : term.slug === "context-compaction" ? <ContextCompactionSignatureHero /> : term.slug === "tool-schema" ? <ToolSchemaSignatureHero /> : term.slug === "latency-budget" ? <LatencyBudgetSignatureHero /> : <TermScene experience={experience} />}
           <p className="term-experience-insight"><span>{copy.insight}</span>{experience.insight}</p>
         </section>
 
@@ -407,7 +431,7 @@ export function TermExperiencePage({ term, experience, previous, next, related }
         <section className="term-learning-path term-experience-learning" aria-labelledby={`${term.slug}-learning-heading`}>
           <div className="term-section-heading"><span>03</span><h2 id={`${term.slug}-learning-heading`}>继续理解</h2></div>
           <div className="term-related-orbit term-related-orbit-wide"><span>相关概念</span><div>{related.slice(0, 4).map((item) => <Link key={item.slug} href={`/terms/${item.slug}`}><span className="brand-star-only term-related-star" aria-hidden="true" />{item.zh}{item.en ? <small>{item.en}</small> : null}</Link>)}</div></div>
-          <div className="term-external-learning"><span>核对来源</span><div>{experience.sources.map((source) => <a href={source.url} target="_blank" rel="noreferrer" key={source.url}><span><strong>{source.label}</strong><small>{source.note}</small></span><ArrowUpRight size={16} /></a>)}</div></div>
+          <div className="term-external-learning"><span>核对来源</span><div>{experience.sources.map((source, index) => <a id={`term-source-${term.slug}-${index + 1}`} href={source.url} target="_blank" rel="noreferrer" key={source.url}><span><strong>{source.label}</strong><small>{source.note}</small></span><ArrowUpRight size={16} /></a>)}</div></div>
         </section>
       </div>
     </main>

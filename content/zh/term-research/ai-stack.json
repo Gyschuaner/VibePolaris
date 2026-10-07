@@ -2139,5 +2139,195 @@
       "benchmark",
       "safety-evaluation"
     ]
+  },
+  {
+    "slug": "chain-of-thought",
+    "mechanism": "思维链提示把复杂任务的中间推理步骤显式化，使条件、运算和暂时结论能够被检查；它是一次请求中的提示/解码行为，不是参数更新。",
+    "misconception": "可读的中间步骤不是事实证明，也不等于应该暴露模型私有思维过程。",
+    "demoSignature": "4帧｜对象：商品价、运费、已用优惠、退款账本｜交互：放入条件、展开算式、检查中间值、删掉一项再看｜变化：条件卡先出现→算式得到88→中间值可核对→删掉优惠后变为108；非流程账本空间。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/2201.11903",
+      "https://arxiv.org/abs/2205.11916",
+      "https://developers.openai.com/api/docs/guides/reasoning",
+      "https://platform.openai.com/docs/guides/prompt-engineering",
+      "https://doi.org/10.6028/NIST.AI.600-1"
+    ],
+    "rewriteRisk": "把可审阅摘要与私有思维过程分开，始终说明前提、证据和独立验证。",
+    "nearDuplicates": [
+      "reasoning-model",
+      "prompt",
+      "self-consistency"
+    ]
+  },
+  {
+    "slug": "self-consistency",
+    "mechanism": "自洽性采样从同一输入生成多条推理路径，按最终答案归并并选择较稳定的答案；它利用采样共识，不更新模型参数。",
+    "misconception": "多数票不等于真相；共享错误前提、歧义和没有唯一答案时，共识会误导。",
+    "demoSignature": "4帧｜对象：同一道题、三条路径、答案投票、共同误读｜交互：摆出同一道题、采样三条路径、只取最后答案、加入共同误读｜变化：先固定问题→路径各自作答→42 获得多数票→共同误读让多数也可能错；非流程投票棋盘。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/2203.11171",
+      "https://arxiv.org/abs/2201.11903",
+      "https://developers.openai.com/api/docs/guides/reasoning",
+      "https://ai.google.dev/gemini-api/docs/prompting-strategies",
+      "https://doi.org/10.6028/NIST.AI.600-1"
+    ],
+    "rewriteRisk": "区分路径共识、统计票数和外部标准答案，不把自洽分数写成通用置信度。",
+    "nearDuplicates": [
+      "chain-of-thought",
+      "reasoning-model",
+      "benchmark"
+    ]
+  },
+  {
+    "slug": "constitutional-ai",
+    "mechanism": "宪法式 AI 用一组可审阅原则指导模型批评和改写候选回答，再将这些改写或偏好用于训练，把部分监督从人工逐条标签移到原则与 AI 反馈。",
+    "misconception": "constitution 不是完整政策、权限系统或自动正确的价值清单；原则来源和冲突处理决定监督方向。",
+    "demoSignature": "4帧｜对象：候选回答、原则卡、批评注记、改写结果｜交互：放入候选回答、挂上原则卡、写出批评、改写并留痕｜变化：回答先暴露隐私问题→原则卡出现→批评指向具体冲突→安全改写留下审阅痕迹；非流程契约台。",
+    "sourceUrls": [
+      "https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback",
+      "https://arxiv.org/abs/2212.08073",
+      "https://www.anthropic.com/research/specific-versus-general-principles-for-constitutional-ai",
+      "https://www.anthropic.com/research/collective-constitutional-ai-aligning-a-language-model-with-public-input",
+      "https://doi.org/10.6028/NIST.AI.600-1"
+    ],
+    "rewriteRisk": "同时写清原则的来源、解释、冲突和人工治理，不把原则文字当运行时防火墙。",
+    "nearDuplicates": [
+      "guardrail",
+      "rlhf",
+      "model-spec"
+    ]
+  },
+  {
+    "slug": "rlhf",
+    "mechanism": "RLHF 先从示范或成对偏好训练奖励模型，再用奖励作为代理信号优化语言模型，把人类比较转成行为方向。",
+    "misconception": "奖励模型只是特定标注标准的近似，不能代表完整的人类价值、事实或安全。",
+    "demoSignature": "4帧｜对象：A/B 回答、人类偏好、奖励代理、新样本｜交互：摆出两个回答、人类做比较、奖励尺学到偏好、换一题再核对｜变化：先看具体回答→人类选 B→代理奖励偏向 B→奖励升高仍需独立核验；非流程偏好实验台。",
+    "sourceUrls": [
+      "https://huggingface.co/blog/rlhf",
+      "https://arxiv.org/abs/2203.02155",
+      "https://huggingface.co/docs/trl/main/en/ppo_trainer",
+      "https://arxiv.org/abs/1706.03741",
+      "https://doi.org/10.6028/NIST.AI.600-1"
+    ],
+    "rewriteRisk": "把代理奖励、标注偏差、奖励投机与独立评测分开，避免把对齐写成一次训练就完成。",
+    "nearDuplicates": [
+      "fine-tuning",
+      "direct-preference-optimization",
+      "model-card"
+    ]
+  },
+  {
+    "slug": "direct-preference-optimization",
+    "mechanism": "DPO 将成对偏好、当前策略和参考模型写进直接分类损失，提升 chosen 相对 rejected 的概率，省去显式奖励模型和在线策略采样。",
+    "misconception": "工程链路更短不代表数据和对齐风险更少；DPO 仍依赖高质量偏好、参考模型和独立评测。",
+    "demoSignature": "4帧｜对象：chosen/rejected、reference、policy 相对概率、坏标签｜交互：放入成对回答、看参考模型、移动相对概率、换坏标签试试｜变化：回答对先并排→参考和当前策略给出倾向→chosen 相对提高→错误偏好同样会被放大；非流程相对概率台。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/2305.18290",
+      "https://huggingface.co/docs/trl/en/dpo_trainer",
+      "https://huggingface.co/blog/dpo-trl",
+      "https://arxiv.org/abs/2203.02155",
+      "https://doi.org/10.6028/NIST.AI.600-1"
+    ],
+    "rewriteRisk": "不要把 DPO 写成无监督或运行时过滤器，明确 reference、偏好数据和训练外验收。",
+    "nearDuplicates": [
+      "rlhf",
+      "fine-tuning",
+      "confidence-calibration"
+    ]
+  },
+  {
+    "slug": "red-teaming",
+    "mechanism": "红队测试主动设计对抗、滥用和异常输入，检查模型、工具链和产品入口在高风险条件下是否失守，并把可复现证据交回修复与回归。",
+    "misconception": "红队不是无授权攻击或一次越狱展示；范围、成功标准、数据保护和修复闭环都属于测试本身。",
+    "demoSignature": "4帧｜对象：授权范围、入口网格、对抗变体、回归证据｜交互：圈定授权范围、点亮一个入口、放入对抗变体、留下回归证据｜变化：先封住沙盒边界→选中聊天入口→记录可复现缺口→原样例和变体进入回归；非流程授权测试板。",
+    "sourceUrls": [
+      "https://developers.openai.com/api/docs/guides/red-teaming",
+      "https://www.nist.gov/publications/adversarial-machine-learning-taxonomy-and-terminology-attacks-and-mitigations",
+      "https://www.nist.gov/itl/ai-risk-management-framework",
+      "https://developers.openai.com/api/docs/guides/safety-best-practices",
+      "https://arxiv.org/abs/2505.04806"
+    ],
+    "rewriteRisk": "限定授权和资产，记录复现与影响，避免把一次攻击或未复现猜测写成全局安全结论。",
+    "nearDuplicates": [
+      "jailbreak",
+      "safety-evaluation",
+      "guardrail"
+    ]
+  },
+  {
+    "slug": "jailbreak",
+    "mechanism": "越狱提示利用角色、格式、编码、上下文冲突或多轮诱导，试图绕过安全策略和拒答边界；研究越狱是为了修复训练和应用防护的泛化缺口。",
+    "misconception": "没有一条万能字符串，越狱成败由模型版本、系统提示、工具权限、过滤和上下文共同决定；测试不应传播危险载荷。",
+    "demoSignature": "4帧｜对象：正常请求、包装类别、边界压力、回归记录｜交互：放入正常请求、改变包装类别、检查边界是否松动、记录安全回归｜变化：建立普通任务基线→抽象包装受压→同时观察拒答和工具闸门→保留原样例与变体；非流程安全压力计。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/2307.02483",
+      "https://developers.openai.com/api/docs/guides/red-teaming",
+      "https://www.anthropic.com/research/next-generation-constitutional-classifiers",
+      "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
+      "https://www.nist.gov/publications/adversarial-machine-learning-taxonomy-and-terminology-attacks-and-mitigations"
+    ],
+    "rewriteRisk": "用抽象类别和受控证据描述越狱，清楚区分安全研究、传播载荷和运行时防护。",
+    "nearDuplicates": [
+      "prompt-injection",
+      "red-teaming",
+      "guardrail"
+    ]
+  },
+  {
+    "slug": "model-spec",
+    "mechanism": "模型规范把目标、指令层级、冲突处理、诚实性和安全边界写成可公开讨论、可评测的行为规则；它不直接控制资源权限。",
+    "misconception": "规范不是权限系统、穷尽程序或永恒不变的法律；产品实现、工具授权、政策和版本都会影响实际行为。",
+    "demoSignature": "4帧｜对象：用户愿望、应用约束、行为规范、真实权限｜交互：收到用户愿望、叠开发者约束、遇到安全冲突、检查真实权限｜变化：愿望进入上下文→应用收窄范围→隐私冲突触发拒绝→只读沙盒在规范与权限同时满足时允许；非流程分层权限台。",
+    "sourceUrls": [
+      "https://model-spec.openai.com/",
+      "https://cdn.openai.com/spec/model-spec-2024-05-08.html",
+      "https://github.com/openai/model_spec/blob/main/model_spec.md",
+      "https://alignment.openai.com/model-spec-evals",
+      "https://doi.org/10.6028/NIST.AI.600-1"
+    ],
+    "rewriteRisk": "把行为规范与应用权限、工具审批、审计分层说明，并记录规范版本和冲突条件。",
+    "nearDuplicates": [
+      "system-prompt",
+      "guardrail",
+      "constitutional-ai"
+    ]
+  },
+  {
+    "slug": "prompt-chaining",
+    "mechanism": "提示链把任务拆成固定子任务，让前一步的结构化产物成为下一次调用的输入，并在连接处加入格式、事实或权限闸门。",
+    "misconception": "拆得越多不一定越好；前一步错误会传播，延迟、费用和状态管理会随链长度增加。",
+    "demoSignature": "4帧｜对象：原始材料、提纲卡、schema gate、正文卡与调用账本｜交互：放入原始材料、切出中间卡、检查 schema、拼正文并记账｜变化：整段材料先停在原处→提纲卡带出待核事实→缺来源时闸门 STOP→通过后正文保留引用且记下 3 calls；非流程中间产物台。",
+    "sourceUrls": [
+      "https://www.anthropic.com/engineering/building-effective-agents",
+      "https://github.com/anthropics/claude-cookbooks/tree/main/patterns/agents",
+      "https://arxiv.org/abs/2203.06566",
+      "https://resources.anthropic.com/hubfs/Building%20Effective%20AI%20Agents-%20Architecture%20Patterns%20and%20Implementation%20Frameworks.pdf",
+      "https://doi.org/10.6028/NIST.AI.600-1"
+    ],
+    "rewriteRisk": "先证明子任务边界和中间 schema 有价值，再讨论调用次数；保留失败、预算和回退路径。",
+    "nearDuplicates": [
+      "agent-workflow",
+      "agent-orchestration",
+      "evaluator-optimizer"
+    ]
+  },
+  {
+    "slug": "evaluator-optimizer",
+    "mechanism": "评估器—优化器把生成、评价和修订分开：评估器按明确 rubric 找缺口，优化器在允许范围内改写，直到达到停止条件或预算上限。",
+    "misconception": "评估循环不能凭空创造标准；共享盲点会让错误被润色，分数提升也不等于事实或用户目标达成。",
+    "demoSignature": "4帧｜对象：初稿、rubric、定向意见、第二稿与未解证据｜交互：放入初稿、打开 rubric、写出定向意见、比较第二稿｜变化：初稿先暴露时间缺口→rubric 定义可观察标准→意见指向 48 小时限制→第二稿覆盖提高但仍留一条来源待核验；非流程反馈工作台。",
+    "sourceUrls": [
+      "https://www.anthropic.com/engineering/building-effective-agents",
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "https://github.com/anthropics/claude-cookbooks/tree/main/patterns/agents",
+      "https://resources.anthropic.com/hubfs/Building%20Effective%20AI%20Agents-%20Architecture%20Patterns%20and%20Implementation%20Frameworks.pdf",
+      "https://doi.org/10.6028/NIST.AI.600-1"
+    ],
+    "rewriteRisk": "把 rubric、意见证据、最大轮数、成本和人工复核写清，不把评估分数当事实证明。",
+    "nearDuplicates": [
+      "eval",
+      "grading-rubric",
+      "prompt-chaining"
+    ]
   }
 ]
