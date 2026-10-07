@@ -5467,5 +5467,55 @@
       "llm",
       "model-card"
     ]
+  },
+  {
+    "zh": "混合专家",
+    "en": "Mixture of Experts",
+    "slug": "mixture-of-experts",
+    "cat": "AI·Agent",
+    "say": "用路由器把每个 token 分给少数专家，让总参数可以很大而每次只激活一部分。",
+    "aliases": [
+      "MoE",
+      "稀疏专家",
+      "专家路由"
+    ],
+    "question": "为什么一层里有很多专家，却不是每个 token 都要把所有房间走一遍？",
+    "definition": "混合专家层由多个专家子网络和路由器组成，路由器按 token 的表示选择 top-k 或 top-1 专家。稀疏激活减少了每个 token 触碰的计算，但也引入容量、负载平衡、通信和丢弃策略。",
+    "boundary": "专家编号或名称不自动代表可解释技能。路由偏好、专家容量和并行通信依赖具体实现；总参数少、激活参数少和实际延迟也不是同一个指标。",
+    "demoType": "branch",
+    "demoTitle": "分诊转盘：数学、代码和闲聊各自占哪一间房",
+    "demoSteps": [
+      {
+        "label": "送来一个 token",
+        "value": "数学 → 路由分数：数理 86%",
+        "note": "路由器只比较本轮候选专家，不展示所谓的内在意图。"
+      },
+      {
+        "label": "换成代码",
+        "value": "代码 → 路由分数：代码 91%",
+        "note": "输入改变，亮起的专家摊位也改变。"
+      },
+      {
+        "label": "容量变窄",
+        "value": "分数高但容量不足 → 排队或丢弃",
+        "note": "路由命中不代表整层已经稳定处理完。"
+      }
+    ],
+    "quizQuestion": "混合专家的“稀疏”主要指什么？",
+    "quizOptions": [
+      "每个 token 只激活少数专家",
+      "模型永远只保留一个参数",
+      "每个专家都必须同时处理全部 token"
+    ],
+    "correctText": "稀疏路由让一次计算只触碰少数专家。",
+    "wrongText": "总参数仍可能很大，所有专家同时出场反而失去稀疏意义。",
+    "promptTitle": "分析一个 MoE 部署",
+    "prompt": "请把总参数、激活参数、top-k、专家容量、丢弃率和跨设备通信分别列出，不要只用一个参数量判断成本。",
+    "relatedSlugs": [
+      "token",
+      "attention",
+      "inference",
+      "distributed-system"
+    ]
   }
 ]
