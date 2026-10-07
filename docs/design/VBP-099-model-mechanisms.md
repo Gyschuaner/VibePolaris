@@ -34,5 +34,4 @@
 
 ## 旧词条流程视觉审计
 
-当前 `term-experiences` 共 329 条，其中 `route`、`pipeline`、`branch`、`loop` 四种明确使用箭头流向的场景共 68 条（约 20.7%）。这一比例不是新的模板要求；它是现存数据的审计结果。本批不再增加通用流程图。后续批次把这 68 条逐条复核，只有概念确实表达有序交接时才保留 flow scene，其余改成 `compare`、`layers`、`matrix`、`contract`、`state-machine` 或专属场景，并同步改写 frames 的观察对象和停止证据，而不是只换一个标签。
-
+当前 `term-experiences` 共 329 条，其中真正使用箭头流向的 `route`、`pipeline`、`loop` 三类共 50 条（约 15.2%）；`branch` 另按条件面板呈现，不再自动画成流程箭头。这一比例不是新的模板要求；它是现存数据的审计结果。本批不再增加通用流程图。后续批次把这 50 条逐条复核，只有概念确实表达有序交接时才保留 flow scene，其余改成 `compare`、`layers`、`matrix`、`contract`、`state-machine` 或专属场景，并同步改写 frames 的观察对象和停止证据，而不是只换一个标签。
