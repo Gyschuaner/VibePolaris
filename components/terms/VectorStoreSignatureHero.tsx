@@ -8,7 +8,7 @@ import styles from "./ConceptDiversitySignatureHeroes.module.css";
 
 export function VectorStoreSignatureHero() {
   const scene = useScene(4);
-  const labels = ["放入向量卡片", "贴上元数据", "提出相似问题", "圈出候选邻居"];
+  const labels = ["索引已建立", "查询沿图搜索", "元数据收窄", "返回前五"];
   const query = scene.step >= 2;
   const [filterOn, setFilterOn] = useState(true);
   const ids = ["A", "B", "C", "D", "E", "F"];
