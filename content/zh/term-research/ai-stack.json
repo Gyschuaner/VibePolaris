@@ -77,7 +77,7 @@
     "slug": "few-shot-prompting",
     "mechanism": "少样本提示把少量输入—输出校样放进当前上下文，让模型在这次请求里参照标签空间、输入分布和输出版式；它不会更新模型参数。",
     "misconception": "示例不是训练，也不是事实数据库；它们只把局部版式摆到当前请求里，覆盖不足、格式混乱或标签冲突都可能被带进新结果。",
-    "demoSignature": "一张校样台先显出两张工单小票、标签盘和单标签格式；新工单落位后盖出前端，加入相反标签后印章改为先修示例。证据：校样卡、标签空间、模型参数 unchanged 和冲突输出同步变化；不画流程节点。",
+    "demoSignature": "校样台先放一张新工单，再显出两张输入—输出小票、标签版式和参数 unchanged；新票盖出前端后加入相反校样，印章改为先修示例。证据是校样卡、标签空间、冲突票和未改变的参数同时可见，不画流程节点。",
     "sourceUrls": [
       "https://arxiv.org/abs/2005.14165",
       "https://developers.openai.com/api/docs/guides/prompt-engineering",
@@ -253,7 +253,7 @@
     "slug": "function-calling",
     "mechanism": "模型根据工具定义生成函数名和结构化参数；宿主程序验证并执行函数，再把结果交回模型继续处理。",
     "misconception": "模型不会因为输出了调用参数就自动执行函数；函数调用也不等于MCP，更不等于完整智能体。",
-    "demoSignature": "输入：用户请求查订单A102；中间：模型返回call_01、函数名get_order和参数{order_id:A102}，应用依次检查注册名、唯一字段、格式与权限；输出：执行1次后回传{order_id:A102,status:shipped}并绑定同一call_id，未知函数、非法JSON、无权访问或查无订单均不执行或不通过。可视化：模型请求→应用注册表→执行回执三段轨迹；交互：切换未知函数、参数文本和权限，观察流程停点。",
+    "demoSignature": "call desk：4 帧把查订单 A102 的请求牌、调用建议、应用核对和工具回执摆在同一张桌上；结果带回同一个 call_id，未知函数、非法 JSON、无权访问或查无订单都停在执行边界。交互：切换参数与权限，观察请求如何停下，不把模型提案画成已经执行。",
     "sourceUrls": [
       "https://developers.openai.com/api/docs/guides/function-calling",
       "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
@@ -363,7 +363,7 @@
     "slug": "handoff",
     "mechanism": "交接把继续任务所需的事实状态和下一步交给接手者，并把后续回复权一并转过去。",
     "misconception": "交接的重点是带齐接手所需的信息，不要求原样搬来整段聊天记录；实际传递多少由系统设计决定。它也不等于两个智能体并行协作，失败后要不要退回、怎么退，需要另行设计。",
-    "demoSignature": "输入：订单 A102 的退款请求进入客服智能体；中间：4 帧整理订单号和申请类型，回复权从客服移动到退款智能体；切换“移除订单号”后交接包缺少关键事实，接手者退回客服；输出：完整交接从确认金额继续且未执行退款，缺信息分支明确保持未完成。可视化：交接包、接手者和回复权三段轨迹；交互：移除/补回订单号观察接手与退回。",
+    "demoSignature": "输入：订单 A102 的退款请求由客服持有；5 帧整理交接包、让包抵达退款智能体、移动回复权，再从确认金额继续。移除订单号时，接手者必须退回补充，交接不能冒充已完成退款。可视化：责任护照、交接凭证和接手者状态；交互：补回或移除关键事实观察责任如何保持或退回。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/handoffs/",
       "https://openai.github.io/openai-agents-python/multi_agent/",

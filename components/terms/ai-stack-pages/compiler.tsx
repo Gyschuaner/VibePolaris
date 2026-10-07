@@ -1,16 +1,14 @@
-import { ArrowRight, Cpu, FileCode, FileJs } from "@phosphor-icons/react/dist/ssr";
 import { ArticleSection, ArticleAside, ConceptTerm } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
-import { ConceptHero } from "../ConceptHero";
 import { CompilerLesson } from "../ai-stack-lessons/compiler";
 import { compilerSources } from "@/lib/ai-stack-concept-sources/compiler";
-import styles from "../ToolchainConcepts.module.css";
+import { CompilerSignatureHero } from "../CompilerSignatureHero";
 
 const sections: [string, string][] = [["compiler-definition", "编译器先把源代码变成什么"], ["compiler-process", "检查、转换和目标环境"], ["compiler-boundary", "产物能生成，不等于任务完成"]];
 
 export function CompilerTermPage() {
   return <Article slug="compiler" title="编译器" subtitle="Compiler · 把一种写法转换成另一种可执行形式" sources={compilerSources} sections={sections}
-    hero={<ConceptHero slug="compiler" label="源代码经过解析、转换，最后交给运行时；错误停在实际发生的那一层"><div className={styles.toolchainHero}><div className={styles.compilerHero}><div><FileCode size={25}/><span>源代码</span><strong>add(2, 3)</strong><code>人写的形式</code></div><ArrowRight size={20} aria-hidden="true"/><div><Cpu size={25}/><span>编译链</span><strong>语法树 → 中间表示</strong><code>逐层检查</code></div><ArrowRight size={20} aria-hidden="true"/><div><FileJs size={25}/><span>运行时</span><strong>output = 5</strong><code>目标代码已执行</code></div></div><p className={styles.heroNote}>生成目标代码和真正运行，是两个相邻但不同的步骤。</p></div></ConceptHero>}
+    hero={<CompilerSignatureHero />}
     intro={<>你写下 `add(2, 3)` 时，电脑还没有拿到一条可以直接执行的指令。<strong>编译器会先读懂这段写法，再把它交给目标环境。</strong>它能在交付前拦住语法问题，却不能替运行时证明每个名字、资源和业务结果都正确。</>}>
     <ArticleSection id="compiler-definition" title="编译器先把源代码变成什么">
       <p id="compiler-definition-text" className="vp-citation-target">编译是把一种语言写成的程序转换成另一种格式或语言；编译器是执行这件事的程序。传统编译器可以把高级语言变成机器码或其他可运行形式，也可以把 TypeScript 变成 JavaScript，这时常被称为 <ConceptTerm slug="transpiler">转译器</ConceptTerm>。<Cite id="compiler-definition-text" sources={compilerSources}/></p>

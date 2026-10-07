@@ -29,6 +29,7 @@ const sceneKinds = [
   "triage-dial",
   "relay-band",
   "memory-drawer",
+  "example-gallery",
 ] as const;
 
 const actorIcons = [

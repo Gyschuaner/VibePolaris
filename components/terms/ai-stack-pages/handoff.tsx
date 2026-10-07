@@ -2,7 +2,7 @@ import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { handoffSources } from "@/lib/ai-stack-concept-sources/handoff";
 import { HandoffLesson } from "../ai-stack-lessons/handoff";
-import { HandoffBadgeHero } from "../ai-stack-lessons/ai-interaction-heroes";
+import { HandoffSignatureHero } from "../HandoffSignatureHero";
 
 export function HandoffTermPage() {
   const sections: [string, string][] = [
@@ -11,7 +11,7 @@ export function HandoffTermPage() {
     ["handoff-history", "历史不是越多越安全"],
     ["handoff-boundary", "交接失败要能退回"],
   ];
-  return <Article slug="handoff" title="交接" subtitle="Handoff · 把任务和回复权交给下一个智能体" sources={handoffSources} sections={sections} hero={<HandoffBadgeHero />} intro={<>交接把继续任务所需的事实状态和下一步交给接手者，同时把后续回复权转过去。它解决的是“谁接着负责”，不是“动作已经完成”；交接包里没有足够证据时，接手者仍应停下，而不是替空白补一个答案。</>}>
+  return <Article slug="handoff" title="交接" subtitle="Handoff · 把任务和回复权交给下一个智能体" sources={handoffSources} sections={sections} hero={<HandoffSignatureHero />} intro={<>交接把继续任务所需的事实状态和下一步交给接手者，同时把后续回复权转过去。它解决的是“谁接着负责”，不是“动作已经完成”；交接包里没有足够证据时，接手者仍应停下，而不是替空白补一个答案。</>}>
     <ArticleSection id="handoff-question" title="交接包先回答接手者要做什么">
       <p>客服已经知道订单号 A102、用户要退款，但退款智能体不需要看到所有闲聊。一个可用的交接包至少要说清目标、已核对事实、尚未完成的动作、允许使用的工具和失败时的回退。把“请继续处理”单独传过去，接手者既不知道金额从哪来，也不知道哪一步已经做过。</p>
       <p id="handoff-definition" className="vp-citation-target">OpenAI Agents SDK 的 handoff 会把当前运行交给另一个智能体，并允许用输入类型、回调和过滤器定制交接。它把“选择谁接手”和“给接手者哪些材料”分成两个问题。<Cite id="handoff-definition" sources={handoffSources} /></p>
