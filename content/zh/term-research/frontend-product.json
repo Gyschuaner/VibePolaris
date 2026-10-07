@@ -987,19 +987,23 @@
     "nearDuplicates": ["feedback", "async-await", "fetch-api"]
   },
   {
-    "slug": "microinteraction",
-    "mechanism": "微交互由触发、规则、局部反馈和持续状态组成；系统触发或用户动作改变单一任务的状态，并把结果立即呈现在上下文中。",
-    "misconception": "微交互不是小动画的同义词；没有状态或反馈含义的装饰运动不属于有效微交互。",
-    "demoSignature": "recoil: 4 states; actors=收藏按钮/图标/计数/请求结果; phases=按下即时响应→成功确认→再次点击进入撤销→失败回到确认值; action=点击收藏并拨动撤销失败",
-    "sourceUrls": [
-      "https://www.nngroup.com/articles/microinteractions/",
-      "https://m3.material.io/styles/motion/overview",
-      "https://developer.apple.com/design/human-interface-guidelines/playing-haptics",
-      "https://www.w3.org/WAI/WCAG21/Understanding/status-messages.html"
-    ],
-    "rewriteRisk": "high",
-    "nearDuplicates": ["feedback", "event", "reduced-motion"]
-  },
+  "slug": "microinteraction",
+  "mechanism": "微交互是围绕单一任务发生的短状态变化：用户或系统触发动作，规则决定允许什么，局部反馈说明动作已被接收，持续状态记录结果，必要时还提供撤销。它可以有形变、颜色或触觉，但动效只是传达状态的手段；真正的对象是按钮、计数、请求结果和下一步操作之间的关系。",
+  "misconception": "没有状态含义的循环装饰不是微交互，持续闪烁也不能代替成功或失败。乐观更新必须有回滚规则，重复点击要处理幂等或禁用，键盘和减少动态模式要得到同样的结果。一个漂亮的图标变形不能证明服务器已经保存。",
+  "demoSignature": "state-machine: 5 frames; objects=收藏按钮/图标/计数/请求/消息; change=idle、pressed、success、undo、failure; evidence=局部形变、计数、请求结果和回滚保持一致",
+  "sourceUrls": [
+    "https://www.nngroup.com/articles/microinteractions/",
+    "https://m3.material.io/styles/motion/overview",
+    "https://developer.apple.com/design/human-interface-guidelines/playing-haptics",
+    "https://www.w3.org/WAI/WCAG21/Understanding/status-messages.html"
+  ],
+  "rewriteRisk": "high",
+  "nearDuplicates": [
+    "feedback",
+    "event",
+    "reduced-motion"
+  ]
+},
   {
     "slug": "reduced-motion",
     "mechanism": "操作系统偏好通过 prefers-reduced-motion 暴露给 CSS；页面应替换非必要大幅位移、缩放和视差，同时保留状态反馈与必要进度。",

@@ -17324,218 +17324,239 @@
     ]
   },
   {
-    "slug": "microinteraction",
-    "lead": "收藏按钮怎样让用户确认点击已经生效，又不过度打断阅读？",
-    "definition": "微交互由触发、规则、局部反馈和持续状态组成；系统触发或用户动作改变单一任务的状态，并把结果立即呈现在上下文中。",
-    "boundary": "微交互不是小动画的同义词；没有状态或反馈含义的装饰运动不属于有效微交互。",
-    "sceneKind": "state-machine",
-    "sceneTitle": "收藏按钮从按下到失败撤回的完整状态",
-    "actionLabel": "点击收藏按钮",
-    "actors": [
-      {
-        "id": "button",
-        "label": "收藏按钮",
-        "detail": "未收藏",
-        "icon": "component",
-        "group": "控件"
-      },
-      {
-        "id": "icon",
-        "label": "星标图标",
-        "detail": "轮廓 / 填充",
-        "icon": "spark",
-        "group": "视觉"
-      },
-      {
-        "id": "count",
-        "label": "收藏数",
-        "detail": "24",
-        "icon": "chart",
-        "group": "数据"
-      },
-      {
-        "id": "request",
-        "label": "收藏请求",
-        "detail": "pending",
-        "icon": "network",
-        "group": "系统"
-      },
-      {
-        "id": "message",
-        "label": "结果提示",
-        "detail": "成功、失败、撤销",
-        "icon": "message",
-        "group": "反馈"
-      }
-    ],
-    "edges": [
-      {
-        "id": "button-request",
-        "from": "button",
-        "to": "request",
-        "label": "发起收藏"
-      },
-      {
-        "id": "request-icon",
-        "from": "request",
-        "to": "icon",
-        "label": "确认状态"
-      },
-      {
-        "id": "request-count",
-        "from": "request",
-        "to": "count",
-        "label": "更新数量"
-      },
-      {
-        "id": "request-message",
-        "from": "request",
-        "to": "message",
-        "label": "返回结果"
-      }
-    ],
-    "frames": [
-      {
-        "label": "按下给即时响应",
-        "note": "按钮轻微缩小，星标从轮廓向填充过渡，但数量旁保留处理中标记。",
-        "activeIds": [
-          "button",
-          "icon",
-          "request"
-        ],
-        "doneIds": [
-          "button"
-        ],
-        "mutedIds": [
-          "count",
-          "message"
-        ],
-        "values": {
-          "icon": "填充中",
-          "request": "pending"
-        },
-        "activeEdgeIds": [
-          "button-request"
-        ]
-      },
-      {
-        "label": "成功确认数据变化",
-        "note": "请求成功，星标稳定填充，收藏数从 24 变 25，读屏状态改为已收藏。",
-        "activeIds": [
-          "request",
-          "icon",
-          "count",
-          "message"
-        ],
-        "doneIds": [
-          "button",
-          "request"
-        ],
-        "mutedIds": [],
-        "values": {
-          "icon": "已收藏",
-          "count": "25",
-          "message": "收藏成功"
-        },
-        "activeEdgeIds": [
-          "request-icon",
-          "request-count",
-          "request-message"
-        ]
-      },
-      {
-        "label": "再次点击进入撤销",
-        "note": "用户再次点击，图标回到轮廓，数量减一；操作仍走请求确认。",
-        "activeIds": [
-          "button",
-          "icon",
-          "count",
-          "request"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "message"
-        ],
-        "values": {
-          "icon": "取消中",
-          "count": "24"
-        },
-        "activeEdgeIds": [
-          "button-request"
-        ]
-      },
-      {
-        "label": "失败时回到可信状态",
-        "note": "把请求切成失败，星标和数量恢复到服务端已确认值，并显示可重试提示。",
-        "activeIds": [
-          "request",
-          "icon",
-          "count",
-          "message"
-        ],
-        "doneIds": [
-          "button"
-        ],
-        "mutedIds": [],
-        "values": {
-          "icon": "已收藏",
-          "count": "25",
-          "message": "取消失败 · 重试"
-        },
-        "activeEdgeIds": [
-          "request-icon",
-          "request-count",
-          "request-message"
-        ]
-      }
-    ],
-    "insight": "微交互用短暂变化解释触发、处理中和结果，数据失败时要回到可信状态。",
-    "quiz": {
-      "question": "微交互动效最重要的作用是什么？",
-      "options": [
-        {
-          "label": "说明操作和状态变化",
-          "correct": true
-        },
-        {
-          "label": "让每个页面持续移动",
-          "correct": false
-        },
-        {
-          "label": "延长用户等待时间",
-          "correct": false
-        }
+  "slug": "microinteraction",
+  "lead": "收藏按钮的微小回弹不是装饰：它告诉用户按下被接收、数量变了、失败能撤回，而且不会把主任务拖走。",
+  "definition": "微交互是围绕单一任务发生的短状态变化：用户或系统触发动作，规则决定允许什么，局部反馈说明动作已被接收，持续状态记录结果，必要时还提供撤销。它可以有形变、颜色或触觉，但动效只是传达状态的手段；真正的对象是按钮、计数、请求结果和下一步操作之间的关系。",
+  "boundary": "没有状态含义的循环装饰不是微交互，持续闪烁也不能代替成功或失败。乐观更新必须有回滚规则，重复点击要处理幂等或禁用，键盘和减少动态模式要得到同样的结果。一个漂亮的图标变形不能证明服务器已经保存。",
+  "sceneKind": "state-machine",
+  "sceneTitle": "按钮的局部反馈如何跟随真实请求状态",
+  "actionLabel": "点击并观察可逆状态",
+  "actors": [
+    {
+      "id": "button",
+      "label": "收藏按钮",
+      "detail": "未收藏",
+      "icon": "component",
+      "group": "控件"
+    },
+    {
+      "id": "icon",
+      "label": "星标图标",
+      "detail": "轮廓 / 填充",
+      "icon": "spark",
+      "group": "视觉"
+    },
+    {
+      "id": "count",
+      "label": "收藏数",
+      "detail": "24",
+      "icon": "chart",
+      "group": "数据"
+    },
+    {
+      "id": "request",
+      "label": "收藏请求",
+      "detail": "pending",
+      "icon": "network",
+      "group": "系统"
+    },
+    {
+      "id": "message",
+      "label": "结果提示",
+      "detail": "成功、失败、撤销",
+      "icon": "message",
+      "group": "反馈"
+    }
+  ],
+  "edges": [
+    {
+      "id": "button-request",
+      "from": "button",
+      "to": "request",
+      "label": "发起收藏"
+    },
+    {
+      "id": "request-icon",
+      "from": "request",
+      "to": "icon",
+      "label": "确认状态"
+    },
+    {
+      "id": "request-count",
+      "from": "request",
+      "to": "count",
+      "label": "更新数量"
+    },
+    {
+      "id": "request-message",
+      "from": "request",
+      "to": "message",
+      "label": "返回结果"
+    }
+  ],
+  "frames": [
+    {
+      "label": "可操作但未收藏",
+      "note": "按钮有清楚的可聚焦样式，图标和计数表示当前事实；悬停只提示可操作，不提前改变收藏状态。",
+      "activeIds": [
+        "button",
+        "icon",
+        "count"
       ],
-      "success": "动效应帮助用户看懂发生了什么。",
-      "retry": "持续装饰和人为延迟会增加干扰。"
+      "doneIds": [],
+      "mutedIds": [
+        "request",
+        "message"
+      ],
+      "values": {
+        "icon": "☆",
+        "count": "12",
+        "button": "可收藏"
+      },
+      "activeEdgeIds": []
     },
-    "prompt": {
-      "title": "设计一个状态清楚的微交互",
-      "text": "请为下面收藏操作定义触发、按下、请求中、成功、失败和撤销状态。动效说明图标与计数如何变化，并提供减少动态效果时的淡入替代。"
+    {
+      "label": "按下先给即时确认",
+      "note": "指针或键盘触发后，图标短促缩放并进入 pending，计数可以暂时显示 13，但请求对象仍标记未确认。",
+      "activeIds": [
+        "button",
+        "icon",
+        "count",
+        "request"
+      ],
+      "doneIds": [
+        "button"
+      ],
+      "mutedIds": [
+        "message"
+      ],
+      "values": {
+        "icon": "★ · pending",
+        "count": "13 · optimistic",
+        "request": "保存中"
+      },
+      "activeEdgeIds": [
+        "button-request",
+        "request-icon",
+        "request-count"
+      ]
     },
-    "sources": [
+    {
+      "label": "成功让事实落地",
+      "note": "服务端确认后，图标停在实心、计数固定为 13，局部消息告诉用户已收藏；短动画到此停止，不持续吸引注意。",
+      "activeIds": [
+        "icon",
+        "count",
+        "request",
+        "message"
+      ],
+      "doneIds": [
+        "button"
+      ],
+      "mutedIds": [],
+      "values": {
+        "icon": "★ · saved",
+        "count": "13",
+        "message": "已收藏"
+      },
+      "activeEdgeIds": [
+        "request-icon",
+        "request-count",
+        "request-message"
+      ]
+    },
+    {
+      "label": "撤销窗口保持可逆",
+      "note": "再次点击或按撤销，规则把状态改回未收藏并把计数减一；撤销不是把过去抹掉，而是发起另一条明确动作。",
+      "activeIds": [
+        "button",
+        "icon",
+        "count",
+        "message"
+      ],
+      "doneIds": [
+        "request"
+      ],
+      "mutedIds": [],
+      "values": {
+        "icon": "☆",
+        "count": "12",
+        "message": "已撤销"
+      },
+      "activeEdgeIds": [
+        "request-message"
+      ]
+    },
+    {
+      "label": "失败回到可解释状态",
+      "note": "网络失败时，乐观的 13 被回滚为 12，消息说明未保存并保留重试；用户看到的是事实与反馈一致，而不是一颗假星星。",
+      "activeIds": [
+        "icon",
+        "count",
+        "request",
+        "message",
+        "button"
+      ],
+      "doneIds": [],
+      "mutedIds": [],
+      "values": {
+        "icon": "☆ · rollback",
+        "count": "12",
+        "request": "failed",
+        "message": "未保存 · 重试"
+      },
+      "activeEdgeIds": [
+        "request-icon",
+        "request-count",
+        "request-message"
+      ]
+    }
+  ],
+  "insight": "微交互的“微”指范围小、反馈快，不指规则可以含糊；动画结束时，局部状态必须和真实结果一致。",
+  "quiz": {
+    "question": "乐观把收藏数加一后请求失败，正确的微交互应该怎样收尾？",
+    "options": [
       {
-        "url": "https://www.nngroup.com/articles/microinteractions/",
-        "label": "Nielsen Norman Group · Microinteractions",
-        "note": "触发、规则、反馈和持续状态"
+        "label": "回滚计数、说明未保存并保留重试",
+        "correct": true
       },
       {
-        "url": "https://m3.material.io/styles/motion/overview",
-        "label": "Material Design · Motion",
-        "note": "运动如何说明状态关系"
+        "label": "继续播放成功动画直到用户离开",
+        "correct": false
       },
       {
-        "url": "https://developer.apple.com/design/human-interface-guidelines/playing-haptics",
-        "label": "Apple HIG · Playing haptics",
-        "note": "触觉反馈的时机与含义"
-      },
-      {
-        "url": "https://www.w3.org/WAI/WCAG21/Understanding/status-messages.html",
-        "label": "W3C WAI · Status Messages",
-        "note": "状态消息不能只靠动效"
+        "label": "清空页面让用户猜发生了什么",
+        "correct": false
       }
-    ]
+    ],
+    "success": "乐观反馈必须有失败回滚和可操作的恢复路径，最终显示服务器确认的事实。",
+    "retry": "持续动画或清空上下文都没有把局部反馈和真实状态接上。"
   },
+  "prompt": "请为收藏按钮定义 idle、pressed、pending、success、undo、failure 六种状态，分别写出键盘触发、图标、计数、请求、消息和撤销规则；再给出 prefers-reduced-motion 下不依赖位移的替代反馈。",
+  "sources": [
+    {
+      "url": "https://www.nngroup.com/articles/microinteractions/",
+      "label": "NN/g · Microinteractions",
+      "note": "NN/g Microinteractions：核对触发器、规则、反馈和循环/模式四部分。"
+    },
+    {
+      "url": "https://m3.material.io/styles/motion/overview",
+      "label": "Material · Motion",
+      "note": "Material motion：核对短促、目的明确的状态动效和停止时机。"
+    },
+    {
+      "url": "https://developer.apple.com/design/human-interface-guidelines/playing-haptics",
+      "label": "Apple HIG · Haptics",
+      "note": "Apple HIG Haptics：核对触觉作为确认辅助而不是唯一反馈。"
+    },
+    {
+      "url": "https://www.w3.org/WAI/WCAG21/Understanding/status-messages.html",
+      "label": "W3C · Status messages",
+      "note": "WCAG Status Messages：核对成功、失败和撤销消息的可感知性。"
+    }
+  ],
+  "promptTitle": "设计一个可回滚的微交互"
+},
   {
     "slug": "reduced-motion",
     "lead": "流星式页面切换对部分用户造成眩晕时，怎样保留状态提示又减少不适？",
