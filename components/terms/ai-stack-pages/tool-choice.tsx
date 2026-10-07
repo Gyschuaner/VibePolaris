@@ -1,11 +1,12 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { toolChoiceSources } from "@/lib/ai-stack-concept-sources/tool-choice";
-import { ToolChoiceHero, ToolChoiceLesson } from "../ai-stack-lessons/tool-choice";
+import { ToolChoiceLesson } from "../ai-stack-lessons/tool-choice";
+import { ToolChoiceSignatureHero } from "../ToolChoiceSignatureHero";
 
 export function ToolChoiceTermPage() {
   const sections: [string, string][] = [["choice-question", "先决定要不要调用"], ["choice-policy", "选择策略改变候选"], ["choice-boundary", "选择不等于执行"]];
-  return <Article slug="tool-choice" title="工具选择" subtitle="Tool Choice · 决定要不要调用哪个工具" sources={toolChoiceSources} sections={sections} hero={<ToolChoiceHero />} intro={<>工具选择回答的是“这一轮让模型提出什么调用”。应用先把可用工具和选择策略放在桌面上，模型再选择、被指定，或被禁止调用；真正执行还要经过参数、权限和副作用检查。</>}>
+  return <Article slug="tool-choice" title="工具选择" subtitle="Tool Choice · 决定要不要调用哪个工具" sources={toolChoiceSources} sections={sections} hero={<ToolChoiceSignatureHero />} intro={<>工具选择回答的是“这一轮让模型提出什么调用”。应用先把可用工具和选择策略放在桌面上，模型再选择、被指定，或被禁止调用；真正执行还要经过参数、权限和副作用检查。</>}>
     <ArticleSection id="choice-question" title="先决定要不要调用">
       <p>用户说“把会议改到周五”，应用不能把“改”两个字直接当成已经发生的日历写入。它先判断这句话需要读取日历、更新日历，还是可以直接回答。候选工具是可能的下一步，不是结果。</p>
       <p id="choice-call" className="vp-citation-target">函数调用接口把工具定义、参数 schema 和本轮请求分开；模型返回调用建议后，宿主程序才决定是否执行。<Cite id="choice-call" sources={toolChoiceSources} /></p>
