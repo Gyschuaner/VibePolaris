@@ -158,6 +158,27 @@
           "label": "监听进程",
           "value": "3"
         }
+      },
+      {
+        "label": "8001 没有监听者",
+        "note": "同一台主机仍在线，但没有进程接住 8001；连接失败发生在请求进入程序之前。",
+        "activeIds": [
+          "probe"
+        ],
+        "doneIds": [
+          "web",
+          "secure",
+          "db"
+        ],
+        "mutedIds": [
+          "host"
+        ],
+        "values": {
+          "host": "203.0.113.7",
+          "port": ":8001",
+          "result": "拒绝连接"
+        },
+        "activeEdgeIds": []
       }
     ],
     "insight": "区分主机、进程和端口，才能解释同一台机器为何能提供多种服务。",
@@ -188,12 +209,66 @@
       {
         "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
         "label": "RFC 9110 · HTTP Semantics",
-        "note": "协议定义与报文语义"
+        "note": "HTTP 客户端、服务器和请求响应语义"
       },
       {
-        "url": "https://www.rfc-editor.org/rfc/rfc1122.html",
-        "label": "RFC 1122 · Internet Hosts",
-        "note": "协议定义与报文语义"
+        "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Howto/Web_mechanics/What_is_a_web_server",
+        "label": "MDN · What is a web server?",
+        "note": "服务器软件、硬件与请求处理的区别"
+      },
+      {
+        "url": "https://nodejs.org/api/http.html",
+        "label": "Node.js · HTTP",
+        "note": "createServer 与 listen 的监听关系"
+      },
+      {
+        "url": "https://docs.python.org/3/library/http.server.html",
+        "label": "Python · http.server",
+        "note": "主机地址、端口和 HTTP 服务示例"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/404",
+        "label": "MDN · 404 Not Found",
+        "note": "已收到请求但找不到目标资源"
+      }
+    ],
+    "teaching": [
+      {
+        "id": "server-role",
+        "title": "先把“服务器”从电脑上拆下来",
+        "body": "“服务器”常常被说成一台电脑，其实它先描述通信中的职责：这一端接收请求、做处理、发回响应。电脑只是运行这些程序的环境；同一台主机可以同时有多个服务器进程，一项服务也可能由多台主机共同承担。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "server-listen",
+        "title": "端口只负责把连接交给监听者",
+        "body": "程序调用 listen 之后，操作系统才会把目标端口的连接交给它。端口号不是服务本身，也不会因为写进 URL 就自动启动程序；80、443 和 5432 可以由不同进程监听，使用的协议也可以不同。",
+        "sourceIndices": [
+          1,
+          3,
+          4
+        ]
+      },
+      {
+        "id": "server-errors",
+        "title": "404 和连不上不是同一种失败",
+        "body": "访问 /missing 时，连接已经找到 HTTP 程序，程序只是没有匹配到这个路径，所以能回 404。访问没有监听的 8001 时，请求处理函数根本没有机会运行，客户端看到的是连接层失败。排查时先问“有没有收到响应”，再问“路径是否存在”。",
+        "sourceIndices": [
+          2,
+          5
+        ]
+      },
+      {
+        "id": "server-boundary",
+        "title": "本机能开，不代表别人能开",
+        "body": "程序绑定 127.0.0.1 时，只接受来自本机的连接；换成对外网卡地址或 0.0.0.0 只是扩大监听范围，仍要经过防火墙和网络策略。数据库是服务器可能使用的依赖，不是服务器这个角色的必备条件。",
+        "sourceIndices": [
+          4,
+          5
+        ]
       }
     ]
   },
