@@ -6087,5 +6087,60 @@
       "model-card",
       "eval"
     ]
+  },
+  {
+    "zh": "直接偏好优化",
+    "en": "Direct Preference Optimization",
+    "slug": "direct-preference-optimization",
+    "cat": "AI·Agent",
+    "say": "直接用成对偏好训练模型，把奖励与策略的关系写进一个分类目标。",
+    "aliases": [
+      "DPO",
+      "直接偏好学习",
+      "偏好优化"
+    ],
+    "question": "已经有“回答 A 比 B 好”的数据，为什么可以直接调整模型，而不先单独训练奖励模型再跑强化学习？",
+    "definition": "DPO 使用成对的 chosen/rejected 回答和参考模型，把偏好优化重写成一个直接的分类损失：提高被选回答相对于参考模型的概率，压低被拒回答。它省去显式奖励模型与在线策略采样这层工程，但仍然依赖偏好数据、参考模型和温度等训练设置。",
+    "boundary": "更短的训练路径不等于更少的对齐风险；偏好标签有偏、chosen 只是写得更讨喜、参考模型不合适时，DPO 仍会学到错误方向。DPO 也不是推理时的安全过滤器，部署前仍要做独立评测和运行时控制。",
+    "demoType": "comparison",
+    "demoTitle": "成对偏好台：一边升一点，另一边就要相对退后",
+    "demoSteps": [
+      {
+        "label": "放入回答对",
+        "value": "chosen：给出边界 · rejected：只给结论",
+        "note": "训练样本表达相对偏好，而不是一张绝对分数表。"
+      },
+      {
+        "label": "对照参考模型",
+        "value": "policy / reference 的概率差",
+        "note": "先看当前模型和参考模型对两份回答的相对倾向。"
+      },
+      {
+        "label": "移动偏好刻度",
+        "value": "chosen ↑ · rejected ↓",
+        "note": "分类目标把相对差距拉开，不显示一个独立奖励网络。"
+      },
+      {
+        "label": "换一条坏标签",
+        "value": "漂亮但错误的 chosen",
+        "note": "优化会忠实放大标签，数据质量仍是边界。"
+      }
+    ],
+    "quizQuestion": "DPO 省掉了哪一层显式组件？",
+    "quizOptions": [
+      "单独训练并调用的奖励模型与强化学习采样环节",
+      "所有偏好数据和参考模型",
+      "上线后的安全评测和权限控制"
+    ],
+    "correctText": "DPO 把目标重写为直接偏好分类损失，但仍需要偏好数据和独立验收。",
+    "wrongText": "它不是无数据训练，也不替代参考模型、评测和运行时安全控制。",
+    "promptTitle": "审阅一份 DPO 偏好数据",
+    "prompt": "请逐条检查 chosen 与 rejected 是否只差一个可解释的行为维度，记录参考模型、截断长度、偏好来源和标注分歧；找出“更讨喜但不正确”的样本，并设计训练外的事实、安全和泛化评测。",
+    "relatedSlugs": [
+      "rlhf",
+      "fine-tuning",
+      "confidence-calibration",
+      "model-card"
+    ]
   }
 ]

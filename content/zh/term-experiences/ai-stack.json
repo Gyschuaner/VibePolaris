@@ -25373,5 +25373,166 @@
         "note": "代理目标和风险治理边界"
       }
     ]
+  },
+  {
+    "slug": "direct-preference-optimization",
+    "lead": "已经有“回答 A 比 B 好”的数据，为什么可以直接调整模型而不先单独训练奖励模型？",
+    "definition": "DPO 使用成对的 chosen/rejected 回答和参考模型，把偏好优化改写成直接的分类损失：提高被选回答相对于参考模型的概率，压低被拒回答。它省去显式奖励模型与在线策略采样这层工程，但仍依赖偏好数据、参考模型和训练设置。",
+    "boundary": "训练路径更短不等于对齐风险更少；偏好标签有偏、chosen 只是更讨喜、参考模型不合适时，DPO 仍会放大错误方向。DPO 不是推理时安全过滤器，部署前要做独立评测和运行时控制。",
+    "sceneKind": "compare",
+    "sceneTitle": "成对偏好台：一边升一点，另一边就要相对退后",
+    "actionLabel": "移动偏好刻度",
+    "actors": [
+      {
+        "id": "chosen",
+        "label": "被选回答",
+        "detail": "说明边界和不确定性",
+        "icon": "spark",
+        "group": "偏好"
+      },
+      {
+        "id": "rejected",
+        "label": "被拒回答",
+        "detail": "只给漂亮结论",
+        "icon": "file",
+        "group": "偏好"
+      },
+      {
+        "id": "reference",
+        "label": "参考模型",
+        "detail": "保留原有分布锚点",
+        "icon": "brain",
+        "group": "对照"
+      },
+      {
+        "id": "policy",
+        "label": "当前模型",
+        "detail": "比较两份回答的相对倾向",
+        "icon": "chart",
+        "group": "更新"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "放入回答对",
+        "note": "样本表达相对偏好，不是一张绝对分数表。",
+        "activeIds": [
+          "chosen",
+          "rejected"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "reference",
+          "policy"
+        ],
+        "values": {
+          "chosen": "chosen",
+          "rejected": "rejected"
+        }
+      },
+      {
+        "label": "对照参考模型",
+        "note": "先看当前模型和参考模型对两份回答的相对倾向。",
+        "activeIds": [
+          "reference",
+          "policy"
+        ],
+        "doneIds": [
+          "chosen",
+          "rejected"
+        ],
+        "mutedIds": [],
+        "values": {
+          "reference": "anchor",
+          "policy": "chosen / rejected 概率差"
+        }
+      },
+      {
+        "label": "拉开相对差距",
+        "note": "分类目标提高 chosen、压低 rejected，不出现独立奖励网络。",
+        "activeIds": [
+          "chosen",
+          "rejected",
+          "policy"
+        ],
+        "doneIds": [
+          "reference"
+        ],
+        "mutedIds": [],
+        "values": {
+          "policy": "chosen ↑ · rejected ↓"
+        }
+      },
+      {
+        "label": "换一条坏标签",
+        "note": "如果错误答案被标成 chosen，优化会忠实放大这条偏好。",
+        "activeIds": [
+          "chosen",
+          "policy"
+        ],
+        "doneIds": [
+          "reference"
+        ],
+        "mutedIds": [
+          "rejected"
+        ],
+        "values": {
+          "chosen": "漂亮但错误",
+          "policy": "方向被带偏"
+        }
+      }
+    ],
+    "insight": "DPO 简化了偏好训练的工程链路，却没有简化数据质量和独立评测。",
+    "quiz": {
+      "question": "DPO 省掉了哪一层显式组件？",
+      "options": [
+        {
+          "label": "单独训练并调用的奖励模型与强化学习采样环节",
+          "correct": true
+        },
+        {
+          "label": "所有偏好数据和参考模型",
+          "correct": false
+        },
+        {
+          "label": "上线后的安全评测和权限控制",
+          "correct": false
+        }
+      ],
+      "success": "DPO 把目标重写成直接偏好分类损失，但仍需数据和验收。",
+      "retry": "它不是无数据训练，也不替代参考模型与安全控制。"
+    },
+    "prompt": {
+      "title": "审阅一份 DPO 偏好数据",
+      "text": "请逐条检查 chosen 与 rejected 是否只差一个可解释的行为维度，记录参考模型、截断长度、偏好来源和标注分歧；找出“更讨喜但不正确”的样本，并设计训练外的事实、安全和泛化评测。"
+    },
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2305.18290",
+        "label": "Rafailov et al. · Direct Preference Optimization",
+        "note": "DPO 原始方法和与 RLHF 的差异"
+      },
+      {
+        "url": "https://huggingface.co/docs/trl/en/dpo_trainer",
+        "label": "Hugging Face TRL · DPO Trainer",
+        "note": "DPO 数据格式和训练实现"
+      },
+      {
+        "url": "https://openai.com/index/instruction-following/",
+        "label": "OpenAI · Aligning language models",
+        "note": "偏好数据与奖励训练背景"
+      },
+      {
+        "url": "https://arxiv.org/abs/2203.02155",
+        "label": "Ouyang et al. · InstructGPT",
+        "note": "RLHF 参考流程和局限"
+      },
+      {
+        "url": "https://doi.org/10.6028/NIST.AI.600-1",
+        "label": "NIST · AI Risk Management Framework",
+        "note": "训练目标与部署风险边界"
+      }
+    ]
   }
 ]
