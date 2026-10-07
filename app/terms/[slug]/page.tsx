@@ -124,6 +124,7 @@ import { OptimisticUpdateTermPage } from "@/components/terms/OptimisticUpdateCon
 import { CircuitBreakerTermPage } from "@/components/terms/CircuitBreakerConceptPage";
 import { DataContractTermPage } from "@/components/terms/DataContractConceptPage";
 import { ContextCompactionTermPage } from "@/components/terms/ContextCompactionConceptPage";
+import { ToolSchemaTermPage } from "@/components/terms/ToolSchemaConceptPage";
 import { EnvironmentVariableTermPage, ExpressionTermPage, FormatterTermPage, FunctionTermPage, LinterTermPage, LockfileTermPage, MonorepoTermPage, ParameterTermPage, ReturnValueTermPage, SourceMapTermPage } from "@/components/terms/toolchain-redesign-pages/ToolchainRedesignPages";
 import { ArrayTermPage, ConditionalBranchTermPage, ControlClientServerTermPage, DistributedSystemTermPage, EventDrivenArchitectureTermPage, LoopTermPage, MicroservicesTermPage, MonolithTermPage, ObjectTermPage, ServerlessTermPage } from "@/components/terms/control-redesign-pages/ControlRedesignPages";
 
@@ -176,6 +177,7 @@ const articleTermPages = {
   'circuit-breaker': CircuitBreakerTermPage,
   'data-contract': DataContractTermPage,
   'context-compaction': ContextCompactionTermPage,
+  'tool-schema': ToolSchemaTermPage,
   'client-server': ControlClientServerTermPage,
   'conditional-branch': ConditionalBranchTermPage,
   loop: LoopTermPage,
