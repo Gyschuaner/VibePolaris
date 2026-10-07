@@ -893,25 +893,25 @@
   {
     "slug": "few-shot-prompting",
     "lead": "只给两张工单小票，为什么新工单会沿用同一枚标签印章？",
-    "definition": "少样本提示把少量输入—输出示例放进当前请求，让模型在这次上下文中参照标签空间、输入样子和输出格式；示例不会更新模型参数。",
-    "boundary": "示例会占用上下文；错误、片面、格式不一致或彼此冲突的校样，也可能被带进新结果。示例数量没有跨模型通用的“正确值”，不是越多越好。",
-    "sceneKind": "assembly",
-    "sceneTitle": "一张校样台怎样给新工单盖标签",
+    "definition": "少样本提示把少量“输入—输出”示例放进当前请求，让模型在生成这一轮回答时参照示例里的标签空间、输入样子和输出版式。它改变的是本次上下文中的参照物，不会把示例写进模型参数，也不会替你核对事实。",
+    "boundary": "示例会占用上下文；覆盖太窄、标签不一致、格式忽左忽右或示例彼此冲突，都会把不稳定带进新结果。示例数量没有跨模型通用的正确值：先看任务变化和上下文预算，再用未出现在校样里的样本检查是否真的迁移。",
+    "sceneKind": "example-gallery",
+    "sceneTitle": "校样台：少量例子怎样改变本轮版式",
     "actionLabel": "加入相反校样",
     "actors": [
       {
         "id": "sample-rack",
-        "label": "校样小票",
+        "label": "输入—输出校样",
         "detail": "登录页空白→前端；付款转圈→网络",
         "icon": "file",
         "group": "校样"
       },
       {
         "id": "label-dial",
-        "label": "标签盘",
-        "detail": "前端 / 后端 / 网络",
+        "label": "局部标签版式",
+        "detail": "前端 / 后端 / 网络 · 单行",
         "icon": "layout",
-        "group": "版式"
+        "group": "参照"
       },
       {
         "id": "new-ticket",
@@ -922,7 +922,7 @@
       },
       {
         "id": "stamp",
-        "label": "标签印章",
+        "label": "本轮结果",
         "detail": "前端 / 先修示例",
         "icon": "spark",
         "group": "输出"
@@ -935,36 +935,11 @@
         "group": "边界"
       }
     ],
-    "edges": [
-      {
-        "id": "sample-dial",
-        "from": "sample-rack",
-        "to": "label-dial",
-        "label": "显出校样"
-      },
-      {
-        "id": "ticket-dial",
-        "from": "new-ticket",
-        "to": "label-dial",
-        "label": "放上新票"
-      },
-      {
-        "id": "dial-stamp",
-        "from": "label-dial",
-        "to": "stamp",
-        "label": "盖出格式"
-      },
-      {
-        "id": "parameter-stamp",
-        "from": "parameters",
-        "to": "stamp",
-        "label": "不写回参数"
-      }
-    ],
+    "edges": [],
     "frames": [
       {
-        "label": "留白校样",
-        "note": "新工单已经摆上桌，但没有示例告诉它标签该长什么样。",
+        "label": "摆上新工单",
+        "note": "新问题先单独摆在桌面上；没有校样时，模型还没有看到这项任务要用什么标签和格式。",
         "activeIds": [
           "new-ticket"
         ],
@@ -981,8 +956,8 @@
         "activeEdgeIds": []
       },
       {
-        "label": "示例贴上",
-        "note": "两张输入—输出小票进入这次请求；它们只是上下文里的校样，不会改模型参数。",
+        "label": "放入两张校样",
+        "note": "两张输入—输出小票进入本次请求，给出标签和版式，但不会改写模型参数。",
         "activeIds": [
           "sample-rack",
           "new-ticket"
@@ -996,15 +971,14 @@
         ],
         "values": {
           "sample-rack": "2 张校样",
-          "new-ticket": "等待匹配"
+          "new-ticket": "等待匹配",
+          "parameters": "unchanged"
         },
-        "activeEdgeIds": [
-          "sample-dial"
-        ]
+        "activeEdgeIds": []
       },
       {
-        "label": "标签显影",
-        "note": "示例先显出标签空间和固定格式，模型看到的是一个局部版式。",
+        "label": "显出标签版式",
+        "note": "校样共同显出三个标签和“一行一个标签”的写法；这是一块局部参照，不是完整规则库。",
         "activeIds": [
           "label-dial"
         ],
@@ -1016,40 +990,14 @@
           "stamp"
         ],
         "values": {
-          "label-dial": "3 个标签 + 单标签格式"
-        },
-        "activeEdgeIds": [
-          "sample-dial",
-          "ticket-dial"
-        ]
-      },
-      {
-        "label": "新票落位",
-        "note": "“导出按钮没反应”沿用同一行的标签写法；它是本次请求的推断结果。",
-        "activeIds": [
-          "stamp"
-        ],
-        "doneIds": [
-          "sample-rack",
-          "new-ticket",
-          "label-dial"
-        ],
-        "mutedIds": [],
-        "values": {
-          "stamp": "前端",
+          "label-dial": "3 个标签 · 单行格式",
           "parameters": "unchanged"
         },
-        "activeEdgeIds": [
-          "dial-stamp"
-        ],
-        "metric": {
-          "label": "当前上下文",
-          "value": "只在本轮有效"
-        }
+        "activeEdgeIds": []
       },
       {
-        "label": "反例打滑",
-        "note": "再贴一张相反标签，校样彼此打架；不稳定是示例问题，不是模型已经学会了新规则。",
+        "label": "反例让印章停下",
+        "note": "再加入一张相反校样后，输入相同却出现不同标签；冲突说明示例需要修整，而不是模型已经永久学会了新规则。",
         "activeIds": [
           "sample-rack",
           "label-dial",
@@ -1060,22 +1008,19 @@
         ],
         "mutedIds": [],
         "values": {
-          "sample-rack": "3 张（含反例）",
-          "label-dial": "标签打架",
+          "sample-rack": "3 张 · 含冲突",
+          "label-dial": "版式打架",
           "stamp": "先修示例",
           "parameters": "unchanged"
         },
-        "activeEdgeIds": [
-          "sample-dial",
-          "dial-stamp"
-        ],
+        "activeEdgeIds": [],
         "metric": {
-          "label": "一致性",
-          "value": "冲突"
+          "label": "本轮参数",
+          "value": "未改变"
         }
       }
     ],
-    "insight": "少样本提示是在当前上下文里摆校样：它显出标签、输入分布和格式，却没有更新模型参数。",
+    "insight": "少样本提示是在当前上下文里摆校样：它让标签、输入分布和格式暂时可见，却没有更新模型参数；校样的代表性和一致性决定这次推断能否迁移。",
     "quiz": {
       "question": "加入相反标签的小票后输出不稳定，首先该检查什么？",
       "options": [
@@ -1124,6 +1069,38 @@
         "url": "https://arxiv.org/abs/2202.12837",
         "label": "arXiv · Rethinking the Role of Demonstrations",
         "note": "标签空间、输入分布与格式"
+      }
+    ],
+    "teaching": [
+      {
+        "id": "what-changes",
+        "title": "示例改变的是参照物，不是模型本身",
+        "body": "把“登录页空白 → 前端”和“付款一直转圈 → 网络”放进请求后，模型在这一次生成中能看到输入长什么样、标签有哪些、答案该用什么格式。请求结束后，示例不会变成新的训练参数；换一轮请求而不再提供校样，模型也不会因为看过小票就永久记住这套标签。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "coverage",
+        "title": "校样要覆盖变化，还要保持写法一致",
+        "body": "两张小票不能只展示同一种输入，否则新工单一换说法就没有参照。校样至少要让读者看见任务的常见变化、边界和固定输出格式；标签名称、顺序和标点也要稳定。示例多到挤掉真正的问题，或把互相矛盾的答案放在一起，都会让上下文变长却更难判断。",
+        "sourceIndices": [
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "id": "verify",
+        "title": "用没见过的工单检查是否真的迁移",
+        "body": "“导出按钮没反应”被标成前端，只能说明它沿用了当前小票的局部模式，不能证明模型掌握了产品事实。把未出现在校样里的工单留作独立检查，再加入一张相反小票观察冲突，是区分示例帮助、标签偏置和事实核验的办法。需要稳定跨任务时，应考虑专门的评测或训练，而不是无限堆小票。",
+        "sourceIndices": [
+          1,
+          4,
+          5
+        ]
       }
     ]
   },
