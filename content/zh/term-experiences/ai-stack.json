@@ -1782,12 +1782,12 @@
   },
   {
     "slug": "hallucination",
-    "lead": "资料只写收入120万，却有人追问利润，系统该不该补一个数字？",
-    "definition": "模型可能生成语法流畅却无事实依据、与来源冲突或凭空补出的内容；它来自生成目标与事实核验之间的缺口。",
-    "boundary": "幻觉不只是“完全捏造”，错误归因、错引数字和把不确定内容说成确定也属于风险。",
+    "lead": "资料只写收入 120 万，却有人追问利润，系统该不该补一个数字？",
+    "definition": "生成器会把高概率的语言接续写成完整答案，却不自动保证每个数字、归因和引用都能回到输入资料；证据字段缺失时，流畅的补写就可能成为幻觉。",
+    "boundary": "幻觉不只是“完全捏造”：偏离输入、与来源冲突、把不确定说成确定，以及引用没有真正支持主张，都需要分别检查。",
     "sceneKind": "branch",
-    "sceneTitle": "答案中的数字是否有证据字段",
-    "actionLabel": "补入证据再回答",
+    "sceneTitle": "候选数字能不能在资料表落位",
+    "actionLabel": "补入证据字段",
     "actors": [
       {
         "id": "question",
@@ -1799,22 +1799,29 @@
       {
         "id": "evidence",
         "label": "资料表",
-        "detail": "收入 120 万；利润缺失",
+        "detail": "收入 120 万；利润空白",
         "icon": "file",
         "group": "证据"
       },
       {
         "id": "claim",
         "label": "候选数字",
-        "detail": "利润 30 万",
+        "detail": "利润 48 万？",
         "icon": "brain",
         "group": "候选"
       },
       {
+        "id": "gate",
+        "label": "证据闸门",
+        "detail": "支持字段？",
+        "icon": "shield",
+        "group": "核对"
+      },
+      {
         "id": "answer",
         "label": "最终回答",
-        "detail": "资料不足",
-        "icon": "shield",
+        "detail": "资料不足 / 48 万",
+        "icon": "message",
         "group": "结果"
       }
     ],
@@ -1832,16 +1839,28 @@
         "label": "核对字段"
       },
       {
+        "id": "c-g",
+        "from": "claim",
+        "to": "gate",
+        "label": "进入证据槽"
+      },
+      {
+        "id": "g-a",
+        "from": "gate",
+        "to": "answer",
+        "label": "放行回答"
+      },
+      {
         "id": "e-a",
         "from": "evidence",
         "to": "answer",
-        "label": "约束输出"
+        "label": "留下落点"
       }
     ],
     "frames": [
       {
-        "label": "问题越出资料",
-        "note": "问题要求利润，但证据只有收入。",
+        "label": "问题伸出资料表",
+        "note": "问题问利润，但眼前的表只填了收入；空白本身也是证据。",
         "activeIds": [
           "question",
           "evidence"
@@ -1849,16 +1868,17 @@
         "doneIds": [],
         "mutedIds": [
           "claim",
+          "gate",
           "answer"
         ],
         "values": {
-          "evidence": "利润 = 缺失"
+          "evidence": "收入 120 万；利润 = 缺失"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "候选没有落点",
-        "note": "“30万”找不到任何支持字段。",
+        "label": "顺口的数字飘进来",
+        "note": "语言可以很流畅，候选数字却还没有可绑定的字段。",
         "activeIds": [
           "claim",
           "evidence"
@@ -1867,10 +1887,11 @@
           "question"
         ],
         "mutedIds": [
+          "gate",
           "answer"
         ],
         "values": {
-          "claim": "支持项 0"
+          "claim": "利润 48 万？"
         },
         "activeEdgeIds": [
           "q-c",
@@ -1878,47 +1899,69 @@
         ]
       },
       {
-        "label": "阻断补写",
-        "note": "无依据候选被移除，回答改为资料不足。",
+        "label": "证据闸门关上",
+        "note": "找不到支持利润的原文，候选被挡在回答外，系统保留“资料不足”。",
         "activeIds": [
-          "answer"
+          "gate"
         ],
         "doneIds": [
           "question",
           "evidence",
           "claim"
         ],
-        "mutedIds": [],
+        "mutedIds": [
+          "answer"
+        ],
         "values": {
-          "answer": "不提供利润数字"
+          "gate": "证据槽为空"
         },
-        "activeEdgeIds": [
-          "e-a"
-        ]
+        "activeEdgeIds": ["c-g"]
       },
       {
-        "label": "证据补齐",
-        "note": "补入利润28万后，答案才更新。",
+        "label": "补入缺失字段",
+        "note": "财报补上一行“利润 48 万”，候选数字终于有了落点。",
         "activeIds": [
           "evidence",
-          "answer"
+          "claim"
         ],
         "doneIds": [
           "question"
         ],
         "mutedIds": [
-          "claim"
+          "gate",
+          "answer"
         ],
         "values": {
-          "evidence": "利润 28 万",
-          "answer": "28 万"
+          "evidence": "利润 48 万",
+          "claim": "已绑定财报第 3 行"
         },
         "activeEdgeIds": [
+          "e-c",
           "e-a"
+        ]
+      },
+      {
+        "label": "带着落点回答",
+        "note": "回答把数字和证据行绑在一起；引用让别人能回到原文检查。",
+        "activeIds": [
+          "answer"
+        ],
+        "doneIds": [
+          "question",
+          "evidence",
+          "claim",
+          "gate"
+        ],
+        "mutedIds": [],
+        "values": {
+          "answer": "利润是 48 万 · 引用第 3 行"
+        },
+        "activeEdgeIds": [
+          "g-a"
         ]
       }
     ],
-    "insight": "幻觉风险常出现在模型把资料里的空白补成了肯定答案。",
+    "insight": "幻觉风险常出现在模型把资料里的空白补成了肯定答案；证据字段和回答落点要一起检查。",
     "quiz": {
       "question": "资料没有利润字段时，哪种回答更可靠？",
       "options": [
@@ -1945,8 +1988,29 @@
     "sources": [
       {
         "url": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
-        "label": "NIST 出版物 · NIST.AI.600 1",
-        "note": "术语、风险与评估框架"
+        "label": "NIST · Generative AI Profile",
+        "note": "confabulation、错误内容与过度信任"
+      },
+      {
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations",
+        "label": "Anthropic · Reduce hallucinations",
+        "note": "允许不确定、摘录原文与逐条验证"
+      },
+      {
+        "url": "https://platform.claude.com/docs/en/build-with-claude/citations",
+        "label": "Anthropic · Citations",
+        "note": "引用指向文档中的具体位置"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/azure/well-architected/ai/grounding-data-design",
+        "label": "Microsoft Azure · Grounding Data Design",
+        "note": "查询、索引与 grounding 数据迭代"
+      },
+      {
+        "url": "https://arxiv.org/abs/2311.05232",
+        "label": "arXiv · Survey on Hallucination in LLMs",
+        "note": "幻觉分类、检测与缓解研究",
+        "date": "2024"
       }
     ]
   },

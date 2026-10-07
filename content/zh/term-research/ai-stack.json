@@ -164,13 +164,17 @@
   },
   {
     "slug": "hallucination",
-    "mechanism": "模型可能生成语法流畅却无事实依据、与来源冲突或凭空补出的内容；它来自生成目标与事实核验之间的缺口。",
-    "misconception": "幻觉不只是“完全捏造”，错误归因、错引数字和把不确定内容说成确定也属于风险。",
-    "demoSignature": "输入：材料只写“季度收入120万”，问题追问利润；中间：证据字段收入=120万、利润=缺失；输出：拒绝给出利润并标注资料不足。可视化：证据表中缺失单元格阻断答案。 建议4帧：问题和资料表并列、利润字段显示空、无依据候选答案被红框、资料不足结果替换它；交互：补入利润字段后重新生成。",
+    "mechanism": "生成器会把高概率的语言接续写成完整答案，却不自动保证每个数字、归因和引用都能回到输入资料；证据字段缺失时，流畅的补写就可能成为幻觉。",
+    "misconception": "幻觉不只是“完全捏造”：偏离输入、与来源冲突、把不确定说成确定，以及引用没有真正支持主张，都需要分别检查。",
+    "demoSignature": "证据验票台 5 帧：收入字段入表→利润空格亮起→无依据数字被证据闸门挡回→补入利润 48 万→回答与财报第 3 行锁定；工作台切换问题与证据字段，观察候选是否获得落点。",
     "sourceUrls": [
-      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf"
+      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
+      "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations",
+      "https://platform.claude.com/docs/en/build-with-claude/citations",
+      "https://learn.microsoft.com/en-us/azure/well-architected/ai/grounding-data-design",
+      "https://arxiv.org/abs/2311.05232"
     ],
-    "rewriteRisk": "不要把任何模型错误都叫幻觉；区分证据缺失、计算错误和检索错误。",
+    "rewriteRisk": "正文要把证据缺失、读取或计算错误、检索不相关和引用不匹配拆开，并说明允许不确定只能降低风险，不能保证零幻觉。",
     "nearDuplicates": [
       "grounding",
       "citation"

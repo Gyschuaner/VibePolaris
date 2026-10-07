@@ -44,7 +44,7 @@ import { DatasetTermPage, QualityTermPage, LineageTermPage } from "@/components/
 
 import { FrameTermPage, FullTextTermPage, VectorDatabaseTermPage } from "@/components/terms/RetrievalConceptPages";
 
-import { GroundingTermPage, HallucinationTermPage, EvaluationTermPage } from '@/components/terms/QualityConceptPages';
+import { GroundingTermPage, EvaluationTermPage } from '@/components/terms/QualityConceptPages';
 import { BenchmarkTermPage, GraderTermPage, EvalDatasetTermPage, EvaluationRunTermPage, GradingRubricTermPage, RegressionEvaluationTermPage, SafetyEvaluationTermPage, CostEvaluationTermPage, LatencyEvaluationTermPage, HumanGraderTermPage, ModelGraderTermPage, PassFailGraderTermPage, ContextOverflowTermPage } from '@/components/terms/AssessmentConceptPages';
 
 import { ModelRoutingTermPage, ModelFallbackTermPage, PromptCachingTermPage } from '@/components/terms/ModelDeliveryPages';
@@ -63,6 +63,7 @@ import { ZeroShotPromptingConceptTermPage } from '@/components/terms/ZeroShotPro
 import { TemperatureConceptTermPage } from '@/components/terms/TemperatureConceptPage';
 import { ContextWindowConceptTermPage } from '@/components/terms/ContextWindowConceptPage';
 import { TokenizationConceptTermPage } from '@/components/terms/TokenizationConceptPage';
+import { HallucinationConceptTermPage } from '@/components/terms/HallucinationConceptPage';
 import { ContainerTermPage, InfrastructureContainerImageTermPage, InfrastructureServiceDiscoveryTermPage, InfrastructureObservabilityTermPage, InfrastructureSastTermPage, InfrastructureSecretScanningTermPage, InfrastructureDependencyScanningTermPage, InfrastructureThreatModelingTermPage, InfrastructureToolApprovalTermPage, InfrastructureEvaluationDatasetTermPage } from '@/components/terms/control-redesign-pages/InfrastructureRedesignPages';
 import { BoundaryPermissionTermPage, BoundaryXssTermPage, BoundarySkillTermPage, BoundaryEvaluationRunTermPage, BoundarySafetyEvaluationTermPage, BoundaryCostEvaluationTermPage, BoundaryLatencyEvaluationTermPage, BoundaryPassFailGraderTermPage, BoundaryGradingRubricTermPage, BoundaryHumanGraderTermPage } from '@/components/terms/control-redesign-pages/BoundaryEvaluationRedesignPages';
 import { BranchTermPage, CheckoutSwitchTermPage, CdTermPage, CiTermPage, CloneTermPage, CodeReviewTermPage as GitCodeReviewTermPage, DiffTermPage, FetchTermPage as GitFetchTermPage, MergeConflictTermPage, MergeTermPage, PreviewDeploymentTermPage, PullRequestTermPage as GitPullRequestTermPage, PullTermPage, PushTermPage, RebaseTermPage as GitRebaseTermPage, RemoteTermPage, RepoCommitTermPage, RevertTermPage as GitRevertTermPage, RollbackTermPage, StashTermPage as GitStashTermPage, StagingAreaTermPage, WorkingTreeTermPage } from "@/components/terms/GitConceptPages";
@@ -375,7 +376,7 @@ const articleTermPages = {
   'model-grader': ModelGraderTermPage,
   'context-overflow': ContextOverflowTermPage,
   grounding: GroundingTermPage,
-  hallucination: HallucinationTermPage,
+  hallucination: HallucinationConceptTermPage,
   eval: EvaluationTermPage,
   "hybrid-search": HybridSearchTermPage,
   citation: CitationTermPage,

@@ -1,0 +1,77 @@
+.hero,
+.lab { box-sizing: border-box; min-width: 0; color: var(--ink); }
+.hero { display: grid; gap: 9px; margin: 0; padding: 12px; border-radius: 16px; background: color-mix(in srgb, var(--accent-text) 5%, var(--paper)); }
+.heroTop,
+.labTop { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 5px; color: var(--muted); font-size: 11px; }
+.heroTop strong { font: 10px ui-monospace, monospace; }
+.proofDesk { position: relative; height: 220px; min-width: 0; }
+.questionTicket { position: absolute; top: 0; right: 0; display: flex; align-items: center; gap: 5px; font-size: 12px; }
+.questionTicket svg { color: var(--accent-text); }
+.ledger { position: absolute; top: 29px; left: 2%; width: 78%; height: 161px; box-sizing: border-box; padding: 12px; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 3px 15px 3px 3px; background: var(--paper); box-shadow: 3px 5px 0 color-mix(in srgb, var(--ink) 6%, transparent); transform: rotate(-3deg); }
+.ledgerHead { display: flex; align-items: center; gap: 5px; margin-bottom: 10px; color: var(--muted); font-size: 10px; }
+.ledgerRow { display: flex; align-items: center; justify-content: space-between; gap: 5px; height: 30px; padding: 0 7px; border-bottom: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); font-size: 12px; }
+.ledgerRow strong { font: 700 14px ui-monospace, monospace; white-space: nowrap; }
+.ledgerRow[data-missing="true"] { border: 1px dashed color-mix(in srgb, #aa7937 55%, transparent); color: #986b2b; }
+.ledgerRow[data-missing="true"] strong { font-size: 11px; font-weight: 400; }
+.ledgerRow[data-new="true"] { background: color-mix(in srgb, var(--accent-text) 12%, transparent); animation: evidenceIn .6s ease both; }
+.paperLines { height: 14px; margin-top: 9px; background: repeating-linear-gradient(to bottom, transparent 0 5px, color-mix(in srgb, var(--ink) 10%, transparent) 5px 6px); }
+.sourceLine { color: var(--muted); font-size: 9px; }
+.claimTicket { position: absolute; top: 95px; right: 0; display: grid; align-content: center; gap: 4px; width: 135px; height: 66px; box-sizing: border-box; padding: 8px 11px; border-left: 3px solid #aa7937; border-radius: 2px; background: color-mix(in srgb, #edc57a 28%, var(--paper)); box-shadow: 0 8px 16px color-mix(in srgb, var(--ink) 12%, transparent); opacity: 0; visibility: hidden; transform: translate(16px, -14px) rotate(8deg); transition: transform .65s ease, opacity .3s ease, background .3s ease, visibility .3s ease; }
+.claimTicket span { color: var(--muted); font-size: 9px; }
+.claimTicket strong { font-size: 15px; white-space: nowrap; }
+.claimTicket[data-visible="true"] { visibility: visible; opacity: 1; transform: translate(0, 0) rotate(6deg); }
+.claimTicket[data-rejected="true"] { border-color: #a44940; background: color-mix(in srgb, #c96659 15%, var(--paper)); transform: translate(-6px, 19px) rotate(-9deg); }
+.claimTicket[data-rejected="true"] strong { text-decoration: line-through; color: #a44940; }
+.claimTicket[data-locked="true"] { background: color-mix(in srgb, var(--accent-text) 10%, var(--paper)); border-color: var(--accent-text); transform: translate(-24px, -9px) rotate(-3deg); }
+.checkSeal { position: absolute; right: 0; bottom: 28px; display: grid; justify-items: center; align-content: center; gap: 2px; width: 55px; height: 55px; border: 2px double #a44940; border-radius: 50%; color: #a44940; font-size: 10px; opacity: 0; transform: scale(1.35) rotate(-15deg); transition: transform .25s ease, opacity .2s ease; }
+.checkSeal[data-visible="true"] { opacity: 1; transform: scale(1) rotate(-15deg); }
+.checkSeal[data-success="true"] { color: var(--accent-text); border-color: var(--accent-text); transform: rotate(8deg); }
+.answerDrawer { position: absolute; left: 0; bottom: 0; display: flex; align-items: center; gap: 5px; font-size: 12px; color: #986b2b; }
+.answerDrawer[data-ready="true"] { color: var(--accent-text); }
+.hero figcaption { min-width: 0; margin: 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.lab { display: grid; gap: 12px; margin: 25px 0 18px; padding: 17px; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 16px; background: color-mix(in srgb, var(--accent-text) 5%, var(--paper)); }
+.labTop { font: 10px ui-monospace, monospace; }
+.labTop strong { font-weight: 400; }
+.labControls { display: grid; gap: 7px; }
+.controlGroup { display: flex; flex-wrap: wrap; gap: 6px; }
+.controlGroup button { display: inline-flex; align-items: center; gap: 4px; min-height: 34px; padding: 5px 10px; border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent); border-radius: 999px; background: var(--paper); color: var(--ink); font-size: 12px; cursor: pointer; }
+.controlGroup button[aria-pressed="true"] { background: var(--accent-text); color: var(--paper); }
+.controlGroup button:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
+.labBoard { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr) minmax(0, .9fr); gap: 8px; }
+.labEvidence,
+.labClaim,
+.labAnswer { position: relative; display: grid; align-content: start; gap: 7px; min-width: 0; min-height: 130px; padding: 11px; border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); border-radius: 9px; background: var(--paper); }
+.labClaim[data-rejected="true"] { border-color: #a44940; background: color-mix(in srgb, #c96659 10%, var(--paper)); }
+.labAnswer[data-ready="true"] { border-color: var(--accent-text); background: color-mix(in srgb, var(--accent-text) 8%, var(--paper)); }
+.labCardHead { display: flex; align-items: center; gap: 5px; color: var(--muted); font-size: 11px; }
+.labCardHead svg { flex: none; }
+.labField { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 4px 6px; align-items: center; padding: 5px 6px; border-bottom: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); font-size: 11px; }
+.labField[data-missing="true"] { border: 1px dashed #aa7937; }
+.labField small { grid-column: 2; }
+.labField strong,
+.labClaim > strong,
+.labAnswer > strong { overflow-wrap: anywhere; font: 700 14px/1.5 ui-monospace, monospace; }
+.labClaim small,
+.labAnswer small,
+.labField small { color: var(--muted); font-size: 10px; line-height: 1.5; }
+.labClaim[data-rejected="true"] > strong { text-decoration: line-through; color: #a44940; }
+.labClaim > svg { margin-left: auto; color: var(--accent-text); }
+.labClaim[data-rejected="true"] > svg { color: #a44940; }
+.labStatus { display: flex; align-items: flex-start; gap: 6px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.labStatus svg { flex: none; margin-top: 2px; color: #986b2b; }
+.labStatus[data-success="true"] svg { color: var(--accent-text); }
+@keyframes evidenceIn { from { opacity: .2; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width:680px) {
+  .lab { padding: 13px; }
+  .labBoard { grid-template-columns: 1fr; }
+  .labEvidence,
+  .labClaim,
+  .labAnswer { min-height: 0; }
+  .labField { grid-template-columns: 38px minmax(0, 1fr) auto; }
+  .labField small { grid-column: auto; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .claimTicket,
+  .checkSeal { transition: none; }
+  .ledgerRow[data-new="true"] { animation: none; }
+}
