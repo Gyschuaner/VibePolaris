@@ -865,18 +865,38 @@
     "demoSteps": [
       {
         "label": "失败票钉上桌",
-        "value": "GET /health → 500 · API_BASE_URL 缺失",
-        "note": "把失败钉在当前状态上，不能假装服务已经健康。"
+        "value": "GET /health → 500",
+        "note": "失败先被记录，不能把旧回执当成成功。"
       },
       {
-        "label": "回执写回再修复",
-        "value": "500 → issue = config → API_BASE_URL 已写入",
-        "note": "旧回执只提供下一步证据；写入配置也还不是通过证明。"
+        "label": "拉开检修抽屉",
+        "value": "inspect_config() → config.env",
+        "note": "读取当前配置，寻找可以解释 500 的证据。"
       },
       {
-        "label": "重新检查再停止",
-        "value": "新回执 200 OK / max_turns 到点仍未完成",
-        "note": "只有新的健康检查回执能打开成功闸门，轮数上限则停在未完成。"
+        "label": "回执滑回来",
+        "value": "payment.log · gateway_timeout",
+        "note": "外部工具带回的回执让下一步有了依据。"
+      },
+      {
+        "label": "贴回状态卡",
+        "value": "issue = config",
+        "note": "把观察结果写回账本，避免下一轮只凭猜测。"
+      },
+      {
+        "label": "写入配置",
+        "value": "API_BASE_URL = set",
+        "note": "修复动作改变状态，但写入本身还不是健康证明。"
+      },
+      {
+        "label": "重新健康检查",
+        "value": "GET /health · checking",
+        "note": "必须重新取得外部回执，不能沿用旧的 500。"
+      },
+      {
+        "label": "打开停止闸门",
+        "value": "200 OK · verified",
+        "note": "新证据满足停止条件；轮数上限仍是另一条边界。"
       }
     ],
     "quizQuestion": "智能体循环的关键是什么？",
