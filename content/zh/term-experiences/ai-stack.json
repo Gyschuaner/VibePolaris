@@ -27562,5 +27562,267 @@
         "note": "索引成本、输出和 local/global 查询的实践提醒"
       }
     ]
+  },
+  {
+    "slug": "lost-in-the-middle",
+    "lead": "资料明明在上下文里，为什么夹在中间像没读到？",
+    "definition": "“长上下文中间遗失”描述一种位置效应：当相关信息被埋在很长的输入中间，模型在需要把它找出来回答时，表现可能明显低于把同一信息放在开头或结尾。它不是说模型真的把中间 token 删除了，而是说明“能接收这么长”与“能稳定取用每一段”是两件事；位置、任务、模型和干扰材料共同改变了取回难度。",
+    "boundary": "这不是所有模型、所有任务都会出现的固定曲线，也不是把证据永远塞到最前面或最后面就能解决的规则。context window 只描述容量，context engineering 决定该放什么、怎样分组；retrieval、引用摘录和压缩可以减少搜索范围，却会引入遗漏和排序偏差。要用同一任务在不同位置做评测，不能把一次漂亮的长文档回答当成全窗口都可靠。context compaction（上下文压缩）会重写旧历史，可能丢掉原句、否定条件或顺序；retrieval/引用摘录先把候选片段挑出来，也可能漏掉它所在的上下文，不能把“更短”直接当成“更可靠”。",
+    "sceneKind": "spectrum",
+    "sceneTitle": "同一根“答案针”，放在长文档的哪里更容易被捞到",
+    "actionLabel": "移动证据位置",
+    "actors": [
+      {
+        "id": "question",
+        "label": "固定问题",
+        "detail": "合同的续期日是什么？",
+        "icon": "message",
+        "group": "任务"
+      },
+      {
+        "id": "front",
+        "label": "开头证据",
+        "detail": "关键句在 10%",
+        "icon": "file",
+        "group": "位置"
+      },
+      {
+        "id": "middle",
+        "label": "中间证据",
+        "detail": "关键句在 50%",
+        "icon": "file",
+        "group": "位置"
+      },
+      {
+        "id": "back",
+        "label": "结尾证据",
+        "detail": "关键句在 90%",
+        "icon": "file",
+        "group": "位置"
+      },
+      {
+        "id": "noise",
+        "label": "干扰段",
+        "detail": "其余合同条款",
+        "icon": "spark",
+        "group": "长输入"
+      },
+      {
+        "id": "answer",
+        "label": "取回结果",
+        "detail": "续期日 · 待观察",
+        "icon": "chart",
+        "group": "表现"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "短上下文",
+        "note": "问题旁边只有一条关键句；先确认任务本身没有难到无法回答。",
+        "activeIds": [
+          "question",
+          "front",
+          "answer"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "middle",
+          "back",
+          "noise"
+        ],
+        "values": {
+          "question": "合同的续期日是什么？",
+          "front": "续期日：2027-06-30",
+          "answer": "命中 · 只作基线"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "放在开头",
+        "note": "同一关键句被放到长文档前部；刻度只作位置测试的定性示意。",
+        "activeIds": [
+          "question",
+          "front",
+          "noise",
+          "answer"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "middle",
+          "back"
+        ],
+        "values": {
+          "front": "10% 位置",
+          "noise": "大量条款",
+          "answer": "较易取回 · 示意"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "埋在中间",
+        "note": "只移动证据，不换问题和答案；长输入里可能更容易漏掉中间那一段。",
+        "activeIds": [
+          "question",
+          "middle",
+          "noise",
+          "answer"
+        ],
+        "doneIds": [
+          "front"
+        ],
+        "mutedIds": [
+          "back"
+        ],
+        "values": {
+          "middle": "50% 位置",
+          "answer": "可能漏取 · 示意"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "放在结尾",
+        "note": "证据靠近输入尾部时表现可能回升，但距离问题、格式和干扰仍需单独测。",
+        "activeIds": [
+          "question",
+          "back",
+          "noise",
+          "answer"
+        ],
+        "doneIds": [
+          "front",
+          "middle"
+        ],
+        "mutedIds": [],
+        "values": {
+          "back": "90% 位置",
+          "answer": "可能回升 · 示意"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "先取证再答",
+        "note": "把相关原句摘出来可缩小搜索范围；摘录遗漏上下文时，模型仍可能被带偏。",
+        "activeIds": [
+          "question",
+          "answer"
+        ],
+        "doneIds": [
+          "front",
+          "middle",
+          "back",
+          "noise"
+        ],
+        "mutedIds": [],
+        "values": {
+          "answer": "原句摘录 + 位置记录"
+        },
+        "metric": {
+          "label": "位置敏感评测",
+          "value": "前 / 中 / 后都要测"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "长上下文的难点不是“能不能装下”，而是相关信息在不同位置能否稳定被取回；把位置当成可测变量，才能知道该检索、摘录还是压缩。",
+    "quiz": {
+      "question": "测试长上下文位置效应时，最应该保持什么不变？",
+      "options": [
+        {
+          "label": "问题、关键证据和干扰材料不变，只移动证据位置",
+          "correct": true
+        },
+        {
+          "label": "每次换一条问题和一套答案，凭感觉比较",
+          "correct": false
+        },
+        {
+          "label": "只测开头，测不到中间就默认可靠",
+          "correct": false
+        }
+      ],
+      "success": "只移动同一条证据，才能把表现变化归因到位置。",
+      "retry": "位置测试需要控制变量；换问题、换模型或换干扰会掩盖真实原因。"
+    },
+    "prompt": {
+      "title": "做一次位置敏感的长上下文评测",
+      "text": "固定问题、答案和干扰材料，只把同一条关键证据轮流放到开头、中间、结尾；记录模型是否引用它、答案是否完整、延迟和成本如何变化。再测试证据摘录、分段检索或压缩，注明每种策略丢掉了哪些上下文，并按模型与任务分别下结论。"
+    },
+    "teaching": [
+      {
+        "id": "capacity",
+        "title": "装得下不等于用得上",
+        "body": "context window 说的是输入和输出能占多少 token；Lost in the Middle 研究的重点是信息在长输入中的取回表现。即使请求没有超出容量，相关句子也可能因为位置和干扰而没有被稳定使用。",
+        "sourceIndices": [
+          1,
+          2,
+          4
+        ]
+      },
+      {
+        "id": "curve",
+        "title": "同一根针，换位置就换难度",
+        "body": "论文在多文档问答与键值取回任务中固定相关信息、改变它的位置，观察到开头和结尾通常更好，中间可能明显下滑。它提供的是评测现象，不是一条对每个模型都成立的硬编码公式。",
+        "sourceIndices": [
+          1
+        ]
+      },
+      {
+        "id": "design",
+        "title": "顺序是上下文设计的一部分",
+        "body": "Anthropic 的长上下文实验也比较了答案在开头、中间、结尾以及摘录相关引文的策略，结果显示提示结构会改变召回。整理上下文时，任务、证据和输出要求应有清楚边界，并用代表性位置做回归。",
+        "sourceIndices": [
+          2,
+          3
+        ]
+      },
+      {
+        "id": "mitigation",
+        "title": "先取证，别把“放边上”当万能药",
+        "body": "检索、相关引文摘录和压缩可以缩小模型要搜索的范围，但每一步都可能丢失上下文、引入排序偏差或增加延迟。它们是实验变量，不是对位置效应的永久豁免。",
+        "sourceIndices": [
+          2,
+          3,
+          5
+        ]
+      },
+      {
+        "id": "eval",
+        "title": "结论要写清模型和任务",
+        "body": "位置效应会随模型、上下文长度、问题类型和干扰材料改变。报告结果时写出模型版本、位置比例、上下文长度、命中标准和失败样例，避免把一次长文档演示包装成普遍能力。",
+        "sourceIndices": [
+          1,
+          2,
+          4
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2307.03172",
+        "label": "Liu et al. · Lost in the Middle: How Language Models Use Long Contexts",
+        "note": "多文档问答与键值取回中的位置敏感性和中间下滑"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+        "label": "Anthropic · Effective context engineering for AI agents",
+        "note": "上下文有限、token 增多会出现注意力与取回精度的递减"
+      },
+      {
+        "url": "https://www.anthropic.com/news/prompting-long-context",
+        "label": "Anthropic · Prompting Claude’s long context window",
+        "note": "比较长文档中证据位置、示例和相关引文摘录策略"
+      },
+      {
+        "url": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
+        "label": "Anthropic Claude Platform Docs · Context windows",
+        "note": "上下文窗口是输入与输出共同占用的容量边界"
+      },
+      {
+        "url": "https://arxiv.org/abs/2005.11401",
+        "label": "Lewis et al. · Retrieval-Augmented Generation",
+        "note": "检索把外部材料带入推理，可作为减少长上下文搜索范围的策略"
+      }
+    ]
   }
 ]

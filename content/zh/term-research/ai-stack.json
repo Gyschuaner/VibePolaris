@@ -2388,5 +2388,25 @@
       "vector-database",
       "knowledge-distillation"
     ]
+  },
+  {
+    "slug": "lost-in-the-middle",
+    "mechanism": "在长输入中固定问题与相关证据，只移动证据位置，观察多文档问答或键值取回表现；研究常见开头/结尾较高、中间下滑的 U 形位置效应，同时提醒任务和模型会改变曲线。",
+    "misconception": "它不是 token 超出窗口、注意力把中间删除或所有模型都必然失效；增加容量、移动证据、检索摘录与压缩各自改变不同变量，都需要位置敏感的实际评测。",
+    "demoSignature": "5帧｜对象：固定问题、开头证据、中间证据、结尾证据、干扰段与取回结果｜交互：拖动同一条证据经过长文档位置、查看定性取回刻度、打开摘录策略｜变化：短输入→前→中→后→先取证再答；位置频谱，不是流程图。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/2307.03172",
+      "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+      "https://www.anthropic.com/news/prompting-long-context",
+      "https://platform.claude.com/docs/en/build-with-claude/context-windows",
+      "https://arxiv.org/abs/2005.11401"
+    ],
+    "rewriteRisk": "不要把一次模型或一次位置实验概括为通用规律；区分窗口容量、位置效应、retrieval/引用摘录、context compaction（上下文压缩）和任务难度，并保留原文证据与模型版本。",
+    "nearDuplicates": [
+      "context-window",
+      "context-engineering",
+      "context-compaction",
+      "retrieval"
+    ]
   }
 ]
