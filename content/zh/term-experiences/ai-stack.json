@@ -28097,5 +28097,279 @@
         "note": "比较块、事实、三元组、摘要和混合记忆及检索方法"
       }
     ]
+  },
+  {
+    "slug": "process-supervision",
+    "lead": "两份解答都写出 42；把每一步拆开，才看见其中一份只是碰巧撞上答案。",
+    "definition": "过程监督是在训练或筛选模型时，不只给最终答案打分，而是对解答中的每个中间步骤提供正确、错误或待定的反馈。过程奖励模型（PRM）可以据此估计一条解答在哪一步开始偏离，再用这些细粒度信号训练模型或从多个候选中挑选更可靠的路径。它监督的是推理过程里的可检查行为，不等于把完整思维链展示给用户，也不等于把所有现实任务都拆成固定流程。",
+    "boundary": "过程监督和 outcome supervision 的差别在反馈落点：后者主要看最终结果，前者还要判断中间步骤是否合理、是否有题目或证据支持。它不是 chain-of-thought 的同义词，也不是验证器、奖励模型或人工审查本身；这些可以承载或使用过程反馈。逐步标签也可能含糊、昂贵、受领域限制，奖励模型仍可能学到表面线索；OpenAI 的结果主要来自数学任务，不能直接当作所有领域都成立的保证。",
+    "sceneKind": "matrix",
+    "sceneTitle": "监督棋盘：把最终数字和每一步的依据分开看",
+    "actionLabel": "贴上步骤标签",
+    "actors": [
+      {
+        "id": "problem",
+        "label": "同一道题",
+        "detail": "3 站车程 · 每站 14 分钟",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "candidate-a",
+        "label": "解答 A",
+        "detail": "14 + 14 + 14 = 42",
+        "icon": "code",
+        "group": "候选"
+      },
+      {
+        "id": "candidate-b",
+        "label": "解答 B",
+        "detail": "先假设每站 20 分钟，再减 18 得 42",
+        "icon": "code",
+        "group": "候选"
+      },
+      {
+        "id": "step-labels",
+        "label": "步骤标签",
+        "detail": "✓ 通过 · ✕ 错误 · ? 待定",
+        "icon": "shield",
+        "group": "监督"
+      },
+      {
+        "id": "process-score",
+        "label": "过程分",
+        "detail": "A 高 · B 低",
+        "icon": "chart",
+        "group": "监督"
+      },
+      {
+        "id": "outcome-score",
+        "label": "结果分",
+        "detail": "A = 42 · B = 42",
+        "icon": "spark",
+        "group": "结果"
+      },
+      {
+        "id": "audit-log",
+        "label": "审阅记录",
+        "detail": "保留第 1 步的缺口",
+        "icon": "file",
+        "group": "证据"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "放上两份解答",
+        "note": "最终答案相同，先把两条候选路径并排摆出。",
+        "activeIds": [
+          "problem",
+          "candidate-a",
+          "candidate-b"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "step-labels",
+          "process-score",
+          "outcome-score",
+          "audit-log"
+        ],
+        "values": {
+          "candidate-a": "A · 结果 42",
+          "candidate-b": "B · 结果 42"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "逐步贴标签",
+        "note": "步骤级监督关心每一处转折是否合理；含糊处可先保留待定，而不是硬判。",
+        "activeIds": [
+          "step-labels",
+          "candidate-a",
+          "candidate-b"
+        ],
+        "doneIds": [
+          "problem"
+        ],
+        "mutedIds": [
+          "process-score",
+          "outcome-score",
+          "audit-log"
+        ],
+        "values": {
+          "step-labels": "A：✓ ✓ ✓ · B：✕ ✕ ✓"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "比较两把尺",
+        "note": "结果监督只看到两个 42；过程监督把 B 的无依据假设暴露出来。",
+        "activeIds": [
+          "process-score",
+          "outcome-score"
+        ],
+        "doneIds": [
+          "problem",
+          "candidate-a",
+          "candidate-b",
+          "step-labels"
+        ],
+        "mutedIds": [
+          "audit-log"
+        ],
+        "values": {
+          "process-score": "A 高 · B 低",
+          "outcome-score": "A = B = 42"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "挑出可疑位置",
+        "note": "把评分落回具体步骤，审阅者才知道该改哪一个假设。",
+        "activeIds": [
+          "candidate-b",
+          "step-labels"
+        ],
+        "doneIds": [
+          "problem",
+          "candidate-a",
+          "process-score",
+          "outcome-score"
+        ],
+        "mutedIds": [
+          "audit-log"
+        ],
+        "values": {
+          "candidate-b": "第 1 步：每站 20 分钟？题目未提供",
+          "step-labels": "✕ 需要证据"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "保存监督记录",
+        "note": "训练或筛选可以使用步骤标签，但记录仍要区分评分、证据和人工复核。",
+        "activeIds": [
+          "audit-log",
+          "step-labels"
+        ],
+        "doneIds": [
+          "problem",
+          "candidate-a",
+          "candidate-b",
+          "process-score",
+          "outcome-score"
+        ],
+        "mutedIds": [],
+        "values": {
+          "audit-log": "步骤标签 + 评语 + 最终结果"
+        },
+        "metric": {
+          "label": "监督粒度",
+          "value": "逐步可回查"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "过程监督的价值不在于把答案写得更长，而在于把错误定位到一个可复核的中间动作；最终结果、步骤依据和人工判断要分开记录。",
+    "quiz": {
+      "question": "两份解答最终都为 42，过程监督应优先追问什么？",
+      "options": [
+        {
+          "label": "每一步是否有题目或证据支持",
+          "correct": true
+        },
+        {
+          "label": "哪一份文字更长、更像完整解释",
+          "correct": false
+        },
+        {
+          "label": "只保留最后的数字，删掉中间记录",
+          "correct": false
+        }
+      ],
+      "success": "过程监督把可疑转折定位出来，结果相同也要回查依据。",
+      "retry": "先看每一步的条件与证据；长度和最终数字都不够。"
+    },
+    "prompt": {
+      "title": "给候选解答做步骤级审阅",
+      "text": "请把候选解答按中间步骤列成表格：每一步标记通过、错误或待定，写出它依赖的题目条件或外部证据；再单独检查最终答案，指出是否存在过程有错但结果碰巧正确的情况，并标出需要领域专家复核的位置。不要把步骤数量、格式或流畅度当成正确性。"
+    },
+    "teaching": [
+      {
+        "id": "granularity",
+        "title": "反馈落在哪一层，决定你能看见什么",
+        "body": "outcome supervision 只在答案末尾给信号，像批卷时只写“对”或“错”；process supervision 则给每个中间步骤贴标签，能指出错误从哪一处开始。两者都可能使用奖励模型，但监督粒度不同，能回答的问题也不同。",
+        "sourceIndices": [
+          1,
+          2,
+          5
+        ]
+      },
+      {
+        "id": "labels",
+        "title": "步骤标签不是简单的二选一",
+        "body": "PRM800K 的标注把步骤分成正面、负面和中性；中性允许标注者把含糊、误导但未必完全错误的步骤暂时挂起。真正的系统要把标签说明、领域规则和标注一致性写清，否则“逐步监督”只是更细的主观分数。",
+        "sourceIndices": [
+          1,
+          3
+        ]
+      },
+      {
+        "id": "spurious",
+        "title": "最后答对，过程仍可能有问题",
+        "body": "一份解答可能靠错误假设、漏掉条件或偶然抵消得到正确数字。OpenAI 的研究明确把这种“spurious solution”视为 outcome supervision 的盲点：只看末尾会奖励一个不值得复用的路径，逐步检查才有机会在早处拦住它。",
+        "sourceIndices": [
+          1,
+          2,
+          4
+        ]
+      },
+      {
+        "id": "selection",
+        "title": "过程分也可以用来挑候选",
+        "body": "验证器研究会先生成多份候选，再按分数选出更可靠的一份；过程奖励模型把每一步的正确概率合成为整条路径的分数。它把“从一个答案硬改到下一个答案”变成“先摆出几条候选，再比较依据”，但候选数量、评分偏差和成本仍需记录。",
+        "sourceIndices": [
+          1,
+          3
+        ]
+      },
+      {
+        "id": "scope",
+        "title": "数学结果不能直接替所有领域背书",
+        "body": "过程监督在 MATH 等数学任务上显示出优势，但研究也明确提醒这种收益能否推广到其他领域仍是开放问题。法律、医疗、产品操作等任务需要各自的可检查步骤、证据标准和专家复核，不能把一个 PRM 分数当成通用安全信号。",
+        "sourceIndices": [
+          1,
+          2,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2305.20050",
+        "label": "Lightman et al. · Let's Verify Step by Step",
+        "note": "比较过程监督与结果监督，并发布 PRM800K 步骤级反馈数据。"
+      },
+      {
+        "url": "https://openai.com/index/improving-mathematical-reasoning-with-process-supervision/",
+        "label": "OpenAI · Improving mathematical reasoning with process supervision",
+        "note": "解释逐步奖励、结果监督盲点与数学任务实验边界。"
+      },
+      {
+        "url": "https://github.com/openai/prm800k",
+        "label": "OpenAI · PRM800K dataset",
+        "note": "查看正面、负面、中性步骤标签与数据格式。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2110.14168",
+        "label": "Cobbe et al. · Training Verifiers to Solve Math Word Problems",
+        "note": "说明验证器如何给候选解答评分并选择结果。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2211.14275",
+        "label": "Uesato et al. · Solving math word problems with process- and outcome-based feedback",
+        "note": "补充过程与结果反馈的对照研究背景。"
+      }
+    ]
   }
 ]

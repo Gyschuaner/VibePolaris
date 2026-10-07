@@ -2428,5 +2428,24 @@
       "retrieval",
       "context-engineering"
     ]
+  },
+  {
+    "slug": "process-supervision",
+    "mechanism": "过程监督对中间推理步骤逐项提供正确、错误或待定反馈，再将步骤级标签用于训练过程奖励模型、筛选候选解答或定位错误；它与只检查最终结果的 outcome supervision 反馈粒度不同。",
+    "misconception": "过程分不等于事实证明，也不是 chain-of-thought 展示或跨领域通用安全分数；步骤标签会受领域规则、标注成本和奖励模型偏差影响。",
+    "demoSignature": "5帧｜对象：同一道题、两份候选解答、步骤标签、过程分/结果分、审阅记录｜交互：并排候选、逐步贴标签、比较两把尺、定位可疑步骤、保存监督记录｜变化：最终同为42→B出现无依据步骤→结果分相同而过程分拉开→错误落到具体位置；监督棋盘，不是流程图。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/2305.20050",
+      "https://openai.com/index/improving-mathematical-reasoning-with-process-supervision/",
+      "https://github.com/openai/prm800k",
+      "https://arxiv.org/abs/2110.14168",
+      "https://arxiv.org/abs/2211.14275"
+    ],
+    "rewriteRisk": "把过程监督写成让模型展示完整思维链或保证答案正确会误导；正文要区分过程与结果反馈、PRM/ORM、候选筛选和人工审阅，并明确数学研究的外推边界。",
+    "nearDuplicates": [
+      "chain-of-thought",
+      "self-consistency",
+      "evaluator-optimizer"
+    ]
   }
 ]
