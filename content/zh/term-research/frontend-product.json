@@ -946,14 +946,23 @@
   ]
 },
   {
-    "slug": "design-token",
-    "mechanism": "设计令牌用稳定名称和值表示设计决策，并可通过引用形成基础值—语义值—组件值的解析图，再转换到设计工具和代码平台。",
-    "misconception": "不是把每个色值都换成变量名；若令牌绑定页面或颜色外观，主题和跨平台复用仍会失败。",
-    "demoSignature": "state: 4 frames; actors=基础颜色/语义令牌/按钮/链接/主题映射; phases=组件引用color.action→浅色映射moss-900→深色映射lime-500→链接硬编码导致对比度失败; action=只切换语义映射，观察引用图是否同步",
-    "sourceUrls": ["https://www.designtokens.org/tr/2025.10/", "https://www.designtokens.org/", "https://developer.android.com/develop/ui/compose/designsystems/material3", "https://v1.lightningdesignsystem.com/design-tokens/"],
-    "rewriteRisk": "high",
-    "nearDuplicates": ["design-system", "css", "component"]
-  },
+  "slug": "design-token",
+  "mechanism": "设计令牌是带稳定名称的设计决策，例如 color.action、space.3 或 radius.card。组件引用语义令牌，语义令牌再指向某个主题下的基础值；换主题时改变的是映射关系，按钮、链接和其他消费端都会得到新的值。令牌因此保存了命名、引用和跨工具同步的关系，而不只是把一串十六进制颜色换成变量名。",
+  "misconception": "令牌不会替你决定层级、交互状态或对比度，也不能修复一个根本不该共用颜色的组件。若组件绕过语义名写死旧值，主题切换只会更新一半；若没有记录平台、状态和无障碍约束，令牌数量增加也可能让系统更难维护。统一命名不是统一审美。",
+  "demoSignature": "network: 5 frames; objects=基础值/语义令牌/按钮/链接/主题映射; change=引用语义名、浅色映射、深色映射、局部硬编码、对比度验收; evidence=引用链同步或断裂",
+  "sourceUrls": [
+    "https://www.designtokens.org/tr/2025.10/",
+    "https://www.designtokens.org/",
+    "https://developer.android.com/develop/ui/compose/designsystems/material3",
+    "https://v1.lightningdesignsystem.com/design-tokens/"
+  ],
+  "rewriteRisk": "high",
+  "nearDuplicates": [
+    "design-system",
+    "css",
+    "component"
+  ]
+},
   {
   "slug": "visual-hierarchy",
   "mechanism": "视觉层级是读者在一组信息里形成注意顺序的结果。字号和字重提供尺度，位置和分组提供阅读路径，对比和留白标出主次；它们共同建立“先看标题、再理解任务、最后行动”的节奏。层级不是某个元素越大越重要，而是相对差异、语义结构和当前任务一起让重点容易被找到。",

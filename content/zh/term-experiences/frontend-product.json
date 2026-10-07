@@ -16518,215 +16518,243 @@
   "promptTitle": "审查一张站点地图"
 },
   {
-    "slug": "design-token",
-    "lead": "品牌主色改变时，怎样避免在几十个组件里逐个找颜色值？",
-    "definition": "设计令牌用稳定名称和值表示设计决策，并可通过引用形成基础值—语义值—组件值的解析图，再转换到设计工具和代码平台。",
-    "boundary": "不是把每个色值都换成变量名；若令牌绑定页面或颜色外观，主题和跨平台复用仍会失败。",
-    "sceneKind": "network",
-    "sceneTitle": "主题色变化如何通过语义令牌影响多个组件",
-    "actionLabel": "切换主题映射",
-    "actors": [
-      {
-        "id": "base",
-        "label": "基础颜色",
-        "detail": "lime-500 / moss-900",
-        "icon": "spark",
-        "group": "基础令牌"
-      },
-      {
-        "id": "semantic",
-        "label": "语义令牌",
-        "detail": "color.action / color.text",
-        "icon": "code",
-        "group": "语义令牌"
-      },
-      {
-        "id": "button",
-        "label": "按钮",
-        "detail": "使用 color.action",
-        "icon": "component",
-        "group": "组件"
-      },
-      {
-        "id": "link",
-        "label": "链接",
-        "detail": "使用 color.action",
-        "icon": "component",
-        "group": "组件"
-      },
-      {
-        "id": "theme",
-        "label": "主题映射",
-        "detail": "浅色 / 深色",
-        "icon": "gear",
-        "group": "配置"
-      }
-    ],
-    "edges": [
-      {
-        "id": "base-semantic",
-        "from": "base",
-        "to": "semantic",
-        "label": "映射值"
-      },
-      {
-        "id": "semantic-button",
-        "from": "semantic",
-        "to": "button",
-        "label": "引用"
-      },
-      {
-        "id": "semantic-link",
-        "from": "semantic",
-        "to": "link",
-        "label": "引用"
-      },
-      {
-        "id": "theme-semantic",
-        "from": "theme",
-        "to": "semantic",
-        "label": "切换映射"
-      }
-    ],
-    "frames": [
-      {
-        "label": "组件引用语义名",
-        "note": "按钮和链接都读取 color.action，不直接写 #B7D524。",
-        "activeIds": [
-          "semantic",
-          "button",
-          "link"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "base",
-          "theme"
-        ],
-        "values": {
-          "semantic": "color.action",
-          "button": "引用",
-          "link": "引用"
-        },
-        "activeEdgeIds": [
-          "semantic-button",
-          "semantic-link"
-        ]
-      },
-      {
-        "label": "浅色主题映射基础值",
-        "note": "color.action 映射到 moss-900，组件同时得到深色前景。",
-        "activeIds": [
-          "base",
-          "semantic",
-          "theme",
-          "button",
-          "link"
-        ],
-        "doneIds": [
-          "theme"
-        ],
-        "mutedIds": [],
-        "values": {
-          "theme": "light",
-          "semantic": "moss-900"
-        },
-        "activeEdgeIds": [
-          "base-semantic",
-          "theme-semantic",
-          "semantic-button",
-          "semantic-link"
-        ]
-      },
-      {
-        "label": "深色主题只改映射",
-        "note": "切换主题后语义令牌改为 lime-500，两个组件同时更新，不逐个搜索颜色。",
-        "activeIds": [
-          "theme",
-          "semantic",
-          "button",
-          "link"
-        ],
-        "doneIds": [
-          "base"
-        ],
-        "mutedIds": [],
-        "values": {
-          "theme": "dark",
-          "semantic": "lime-500"
-        },
-        "activeEdgeIds": [
-          "theme-semantic",
-          "semantic-button",
-          "semantic-link"
-        ]
-      },
-      {
-        "label": "局部硬编码暴露",
-        "note": "给链接写死旧色后再次切换主题，按钮正常更新，链接对比度检查失败。",
-        "activeIds": [
-          "link",
-          "theme"
-        ],
-        "doneIds": [
-          "base",
-          "semantic",
-          "button"
-        ],
-        "mutedIds": [],
-        "values": {
-          "button": "已更新",
-          "link": "hard-coded · contrast fail"
-        },
-        "activeEdgeIds": []
-      }
-    ],
-    "insight": "设计令牌把使用目的与具体值分开，主题变化通过语义映射传到所有正确引用它的组件。",
-    "quiz": {
-      "question": "哪种令牌名称更容易跨组件使用？",
-      "options": [
-        {
-          "label": "color.text.muted",
-          "correct": true
-        },
-        {
-          "label": "card3-gray",
-          "correct": false
-        },
-        {
-          "label": "almost-black-final",
-          "correct": false
-        }
+  "slug": "design-token",
+  "lead": "品牌色要换一套主题时，设计令牌把“用途”和“今天用的颜色”分开，改一次映射就能看见谁跟上、谁掉队。",
+  "definition": "设计令牌是带稳定名称的设计决策，例如 color.action、space.3 或 radius.card。组件引用语义令牌，语义令牌再指向某个主题下的基础值；换主题时改变的是映射关系，按钮、链接和其他消费端都会得到新的值。令牌因此保存了命名、引用和跨工具同步的关系，而不只是把一串十六进制颜色换成变量名。",
+  "boundary": "令牌不会替你决定层级、交互状态或对比度，也不能修复一个根本不该共用颜色的组件。若组件绕过语义名写死旧值，主题切换只会更新一半；若没有记录平台、状态和无障碍约束，令牌数量增加也可能让系统更难维护。统一命名不是统一审美。",
+  "sceneKind": "network",
+  "sceneTitle": "一条语义引用链怎样把主题改动送到组件",
+  "actionLabel": "切换主题并检查引用",
+  "actors": [
+    {
+      "id": "base",
+      "label": "基础颜色",
+      "detail": "lime-500 / moss-900",
+      "icon": "spark",
+      "group": "基础令牌"
+    },
+    {
+      "id": "semantic",
+      "label": "语义令牌",
+      "detail": "color.action / color.text",
+      "icon": "code",
+      "group": "语义令牌"
+    },
+    {
+      "id": "button",
+      "label": "按钮",
+      "detail": "使用 color.action",
+      "icon": "component",
+      "group": "组件"
+    },
+    {
+      "id": "link",
+      "label": "链接",
+      "detail": "使用 color.action",
+      "icon": "component",
+      "group": "组件"
+    },
+    {
+      "id": "theme",
+      "label": "主题映射",
+      "detail": "浅色 / 深色",
+      "icon": "gear",
+      "group": "配置"
+    }
+  ],
+  "edges": [
+    {
+      "id": "base-semantic",
+      "from": "base",
+      "to": "semantic",
+      "label": "映射值"
+    },
+    {
+      "id": "semantic-button",
+      "from": "semantic",
+      "to": "button",
+      "label": "引用"
+    },
+    {
+      "id": "semantic-link",
+      "from": "semantic",
+      "to": "link",
+      "label": "引用"
+    },
+    {
+      "id": "theme-semantic",
+      "from": "theme",
+      "to": "semantic",
+      "label": "切换映射"
+    }
+  ],
+  "frames": [
+    {
+      "label": "组件先说用途",
+      "note": "按钮和链接都写 color.action，组件没有直接知道今天是苔藓绿还是荧光绿。用途先稳定下来，主题才有可替换的位置。",
+      "activeIds": [
+        "semantic",
+        "button",
+        "link"
       ],
-      "success": "语义名称说明用途，不依赖某个页面或临时版本。",
-      "retry": "组件编号和临时描述会限制复用并容易过期。"
+      "doneIds": [],
+      "mutedIds": [
+        "base",
+        "theme"
+      ],
+      "values": {
+        "semantic": "color.action",
+        "button": "引用语义名",
+        "link": "引用语义名"
+      },
+      "activeEdgeIds": [
+        "semantic-button",
+        "semantic-link"
+      ]
     },
-    "prompt": {
-      "title": "整理一组设计令牌",
-      "text": "请把下面散落的颜色和间距值归并为基础令牌与语义令牌，合并重复值，说明主题切换时哪些语义映射需要变化。"
+    {
+      "label": "浅色主题解析",
+      "note": "浅色主题把 color.action 映射到 moss-900，两个消费端同时得到同一套动作色；这一步改变的是映射，不是组件代码。",
+      "activeIds": [
+        "base",
+        "semantic",
+        "theme",
+        "button",
+        "link"
+      ],
+      "doneIds": [
+        "theme"
+      ],
+      "mutedIds": [],
+      "values": {
+        "theme": "light",
+        "base": "moss-900",
+        "semantic": "color.action → moss-900"
+      },
+      "activeEdgeIds": [
+        "base-semantic",
+        "theme-semantic",
+        "semantic-button",
+        "semantic-link"
+      ]
     },
-    "sources": [
+    {
+      "label": "深色主题只换映射",
+      "note": "切换为深色后，语义名仍叫 color.action，只指向 lime-500；按钮和链接一起更新，读者可以把变化归因到一处。",
+      "activeIds": [
+        "base",
+        "semantic",
+        "theme",
+        "button",
+        "link"
+      ],
+      "doneIds": [
+        "theme",
+        "base"
+      ],
+      "mutedIds": [],
+      "values": {
+        "theme": "dark",
+        "base": "lime-500",
+        "semantic": "color.action → lime-500"
+      },
+      "activeEdgeIds": [
+        "base-semantic",
+        "theme-semantic",
+        "semantic-button",
+        "semantic-link"
+      ]
+    },
+    {
+      "label": "硬编码的链接掉队",
+      "note": "如果链接偷偷写 #58634d，再切主题时按钮变亮、链接仍是旧色；引用图断开的地方，就是需要回收的维护债。",
+      "activeIds": [
+        "link",
+        "theme",
+        "button"
+      ],
+      "doneIds": [
+        "semantic",
+        "base"
+      ],
+      "mutedIds": [],
+      "values": {
+        "button": "已更新",
+        "link": "hard-coded 旧值",
+        "theme": "对比度检查失败"
+      },
+      "activeEdgeIds": []
+    },
+    {
+      "label": "验收状态而非只看色板",
+      "note": "最后同时检查默认、悬停、禁用和键盘焦点状态；令牌让值能同步，却不替代组件状态和对比度验收。",
+      "activeIds": [
+        "semantic",
+        "button",
+        "link",
+        "theme"
+      ],
+      "doneIds": [
+        "base"
+      ],
+      "mutedIds": [],
+      "values": {
+        "button": "4 个状态均有值",
+        "link": "修复后重新检查",
+        "theme": "light/dark 可切换"
+      },
+      "activeEdgeIds": [
+        "theme-semantic",
+        "semantic-button",
+        "semantic-link"
+      ]
+    }
+  ],
+  "insight": "令牌把设计意图放在组件和具体值之间；它的价值在引用关系可追踪，失败也能看出是哪一个消费端绕开了这条链。",
+  "quiz": {
+    "question": "切换主题后按钮更新、链接不变，优先检查哪一处？",
+    "options": [
       {
-        "url": "https://www.designtokens.org/tr/2025.10/",
-        "label": "资料来源",
-        "note": "用于核对定义、边界与演示"
+        "label": "链接是否绕过语义令牌写死了颜色",
+        "correct": true
       },
       {
-        "url": "https://www.designtokens.org/",
-        "label": "资料来源",
-        "note": "用于核对定义、边界与演示"
+        "label": "是否需要把所有组件改成同一个字号",
+        "correct": false
       },
       {
-        "url": "https://developer.android.com/develop/ui/compose/designsystems/material3",
-        "label": "资料来源",
-        "note": "用于核对定义、边界与演示"
-      },
-      {
-        "url": "https://v1.lightningdesignsystem.com/design-tokens/",
-        "label": "资料来源",
-        "note": "用于核对定义、边界与演示"
+        "label": "是否应该删除深色主题",
+        "correct": false
       }
-    ]
+    ],
+    "success": "先检查链接的引用链和状态值，主题映射本身可能已经正常工作。",
+    "retry": "令牌解决值的关系，不会通过改字号或删除主题来修复断开的引用。"
   },
+  "prompt": "请为一个按钮和一条链接建立 primitive→semantic→component 的令牌引用，分别给出浅色、深色、悬停、禁用和键盘焦点值；切换主题后列出仍写死旧值的组件，并检查对比度。",
+  "sources": [
+    {
+      "url": "https://www.designtokens.org/tr/2025.10/",
+      "label": "Design Tokens · Format",
+      "note": "Design Tokens Community Group：核对令牌交换格式、命名和跨工具传递的范围。"
+    },
+    {
+      "url": "https://www.designtokens.org/",
+      "label": "Design Tokens · Community",
+      "note": "Design Tokens Community Group 首页：核对令牌作为设计决策而非页面样式的定位。"
+    },
+    {
+      "url": "https://developer.android.com/develop/ui/compose/designsystems/material3",
+      "label": "Material 3 · Color roles",
+      "note": "Material 3：核对颜色角色、主题映射和组件状态的分层方式。"
+    },
+    {
+      "url": "https://v1.lightningdesignsystem.com/design-tokens/",
+      "label": "Salesforce · Design tokens",
+      "note": "Lightning Design System：核对语义 token 与组件消费端的关系。"
+    }
+  ],
+  "promptTitle": "追踪一次主题切换"
+},
   {
   "slug": "visual-hierarchy",
   "lead": "页面上的字、按钮和标签都在争第一眼时，视觉层级先回答“现在该看什么、下一步做什么”。",

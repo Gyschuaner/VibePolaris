@@ -2016,19 +2016,64 @@
   ]
 },
   {
-    "zh": "设计令牌", "en": "Design Token", "slug": "design-token", "cat": "产品与设计",
-    "say": "设计令牌用有含义的名称保存颜色、字号、间距等基础值，让设计和代码引用同一套变量。",
-    "aliases": ["Design Token", "设计变量", "样式令牌"],
-    "question": "品牌主色改变时，怎样避免在几十个组件里逐个找颜色值？",
-    "definition": "设计令牌把视觉决策表示为可复用数据，例如 color.text.primary 或 spacing.md，并可转换为设计工具变量和代码常量。",
-    "boundary": "令牌不是随意给每个值起名字。过细、重复或缺少语义层会让维护成本反而上升。",
-    "demoType": "hierarchy", "demoTitle": "一个颜色如何传到多个组件",
-    "demoSteps": [{"label":"组件引用语义名","value":"按钮和链接读取 color.action","note":"组件不直接写基础色。"},{"label":"切换主题映射","value":"moss-900 → lime-500","note":"只改语义映射，两个组件同步更新。"},{"label":"检查硬编码","value":"链接脱离映射，对比度失败","note":"发现局部旧值后回到语义层修复。"}],
-    "quizQuestion": "哪种令牌名称更容易跨组件使用？", "quizOptions": ["color.text.muted", "card3-gray", "almost-black-final"],
-    "correctText": "语义名称说明用途，不依赖某个页面或临时版本。", "wrongText": "组件编号和临时描述会限制复用并容易过期。",
-    "promptTitle": "整理一组设计令牌", "prompt": "请把下面散落的颜色和间距值归并为基础令牌与语义令牌，合并重复值，说明主题切换时哪些语义映射需要变化。",
-    "relatedSlugs": ["design-system", "css", "component"]
-  },
+  "zh": "设计令牌",
+  "en": "Design Token",
+  "slug": "design-token",
+  "cat": "产品与设计",
+  "say": "品牌色要换一套主题时，设计令牌把“用途”和“今天用的颜色”分开，改一次映射就能看见谁跟上、谁掉队。",
+  "aliases": [
+    "Design Token",
+    "设计变量",
+    "样式令牌"
+  ],
+  "question": "为什么语义令牌能让主题切换扩散到多个组件，而把颜色直接写在组件里会留下暗角？",
+  "definition": "设计令牌是带稳定名称的设计决策，例如 color.action、space.3 或 radius.card。组件引用语义令牌，语义令牌再指向某个主题下的基础值；换主题时改变的是映射关系，按钮、链接和其他消费端都会得到新的值。令牌因此保存了命名、引用和跨工具同步的关系，而不只是把一串十六进制颜色换成变量名。",
+  "boundary": "令牌不会替你决定层级、交互状态或对比度，也不能修复一个根本不该共用颜色的组件。若组件绕过语义名写死旧值，主题切换只会更新一半；若没有记录平台、状态和无障碍约束，令牌数量增加也可能让系统更难维护。统一命名不是统一审美。",
+  "demoType": "comparison",
+  "demoTitle": "同一语义令牌如何穿过主题映射和组件引用",
+  "demoSteps": [
+    {
+      "label": "组件先说用途",
+      "value": "color.action · 引用语义名 · 引用语义名",
+      "note": "按钮和链接都写 color.action，组件没有直接知道今天是苔藓绿还是荧光绿。用途先稳定下来，主题才有可替换的位置。"
+    },
+    {
+      "label": "浅色主题解析",
+      "value": "light · moss-900 · color.action → moss-900",
+      "note": "浅色主题把 color.action 映射到 moss-900，两个消费端同时得到同一套动作色；这一步改变的是映射，不是组件代码。"
+    },
+    {
+      "label": "深色主题只换映射",
+      "value": "dark · lime-500 · color.action → lime-500",
+      "note": "切换为深色后，语义名仍叫 color.action，只指向 lime-500；按钮和链接一起更新，读者可以把变化归因到一处。"
+    },
+    {
+      "label": "硬编码的链接掉队",
+      "value": "已更新 · hard-coded 旧值 · 对比度检查失败",
+      "note": "如果链接偷偷写 #58634d，再切主题时按钮变亮、链接仍是旧色；引用图断开的地方，就是需要回收的维护债。"
+    },
+    {
+      "label": "验收状态而非只看色板",
+      "value": "4 个状态均有值 · 修复后重新检查 · light/dark 可切换",
+      "note": "最后同时检查默认、悬停、禁用和键盘焦点状态；令牌让值能同步，却不替代组件状态和对比度验收。"
+    }
+  ],
+  "quizQuestion": "切换主题后按钮更新、链接不变，优先检查哪一处？",
+  "quizOptions": [
+    "链接是否绕过语义令牌写死了颜色",
+    "是否需要把所有组件改成同一个字号",
+    "是否应该删除深色主题"
+  ],
+  "correctText": "先检查链接的引用链和状态值，主题映射本身可能已经正常工作。",
+  "wrongText": "令牌解决值的关系，不会通过改字号或删除主题来修复断开的引用。",
+  "promptTitle": "追踪一次主题切换",
+  "prompt": "请为一个按钮和一条链接建立 primitive→semantic→component 的令牌引用，分别给出浅色、深色、悬停、禁用和键盘焦点值；切换主题后列出仍写死旧值的组件，并检查对比度。",
+  "relatedSlugs": [
+    "design-system",
+    "css",
+    "component"
+  ]
+},
   {
   "zh": "视觉层级",
   "en": "Visual Hierarchy",
