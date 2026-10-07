@@ -30286,5 +30286,259 @@
         "note": "从通用近似与梯度角度讨论非线性单元。"
       }
     ]
+  },
+  {
+    "slug": "layer-normalization",
+    "lead": "把每个 token 自己这一行的特征拉回可比较的尺度，再交还给网络继续变换。",
+    "definition": "层归一化（LayerNorm）在一个样本内部，沿指定的特征维度计算均值和方差，再把这一行标准化，最后用可学习的缩放和偏移恢复模型需要的尺度。对 Transformer 来说，它通常按 token 独立处理，不需要等整个 batch 凑齐，因此训练和推理的归一化统计可以保持一致。",
+    "boundary": "层归一化的关键不是“把数字变小”，而是先确定统计轴：对 hidden features 做归一化，和对 batch、序列位置或通道做归一化并不是一回事。它不会替代残差、注意力或优化器，也不会自动解决 padding、mask、混合精度和异常值；放在子层前还是后，还会改变信号和梯度的路径。",
+    "sceneKind": "layers",
+    "sceneTitle": "一行一行量自己的尺度",
+    "actionLabel": "切换统计轴",
+    "actors": [
+      {
+        "id": "tokens",
+        "label": "Token 特征行",
+        "detail": "每个 token 有自己的 hidden 向量",
+        "icon": "layout",
+        "group": "输入"
+      },
+      {
+        "id": "stats",
+        "label": "均值/方差",
+        "detail": "沿 normalized_shape 统计",
+        "icon": "chart",
+        "group": "测量"
+      },
+      {
+        "id": "normalize",
+        "label": "标准化",
+        "detail": "(x−μ)/√(σ²+ε)",
+        "icon": "gear",
+        "group": "变换"
+      },
+      {
+        "id": "affine",
+        "label": "γ / β",
+        "detail": "可学习缩放与偏移",
+        "icon": "spark",
+        "group": "恢复"
+      },
+      {
+        "id": "batch",
+        "label": "Batch 统计",
+        "detail": "另一种归一化轴",
+        "icon": "database",
+        "group": "对照"
+      },
+      {
+        "id": "result",
+        "label": "输出表示",
+        "detail": "送往下一层",
+        "icon": "brain",
+        "group": "结果"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "每个 token 先站成一行",
+        "note": "把 token 的 hidden features 展开；统计还没有跨行串起来。",
+        "activeIds": [
+          "tokens"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "stats",
+          "normalize",
+          "affine",
+          "batch",
+          "result"
+        ],
+        "values": {
+          "tokens": "猫 [2,4,6] · 跑 [0.1,0.2,0.3]"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "只量这一行",
+        "note": "LayerNorm 沿指定特征轴算均值和方差；猫和跑各有自己的统计。",
+        "activeIds": [
+          "stats",
+          "tokens"
+        ],
+        "doneIds": [
+          "tokens"
+        ],
+        "mutedIds": [
+          "normalize",
+          "affine",
+          "batch",
+          "result"
+        ],
+        "values": {
+          "stats": "猫 μ=4 σ≈1.63 · 跑 μ=.2 σ≈.08"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "拉回共同刻度",
+        "note": "标准化让每一行的特征尺度可比较，但仍保留这一行的相对形状。",
+        "activeIds": [
+          "normalize"
+        ],
+        "doneIds": [
+          "tokens",
+          "stats"
+        ],
+        "mutedIds": [
+          "affine",
+          "batch",
+          "result"
+        ],
+        "values": {
+          "normalize": "每行均值≈0 · 方差≈1"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "让模型再选幅度",
+        "note": "可学习的 gamma 和 beta 把需要的尺度与偏移交还给网络。",
+        "activeIds": [
+          "affine",
+          "result"
+        ],
+        "doneIds": [
+          "tokens",
+          "stats",
+          "normalize"
+        ],
+        "mutedIds": [
+          "batch"
+        ],
+        "values": {
+          "affine": "γ=1.3 · β=-0.2",
+          "result": "归一化表示可继续进入子层"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "换轴，行为就换了",
+        "note": "把统计改成 batch 级会得到另一种归一化；先看轴，再比较名字。",
+        "activeIds": [
+          "batch",
+          "stats"
+        ],
+        "doneIds": [
+          "tokens",
+          "normalize",
+          "affine",
+          "result"
+        ],
+        "mutedIds": [],
+        "values": {
+          "batch": "跨样本统计 · 不是 LayerNorm"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "LayerNorm 的核心是每个样本沿指定特征轴自算统计，再用可学习的 γ/β 调回合适尺度；统计轴决定它究竟在做什么。",
+    "quiz": {
+      "question": "LayerNorm 的“层”主要指什么？",
+      "options": [
+        {
+          "label": "在一个样本的指定特征维度上计算统计量并归一化",
+          "correct": true
+        },
+        {
+          "label": "把整个训练 batch 的样本混在一起归一化",
+          "correct": false
+        },
+        {
+          "label": "只把每层的参数数量除以平均值",
+          "correct": false
+        }
+      ],
+      "success": "对，先确认 normalized_shape 与统计轴，才知道归一化范围。",
+      "retry": "把每个 token 的特征行单独量一遍；跨 batch 统计是另一个概念。"
+    },
+    "prompt": {
+      "title": "检查一层归一化的统计轴",
+      "text": "给出输入张量的形状和 LayerNorm normalized_shape，标出均值、方差、epsilon、gamma、beta 分别沿哪些维度计算；用两个 token 和一个 padding 位置说明如果误用 batch 统计会发生什么。"
+    },
+    "teaching": [
+      {
+        "id": "axis",
+        "title": "先问“沿哪一维量”",
+        "body": "LayerNorm 不是对一个模糊的“层”按下平均键。PyTorch 的 normalized_shape 决定最后若干维作为归一化范围；同一张量换一个轴，均值、方差和输出都会变。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "token",
+        "title": "Transformer 里常按 token 各自处理",
+        "body": "每个 token 的 hidden vector 可以独立算统计，因此序列长度或 batch 中其他样本不会直接改变这一 token 的均值与方差。这是它适合自回归和变长序列的一部分原因。",
+        "sourceIndices": [
+          1,
+          3
+        ]
+      },
+      {
+        "id": "affine",
+        "title": "标准化之后，模型还能把尺度拿回来",
+        "body": "LayerNorm 通常带可学习的 weight 和 bias。它们不是多余装饰：如果任务需要某些特征保持更大幅度或移动中心，gamma 与 beta 提供了这条可学习通道。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "placement",
+        "title": "放在残差前后会改变路径",
+        "body": "原始 Transformer 采用子层后归一化，后来常见 pre-norm 变体把归一化放到子层之前。两者都叫 LayerNorm，但梯度路径、初始化和深层稳定性可能不同，不能只看名字。",
+        "sourceIndices": [
+          3,
+          4
+        ]
+      },
+      {
+        "id": "boundary",
+        "title": "epsilon、padding 和精度都在边界里",
+        "body": "方差接近零时需要 epsilon 保证数值安全；padding 是否参与统计、混合精度如何累加，也会影响结果。归一化让尺度更整齐，不会自动修复错误 mask 或异常输入。",
+        "sourceIndices": [
+          1,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/1607.06450",
+        "label": "Ba et al. · Layer Normalization",
+        "note": "提出在单个训练样本内对层输入做归一化，并讨论其与 batch 统计的差异。"
+      },
+      {
+        "url": "https://pytorch.org/docs/stable/generated/torch.nn.LayerNorm.html",
+        "label": "PyTorch · LayerNorm",
+        "note": "给出 normalized_shape、epsilon、elementwise_affine 与统计维度。"
+      },
+      {
+        "url": "https://arxiv.org/abs/1706.03762",
+        "label": "Vaswani et al. · Attention Is All You Need",
+        "note": "展示 Transformer 子层周围的残差与 layer normalization。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2002.04745",
+        "label": "Xiong et al. · On Layer Normalization in the Transformer Architecture",
+        "note": "分析 pre-LN 与 post-LN 的梯度路径和训练稳定性。"
+      },
+      {
+        "url": "https://d2l.ai/chapter_convolutional-modern/batch-norm.html",
+        "label": "Dive into Deep Learning · Batch normalization",
+        "note": "用对照说明按 batch 统计的归一化与 LayerNorm 不同。"
+      }
+    ]
   }
 ]

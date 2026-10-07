@@ -2587,5 +2587,25 @@
       "embedding",
       "inference"
     ]
+  },
+  {
+    "slug": "layer-normalization",
+    "mechanism": "LayerNorm 沿每个样本的指定特征维度计算均值和方差，标准化后再用可学习的 weight/bias 调整尺度；它不依赖 batch 中其他样本。",
+    "misconception": "LayerNorm 不是把整批样本混在一起，也不是单纯缩小数值；统计轴与放置位置决定行为。",
+    "demoSignature": "5帧｜对象：token特征行、均值/方差、标准化、γ/β、Batch统计、输出表示｜交互：逐行测量并切换统计轴｜变化：原始行→各自统计→共同刻度→可学习恢复→换轴产生另一概念；分层测量台，不是流程图。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/1607.06450",
+      "https://pytorch.org/docs/stable/generated/torch.nn.LayerNorm.html",
+      "https://arxiv.org/abs/1706.03762",
+      "https://arxiv.org/abs/2002.04745",
+      "https://d2l.ai/chapter_convolutional-modern/batch-norm.html"
+    ],
+    "rewriteRisk": "不要只写“把数据标准化”；必须交代 normalized_shape、统计轴、γ/β、epsilon，以及它与 BatchNorm 和 pre/post-LN 的边界。",
+    "nearDuplicates": [
+      "transformer",
+      "embedding",
+      "attention",
+      "inference"
+    ]
   }
 ]
