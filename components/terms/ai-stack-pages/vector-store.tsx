@@ -2,7 +2,7 @@ import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { vectorStoreSources } from "@/lib/ai-stack-concept-sources/vector-store";
 import { ContextRetrievalLesson } from "../ContextRetrievalLessonShared";
-import { VectorStoreLedgerHero } from "../ai-stack-lessons/signature-heroes";
+import { VectorStoreSignatureHero } from "../VectorStoreSignatureHero";
 
 export function VectorStoreTermPage() {
   const sections: [string, string][] = [
@@ -11,7 +11,7 @@ export function VectorStoreTermPage() {
     ["vector-store-lifecycle-chapter", "原文变了，索引也要更新"],
     ["vector-store-boundary", "它是索引容器，不是真相仓库"],
   ];
-  return <Article slug="vector-store" title="向量存储" subtitle="Vector Store · 保存向量、来源和检索条件的索引容器" sources={vectorStoreSources} sections={sections} hero={<VectorStoreLedgerHero />} intro={<>向量存储把向量与原文标识、版本、权限等元数据放在可查询的索引中。它可以由专门的向量数据库、普通数据库扩展或进程内结构实现；存储器负责组织和查找，不会自动更新事实，也不替你决定能不能引用。</>}>
+  return <Article slug="vector-store" title="向量存储" subtitle="Vector Store · 保存向量、来源和检索条件的索引容器" sources={vectorStoreSources} sections={sections} hero={<VectorStoreSignatureHero />} intro={<>向量存储把向量与原文标识、版本、权限等元数据放在可查询的索引中。它可以由专门的向量数据库、普通数据库扩展或进程内结构实现；存储器负责组织和查找，不会自动更新事实，也不替你决定能不能引用。</>}>
     <ArticleSection id="vector-store-write" title="存什么才找得回来">
       <p>一条可用记录至少要能回答三件事：这个向量来自哪段原文、原文当前是什么版本、返回时是否允许当前用户看到。只保存一串浮点数，命中后就无法回到可读材料，也无法检查版本和权限。实际记录通常还要带租户、文档类型、语言和更新时间，方便后面的过滤与回查。</p>
       <p id="vector-store-definition" className="vp-citation-target">OpenAI Retrieval 将 vector store 描述为承载文件、分块、嵌入和索引的容器；检索结果仍然关联文件和属性。<Cite id="vector-store-definition" sources={vectorStoreSources} />向量是找回入口，原文 ID 才是能让用户读懂和核对的出口。</p>
