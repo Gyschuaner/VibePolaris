@@ -286,22 +286,16 @@ export function CsrSignatureHero() {
   const showContent = step >= 3;
   const controls = { ...scene, seek: (next: number) => { setDetailsOpen(false); scene.seek(next); }, toggle: () => { setDetailsOpen(false); scene.toggle(); } };
   return <SignatureFrame scene={controls} title="浏览器里的空挂载点怎样长成页面" labels={csrLabels} caption={csrCaptions[step]}>
-    <div className={styles.csrSignature} data-step={step}>
-      <div className={styles.csrWorkbench}>
-      <div className={styles.serverDock} aria-label="提供壳、脚本和数据的服务器"><span>服务器</span><i /><i /><i /></div>
-      <div className={styles.browserCanvas}>
-        <div className={styles.browserBar}><Browser size={15} /><span>app.example</span><i data-live={showContent} /></div>
-        <div className={styles.mountPoint} data-ready={showContent} data-interactive={step === 4}>
-          {showContent ? <div className={styles.mountCard} data-expanded={detailsOpen}><span>今日订单</span><strong>{detailsOpen ? "订单 #031 · 待发货" : "3 件待处理"}</strong><div className={styles.orderRows}><i /><i /><i /></div><button type="button" disabled={step !== 4} aria-expanded={detailsOpen} onClick={() => setDetailsOpen(value => !value)}>{step !== 4 ? "等待事件" : detailsOpen ? "收起详情" : "查看详情"}</button></div> : <><span id="app">&lt;div id=&quot;app&quot; /&gt;</span>{step === 1 && <span className={styles.runtimeChip} aria-hidden="true"><Code size={16} /><i /></span>}<small>{step === 0 ? "空挂载点" : step === 1 ? "运行时建立中" : "等待 API"}</small></>}
-          <span className={styles.mountCursor} data-on={step === 4} aria-hidden="true" />
+    <div className={styles.csrArtifact} data-step={step} role="group" aria-label="服务器把 HTML 壳、JavaScript 和接口数据依次送入浏览器挂载点">
+      <div className={styles.csrServerNode}><Database size={16} aria-hidden="true" /><span>server</span><i data-live={step >= 0} /><i data-live={step >= 1} /><i data-live={step >= 3} /></div>
+      <div className={styles.csrBrowserFrame}>
+        <div className={styles.csrBrowserBar}><Browser size={15} aria-hidden="true" /><span>app.example</span><i data-live={showContent} /></div>
+        <div className={styles.csrMountSlot} data-ready={showContent} data-interactive={step === 4}>
+          {showContent ? <div className={styles.csrDomObject} data-expanded={detailsOpen}><span>订单列表</span><strong>{detailsOpen ? "#031 · 待发货" : "3 件待处理"}</strong><div className={styles.csrDomLines}><i /><i /><i /></div><button type="button" disabled={step !== 4} aria-expanded={detailsOpen} onClick={() => setDetailsOpen(value => !value)}>{step !== 4 ? "等待事件" : detailsOpen ? "收起" : "打开"}</button></div> : <><span className={styles.csrMountLabel}>&lt;div id=&quot;app&quot; /&gt;</span><Code className={styles.csrRuntimeMark} size={17} aria-hidden="true" /><small>{step === 0 ? "空位置" : step === 1 ? "运行时建立" : "等待 API"}</small></>}
+          <span className={styles.csrEventPulse} data-on={step === 4} aria-hidden="true" />
         </div>
       </div>
-        <div className={styles.csrPackets} aria-label="进入浏览器的材料">
-          <span className={styles.csrPacket} data-kind="shell" data-arrived={step >= 0}><Browser size={12} /><b>壳</b></span>
-          <span className={styles.csrPacket} data-kind="script" data-arrived={step >= 1}><Code size={12} /><b>JS</b></span>
-          <span className={styles.csrPacket} data-kind="data" data-arrived={step >= 3}><Database size={12} /><b>{step === 2 ? "请求中" : "API"}</b></span>
-        </div>
-      </div>
+      <div className={styles.csrIncoming} aria-hidden="true"><span data-kind="shell" data-arrived={step >= 0}><Browser size={13} /><b>壳</b></span><span data-kind="script" data-arrived={step >= 1}><Code size={13} /><b>JS</b></span><span data-kind="data" data-arrived={step >= 3}><Database size={13} /><b>{step === 2 ? "API?" : "数据"}</b></span></div>
       <div className={styles.csrProof} role="status"><span className={styles.csrPulse} data-on={showContent} aria-hidden="true" /><strong>{showContent ? step === 4 ? "内容已接上事件" : "数据长进挂载点" : "先只有一个空位置"}</strong><span>{step === 1 ? "脚本还在浏览器里执行" : step === 2 ? "数据回来前，空位仍然是空位" : "CSR 不等于没有服务器"}</span></div>
     </div>
   </SignatureFrame>;

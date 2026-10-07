@@ -37,15 +37,20 @@ function MultimodalHero() {
   const scene = useScene(frames.length);
   const current = frames[scene.step];
   return <figure ref={scene.ref} className={styles.hero} aria-label="文字问题如何在票面图片上找到对应证据的多模态演示">
-    <div className={styles.heroTop}>让一句话找到图里的位置</div>
+    <div className={styles.heroTop}><span>镜头沿着问题找证据</span><strong>{String(scene.step + 1).padStart(2, "0")}</strong></div>
     <SceneControls scene={scene} labels={frames.map((frame) => frame.label)} compact />
-    <div className={styles.viewfinderBoard} data-phase={current.phase}>
-      <div className={styles.cameraFrame} data-ready={current.image} data-focus={current.focus} aria-hidden="true"><span className={styles.cameraCrosshair} /><span className={styles.cameraScan} /></div>
-      <div className={styles.questionPin}><TextT size={15} aria-hidden="true" /><span>这张票的日期？</span></div>
-      <div className={styles.ticketSlot}><Ticket image={current.image} focus={current.focus} /></div>
-      <div className={styles.evidenceStamp} data-danger={!current.image} data-answer={current.phase === "ANSWER"}>
+    <div className={styles.lensScene} data-phase={current.phase}>
+      <div className={styles.questionPin}><TextT size={15} aria-hidden="true" /><span>日期？</span></div>
+      <div className={styles.ticketObject} data-visible={current.image} aria-hidden={!current.image} aria-label={current.image ? "已经进入请求的票面" : undefined}>
+        <div className={styles.ticketObjectHead}><span>票面</span><span>VBP 031</span></div>
+        <div className={styles.ticketDate} data-focus={current.focus === "date"}><small>DATE</small><strong>2026 · 10 · 03</strong></div>
+        <div className={styles.ticketMeta}><span>GATE <b>A12</b></span><span>NAME <b>READER</b></span></div>
+        <i className={styles.ticketBarcode} aria-hidden="true" />
+      </div>
+      <div className={styles.lensRing} data-focus={current.focus} aria-hidden="true"><Eye size={17} /></div>
+      <div className={styles.evidencePin} data-danger={!current.image} data-answer={current.phase === "ANSWER"}>
         {!current.image ? <XCircle size={15} aria-hidden="true" /> : current.phase === "ANSWER" ? <CheckCircle size={15} aria-hidden="true" /> : <Eye size={15} aria-hidden="true" />}
-        <strong>{current.phase === "LENS" ? "锁定 DATE" : current.result}</strong>
+        <strong>{current.phase === "LENS" ? "DATE" : current.result}</strong>
       </div>
     </div>
     <figcaption aria-live="polite">{current.note}</figcaption>
