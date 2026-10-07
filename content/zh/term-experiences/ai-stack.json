@@ -154,212 +154,48 @@
   },
   {
     "slug": "multimodal",
-    "lead": "照片里有五只杯子，问题只问红色的，系统怎样把图和字对上？",
-    "definition": "多模态系统把文字、图片、音频或视频等不同类型的信息编码成模型可以一起处理的表示，再按具体模型和接口生成指定类型的结果。“表示”指模型内部可计算的信息，不是把图片自动变成一段可检索的文字。",
-    "boundary": "输入和输出模态由具体产品决定：有的接口接收图和文字并返回文字，有的还支持音频或图像输出。上传一份材料只授权使用这份材料，不等于访问设备上的其他文件；识别、计数和生成结果仍需核验。",
+    "lead": "我问票面上的日期，文字和图片怎样互相对上？",
+    "definition": "多模态系统让不同形式的输入在同一次任务里共同参与处理，例如文字问题和图片一起进入请求。模型会把它们转换成可计算的内部表示，再按具体接口生成回答；这不等于图片自动变成一段已经核验的文字。",
+    "boundary": "能接收图片、音频或视频的种类取决于具体模型和接口。图片没有提交、格式不支持或细节看不清时，回答范围就应缩小；上传一份材料也不等于授权读取设备里的其他文件。",
     "sceneKind": "layers",
-    "sceneTitle": "图像区域与文字条件如何汇合",
-    "actionLabel": "框选并计数",
+    "sceneTitle": "问题如何把取景框对准票面",
+    "actionLabel": "切换取景条件",
     "actors": [
-      {
-        "id": "image",
-        "label": "杯子照片",
-        "detail": "5只杯子，其中3只红色",
-        "icon": "file",
-        "group": "图像"
-      },
-      {
-        "id": "question",
-        "label": "文字问题",
-        "detail": "有几个红杯？",
-        "icon": "message",
-        "group": "文字"
-      },
-      {
-        "id": "regions",
-        "label": "视觉区域",
-        "detail": "候选 5 个",
-        "icon": "layout",
-        "group": "识别"
-      },
-      {
-        "id": "fusion",
-        "label": "条件对齐",
-        "detail": "对象=杯子，颜色=红",
-        "icon": "brain",
-        "group": "对齐"
-      },
-      {
-        "id": "answer",
-        "label": "回答",
-        "detail": "3 个",
-        "icon": "spark",
-        "group": "输出"
-      }
+      {"id": "question", "label": "文字问题", "detail": "读出日期 / 登机口", "icon": "message", "group": "条件"},
+      {"id": "ticket", "label": "票面图片", "detail": "日期、登机口、姓名", "icon": "file", "group": "材料"},
+      {"id": "lens", "label": "取景框", "detail": "当前关注字段", "icon": "search", "group": "对齐"},
+      {"id": "answer", "label": "可核对回答", "detail": "来自被圈出的像素", "icon": "spark", "group": "结果"}
     ],
     "edges": [
-      {
-        "id": "img-reg",
-        "from": "image",
-        "to": "regions",
-        "label": "检测区域"
-      },
-      {
-        "id": "q-fuse",
-        "from": "question",
-        "to": "fusion",
-        "label": "提取条件"
-      },
-      {
-        "id": "reg-fuse",
-        "from": "regions",
-        "to": "fusion",
-        "label": "逐项核对"
-      },
-      {
-        "id": "fuse-out",
-        "from": "fusion",
-        "to": "answer",
-        "label": "汇总"
-      }
+      {"id": "question-lens", "from": "question", "to": "lens", "label": "指定字段"},
+      {"id": "ticket-lens", "from": "ticket", "to": "lens", "label": "提供像素"},
+      {"id": "lens-answer", "from": "lens", "to": "answer", "label": "返回可核对值"}
     ],
     "frames": [
-      {
-        "label": "两路输入",
-        "note": "照片和问题分别进入，不把图片先写成长描述。",
-        "activeIds": [
-          "image",
-          "question"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "answer"
-        ],
-        "values": {
-          "image": "已提交图片",
-          "question": "颜色条件：红"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "框出对象",
-        "note": "画面里找到 5 只杯子，先不判断哪些该计入。",
-        "activeIds": [
-          "regions"
-        ],
-        "doneIds": [
-          "image"
-        ],
-        "mutedIds": [
-          "answer"
-        ],
-        "values": {
-          "regions": "5 个框"
-        },
-        "activeEdgeIds": [
-          "img-reg"
-        ],
-        "metric": {
-          "label": "候选区域",
-          "value": "5"
-        }
-      },
-      {
-        "label": "文字筛选",
-        "note": "问题中的“红色”筛掉2个不匹配区域。",
-        "activeIds": [
-          "fusion"
-        ],
-        "doneIds": [
-          "question",
-          "regions"
-        ],
-        "mutedIds": [
-          "answer"
-        ],
-        "values": {
-          "fusion": "5 → 3"
-        },
-        "activeEdgeIds": [
-          "q-fuse",
-          "reg-fuse"
-        ]
-      },
-      {
-        "label": "得到数量",
-        "note": "只对保留区域计数。",
-        "activeIds": [
-          "answer"
-        ],
-        "doneIds": [
-          "image",
-          "question",
-          "regions",
-          "fusion"
-        ],
-        "mutedIds": [],
-        "values": {
-          "answer": "3 个"
-        },
-        "activeEdgeIds": [
-          "fuse-out"
-        ],
-        "metric": {
-          "label": "红杯数量",
-          "value": "3"
-        }
-      }
+      {"label": "问题先到", "note": "文字里的“这张票”还没有对应图片。", "activeIds": ["question"], "doneIds": [], "mutedIds": ["ticket", "answer"], "values": {"question": "读出日期", "ticket": "input_image = ∅"}, "activeEdgeIds": []},
+      {"label": "票面进来", "note": "图片和文字在同一次请求中保留各自形态。", "activeIds": ["question", "ticket"], "doneIds": [], "mutedIds": ["answer"], "values": {"question": "读出日期", "ticket": "input_image · present"}, "activeEdgeIds": []},
+      {"label": "取景对准", "note": "问题把取景框移到 DATE 字段，其他像素仍是背景。", "activeIds": ["lens"], "doneIds": ["question", "ticket"], "mutedIds": ["answer"], "values": {"lens": "DATE · 2026 · 10 · 03"}, "activeEdgeIds": ["question-lens", "ticket-lens"]},
+      {"label": "回答有出处", "note": "结果回到被圈出的像素，读者可以沿原图核对。", "activeIds": ["answer"], "doneIds": ["question", "ticket", "lens"], "mutedIds": [], "values": {"answer": "2026 · 10 · 03"}, "activeEdgeIds": ["lens-answer"], "metric": {"label": "可定位字段", "value": "DATE"}},
+      {"label": "图片被拿掉", "note": "相同文字问题失去票面后，不再补出日期。", "activeIds": ["answer"], "doneIds": ["question"], "mutedIds": ["ticket", "lens"], "values": {"answer": "缺少图像证据"}, "activeEdgeIds": []}
     ],
-    "insight": "不同类型的信息要一起用上，才算多模态；能上传图片不等于会生成图片。",
+    "insight": "多模态的变化发生在输入材料和取景条件之间；图片进入请求不等于每个细节都已核对。",
     "quiz": {
-      "question": "这个演示中，哪一步体现了多模态？",
+      "question": "哪一项能让回答真正获得票面日期的依据？",
       "options": [
-        {
-          "label": "用文字条件筛选图像区域",
-          "correct": true
-        },
-        {
-          "label": "把照片压缩得更小",
-          "correct": false
-        },
-        {
-          "label": "连续生成三次答案",
-          "correct": false
-        }
+        {"label": "把票面图片和文字问题一起提交", "correct": true},
+        {"label": "只在文字里写“看这张票”", "correct": false},
+        {"label": "把图片文件名写进提示词", "correct": false}
       ],
-      "success": "关键是把文字条件用到了图像区域上。",
-      "retry": "只处理图片或只处理文字，都只用到一种模态。"
+      "success": "图片像素和文字条件都在请求里，回答才有可定位的材料。",
+      "retry": "文字里的指代不能替代图片本身；文件名也不是票面内容。"
     },
-    "prompt": {
-      "title": "设计一次多模态核对",
-      "text": "请分别写明提供了哪些输入、希望得到哪种输出；只根据已提交材料回答，看不清、没提供或无法确认的部分请指出。"
-    },
+    "prompt": {"title": "设计一次多模态核对", "text": "请列出实际提交的文字、图片或音频，并把回答定位到对应材料；缺少材料、格式不支持或看不清的部分请明确停下。"},
     "sources": [
-      {
-        "url": "https://arxiv.org/abs/2303.08774",
-        "label": "OpenAI · GPT-4 Technical Report",
-        "note": "图文输入与文本输出"
-      },
-      {
-        "url": "https://arxiv.org/abs/2103.00020",
-        "label": "OpenAI · CLIP",
-        "note": "图文表示对齐"
-      },
-      {
-        "url": "https://arxiv.org/abs/2204.14198",
-        "label": "DeepMind · Flamingo",
-        "note": "交错视觉与文本输入"
-      },
-      {
-        "url": "https://arxiv.org/abs/2312.11805",
-        "label": "Google · Gemini technical report",
-        "note": "多种输入模态范围"
-      },
-      {
-        "url": "https://developers.openai.com/api/docs/guides/images-vision",
-        "label": "OpenAI · Images and vision",
-        "note": "图片输入接口边界"
-      }
+      {"url": "https://platform.openai.com/docs/guides/images-vision", "label": "OpenAI · Images and vision", "note": "图片作为输入内容块提交"},
+      {"url": "https://ai.google.dev/gemini-api/docs/vision", "label": "Google · Image understanding", "note": "视觉任务与图片输入方式"},
+      {"url": "https://arxiv.org/abs/2103.00020", "label": "Radford et al. · CLIP", "note": "图片与文字表示匹配"},
+      {"url": "https://arxiv.org/abs/2204.14198", "label": "Alayrac et al. · Flamingo", "note": "视觉与语言模型的连接"},
+      {"url": "https://doi.org/10.6028/NIST.AI.600-1", "label": "NIST · Generative AI Profile", "note": "多模态风险与证据边界"}
     ]
   },
   {

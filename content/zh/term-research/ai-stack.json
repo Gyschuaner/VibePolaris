@@ -20,9 +20,9 @@
   },
   {
     "slug": "multimodal",
-    "mechanism": "多模态系统把文字、图片、音频或其他输入编码后放进同一任务流程，模型根据实际进入请求的模态共同理解。",
-    "misconception": "多模态不是“什么都能看”；支持的模态、格式和分辨率有边界，缺少图片时不能凭文字问题猜出视觉事实。",
-    "demoSignature": "文字问题先无票面图片；加入图片后显示日期回答；移除图片后转为缺少证据。证据：输入通道卡片与回答范围同步变化。",
+    "mechanism": "多模态系统让文字问题与图片、音频或视频等输入在同一次任务里共同参与处理；问题会改变模型在材料上寻找的字段，材料缺失则限制回答范围。",
+    "misconception": "多模态不是“什么都能看”；支持的模态、格式和细节由具体模型与接口决定，文字里的指代不能替代没有提交的图片。",
+    "demoSignature": "5帧｜对象：文字条件、票面图片、取景框、可核对回答｜交互：问题先到、带上票面、对准 DATE、切换字段、移除图片｜变化：input_image=∅→present→字段被圈出→回答回到像素→证据收窄；结果：看见多种输入如何互相约束，而不是一条通用流水线。",
     "sourceUrls": [
       "https://platform.openai.com/docs/guides/images-vision",
       "https://ai.google.dev/gemini-api/docs/vision",
@@ -30,7 +30,7 @@
       "https://arxiv.org/abs/2204.14198",
       "https://doi.org/10.6028/NIST.AI.600-1"
     ],
-    "rewriteRisk": "用具体的票面例子解释输入通道，不把“视觉模型”写成自动拥有所有图像事实。",
+    "rewriteRisk": "用具体的票面取景例子解释输入通道、表示对齐和证据范围，不把“视觉模型”写成自动拥有所有图像事实。",
     "nearDuplicates": [
       "generative-ai"
     ]
