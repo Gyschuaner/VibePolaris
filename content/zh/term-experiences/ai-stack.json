@@ -74,50 +74,116 @@
       {
         "label": "种子固定",
         "note": "同一条提示先成为这次生成的条件。",
-        "activeIds": ["prompt"],
+        "activeIds": [
+          "prompt"
+        ],
         "doneIds": [],
-        "mutedIds": ["next", "path-a", "path-b", "path-c"],
-        "values": {"prompt": "为雨天写一句提醒 · fixed"},
+        "mutedIds": [
+          "next",
+          "path-a",
+          "path-b",
+          "path-c"
+        ],
+        "values": {
+          "prompt": "为雨天写一句提醒 · fixed"
+        },
         "activeEdgeIds": []
       },
       {
         "label": "候选长出来",
         "note": "模型为下一步形成候选分布；比例是教学示意，不是固定答案库。",
-        "activeIds": ["next"],
-        "doneIds": ["prompt"],
-        "mutedIds": ["path-a", "path-b", "path-c"],
-        "values": {"next": "带伞 46% / 积水 31% / 防水鞋 12% / 其他 11%（未展开）"},
-        "activeEdgeIds": ["p-n"],
-        "metric": {"label": "候选片段", "value": "3 类"}
+        "activeIds": [
+          "next"
+        ],
+        "doneIds": [
+          "prompt"
+        ],
+        "mutedIds": [
+          "path-a",
+          "path-b",
+          "path-c"
+        ],
+        "values": {
+          "next": "带伞 46% / 积水 31% / 防水鞋 12% / 其他 11%（未展开）"
+        },
+        "activeEdgeIds": [
+          "p-n"
+        ],
+        "metric": {
+          "label": "候选片段",
+          "value": "3 类"
+        }
       },
       {
         "label": "抽到一条路径",
         "note": "一次采样选中一条句子路径，选中的片段会接回序列继续生成。",
-        "activeIds": ["path-a"],
-        "doneIds": ["prompt", "next"],
-        "mutedIds": ["path-b", "path-c"],
-        "values": {"path-a": "记得带伞，路上慢一点。"},
-        "activeEdgeIds": ["n-a"]
+        "activeIds": [
+          "path-a"
+        ],
+        "doneIds": [
+          "prompt",
+          "next"
+        ],
+        "mutedIds": [
+          "path-b",
+          "path-c"
+        ],
+        "values": {
+          "path-a": "记得带伞，路上慢一点。"
+        },
+        "activeEdgeIds": [
+          "n-a"
+        ]
       },
       {
         "label": "三次各自长完",
         "note": "同一任务可以长出不同措辞；变化本身不是事实证据。",
-        "activeIds": ["path-a", "path-b", "path-c"],
-        "doneIds": ["prompt", "next"],
+        "activeIds": [
+          "path-a",
+          "path-b",
+          "path-c"
+        ],
+        "doneIds": [
+          "prompt",
+          "next"
+        ],
         "mutedIds": [],
-        "values": {"path-a": "记得带伞", "path-b": "留意积水", "path-c": "看一眼天气"},
-        "activeEdgeIds": ["n-a", "n-b", "n-c"],
-        "metric": {"label": "不同措辞", "value": "3 条"}
+        "values": {
+          "path-a": "记得带伞",
+          "path-b": "留意积水",
+          "path-c": "看一眼天气"
+        },
+        "activeEdgeIds": [
+          "n-a",
+          "n-b",
+          "n-c"
+        ],
+        "metric": {
+          "label": "不同措辞",
+          "value": "3 条"
+        }
       },
       {
         "label": "没有种子就停下",
         "note": "清空提示后承认缺少任务条件，不用完整句子掩盖输入为空。",
-        "activeIds": ["prompt"],
+        "activeIds": [
+          "prompt"
+        ],
         "doneIds": [],
-        "mutedIds": ["next", "path-a", "path-b", "path-c"],
-        "values": {"prompt": "prompt = ∅ · stop"},
+        "mutedIds": [
+          "next",
+          "path-a",
+          "path-b",
+          "path-c"
+        ],
+        "values": {
+          "prompt": "prompt = ∅ · stop"
+        },
         "activeEdgeIds": [],
-        "metric": {"label": "可生成结果", "value": "0 条"}
+        "metric": {
+          "label": "可生成结果",
+          "value": "0 条"
+        }
       }
     ],
     "insight": "生成式 AI 是根据输入和模型学到的分布逐步续出新内容；检索则从指定索引或资料库取回已有资料。两者可以在同一个应用里先后配合，但生成结果仍需核验。",
@@ -145,11 +211,31 @@
       "text": "请先写清目标、受众、格式和事实边界；如果内容需要真实数据，再列出来源与核验步骤。"
     },
     "sources": [
-      {"url": "https://doi.org/10.6028/NIST.AI.600-1", "label": "NIST · Artificial Intelligence Risk Management Framework: Generative AI Profile", "note": "生成式系统定义与风险"},
-      {"url": "https://platform.openai.com/docs/guides/text?api-mode=responses", "label": "OpenAI · Text generation", "note": "提示、模型与生成请求"},
-      {"url": "https://ai.google.dev/gemini-api/docs/text-generation", "label": "Google · Text generation with the Gemini API", "note": "文本生成配置"},
-      {"url": "https://arxiv.org/abs/2005.14165", "label": "Brown et al. · Language Models are Few-Shot Learners", "note": "提示与示例影响任务表现"},
-      {"url": "https://arxiv.org/abs/1706.03762", "label": "Vaswani et al. · Attention Is All You Need", "note": "序列中的注意力机制"}
+      {
+        "url": "https://doi.org/10.6028/NIST.AI.600-1",
+        "label": "NIST · Artificial Intelligence Risk Management Framework: Generative AI Profile",
+        "note": "生成式系统定义与风险"
+      },
+      {
+        "url": "https://platform.openai.com/docs/guides/text?api-mode=responses",
+        "label": "OpenAI · Text generation",
+        "note": "提示、模型与生成请求"
+      },
+      {
+        "url": "https://ai.google.dev/gemini-api/docs/text-generation",
+        "label": "Google · Text generation with the Gemini API",
+        "note": "文本生成配置"
+      },
+      {
+        "url": "https://arxiv.org/abs/2005.14165",
+        "label": "Brown et al. · Language Models are Few-Shot Learners",
+        "note": "提示与示例影响任务表现"
+      },
+      {
+        "url": "https://arxiv.org/abs/1706.03762",
+        "label": "Vaswani et al. · Attention Is All You Need",
+        "note": "序列中的注意力机制"
+      }
     ]
   },
   {
@@ -161,41 +247,203 @@
     "sceneTitle": "问题如何把取景框对准票面",
     "actionLabel": "切换取景条件",
     "actors": [
-      {"id": "question", "label": "文字问题", "detail": "读出日期 / 登机口", "icon": "message", "group": "条件"},
-      {"id": "ticket", "label": "票面图片", "detail": "日期、登机口、姓名", "icon": "file", "group": "材料"},
-      {"id": "lens", "label": "取景框", "detail": "当前关注字段", "icon": "search", "group": "对齐"},
-      {"id": "answer", "label": "可核对回答", "detail": "来自被圈出的像素", "icon": "spark", "group": "结果"}
+      {
+        "id": "question",
+        "label": "文字问题",
+        "detail": "读出日期 / 登机口",
+        "icon": "message",
+        "group": "条件"
+      },
+      {
+        "id": "ticket",
+        "label": "票面图片",
+        "detail": "日期、登机口、姓名",
+        "icon": "file",
+        "group": "材料"
+      },
+      {
+        "id": "lens",
+        "label": "取景框",
+        "detail": "当前关注字段",
+        "icon": "search",
+        "group": "对齐"
+      },
+      {
+        "id": "answer",
+        "label": "可核对回答",
+        "detail": "来自被圈出的像素",
+        "icon": "spark",
+        "group": "结果"
+      }
     ],
     "edges": [
-      {"id": "question-lens", "from": "question", "to": "lens", "label": "指定字段"},
-      {"id": "ticket-lens", "from": "ticket", "to": "lens", "label": "提供像素"},
-      {"id": "lens-answer", "from": "lens", "to": "answer", "label": "返回可核对值"}
+      {
+        "id": "question-lens",
+        "from": "question",
+        "to": "lens",
+        "label": "指定字段"
+      },
+      {
+        "id": "ticket-lens",
+        "from": "ticket",
+        "to": "lens",
+        "label": "提供像素"
+      },
+      {
+        "id": "lens-answer",
+        "from": "lens",
+        "to": "answer",
+        "label": "返回可核对值"
+      }
     ],
     "frames": [
-      {"label": "问题先到", "note": "文字里的“这张票”还没有对应图片。", "activeIds": ["question"], "doneIds": [], "mutedIds": ["ticket", "answer"], "values": {"question": "读出日期", "ticket": "input_image = ∅"}, "activeEdgeIds": []},
-      {"label": "票面进来", "note": "图片和文字在同一次请求中保留各自形态。", "activeIds": ["question", "ticket"], "doneIds": [], "mutedIds": ["answer"], "values": {"question": "读出日期", "ticket": "input_image · present"}, "activeEdgeIds": []},
-      {"label": "取景对准", "note": "问题把取景框移到 DATE 字段，其他像素仍是背景。", "activeIds": ["lens"], "doneIds": ["question", "ticket"], "mutedIds": ["answer"], "values": {"lens": "DATE · 2026 · 10 · 03"}, "activeEdgeIds": ["question-lens", "ticket-lens"]},
-      {"label": "回答有出处", "note": "结果回到被圈出的像素，读者可以沿原图核对。", "activeIds": ["answer"], "doneIds": ["question", "ticket", "lens"], "mutedIds": [], "values": {"answer": "2026 · 10 · 03"}, "activeEdgeIds": ["lens-answer"], "metric": {"label": "可定位字段", "value": "DATE"}},
-      {"label": "图片被拿掉", "note": "相同文字问题失去票面后，不再补出日期。", "activeIds": ["answer"], "doneIds": ["question"], "mutedIds": ["ticket", "lens"], "values": {"answer": "缺少图像证据"}, "activeEdgeIds": []}
+      {
+        "label": "问题先到",
+        "note": "文字里的“这张票”还没有对应图片。",
+        "activeIds": [
+          "question"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "ticket",
+          "answer"
+        ],
+        "values": {
+          "question": "读出日期",
+          "ticket": "input_image = ∅"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "票面进来",
+        "note": "图片和文字在同一次请求中保留各自形态。",
+        "activeIds": [
+          "question",
+          "ticket"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "answer"
+        ],
+        "values": {
+          "question": "读出日期",
+          "ticket": "input_image · present"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "取景对准",
+        "note": "问题把取景框移到 DATE 字段，其他像素仍是背景。",
+        "activeIds": [
+          "lens"
+        ],
+        "doneIds": [
+          "question",
+          "ticket"
+        ],
+        "mutedIds": [
+          "answer"
+        ],
+        "values": {
+          "lens": "DATE · 2026 · 10 · 03"
+        },
+        "activeEdgeIds": [
+          "question-lens",
+          "ticket-lens"
+        ]
+      },
+      {
+        "label": "回答有出处",
+        "note": "结果回到被圈出的像素，读者可以沿原图核对。",
+        "activeIds": [
+          "answer"
+        ],
+        "doneIds": [
+          "question",
+          "ticket",
+          "lens"
+        ],
+        "mutedIds": [],
+        "values": {
+          "answer": "2026 · 10 · 03"
+        },
+        "activeEdgeIds": [
+          "lens-answer"
+        ],
+        "metric": {
+          "label": "可定位字段",
+          "value": "DATE"
+        }
+      },
+      {
+        "label": "图片被拿掉",
+        "note": "相同文字问题失去票面后，不再补出日期。",
+        "activeIds": [
+          "answer"
+        ],
+        "doneIds": [
+          "question"
+        ],
+        "mutedIds": [
+          "ticket",
+          "lens"
+        ],
+        "values": {
+          "answer": "缺少图像证据"
+        },
+        "activeEdgeIds": []
+      }
     ],
     "insight": "多模态的变化发生在输入材料和取景条件之间；图片进入请求不等于每个细节都已核对。",
     "quiz": {
       "question": "哪一项能让回答真正获得票面日期的依据？",
       "options": [
-        {"label": "把票面图片和文字问题一起提交", "correct": true},
-        {"label": "只在文字里写“看这张票”", "correct": false},
-        {"label": "把图片文件名写进提示词", "correct": false}
+        {
+          "label": "把票面图片和文字问题一起提交",
+          "correct": true
+        },
+        {
+          "label": "只在文字里写“看这张票”",
+          "correct": false
+        },
+        {
+          "label": "把图片文件名写进提示词",
+          "correct": false
+        }
       ],
       "success": "图片像素和文字条件都在请求里，回答才有可定位的材料。",
       "retry": "文字里的指代不能替代图片本身；文件名也不是票面内容。"
     },
-    "prompt": {"title": "设计一次多模态核对", "text": "请列出实际提交的文字、图片或音频，并把回答定位到对应材料；缺少材料、格式不支持或看不清的部分请明确停下。"},
+    "prompt": {
+      "title": "设计一次多模态核对",
+      "text": "请列出实际提交的文字、图片或音频，并把回答定位到对应材料；缺少材料、格式不支持或看不清的部分请明确停下。"
+    },
     "sources": [
-      {"url": "https://platform.openai.com/docs/guides/images-vision", "label": "OpenAI · Images and vision", "note": "图片作为输入内容块提交"},
-      {"url": "https://ai.google.dev/gemini-api/docs/vision", "label": "Google · Image understanding", "note": "视觉任务与图片输入方式"},
-      {"url": "https://arxiv.org/abs/2103.00020", "label": "Radford et al. · CLIP", "note": "图片与文字表示匹配"},
-      {"url": "https://arxiv.org/abs/2204.14198", "label": "Alayrac et al. · Flamingo", "note": "视觉与语言模型的连接"},
-      {"url": "https://doi.org/10.6028/NIST.AI.600-1", "label": "NIST · Generative AI Profile", "note": "多模态风险与证据边界"}
+      {
+        "url": "https://platform.openai.com/docs/guides/images-vision",
+        "label": "OpenAI · Images and vision",
+        "note": "图片作为输入内容块提交"
+      },
+      {
+        "url": "https://ai.google.dev/gemini-api/docs/vision",
+        "label": "Google · Image understanding",
+        "note": "视觉任务与图片输入方式"
+      },
+      {
+        "url": "https://arxiv.org/abs/2103.00020",
+        "label": "Radford et al. · CLIP",
+        "note": "图片与文字表示匹配"
+      },
+      {
+        "url": "https://arxiv.org/abs/2204.14198",
+        "label": "Alayrac et al. · Flamingo",
+        "note": "视觉与语言模型的连接"
+      },
+      {
+        "url": "https://doi.org/10.6028/NIST.AI.600-1",
+        "label": "NIST · Generative AI Profile",
+        "note": "多模态风险与证据边界"
+      }
     ]
   },
   {
@@ -1672,7 +1920,9 @@
         "values": {
           "pieces": "CSS · ␠ · 很 · 好 · 用"
         },
-        "activeEdgeIds": ["text-pieces"]
+        "activeEdgeIds": [
+          "text-pieces"
+        ]
       },
       {
         "label": "常见片段合并",
@@ -1691,7 +1941,10 @@
           "pieces": "CSS · ␠ · 很好 · 用",
           "encoder": "BPE 示意"
         },
-        "activeEdgeIds": ["text-pieces", "pieces-encoder"]
+        "activeEdgeIds": [
+          "text-pieces",
+          "pieces-encoder"
+        ]
       },
       {
         "label": "编号贴上",
@@ -1708,7 +1961,9 @@
         "values": {
           "sequence": "[804, 220, 17732, 3912]"
         },
-        "activeEdgeIds": ["pieces-sequence"]
+        "activeEdgeIds": [
+          "pieces-sequence"
+        ]
       },
       {
         "label": "换一把尺",
@@ -1718,14 +1973,18 @@
           "encoder",
           "sequence"
         ],
-        "doneIds": ["text"],
+        "doneIds": [
+          "text"
+        ],
         "mutedIds": [],
         "values": {
           "pieces": "CSS · ␠ · 很好用",
           "encoder": "按词示意",
           "sequence": "[804, 220, 19348]"
         },
-        "activeEdgeIds": ["encoder-sequence"]
+        "activeEdgeIds": [
+          "encoder-sequence"
+        ]
       }
     ],
     "insight": "token 数取决于具体编码器怎样切边界；同一字符串换尺后，片段、编号和预算都要重新看。",
@@ -1915,7 +2174,9 @@
         "values": {
           "gate": "证据槽为空"
         },
-        "activeEdgeIds": ["c-g"]
+        "activeEdgeIds": [
+          "c-g"
+        ]
       },
       {
         "label": "补入缺失字段",
@@ -2701,11 +2962,6 @@
     },
     "sources": [
       {
-        "url": "https://json-schema.org/draft/2020-12/json-schema-core",
-        "label": "JSON Schema 规范 · json schema core",
-        "note": "JSON 结构约束与校验"
-      },
-      {
         "url": "https://json-schema.org/draft/2020-12/json-schema-validation",
         "label": "JSON Schema 规范 · json schema validation",
         "note": "JSON 结构约束与校验"
@@ -2901,11 +3157,6 @@
     },
     "sources": [
       {
-        "url": "https://platform.openai.com/docs/guides/function-calling",
-        "label": "OpenAI 官方文档 · function calling",
-        "note": "接口参数与调用行为"
-      },
-      {
         "url": "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
         "label": "MCP 规范 · tools",
         "note": "协议角色与消息行为"
@@ -3000,38 +3251,92 @@
       {
         "label": "任务票放上桌",
         "note": "应用先接住“改会议时间”这张任务票；此刻没有工具被调用。",
-        "activeIds": ["request"],
+        "activeIds": [
+          "request"
+        ],
         "doneIds": [],
-        "mutedIds": ["dial", "read", "update", "search", "approval"],
-        "values": {"request": "把会议改到周五"},
+        "mutedIds": [
+          "dial",
+          "read",
+          "update",
+          "search",
+          "approval"
+        ],
+        "values": {
+          "request": "把会议改到周五"
+        },
         "activeEdgeIds": []
       },
       {
         "label": "三枚工具筹码露出",
         "note": "选择针打开转盘，读取、更新和搜索只是候选能力，出现不等于执行。",
-        "activeIds": ["request", "dial", "read", "update", "search"],
-        "doneIds": ["request"],
-        "mutedIds": ["approval"],
-        "values": {"read": "查空档", "update": "改时间", "search": "找资料"},
-        "activeEdgeIds": ["request-dial", "dial-read", "dial-update", "dial-search"]
+        "activeIds": [
+          "request",
+          "dial",
+          "read",
+          "update",
+          "search"
+        ],
+        "doneIds": [
+          "request"
+        ],
+        "mutedIds": [
+          "approval"
+        ],
+        "values": {
+          "read": "查空档",
+          "update": "改时间",
+          "search": "找资料"
+        },
+        "activeEdgeIds": [
+          "request-dial",
+          "dial-read",
+          "dial-update",
+          "dial-search"
+        ]
       },
       {
         "label": "选择针落在更新",
         "note": "auto 或 required 可以让模型提出 calendar_update；这仍是一张待校验的调用票。",
-        "activeIds": ["dial", "update"],
-        "doneIds": ["request", "read", "search"],
-        "mutedIds": ["approval"],
-        "values": {"update": "PROPOSED"},
-        "activeEdgeIds": ["dial-update"]
+        "activeIds": [
+          "dial",
+          "update"
+        ],
+        "doneIds": [
+          "request",
+          "read",
+          "search"
+        ],
+        "mutedIds": [
+          "approval"
+        ],
+        "values": {
+          "update": "PROPOSED"
+        },
+        "activeEdgeIds": [
+          "dial-update"
+        ]
       },
       {
         "label": "写操作停在审批台",
         "note": "审批通过前，calendar_update 不会改变日历；选择和执行是两道门。",
-        "activeIds": ["update", "approval"],
-        "doneIds": ["request", "dial", "read", "search"],
+        "activeIds": [
+          "update",
+          "approval"
+        ],
+        "doneIds": [
+          "request",
+          "dial",
+          "read",
+          "search"
+        ],
         "mutedIds": [],
-        "values": {"approval": "NEEDS APPROVAL"},
-        "activeEdgeIds": ["update-approval"]
+        "values": {
+          "approval": "NEEDS APPROVAL"
+        },
+        "activeEdgeIds": [
+          "update-approval"
+        ]
       }
     ],
     "insight": "工具选择决定模型提出哪个调用；能不能执行，是另一道由权限和审批做的判断。",
@@ -3161,38 +3466,83 @@
       {
         "label": "查询票夹入页",
         "note": "应用记下 call_id=inv-7 和 sku=K7，翻页簿先保留这次查询的身份。",
-        "activeIds": ["query"],
+        "activeIds": [
+          "query"
+        ],
         "doneIds": [],
-        "mutedIds": ["json", "field", "sticker", "error"],
-        "values": {"query": "inv-7 · K7"},
+        "mutedIds": [
+          "json",
+          "field",
+          "sticker",
+          "error"
+        ],
+        "values": {
+          "query": "inv-7 · K7"
+        },
         "activeEdgeIds": []
       },
       {
         "label": "原始 JSON 页翻开",
         "note": "status=200 和 stock=0 同时被保存；状态码只描述响应层，不替业务字段下结论。",
-        "activeIds": ["json"],
-        "doneIds": ["query"],
-        "mutedIds": ["field", "sticker", "error"],
-        "values": {"json": "status=200 · stock=0"},
-        "activeEdgeIds": ["query-json"]
+        "activeIds": [
+          "json"
+        ],
+        "doneIds": [
+          "query"
+        ],
+        "mutedIds": [
+          "field",
+          "sticker",
+          "error"
+        ],
+        "values": {
+          "json": "status=200 · stock=0"
+        },
+        "activeEdgeIds": [
+          "query-json"
+        ]
       },
       {
         "label": "stock 标签被抽出",
         "note": "解释层只把 stock=0 当作业务证据；来源、时效和字段校验仍要过一遍。",
-        "activeIds": ["field"],
-        "doneIds": ["query", "json"],
-        "mutedIds": ["sticker", "error"],
-        "values": {"field": "0 → 缺货"},
-        "activeEdgeIds": ["json-field"]
+        "activeIds": [
+          "field"
+        ],
+        "doneIds": [
+          "query",
+          "json"
+        ],
+        "mutedIds": [
+          "sticker",
+          "error"
+        ],
+        "values": {
+          "field": "0 → 缺货"
+        },
+        "activeEdgeIds": [
+          "json-field"
+        ]
       },
       {
         "label": "回答贴纸贴上去",
         "note": "最终措辞是“K7 暂时缺货”；stock=8 会换成有货，timeout 则必须保留无法确认。",
-        "activeIds": ["sticker"],
-        "doneIds": ["query", "json", "field"],
-        "mutedIds": ["error"],
-        "values": {"sticker": "K7 暂时缺货"},
-        "activeEdgeIds": ["field-sticker"]
+        "activeIds": [
+          "sticker"
+        ],
+        "doneIds": [
+          "query",
+          "json",
+          "field"
+        ],
+        "mutedIds": [
+          "error"
+        ],
+        "values": {
+          "sticker": "K7 暂时缺货"
+        },
+        "activeEdgeIds": [
+          "field-sticker"
+        ]
       }
     ],
     "insight": "工具结果是下一步的可观测状态，不是最终答案；状态码和业务字段要分别解释。",
@@ -3335,65 +3685,154 @@
       {
         "label": "失败票钉上桌",
         "note": "维修工作台从可见的失败开始：GET /health 返回 500，票面还标着一个配置问题。",
-        "activeIds": ["ticket"],
+        "activeIds": [
+          "ticket"
+        ],
         "doneIds": [],
-        "mutedIds": ["action", "observation", "state", "verification", "gate"],
-        "values": {"ticket": "500 · 1 项问题"},
+        "mutedIds": [
+          "action",
+          "observation",
+          "state",
+          "verification",
+          "gate"
+        ],
+        "values": {
+          "ticket": "500 · 1 项问题"
+        },
         "activeEdgeIds": []
       },
       {
         "label": "拉开检修抽屉",
         "note": "先读配置再决定怎么修；动作发出而回执未回时，任务仍然没有完成。",
-        "activeIds": ["action"],
-        "doneIds": ["ticket"],
-        "mutedIds": ["observation", "state", "verification", "gate"],
-        "values": {"action": "inspect_config()"},
-        "activeEdgeIds": ["ticket-action"]
+        "activeIds": [
+          "action"
+        ],
+        "doneIds": [
+          "ticket"
+        ],
+        "mutedIds": [
+          "observation",
+          "state",
+          "verification",
+          "gate"
+        ],
+        "values": {
+          "action": "inspect_config()"
+        },
+        "activeEdgeIds": [
+          "ticket-action"
+        ]
       },
       {
         "label": "回执滑回来",
         "note": "工具带回 500 和缺失字段，纸质回执本身成为下一轮的证据。",
-        "activeIds": ["observation"],
-        "doneIds": ["ticket", "action"],
-        "mutedIds": ["state", "verification", "gate"],
-        "values": {"observation": "500 · API_BASE_URL"},
-        "activeEdgeIds": ["action-observation"]
+        "activeIds": [
+          "observation"
+        ],
+        "doneIds": [
+          "ticket",
+          "action"
+        ],
+        "mutedIds": [
+          "state",
+          "verification",
+          "gate"
+        ],
+        "values": {
+          "observation": "500 · API_BASE_URL"
+        },
+        "activeEdgeIds": [
+          "action-observation"
+        ]
       },
       {
         "label": "贴回状态卡",
         "note": "把 issue = config 写回任务单，下一轮知道该改哪里，而不是盲目重试。",
-        "activeIds": ["state"],
-        "doneIds": ["ticket", "action", "observation"],
-        "mutedIds": ["verification", "gate"],
-        "values": {"state": "issue = config"},
-        "activeEdgeIds": ["observation-state"]
+        "activeIds": [
+          "state"
+        ],
+        "doneIds": [
+          "ticket",
+          "action",
+          "observation"
+        ],
+        "mutedIds": [
+          "verification",
+          "gate"
+        ],
+        "values": {
+          "state": "issue = config"
+        },
+        "activeEdgeIds": [
+          "observation-state"
+        ]
       },
       {
         "label": "写入配置",
         "note": "API_BASE_URL 已写入，状态发生了变化；写入动作仍不能代替健康检查。",
-        "activeIds": ["action", "state"],
-        "doneIds": ["ticket", "observation"],
-        "mutedIds": ["verification", "gate"],
-        "values": {"action": "set API_BASE_URL", "state": "API_BASE_URL = set"},
-        "activeEdgeIds": ["observation-state"]
+        "activeIds": [
+          "action",
+          "state"
+        ],
+        "doneIds": [
+          "ticket",
+          "observation"
+        ],
+        "mutedIds": [
+          "verification",
+          "gate"
+        ],
+        "values": {
+          "action": "set API_BASE_URL",
+          "state": "API_BASE_URL = set"
+        },
+        "activeEdgeIds": [
+          "observation-state"
+        ]
       },
       {
         "label": "重新健康检查",
         "note": "第三轮才重新检查服务；新的回执回来之前，复查灯保持等待。",
-        "activeIds": ["verification"],
-        "doneIds": ["ticket", "action", "observation", "state"],
-        "mutedIds": ["gate"],
-        "values": {"verification": "等待 GET /health"},
-        "activeEdgeIds": ["state-verification"]
+        "activeIds": [
+          "verification"
+        ],
+        "doneIds": [
+          "ticket",
+          "action",
+          "observation",
+          "state"
+        ],
+        "mutedIds": [
+          "gate"
+        ],
+        "values": {
+          "verification": "等待 GET /health"
+        },
+        "activeEdgeIds": [
+          "state-verification"
+        ]
       },
       {
         "label": "打开停止闸门",
         "note": "新的健康检查返回 200 OK 才能标成成功；若先撞到 max_turns，也必须停在未完成。",
-        "activeIds": ["gate", "verification"],
-        "doneIds": ["ticket", "action", "observation", "state"],
+        "activeIds": [
+          "gate",
+          "verification"
+        ],
+        "doneIds": [
+          "ticket",
+          "action",
+          "observation",
+          "state"
+        ],
         "mutedIds": [],
-        "values": {"verification": "200 OK · verified", "gate": "200 OK / max_turns"},
-        "activeEdgeIds": ["verification-gate"]
+        "values": {
+          "verification": "200 OK · verified",
+          "gate": "200 OK / max_turns"
+        },
+        "activeEdgeIds": [
+          "verification-gate"
+        ]
       }
     ],
     "insight": "循环的关键不是调用次数，而是每次回执是否写回状态，并经过一个能区分成功、失败、取消和上限的停止闸门。",
@@ -3772,56 +4211,130 @@
       {
         "label": "任务拆开",
         "note": "编排台先把检索、核对和撰写放到拼图桌上，标出撰写要等核对。",
-        "activeIds": ["orchestrator"],
+        "activeIds": [
+          "orchestrator"
+        ],
         "doneIds": [],
-        "mutedIds": ["research", "verify", "write", "report"],
-        "values": {"orchestrator": "3 块 · 2 依赖"},
+        "mutedIds": [
+          "research",
+          "verify",
+          "write",
+          "report"
+        ],
+        "values": {
+          "orchestrator": "3 块 · 2 依赖"
+        },
         "activeEdgeIds": []
       },
       {
         "label": "检索与核对翻牌",
         "note": "并行模式让检索和核对同时开工；串行模式会让核对继续等检索。",
-        "activeIds": ["research", "verify"],
-        "doneIds": ["orchestrator"],
-        "mutedIds": ["write", "report"],
-        "values": {"research": "8 条", "verify": "翻牌中"},
-        "activeEdgeIds": ["o-r", "o-v", "r-v"]
+        "activeIds": [
+          "research",
+          "verify"
+        ],
+        "doneIds": [
+          "orchestrator"
+        ],
+        "mutedIds": [
+          "write",
+          "report"
+        ],
+        "values": {
+          "research": "8 条",
+          "verify": "翻牌中"
+        },
+        "activeEdgeIds": [
+          "o-r",
+          "o-v",
+          "r-v"
+        ]
       },
       {
         "label": "冲突磁片露出",
         "note": "核对发现 1 处冲突；证据还没有通过规则，撰写不能直接拿去合并。",
-        "activeIds": ["verify", "write"],
-        "doneIds": ["orchestrator", "research"],
-        "mutedIds": ["report"],
-        "values": {"verify": "冲突 1", "write": "锁住"},
-        "activeEdgeIds": ["r-v", "v-w"]
+        "activeIds": [
+          "verify",
+          "write"
+        ],
+        "doneIds": [
+          "orchestrator",
+          "research"
+        ],
+        "mutedIds": [
+          "report"
+        ],
+        "values": {
+          "verify": "冲突 1",
+          "write": "锁住"
+        },
+        "activeEdgeIds": [
+          "r-v",
+          "v-w"
+        ]
       },
       {
         "label": "撰写夹保持锁住",
         "note": "停止是编排规则的一部分：先保留冲突状态，不把矛盾材料写成一份完整报告。",
-        "activeIds": ["write"],
-        "doneIds": ["orchestrator", "research", "verify"],
-        "mutedIds": ["report"],
-        "values": {"write": "等待冲突处理"},
-        "activeEdgeIds": ["v-w"]
+        "activeIds": [
+          "write"
+        ],
+        "doneIds": [
+          "orchestrator",
+          "research",
+          "verify"
+        ],
+        "mutedIds": [
+          "report"
+        ],
+        "values": {
+          "write": "等待冲突处理"
+        },
+        "activeEdgeIds": [
+          "v-w"
+        ]
       },
       {
         "label": "排除冲突磁片",
         "note": "按规则排除冲突证据，撰写只接收 7 条一致材料，合页仍等待最后一扣。",
-        "activeIds": ["verify", "write"],
-        "doneIds": ["orchestrator", "research"],
-        "mutedIds": ["report"],
-        "values": {"verify": "冲突 0", "write": "7 条入稿"},
-        "activeEdgeIds": ["v-w"]
+        "activeIds": [
+          "verify",
+          "write"
+        ],
+        "doneIds": [
+          "orchestrator",
+          "research"
+        ],
+        "mutedIds": [
+          "report"
+        ],
+        "values": {
+          "verify": "冲突 0",
+          "write": "7 条入稿"
+        },
+        "activeEdgeIds": [
+          "v-w"
+        ]
       },
       {
         "label": "报告合页扣上",
         "note": "7 条一致证据合并进报告；可交付来自合并规则，不来自同时运行的角色数量。",
-        "activeIds": ["report"],
-        "doneIds": ["orchestrator", "research", "verify", "write"],
+        "activeIds": [
+          "report"
+        ],
+        "doneIds": [
+          "orchestrator",
+          "research",
+          "verify",
+          "write"
+        ],
         "mutedIds": [],
-        "values": {"report": "7 条一致证据"},
-        "activeEdgeIds": ["w-rep"]
+        "values": {
+          "report": "7 条一致证据"
+        },
+        "activeEdgeIds": [
+          "w-rep"
+        ]
       }
     ],
     "insight": "编排先管清楚谁做什么、谁要等谁；并行调用几个模型，不会自动解决冲突。",
@@ -4533,11 +5046,6 @@
         "note": "在执行前检查并阻止不合规动作"
       },
       {
-        "url": "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook",
-        "label": "NIST AI RMF · Playbook",
-        "note": "风险分级、治理与人工监督建议"
-      },
-      {
         "url": "https://www.nist.gov/itl/ai-risk-management-framework",
         "label": "NIST AI Risk Management Framework",
         "note": "可信与可负责的 AI 风险管理框架"
@@ -4619,47 +5127,106 @@
       {
         "label": "数据待导出",
         "note": "12 条记录仍含完整手机号，每条记录各含 1 个。",
-        "activeIds": ["data"],
+        "activeIds": [
+          "data"
+        ],
         "doneIds": [],
-        "mutedIds": ["scanner", "mask", "block", "output"],
-        "values": {"data": "完整手机号 12（每条 1 个）"},
+        "mutedIds": [
+          "scanner",
+          "mask",
+          "block",
+          "output"
+        ],
+        "values": {
+          "data": "完整手机号 12（每条 1 个）"
+        },
         "activeEdgeIds": []
       },
       {
         "label": "规则命中",
         "note": "检查器识别出 12 个手机号字段，原始数据仍未交付。",
-        "activeIds": ["scanner"],
-        "doneIds": ["data"],
-        "mutedIds": ["mask", "block", "output"],
-        "values": {"scanner": "命中 12"},
-        "activeEdgeIds": ["d-s"]
+        "activeIds": [
+          "scanner"
+        ],
+        "doneIds": [
+          "data"
+        ],
+        "mutedIds": [
+          "mask",
+          "block",
+          "output"
+        ],
+        "values": {
+          "scanner": "命中 12"
+        },
+        "activeEdgeIds": [
+          "d-s"
+        ]
       },
       {
         "label": "选择处置",
         "note": "同一个命中结果可以进入脱敏放行或命中即阻断，两条分支都还没有交付。",
-        "activeIds": ["mask", "block"],
-        "doneIds": ["data", "scanner"],
-        "mutedIds": ["output"],
-        "values": {"mask": "脱敏候选", "block": "阻断候选"},
-        "activeEdgeIds": ["s-m", "s-b"]
+        "activeIds": [
+          "mask",
+          "block"
+        ],
+        "doneIds": [
+          "data",
+          "scanner"
+        ],
+        "mutedIds": [
+          "output"
+        ],
+        "values": {
+          "mask": "脱敏候选",
+          "block": "阻断候选"
+        },
+        "activeEdgeIds": [
+          "s-m",
+          "s-b"
+        ]
       },
       {
         "label": "脱敏放行",
         "note": "脱敏规则把完整号码改为只显示后 4 位，导出条数不变。",
-        "activeIds": ["output"],
-        "doneIds": ["data", "scanner", "mask"],
-        "mutedIds": ["block"],
-        "values": {"output": "12 条 · 完整号码 0"},
-        "activeEdgeIds": ["m-o"]
+        "activeIds": [
+          "output"
+        ],
+        "doneIds": [
+          "data",
+          "scanner",
+          "mask"
+        ],
+        "mutedIds": [
+          "block"
+        ],
+        "values": {
+          "output": "12 条 · 完整号码 0"
+        },
+        "activeEdgeIds": [
+          "m-o"
+        ]
       },
       {
         "label": "命中即阻断",
         "note": "禁止规则关闭导出出口，完整手机号没有进入输出；权限仍需单独判断。",
-        "activeIds": ["block"],
-        "doneIds": ["data", "scanner"],
-        "mutedIds": ["mask", "output"],
-        "values": {"block": "导出停止 · 完整号码 0"},
-        "activeEdgeIds": ["s-b"]
+        "activeIds": [
+          "block"
+        ],
+        "doneIds": [
+          "data",
+          "scanner"
+        ],
+        "mutedIds": [
+          "mask",
+          "output"
+        ],
+        "values": {
+          "block": "导出停止 · 完整号码 0"
+        },
+        "activeEdgeIds": [
+          "s-b"
+        ]
       }
     ],
     "insight": "护栏在输入、输出或工具动作前后执行具体检查；它不能替代权限、内容审核或业务校验。",
@@ -4701,11 +5268,6 @@
         "url": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
         "label": "NIST AI 600-1 · Generative AI Profile",
         "note": "生成式 AI 风险与控制措施"
-      },
-      {
-        "url": "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook",
-        "label": "NIST AI RMF · Playbook",
-        "note": "风险识别、治理与验证建议"
       }
     ]
   },
@@ -4887,11 +5449,6 @@
     },
     "sources": [
       {
-        "url": "https://platform.openai.com/docs/guides/moderation",
-        "label": "OpenAI 官方文档 · moderation",
-        "note": "审核模型接口与风险类别"
-      },
-      {
         "url": "https://openai.github.io/openai-agents-python/guardrails/",
         "label": "OpenAI Agents SDK · guardrails",
         "note": "与内容审核相邻的规则检查边界"
@@ -4900,11 +5457,6 @@
         "url": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
         "label": "NIST AI 600-1 · Generative AI Profile",
         "note": "生成式 AI 风险与控制措施"
-      },
-      {
-        "url": "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook",
-        "label": "NIST AI RMF · Playbook",
-        "note": "风险分级、治理与人工复核建议"
       }
     ]
   },
@@ -5685,16 +6237,6 @@
     },
     "sources": [
       {
-        "url": "https://platform.openai.com/docs/guides/model-optimization",
-        "label": "OpenAI 官方文档 · model optimization",
-        "note": "优化循环与评测取舍"
-      },
-      {
-        "url": "https://platform.openai.com/docs/guides/supervised-fine-tuning",
-        "label": "OpenAI 官方文档 · supervised fine-tuning",
-        "note": "监督微调数据与训练流程"
-      },
-      {
         "url": "https://huggingface.co/docs/transformers/training",
         "label": "Hugging Face · Transformers training",
         "note": "训练、验证与保存模型的流程"
@@ -6200,65 +6742,159 @@
       {
         "label": "写下查询",
         "note": "问题先成为查询磁贴，资料抽屉还没有打开。",
-        "activeIds": ["query"],
+        "activeIds": [
+          "query"
+        ],
         "doneIds": [],
-        "mutedIds": ["drawer", "keyword-rail", "semantic-rail", "card-policy", "card-faq", "evidence-gate"],
-        "values": {"query": "1条"},
+        "mutedIds": [
+          "drawer",
+          "keyword-rail",
+          "semantic-rail",
+          "card-policy",
+          "card-faq",
+          "evidence-gate"
+        ],
+        "values": {
+          "query": "1条"
+        },
         "activeEdgeIds": []
       },
       {
         "label": "拉开抽屉",
         "note": "查询打开200段资料的候选范围，但还没有生成答案。",
-        "activeIds": ["drawer"],
-        "doneIds": ["query"],
-        "mutedIds": ["keyword-rail", "semantic-rail", "card-policy", "card-faq", "evidence-gate"],
-        "values": {"drawer": "200段"},
-        "activeEdgeIds": ["q-drawer"]
+        "activeIds": [
+          "drawer"
+        ],
+        "doneIds": [
+          "query"
+        ],
+        "mutedIds": [
+          "keyword-rail",
+          "semantic-rail",
+          "card-policy",
+          "card-faq",
+          "evidence-gate"
+        ],
+        "values": {
+          "drawer": "200段"
+        },
+        "activeEdgeIds": [
+          "q-drawer"
+        ]
       },
       {
         "label": "语义轨滑到前面",
         "note": "语义分数把没有来源的问答摘录推到首位；相似度不是引用。",
-        "activeIds": ["semantic-rail", "card-faq"],
-        "doneIds": ["query", "drawer"],
-        "mutedIds": ["keyword-rail", "card-policy", "evidence-gate"],
-        "values": {"semantic-rail": "0.94", "card-faq": "首位"},
-        "activeEdgeIds": ["drawer-semantic", "rail-card"]
+        "activeIds": [
+          "semantic-rail",
+          "card-faq"
+        ],
+        "doneIds": [
+          "query",
+          "drawer"
+        ],
+        "mutedIds": [
+          "keyword-rail",
+          "card-policy",
+          "evidence-gate"
+        ],
+        "values": {
+          "semantic-rail": "0.94",
+          "card-faq": "首位"
+        },
+        "activeEdgeIds": [
+          "drawer-semantic",
+          "rail-card"
+        ]
       },
       {
         "label": "扩大 top-k",
         "note": "top-k从1调到3会带回更多候选，仍然只交付原文卡片。",
-        "activeIds": ["card-faq", "card-policy"],
-        "doneIds": ["query", "drawer", "semantic-rail"],
-        "mutedIds": ["keyword-rail", "evidence-gate"],
-        "values": {"card-faq": "0.94", "card-policy": "0.88"},
-        "activeEdgeIds": ["rail-card"]
+        "activeIds": [
+          "card-faq",
+          "card-policy"
+        ],
+        "doneIds": [
+          "query",
+          "drawer",
+          "semantic-rail"
+        ],
+        "mutedIds": [
+          "keyword-rail",
+          "evidence-gate"
+        ],
+        "values": {
+          "card-faq": "0.94",
+          "card-policy": "0.88"
+        },
+        "activeEdgeIds": [
+          "rail-card"
+        ]
       },
       {
         "label": "抽走无来源卡",
         "note": "最高分卡没有来源ID，抽走后不能把它写成答案；政策原文留下来继续核对。",
-        "activeIds": ["card-policy", "evidence-gate"],
-        "doneIds": ["query", "drawer", "semantic-rail"],
-        "mutedIds": ["keyword-rail", "card-faq"],
-        "values": {"card-faq": "移出", "card-policy": "来源ID"},
-        "activeEdgeIds": ["card-gate"]
+        "activeIds": [
+          "card-policy",
+          "evidence-gate"
+        ],
+        "doneIds": [
+          "query",
+          "drawer",
+          "semantic-rail"
+        ],
+        "mutedIds": [
+          "keyword-rail",
+          "card-faq"
+        ],
+        "values": {
+          "card-faq": "移出",
+          "card-policy": "来源ID"
+        },
+        "activeEdgeIds": [
+          "card-gate"
+        ]
       },
       {
         "label": "关上引用闸",
         "note": "带来源的候选可以交给下一步核对；检索本身没有生成结论。",
-        "activeIds": ["evidence-gate"],
-        "doneIds": ["query", "drawer", "semantic-rail", "card-policy"],
-        "mutedIds": ["keyword-rail", "card-faq"],
-        "values": {"evidence-gate": "候选可核对"},
-        "activeEdgeIds": ["card-gate"]
+        "activeIds": [
+          "evidence-gate"
+        ],
+        "doneIds": [
+          "query",
+          "drawer",
+          "semantic-rail",
+          "card-policy"
+        ],
+        "mutedIds": [
+          "keyword-rail",
+          "card-faq"
+        ],
+        "values": {
+          "evidence-gate": "候选可核对"
+        },
+        "activeEdgeIds": [
+          "card-gate"
+        ]
       }
     ],
     "insight": "检索的产物是候选资料；相似度负责排序，来源字段负责让下一步回到原文，RAG还要继续生成和核对。",
     "quiz": {
       "question": "语义分数最高的卡片没有来源ID时，检索阶段能直接给出答案吗？",
       "options": [
-        {"label": "不能，留下缺证据状态", "correct": true},
-        {"label": "能，分数就是事实证明", "correct": false},
-        {"label": "能，检索会自动补齐出处", "correct": false}
+        {
+          "label": "不能，留下缺证据状态",
+          "correct": true
+        },
+        {
+          "label": "能，分数就是事实证明",
+          "correct": false
+        },
+        {
+          "label": "能，检索会自动补齐出处",
+          "correct": false
+        }
       ],
       "success": "检索只交付候选；没有可回查的来源，就不能越过引用闸门生成确定结论。",
       "retry": "先看卡片有没有来源，再区分相似度和证据。"
@@ -7187,7 +7823,7 @@
           "sticky"
         ],
         "values": {
-            "cache-stamp": "写入 3/4 层"
+          "cache-stamp": "写入 3/4 层"
         },
         "activeEdgeIds": [],
         "metric": {
@@ -7573,55 +8209,115 @@
       {
         "label": "拆开工单",
         "note": "只看任务需要什么；此时还没有调用模型。",
-        "activeIds": ["ticket"],
+        "activeIds": [
+          "ticket"
+        ],
         "doneIds": [],
-        "mutedIds": ["dial", "candidate-a", "candidate-b", "stop"],
-        "values": {"ticket": "提取订单金额"},
+        "mutedIds": [
+          "dial",
+          "candidate-a",
+          "candidate-b",
+          "stop"
+        ],
+        "values": {
+          "ticket": "提取订单金额"
+        },
         "activeEdgeIds": []
       },
       {
         "label": "拨到门槛",
         "note": "同一把 90 分门槛先筛候选，再比较费用。",
-        "activeIds": ["dial"],
-        "doneIds": ["ticket"],
-        "mutedIds": ["candidate-a", "candidate-b", "stop"],
-        "values": {"dial": "门槛 90 / 100"},
+        "activeIds": [
+          "dial"
+        ],
+        "doneIds": [
+          "ticket"
+        ],
+        "mutedIds": [
+          "candidate-a",
+          "candidate-b",
+          "stop"
+        ],
+        "values": {
+          "dial": "门槛 90 / 100"
+        },
         "activeEdgeIds": []
       },
       {
         "label": "钉住 A",
         "note": "提取金额时两者都达标，路由选择更省的 A；还没生成回答。",
-        "activeIds": ["candidate-a"],
-        "doneIds": ["ticket", "dial"],
-        "mutedIds": ["candidate-b", "stop"],
-        "values": {"candidate-a": "命中 · 96 / 100"},
+        "activeIds": [
+          "candidate-a"
+        ],
+        "doneIds": [
+          "ticket",
+          "dial"
+        ],
+        "mutedIds": [
+          "candidate-b",
+          "stop"
+        ],
+        "values": {
+          "candidate-a": "命中 · 96 / 100"
+        },
         "activeEdgeIds": []
       },
       {
         "label": "转向 B",
         "note": "复杂条款让 A 低于门槛，B 才留下；任务难度改变了选择。",
-        "activeIds": ["candidate-b"],
-        "doneIds": ["ticket", "dial"],
-        "mutedIds": ["candidate-a", "stop"],
-        "values": {"candidate-b": "命中 · 92 / 100"},
+        "activeIds": [
+          "candidate-b"
+        ],
+        "doneIds": [
+          "ticket",
+          "dial"
+        ],
+        "mutedIds": [
+          "candidate-a",
+          "stop"
+        ],
+        "values": {
+          "candidate-b": "命中 · 92 / 100"
+        },
         "activeEdgeIds": []
       },
       {
         "label": "遇到图片",
         "note": "A 没有图片能力，B 以较高成本承接这类请求。",
-        "activeIds": ["candidate-b"],
-        "doneIds": ["ticket", "dial"],
-        "mutedIds": ["candidate-a", "stop"],
-        "values": {"candidate-a": "不支持图片", "candidate-b": "命中 · 94 / 100"},
+        "activeIds": [
+          "candidate-b"
+        ],
+        "doneIds": [
+          "ticket",
+          "dial"
+        ],
+        "mutedIds": [
+          "candidate-a",
+          "stop"
+        ],
+        "values": {
+          "candidate-a": "不支持图片",
+          "candidate-b": "命中 · 94 / 100"
+        },
         "activeEdgeIds": []
       },
       {
         "label": "没有可接候选",
         "note": "门槛 98 高于两者分数，路由停在调用前而不是偷偷放宽条件。",
-        "activeIds": ["stop"],
-        "doneIds": ["ticket", "dial"],
-        "mutedIds": ["candidate-a", "candidate-b"],
-        "values": {"stop": "门槛 98 · 无候选"},
+        "activeIds": [
+          "stop"
+        ],
+        "doneIds": [
+          "ticket",
+          "dial"
+        ],
+        "mutedIds": [
+          "candidate-a",
+          "candidate-b"
+        ],
+        "values": {
+          "stop": "门槛 98 · 无候选"
+        },
         "activeEdgeIds": []
       }
     ],
@@ -7850,11 +8546,6 @@
         "url": "https://www.rfc-editor.org/rfc/rfc6585#section-4",
         "label": "RFC · rfc6585",
         "note": "协议定义与报文语义"
-      },
-      {
-        "url": "https://platform.openai.com/docs/guides/production-best-practices",
-        "label": "OpenAI 官方文档 · production best practices",
-        "note": "接口参数与调用行为"
       }
     ]
   },
@@ -8376,47 +9067,106 @@
       {
         "label": "任务和资料摆上桌",
         "note": "用户目标与网页正文同时可见，但来源还没有被混成同一种授权。",
-        "activeIds": ["user", "page"],
+        "activeIds": [
+          "user",
+          "page"
+        ],
         "doneIds": [],
-        "mutedIds": ["sleeve", "tool", "summary"],
-        "values": {"page": "资料袋未打开"},
+        "mutedIds": [
+          "sleeve",
+          "tool",
+          "summary"
+        ],
+        "values": {
+          "page": "资料袋未打开"
+        },
         "activeEdgeIds": []
       },
       {
         "label": "可疑句子露出来",
         "note": "网页里的命令句被读到，但贴纸仍写着 DATA；可读不等于可授权。",
-        "activeIds": ["page", "sleeve"],
-        "doneIds": ["user"],
-        "mutedIds": ["tool", "summary"],
-        "values": {"page": "含外部命令", "sleeve": "DATA"},
-        "activeEdgeIds": ["page-sleeve"]
+        "activeIds": [
+          "page",
+          "sleeve"
+        ],
+        "doneIds": [
+          "user"
+        ],
+        "mutedIds": [
+          "tool",
+          "summary"
+        ],
+        "values": {
+          "page": "含外部命令",
+          "sleeve": "DATA"
+        },
+        "activeEdgeIds": [
+          "page-sleeve"
+        ]
       },
       {
         "label": "错误信任贴上去",
         "note": "如果模型把网页句子提升成指令，send_secret 只能先成为提案，还没有真正执行。",
-        "activeIds": ["sleeve", "tool"],
-        "doneIds": ["user", "page"],
-        "mutedIds": ["summary"],
-        "values": {"sleeve": "INSTRUCTION · 错误提升", "tool": "PROPOSED"},
-        "activeEdgeIds": ["sleeve-tool"]
+        "activeIds": [
+          "sleeve",
+          "tool"
+        ],
+        "doneIds": [
+          "user",
+          "page"
+        ],
+        "mutedIds": [
+          "summary"
+        ],
+        "values": {
+          "sleeve": "INSTRUCTION · 错误提升",
+          "tool": "PROPOSED"
+        },
+        "activeEdgeIds": [
+          "sleeve-tool"
+        ]
       },
       {
         "label": "工具闸门拒绝",
         "note": "工具层没有发送密钥的授权，调用保持 0 次；模型误判的影响停在闸门外。",
-        "activeIds": ["tool"],
-        "doneIds": ["user", "page", "sleeve"],
-        "mutedIds": ["summary"],
-        "values": {"tool": "REJECTED · 0 次"},
-        "activeEdgeIds": ["sleeve-tool"]
+        "activeIds": [
+          "tool"
+        ],
+        "doneIds": [
+          "user",
+          "page",
+          "sleeve"
+        ],
+        "mutedIds": [
+          "summary"
+        ],
+        "values": {
+          "tool": "REJECTED · 0 次"
+        },
+        "activeEdgeIds": [
+          "sleeve-tool"
+        ]
       },
       {
         "label": "放回资料袋，继续摘要",
         "note": "把网页恢复为 DATA，原任务继续使用可见正文，危险工具从未执行。",
-        "activeIds": ["page", "sleeve", "summary"],
-        "doneIds": ["user", "tool"],
+        "activeIds": [
+          "page",
+          "sleeve",
+          "summary"
+        ],
+        "doneIds": [
+          "user",
+          "tool"
+        ],
         "mutedIds": [],
-        "values": {"sleeve": "DATA", "summary": "摘要完成 · send_secret 0 次"},
-        "activeEdgeIds": ["sleeve-summary"]
+        "values": {
+          "sleeve": "DATA",
+          "summary": "摘要完成 · send_secret 0 次"
+        },
+        "activeEdgeIds": [
+          "sleeve-summary"
+        ]
       }
     ],
     "insight": "提示词注入混淆了数据和指令；读数据与执行动作要分开，来源标记、最小权限和确认共同限制影响。",
@@ -8653,11 +9403,6 @@
         "url": "https://csrc.nist.gov/pubs/sp/800/190/final",
         "label": "NIST CSRC · final",
         "note": "安全要求与风险边界"
-      },
-      {
-        "url": "https://platform.openai.com/docs/guides/tools-code-interpreter",
-        "label": "OpenAI 官方文档 · tools code interpreter",
-        "note": "接口参数与调用行为"
       }
     ]
   },
@@ -22146,6 +22891,1816 @@
         "url": "https://cloud.google.com/architecture/framework/performance-optimization",
         "label": "Google Cloud · Performance optimization",
         "note": "端到端性能目标与取舍"
+      }
+    ]
+  },
+  {
+    "slug": "quantization",
+    "lead": "把同一组权重放进三种刻度盘：容量变轻，误差预算却不会凭空消失。",
+    "definition": "量化用更少的数值刻度表示参数或激活值；它交换的是表示精度与资源占用，不是把模型知识压成同样的结果。",
+    "boundary": "这张刻度盘只显示权重存储和示意误差。激活、KV cache、算子支持、校准数据和任务质量仍要在目标硬件上另测。",
+    "sceneKind": "spectrum",
+    "sceneTitle": "精度刻度盘",
+    "actionLabel": "切换 bit 宽",
+    "actors": [
+      {
+        "id": "quantization-fp16",
+        "label": "FP16 基准",
+        "detail": "完整刻度",
+        "icon": "code",
+        "group": "precision"
+      },
+      {
+        "id": "quantization-int8",
+        "label": "INT8 对照",
+        "detail": "折半存储",
+        "icon": "chart",
+        "group": "precision"
+      },
+      {
+        "id": "quantization-int4",
+        "label": "INT4 低位",
+        "detail": "误差预算变紧",
+        "icon": "shield",
+        "group": "precision"
+      },
+      {
+        "id": "quantization-calibration",
+        "label": "校准样本",
+        "detail": "部署前证据",
+        "icon": "search",
+        "group": "evidence"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "FP16：先记基准",
+        "note": "先固定同一组权重的存储量与任务分数，后面的变化才有对照。",
+        "activeIds": [
+          "quantization-fp16"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "quantization-int8",
+          "quantization-int4",
+          "quantization-calibration"
+        ],
+        "values": {
+          "quantization-fp16": "100% 存储 · 误差基线"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "基准",
+          "value": "FP16"
+        }
+      },
+      {
+        "label": "INT8：容量下降",
+        "note": "位宽减半带来更轻的权重；此时还不能把“装得下”说成“效果一样”。",
+        "activeIds": [
+          "quantization-int8"
+        ],
+        "doneIds": [
+          "quantization-fp16"
+        ],
+        "mutedIds": [
+          "quantization-int4",
+          "quantization-calibration"
+        ],
+        "values": {
+          "quantization-int8": "约 50% 存储 · 先测质量"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "资源",
+          "value": "更轻"
+        }
+      },
+      {
+        "label": "INT4：刻度变粗",
+        "note": "四位表示只留下更少的刻度，敏感层可能需要保护，误差预算开始占据画面。",
+        "activeIds": [
+          "quantization-int4"
+        ],
+        "doneIds": [
+          "quantization-fp16",
+          "quantization-int8"
+        ],
+        "mutedIds": [
+          "quantization-calibration"
+        ],
+        "values": {
+          "quantization-int4": "约 25% 存储 · 误差需查"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "风险",
+          "value": "需校准"
+        }
+      },
+      {
+        "label": "校准：证据过闸",
+        "note": "把代表性输入跑过一次，留下“格式能加载”和“任务仍可接受”两条分开的证据。",
+        "activeIds": [
+          "quantization-calibration"
+        ],
+        "doneIds": [
+          "quantization-fp16",
+          "quantization-int8",
+          "quantization-int4"
+        ],
+        "mutedIds": [],
+        "values": {
+          "quantization-calibration": "校准集 + 回归结果"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "发布",
+          "value": "可复核"
+        }
+      }
+    ],
+    "insight": "量化的关键不是追求最低 bit，而是让资源收益、误差预算和部署证据同时可见。",
+    "quiz": {
+      "question": "为什么 INT4 不能直接等同于“模型变小且完全不变”？",
+      "options": [
+        {
+          "label": "位宽更低会改变可用刻度，还需要校准与任务回归",
+          "correct": true
+        },
+        {
+          "label": "只要文件变小，所有硬件都会同比变快",
+          "correct": false
+        },
+        {
+          "label": "量化会自动修复模型的错误",
+          "correct": false
+        }
+      ],
+      "success": "你把容量收益和质量证据分开了。",
+      "retry": "先找出低 bit 改变了什么，以及还缺哪条证据。"
+    },
+    "prompt": {
+      "title": "量化决策复盘",
+      "text": "把一份模型量化成较低 bit 时，记录存储、硬件、校准集和任务回归分别怎样变化。"
+    },
+    "sources": [
+      {
+        "url": "https://huggingface.co/docs/transformers/v4.57.0/en/quantization/concept_guide",
+        "label": "Quantization concepts",
+        "note": "核对 PTQ、QAT、bit 宽和资源取舍的概念边界。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2210.17323",
+        "label": "GPTQ",
+        "note": "核对训练后权重量化的实验语境。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2306.00978",
+        "label": "AWQ",
+        "note": "核对激活感知的权重保护思路。"
+      },
+      {
+        "url": "https://huggingface.co/docs/text-generation-inference/en/conceptual/quantization",
+        "label": "Text Generation Inference quantization",
+        "note": "核对后端格式与部署支持不能脱离硬件。"
+      }
+    ]
+  },
+  {
+    "slug": "knowledge-distillation",
+    "lead": "影子课堂不搬走老师的整本教材，只比较一张样本里“第一名”和“第二名”相差多少。",
+    "definition": "知识蒸馏让学生模型在训练时拟合教师的输出分布、表示或注意力；教师提供示范，学生仍要用自己的参数完成推理。",
+    "boundary": "页面只展示训练信号，不代表学生继承教师全部事实、许可或安全边界；蒸馏效果必须在新任务和失败样本上独立评估。",
+    "sceneKind": "layers",
+    "sceneTitle": "软目标课堂",
+    "actionLabel": "切换训练信号",
+    "actors": [
+      {
+        "id": "knowledge-distillation-teacher",
+        "label": "教师分布",
+        "detail": "猫 0.72 · 狐狸 0.21",
+        "icon": "brain",
+        "group": "teacher"
+      },
+      {
+        "id": "knowledge-distillation-hard",
+        "label": "硬标签",
+        "detail": "只保留赢家",
+        "icon": "file",
+        "group": "target"
+      },
+      {
+        "id": "knowledge-distillation-soft",
+        "label": "软目标",
+        "detail": "留下相似度",
+        "icon": "chart",
+        "group": "target"
+      },
+      {
+        "id": "knowledge-distillation-student",
+        "label": "学生拟合",
+        "detail": "学习输出关系",
+        "icon": "robot",
+        "group": "student"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "教师先写下分布",
+        "note": "同一张图不只得到一个答案，教师还透露候选之间的距离。",
+        "activeIds": [
+          "knowledge-distillation-teacher"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "knowledge-distillation-hard",
+          "knowledge-distillation-soft",
+          "knowledge-distillation-student"
+        ],
+        "values": {
+          "knowledge-distillation-teacher": "猫 0.72 / 狐狸 0.21 / 狗 0.07"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "教师",
+          "value": "细节保留"
+        }
+      },
+      {
+        "label": "只交硬标签",
+        "note": "学生只收到“猫”，狐狸和狗之间的相似程度被抹掉。",
+        "activeIds": [
+          "knowledge-distillation-hard"
+        ],
+        "doneIds": [
+          "knowledge-distillation-teacher"
+        ],
+        "mutedIds": [
+          "knowledge-distillation-soft",
+          "knowledge-distillation-student"
+        ],
+        "values": {
+          "knowledge-distillation-hard": "猫 = 1.00，其余 = 0"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "信号",
+          "value": "赢家"
+        }
+      },
+      {
+        "label": "交付软目标",
+        "note": "学生看到完整分布，知道狐狸比狗更接近猫，这就是额外的关系信息。",
+        "activeIds": [
+          "knowledge-distillation-soft"
+        ],
+        "doneIds": [
+          "knowledge-distillation-teacher"
+        ],
+        "mutedIds": [
+          "knowledge-distillation-hard",
+          "knowledge-distillation-student"
+        ],
+        "values": {
+          "knowledge-distillation-soft": "猫 .72 · 狐狸 .21 · 狗 .07"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "信号",
+          "value": "关系"
+        }
+      },
+      {
+        "label": "学生拟合自己的输出",
+        "note": "训练结束后线上只跑学生；教师没有变成每次请求都要经过的前置服务。",
+        "activeIds": [
+          "knowledge-distillation-student"
+        ],
+        "doneIds": [
+          "knowledge-distillation-teacher",
+          "knowledge-distillation-soft"
+        ],
+        "mutedIds": [],
+        "values": {
+          "knowledge-distillation-student": "轻量模型 · 线上推理"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "部署",
+          "value": "教师离线"
+        }
+      }
+    ],
+    "insight": "蒸馏真正搬运的是训练信号的细节，不是教师参数或教师的全部可靠性。",
+    "quiz": {
+      "question": "软目标比硬标签多提供了什么？",
+      "options": [
+        {
+          "label": "候选答案之间的相对相似度",
+          "correct": true
+        },
+        {
+          "label": "教师模型的所有参数副本",
+          "correct": false
+        },
+        {
+          "label": "对每个新问题的事实保证",
+          "correct": false
+        }
+      ],
+      "success": "你抓住了“分布里的关系信息”。",
+      "retry": "想想狐狸和狗的概率为什么仍然有用。"
+    },
+    "prompt": {
+      "title": "拆解一次蒸馏",
+      "text": "用一个分类样例写出教师分布、学生损失和线上部署位置，并标出哪些能力仍需独立评测。"
+    },
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/1503.02531",
+        "label": "Distilling the Knowledge",
+        "note": "核对软目标和教师—学生训练分工。"
+      },
+      {
+        "url": "https://arxiv.org/abs/1910.01108",
+        "label": "DistilBERT",
+        "note": "核对蒸馏用于轻量语言模型的具体做法。"
+      },
+      {
+        "url": "https://arxiv.org/abs/1909.10351",
+        "label": "TinyBERT",
+        "note": "核对表示、注意力等多层蒸馏信号。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2006.05525",
+        "label": "Knowledge Distillation: A Survey",
+        "note": "Gou et al.：综述蒸馏知识类型、训练方案与教师—学生结构。"
+      }
+    ]
+  },
+  {
+    "slug": "mixture-of-experts",
+    "lead": "分诊台让每个 token 先亮出偏好，再把容量不足的专家从“最会做”与“能接单”之间分开。",
+    "definition": "混合专家模型用路由器为每个 token 选择少数专家。总参数可以很大，但单个 token 的计算保持稀疏；负载与通信因此成为新变量。",
+    "boundary": "专家名称只是页面标签，不代表模型学出了可解释技能；容量、丢弃策略和跨设备通信要结合具体实现测量。",
+    "sceneKind": "matrix",
+    "sceneTitle": "路由与容量矩阵",
+    "actionLabel": "选择 token 类型",
+    "actors": [
+      {
+        "id": "mixture-of-experts-router",
+        "label": "路由器",
+        "detail": "给专家打分",
+        "icon": "network",
+        "group": "router"
+      },
+      {
+        "id": "mixture-of-experts-math",
+        "label": "数理专家",
+        "detail": "数学 token 的首选",
+        "icon": "brain",
+        "group": "experts"
+      },
+      {
+        "id": "mixture-of-experts-code",
+        "label": "代码专家",
+        "detail": "代码 token 的首选",
+        "icon": "code",
+        "group": "experts"
+      },
+      {
+        "id": "mixture-of-experts-capacity",
+        "label": "容量上限",
+        "detail": "本轮剩余槽位",
+        "icon": "queue",
+        "group": "system"
+      },
+      {
+        "id": "mixture-of-experts-dropped",
+        "label": "拥塞处理",
+        "detail": "排队或丢弃",
+        "icon": "shield",
+        "group": "system"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "路由器打分",
+        "note": "先看偏好矩阵：同一个 token 不是把所有专家都完整唤醒。",
+        "activeIds": [
+          "mixture-of-experts-router"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "mixture-of-experts-math",
+          "mixture-of-experts-code",
+          "mixture-of-experts-capacity",
+          "mixture-of-experts-dropped"
+        ],
+        "values": {
+          "mixture-of-experts-router": "数学 → 数理 86 · 代码 21"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "激活",
+          "value": "少数专家"
+        }
+      },
+      {
+        "label": "代码 token 换一列",
+        "note": "换输入只改变一列偏好，代码专家成为首选；专家名仍只是观察用标签。",
+        "activeIds": [
+          "mixture-of-experts-code"
+        ],
+        "doneIds": [
+          "mixture-of-experts-router"
+        ],
+        "mutedIds": [
+          "mixture-of-experts-math",
+          "mixture-of-experts-capacity",
+          "mixture-of-experts-dropped"
+        ],
+        "values": {
+          "mixture-of-experts-code": "代码 → 代码专家 91"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "路由",
+          "value": "偏好改变"
+        }
+      },
+      {
+        "label": "容量条被顶满",
+        "note": "当首选专家的槽位不够，最高分不再等于“马上执行”，系统必须决定排队、换路或丢弃。",
+        "activeIds": [
+          "mixture-of-experts-capacity"
+        ],
+        "doneIds": [
+          "mixture-of-experts-router",
+          "mixture-of-experts-code"
+        ],
+        "mutedIds": [
+          "mixture-of-experts-math",
+          "mixture-of-experts-dropped"
+        ],
+        "values": {
+          "mixture-of-experts-capacity": "容量 70% · 请求 91%"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "负载",
+          "value": "超出 21%"
+        }
+      },
+      {
+        "label": "把拥塞单独记账",
+        "note": "最后留下处理结果，别把稀疏计算的好处和通信、丢 token 的代价混成一个数字。",
+        "activeIds": [
+          "mixture-of-experts-dropped"
+        ],
+        "doneIds": [
+          "mixture-of-experts-router",
+          "mixture-of-experts-capacity"
+        ],
+        "mutedIds": [
+          "mixture-of-experts-math",
+          "mixture-of-experts-code"
+        ],
+        "values": {
+          "mixture-of-experts-dropped": "排队 / 重路由 / 丢弃需记录"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "证据",
+          "value": "分开核算"
+        }
+      }
+    ],
+    "insight": "MoE 的难点是让“选谁”和“接不接得下”同时可见，而不是给每个专家编一个漂亮职能。",
+    "quiz": {
+      "question": "为什么 MoE 需要同时看路由分数和容量？",
+      "options": [
+        {
+          "label": "最高分专家可能没有空槽，负载会改变实际处理结果",
+          "correct": true
+        },
+        {
+          "label": "专家数量越多就一定有越高准确率",
+          "correct": false
+        },
+        {
+          "label": "只要是稀疏激活就没有通信成本",
+          "correct": false
+        }
+      ],
+      "success": "你把偏好和承载能力分开了。",
+      "retry": "重新观察容量条：它和路由最高分不是一回事。"
+    },
+    "prompt": {
+      "title": "检查一次专家路由",
+      "text": "选三类 token，分别记录路由偏好、容量阈值、排队或丢弃结果；不要把专家标签当成解释证明。"
+    },
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/1701.06538",
+        "label": "Sparsely-Gated MoE",
+        "note": "核对稀疏门控和路由器的基本机制。"
+      },
+      {
+        "url": "https://jmlr.org/papers/volume23/21-0998/21-0998.pdf",
+        "label": "Switch Transformers",
+        "note": "核对 top-1 路由、容量和负载平衡。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2112.06905",
+        "label": "GLaM",
+        "note": "核对稀疏激活与总参数规模的区别。"
+      },
+      {
+        "url": "https://huggingface.co/blog/moe",
+        "label": "Mixture of experts overview",
+        "note": "补充容量、稀疏激活和工程取舍的解释。"
+      }
+    ]
+  },
+  {
+    "slug": "speculative-decoding",
+    "lead": "草稿校对台允许小模型先写几枚 token，但每一枚都要回到目标模型的印章下；被拒的部分会退回重写。",
+    "definition": "投机解码用便宜的草稿模型提出一段候选，再由目标模型批量验证。接受的 token 可以一次留下，拒绝的位置按目标分布继续采样。",
+    "boundary": "这不是让草稿模型拥有最终决定权；速度收益依赖接受率、模型配对、批量和硬件，失败时还要回到普通解码。",
+    "sceneKind": "state-machine",
+    "sceneTitle": "草稿校对台",
+    "actionLabel": "验收下一枚 token",
+    "actors": [
+      {
+        "id": "speculative-decoding-draft",
+        "label": "草稿带",
+        "detail": "小模型先提议",
+        "icon": "robot",
+        "group": "draft"
+      },
+      {
+        "id": "speculative-decoding-verify",
+        "label": "目标验收",
+        "detail": "逐枚盖章",
+        "icon": "shield",
+        "group": "target"
+      },
+      {
+        "id": "speculative-decoding-accepted",
+        "label": "保留区",
+        "detail": "通过的 token",
+        "icon": "shield",
+        "group": "output"
+      },
+      {
+        "id": "speculative-decoding-rollback",
+        "label": "回滚区",
+        "detail": "拒绝处重采样",
+        "icon": "network",
+        "group": "fallback"
+      }
+    ],
+    "edges": [
+      {
+        "id": "speculative-decoding-edge-1",
+        "from": "speculative-decoding-draft",
+        "to": "speculative-decoding-verify",
+        "label": "送检"
+      },
+      {
+        "id": "speculative-decoding-edge-2",
+        "from": "speculative-decoding-verify",
+        "to": "speculative-decoding-accepted",
+        "label": "通过"
+      },
+      {
+        "id": "speculative-decoding-edge-3",
+        "from": "speculative-decoding-verify",
+        "to": "speculative-decoding-rollback",
+        "label": "拒绝"
+      }
+    ],
+    "frames": [
+      {
+        "label": "草稿先写三枚",
+        "note": "小模型先把候选带到桌上，尚未算作最终输出。",
+        "activeIds": [
+          "speculative-decoding-draft"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "speculative-decoding-verify",
+          "speculative-decoding-accepted",
+          "speculative-decoding-rollback"
+        ],
+        "values": {
+          "speculative-decoding-draft": "the / cat / sat"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "状态",
+          "value": "待验收"
+        }
+      },
+      {
+        "label": "目标一次看一段",
+        "note": "目标模型批量检查候选；草稿越贴近目标，越可能一次留下多枚。",
+        "activeIds": [
+          "speculative-decoding-verify"
+        ],
+        "doneIds": [
+          "speculative-decoding-draft"
+        ],
+        "mutedIds": [
+          "speculative-decoding-accepted",
+          "speculative-decoding-rollback"
+        ],
+        "values": {
+          "speculative-decoding-verify": "检查 3 枚候选"
+        },
+        "activeEdgeIds": [
+          "speculative-decoding-edge-1"
+        ],
+        "metric": {
+          "label": "状态",
+          "value": "验证中"
+        }
+      },
+      {
+        "label": "前两枚盖章",
+        "note": "通过的 token 进入输出带，验证过程不必逐枚重新生成。",
+        "activeIds": [
+          "speculative-decoding-accepted"
+        ],
+        "doneIds": [
+          "speculative-decoding-draft",
+          "speculative-decoding-verify"
+        ],
+        "mutedIds": [
+          "speculative-decoding-rollback"
+        ],
+        "values": {
+          "speculative-decoding-accepted": "the · cat"
+        },
+        "activeEdgeIds": [
+          "speculative-decoding-edge-1"
+        ],
+        "metric": {
+          "label": "收益",
+          "value": "一次多枚"
+        }
+      },
+      {
+        "label": "第三枚退回",
+        "note": "被拒的位置不能沿用草稿答案，按目标分布重采样后再继续。",
+        "activeIds": [
+          "speculative-decoding-rollback"
+        ],
+        "doneIds": [
+          "speculative-decoding-draft",
+          "speculative-decoding-verify",
+          "speculative-decoding-accepted"
+        ],
+        "mutedIds": [],
+        "values": {
+          "speculative-decoding-rollback": "sat ✕ → 目标重采样"
+        },
+        "activeEdgeIds": [
+          "speculative-decoding-edge-1"
+        ],
+        "metric": {
+          "label": "边界",
+          "value": "回普通路径"
+        }
+      }
+    ],
+    "insight": "投机解码的加速来自“批量验证后一次接受”，正确性仍由目标模型的分布守住。",
+    "quiz": {
+      "question": "草稿 token 被拒时应该怎样处理？",
+      "options": [
+        {
+          "label": "在拒绝位置按目标模型重新采样",
+          "correct": true
+        },
+        {
+          "label": "直接把草稿结果当作最终答案",
+          "correct": false
+        },
+        {
+          "label": "丢掉整段输出并永久停止",
+          "correct": false
+        }
+      ],
+      "success": "你找到了回滚点。",
+      "retry": "看第三枚 token：谁有最终决定权？"
+    },
+    "prompt": {
+      "title": "复盘一次投机解码",
+      "text": "画出一次草稿—验证—接受/回滚的记录，写清接受率和回到普通解码的条件。"
+    },
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2211.17192",
+        "label": "Fast Inference from Transformers via Speculative Decoding",
+        "note": "核对草稿模型、目标模型和接受规则。"
+      },
+      {
+        "url": "https://huggingface.co/docs/transformers/v4.52.2/en/generation_strategies",
+        "label": "Generation strategies",
+        "note": "核对生成服务中的实现边界。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2302.01318",
+        "label": "Accelerating Large Language Model Decoding with Speculative Sampling",
+        "note": "Chen et al.：补充独立的 speculative sampling 与拒绝采样边界。"
+      },
+      {
+        "url": "https://research.google/blog/looking-back-at-speculative-decoding/",
+        "label": "Looking back at speculative decoding",
+        "note": "补充草稿接受率与系统加速边界。"
+      }
+    ]
+  },
+  {
+    "slug": "beam-search",
+    "lead": "候选书签架不急着押中第一条句子，而是先保留几张未完成的书签，等下一词出现再按累计分数剪枝。",
+    "definition": "束搜索在每一步保留多个部分序列，扩展后按累计模型分数筛掉较弱候选；它改变的是搜索宽度，不是事实来源。",
+    "boundary": "束宽、长度惩罚和模型分数不等于答案正确性；更宽的搜索也可能更稳定地选中一个错误但高分的句子。",
+    "sceneKind": "compare",
+    "sceneTitle": "候选书签架",
+    "actionLabel": "调整束宽",
+    "actors": [
+      {
+        "id": "beam-search-beam1",
+        "label": "beam = 1",
+        "detail": "只留当前冠军",
+        "icon": "spark",
+        "group": "width"
+      },
+      {
+        "id": "beam-search-beam3",
+        "label": "beam = 3",
+        "detail": "保留三条前缀",
+        "icon": "queue",
+        "group": "width"
+      },
+      {
+        "id": "beam-search-score",
+        "label": "累计分数",
+        "detail": "每轮重新排序",
+        "icon": "chart",
+        "group": "evidence"
+      },
+      {
+        "id": "beam-search-pruned",
+        "label": "剪枝台",
+        "detail": "移走低分前缀",
+        "icon": "spark",
+        "group": "evidence"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "束宽为 1",
+        "note": "只留一条前缀，搜索便宜，但早早选错就没有回头路。",
+        "activeIds": [
+          "beam-search-beam1"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "beam-search-beam3",
+          "beam-search-score",
+          "beam-search-pruned"
+        ],
+        "values": {
+          "beam-search-beam1": "候选：A · 分数 -1.2"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "搜索",
+          "value": "窄"
+        }
+      },
+      {
+        "label": "同时留三条",
+        "note": "把多个前缀放在架上，等待下一步分数再决定谁留下。",
+        "activeIds": [
+          "beam-search-beam3"
+        ],
+        "doneIds": [
+          "beam-search-beam1"
+        ],
+        "mutedIds": [
+          "beam-search-score",
+          "beam-search-pruned"
+        ],
+        "values": {
+          "beam-search-beam3": "候选：A / B / C"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "搜索",
+          "value": "宽"
+        }
+      },
+      {
+        "label": "按累计分数排位",
+        "note": "分数来自模型对序列的偏好，不是外部检索或人工事实核验。",
+        "activeIds": [
+          "beam-search-score"
+        ],
+        "doneIds": [
+          "beam-search-beam1",
+          "beam-search-beam3"
+        ],
+        "mutedIds": [
+          "beam-search-pruned"
+        ],
+        "values": {
+          "beam-search-score": "A -1.2 · B -1.4 · C -1.7"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "依据",
+          "value": "模型分数"
+        }
+      },
+      {
+        "label": "剪掉弱候选",
+        "note": "架上只剩高分前缀，最终仍要检查长度偏置和任务质量。",
+        "activeIds": [
+          "beam-search-pruned"
+        ],
+        "doneIds": [
+          "beam-search-beam1",
+          "beam-search-beam3",
+          "beam-search-score"
+        ],
+        "mutedIds": [],
+        "values": {
+          "beam-search-pruned": "C 出架 · A/B 继续"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "结果",
+          "value": "候选变少"
+        }
+      }
+    ],
+    "insight": "束搜索是在有限预算下保留更多可能性，分数高仍然只是“模型更偏好”。",
+    "quiz": {
+      "question": "把 beam 从 1 调到 3，直接增加了什么？",
+      "options": [
+        {
+          "label": "同时保留的部分序列数量",
+          "correct": true
+        },
+        {
+          "label": "模型访问的外部事实数量",
+          "correct": false
+        },
+        {
+          "label": "答案经过人工核验的次数",
+          "correct": false
+        }
+      ],
+      "success": "你区分了搜索空间和事实证据。",
+      "retry": "先看书签架上增加的是候选，不是来源。"
+    },
+    "prompt": {
+      "title": "做一次束宽对照",
+      "text": "用同一个生成任务比较 beam=1 和 beam=3，单独记录搜索成本、长度偏置和最终人工验收结果。"
+    },
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/1409.3215",
+        "label": "Sequence to Sequence Learning",
+        "note": "核对束搜索作为序列生成解码策略的背景。"
+      },
+      {
+        "url": "https://arxiv.org/abs/1609.08144",
+        "label": "GNMT",
+        "note": "核对长度惩罚和束搜索在翻译中的使用。"
+      },
+      {
+        "url": "https://huggingface.co/docs/transformers/v4.52.2/en/generation_strategies",
+        "label": "Generation strategies",
+        "note": "补充 beam width 在生成配置中的含义。"
+      },
+      {
+        "url": "https://huggingface.co/docs/transformers/main_classes/text_generation",
+        "label": "Text generation configuration",
+        "note": "核对 beam width 与生成参数的工程含义。"
+      }
+    ]
+  },
+  {
+    "slug": "confidence-calibration",
+    "lead": "置信温度计把“我有多确定”和“我长期有多常答对”放在两根刻度上，温度只负责把数字调得没那么冒进。",
+    "definition": "置信度校准比较预测概率与相近概率样本的实际正确率；温度缩放主要改变概率的尖锐程度，不改变类别排序。",
+    "boundary": "校准依赖一份代表性的校准集和稳定的数据分布；换到新场景、脏标签或 OOD 输入，原来的读数可能再次失真。",
+    "sceneKind": "spectrum",
+    "sceneTitle": "可靠性温度计",
+    "actionLabel": "调整温度",
+    "actors": [
+      {
+        "id": "confidence-calibration-raw",
+        "label": "原始置信",
+        "detail": "模型报 0.90",
+        "icon": "chart",
+        "group": "prediction"
+      },
+      {
+        "id": "confidence-calibration-bucket",
+        "label": "可靠性桶",
+        "detail": "长期实际 0.64",
+        "icon": "database",
+        "group": "evidence"
+      },
+      {
+        "id": "confidence-calibration-temperature",
+        "label": "温度旋钮",
+        "detail": "软化概率",
+        "icon": "gear",
+        "group": "calibration"
+      },
+      {
+        "id": "confidence-calibration-aligned",
+        "label": "对齐读数",
+        "detail": "概率接近正确率",
+        "icon": "shield",
+        "group": "result"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "先看原始读数",
+        "note": "模型把一批样本报成 0.90，不代表其中九成一定答对；还缺长期统计。",
+        "activeIds": [
+          "confidence-calibration-raw"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "confidence-calibration-bucket",
+          "confidence-calibration-temperature",
+          "confidence-calibration-aligned"
+        ],
+        "values": {
+          "confidence-calibration-raw": "预测概率 0.90"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "读数",
+          "value": "偏乐观"
+        }
+      },
+      {
+        "label": "放进可靠性桶",
+        "note": "把概率相近的样本放在一起，再数它们真实答对的比例。",
+        "activeIds": [
+          "confidence-calibration-bucket"
+        ],
+        "doneIds": [
+          "confidence-calibration-raw"
+        ],
+        "mutedIds": [
+          "confidence-calibration-temperature",
+          "confidence-calibration-aligned"
+        ],
+        "values": {
+          "confidence-calibration-bucket": "实际正确率 0.64"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "证据",
+          "value": "分桶统计"
+        }
+      },
+      {
+        "label": "调温度，不换冠军",
+        "note": "温度缩放把过尖的概率压平，但类别排序仍由原模型决定。",
+        "activeIds": [
+          "confidence-calibration-temperature"
+        ],
+        "doneIds": [
+          "confidence-calibration-raw",
+          "confidence-calibration-bucket"
+        ],
+        "mutedIds": [
+          "confidence-calibration-aligned"
+        ],
+        "values": {
+          "confidence-calibration-temperature": "T > 1 · 概率变平"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "操作",
+          "value": "只调尺度"
+        }
+      },
+      {
+        "label": "读数接近现实",
+        "note": "校准后的概率更适合作为风险分层输入，仍不是事实或安全保证。",
+        "activeIds": [
+          "confidence-calibration-aligned"
+        ],
+        "doneIds": [
+          "confidence-calibration-raw",
+          "confidence-calibration-bucket",
+          "confidence-calibration-temperature"
+        ],
+        "mutedIds": [],
+        "values": {
+          "confidence-calibration-aligned": "预测 0.68 ≈ 实际 0.66"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "结果",
+          "value": "可解释"
+        }
+      }
+    ],
+    "insight": "校准让概率更像长期命中率，但它不负责改正分类结果，也不承诺换分布后仍然可靠。",
+    "quiz": {
+      "question": "温度缩放主要改变什么？",
+      "options": [
+        {
+          "label": "概率的尖锐程度与可解释性",
+          "correct": true
+        },
+        {
+          "label": "模型选中的类别排序",
+          "correct": false
+        },
+        {
+          "label": "输入是否来自训练分布",
+          "correct": false
+        }
+      ],
+      "success": "你把概率尺度和分类决策分开了。",
+      "retry": "看温度旋钮：它没有把冠军换掉。"
+    },
+    "prompt": {
+      "title": "检查一次置信度",
+      "text": "从校准集做可靠性分桶，记录预测概率、实际正确率、温度和换分布后的变化。"
+    },
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/1706.04599",
+        "label": "On Calibration of Modern Neural Networks",
+        "note": "核对温度缩放和可靠性图的定义。"
+      },
+      {
+        "url": "https://arxiv.org/abs/1910.12656",
+        "label": "Dirichlet calibration",
+        "note": "Kull et al.：补充多分类校准不只依赖单一温度参数。"
+      },
+      {
+        "url": "https://scikit-learn.org/stable/modules/calibration.html",
+        "label": "Probability calibration",
+        "note": "核对分桶比较预测概率与长期正确率。"
+      },
+      {
+        "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+        "label": "AI Risk Management Framework",
+        "note": "补充概率读数进入风险管理时仍需场景证据。"
+      }
+    ]
+  },
+  {
+    "slug": "data-contamination",
+    "lead": "试卷封存柜先问“这道题有没有提前进过训练资料”，再决定一个漂亮分数还能不能拿来比较。",
+    "definition": "数据污染是评测题或其近似内容提前出现在训练、微调或提示资料中，使测试集失去独立性，分数的解释力随之下降。",
+    "boundary": "一次精确匹配扫描只能说明发现了什么；训练语料不完整、近似改写和间接泄漏都可能让“没找到”不等于“没污染”。",
+    "sceneKind": "contract",
+    "sceneTitle": "评测封存契约",
+    "actionLabel": "切换证据状态",
+    "actors": [
+      {
+        "id": "data-contamination-corpus",
+        "label": "训练资料",
+        "detail": "已见网页与题库",
+        "icon": "file",
+        "group": "source"
+      },
+      {
+        "id": "data-contamination-exam",
+        "label": "封存试卷",
+        "detail": "本轮独立题目",
+        "icon": "spark",
+        "group": "evaluation"
+      },
+      {
+        "id": "data-contamination-match",
+        "label": "重合证据",
+        "detail": "精确或近似命中",
+        "icon": "search",
+        "group": "evidence"
+      },
+      {
+        "id": "data-contamination-score",
+        "label": "分数条",
+        "detail": "高分仍需解释",
+        "icon": "chart",
+        "group": "result"
+      },
+      {
+        "id": "data-contamination-comparability",
+        "label": "可比性",
+        "detail": "能否与他人比较",
+        "icon": "chart",
+        "group": "result"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "先封存试卷",
+        "note": "发布评测前保存题目版本、时间和来源，先把“独立”写成契约。",
+        "activeIds": [
+          "data-contamination-exam"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "data-contamination-corpus",
+          "data-contamination-match",
+          "data-contamination-score",
+          "data-contamination-comparability"
+        ],
+        "values": {
+          "data-contamination-exam": "版本 2026-10 · 未公开"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "前提",
+          "value": "独立"
+        }
+      },
+      {
+        "label": "发现近似重合",
+        "note": "一条题目与训练资料近似命中，问题从“模型答得对吗”变成“这题还算新吗”。",
+        "activeIds": [
+          "data-contamination-match"
+        ],
+        "doneIds": [
+          "data-contamination-exam"
+        ],
+        "mutedIds": [
+          "data-contamination-corpus",
+          "data-contamination-score",
+          "data-contamination-comparability"
+        ],
+        "values": {
+          "data-contamination-match": "近似匹配 · 需追溯"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "风险",
+          "value": "有泄漏线索"
+        }
+      },
+      {
+        "label": "分数仍然很高",
+        "note": "污染并不会自动把分数擦掉；高分可以是真的，却不再支持泛化结论。",
+        "activeIds": [
+          "data-contamination-score"
+        ],
+        "doneIds": [
+          "data-contamination-exam",
+          "data-contamination-match"
+        ],
+        "mutedIds": [
+          "data-contamination-corpus",
+          "data-contamination-comparability"
+        ],
+        "values": {
+          "data-contamination-score": "92 分 · 解释受限"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "分数",
+          "value": "不能直读"
+        }
+      },
+      {
+        "label": "把可比性降下来",
+        "note": "去重、换独立集并记录排除规则后，才知道新分数能否和别的模型比较。",
+        "activeIds": [
+          "data-contamination-comparability"
+        ],
+        "doneIds": [
+          "data-contamination-exam",
+          "data-contamination-match",
+          "data-contamination-score"
+        ],
+        "mutedIds": [],
+        "values": {
+          "data-contamination-comparability": "封存复测 · 可审计"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "证据",
+          "value": "重新建立"
+        }
+      }
+    ],
+    "insight": "污染审计不只是找重复题，而是决定一个分数还能支撑哪种结论。",
+    "quiz": {
+      "question": "发现评测题疑似进入训练资料后，最先该改变什么？",
+      "options": [
+        {
+          "label": "降低对该分数泛化意义的解释并启动独立复测",
+          "correct": true
+        },
+        {
+          "label": "把高分直接当成更强能力证明",
+          "correct": false
+        },
+        {
+          "label": "只删除命中的一行而不记录规则",
+          "correct": false
+        }
+      ],
+      "success": "你把分数和独立性拆开了。",
+      "retry": "回到封存契约：题目独立性先于比较。"
+    },
+    "prompt": {
+      "title": "写一份污染审计",
+      "text": "给一次评测写封存记录、精确/近似匹配规则、排除清单和独立复测方案。"
+    },
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2310.18018",
+        "label": "NLP Evaluation in trouble",
+        "note": "Sainz et al.：说明基准污染会抬高分数并损害结论。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2406.04244",
+        "label": "Benchmark Data Contamination survey",
+        "note": "Xu et al.：综述基准污染的成因、检测与替代评测。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2311.09783",
+        "label": "Investigating Data Contamination",
+        "note": "Deng et al.：说明检索重合与 TS-Guessing 等检测思路。"
+      },
+      {
+        "url": "https://aclanthology.org/2024.findings-emnlp.30/",
+        "label": "An Open-Source Data Contamination Report",
+        "note": "Li et al.：补充公开污染报告与可复核资料。"
+      }
+    ]
+  },
+  {
+    "slug": "out-of-distribution",
+    "lead": "陌生件验收台只换一个环境因素：地点、时间或摄像头；模型越自信，越要问它是不是把陌生件认成了旧类别。",
+    "definition": "分布外输入来自训练数据之外的地点、时间、设备或任务条件。模型可以在陌生输入上继续给出高置信，因此需要单独的检测和处置。",
+    "boundary": "OOD 标签依赖参考分布、阈值和业务动作；一个红色提示不能自动告诉系统答案，也不能替代人工复核或安全默认值。",
+    "sceneKind": "branch",
+    "sceneTitle": "陌生件验收台",
+    "actionLabel": "更换环境因素",
+    "actors": [
+      {
+        "id": "out-of-distribution-reference",
+        "label": "训练分布",
+        "detail": "熟悉地点与设备",
+        "icon": "layout",
+        "group": "reference"
+      },
+      {
+        "id": "out-of-distribution-shift",
+        "label": "单项变化",
+        "detail": "医院 B / 夜间 / 新镜头",
+        "icon": "cloud",
+        "group": "shift"
+      },
+      {
+        "id": "out-of-distribution-confidence",
+        "label": "模型置信",
+        "detail": "仍可能 88%",
+        "icon": "chart",
+        "group": "readout"
+      },
+      {
+        "id": "out-of-distribution-review",
+        "label": "处置出口",
+        "detail": "暂缓自动通过",
+        "icon": "user",
+        "group": "action"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "同分布样本",
+        "note": "地点、时间和相机都接近训练资料，置信度只是当前读数。",
+        "activeIds": [
+          "out-of-distribution-reference"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "out-of-distribution-shift",
+          "out-of-distribution-confidence",
+          "out-of-distribution-review"
+        ],
+        "values": {
+          "out-of-distribution-reference": "医院 A · 白天 · 镜头 1"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "环境",
+          "value": "已见"
+        }
+      },
+      {
+        "label": "只换地点",
+        "note": "把地点换成医院 B，其余保持不动，才能知道是哪一项改变触发风险。",
+        "activeIds": [
+          "out-of-distribution-shift"
+        ],
+        "doneIds": [
+          "out-of-distribution-reference"
+        ],
+        "mutedIds": [
+          "out-of-distribution-confidence",
+          "out-of-distribution-review"
+        ],
+        "values": {
+          "out-of-distribution-shift": "医院 B · 其他不变"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "实验",
+          "value": "单变量"
+        }
+      },
+      {
+        "label": "高置信仍出现",
+        "note": "陌生不保证低分；一个 88% 的读数反而提醒我们不要把概率当熟悉度。",
+        "activeIds": [
+          "out-of-distribution-confidence"
+        ],
+        "doneIds": [
+          "out-of-distribution-reference",
+          "out-of-distribution-shift"
+        ],
+        "mutedIds": [
+          "out-of-distribution-review"
+        ],
+        "values": {
+          "out-of-distribution-confidence": "confidence 88% · 仍可疑"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "读数",
+          "value": "高但陌生"
+        }
+      },
+      {
+        "label": "转到处置出口",
+        "note": "把 OOD 侦测、模型置信和业务动作分开记录，给人工复核或补充资料留位置。",
+        "activeIds": [
+          "out-of-distribution-review"
+        ],
+        "doneIds": [
+          "out-of-distribution-reference",
+          "out-of-distribution-shift",
+          "out-of-distribution-confidence"
+        ],
+        "mutedIds": [],
+        "values": {
+          "out-of-distribution-review": "暂停自动通过 · 人工复核"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "动作",
+          "value": "有去处"
+        }
+      }
+    ],
+    "insight": "分布外问题的关键不是猜一个阈值，而是把环境变化、置信度和后续动作分账。",
+    "quiz": {
+      "question": "为什么陌生输入上的高置信仍然需要复核？",
+      "options": [
+        {
+          "label": "置信度不等于熟悉度，分布变化可能让模型自信地错",
+          "correct": true
+        },
+        {
+          "label": "高置信就证明输入一定在训练分布内",
+          "correct": false
+        },
+        {
+          "label": "只要换设备，模型就必然拒答",
+          "correct": false
+        }
+      ],
+      "success": "你没有把高概率当成“见过”。",
+      "retry": "再看陌生摄像头的读数：它故意没有下降。"
+    },
+    "prompt": {
+      "title": "设计一次分布偏移检查",
+      "text": "选择一个真实业务环境，只改变地点、时间或设备中的一项，记录 OOD 信号、模型置信和人工处置。"
+    },
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/1610.02136",
+        "label": "A Baseline for Detecting Misclassified and OOD Examples",
+        "note": "核对置信度作为 OOD 基线的局限。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2012.07421",
+        "label": "WILDS",
+        "note": "核对地点、设备、时间等真实分布变化。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2406.09867",
+        "label": "Rethinking OOD detection",
+        "note": "Long et al.：补充语义与协变量偏移的检测评测边界。"
+      },
+      {
+        "url": "https://arxiv.org/abs/1906.02530",
+        "label": "Can You Trust Your Model’s Uncertainty?",
+        "note": "核对分布变化下不确定性与校准的风险。"
+      }
+    ]
+  },
+  {
+    "slug": "parameter-efficient-fine-tuning",
+    "lead": "适配器磁贴墙把基座钉在原位，只换一张任务贴纸；文件变小了，版本、权限和失败样本仍要跟着走。",
+    "definition": "参数高效微调冻结大部分基座参数，只训练低秩更新、提示或适配器等少量参数，让多个任务共享一份基座。",
+    "boundary": "适配器小不代表任务安全或事实可靠；它必须绑定基座版本、训练数据、量化格式和加载顺序，并单独评测。",
+    "sceneKind": "assembly",
+    "sceneTitle": "基座与适配器磁贴墙",
+    "actionLabel": "挂上或取下适配器",
+    "actors": [
+      {
+        "id": "parameter-efficient-fine-tuning-base",
+        "label": "冻结基座",
+        "detail": "大部分参数不动",
+        "icon": "brain",
+        "group": "base"
+      },
+      {
+        "id": "parameter-efficient-fine-tuning-customer",
+        "label": "客服磁贴",
+        "detail": "订单支持偏置",
+        "icon": "message",
+        "group": "adapter"
+      },
+      {
+        "id": "parameter-efficient-fine-tuning-code",
+        "label": "代码磁贴",
+        "detail": "函数补全偏置",
+        "icon": "code",
+        "group": "adapter"
+      },
+      {
+        "id": "parameter-efficient-fine-tuning-stats",
+        "label": "成本标签",
+        "detail": "可训练参数与文件大小",
+        "icon": "chart",
+        "group": "evidence"
+      },
+      {
+        "id": "parameter-efficient-fine-tuning-output",
+        "label": "任务输出",
+        "detail": "挂哪张就偏向哪类任务",
+        "icon": "layout",
+        "group": "result"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "基座留在墙上",
+        "note": "先锁定基座版本；没有任务磁贴时，输出仍是基座默认行为。",
+        "activeIds": [
+          "parameter-efficient-fine-tuning-base"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "parameter-efficient-fine-tuning-customer",
+          "parameter-efficient-fine-tuning-code",
+          "parameter-efficient-fine-tuning-stats",
+          "parameter-efficient-fine-tuning-output"
+        ],
+        "values": {
+          "parameter-efficient-fine-tuning-base": "基座 v1 · 冻结"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "参数",
+          "value": "大部分不动"
+        }
+      },
+      {
+        "label": "挂上客服磁贴",
+        "note": "只加载一小份任务更新，输出偏向订单支持语气；基座没有被重新训练一遍。",
+        "activeIds": [
+          "parameter-efficient-fine-tuning-customer"
+        ],
+        "doneIds": [
+          "parameter-efficient-fine-tuning-base"
+        ],
+        "mutedIds": [
+          "parameter-efficient-fine-tuning-code",
+          "parameter-efficient-fine-tuning-stats",
+          "parameter-efficient-fine-tuning-output"
+        ],
+        "values": {
+          "parameter-efficient-fine-tuning-customer": "客服 adapter · 18 MB"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "任务",
+          "value": "客服"
+        }
+      },
+      {
+        "label": "换成代码磁贴",
+        "note": "同一基座换另一张适配器，任务方向改变；两张磁贴不能混成“模型自动会所有事”。",
+        "activeIds": [
+          "parameter-efficient-fine-tuning-code"
+        ],
+        "doneIds": [
+          "parameter-efficient-fine-tuning-base"
+        ],
+        "mutedIds": [
+          "parameter-efficient-fine-tuning-customer",
+          "parameter-efficient-fine-tuning-stats",
+          "parameter-efficient-fine-tuning-output"
+        ],
+        "values": {
+          "parameter-efficient-fine-tuning-code": "代码 adapter · 22 MB"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "任务",
+          "value": "代码"
+        }
+      },
+      {
+        "label": "把证据贴在旁边",
+        "note": "记录可训练参数、峰值显存、基座哈希和失败样本，成本节省才可复现。",
+        "activeIds": [
+          "parameter-efficient-fine-tuning-stats"
+        ],
+        "doneIds": [
+          "parameter-efficient-fine-tuning-base",
+          "parameter-efficient-fine-tuning-code"
+        ],
+        "mutedIds": [
+          "parameter-efficient-fine-tuning-customer",
+          "parameter-efficient-fine-tuning-output"
+        ],
+        "values": {
+          "parameter-efficient-fine-tuning-stats": "0.8% 参数 · 基座哈希已记"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "发布",
+          "value": "可追溯"
+        }
+      }
+    ],
+    "insight": "PEFT 节省的是更新和存储的搬运量，不是验证、权限和版本管理。",
+    "quiz": {
+      "question": "取下适配器后最应该观察什么？",
+      "options": [
+        {
+          "label": "输出回到基座默认，说明适配器是独立任务更新",
+          "correct": true
+        },
+        {
+          "label": "基座参数已经永久变成客服模型",
+          "correct": false
+        },
+        {
+          "label": "所有任务都自动获得客服数据",
+          "correct": false
+        }
+      ],
+      "success": "你看到了共享基座和独立适配器的边界。",
+      "retry": "把磁贴取下，观察谁还留在墙上。"
+    },
+    "prompt": {
+      "title": "整理适配器清单",
+      "text": "为一个 PEFT 适配器写发布卡：基座版本、训练资料、适配器哈希、可用任务和已知失败样本。"
+    },
+    "sources": [
+      {
+        "url": "https://huggingface.co/docs/transformers/peft",
+        "label": "PEFT",
+        "note": "核对适配器、提示调优和冻结基座的路线。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2106.09685",
+        "label": "LoRA",
+        "note": "核对低秩更新如何减少可训练参数。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2305.14314",
+        "label": "QLoRA",
+        "note": "核对量化基座上的参数高效微调边界。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2104.08691",
+        "label": "Prompt tuning",
+        "note": "补充提示调优作为另一类 PEFT 路线。"
+      }
+    ]
+  },
+  {
+    "slug": "model-card",
+    "lead": "模型卡像随版本折叠的使用说明：把用途、数据、指标和限制摊开，缺一页就不该悄悄变成“可放心使用”。",
+    "definition": "模型卡是随模型版本发布的说明，记录预期用途、训练数据、评测条件、限制和已知失败，让使用者可以判断场景是否适配。",
+    "boundary": "模型卡提高透明度，却不能替代安全测试、监控和治理；勾齐栏目也不等于内容真实或模型通过认证。",
+    "sceneKind": "contract",
+    "sceneTitle": "版本发布折页",
+    "actionLabel": "补齐发布清单",
+    "actors": [
+      {
+        "id": "model-card-purpose",
+        "label": "预期用途",
+        "detail": "这版模型想解决什么",
+        "icon": "layout",
+        "group": "card"
+      },
+      {
+        "id": "model-card-data",
+        "label": "数据与环境",
+        "detail": "在哪些资料上训练",
+        "icon": "database",
+        "group": "card"
+      },
+      {
+        "id": "model-card-eval",
+        "label": "评测证据",
+        "detail": "指标对应什么条件",
+        "icon": "chart",
+        "group": "evidence"
+      },
+      {
+        "id": "model-card-limits",
+        "label": "限制与失败",
+        "detail": "不适用场景要写出来",
+        "icon": "shield",
+        "group": "boundary"
+      },
+      {
+        "id": "model-card-release",
+        "label": "审阅闸门",
+        "detail": "缺页就停在这里",
+        "icon": "shield",
+        "group": "release"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "先写用途",
+        "note": "先说清模型服务谁、做什么，不把通用能力暗示成所有场景都适用。",
+        "activeIds": [
+          "model-card-purpose"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "model-card-data",
+          "model-card-eval",
+          "model-card-limits",
+          "model-card-release"
+        ],
+        "values": {
+          "model-card-purpose": "预期用途：草拟客服回复"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "卡片",
+          "value": "定位"
+        }
+      },
+      {
+        "label": "补上数据与环境",
+        "note": "训练数据来源、时间、语言和硬件条件决定指标能不能被别人复现。",
+        "activeIds": [
+          "model-card-data"
+        ],
+        "doneIds": [
+          "model-card-purpose"
+        ],
+        "mutedIds": [
+          "model-card-eval",
+          "model-card-limits",
+          "model-card-release"
+        ],
+        "values": {
+          "model-card-data": "数据版本 + 部署环境"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "卡片",
+          "value": "可追溯"
+        }
+      },
+      {
+        "label": "把指标放回条件",
+        "note": "一个 92 分必须带着数据集、阈值和评测脚本，否则读者不知道它说明了什么。",
+        "activeIds": [
+          "model-card-eval"
+        ],
+        "doneIds": [
+          "model-card-purpose",
+          "model-card-data"
+        ],
+        "mutedIds": [
+          "model-card-limits",
+          "model-card-release"
+        ],
+        "values": {
+          "model-card-eval": "准确率 92% · 条件已标注"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "证据",
+          "value": "有上下文"
+        }
+      },
+      {
+        "label": "限制页过闸",
+        "note": "把已知失败、不适用人群和监控要求写出，发布闸门才有理由打开。",
+        "activeIds": [
+          "model-card-limits",
+          "model-card-release"
+        ],
+        "doneIds": [
+          "model-card-purpose",
+          "model-card-data",
+          "model-card-eval"
+        ],
+        "mutedIds": [],
+        "values": {
+          "model-card-limits": "失败样本 + 不适用场景",
+          "model-card-release": "可审阅"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "发布",
+          "value": "限制在场"
+        }
+      }
+    ],
+    "insight": "模型卡的价值在于让下一位使用者看到证据的范围和缺口，而不是给模型盖安全章。",
+    "quiz": {
+      "question": "为什么模型卡里的限制页和指标页同样重要？",
+      "options": [
+        {
+          "label": "指标告诉你在哪测过，限制告诉你不要把它搬到哪里",
+          "correct": true
+        },
+        {
+          "label": "只要有指标，限制就会自动从模型里消失",
+          "correct": false
+        },
+        {
+          "label": "限制页可以代替线上监控和安全测试",
+          "correct": false
+        }
+      ],
+      "success": "你把适用证据和不适用边界同时保留了。",
+      "retry": "重新打开折页：缺少限制时发布闸门为什么停住？"
+    },
+    "prompt": {
+      "title": "起草一张模型卡",
+      "text": "为一个具体模型版本写四页卡片：用途、数据与环境、评测条件、限制与失败样本。"
+    },
+    "sources": [
+      {
+        "url": "https://doi.org/10.48550/arXiv.1810.03993",
+        "label": "Model Cards for Model Reporting",
+        "note": "核对用途、评测、限制和版本说明的结构。"
+      },
+      {
+        "url": "https://huggingface.co/docs/hub/model-cards",
+        "label": "Hugging Face model cards",
+        "note": "核对模型卡作为可发布说明的字段。"
+      },
+      {
+        "url": "https://deepmind.google/models/model-cards/",
+        "label": "Google DeepMind model cards",
+        "note": "核对模型卡在实际发布中的透明度作用。"
+      },
+      {
+        "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+        "label": "AI Risk Management Framework",
+        "note": "补充模型卡之外仍需持续治理和监控。"
       }
     ]
   }

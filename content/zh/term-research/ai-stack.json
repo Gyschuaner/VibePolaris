@@ -1959,5 +1959,185 @@
       "inference",
       "loading-state"
     ]
+  },
+  {
+    "slug": "quantization",
+    "mechanism": "量化把参数从高精度换成更少 bit 的数值刻度；PTQ、QAT、校准和硬件后端决定误差与收益。",
+    "misconception": "权重变小不等于所有运行时内存都按同一比例下降，也不等于没有质量损失。",
+    "demoSignature": "4帧｜对象：FP16/INT8/INT4 精度盘、权重刻度、内存条、校准开关｜交互：切换 bit 并勾选校准｜变化：存储下降、误差预算上升、未校准的低 bit 停在部署闸门外｜结果：看见资源取舍而非缩小即正确。",
+    "sourceUrls": [
+      "https://huggingface.co/docs/transformers/v4.57.0/en/quantization/concept_guide",
+      "https://arxiv.org/abs/2210.17323",
+      "https://arxiv.org/abs/2306.00978",
+      "https://huggingface.co/docs/text-generation-inference/en/conceptual/quantization"
+    ],
+    "rewriteRisk": "定义要区分 PTQ/QAT，并把方法论文的实验数字限制在原设置。",
+    "nearDuplicates": [
+      "inference",
+      "fine-tuning",
+      "transformer"
+    ]
+  },
+  {
+    "slug": "knowledge-distillation",
+    "mechanism": "蒸馏在训练时让小学生模型拟合大教师的输出分布或表示，软目标保留候选之间的相似度。",
+    "misconception": "学生不是把教师参数整包复制，也不是线上每次请求都先调用教师。",
+    "demoSignature": "3帧｜对象：教师黑板、hard label、soft distribution、学生概率｜交互：切换硬标签与软目标｜变化：第二名关系被抹掉或保留｜结果：看到训练信号的细节差异。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/1503.02531",
+      "https://arxiv.org/abs/1910.01108",
+      "https://arxiv.org/abs/1909.10351",
+      "https://arxiv.org/abs/2006.05525"
+    ],
+    "rewriteRisk": "不要把 DistilBERT/TinyBERT 的压缩数字写成蒸馏的普遍保证。",
+    "nearDuplicates": [
+      "pretraining",
+      "fine-tuning",
+      "llm"
+    ]
+  },
+  {
+    "slug": "mixture-of-experts",
+    "mechanism": "MoE 用路由器给 token 选择少数专家，稀疏激活降低每 token 的计算，但增加容量、负载和通信问题。",
+    "misconception": "专家的名字不自动代表人类可解释技能；总参数、激活参数和内存不是同一个指标。",
+    "demoSignature": "3帧｜对象：路由转盘、数学/代码/通用专家摊位、容量条、排队标记｜交互：换 token 与容量｜变化：高分专家亮起、容量不足转为排队｜结果：看见路由与拥塞分离。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/1701.06538",
+      "https://jmlr.org/papers/volume23/21-0998/21-0998.pdf",
+      "https://arxiv.org/abs/2112.06905",
+      "https://huggingface.co/blog/moe"
+    ],
+    "rewriteRisk": "说明稀疏计算同时保留全部专家加载与通信成本。",
+    "nearDuplicates": [
+      "attention",
+      "token",
+      "distributed-system"
+    ]
+  },
+  {
+    "slug": "speculative-decoding",
+    "mechanism": "小模型先提出草稿 token，目标模型批量验证，接受的草稿留下，拒绝处按目标分布重新采样。",
+    "misconception": "草稿模型没有最终决定权，速度收益也不是固定倍数。",
+    "demoSignature": "3帧｜对象：草稿 token 带、验证印章、接受 token、回滚线｜交互：逐步验收草稿｜变化：匹配 token 变绿、拒绝处回滚｜结果：加速提议与最终分布保持分开。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/2211.17192",
+      "https://huggingface.co/docs/transformers/v4.52.2/en/generation_strategies",
+      "https://arxiv.org/abs/2302.01318",
+      "https://research.google/blog/looking-back-at-speculative-decoding/"
+    ],
+    "rewriteRisk": "不能把特定 T5 实验的加速倍数泛化到所有硬件。",
+    "nearDuplicates": [
+      "inference",
+      "token",
+      "kv-cache"
+    ]
+  },
+  {
+    "slug": "beam-search",
+    "mechanism": "束搜索保留多个部分序列，按累计模型分数继续扩展并剪去较弱候选。",
+    "misconception": "束宽增加模型搜索候选，不增加外部事实，也不保证最高分是正确答案。",
+    "demoSignature": "3帧｜对象：候选书签、累计分数、剪枝台、束宽滑杆｜交互：从 beam=1 调到 3｜变化：保留集合扩大、低分候选被剪掉｜结果：看到搜索空间与事实核验的边界。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/1409.3215",
+      "https://arxiv.org/abs/1609.08144",
+      "https://huggingface.co/docs/transformers/v4.52.2/en/generation_strategies",
+      "https://huggingface.co/docs/transformers/main_classes/text_generation"
+    ],
+    "rewriteRisk": "需要区分模型评分、长度惩罚和事实正确性，避免把 beam 当答案验证器。",
+    "nearDuplicates": [
+      "inference",
+      "token",
+      "llm"
+    ]
+  },
+  {
+    "slug": "confidence-calibration",
+    "mechanism": "校准把置信度分桶中的预测概率与长期实际正确率对齐，温度缩放主要改变概率尖锐度。",
+    "misconception": "校准不改变类别排序，也不让错误预测变成事实；换分布后对齐可能失效。",
+    "demoSignature": "3帧｜对象：置信温度计、可靠性柱、预测/实际分桶、温度滑杆｜交互：调 T 并对照分桶｜变化：高概率过于乐观变得更接近实际｜结果：看见数字的可解释范围。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/1706.04599",
+      "https://arxiv.org/abs/1910.12656",
+      "https://scikit-learn.org/stable/modules/calibration.html",
+      "https://www.nist.gov/itl/ai-risk-management-framework"
+    ],
+    "rewriteRisk": "要写清校准集、标签质量和数据分布，不能宣称通用可信。",
+    "nearDuplicates": [
+      "evaluation",
+      "benchmark",
+      "out-of-distribution"
+    ]
+  },
+  {
+    "slug": "data-contamination",
+    "mechanism": "评测题或近似内容提前出现在训练/微调/提示资料中，测试集因此失去独立性。",
+    "misconception": "分数仍可能很高，但它不能再直接解释为未见数据上的泛化。",
+    "demoSignature": "3帧｜对象：训练资料夹、封存试卷、重合标记、可比性条｜交互：打开泄漏或封存评测题｜变化：分数高但可比性下降，去重后证据变干净｜结果：把分数与独立性拆开。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/2310.18018",
+      "https://arxiv.org/abs/2406.04244",
+      "https://arxiv.org/abs/2311.09783",
+      "https://aclanthology.org/2024.findings-emnlp.30/"
+    ],
+    "rewriteRisk": "没有发现精确匹配不等于证明没有污染，需保留资料可见范围和检测不确定性。",
+    "nearDuplicates": [
+      "evaluation",
+      "benchmark",
+      "eval"
+    ]
+  },
+  {
+    "slug": "out-of-distribution",
+    "mechanism": "OOD 输入来自训练分布之外的地点、时间、设备或任务条件，模型可能仍报高置信。",
+    "misconception": "陌生分布不会自动导致低置信；最大 softmax 也不是可靠的通用检测器。",
+    "demoSignature": "3帧｜对象：同分布样本、陌生摄像头、置信门、人工复核台｜交互：只改变地点/时间/相机之一｜变化：高置信与陌生标签同时出现，拒答门转人工｜结果：拆开环境、概率和动作。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/1610.02136",
+      "https://arxiv.org/abs/2012.07421",
+      "https://arxiv.org/abs/2406.09867",
+      "https://arxiv.org/abs/1906.02530"
+    ],
+    "rewriteRisk": "要把 OOD 检测阈值和业务拒答去处写在一起，不能当安全证明。",
+    "nearDuplicates": [
+      "confidence-calibration",
+      "evaluation",
+      "model-fallback"
+    ]
+  },
+  {
+    "slug": "parameter-efficient-fine-tuning",
+    "mechanism": "PEFT 冻结基座的大部分参数，只训练低秩更新、提示或适配器等少量任务参数。",
+    "misconception": "适配器文件小不等于任务无风险，也不等于基座权限和事实边界被自动继承。",
+    "demoSignature": "3帧｜对象：冻结基座、客服/代码适配器磁贴、任务输出、参数统计｜交互：挂上或取下适配器｜变化：可训练参数与输出偏置变化，基座保持不动｜结果：看见共享基座与独立适配器。",
+    "sourceUrls": [
+      "https://huggingface.co/docs/transformers/peft",
+      "https://arxiv.org/abs/2106.09685",
+      "https://arxiv.org/abs/2305.14314",
+      "https://arxiv.org/abs/2104.08691"
+    ],
+    "rewriteRisk": "不要把 LoRA、QLoRA、提示调优写成同一个实现；绑定基座与训练证据。",
+    "nearDuplicates": [
+      "fine-tuning",
+      "quantization",
+      "llm"
+    ]
+  },
+  {
+    "slug": "model-card",
+    "mechanism": "模型卡把预期用途、数据、评测特征、限制和不适用场景写成随版本发布的说明。",
+    "misconception": "有模型卡不等于通过安全认证；卡片不能替代监控、治理和场景测试。",
+    "demoSignature": "3帧｜对象：模型卡折页、用途/数据/指标/限制清单、发布闸门｜交互：勾选或折掉限制页｜变化：限制缺失时发布停住，补齐后才可审阅｜结果：透明度成为发布条件。",
+    "sourceUrls": [
+      "https://doi.org/10.48550/arXiv.1810.03993",
+      "https://huggingface.co/docs/hub/model-cards",
+      "https://deepmind.google/models/model-cards/",
+      "https://www.nist.gov/itl/ai-risk-management-framework"
+    ],
+    "rewriteRisk": "把卡片写成可审阅记录，不要写成无风险或全场景适用证明。",
+    "nearDuplicates": [
+      "evaluation",
+      "benchmark",
+      "safety-evaluation"
+    ]
   }
 ]
