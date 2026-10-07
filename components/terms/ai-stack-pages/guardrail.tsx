@@ -1,8 +1,8 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
-import { GuardrailGateHero } from "../ai-stack-lessons/ai-interaction-heroes";
 import { guardrailSources } from "@/lib/ai-stack-concept-sources/guardrail";
 import { GuardrailLesson } from "../ai-stack-lessons/guardrail";
+import { GuardrailSignatureHero } from "../GuardrailSignatureHero";
 
 export function GuardrailTermPage() {
   const sections: [string, string][] = [
@@ -11,7 +11,7 @@ export function GuardrailTermPage() {
     ["guardrail-failure-state", "检查器出错时也要停在可见状态"],
     ["guardrail-boundary", "护栏不是所有安全措施"],
   ];
-  return <Article slug="guardrail" title="护栏" subtitle="Guardrail · 在输入、输出或动作前后检查规则" sources={guardrailSources} sections={sections} hero={<GuardrailGateHero />} intro={<>护栏是在流程某个边界执行的规则检查。它可以检查输入、模型输出或工具动作，然后放行、改写、拦截或转人工。它回答的是“这一处是否符合这条规则”，不能替代权限、内容分类、事实核对和业务校验。</>}>
+  return <Article slug="guardrail" title="护栏" subtitle="Guardrail · 在输入、输出或动作前后检查规则" sources={guardrailSources} sections={sections} hero={<GuardrailSignatureHero />} intro={<>护栏是在流程某个边界执行的规则检查。它可以检查输入、模型输出或工具动作，然后放行、改写、拦截或转人工。它回答的是“这一处是否符合这条规则”，不能替代权限、内容分类、事实核对和业务校验。</>}>
     <ArticleSection id="guardrail-question" title="规则检查放在哪里">
       <p>导出客户表前，应用可以检查输出中的敏感字段；写入外部系统前，也可以检查工具参数。位置不同，阻断的对象就不同：输入护栏阻止危险请求进入，输出护栏改写或拒绝结果，工具护栏限制动作。先说清检查发生在哪个边界，读者才知道它能挡住什么、挡不住什么。</p>
       <p id="guardrail-check" className="vp-citation-target">OpenAI Agents SDK 把输入、输出和工具级 guardrail 分成不同阶段，阶段决定检查何时发生以及是否能阻止下一步。一个只检查最终文字的护栏，已经看不到模型之前提出过的工具参数。<Cite id="guardrail-check" sources={guardrailSources} /></p>
