@@ -25034,5 +25034,174 @@
         "note": "评测和不确定性治理"
       }
     ]
+  },
+  {
+    "slug": "constitutional-ai",
+    "lead": "没有人逐句标注每个回答时，模型如何用一组原则批评并改写自己的答案？",
+    "definition": "宪法式 AI 把一组关于有用、诚实、无害等行为的原则写成可审阅的 constitution，让模型依据原则批评和修订候选回答，再把这些改写或偏好用于训练。监督信号的一部分从逐条人工标签移到了原则集合与模型辅助反馈。",
+    "boundary": "原则不是自动正确的法律，也不是运行时权限或防火墙；谁写原则、怎样解释冲突、如何抽样评估都会改变结果。训练之后仍需政策、工具权限、红队和人工升级，不能把一段 constitution 当成完整安全系统。",
+    "sceneKind": "contract",
+    "sceneTitle": "原则卡与修订台：规则改变时，答案的取舍也显形",
+    "actionLabel": "挂上一张原则卡",
+    "actors": [
+      {
+        "id": "request",
+        "label": "用户请求",
+        "detail": "索取客户私人地址",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "constitution",
+        "label": "原则卡",
+        "detail": "尊重隐私、提供安全替代",
+        "icon": "file",
+        "group": "标准"
+      },
+      {
+        "id": "draft",
+        "label": "原回答",
+        "detail": "直接贴出地址",
+        "icon": "robot",
+        "group": "候选"
+      },
+      {
+        "id": "critique",
+        "label": "自评意见",
+        "detail": "指出隐私风险和缺少授权",
+        "icon": "search",
+        "group": "检查"
+      },
+      {
+        "id": "revision",
+        "label": "修订回答",
+        "detail": "拒绝地址并提供合法联系办法",
+        "icon": "shield",
+        "group": "结果"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "先看原回答",
+        "note": "没有原则卡时，候选回答只表现出完成请求的一面。",
+        "activeIds": [
+          "request",
+          "draft"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "constitution",
+          "critique",
+          "revision"
+        ],
+        "values": {
+          "draft": "直接贴出地址"
+        }
+      },
+      {
+        "label": "放入原则卡",
+        "note": "原则变成一把可审阅的评判尺，而不是隐藏开关。",
+        "activeIds": [
+          "constitution"
+        ],
+        "doneIds": [
+          "request"
+        ],
+        "mutedIds": [
+          "critique",
+          "revision"
+        ],
+        "values": {
+          "constitution": "隐私 + 安全替代"
+        }
+      },
+      {
+        "label": "自评并改写",
+        "note": "模型指出冲突，再把候选改成可帮助用户的安全版本。",
+        "activeIds": [
+          "critique",
+          "revision"
+        ],
+        "doneIds": [
+          "request",
+          "constitution",
+          "draft"
+        ],
+        "mutedIds": [],
+        "values": {
+          "critique": "缺少授权",
+          "revision": "拒绝地址 · 给出联系路径"
+        }
+      },
+      {
+        "label": "出现原则冲突",
+        "note": "紧急救助与隐私同时出现时，需要记录升级和人工判断。",
+        "activeIds": [
+          "constitution",
+          "critique"
+        ],
+        "doneIds": [
+          "request"
+        ],
+        "mutedIds": [
+          "revision"
+        ],
+        "values": {
+          "constitution": "紧急救助优先 + 核验身份"
+        }
+      }
+    ],
+    "insight": "宪法式 AI 把监督原则变成可检查材料，但原则来源和冲突处理仍需人负责。",
+    "quiz": {
+      "question": "宪法式 AI 中最需要公开讨论的部分是什么？",
+      "options": [
+        {
+          "label": "原则由谁写、怎样解释和评估",
+          "correct": true
+        },
+        {
+          "label": "把所有拒答写成同一句话",
+          "correct": false
+        },
+        {
+          "label": "只看模型是否记住原则名称",
+          "correct": false
+        }
+      ],
+      "success": "原则的来源、解释、冲突与评估决定监督信号。",
+      "retry": "复述原则名字不能证明模型在情境中按原则行动。"
+    },
+    "prompt": {
+      "title": "审阅一组 AI 行为原则",
+      "text": "请把这组原则改写成可观察的行为标准：每条给出适用情境、允许回答、应拒绝的边界、与其他原则冲突时的优先级和可由人工复核的测试例子。标明哪些价值判断仍需要负责人批准。"
+    },
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback",
+        "label": "Anthropic · Constitutional AI",
+        "note": "原则、自评与 AI 反馈训练"
+      },
+      {
+        "url": "https://arxiv.org/abs/2212.08073",
+        "label": "Bai et al. · Constitutional AI",
+        "note": "宪法式无害化方法原始论文"
+      },
+      {
+        "url": "https://www.anthropic.com/research/specific-versus-general-principles-for-constitutional-ai",
+        "label": "Anthropic · Specific vs general principles",
+        "note": "原则粒度与行为泛化"
+      },
+      {
+        "url": "https://www.anthropic.com/research/collective-constitutional-ai-aligning-a-language-model-with-public-input",
+        "label": "Anthropic · Collective Constitutional AI",
+        "note": "原则来源和公共输入边界"
+      },
+      {
+        "url": "https://doi.org/10.6028/NIST.AI.600-1",
+        "label": "NIST · AI Risk Management Framework",
+        "note": "治理、风险与人工监督"
+      }
+    ]
   }
 ]
