@@ -2,11 +2,11 @@ import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { workingMemorySources } from "@/lib/ai-stack-concept-sources/working-memory";
 import { WorkingMemoryLesson } from "../ai-stack-lessons/working-memory";
-import { WorkingMemoryHero } from "../ai-stack-lessons/working-memory-hero";
+import { WorkingMemoryDeskHero } from "../ai-stack-lessons/ai-interaction-heroes";
 
 export function WorkingMemoryTermPage() {
   const sections: [string, string][] = [["working-snapshot", "先留下这次任务真正会用的几件事"], ["working-unknown", "工具没回，状态就停在未知"], ["working-handoff", "每次回执都要改写下一步"], ["working-cleanup", "交付物和临时草稿各走各的生命周期"]];
-  return <Article slug="working-memory" title="工作记忆" subtitle="Working Memory · 当前任务继续推进所需的临时状态" sources={workingMemorySources} sections={sections} hero={<WorkingMemoryHero />} intro={<>周五晚上，你让智能体从五副耳机里挑出两副“预算内、现在有货”的。它需要记住预算、候选和查库存的回执，却不需要把昨晚的闲聊整段搬进来。工作记忆就是这张会被回执改写、任务结束后可以收起的临时桌面。</>}>
+  return <Article slug="working-memory" title="工作记忆" subtitle="Working Memory · 当前任务继续推进所需的临时状态" sources={workingMemorySources} sections={sections} hero={<WorkingMemoryDeskHero />} intro={<>周五晚上，你让智能体从五副耳机里挑出两副“预算内、现在有货”的。它需要记住预算、候选和查库存的回执，却不需要把昨晚的闲聊整段搬进来。工作记忆就是这张会被回执改写、任务结束后可以收起的临时桌面。</>}>
     <ArticleSection id="working-snapshot" title="先留下这次任务真正会用的几件事"><p>任务刚开始时，桌面上只有三件要紧的东西：预算不超过 500 元、必须现货、最后交付两项。五个候选和“下一步查库存”也写进去；用户上次说过喜欢哪种编程语言，与这次比价没有关系，就留在别处。</p><p id="working-state" className="vp-citation-target">OpenAI Agents SDK 的运行器会沿着输入、工具调用和结果推进一次运行；session 或输入列表可以成为下一轮的状态来源，至于哪些历史进入模型，要由承载它的应用决定。<Cite id="working-state" sources={workingMemorySources} /></p><WorkingMemoryLesson /></ArticleSection>
     <ArticleSection id="working-unknown" title="工具没回，状态就停在未知"><p id="working-short-term" className="vp-citation-target">LangChain 把短期记忆放在线程状态里：同一条任务线能继续看到目标和工具结果，也可以在内容变长时做摘要。摘要会丢细节，所以任务真正依赖的约束要以可检查的状态留下。<Cite id="working-short-term" sources={workingMemorySources} /></p><p id="working-context" className="vp-citation-target">Anthropic 的上下文工程把当前动作需要的内容放在一起，并持续取舍相关性。库存接口还没回时，A、C、E 只能标成“待查”；把“没消息”涂成“有货”，下一步就会拿着假证据交付。<Cite id="working-context" sources={workingMemorySources} /></p></ArticleSection>
     <ArticleSection id="working-handoff" title="每次回执都要改写下一步"><p id="working-observation" className="vp-citation-target">ReAct 把行动和观察交替起来：先发出查询，再把环境返回的内容带回下一轮。库存回执说 E 无货后，清单才从 A、C、E 收敛为 A、C；这条观察是本轮的工作证据，不会因为被看见就自动变成长期档案。<Cite id="working-observation" sources={workingMemorySources} /></p><p>真正的交付也要有自己的边界：A、C 已经可以给用户比较，下一步不该继续盲目查库存。任务板上的候选数、调用次数和待办动作一起更新，读者才能看见“为什么现在可以停”。</p></ArticleSection>

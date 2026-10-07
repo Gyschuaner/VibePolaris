@@ -1,22 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, Check, CheckCircle, FileText, LockSimple, X } from "@phosphor-icons/react";
-import { useScene } from "../HarnessStoryScenes";
-import { Caption } from "../AiStackConceptLessonShared";
+import { ArrowRight, Check, CheckCircle, FileText, LockSimple, SealCheck, X } from "@phosphor-icons/react";
+import { SceneControls, useScene } from "../HarnessStoryScenes";
 import { useResetOnSceneStart } from "../AgentConceptLessonShared";
-import styles from "../ConceptArticle.module.css";
+import styles from "../ModelOutputConcepts.module.css";
+
+type Decision = "pending" | "approve" | "modify" | "reject";
+const steps = ["请求进入", "暂停等待", "人做决定", "执行结果"];
 
 export function HumanInTheLoopLesson() {
-  const scene = useScene(4);
-  const [decision, setDecision] = useState<"pending" | "approve" | "modify" | "reject">("pending");
+  const scene = useScene(steps.length);
+  const [decision, setDecision] = useState<Decision>("pending");
   useResetOnSceneStart(scene, () => setDecision("pending"));
-  const decisionVisible = scene.step >= 2;
-  const approved = decisionVisible && (decision === "approve" || decision === "modify");
+  const decided = scene.step >= 2 && decision !== "pending";
+  const approved = decided && (decision === "approve" || decision === "modify");
   const executed = scene.step === 3 && approved;
-  return <div className={styles.lab} ref={scene.ref} role="region" aria-label="人在回路演示">
-    <Caption scene={scene} labels={["请求进入", "暂停等待", "人做决定", "执行结果"]} titles={["金额超过自动上限", "动作还没有发生", "决定能改变结果", "执行或保持未执行"]} copy={["退款申请为 1200 元，自动上限为 500 元。", "系统展示订单、金额和建议动作，暂停在执行前。", "批准、修改和拒绝都是不同的决定，不是点一下确认。", executed ? "人工决定被记录，批准路径才产生退款。" : approved ? "决定已记录，下一步才会执行退款。" : "拒绝或未决定不会产生退款。"]} />
-    <div className={styles.choices} role="group" aria-label="选择人工决定">{(["approve", "modify", "reject"] as const).map((key) => <button key={key} type="button" aria-pressed={decision === key} onClick={() => { setDecision(key); scene.seek(2); }}>{key === "approve" ? "批准" : key === "modify" ? "改为 500" : "拒绝"}</button>)}</div>
-    <div className={styles.contract}><div><FileText size={25} /><h3>预览</h3><p>退款 1200 元</p></div><ArrowRight size={20} /><div>{!decisionVisible || decision === "pending" ? <LockSimple size={25} /> : <Check size={25} />}<h3>审阅人</h3><p>{!decisionVisible || decision === "pending" ? "等待决定" : decision === "modify" ? "改为 500 元" : decision === "approve" ? "批准" : "拒绝"}</p></div><ArrowRight size={20} /><div>{executed ? <CheckCircle size={25} /> : <X size={25} />}<h3>退款</h3><p>{executed ? decision === "modify" ? "按 500 元执行" : "按 1200 元执行" : scene.step === 2 && approved ? "等待执行" : "未执行"}</p></div></div>
+  const amount = decision === "modify" ? "¥500" : "¥1,200";
+  return <div ref={scene.ref} className={`${styles.lab} ${styles.approvalLab}`} role="region" aria-label="人在回路演示">
+    <SceneControls scene={scene} labels={steps}/>
+    <div className={styles.approvalWorkbench}><div className={styles.approvalRequest}><div className={styles.approvalRequestHead}><FileText size={21}/><strong>待审阅退款单</strong><span>{scene.step < 1 ? "未进入" : executed ? "已执行" : "暂停"}</span></div><div className={styles.approvalAmount}><small>申请金额</small><strong>{amount}</strong></div><dl><div><dt>自动上限</dt><dd>¥500</dd></div><div><dt>影响</dt><dd>退款副作用</dd></div><div><dt>来源</dt><dd>订单 A102</dd></div></dl></div><div className={styles.approvalDecision}><h3>审阅者决定</h3><div className={styles.approvalChoices}>{(["approve", "modify", "reject"] as const).map((key) => <button key={key} type="button" aria-pressed={decision === key} onClick={() => { setDecision(key); scene.seek(2); }}>{key === "approve" ? "批准 ¥1,200" : key === "modify" ? "改为 ¥500" : "拒绝"}</button>)}</div><div className={styles.approvalStamp} data-state={decision}>{decision === "pending" ? <><LockSimple size={22}/><strong>暂停</strong><small>动作尚未发生</small></> : decision === "reject" ? <><X size={22}/><strong>拒绝</strong><small>不产生退款</small></> : <><SealCheck size={22}/><strong>{decision === "modify" ? "改额" : "批准"}</strong><small>记录后可执行</small></>}</div>{approved && !executed && <button className={styles.approvalExecute} type="button" onClick={() => scene.seek(3)}>执行已批准退款<ArrowRight size={18}/></button>}</div></div>
+    <div className={styles.approvalAudit} role="status">{executed ? <><CheckCircle size={17}/> 决定与待处理项一一对应，按 {amount} 执行</> : decision === "reject" && scene.step >= 2 ? <><X size={17}/> 拒绝被记录，退款执行次数为 0</> : approved ? <><Check size={17}/> 决定已记录，执行仍需要单独一步</> : "先看见金额、上限和影响，再决定是否盖章"}</div>
   </div>;
 }

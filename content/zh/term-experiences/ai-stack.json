@@ -4565,6 +4565,13 @@
         "group": "处理"
       },
       {
+        "id": "block",
+        "label": "阻断规则",
+        "detail": "关闭出口",
+        "icon": "shield",
+        "group": "处理"
+      },
+      {
         "id": "output",
         "label": "导出结果",
         "detail": "12条脱敏记录",
@@ -4586,87 +4593,63 @@
         "label": "命中后处理"
       },
       {
+        "id": "s-b",
+        "from": "scanner",
+        "to": "block",
+        "label": "命中即阻断"
+      },
+      {
         "id": "m-o",
         "from": "mask",
         "to": "output",
-        "label": "放行"
+        "label": "脱敏后放行"
       }
     ],
     "frames": [
       {
         "label": "数据待导出",
         "note": "12 条记录仍含完整手机号，每条记录各含 1 个。",
-        "activeIds": [
-          "data"
-        ],
+        "activeIds": ["data"],
         "doneIds": [],
-        "mutedIds": [
-          "scanner",
-          "mask",
-          "output"
-        ],
-        "values": {
-          "data": "完整手机号 12（每条 1 个）"
-        },
+        "mutedIds": ["scanner", "mask", "block", "output"],
+        "values": {"data": "完整手机号 12（每条 1 个）"},
         "activeEdgeIds": []
       },
       {
         "label": "规则命中",
-        "note": "检查器识别出 12 个手机号字段。",
-        "activeIds": [
-          "scanner"
-        ],
-        "doneIds": [
-          "data"
-        ],
-        "mutedIds": [
-          "output"
-        ],
-        "values": {
-          "scanner": "命中 12"
-        },
-        "activeEdgeIds": [
-          "d-s"
-        ]
+        "note": "检查器识别出 12 个手机号字段，原始数据仍未交付。",
+        "activeIds": ["scanner"],
+        "doneIds": ["data"],
+        "mutedIds": ["mask", "block", "output"],
+        "values": {"scanner": "命中 12"},
+        "activeEdgeIds": ["d-s"]
       },
       {
-        "label": "字段被改写",
-        "note": "脱敏规则把完整号码改为只显示后 4 位。",
-        "activeIds": [
-          "mask"
-        ],
-        "doneIds": [
-          "data",
-          "scanner"
-        ],
-        "mutedIds": [
-          "output"
-        ],
-        "values": {
-          "mask": "处理 12 / 12"
-        },
-        "activeEdgeIds": [
-          "s-m"
-        ]
+        "label": "选择处置",
+        "note": "同一个命中结果可以进入脱敏放行或命中即阻断，两条分支都还没有交付。",
+        "activeIds": ["mask", "block"],
+        "doneIds": ["data", "scanner"],
+        "mutedIds": ["output"],
+        "values": {"mask": "脱敏候选", "block": "阻断候选"},
+        "activeEdgeIds": ["s-m", "s-b"]
       },
       {
-        "label": "安全结果放行",
-        "note": "导出条数不变，完整手机号数量降为 0；权限仍需单独判断。",
-        "activeIds": [
-          "output"
-        ],
-        "doneIds": [
-          "data",
-          "scanner",
-          "mask"
-        ],
-        "mutedIds": [],
-        "values": {
-          "output": "12 条 · 完整号码 0"
-        },
-        "activeEdgeIds": [
-          "m-o"
-        ]
+        "label": "脱敏放行",
+        "note": "脱敏规则把完整号码改为只显示后 4 位，导出条数不变。",
+        "activeIds": ["output"],
+        "doneIds": ["data", "scanner", "mask"],
+        "mutedIds": ["block"],
+        "values": {"output": "12 条 · 完整号码 0"},
+        "activeEdgeIds": ["m-o"]
+      },
+      {
+        "label": "命中即阻断",
+        "note": "禁止规则关闭导出出口，完整手机号没有进入输出；权限仍需单独判断。",
+        "activeIds": ["block"],
+        "doneIds": ["data", "scanner"],
+        "mutedIds": ["mask", "output"],
+        "values": {"block": "导出停止 · 完整号码 0"},
+        "activeEdgeIds": ["s-b"]
       }
     ],
     "insight": "护栏在输入、输出或工具动作前后执行具体检查；它不能替代权限、内容审核或业务校验。",
@@ -4809,7 +4792,7 @@
       },
       {
         "label": "阈值切分",
-        "note": "按示意规则：≥ 0.80 隐藏，0.50–0.79 复核，< 0.50 展示。",
+        "note": "按示意规则：≥ 0.80 隐藏，0.65–0.79 复核，< 0.65 展示。",
         "activeIds": [
           "threshold"
         ],
@@ -4824,7 +4807,7 @@
       },
       {
         "label": "三路处置",
-        "note": "A 展示、B 复核、C 隐藏，不把分数直接当法律结论。",
+        "note": "A、B 展示，C 隐藏；分数还没有变成法律结论。",
         "activeIds": [
           "queues"
         ],
@@ -4836,7 +4819,7 @@
         ],
         "mutedIds": [],
         "values": {
-          "queues": "展示 1 / 复核 1 / 隐藏 1"
+          "queues": "展示 2 / 复核 0 / 隐藏 1"
         },
         "activeEdgeIds": [
           "t-q",
@@ -4847,7 +4830,7 @@
       },
       {
         "label": "阈值下调",
-        "note": "阈值改为 0.60 后，样本的复核队列变空，B 进入隐藏队列。",
+        "note": "阈值改为 0.70 后，B 从展示进入复核，分数本身没有改变。",
         "activeIds": [
           "threshold",
           "mid",
@@ -4859,8 +4842,8 @@
         ],
         "mutedIds": [],
         "values": {
-          "threshold": "0.60",
-          "queues": "展示 1 / 复核 0 / 隐藏 2"
+          "threshold": "0.70",
+          "queues": "展示 1 / 复核 1 / 隐藏 1"
         },
         "activeEdgeIds": [
           "t-q",
