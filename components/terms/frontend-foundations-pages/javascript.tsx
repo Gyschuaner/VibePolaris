@@ -76,7 +76,7 @@ export function JavascriptTermPage(_props: BespokeTermPageProps) {
     <ArticleSection id="javascript-events-section" title="事件只是一次通知">
       <p id="javascript-events" className="vp-citation-target">事件告诉脚本“某件事发生了”，例如用户点击、输入、按键或页面完成加载。监听器登记一个函数；事件发生时，浏览器调用它，并把这次事件的相关信息传进去。<Cite id="javascript-events" sources={javascriptSources} /></p>
       <p>监听器不是业务结果。点击只说明一件事发生，接下来是否校验输入、更新状态、发请求或显示错误，要由回调里的代码决定。把“收到了 click”和“保存成功”写成同一个状态，排查问题时就会混在一起。</p>
-      <div className={styles.javascriptEventCard}><div><Cursor size={19} /><span>事件对象</span><code>type: "click"</code></div><div><Code size={19} /><span>回调函数</span><code>检查 → 计算 → 决定</code></div><div><Database size={19} /><span>业务结果</span><code>另一个需要验证的事实</code></div></div>
+      <div className={styles.javascriptEventCard}><div><Cursor size={19} /><span>事件对象</span><code>type: &quot;click&quot;</code></div><div><Code size={19} /><span>回调函数</span><code>检查 → 计算 → 决定</code></div><div><Database size={19} /><span>业务结果</span><code>另一个需要验证的事实</code></div></div>
     </ArticleSection>
     <ArticleSection id="javascript-state-section" title="变量改变，页面不一定跟着变">
       <p id="javascript-state" className="vp-citation-target">变量只是程序当前保存的值。脚本把 <code>count</code> 从 2 改成 3，只能证明内存里的值变了；页面是否显示 3，要看代码有没有把这个值写回 DOM 或交给框架的渲染机制。<Cite id="javascript-state" sources={javascriptSources} /></p>
