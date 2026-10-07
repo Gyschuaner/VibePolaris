@@ -1,6 +1,6 @@
 "use client";
 
-import { Browser, CheckCircle, Code, Cube, Cursor, Database, PlayCircle, Terminal, WarningCircle } from "@phosphor-icons/react";
+import { Browser, CheckCircle, Code, Cursor, Database, PlayCircle, Terminal, WarningCircle } from "@phosphor-icons/react";
 import { useState } from "react";
 import { javascriptSources } from "@/lib/frontend-foundation-sources";
 import { Article, Cite } from "../AiStackConceptPageShared";
@@ -10,16 +10,23 @@ import type { BespokeTermPageProps } from "../BespokeTermScaffold";
 import styles from "./FrontendFoundations.module.css";
 
 function JavascriptHero() {
-  return <ConceptHero slug="javascript" label="一次点击改变 JavaScript 状态，页面读数是否跟着变化取决于 DOM 写回">
-    <div className={styles.javascriptHero}><div className={styles.javascriptHeroPanel}>
-      <div className={styles.javascriptHeroHead}><Code size={19} /><span>EVENT · STATE · SCREEN</span><b>同一块读数</b></div>
-      <div className={styles.javascriptHeroReadouts}>
-        <div><Cursor size={20} /><span>事件</span><strong>click</strong><small>浏览器发出的通知</small></div>
-        <div data-active="true"><Cube size={20} /><span>状态</span><strong>count = 2</strong><small>脚本里的值</small></div>
-        <div><Browser size={20} /><span>屏幕</span><strong>显示 2</strong><small>当前 DOM 读数</small></div>
-      </div>
-      <div className={styles.javascriptHeroFoot}><span>语言核心</span><i /><span>宿主 API</span><i /><strong>都由运行环境提供边界</strong></div>
-    </div></div>
+  return <ConceptHero slug="javascript" label="指针点击加一按钮，脚本中的 count 从 2 变为 3，写回 DOM 后页面读数也变为 3">
+    <svg className={styles.javascriptCounterHero} viewBox="0 0 350 225" fill="none">
+      <rect className={styles.javascriptCounterMemory} x="8" y="77" width="131" height="91" rx="9" />
+      <text className={styles.javascriptCounterLabel} x="22" y="101">脚本里的值</text>
+      <g className={styles.javascriptCounterBefore}><text className={styles.javascriptCounterCode} x="22" y="134">count = 2</text></g>
+      <g className={styles.javascriptCounterAfter}><text className={styles.javascriptCounterCode} x="22" y="134">count = 3</text></g>
+      <rect className={styles.javascriptCounterWindow} x="150" y="16" width="189" height="187" rx="11" />
+      <path className={styles.javascriptCounterLine} d="M150 45H339" />
+      <circle className={styles.javascriptCounterDot} cx="164" cy="31" r="3" /><circle className={styles.javascriptCounterDot} cx="175" cy="31" r="3" /><circle className={styles.javascriptCounterDot} cx="186" cy="31" r="3" />
+      <text className={styles.javascriptCounterLabel} x="244" y="70" textAnchor="middle">页面上的读数</text>
+      <g className={styles.javascriptCounterBefore}><text className={styles.javascriptCounterDigit} x="244" y="128" textAnchor="middle">2</text></g>
+      <g className={styles.javascriptCounterAfter}><text className={styles.javascriptCounterDigit} x="244" y="128" textAnchor="middle">3</text></g>
+      <rect className={styles.javascriptCounterButton} x="209" y="146" width="70" height="33" rx="7" />
+      <text className={styles.javascriptCounterButtonLabel} x="244" y="168" textAnchor="middle">+1</text>
+      <circle className={styles.javascriptCounterPulse} cx="251" cy="163" r="17" />
+      <path className={styles.javascriptCounterCursor} d="M264 164V191L271 183L276 195L281 192L276 180H287Z" />
+    </svg>
   </ConceptHero>;
 }
 

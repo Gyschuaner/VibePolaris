@@ -1,23 +1,43 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { ArrowCounterClockwise, ArrowDownLeft, ArrowRight, ArrowUpRight, Brain, Check, FileText, GitBranch, GitCommit, Key, LockKey, MagnifyingGlass, Scales, ShieldCheck, Sparkle, Stack, Terminal, Wrench } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowDownLeft, ArrowRight, ArrowUpRight, Brain, Check, FileText, GitBranch, GitCommit, Key, LockKey, MagnifyingGlass, Pause, Play, Scales, ShieldCheck, Sparkle, Stack, Terminal, Wrench } from "@phosphor-icons/react";
 import styles from "./ConceptHero.module.css";
 
 // The three introductions share only playback, not a diagram template.
 export function ConceptHero({ slug, label, children }: { slug: string; label?: string; children?: ReactNode }) {
   const ref = useRef<HTMLElement>(null);
   const [replay, setReplay] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const visibleRef = useRef(false);
+
   useEffect(() => {
     const element = ref.current;
     if (!element) return;
-    let visible = false;
-    const update = () => { element.dataset.playing = String(visible && !document.hidden); };
-    const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; update(); });
+    const update = () => { element.dataset.playing = String(visibleRef.current && !document.hidden && isPlaying); };
+    const observer = new IntersectionObserver(([entry]) => { visibleRef.current = entry.isIntersecting; update(); });
     observer.observe(element);
     document.addEventListener("visibilitychange", update);
+    update();
     return () => { observer.disconnect(); document.removeEventListener("visibilitychange", update); };
-  }, []);
+  }, [isPlaying]);
+
+  function advance() {
+    const animations = ref.current?.getAnimations({ subtree: true }) ?? [];
+    for (const animation of animations) {
+      const timing = animation.effect?.getComputedTiming();
+      const duration = typeof timing?.duration === "number" ? timing.duration : Number.POSITIVE_INFINITY;
+      const current = typeof animation.currentTime === "number" ? animation.currentTime : 0;
+      animation.currentTime = Math.min(current + 650, duration);
+      animation.pause();
+    }
+    setIsPlaying(false);
+  }
+
+  function restart() {
+    setIsPlaying(true);
+    setReplay(value => value + 1);
+  }
 
   return <figure ref={ref} className={styles.hero} data-kind={slug} aria-label={label ?? (slug === "tools" ? "请求交给工具，实际结果返回模型" : slug === "context" ? "任务、日志和要求组合成本轮输入" : "读取日志、修正代码与检查结果")}>
     <div key={replay} className={styles.art} aria-hidden="true">
@@ -37,7 +57,11 @@ export function ConceptHero({ slug, label, children }: { slug: string; label?: s
         <div><Check size={20} /><span>改返回值</span><code>200 OK</code></div>
       </div>)}
     </div>
-    <button type="button" className={styles.replay} onClick={() => setReplay(value => value + 1)} aria-label="重播概念首图"><ArrowCounterClockwise size={16} /></button>
+    <div className={styles.controls} role="group" aria-label="概念首图动画控制">
+      <button type="button" className={styles.control} onClick={() => setIsPlaying(value => !value)} aria-label={isPlaying ? "暂停概念首图动画" : "继续概念首图动画"}>{isPlaying ? <Pause size={13} /> : <Play size={13} />}</button>
+      <button type="button" className={styles.control} onClick={advance} aria-label="推进概念首图动画一段"><ArrowRight size={13} /></button>
+      <button type="button" className={styles.control} onClick={restart} aria-label="重播概念首图动画"><ArrowCounterClockwise size={13} /></button>
+    </div>
   </figure>;
 }
 
