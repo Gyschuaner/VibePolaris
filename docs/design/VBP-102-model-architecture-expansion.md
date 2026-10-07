@@ -189,9 +189,16 @@
 - 十个 slug 在 `content/zh/published-terms.json` 本次一次性加入；在此之前均只存在于批次、体验和研究台账。
 - 单条检查：`node --experimental-strip-types --test tests/term-library.test.mjs`、`npm run typecheck`、`git diff --check` 已在每条提交前通过。
 - 来源 URL 批量检查：36 个唯一 URL 全部 HTTP 200。
-- 待执行整批检查：`npm run audit:terms`、`npm run build`、生产前真实浏览器检查十个公开路由。
-- DP requirement/deployment 查询受 `SSL: UNEXPECTED_EOF_WHILE_READING` 阻塞；未伪造需求或部署 ID，待网络恢复后按项目规则补录。
+- 整批检查：`npm run audit:terms` 通过（372 条唯一体验，流程类 44/372 = 11.8%，本批新增 0 条，重复场景 0）；`npm run build` 通过（静态页 1111/1111）；`node --experimental-strip-types --test tests/term-library.test.mjs` 8/8；`npm run typecheck` 通过；`git diff --check` 通过。
+- 生产前真实浏览器检查：十个公开路由均能打开，标题、正文、来源和各自 sceneKind 均存在，无 404。
 
 ## 发布记录
 
-生产发布完成后补写 main 合并提交、镜像、release、备份、回滚和 DP 记录。
+- GitHub PR：[#454](https://github.com/Gyschuaner/VibePolaris/pull/454)，已合并到 `main`；合并提交 `2c2d6234d703bcb44a5bb4c71d6802ff3dfb67db`。
+- 镜像：`vibepolaris:2c2d6234d703bcb44a5bb4c71d6802ff3dfb67db`。
+- 生产 release：`/opt/vibepolaris/releases/20261007T221342Z-2c2d6234`；当前 symlink 已切换到该目录，容器 `vibepolaris-web-1` healthy。
+- 备份：`/opt/vibepolaris/backups/20261007T221342Z-from-575e0b03bcebc7ad182c7f2f8fa08af633c2b151`，含旧 compose、旧镜像检查信息、容器检查信息和 SQLite 在线备份 `sqlite/xiaobei.sqlite`。
+- 回滚：`/opt/vibepolaris/releases/20261007T221342Z-2c2d6234/rollback.sh`，恢复旧 release 和旧镜像，保留持久化数据卷。
+- 服务器本机经 Caddy 检查十个新路由全部 HTTP 200；根路径返回既有 308 规范化跳转。操作机直接访问公网域名时出现 `SSL_ERROR_SYSCALL`，因此不把它当作公网成功证据。
+- DP：已先查询 deployment 列表，再用幂等 ID `deploy-vbp102-model-architecture-prod-20261008` 按完整提交记录生产发布，并按规则原样重试一次；两次均因 `SSL: UNEXPECTED_EOF_WHILE_READING` 无法连接，未伪造 DP 记录。
+- 当前机器不存在 `D:/Obsidian/gysnote`，本次跳过 Obsidian 记录。
