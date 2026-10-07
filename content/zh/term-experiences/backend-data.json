@@ -687,6 +687,27 @@
           "label": "重新传输内容",
           "value": "0 KB"
         }
+      },
+      {
+        "label": "201 但正文读不懂",
+        "note": "服务已经报告创建成功，客户端却在解析损坏的 JSON；网络结果和页面显示错误属于两层证据。",
+        "activeIds": [
+          "reply",
+          "resource"
+        ],
+        "doneIds": [
+          "get",
+          "head",
+          "conditional"
+        ],
+        "mutedIds": [],
+        "values": {
+          "reply": "201 · body malformed",
+          "resource": "已创建 id=42"
+        },
+        "activeEdgeIds": [
+          "resource-reply"
+        ]
       }
     ],
     "insight": "状态、字段和内容是响应的不同部分；没有响应体不等于没有响应。",
@@ -717,7 +738,66 @@
       {
         "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
         "label": "RFC 9110 · HTTP Semantics",
-        "note": "协议定义与报文语义"
+        "note": "响应、状态码与表示的语义"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Messages",
+        "label": "MDN · HTTP messages",
+        "note": "响应首行、字段和正文"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/201",
+        "label": "MDN · 201 Created",
+        "note": "创建资源后的响应语义"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/204",
+        "label": "MDN · 204 No Content",
+        "note": "成功但没有响应正文"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch",
+        "label": "MDN · Using the Fetch API",
+        "note": "fetch、状态检查与响应正文读取"
+      }
+    ],
+    "teaching": [
+      {
+        "id": "response-message",
+        "title": "响应是一份回执，不只是 body",
+        "body": "服务器针对请求返回的响应至少要看状态码和字段，正文只是可选的一部分。状态码先给出处理结果的类别，Content-Type 等字段说明如何理解正文；页面最后显示什么，仍由客户端代码决定。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "response-created",
+        "title": "201 的“创建成功”还要看接口约定",
+        "body": "201 表示请求已经导致新资源创建，但新资源的编号、Location 和正文形状由具体接口约定。页面不应把自己提交的草稿当成最终记录，应该读取服务回传的标识和表示。",
+        "sourceIndices": [
+          1,
+          3
+        ]
+      },
+      {
+        "id": "response-empty",
+        "title": "没有正文也可以是成功",
+        "body": "204 明确表示这次没有响应内容。删除或更新完成后，服务可以只给状态和响应头；客户端应直接更新界面，不能无条件调用 `response.json()`，因为空字节不是合法 JSON。",
+        "sourceIndices": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": "response-boundary",
+        "title": "网络成功、解析失败、业务失败要分开",
+        "body": "拿到 201 说明服务已经报告创建成功；之后 JSON 解析失败，说明客户端没读懂回执，不足以推断创建被撤销。相反，422 是服务拒绝当前内容，页面应按错误正文提示用户修改输入。",
+        "sourceIndices": [
+          1,
+          2,
+          5
+        ]
       }
     ]
   },
