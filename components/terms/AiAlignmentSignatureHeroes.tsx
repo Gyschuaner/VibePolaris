@@ -1,6 +1,6 @@
 "use client";
 
-import { Calculator, ChartLine, CheckCircle, FileText, GitBranch, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
+import { Calculator, ChartLine, CheckCircle, FileText, GitBranch, ShieldCheck, User, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./AiAlignmentSignatureHeroes.module.css";
 
@@ -80,5 +80,30 @@ export function ConstitutionalAiSignatureHero() {
       </div>
     </div>
     <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 2 ? "原则卡先把“什么算合适”写得具体，避免只剩一句口号。" : revised ? "批评、改写和剩余风险都被留下；原则不是权限系统或自动正确的法律。" : "先指出哪条原则被触犯，再谈怎样改写，不能把模型自评当成证明。"}</p></figcaption>
+  </figure>;
+}
+
+
+export function RlhfSignatureHero() {
+  const scene = useScene(4);
+  const labels = ["摆出两个回答", "人类做比较", "奖励尺学到偏好", "换一题再核对"];
+  const proxy = scene.step === 3;
+  return <figure ref={scene.ref} className={styles.hero} role="region" aria-label="RLHF 把人类对回答的比较变成奖励代理" data-step={scene.step}>
+    <SceneControls scene={scene} labels={labels} compact />
+    <div className={styles.canvas}>
+      <div className={styles.preferenceBoard}>
+        <div className={styles.preferencePair}>
+          <span>同一个请求 · 写给人看</span>
+          <div className={styles.preferenceCard} data-picked={scene.step >= 1} data-muted={scene.step >= 1}><User size={16} /><strong>A · 礼貌但漏了日期</strong><small>{scene.step >= 1 ? "未选" : "候选回答"}</small></div>
+          <div className={styles.preferenceCard} data-picked={scene.step >= 1} data-winner={scene.step >= 1}><User size={16} /><strong>B · 说明限制和日期</strong><small>{scene.step >= 1 ? "人类偏好" : "候选回答"}</small></div>
+        </div>
+        <div className={styles.rewardBoard}>
+          <span>奖励模型 · 只是代理尺</span>
+          <div className={styles.rewardDial} data-active={scene.step >= 2}><ChartLine size={20} /><strong>{scene.step < 2 ? "—" : proxy ? "0.91" : "0.78"}</strong><small>{scene.step < 2 ? "等待比较" : proxy ? "语气很顺，但要换测试" : "更偏向 B"}</small></div>
+          <div className={styles.rewardNotice} data-warn={proxy}>{proxy ? <WarningCircle size={17} /> : scene.step >= 2 ? <CheckCircle size={17} /> : <User size={17} />}<span>{scene.step < 2 ? "人的判断还没有进入尺子" : proxy ? "奖励高，不代表事实已核验" : "比较被转成训练信号"}</span></div>
+        </div>
+      </div>
+    </div>
+    <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 2 ? "先让人比较具体回答，奖励模型才知道这批任务里的“更好”长什么样。" : proxy ? "奖励是代理目标；换题、换标注标准和独立事实检查仍然必要。" : "偏好被压成一把可训练的尺，但它不等于完整的人类价值。"}</p></figcaption>
   </figure>;
 }

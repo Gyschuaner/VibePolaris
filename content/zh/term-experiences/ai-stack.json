@@ -25436,9 +25436,9 @@
     },
     "sources": [
       {
-        "url": "https://openai.com/index/instruction-following/",
-        "label": "OpenAI · Aligning language models",
-        "note": "示范、偏好、奖励模型与 PPO"
+        "url": "https://huggingface.co/blog/rlhf",
+        "label": "Hugging Face · Illustrating RLHF",
+        "note": "人类偏好、奖励模型与策略优化概览"
       },
       {
         "url": "https://arxiv.org/abs/2203.02155",
@@ -25446,9 +25446,9 @@
         "note": "RLHF 训练与限制"
       },
       {
-        "url": "https://openai.com/index/learning-from-human-preferences/",
-        "label": "OpenAI · Learning from human preferences",
-        "note": "人类偏好作为奖励信号"
+        "url": "https://huggingface.co/docs/trl/main/en/ppo_trainer",
+        "label": "Hugging Face TRL · PPO Trainer",
+        "note": "偏好奖励进入 PPO 的实现参考"
       },
       {
         "url": "https://arxiv.org/abs/1706.03741",
@@ -25459,6 +25459,38 @@
         "url": "https://doi.org/10.6028/NIST.AI.600-1",
         "label": "NIST · AI Risk Management Framework",
         "note": "代理目标和风险治理边界"
+      }
+    ],
+    "teaching": [
+      {
+        "id": "stages",
+        "title": "人类反馈先被整理成可学习的比较",
+        "body": "常见做法是先让人写示范或比较回答 A、B，再用这些判断训练一个奖励模型。奖励模型学到的是“在这批任务和标注标准下，哪种回答更像被选中的”，而不是一张完整的人类价值表。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "proxy",
+        "title": "奖励是代理尺，不是事实裁判",
+        "body": "如果标注者偏爱礼貌而忽略事实，模型就可能学会更像样的语气，却没有更可靠的内容。奖励投机、标注分歧和分布变化都需要单独检查，因此高奖励不能替代事实核验、安全评测或真实用户场景。",
+        "sourceIndices": [
+          1,
+          2,
+          5
+        ]
+      },
+      {
+        "id": "evaluation",
+        "title": "训练结束还要把尺子拿开再测一次",
+        "body": "独立测试要换一批问题、标注规则和失败条件，观察模型是否只记住了奖励模型熟悉的表面信号。把训练数据、奖励模型版本、偏好分布和未解决案例留下，后续才知道一次回归究竟改进了什么。",
+        "sourceIndices": [
+          3,
+          4,
+          5
+        ]
       }
     ]
   },
