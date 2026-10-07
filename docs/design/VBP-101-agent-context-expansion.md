@@ -48,4 +48,13 @@
 
 ## 发布记录
 
-本文件记录本地实现和批次验收；生产发布、版本、备份、回滚及 DP deployment 以十条最终合并后的记录为准，未在批次完成前提前标记为生产已发布。
+## 生产发布记录（2026-10-08）
+
+- 内容 PR [#452](https://github.com/Gyschuaner/VibePolaris/pull/452) 已合入 `main`，生产源提交为 `575e0b03bcebc7ad182c7f2f8fa08af633c2b151`。
+- 本机构建的 `linux/amd64` 镜像为 `vibepolaris:575e0b03bcebc7ad182c7f2f8fa08af633c2b151`；镜像内 `news:validate`、Next 静态生成 1101 页和容器启动均通过。
+- 生产 release 为 `/opt/vibepolaris/releases/20261007T213629Z-575e0b03`，`/opt/vibepolaris/current` 已原子切换到该目录；`vibepolaris-web-1` 使用新镜像并保持 `healthy`。
+- 切换前 release 为 `/opt/vibepolaris/releases/20261007T204157Z-1de99bfe`，旧镜像为 `vibepolaris:1de99bfe7d1ee5c9e370d4d64f56f032da6eef3d`；备份为 `/opt/vibepolaris/backups/20261007T213629Z-from-1de99bfe7d1ee5c9e370d4d64f56f032da6eef3d`。备份包含旧 Compose、容器和镜像检查信息，以及通过 SQLite `VACUUM INTO` 完成的在线备份 `xiaobei.sqlite`；`vibepolaris_xiaobei_data` 数据卷未替换。
+- 生产机经 HTTPS server-local smoke 检查 `/`、`/news`、`/about`、`/sitemap.xml` 与本批十条 `/terms/*` 路由均返回 HTTP 200；过程监督、结果监督、奖励投机和计算机使用的专属演示标记可在页面 HTML 中找到；容器最近日志只有正常启动信息。当前客户端直接访问公网时出现 `SSL_ERROR_SYSCALL`，因此公网客户端检查未冒充通过，服务器本地 HTTPS 结果作为本次发布证据。
+- 回滚入口为 `/opt/vibepolaris/releases/20261007T213629Z-575e0b03/rollback.sh`，可恢复旧 Compose、旧镜像和旧 release；回滚不删除或覆盖上线后新增的 Xiaobei 数据。
+- 按 `developer-platform-cli` 以批次 `deploy-vbp101-agent-context-prod-20261008` 记录生产 deployment，并用同一批次 ID 重试一次；两次均因 `SSL: UNEXPECTED_EOF_WHILE_READING` 未连接 DP。未伪造 deployment ID 或状态，待 DP 网络恢复后用同一批次 ID 补录并查询确认。
+- 当前机器不存在规则指定的 `D:/Obsidian/gysnote`，本批没有写入该库。
