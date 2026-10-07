@@ -3,7 +3,7 @@
     "slug": "generative-ai",
     "mechanism": "生成式模型把输入条件转换成候选分布，并逐步选择 token、像素或音频片段，直到形成一份新内容。",
     "misconception": "“生成”不等于查找固定答案，也不等于事实已被核验；模型类型、提示和采样设置要分开理解。",
-    "demoSignature": "提示“为雨天写一句提醒”进入候选分布；采样 A/B 得到两种措辞；清空提示后显示缺少任务条件。证据：输出文本变化与空输入警告。",
+    "demoSignature": "5帧｜对象：一粒提示种子、三枚候选 token、三条句子带、空提示警示｜交互：固定提示、展开候选、抽出一条路径、并排完成三种措辞、清空提示｜变化：prompt=fixed→候选分布→一句路径→三种结果→prompt=∅ 停止；结果：看见生成变化，同时保留‘新内容不等于事实’边界。",
     "sourceUrls": [
       "https://doi.org/10.6028/NIST.AI.600-1",
       "https://platform.openai.com/docs/guides/text?api-mode=responses",
@@ -20,9 +20,9 @@
   },
   {
     "slug": "multimodal",
-    "mechanism": "多模态系统把文字、图片、音频或其他输入编码后放进同一任务流程，模型根据实际进入请求的模态共同理解。",
-    "misconception": "多模态不是“什么都能看”；支持的模态、格式和分辨率有边界，缺少图片时不能凭文字问题猜出视觉事实。",
-    "demoSignature": "文字问题先无票面图片；加入图片后显示日期回答；移除图片后转为缺少证据。证据：输入通道卡片与回答范围同步变化。",
+    "mechanism": "多模态系统让文字问题与图片、音频或视频等输入在同一次任务里共同参与处理；问题会改变模型在材料上寻找的字段，材料缺失则限制回答范围。",
+    "misconception": "多模态不是“什么都能看”；支持的模态、格式和细节由具体模型与接口决定，文字里的指代不能替代没有提交的图片。",
+    "demoSignature": "5帧｜对象：文字条件、票面图片、取景框、可核对回答｜交互：问题先到、带上票面、对准 DATE、切换字段、移除图片｜变化：input_image=∅→present→字段被圈出→回答回到像素→证据收窄；结果：看见多种输入如何互相约束，而不是一条通用流水线。",
     "sourceUrls": [
       "https://platform.openai.com/docs/guides/images-vision",
       "https://ai.google.dev/gemini-api/docs/vision",
@@ -30,18 +30,19 @@
       "https://arxiv.org/abs/2204.14198",
       "https://doi.org/10.6028/NIST.AI.600-1"
     ],
-    "rewriteRisk": "用具体的票面例子解释输入通道，不把“视觉模型”写成自动拥有所有图像事实。",
+    "rewriteRisk": "用具体的票面取景例子解释输入通道、表示对齐和证据范围，不把“视觉模型”写成自动拥有所有图像事实。",
     "nearDuplicates": [
       "generative-ai"
     ]
   },
   {
     "slug": "reasoning-model",
-    "mechanism": "推理模型为复杂任务分配额外 token 或候选搜索过程，用来拆分条件、比较路径并检查中间结果。",
-    "misconception": "推理更长不等于事实更正确；推理预算、外部证据和最终校验是三件事。",
-    "demoSignature": "退款条件比较先给直接候选，再展开检查步骤；切换紧张预算后停在未完成状态。证据：完成/未完成状态与预算同步。",
+    "mechanism": "推理模型为多步骤任务保留额外计算，用来拆分条件、比较候选路径并检查中间结果；可公开核对的是条件账本，不是模型私有思维链。",
+    "misconception": "推理更长不等于事实更正确；推理预算、外部证据和最终校验分别决定能不能交付。",
+    "demoSignature": "退款条件先落成一杆未平衡的天平，再逐项记账；预算紧张时停在未完成状态，不能盖章。证据：条件计数、平衡状态与预算同步。",
     "sourceUrls": [
-      "https://platform.openai.com/docs/guides/reasoning",
+      "https://developers.openai.com/api/docs/guides/reasoning",
+      "https://developers.openai.com/api/docs/guides/reasoning-best-practices",
       "https://arxiv.org/abs/2201.11903",
       "https://arxiv.org/abs/2305.10601",
       "https://arxiv.org/abs/2501.12948",
@@ -56,13 +57,13 @@
   },
   {
     "slug": "system-prompt",
-    "mechanism": "系统提示词在请求开始时提供较高层的行为、格式或安全规则，模型再处理用户消息并生成受约束的输出。",
-    "misconception": "系统提示不是保险箱，也不是权限系统；低层请求受规则约束，但秘密和授权仍要在模型外保护。",
-    "demoSignature": "系统规则要求 JSON 且不泄露内部指令；用户请求冲突时仍按 JSON 拒绝；移除系统规则后显示保护缺失。",
+    "mechanism": "系统提示词把角色、输出形状和工作范围放在一次请求的高层指令中，模型再处理用户消息；它影响生成行为，不直接执行权限。",
+    "misconception": "系统提示不是保险箱，也不是权限系统；文字模具可以收窄输出，却不能替应用保存秘密、审批动作或验证结果。",
+    "demoSignature": "同一张索取规则的用户便签经过“JSON·不泄露”模具时变成受限结果；拿掉模具后只显示保护缺失。证据：规则卡、便签和出模状态同步。",
     "sourceUrls": [
-      "https://model-spec.openai.com/",
-      "https://platform.openai.com/docs/guides/prompt-engineering",
-      "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#give-claude-a-role",
+      "https://github.com/openai/model_spec/blob/main/model_spec.md",
+      "https://developers.openai.com/api/docs/guides/prompt-engineering",
+      "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices",
       "https://ai.google.dev/gemini-api/docs/system-instructions",
       "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
     ],
@@ -74,17 +75,17 @@
   },
   {
     "slug": "few-shot-prompting",
-    "mechanism": "少样本提示把少量输入—输出示例放进当前上下文，模型据此推断任务格式或局部边界，不更新模型参数。",
-    "misconception": "示例不是训练，也不是事实数据库；示例覆盖不足或互相冲突时，结果会随上下文变化。",
-    "demoSignature": "一致工单示例把新故障归为前端；加入互相冲突的示例后标签显示不稳定。证据：示例卡和新输出同步改变。",
+    "mechanism": "少样本提示把少量输入—输出校样放进当前上下文，让模型在这次请求里参照标签空间、输入分布和输出版式；它不会更新模型参数。",
+    "misconception": "示例不是训练，也不是事实数据库；它们只把局部版式摆到当前请求里，覆盖不足、格式混乱或标签冲突都可能被带进新结果。",
+    "demoSignature": "一张校样台先显出两张工单小票、标签盘和单标签格式；新工单落位后盖出前端，加入相反标签后印章改为先修示例。证据：校样卡、标签空间、模型参数 unchanged 和冲突输出同步变化；不画流程节点。",
     "sourceUrls": [
       "https://arxiv.org/abs/2005.14165",
-      "https://platform.openai.com/docs/guides/prompt-engineering",
+      "https://developers.openai.com/api/docs/guides/prompt-engineering",
       "https://ai.google.dev/gemini-api/docs/prompting-strategies",
       "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview",
       "https://arxiv.org/abs/2202.12837"
     ],
-    "rewriteRisk": "先解释示例改变的是当前上下文，再说明覆盖边界和冲突风险，避免把少样本写成微调。",
+    "rewriteRisk": "先解释示例改变的是当前上下文，再说明标签空间、输入分布和格式如何显影；必须把示例校样与微调、事实核验和独立评测分开。",
     "nearDuplicates": [
       "zero-shot-prompting",
       "fine-tuning"
@@ -92,17 +93,17 @@
   },
   {
     "slug": "zero-shot-prompting",
-    "mechanism": "零样本提示不放输入—输出示例，只依靠自然语言任务说明、约束和格式让模型直接完成一次判断。",
-    "misconception": "零样本不是空提示，也不代表模型拥有通用且已验证的能力；约束和独立评估仍然需要。",
-    "demoSignature": "无示例的故障分类先按模糊任务说明判断；补充“按最先失败组件”后结果标为可复核。",
+    "mechanism": "零样本提示把示例数量固定为 0，只用自然语言任务牌、允许范围、拒答条件和输出格式让模型直接完成一次判断；输入不够清楚时，任务应停在补信息。",
+    "misconception": "零样本不是空提示，也不代表模型拥有通用且已验证的能力；约束能收窄输出，却不能制造缺失证据，独立评估仍然需要。",
+    "demoSignature": "一只没有校样的指南针：示例盒始终为 0，任务牌亮起后装入允许标签与拒答条件；具体故障让指针落到前端，模糊故障让指针停在补信息。可视化：空样本盒、任务卡、罗盘扇区、输入票与停下状态，不画流程节点。",
     "sourceUrls": [
       "https://arxiv.org/abs/2005.14165",
-      "https://platform.openai.com/docs/guides/prompt-engineering",
+      "https://developers.openai.com/api/docs/guides/reasoning-best-practices",
       "https://ai.google.dev/gemini-api/docs/prompting-strategies",
       "https://arxiv.org/abs/2205.11916",
       "https://arxiv.org/abs/2109.01652"
     ],
-    "rewriteRisk": "解释无示例和无任务的区别，避免把一次零样本成功写成普遍能力。",
+    "rewriteRisk": "解释无示例和无任务的区别，把任务牌、约束、输入证据和拒答边界写清；避免把一次零样本成功写成普遍能力或事实核验。",
     "nearDuplicates": [
       "few-shot-prompting"
     ]
@@ -111,15 +112,15 @@
     "slug": "temperature",
     "mechanism": "温度在采样阶段重新拉伸下一 token 的候选概率，通常低温更集中、高温更分散；实际效果取决于接口和解码组合。",
     "misconception": "温度不是创造力或准确度刻度，也不会替代事实检索；低温可能让错误更稳定。",
-    "demoSignature": "三候选概率柱随滑块改变集中度，低温显示更稳定，高温显示更分散；正文明确数值为教学示意且不改变事实校验。",
+    "demoSignature": "一枚落针抽签盘把同一句提示的三个候选分成不同面积：低温收窄最高候选，高温铺开其他区域；同一落点在两种温度下落进不同词区。盘外保留“事实材料 = ∅”的边界卡，不画流程节点。",
     "sourceUrls": [
-      "https://developers.openai.com/api/reference/resources/responses/methods/create",
-      "https://platform.openai.com/docs/guides/text?api-mode=responses",
-      "https://huggingface.co/docs/transformers/main/en/generation_strategies",
+      "https://developers.openai.com/api/docs/guides/text",
+      "https://ai.google.dev/gemini-api/docs/prompting-strategies",
+      "https://ai.google.dev/api/models",
       "https://huggingface.co/docs/transformers/main/en/main_classes/text_generation",
       "https://arxiv.org/abs/1904.09751"
     ],
-    "rewriteRisk": "只写采样阶段的相对概率变化，避免把温度宣传成创造力或准确度旋钮。",
+    "rewriteRisk": "把温度限定在候选采样分布，补齐不同模型的参数范围与 top-p/top-k 边界；避免把低温写成准确率开关，并把没有来源的事实题停在证据缺口。",
     "nearDuplicates": [
       "generative-ai"
     ]
@@ -128,7 +129,7 @@
     "slug": "context-window",
     "mechanism": "输入、历史、工具结果和输出预算共同占用一次请求的 token 容量；超出后必须裁剪、压缩或另行检索。",
     "misconception": "上下文窗口不是长期记忆，也不保证模型平均利用每个位置。",
-    "demoSignature": "周末出游聊天：周日 17:00 前到家、民宿地址和旧天气闲聊依次进入 16k 工作台；历史达到 17k 后出现溢出，摘要移出闲聊并保住返程约束，窗口回到 14k。交互：首图自动演示卡片进入、溢出和整理，正文工作台再逐步拆开预算。",
+    "demoSignature": "一只 16k 旅行箱装入返程约束、民宿地址和旧天气闲聊；工具结果把箱盖顶开到 17k，随后把闲聊折成摘要回到 14k，最后把关键约束放回可见位置。交互：首图逐帧看卡片进入、超出、折叠和定位，正文工作台可切换溢出、摘要与信息位置。",
     "sourceUrls": [
       "https://developers.openai.com/api/docs/guides/conversation-state",
       "https://openai.github.io/openai-agents-python/running_agents/",
@@ -146,9 +147,9 @@
   },
   {
     "slug": "tokenization",
-    "mechanism": "分词器按具体词表和规则把字符串切成 token 片段并映射为编号，模型接收编号序列而不是原始字符。",
-    "misconception": "token 不是固定一个字或一个词；语言、空格、符号和编码器都会影响数量。",
-    "demoSignature": "“CSS 很好用”在 BPE 示意与按词示意下显示不同 token 数和编号；正文强调示意不能替代目标模型实测。",
+    "mechanism": "tokenizer 先把原始字符串按词表和边界规则切成片段，再把每个片段映射成当前编码器的编号序列；空格、语言、代码和词表都会改变这组片段。",
+    "misconception": "token 不是固定一个字或一个词，编号也没有跨编码器的通用含义；教学示意只能帮助理解，不能代替目标模型实测。",
+    "demoSignature": "字符串压缩机 5 帧：原句落台→标出空格边界→合并常见片段→贴上示意编号→并排换编码器；用户切换字符串与示意尺，观察 token 片段和序列实际变化。",
     "sourceUrls": [
       "https://github.com/openai/tiktoken",
       "https://developers.openai.com/cookbook/examples/how_to_count_tokens_with_tiktoken",
@@ -156,20 +157,24 @@
       "https://arxiv.org/abs/1808.06226",
       "https://arxiv.org/abs/1508.07909"
     ],
-    "rewriteRisk": "始终绑定具体编码器，避免把字符、词和 token 当成同一层单位。",
+    "rewriteRisk": "正文要解释子词、空格和编号的关系，并始终绑定具体编码器；不要把本站固定片段或数字写成厂商词表事实。",
     "nearDuplicates": [
       "context-window"
     ]
   },
   {
     "slug": "hallucination",
-    "mechanism": "模型可能生成语法流畅却无事实依据、与来源冲突或凭空补出的内容；它来自生成目标与事实核验之间的缺口。",
-    "misconception": "幻觉不只是“完全捏造”，错误归因、错引数字和把不确定内容说成确定也属于风险。",
-    "demoSignature": "输入：材料只写“季度收入120万”，问题追问利润；中间：证据字段收入=120万、利润=缺失；输出：拒绝给出利润并标注资料不足。可视化：证据表中缺失单元格阻断答案。 建议4帧：问题和资料表并列、利润字段显示空、无依据候选答案被红框、资料不足结果替换它；交互：补入利润字段后重新生成。",
+    "mechanism": "生成器会把高概率的语言接续写成完整答案，却不自动保证每个数字、归因和引用都能回到输入资料；证据字段缺失时，流畅的补写就可能成为幻觉。",
+    "misconception": "幻觉不只是“完全捏造”：偏离输入、与来源冲突、把不确定说成确定，以及引用没有真正支持主张，都需要分别检查。",
+    "demoSignature": "证据验票台 5 帧：收入字段入表→利润空格亮起→无依据数字被证据闸门挡回→补入利润 48 万→回答与财报第 3 行锁定；工作台切换问题与证据字段，观察候选是否获得落点。",
     "sourceUrls": [
-      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf"
+      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
+      "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations",
+      "https://platform.claude.com/docs/en/build-with-claude/citations",
+      "https://learn.microsoft.com/en-us/azure/well-architected/ai/grounding-data-design",
+      "https://arxiv.org/abs/2311.05232"
     ],
-    "rewriteRisk": "不要把任何模型错误都叫幻觉；区分证据缺失、计算错误和检索错误。",
+    "rewriteRisk": "正文要把证据缺失、读取或计算错误、检索不相关和引用不匹配拆开，并说明允许不确定只能降低风险，不能保证零幻觉。",
     "nearDuplicates": [
       "grounding",
       "citation"

@@ -1,0 +1,77 @@
+.hero,
+.lab { position: relative; box-sizing: border-box; overflow: hidden; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 20px; background: linear-gradient(145deg, color-mix(in srgb, var(--paper) 82%, #e7eee1), var(--paper)); color: var(--ink); }
+.hero { display: grid; gap: 11px; padding: 17px 18px 15px; }
+.hero::before,
+.lab::before { content: ""; position: absolute; inset: 9px; border: 1px solid color-mix(in srgb, var(--accent-text) 16%, transparent); border-radius: 15px; pointer-events: none; }
+.heroTop,
+.labTop { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--muted); font: 10px ui-monospace, SFMono-Regular, monospace; letter-spacing: .05em; }
+.heroTop strong,
+.labTop strong { padding: 4px 7px; border-radius: 999px; background: color-mix(in srgb, var(--accent-text) 10%, transparent); color: var(--ink); font-size: 9px; }
+.hero :global(.sceneControls) { position: relative; }
+.suitcase { position: relative; display: grid; gap: 10px; padding: 13px; border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent); border-radius: 16px; background: color-mix(in srgb, var(--paper) 76%, #e7eee1); box-shadow: inset 0 0 0 7px color-mix(in srgb, var(--accent-text) 5%, transparent); transition: background .45s, border-color .45s, box-shadow .45s; }
+.suitcase[data-overflow="true"] { border-color: #a54b42; background: #f6e3dd; box-shadow: inset 0 0 0 7px color-mix(in srgb, #a54b42 8%, transparent); }
+.suitcaseLid { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 10px; }
+.suitcaseLid span { display: inline-flex; align-items: center; gap: 5px; min-width: 0; overflow: hidden; white-space: nowrap; }
+.suitcaseLid strong { flex: none; color: var(--accent-text); font: 700 12px ui-monospace, monospace; white-space: nowrap; }
+.meter { display: flex; align-items: center; gap: 8px; }
+.meterRail,
+.labRail { position: relative; flex: 1; height: 9px; overflow: hidden; border-radius: 99px; background: color-mix(in srgb, var(--ink) 10%, transparent); }
+.meterRail::after,
+.labRail::after { content: ""; position: absolute; inset: 0 0 0 75%; border-left: 1px dashed color-mix(in srgb, var(--ink) 35%, transparent); }
+.meterRail i,
+.labRail i { display: block; height: 100%; border-radius: inherit; background: var(--accent-text); transition: width .55s ease, background .4s ease; }
+.meterRail i[data-overflow="true"],
+.labRail i[data-overflow="true"] { background: #a54b42; }
+.meter code { color: var(--muted); font: 600 10px ui-monospace, monospace; }
+.cardStack { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; min-height: 128px; align-content: start; }
+.memoryCard { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 6px; align-items: center; min-width: 0; padding: 9px 8px; border: 1px solid color-mix(in srgb, var(--ink) 11%, transparent); border-radius: 10px; background: var(--paper); opacity: .58; transform: translateY(3px); transition: opacity .45s, transform .45s, border-color .35s, background .35s; }
+.memoryCard[data-kept="true"] { opacity: 1; border-left: 3px solid var(--accent-text); transform: translateY(0); }
+.memoryCard[data-overflow="true"] { border-color: #a54b42; background: #f8dcd6; opacity: 1; transform: rotate(1deg); }
+.memoryCard svg { color: var(--accent-text); }
+.memoryCard[data-overflow="true"] svg { color: #a54b42; }
+.memoryCard div { display: grid; gap: 2px; min-width: 0; }
+.memoryCard strong { overflow-wrap: anywhere; font-size: 11px; }
+.memoryCard span { overflow-wrap: anywhere; color: var(--muted); font-size: 9px; }
+.memoryCard code { color: var(--muted); font: 600 9px ui-monospace, monospace; }
+.suitcaseFoot { display: flex; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 9px; }
+.suitcaseFoot b { display: inline-flex; align-items: center; gap: 4px; color: var(--accent-text); font-weight: 600; }
+.suitcaseFoot .overflowTag { color: #a54b42; }
+.overflowStamp { position: absolute; right: 15px; top: 45%; display: grid; justify-items: center; gap: 2px; color: #a54b42; font: 700 10px ui-monospace, monospace; transform: rotate(-8deg); }
+.overflowStamp svg { width: 28px; height: 28px; }
+.heroNote,
+.labStatus { position: relative; display: flex; align-items: flex-start; gap: 7px; padding: 9px 10px; border-radius: 9px; background: color-mix(in srgb, var(--accent-text) 8%, transparent); color: var(--muted); font-size: 11px; line-height: 1.5; }
+.heroNote[data-danger="true"],
+.labStatus[data-danger="true"] { background: #f6e3dd; color: #8f3f35; }
+.heroNote strong,
+.labStatus strong { color: var(--ink); }
+.heroNote[data-danger="true"] strong,
+.labStatus[data-danger="true"] strong { color: #8f3f35; }
+.hero figcaption { position: relative; color: var(--muted); font-size: 10px; line-height: 1.45; }
+.lab { display: grid; gap: 12px; margin: 25px 0 18px; padding: 17px 18px 16px; }
+.labButtons { position: relative; display: flex; flex-wrap: wrap; gap: 6px; }
+.labButtons button,
+.focusButtons button { border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent); border-radius: 999px; padding: 6px 9px; background: transparent; color: var(--muted); font: inherit; font-size: 10px; cursor: pointer; }
+.labButtons button:hover,
+.labButtons button[aria-pressed="true"],
+.focusButtons button[aria-pressed="true"] { border-color: var(--accent-text); background: color-mix(in srgb, var(--accent-text) 10%, var(--paper)); color: var(--ink); }
+.labBoard { position: relative; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(145px, .8fr); gap: 10px; }
+.labWindow,
+.labReadout { min-width: 0; padding: 11px 10px; border-radius: 11px; background: color-mix(in srgb, var(--paper) 75%, transparent); }
+.labWindow { display: grid; gap: 8px; }
+.labWindowHead { display: flex; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 9px; }
+.labWindowHead strong { color: var(--accent-text); font: 700 11px ui-monospace, monospace; }
+.labCards { display: grid; gap: 5px; }
+.labCard { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 6px; align-items: center; padding: 7px; border-radius: 8px; background: var(--tint); font-size: 10px; }
+.labCard[data-kept="true"] { border-left: 3px solid var(--accent-text); }
+.labCard[data-danger="true"] { background: #f3d8d0; color: #8f3f35; }
+.labCard code { color: var(--muted); font: 9px ui-monospace, monospace; }
+.labReadout { display: grid; align-content: center; gap: 7px; }
+.labReadout > span { color: var(--muted); font-size: 9px; }
+.focusButtons { display: flex; flex-wrap: wrap; gap: 5px; }
+.focusButtons button { padding: 5px 7px; }
+.labReadout strong { font-size: 13px; }
+.labReadout small { color: var(--muted); font-size: 9px; line-height: 1.4; }
+.labStatus svg { flex: none; margin-top: 2px; color: var(--accent-text); }
+.labStatus[data-danger="true"] svg { color: #a54b42; }
+@media (max-width: 620px) { .hero, .lab { padding-left: 14px; padding-right: 14px; } .cardStack { grid-template-columns: 1fr; min-height: 0; } .labBoard { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .suitcase, .meterRail i, .labRail i, .memoryCard { transition: none; transform: none; } }
