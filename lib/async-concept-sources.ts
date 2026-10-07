@@ -18,9 +18,10 @@ export const awaitSources = [
 ];
 export const jsonSources = [
   { publisher: "IETF · Tim Bray（编）", title: "RFC 8259 — The JavaScript Object Notation (JSON) Data Interchange Format", date: "2017-12", url: "https://www.rfc-editor.org/rfc/rfc8259.html", citations: ["json-purpose", "json-values", "json-precision"] },
-  { publisher: "MDN Web Docs · 贡献者", title: "JSON", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON", citations: ["json-grammar"] },
+  { publisher: "MDN Web Docs · 贡献者", title: "Working with JSON", date: "", url: "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/JSON", citations: ["json-grammar"] },
   { publisher: "MDN Web Docs · 贡献者", title: "JSON.parse()", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse", citations: ["json-parse", "json-precision"] },
   { publisher: "MDN Web Docs · 贡献者", title: "JSON.stringify()", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify", citations: ["json-stringify", "json-loss"] },
+  { publisher: "MDN Web Docs · 贡献者", title: "JSON", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON", citations: ["json-grammar"] },
   { publisher: "JSON Schema · 官方文档", title: "What is JSON Schema?", date: "", url: "https://json-schema.org/overview/what-is-jsonschema", citations: ["json-contract"] },
 ];
 export const schemaSources = [

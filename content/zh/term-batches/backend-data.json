@@ -6,11 +6,28 @@
     "question": "为什么我本地能打开，发给别人却访问不了？",
     "definition": "服务器是在网络中接收客户端请求并提供数据或功能的计算机或程序。",
     "boundary": "服务器不等于数据库；服务器可以调用数据库，但也能处理计算、文件和接口请求。",
-    "demoType": "request", "demoTitle": "一次页面请求怎样经过服务器",
+    "demoType": "request", "demoTitle": "监听端口与路径怎样改变结果",
     "demoSteps": [
-      {"label": "请求到达", "value": "GET /products", "note": "浏览器把目标路径发送到服务器。"},
-      {"label": "服务处理", "value": "读取商品数据", "note": "程序校验请求并调用所需资源。"},
-      {"label": "返回结果", "value": "200 + HTML", "note": "服务器把状态码和内容发回浏览器。"}
+      {
+        "label": "连到监听端口",
+        "value": "8000 /books",
+        "note": "HTTP 程序接住请求，路径存在时回 200。"
+      },
+      {
+        "label": "换成缺失路径",
+        "value": "8000 /missing",
+        "note": "连接仍然成功，但程序找不到资源，回 404。"
+      },
+      {
+        "label": "确认同一台主机",
+        "value": "127.0.0.1 · 8001",
+        "note": "主机在线不等于每个端口都有服务。"
+      },
+      {
+        "label": "请求停在连接层",
+        "value": "8001 /books · refused",
+        "note": "没有监听者，请求还没进入 HTTP 处理函数。"
+      }
     ],
     "quizQuestion": "下面哪项是服务器的主要职责？", "quizOptions": ["接收请求并返回数据或功能", "只负责显示页面颜色", "只保存用户密码"],
     "correctText": "服务器处理来自客户端的请求，并返回对应结果。", "wrongText": "页面显示和数据保存只是部分场景，不是服务器的完整职责。",
@@ -24,11 +41,28 @@
     "question": "点了保存按钮以后，浏览器到底给后端发了什么？",
     "definition": "请求是客户端发给服务器的一组信息，通常包含方法、地址、请求头和可选的请求体。",
     "boundary": "请求描述客户端要做什么；响应是服务器处理后返回的结果。",
-    "demoType": "request", "demoTitle": "保存操作中的请求内容",
+    "demoType": "request", "demoTitle": "一条请求怎样组装但还没发送",
     "demoSteps": [
-      {"label": "选择动作", "value": "POST", "note": "方法说明这次操作要提交数据。"},
-      {"label": "携带数据", "value": "{name: '小满'}", "note": "请求体带上需要保存的字段。"},
-      {"label": "发送接口", "value": "/api/users", "note": "请求被送到对应端点。"}
+      {
+        "label": "先放方法与目标",
+        "value": "GET /books?q=海边",
+        "note": "方法和目标一起说明这次请求要访问哪里、做什么。"
+      },
+      {
+        "label": "切到 POST",
+        "value": "POST /books",
+        "note": "同一个书名也可以改放在正文里，方法语义随目标一起读。"
+      },
+      {
+        "label": "补请求头与正文",
+        "value": "Content-Type + JSON body",
+        "note": "请求头说明处理条件，body 承载书名表示。"
+      },
+      {
+        "label": "构造不等于发送",
+        "value": "new Request → fetch",
+        "note": "Request 对象构造成功，只说明消息已在浏览器内存中组好。"
+      }
     ],
     "quizQuestion": "一条 HTTP 请求通常包含什么？", "quizOptions": ["方法、地址、请求头和可选请求体", "只有页面截图", "只有服务器状态码"],
     "correctText": "这些信息共同说明请求目标和处理方式。", "wrongText": "状态码属于响应，截图也不是 HTTP 请求的固定组成。",
@@ -42,11 +76,28 @@
     "question": "接口明明有返回，为什么页面仍然显示失败？",
     "definition": "响应是服务器针对请求返回的信息，通常包含状态码、响应头和响应体。",
     "boundary": "响应表示一次请求的处理结果，不等于页面最终呈现的界面状态。",
-    "demoType": "request", "demoTitle": "服务器怎样组成响应",
+    "demoType": "comparison", "demoTitle": "同一份回执怎样改变页面",
     "demoSteps": [
-      {"label": "确定状态", "value": "201 Created", "note": "状态码表示资源已经创建。"},
-      {"label": "写入数据", "value": "{id: 42}", "note": "响应体提供新资源的信息。"},
-      {"label": "页面更新", "value": "显示保存成功", "note": "客户端根据响应更新界面。"}
+      {
+        "label": "创建书签",
+        "value": "201 + JSON",
+        "note": "客户端读出服务返回的 id 和 title，再新增页面书签。"
+      },
+      {
+        "label": "移除书签",
+        "value": "204 + 空正文",
+        "note": "成功结果没有 body，页面按状态更新，不调用 json()。"
+      },
+      {
+        "label": "缺少书名",
+        "value": "422 + error body",
+        "note": "服务拒绝当前内容，页面保留可读的错误提示。"
+      },
+      {
+        "label": "分开两层结果",
+        "value": "Response → 页面",
+        "note": "拿到响应、读懂正文和更新界面是三件不同的事。"
+      }
     ],
     "quizQuestion": "哪一项属于 HTTP 响应？", "quizOptions": ["状态码和返回数据", "用户点击按钮的坐标", "数据库表的全部结构"],
     "correctText": "响应通过状态码和内容说明处理结果。", "wrongText": "交互坐标和完整表结构不会自动成为响应内容。",
@@ -60,11 +111,23 @@
     "question": "读取、修改和删除数据应该都用 POST 吗？",
     "definition": "HTTP 方法表达请求意图，例如 GET 读取资源、POST 创建或触发处理、DELETE 删除资源。",
     "boundary": "方法只表达语义，不能代替权限校验和参数校验。",
-    "demoType": "branch", "demoTitle": "同一个资源对应不同方法",
+    "demoType": "branch", "demoTitle": "同一资源对应不同方法",
     "demoSteps": [
-      {"label": "读取", "value": "GET /users/42", "note": "获取编号为 42 的用户。"},
-      {"label": "修改", "value": "PATCH /users/42", "note": "只提交需要变更的字段。"},
-      {"label": "删除", "value": "DELETE /users/42", "note": "请求移除指定资源。"}
+      {
+        "label": "读一次",
+        "value": "GET /notes/42",
+        "note": "safe 方法的目标是读取，重复不会要求写入。"
+      },
+      {
+        "label": "设定状态",
+        "value": "PUT /notes/42",
+        "note": "重复把同一内容设到同一目标，预期状态保持一致。"
+      },
+      {
+        "label": "提交两次",
+        "value": "POST /notes",
+        "note": "POST 的结果由接口约定，重复可能新增两条资源。"
+      }
     ],
     "quizQuestion": "读取一个资源通常使用哪个方法？", "quizOptions": ["GET", "DELETE", "PATCH"],
     "correctText": "GET 通常用于读取资源。", "wrongText": "DELETE 用于删除，PATCH 常用于局部修改。",
@@ -78,11 +141,33 @@
     "question": "接口返回 200，但数据里写着失败，应该相信哪个？",
     "definition": "HTTP 状态码是响应中的标准数字，用来概括请求处理结果。",
     "boundary": "状态码只提供结果类别；具体错误原因仍需通过响应体和日志说明。",
-    "demoType": "branch", "demoTitle": "同一接口的三种处理结果",
+    "demoType": "state", "demoTitle": "导出状态码怎样决定下一步",
     "demoSteps": [
-      {"label": "成功", "value": "200", "note": "请求完成并返回所需内容。"},
-      {"label": "输入有误", "value": "400", "note": "客户端提交的数据不符合要求。"},
-      {"label": "服务异常", "value": "500", "note": "服务器处理时发生未完成的错误。"}
+      {
+        "label": "提交任务",
+        "value": "202 Accepted",
+        "note": "请求已受理，先拿 task 地址，不代表文件完成。"
+      },
+      {
+        "label": "查询处理中",
+        "value": "200 + state=pending",
+        "note": "查询本身成功，但任务状态仍未完成。"
+      },
+      {
+        "label": "查询已完成",
+        "value": "200 + state=done",
+        "note": "后台完成后再次查询，页面才显示下载入口。"
+      },
+      {
+        "label": "改正输入",
+        "value": "422 / 数量为 0",
+        "note": "内容能解析却不符合范围，先修改输入再提交。"
+      },
+      {
+        "label": "等待服务恢复",
+        "value": "503 + Retry-After",
+        "note": "服务暂时不可用，重试要结合请求语义和等待窗口。"
+      }
     ],
     "quizQuestion": "找不到资源通常使用哪个状态码？", "quizOptions": ["404", "201", "302"],
     "correctText": "404 表示目标资源未找到。", "wrongText": "201 表示创建成功，302 表示临时重定向。",
@@ -96,11 +181,28 @@
     "question": "为什么请求体一样，一个请求能通过，另一个却返回未授权？",
     "definition": "请求头是随 HTTP 请求发送的键值信息，用于描述内容、身份、缓存和客户端能力。",
     "boundary": "请求头适合元信息，不适合承载大量业务数据；敏感凭证也不能写进日志。",
-    "demoType": "request", "demoTitle": "请求头怎样影响接口处理",
+    "demoType": "comparison", "demoTitle": "三个字段怎样改变资源表示",
     "demoSteps": [
-      {"label": "声明格式", "value": "Content-Type: application/json", "note": "服务器据此解析请求体。"},
-      {"label": "携带凭证", "value": "Authorization: Bearer …", "note": "认证层读取令牌并识别调用者。"},
-      {"label": "选择语言", "value": "Accept-Language: zh-CN", "note": "服务可据此返回本地化内容。"}
+      {
+        "label": "偏好 JSON",
+        "value": "Accept: application/json",
+        "note": "客户端请求 JSON 表示，服务返回对应 Content-Type。"
+      },
+      {
+        "label": "偏好纯文本",
+        "value": "Accept: text/plain",
+        "note": "地址不变，返回的表示变化，缓存要比较 Vary: Accept。"
+      },
+      {
+        "label": "声明正文类型",
+        "value": "Content-Type: application/json",
+        "note": "它描述当前消息正文是什么，不负责验证正文内容。"
+      },
+      {
+        "label": "请求不可用表示",
+        "value": "Accept: application/xml → 406",
+        "note": "服务没有 XML 表示时，字段变化会让协商失败。"
+      }
     ],
     "quizQuestion": "Content-Type 请求头主要说明什么？", "quizOptions": ["请求体的数据格式", "数据库索引数量", "页面按钮颜色"],
     "correctText": "Content-Type 告诉接收方如何解析请求体。", "wrongText": "它描述传输内容的媒体类型。",
@@ -114,11 +216,28 @@
     "question": "商品列表要按价格筛选，参数应该放在哪里？",
     "definition": "查询参数是 URL 中问号后的键值对，常用于可选的筛选、排序和分页条件。",
     "boundary": "查询参数不适合传密码等敏感数据，因为 URL 可能进入历史记录和日志。",
-    "demoType": "request", "demoTitle": "筛选条件怎样进入查询参数",
+    "demoType": "comparison", "demoTitle": "同一查询串怎样被解析",
     "demoSteps": [
-      {"label": "原始列表", "value": "/products", "note": "接口返回默认商品集合。"},
-      {"label": "添加筛选", "value": "?category=book", "note": "结果只保留图书类别。"},
-      {"label": "添加分页", "value": "&page=2", "note": "服务返回第二页数据。"}
+      {
+        "label": "保留原文",
+        "value": "tag=a&tag=b",
+        "note": "query 先是一串字符，重复键仍然是两个键值。"
+      },
+      {
+        "label": "比较取值方式",
+        "value": "get / getAll",
+        "note": "不同解析约定可能只取一个值，也可能保留数组。"
+      },
+      {
+        "label": "分清缺失和空值",
+        "value": "tag= / 没有 tag",
+        "note": "空字符串和不存在的键在程序里不是同一种结果。"
+      },
+      {
+        "label": "最后处理编码",
+        "value": "A+B → A%2BB",
+        "note": "编码解决字符边界，不会把 URL 变成秘密。"
+      }
     ],
     "quizQuestion": "哪种信息适合放在查询参数中？", "quizOptions": ["商品筛选条件", "用户明文密码", "文件的完整二进制内容"],
     "correctText": "筛选条件是查询参数的常见用途。", "wrongText": "敏感信息和大体积文件不适合放在 URL 中。",
@@ -132,11 +251,28 @@
     "question": "查看某个用户详情时，用户 ID 应该放查询参数还是路径里？",
     "definition": "路径参数是 URL 路径中可变化的部分，通常用来标识具体资源或层级。",
     "boundary": "路径参数通常是定位资源所必需的；可选筛选条件更适合查询参数。",
-    "demoType": "request", "demoTitle": "用户编号怎样匹配路由",
+    "demoType": "hierarchy", "demoTitle": "路由怎样提取并检查参数",
     "demoSteps": [
-      {"label": "定义路由", "value": "/users/:id", "note": "冒号位置声明动态参数。"},
-      {"label": "发出请求", "value": "/users/42", "note": "42 被匹配为用户编号。"},
-      {"label": "读取资源", "value": "userId = 42", "note": "控制器据此查询目标用户。"}
+      {
+        "label": "套用模板",
+        "value": "/users/{id} → /users/42",
+        "note": "花括号是文档说明，实际请求发送具体值。"
+      },
+      {
+        "label": "处理固定路径",
+        "value": "/users/me",
+        "note": "静态 me 应按路由优先级匹配，不能盲目当成 id。"
+      },
+      {
+        "label": "校验参数",
+        "value": "abc → 422",
+        "note": "匹配到模板后，还要把路径文字转换并检查范围。"
+      },
+      {
+        "label": "检查权限与存在性",
+        "value": "42 → 403 / 200",
+        "note": "找到对象不等于允许访问，资料不存在还可能回 404。"
+      }
     ],
     "quizQuestion": "哪个地址使用了路径参数定位资源？", "quizOptions": ["/orders/908", "/orders?page=2", "/orders#top"],
     "correctText": "908 位于资源路径中，用来定位订单。", "wrongText": "page 是查询参数，#top 是页面片段。",
@@ -150,11 +286,28 @@
     "question": "注册表单的姓名和邮箱应该怎样发给后端？",
     "definition": "请求体是 HTTP 请求中承载业务数据的部分，常见格式有 JSON、表单和文件流。",
     "boundary": "GET 请求通常不依赖请求体；请求体格式需要与 Content-Type 保持一致。",
-    "demoType": "request", "demoTitle": "表单数据怎样进入请求体",
+    "demoType": "comparison", "demoTitle": "请求体怎样从字段变成可解析内容",
     "demoSteps": [
-      {"label": "收集字段", "value": "name + email", "note": "页面读取用户输入。"},
-      {"label": "编码内容", "value": "JSON", "note": "字段被序列化成约定格式。"},
-      {"label": "服务解析", "value": "req.body", "note": "后端校验并使用提交的数据。"}
+      {
+        "label": "整理字段",
+        "value": "title + seats",
+        "note": "网页把输入组织成接口约定的数据结构。"
+      },
+      {
+        "label": "选择表示",
+        "value": "JSON / form / multipart",
+        "note": "不同编码器会把同一字段写成不同字节。"
+      },
+      {
+        "label": "对上类型声明",
+        "value": "Content-Type + boundary",
+        "note": "接收方据此选择解析器和分段边界。"
+      },
+      {
+        "label": "观察失败层次",
+        "value": "415 / 400 / 422",
+        "note": "类型不支持、语法错误和字段不合规需要分开处理。"
+      }
     ],
     "quizQuestion": "JSON 请求体应搭配哪种 Content-Type？", "quizOptions": ["application/json", "image/png", "text/css"],
     "correctText": "application/json 表明请求体需要按 JSON 解析。", "wrongText": "图片和 CSS 类型不能说明 JSON 数据格式。",
@@ -168,11 +321,33 @@
     "question": "为什么接口返回的内容看起来像 JavaScript 对象？",
     "definition": "JSON 是用字符串、数字、布尔值、null、数组和对象表示结构化数据的文本格式。",
     "boundary": "JSON 不是 JavaScript 代码，不支持注释、函数和 undefined。",
-    "demoType": "state", "demoTitle": "对象怎样转换为 JSON",
+    "demoType": "state", "demoTitle": "文本怎样变成值并通过契约",
     "demoSteps": [
-      {"label": "程序对象", "value": "{name: '云舟'}", "note": "内存中存在一个语言对象。"},
-      {"label": "序列化", "value": "{\"name\":\"云舟\"}", "note": "对象转换成可传输文本。"},
-      {"label": "解析", "value": "data.name", "note": "接收方把文本恢复为可读取的数据。"}
+      {
+        "label": "写出结构",
+        "value": "title · copies · available",
+        "note": "JSON 文本用对象、数组和基本值表达字段关系。"
+      },
+      {
+        "label": "解析文本",
+        "value": "JSON.parse → value",
+        "note": "解析成功后才得到程序可以读取的值。"
+      },
+      {
+        "label": "停在语法边界",
+        "value": "尾逗号 → SyntaxError",
+        "note": "看起来像对象不代表文本符合 JSON 语法。"
+      },
+      {
+        "label": "检查数字边界",
+        "value": "9007199254740993",
+        "note": "不同运行时可能出现精度差异，编号可改用字符串。"
+      },
+      {
+        "label": "补业务契约",
+        "value": "JSON Schema",
+        "note": "语法通过后，还要检查字段、类型和业务范围。"
+      }
     ],
     "quizQuestion": "下面哪个值不能直接出现在标准 JSON 中？", "quizOptions": ["undefined", "null", "false"],
     "correctText": "标准 JSON 不包含 undefined。", "wrongText": "null 和布尔值都属于 JSON 支持的数据类型。",

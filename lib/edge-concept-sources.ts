@@ -3,8 +3,9 @@ const source = (publisher: string, title: string, url: string, citations: string
 export const serverSources = [
   source('IETF', 'RFC 9110 — HTTP Semantics', 'https://www.rfc-editor.org/rfc/rfc9110.html', ['server-role'], '2022-06'),
   source('MDN contributors', 'What is a web server?', 'https://developer.mozilla.org/en-US/docs/Learn_web_development/Howto/Web_mechanics/What_is_a_web_server', ['server-hardware', 'server-handler']),
-  source('Node.js', 'HTTP', 'https://nodejs.org/api/http.html', ['server-listen']),
+  source('Node.js', 'HTTP', 'https://nodejs.org/docs/latest-v22.x/api/http.html', ['server-listen']),
   source('Python Software Foundation', 'http.server — HTTP servers', 'https://docs.python.org/3/library/http.server.html', ['server-port', 'server-handler']),
+  source('MDN contributors', '404 Not Found', 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/404', ['server-handler']),
 ];
 
 export const gatewaySources = [
