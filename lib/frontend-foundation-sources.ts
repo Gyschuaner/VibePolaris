@@ -22,3 +22,10 @@ export const formSources = [
   source("W3C WAI", "Error Identification", "https://www.w3.org/WAI/WCAG22/Understanding/error-identification.html", ["form-error"]),
   source("OWASP", "Input Validation Cheat Sheet", "https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html", ["form-boundary", "form-server"]),
 ];
+
+export const htmlSources = [
+  source("WHATWG", "HTML Living Standard", "https://html.spec.whatwg.org/", ["html-definition", "html-structure"]),
+  source("MDN", "Structuring documents", "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content/Structuring_documents", ["html-structure", "html-semantics"]),
+  source("MDN", "HTML elements reference", "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements", ["html-elements", "html-native"]),
+  source("W3C WAI", "Info and relationships", "https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html", ["html-semantics", "html-boundary"]),
+];

@@ -143,12 +143,14 @@ import { ArrayTermPage, ConditionalBranchTermPage, ControlClientServerTermPage, 
 import { BeamSearchTermPage, ConfidenceCalibrationTermPage, DataContaminationTermPage, KnowledgeDistillationTermPage, MixtureOfExpertsTermPage, ModelCardTermPage, OutOfDistributionTermPage, ParameterEfficientFineTuningTermPage, QuantizationTermPage, SpeculativeDecodingTermPage } from "@/components/terms/ModelMechanismsPages";
 import { CssTermPage } from "@/components/terms/frontend-foundations-pages/css";
 import { FormTermPage } from "@/components/terms/frontend-foundations-pages/form";
+import { HtmlTermPage } from "@/components/terms/frontend-foundations-pages/html";
 import { ResponsiveTermPage } from "@/components/terms/frontend-foundations-pages/responsive";
 
 const articleTermPages = {
   responsive: ResponsiveTermPage,
   css: CssTermPage,
   form: FormTermPage,
+  html: HtmlTermPage,
   'offline-first': OfflineFirstTermPage,
   'adaptive-layout': AdaptiveLayoutTermPage,
   'safe-area': SafeAreaTermPage,
@@ -474,7 +476,6 @@ const articleTermPages = {
 
 const dedicatedTermPages = {
   ...articleTermPages,
-  html: TermDetailExperience,
   javascript: TermDetailExperience,
 } satisfies Record<string, ComponentType<BespokeTermPageProps>>;
 
