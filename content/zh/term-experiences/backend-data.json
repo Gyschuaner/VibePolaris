@@ -2295,14 +2295,79 @@
     },
     "sources": [
       {
-        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
-        "label": "RFC 9110 · Content",
-        "note": "协议定义与报文语义"
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch",
+        "label": "MDN · Using the Fetch API",
+        "note": "body、Content-Type 与请求方法"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Type",
+        "label": "MDN · Content-Type",
+        "note": "消息正文的媒体类型"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest_API/Using_FormData_Objects",
+        "label": "MDN · Using FormData objects",
+        "note": "multipart 字段与文件"
       },
       {
         "url": "https://www.iana.org/assignments/media-types/media-types.xhtml",
         "label": "IANA · Media Types",
-        "note": "协议参数与注册信息"
+        "note": "媒体类型注册表"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/415",
+        "label": "MDN · 415 Unsupported Media Type",
+        "note": "服务器不支持请求表示的媒体类型"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+        "label": "RFC 9110 · HTTP Semantics",
+        "note": "请求内容与方法语义"
+      },
+      {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html",
+        "label": "OWASP · Input Validation",
+        "note": "解析后仍需业务输入校验"
+      }
+    ],
+    "teaching": [
+      {
+        "id": "body-representation",
+        "title": "body 是表示，不是自动生成的对象",
+        "body": "请求体承载一段表示：可以是 JSON 文本、表单键值、multipart 的多个部分，也可以是图片或压缩字节。服务器先按 Content-Type 选择解释方式，再把字节转换成业务数据；body 本身没有“用户资料”这种固定含义。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "body-type",
+        "title": "声明和实际字节要对得上",
+        "body": "把 multipart 字节标成 `application/json`，接收方会选择 JSON 解析器，通常在解析边界返回 415。反过来，Content-Type 写对了也不保证内容合法，字段类型、大小和必填项仍需应用校验。",
+        "sourceIndices": [
+          2,
+          4,
+          5
+        ]
+      },
+      {
+        "id": "body-multipart",
+        "title": "文件为什么需要边界",
+        "body": "multipart/form-data 用 boundary 把文字字段和文件段隔开，每段还能带自己的名称、文件名和媒体类型。它不是把文件“塞进 JSON”，而是选择了另一种表示，让接收方可以分别读取字段和二进制内容。",
+        "sourceIndices": [
+          3,
+          4
+        ]
+      },
+      {
+        "id": "body-method",
+        "title": "方法语义决定能不能这样带 body",
+        "body": "Fetch API 不允许 GET 和 HEAD 携带 body；这次构造会直接失败，不会悄悄把内容挪到查询参数。其他方法是否接受、怎样解释请求体，还要看 HTTP 语义和接口约定，不能只看浏览器控件。",
+        "sourceIndices": [
+          1,
+          6
+        ]
       }
     ]
   },
