@@ -141,8 +141,10 @@ import { AcidTermPage } from "@/components/terms/AcidConceptPage";
 import { EnvironmentVariableTermPage, ExpressionTermPage, FormatterTermPage, FunctionTermPage, LinterTermPage, LockfileTermPage, MonorepoTermPage, ParameterTermPage, ReturnValueTermPage, SourceMapTermPage } from "@/components/terms/toolchain-redesign-pages/ToolchainRedesignPages";
 import { ArrayTermPage, ConditionalBranchTermPage, ControlClientServerTermPage, DistributedSystemTermPage, EventDrivenArchitectureTermPage, LoopTermPage, MicroservicesTermPage, MonolithTermPage, ObjectTermPage, ServerlessTermPage } from "@/components/terms/control-redesign-pages/ControlRedesignPages";
 import { BeamSearchTermPage, ConfidenceCalibrationTermPage, DataContaminationTermPage, KnowledgeDistillationTermPage, MixtureOfExpertsTermPage, ModelCardTermPage, OutOfDistributionTermPage, ParameterEfficientFineTuningTermPage, QuantizationTermPage, SpeculativeDecodingTermPage } from "@/components/terms/ModelMechanismsPages";
+import { ResponsiveTermPage } from "@/components/terms/frontend-foundations-pages/responsive";
 
 const articleTermPages = {
+  responsive: ResponsiveTermPage,
   'offline-first': OfflineFirstTermPage,
   'adaptive-layout': AdaptiveLayoutTermPage,
   'safe-area': SafeAreaTermPage,
