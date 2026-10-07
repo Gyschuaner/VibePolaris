@@ -182,3 +182,29 @@ export function JailbreakSignatureHero() {
     <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 1 ? "先有一条正常基线，才知道包装变化后究竟松动了哪一层。" : blocked ? "安全结论来自跨版本、跨语言和多轮回归；测试类别不等于可滥用载荷。" : "越狱研究的是行为边界，输入来源、过滤和工具权限还要分别检查。"}</p></figcaption>
   </figure>;
 }
+
+
+export function ModelSpecSignatureHero() {
+  const scene = useScene(4);
+  const labels = ["收到用户愿望", "叠开发者约束", "遇到安全冲突", "检查真实权限"];
+  const conflict = scene.step >= 2;
+  const allowed = scene.step === 3;
+  return <figure ref={scene.ref} className={styles.hero} role="region" aria-label="模型规范把指令层级和真实工具权限分开" data-step={scene.step}>
+    <SceneControls scene={scene} labels={labels} compact />
+    <div className={styles.canvas}>
+      <div className={styles.modelSpecBoard}>
+        <div className={styles.specLayers}>
+          <span>行为规范 · 谁的要求更优先</span>
+          <div className={styles.specLayer} data-active={scene.step >= 0}><span>用户</span><strong>帮我导出客户名单</strong><small>愿望进入上下文</small></div>
+          <div className={styles.specLayer} data-active={scene.step >= 1}><span>应用</span><strong>只处理已授权记录</strong><small>产品约束进入上下文</small></div>
+          <div className={styles.specLayer} data-active={conflict} data-danger={conflict}><span>安全</span><strong>{conflict ? "隐私边界不能被绕过" : "等待冲突判断"}</strong><small>{conflict ? "规范给出行为方向" : "先看优先级"}</small></div>
+        </div>
+        <div className={styles.permissionGate} data-allowed={allowed}>
+          {allowed ? <CheckCircle size={23} /> : <LockSimple size={23} />}
+          <span>工具权限</span><strong>{allowed ? "只读沙盒 · 允许" : "未授权 · 不执行"}</strong><small>{allowed ? "规范和权限同时满足" : "规范不能凭空开门"}</small>
+        </div>
+      </div>
+    </div>
+    <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 2 ? "规范先帮助解释指令冲突，读者能看到规则怎样影响行为目标。" : allowed ? "最后仍要经过真实工具授权；这两把锁同时满足，动作才可以发生。" : "模型规范不是权限系统，不能因为文字上“应该允许”就读取或发送真实数据。"}</p></figcaption>
+  </figure>;
+}
