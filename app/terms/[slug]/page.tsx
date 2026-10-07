@@ -146,6 +146,7 @@ import { FormTermPage } from "@/components/terms/frontend-foundations-pages/form
 import { HtmlTermPage } from "@/components/terms/frontend-foundations-pages/html";
 import { JavascriptTermPage } from "@/components/terms/frontend-foundations-pages/javascript";
 import { DomTermPage } from "@/components/terms/frontend-foundations-pages/dom";
+import { FrameworkTermPage } from "@/components/terms/frontend-foundations-pages/framework";
 import { ResponsiveTermPage } from "@/components/terms/frontend-foundations-pages/responsive";
 
 const articleTermPages = {
@@ -155,6 +156,7 @@ const articleTermPages = {
   html: HtmlTermPage,
   javascript: JavascriptTermPage,
   dom: DomTermPage,
+  framework: FrameworkTermPage,
   'offline-first': OfflineFirstTermPage,
   'adaptive-layout': AdaptiveLayoutTermPage,
   'safe-area': SafeAreaTermPage,

@@ -43,3 +43,10 @@ export const domSources = [
   source("MDN", "Document.querySelector", "https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector", ["dom-query"]),
   source("MDN", "Node.textContent", "https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent", ["dom-text", "dom-boundary"]),
 ];
+
+export const frameworkSources = [
+  source("Next.js", "Project structure", "https://nextjs.org/docs/app/getting-started/project-structure", ["framework-definition", "framework-convention"]),
+  source("React", "Describing the UI", "https://react.dev/learn/describing-the-ui", ["framework-library", "framework-definition"]),
+  source("Angular", "Overview", "https://angular.dev/overview", ["framework-convention", "framework-library"]),
+  source("Next.js", "Server and Client Components", "https://nextjs.org/docs/app/getting-started/server-and-client-components", ["framework-runtime", "framework-boundary"]),
+];
