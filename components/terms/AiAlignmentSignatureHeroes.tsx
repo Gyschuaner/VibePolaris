@@ -1,6 +1,6 @@
 "use client";
 
-import { Calculator, ChartLine, CheckCircle, FileText, GitBranch, ShieldCheck, User, WarningCircle } from "@phosphor-icons/react";
+import { Brain, Calculator, ChartLine, CheckCircle, FileText, GitBranch, ShieldCheck, User, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./AiAlignmentSignatureHeroes.module.css";
 
@@ -105,5 +105,33 @@ export function RlhfSignatureHero() {
       </div>
     </div>
     <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 2 ? "先让人比较具体回答，奖励模型才知道这批任务里的“更好”长什么样。" : proxy ? "奖励是代理目标；换题、换标注标准和独立事实检查仍然必要。" : "偏好被压成一把可训练的尺，但它不等于完整的人类价值。"}</p></figcaption>
+  </figure>;
+}
+
+
+export function DirectPreferenceOptimizationSignatureHero() {
+  const scene = useScene(4);
+  const labels = ["放入成对回答", "看参考模型", "移动相对概率", "换坏标签试试"];
+  const badLabel = scene.step === 3;
+  const chosen = badLabel ? "套话很多" : "说明限制";
+  const rejected = badLabel ? "事实更完整" : "只给结论";
+  return <figure ref={scene.ref} className={styles.hero} role="region" aria-label="DPO 对照 chosen、rejected、参考模型和当前策略的相对概率" data-step={scene.step}>
+    <SceneControls scene={scene} labels={labels} compact />
+    <div className={styles.canvas}>
+      <div className={styles.dpoBoard}>
+        <div className={styles.dpoPairs}>
+          <span>偏好数据 · 不是绝对真理</span>
+          <div className={styles.dpoAnswer} data-chosen={scene.step >= 1} data-bad={badLabel}><CheckCircle size={16} /><strong>chosen · {chosen}</strong><small>{badLabel ? "标签把讨喜当成更好" : "标注者选中"}</small></div>
+          <div className={styles.dpoAnswer} data-rejected={scene.step >= 1} data-bad={badLabel}><WarningCircle size={16} /><strong>rejected · {rejected}</strong><small>{badLabel ? "更可靠却被拒" : "相对被拒"}</small></div>
+        </div>
+        <div className={styles.dpoProbabilities}>
+          <div className={styles.dpoModelHead}><Brain size={18} /><span>相对概率</span></div>
+          <div className={styles.dpoProbability}><span>reference</span><i style={{ width: `${scene.step < 2 ? 52 : 44}%` }} /><b>{scene.step < 2 ? "0.52" : "0.44"}</b></div>
+          <div className={styles.dpoProbability} data-policy="true"><span>policy</span><i style={{ width: `${scene.step < 2 ? 55 : badLabel ? 78 : 71}%` }} /><b>{scene.step < 2 ? "0.55" : badLabel ? "0.78" : "0.71"}</b></div>
+          <div className={styles.dpoVerdict} data-warn={badLabel}>{badLabel ? <WarningCircle size={17} /> : <ChartLine size={17} />}<span>{scene.step < 2 ? "等待相对比较" : badLabel ? "错误偏好也会被放大" : "chosen 相对提高"}</span></div>
+        </div>
+      </div>
+    </div>
+    <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 2 ? "DPO 先把一对回答和参考模型摆在同一张相对尺上。" : badLabel ? "链路更短不会替你判断标签；坏的偏好会被很有效地学进去。" : "它省去显式奖励模型，但仍然需要高质量偏好、参考基线和训练外评测。"}</p></figcaption>
   </figure>;
 }

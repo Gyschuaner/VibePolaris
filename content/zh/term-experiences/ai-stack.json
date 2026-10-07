@@ -25639,9 +25639,9 @@
         "note": "DPO 数据格式和训练实现"
       },
       {
-        "url": "https://openai.com/index/instruction-following/",
-        "label": "OpenAI · Aligning language models",
-        "note": "偏好数据与奖励训练背景"
+        "url": "https://huggingface.co/blog/dpo-trl",
+        "label": "Hugging Face · DPO with TRL",
+        "note": "DPO 数据与训练实践"
       },
       {
         "url": "https://arxiv.org/abs/2203.02155",
@@ -25652,6 +25652,36 @@
         "url": "https://doi.org/10.6028/NIST.AI.600-1",
         "label": "NIST · AI Risk Management Framework",
         "note": "训练目标与部署风险边界"
+      }
+    ],
+    "teaching": [
+      {
+        "id": "pairs",
+        "title": "DPO 先问“这两个回答谁更合适”",
+        "body": "每条训练样本有一个 chosen 和一个 rejected，另有一份 reference model 作为相对基线。损失函数推动当前策略更偏向 chosen、远离 rejected；它不是把一条回答直接标成绝对真理，而是在一对样本里学习方向。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "shorter",
+        "title": "少一层奖励模型，不等于少一层判断",
+        "body": "DPO 把偏好优化写成直接的分类式目标，工程链路比显式奖励模型加在线策略采样更短。但偏好数据怎么来的、reference 是否合适、训练后是否过拟合，仍然决定它会把什么方向放大。",
+        "sourceIndices": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": "limits",
+        "title": "训练目标之外的风险不会自动消失",
+        "body": "如果 chosen 只是更讨喜、标签本身有偏，DPO 会很有效地学会这个偏好。部署前仍要做事实、安全、拒答和分布外评测，并在运行时保留权限、过滤和人工升级；DPO 不是请求到来时才启动的安全闸门。",
+        "sourceIndices": [
+          2,
+          5
+        ]
       }
     ]
   },
