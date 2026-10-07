@@ -1214,9 +1214,73 @@
     },
     "sources": [
       {
-        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
-        "label": "RFC 9110 · Status Codes",
-        "note": "协议定义与报文语义"
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html#section-15",
+        "label": "RFC 9110 · §15 Status Codes",
+        "note": "状态码类别和响应语义"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status",
+        "label": "MDN · HTTP response status codes",
+        "note": "1xx 到 5xx 的类别与常见代码"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/202",
+        "label": "MDN · 202 Accepted",
+        "note": "接受处理但可能尚未完成"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/409",
+        "label": "MDN · 409 Conflict",
+        "note": "资源当前状态冲突"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/429",
+        "label": "MDN · 429 Too Many Requests",
+        "note": "请求频率过高与等待提示"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Retry-After",
+        "label": "MDN · Retry-After",
+        "note": "再次尝试前的时间提示"
+      }
+    ],
+    "teaching": [
+      {
+        "id": "status-class",
+        "title": "先看第一位数字，再看具体代码",
+        "body": "状态码的第一位把响应分成五类：信息、成功、重定向、客户端错误和服务器错误。类别帮助客户端决定大方向，具体代码再补充这次响应的含义；它不是业务错误字典，不能从 4xx 自动推断字段名称。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "status-created",
+        "title": "201、202 都不是“页面已经完成”",
+        "body": "201 说明请求导致了新资源创建；202 只说明请求已接受，处理可能还在后台进行。若接口返回 202，客户端应根据接口提供的状态地址或后续查询判断进度，不能把“已接收”当作“订单已完成”。",
+        "sourceIndices": [
+          1,
+          3
+        ]
+      },
+      {
+        "id": "status-client",
+        "title": "400、409、429 指向三种不同处理",
+        "body": "400 常用于请求写法或字段不符合约定，409 表示当前资源状态与请求冲突，429 表示请求过于频繁。它们都属于 4xx，但修复方式不同：改输入、重新读取并合并，或按 Retry-After 等提示等待。",
+        "sourceIndices": [
+          1,
+          4,
+          5
+        ]
+      },
+      {
+        "id": "status-retry",
+        "title": "503 的重试要有条件",
+        "body": "503 表示服务暂时无法处理请求，可能带 Retry-After。客户端是否重试，还要看请求方法是否可安全重复、是否有幂等键、退避是否会继续压垮服务。状态码提供线索，不能单独替应用做这个决定。",
+        "sourceIndices": [
+          1,
+          5
+        ]
       }
     ]
   },
