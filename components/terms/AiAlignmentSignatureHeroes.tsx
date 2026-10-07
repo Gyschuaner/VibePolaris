@@ -126,7 +126,7 @@ export function DirectPreferenceOptimizationSignatureHero() {
         </div>
         <div className={styles.dpoProbabilities}>
           <div className={styles.dpoModelHead}><Brain size={18} /><span>相对概率</span></div>
-          <div className={styles.dpoProbability}><span>reference</span><i style={{ width: `${scene.step < 2 ? 52 : 44}%` }} /><b>{scene.step < 2 ? "0.52" : "0.44"}</b></div>
+          <div className={styles.dpoProbability}><span>reference</span><i style={{ width: "52%" }} /><b>0.52</b></div>
           <div className={styles.dpoProbability} data-policy="true"><span>policy</span><i style={{ width: `${scene.step < 2 ? 55 : badLabel ? 78 : 71}%` }} /><b>{scene.step < 2 ? "0.55" : badLabel ? "0.78" : "0.71"}</b></div>
           <div className={styles.dpoVerdict} data-warn={badLabel}>{badLabel ? <WarningCircle size={17} /> : <ChartLine size={17} />}<span>{scene.step < 2 ? "等待相对比较" : badLabel ? "错误偏好也会被放大" : "chosen 相对提高"}</span></div>
         </div>
