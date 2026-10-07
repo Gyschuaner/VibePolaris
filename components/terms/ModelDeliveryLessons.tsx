@@ -1,22 +1,10 @@
 'use client';
 import { useState } from 'react';
-import { ArrowCounterClockwise, ArrowRight, Check, FileText, X } from '@phosphor-icons/react';
-import { Reveal, States } from './ExtendedConceptLessons';
-import { routeRequest, routeTasks, fallbackPolicy, callBackup, primaryLabels, type RouteTask, type PrimaryOutcome, type BackupOutcome } from '@/lib/model-delivery-teaching';
+import { ArrowCounterClockwise, ArrowRight, FileText } from '@phosphor-icons/react';
+import { Reveal } from './ExtendedConceptLessons';
+import { fallbackPolicy, callBackup, primaryLabels, type PrimaryOutcome, type BackupOutcome } from '@/lib/model-delivery-teaching';
 import base from './EventConcepts.module.css';
 import s from './ModelDeliveryConcepts.module.css';
-
-export function ModelRoutingLesson() {
-  const [task, setTask] = useState<RouteTask>('extract'), [threshold, setThreshold] = useState(90), [available, setAvailable] = useState(true);
-  const [open, setOpen] = useState(false), [report, setReport] = useState(routeRequest('extract', 90, true));
-  return <div className={`${base.lab} ${s.lab}`} aria-label="实验：按条件选择模型">
-    <div className={s.controls}><label>当前任务<select value={task} onChange={e => { setTask(e.target.value as RouteTask); setOpen(false); }}>{Object.entries(routeTasks).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label><label>离线分数门槛<select value={threshold} onChange={e => { setThreshold(Number(e.target.value)); setOpen(false); }}>{[90,95,98].map(n => <option key={n} value={n}>{n} / 100</option>)}</select></label><label className={s.check}><input type="checkbox" checked={available} onChange={e => { setAvailable(e.target.checked); setOpen(false); }}/>B 当前可用</label></div>
-    <div className={s.task}><FileText size={25}/><States index={['extract','analysis','image'].indexOf(task)}>{Object.values(routeTasks).map(label => <strong key={label}>{label}</strong>)}</States></div>
-    <button disabled={open} onClick={() => { setReport(routeRequest(task, threshold, available)); setOpen(true); }}>筛选并选择<ArrowRight size={18}/></button>
-    <Reveal open={open}><div className={s.routeResult} role="status"><div className={s.candidates}>{report.candidates.map(model => <div key={model.name} data-chosen={model.name === report.chosen} data-eligible={model.eligible}><div><strong>{model.name}</strong>{model.name === report.chosen ? <ArrowRight size={24}/> : model.eligible ? <Check size={23}/> : <X size={23}/>}</div><dl><dt>离线分数</dt><dd>{model.score ?? '不支持'}{model.score !== null && ' / 100'}</dd><dt>虚构费用</dt><dd>{model.cost} 单位</dd></dl><p>{model.reason}</p><span>{model.name === report.chosen ? '请求 → 此模型' : model.eligible ? '候选保留' : '排除'}</span></div>)}</div><h3>{report.chosen ? `选择 ${report.chosen}，准备调用` : '没有满足条件的模型'}</h3><p>{report.chosen ? `${routeTasks[report.task]}：在满足本例门槛 ${report.threshold} 的候选中，选择费用较低者。这是调用前的选择，不是本次回答的正确性检查。` : '本例停在选择阶段，不降低门槛或把不可用模型当作已执行。'}</p></div></Reveal>
-    <button className={base.reset} onClick={() => { setTask('extract'); setThreshold(90); setAvailable(true); setOpen(false); }}><ArrowCounterClockwise size={17}/>重置任务与条件</button>
-  </div>;
-}
 
 export function ModelFallbackLesson() {
   const [primary, setPrimary] = useState<PrimaryOutcome>('rate'), [backup, setBackup] = useState<BackupOutcome>('valid'), [limit, setLimit] = useState(2);

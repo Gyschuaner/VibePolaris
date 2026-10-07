@@ -1,7 +1,8 @@
-import { ArrowDown, ArrowRight, Check, FileText, X } from '@phosphor-icons/react/dist/ssr';
+import { ArrowDown, Check, X } from '@phosphor-icons/react/dist/ssr';
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
 import { ConceptHero } from './ConceptHero';
-import { ModelRoutingLesson, ModelFallbackLesson } from './ModelDeliveryLessons';
+import { ModelFallbackLesson } from './ModelDeliveryLessons';
+import { ModelRoutingHero, ModelRoutingLesson } from './ai-stack-lessons/model-routing';
 import { PromptCachingHero, PromptCachingLesson } from './ai-stack-lessons/prompt-caching';
 import { routingSources, fallbackSources, promptCachingSources } from '@/lib/model-delivery-sources';
 import base from './EventConcepts.module.css';
@@ -12,7 +13,7 @@ export function ModelRoutingTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={routingSources}/>;
   return <ConceptArticle slug="model-routing" title="模型路由" sources={routingSources} sections={[["selection","根据任务选择模型"],["gate","能力、门槛与费用"],["timing","请求前选择与结果级联"],["operation","把选择放进实际服务"]]}
     intro={<>模型路由把请求分配给合适的模型，或同一个模型正在运行的某个实例（部署）。通常是服务背后的策略替用户做这个选择，依据可能是输入类型、任务难度、评测表现或费用；按负载把请求摊到同一模型的多个实例，更接近负载均衡。它要解决的是“这次交给谁”，选择之后仍需要检查回答与任务结果。</>}
-    hero={<ConceptHero slug="model-routing" label="订单金额请求经过条件筛选后进入模型A，另一候选B保持未选择"><div className={s.routingHero}><div><FileText size={22}/><span>订单金额</span></div><div className={s.fork}><ArrowDown size={23}/><ArrowDown size={23}/></div><div className={s.heroModels}><div data-picked><strong>A</strong><span>满足条件 · 1 单位</span><Check size={19}/></div><div><strong>B</strong><span>满足条件 · 3 单位</span></div></div><p>在合格候选中选择</p></div></ConceptHero>}>
+    hero={<ModelRoutingHero/>}>
     <ArticleSection id="selection" title="根据任务选择模型"><Legacy slug="model-routing" names={["question","definition"]}/>
       <p id="routing-definition" className="vp-citation-target"><strong>模型路由依据请求与策略，选择由哪个模型处理。</strong>RouteLLM 用偏好数据学习请求与强弱模型（能力较高和能力较低的两档模型）的适配关系；偏好数据可以是同类问题上哪个模型回答更好的历史记录。它在质量和调用成本之间取舍，路由器在得到候选模型回答之前进行选择，是一种实现方式，不是所有路由都必须使用学习得到的分类器。<Cite id="routing-definition"/></p>
       <p>例如订单助手既会提取金额，也会分析多项条款，还可能读取截图。某个模型处理简单文本更便宜，却不支持图片；另一个支持图片，但价格更高，不该让它处理每一次简单提取。先识别输入与必须满足的要求，再比较候选，选择才有依据。</p>

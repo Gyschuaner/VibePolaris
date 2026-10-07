@@ -13,6 +13,10 @@ export function routeRequest(task: RouteTask, threshold: number, availableB: boo
   const chosen = candidates.filter(model => model.eligible).sort((a, b) => a.cost - b.cost)[0]?.name ?? null;
   return { task, threshold, candidates, chosen };
 }
+export function reusePrefix(change: 'question' | 'material' | 'instruction', sameModel: boolean, available: boolean, saved: boolean) {
+  const reused = !sameModel || !available || !saved ? 0 : change === 'question' ? 3 : change === 'material' ? 1 : 0;
+  return { reused, answer: change === 'question' ? '回答退款问题' : change === 'material' ? '回答账单问题' : '按新指令回答' };
+}
 export type PrimaryOutcome = 'rate' | 'timeout' | 'auth' | 'success';
 export type BackupOutcome = 'valid' | 'invalid' | 'unsupported' | 'none';
 export const primaryLabels = { rate: 'HTTP 429 · 限流', timeout: '超时 · 未收到响应', auth: 'HTTP 401 · 身份验证失败', success: 'HTTP 200 · 金额字段正确' };

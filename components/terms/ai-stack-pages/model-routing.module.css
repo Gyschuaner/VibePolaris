@@ -1,0 +1,110 @@
+.hero,
+.lab { box-sizing: border-box; min-width: 0; color: var(--ink); }
+
+:global(.vp-concept[data-concept="model-routing"] .vp-hero h1) { font-size: clamp(42px, 4.2vw, 64px); letter-spacing: -2px; text-wrap: nowrap; }
+:global(.vp-concept[data-concept="model-routing"] .vp-hero h1 span) { display: block; margin: 12px 0 0; white-space: normal; }
+
+.hero { display: grid; gap: 8px; width: 100%; max-width: 100%; margin: 0; padding: 12px; overflow: hidden; border-radius: 16px; background: radial-gradient(circle at 9% 18%, color-mix(in srgb, var(--accent) 15%, transparent), transparent 36%), color-mix(in srgb, var(--accent-text) 5%, var(--paper)); }
+.heroTop,
+.labTop { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 11px; }
+.heroTop strong { font: 10px ui-monospace, monospace; color: var(--accent-text); }
+.hero figcaption { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.hero :global(.sceneControls),
+.lab :global(.sceneControls) { min-width: 0; }
+
+.dialDesk { display: grid; gap: 9px; width: 100%; max-width: 100%; min-width: 0; padding: 11px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 14px; background: color-mix(in srgb, var(--paper) 94%, var(--accent) 6%); }
+.heroDesk { min-height: 290px; }
+.lessonDesk { min-height: 390px; padding: 16px; }
+.deskHeader { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 10px; }
+.deskHeader > span { display: inline-flex; align-items: center; gap: 5px; }
+.deskHeader svg { color: var(--accent-text); }
+.deskHeader code { color: var(--accent-text); font: 9px ui-monospace, monospace; }
+
+.ticket { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 8px; min-width: 0; padding: 8px 9px; border: 1px solid color-mix(in srgb, var(--accent-text) 29%, transparent); border-radius: 10px; background: color-mix(in srgb, var(--accent-text) 7%, var(--paper)); transition: transform .45s ease, border-color .35s ease, background .35s ease; }
+.ticket[data-open="true"] { transform: translateY(2px); border-color: color-mix(in srgb, var(--accent-text) 52%, transparent); background: color-mix(in srgb, var(--accent-text) 11%, var(--paper)); }
+.ticket > svg { color: var(--accent-text); }
+.ticket > div { display: grid; gap: 2px; min-width: 0; }
+.ticket span { color: var(--muted); font-size: 9px; }
+.ticket strong { min-width: 0; font-size: 12px; overflow-wrap: anywhere; }
+.ticket small { color: var(--muted); font-size: 8px; overflow-wrap: anywhere; }
+.ticket code { color: var(--accent-text); font: 9px ui-monospace, monospace; }
+
+.dialRow { display: grid; grid-template-columns: minmax(112px, .78fr) minmax(0, 1.22fr); align-items: center; gap: 10px; min-width: 0; }
+.dialWrap { display: grid; justify-items: center; gap: 6px; min-width: 0; }
+.dial { --pointer-angle: 0deg; position: relative; width: 118px; aspect-ratio: 1; border: 1px solid color-mix(in srgb, var(--ink) 21%, transparent); border-radius: 50%; background: conic-gradient(from -25deg, color-mix(in srgb, var(--accent-text) 18%, var(--paper)) 0 28%, color-mix(in srgb, var(--ink) 7%, var(--paper)) 28% 63%, color-mix(in srgb, #b35b4a 13%, var(--paper)) 63% 82%, color-mix(in srgb, var(--ink) 7%, var(--paper)) 82% 100%); box-shadow: inset 0 0 0 8px color-mix(in srgb, var(--paper) 72%, transparent), 0 7px 18px color-mix(in srgb, var(--ink) 9%, transparent); transition: transform .45s ease, box-shadow .35s ease; }
+.dial::before { content: ""; position: absolute; inset: 19px; border: 1px dashed color-mix(in srgb, var(--ink) 20%, transparent); border-radius: 50%; }
+.dialTick { position: absolute; z-index: 1; color: var(--muted); font: 8px ui-monospace, monospace; }
+.dialTick[data-tick="quality"] { top: 12px; left: 50%; transform: translateX(-50%); }
+.dialTick[data-tick="cost"] { right: 8px; bottom: 25px; }
+.dialTick[data-tick="ability"] { bottom: 25px; left: 7px; }
+.dialNeedle { position: absolute; z-index: 2; top: 50%; left: 50%; width: 3px; height: 41px; border-radius: 99px; background: var(--accent-text); transform-origin: 50% 100%; transform: translate(-50%, -100%) rotate(var(--pointer-angle)); transition: transform .75s cubic-bezier(.2,.8,.2,1); }
+.dialNeedle::after { content: ""; position: absolute; top: -4px; left: 50%; width: 9px; height: 9px; border-radius: 50%; background: var(--accent-text); transform: translateX(-50%); }
+.dialHub { position: absolute; z-index: 3; inset: 50% auto auto 50%; display: grid; place-items: center; width: 29px; height: 29px; border: 1px solid color-mix(in srgb, var(--accent-text) 45%, transparent); border-radius: 50%; background: var(--paper); color: var(--accent-text); transform: translate(-50%, -50%); }
+.dialLabel { max-width: 100%; color: var(--accent-text); font: 10px ui-monospace, monospace; text-align: center; overflow-wrap: anywhere; }
+
+.candidates { display: grid; gap: 7px; min-width: 0; }
+.candidate { position: relative; display: grid; gap: 5px; min-width: 0; padding: 8px; border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); border-radius: 10px; background: color-mix(in srgb, var(--surface) 70%, var(--paper)); color: var(--muted); transition: opacity .4s ease, transform .5s ease, border-color .35s ease, background .35s ease, color .35s ease; }
+.candidate[data-state="eligible"] { border-color: color-mix(in srgb, var(--accent-text) 32%, transparent); }
+.candidate[data-state="picked"] { color: var(--accent-text); border-color: color-mix(in srgb, var(--accent-text) 65%, transparent); background: color-mix(in srgb, var(--accent-text) 11%, var(--paper)); transform: translateX(4px) rotate(-1deg); box-shadow: 4px 4px 0 color-mix(in srgb, var(--accent-text) 14%, transparent); }
+.candidate[data-state="blocked"] { opacity: .4; transform: translateX(-4px); }
+.candidate[data-state="unavailable"] { opacity: .3; border-style: dashed; }
+.candidateHead { display: grid; grid-template-columns: auto auto minmax(0, 1fr); align-items: center; gap: 5px; min-width: 0; }
+.modelMark { display: grid; place-items: center; color: var(--accent-text); }
+.candidateHead strong { font: 13px ui-monospace, monospace; color: var(--ink); }
+.candidate[data-state="picked"] .candidateHead strong { color: var(--accent-text); }
+.candidateHead > span:last-child { justify-self: end; font-size: 8px; }
+.candidateScore { display: flex; align-items: baseline; justify-content: space-between; gap: 4px; min-width: 0; }
+.candidateScore span { font-size: 8px; }
+.candidateScore b { font: 12px ui-monospace, monospace; color: var(--ink); }
+.candidateFoot { display: flex; align-items: baseline; justify-content: space-between; gap: 5px; min-width: 0; }
+.candidateFoot small { min-width: 0; overflow-wrap: anywhere; font-size: 8px; line-height: 1.35; }
+.candidateFoot code { flex: none; color: var(--muted); font: 8px ui-monospace, monospace; }
+.candidateSeal { position: absolute; top: 8px; right: 7px; }
+
+.verdict { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 7px; min-width: 0; padding: 8px 9px 2px; border-top: 1px dashed color-mix(in srgb, var(--ink) 21%, transparent); color: var(--muted); }
+.verdict > svg { margin-top: 1px; color: var(--accent-text); }
+.verdict > div { display: grid; gap: 2px; min-width: 0; }
+.verdict strong { color: var(--ink); font-size: 10px; overflow-wrap: anywhere; }
+.verdict span { font-size: 9px; line-height: 1.45; overflow-wrap: anywhere; }
+.verdict[data-status="chosen"] { color: var(--accent-text); }
+.verdict[data-status="chosen"] strong { color: var(--accent-text); }
+.verdict[data-status="blocked"] { color: #9d4b40; }
+.verdict[data-status="blocked"] > svg { color: #a34b40; }
+.verdict[data-status="blocked"] strong { color: #9d4b40; }
+
+.lab { display: grid; gap: 13px; width: 100%; max-width: 100%; margin: 26px 0 18px; padding: 17px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 16px; background: color-mix(in srgb, var(--accent-text) 5%, var(--paper)); }
+.labTop { font: 10px ui-monospace, monospace; }
+.labTop strong { font: 400 11px/1.4 inherit; }
+.controls { display: flex; flex-wrap: wrap; gap: 7px; }
+.controlGroup { display: flex; flex-wrap: wrap; gap: 6px; }
+.controls button { min-height: 34px; padding: 6px 10px; border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent); border-radius: 999px; background: var(--paper); color: var(--ink); font-size: 12px; cursor: pointer; }
+.controls button[aria-pressed="true"] { background: var(--accent-text); color: var(--paper); }
+.controls button:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
+.reset { margin-left: auto; }
+.status { min-height: 25px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+.status[data-status="chosen"] { color: var(--accent-text); }
+.status[data-status="blocked"] { color: #9d4b40; }
+
+.hero .dialDesk { gap: 7px; padding: 9px; }
+.hero .ticket { padding-block: 6px; }
+.hero .dial { width: 102px; }
+.hero .dialNeedle { height: 35px; }
+.hero .candidate { padding: 6px; }
+.hero .candidateHead strong { font-size: 12px; }
+.hero .candidateFoot small { max-height: 22px; overflow: hidden; }
+
+@media (max-width: 600px) {
+  .hero { padding: 10px; }
+  .lessonDesk { padding: 12px; }
+  .dialRow { grid-template-columns: minmax(100px, .72fr) minmax(0, 1.28fr); gap: 7px; }
+  .dial { width: 104px; }
+  .candidate { padding: 7px; }
+  .candidateHead > span:last-child { font-size: 7px; }
+  .reset { margin-left: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticket,
+  .dialNeedle,
+  .candidate { transition: none; }
+}

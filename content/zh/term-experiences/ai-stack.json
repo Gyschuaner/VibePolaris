@@ -7505,156 +7505,101 @@
     "lead": "100个请求里70个是抽取、30个是复杂推理，怎样按任务把它们分给不同模型？",
     "definition": "路由器根据任务类型、质量要求、延迟、成本或实时状态，为每个请求选择合适模型。",
     "boundary": "模型路由不是失败后的备用切换；前者在请求前做选择，后者在首选模型失败后接管。",
-    "sceneKind": "route",
-    "sceneTitle": "请求特征在调用前决定模型",
-    "actionLabel": "调整质量权重",
+    "sceneKind": "triage-dial",
+    "sceneTitle": "工单在调用前经过分诊转盘",
+    "actionLabel": "拨动选择盘",
     "actors": [
       {
-        "id": "requests",
-        "label": "请求流",
-        "detail": "100个",
-        "icon": "queue",
+        "id": "ticket",
+        "label": "工单",
+        "detail": "提取金额",
+        "icon": "file",
         "group": "输入"
       },
       {
-        "id": "router",
-        "label": "路由器",
-        "detail": "任务+质量+成本",
+        "id": "dial",
+        "label": "分诊转盘",
+        "detail": "任务+门槛+可用性",
         "icon": "gear",
         "group": "决策"
       },
       {
-        "id": "light",
-        "label": "轻量模型",
-        "detail": "承接65个",
+        "id": "candidate-a",
+        "label": "模型 A",
+        "detail": "96 / 100 · 1单位",
         "icon": "robot",
-        "group": "路径A"
+        "group": "候选"
       },
       {
-        "id": "strong",
-        "label": "强模型",
-        "detail": "承接35个",
+        "id": "candidate-b",
+        "label": "模型 B",
+        "detail": "97 / 100 · 3单位",
         "icon": "brain",
-        "group": "路径B"
+        "group": "候选"
       },
       {
-        "id": "metrics",
-        "label": "汇总",
-        "detail": "成本0.07 · 质量90%",
-        "icon": "chart",
-        "group": "结果"
+        "id": "stop",
+        "label": "停在调用前",
+        "detail": "没有满足条件的模型",
+        "icon": "shield",
+        "group": "边界"
       }
     ],
-    "edges": [
-      {
-        "id": "r-ro",
-        "from": "requests",
-        "to": "router",
-        "label": "提取特征"
-      },
-      {
-        "id": "ro-l",
-        "from": "router",
-        "to": "light",
-        "label": "简单任务"
-      },
-      {
-        "id": "ro-s",
-        "from": "router",
-        "to": "strong",
-        "label": "复杂任务"
-      },
-      {
-        "id": "l-m",
-        "from": "light",
-        "to": "metrics",
-        "label": "汇总"
-      },
-      {
-        "id": "s-m",
-        "from": "strong",
-        "to": "metrics",
-        "label": "汇总"
-      }
-    ],
+    "edges": [],
     "frames": [
       {
-        "label": "请求着色",
-        "note": "100个请求按抽取和复杂推理标出不同特征。",
-        "activeIds": [
-          "requests"
-        ],
+        "label": "拆开工单",
+        "note": "只看任务需要什么；此时还没有调用模型。",
+        "activeIds": ["ticket"],
         "doneIds": [],
-        "mutedIds": [
-          "light",
-          "strong"
-        ],
-        "values": {
-          "requests": "70 简单 / 30 复杂"
-        },
+        "mutedIds": ["dial", "candidate-a", "candidate-b", "stop"],
+        "values": {"ticket": "提取订单金额"},
         "activeEdgeIds": []
       },
       {
-        "label": "路由打分",
-        "note": "路由器同时考虑质量门槛和示例成本。",
-        "activeIds": [
-          "router"
-        ],
-        "doneIds": [
-          "requests"
-        ],
-        "mutedIds": [
-          "light",
-          "strong"
-        ],
-        "values": {
-          "router": "质量权重 0.6"
-        },
-        "activeEdgeIds": [
-          "r-ro"
-        ]
+        "label": "拨到门槛",
+        "note": "同一把 90 分门槛先筛候选，再比较费用。",
+        "activeIds": ["dial"],
+        "doneIds": ["ticket"],
+        "mutedIds": ["candidate-a", "candidate-b", "stop"],
+        "values": {"dial": "门槛 90 / 100"},
+        "activeEdgeIds": []
       },
       {
-        "label": "两路分流",
-        "note": "边界样本使5个简单请求也进入强模型，最终65/35。",
-        "activeIds": [
-          "light",
-          "strong"
-        ],
-        "doneIds": [
-          "requests",
-          "router"
-        ],
-        "mutedIds": [],
-        "values": {
-          "light": "65",
-          "strong": "35"
-        },
-        "activeEdgeIds": [
-          "ro-l",
-          "ro-s"
-        ]
+        "label": "钉住 A",
+        "note": "提取金额时两者都达标，路由选择更省的 A；还没生成回答。",
+        "activeIds": ["candidate-a"],
+        "doneIds": ["ticket", "dial"],
+        "mutedIds": ["candidate-b", "stop"],
+        "values": {"candidate-a": "命中 · 96 / 100"},
+        "activeEdgeIds": []
       },
       {
-        "label": "汇总取舍",
-        "note": "示例平均成本从0.12降到0.07元，质量保持90%。",
-        "activeIds": [
-          "metrics"
-        ],
-        "doneIds": [
-          "requests",
-          "router",
-          "light",
-          "strong"
-        ],
-        "mutedIds": [],
-        "values": {
-          "metrics": "0.07元 · 90%"
-        },
-        "activeEdgeIds": [
-          "l-m",
-          "s-m"
-        ]
+        "label": "转向 B",
+        "note": "复杂条款让 A 低于门槛，B 才留下；任务难度改变了选择。",
+        "activeIds": ["candidate-b"],
+        "doneIds": ["ticket", "dial"],
+        "mutedIds": ["candidate-a", "stop"],
+        "values": {"candidate-b": "命中 · 92 / 100"},
+        "activeEdgeIds": []
+      },
+      {
+        "label": "遇到图片",
+        "note": "A 没有图片能力，B 以较高成本承接这类请求。",
+        "activeIds": ["candidate-b"],
+        "doneIds": ["ticket", "dial"],
+        "mutedIds": ["candidate-a", "stop"],
+        "values": {"candidate-a": "不支持图片", "candidate-b": "命中 · 94 / 100"},
+        "activeEdgeIds": []
+      },
+      {
+        "label": "没有可接候选",
+        "note": "门槛 98 高于两者分数，路由停在调用前而不是偷偷放宽条件。",
+        "activeIds": ["stop"],
+        "doneIds": ["ticket", "dial"],
+        "mutedIds": ["candidate-a", "candidate-b"],
+        "values": {"stop": "门槛 98 · 无候选"},
+        "activeEdgeIds": []
       }
     ],
     "insight": "模型路由是在请求前按目标选模型；备用模型是在首选失败后接管。",

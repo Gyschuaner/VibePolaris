@@ -98,6 +98,7 @@ const sceneCopy = {
   terminal: { heading: "逐条执行并看输出", insight: "执行结论" },
   "magnet-drawer": { heading: "拉开抽屉，检查哪张卡能被引用", insight: "证据结论" },
   "overlay-film": { heading: "叠上便签，看哪一层还能复用", insight: "命中结论" },
+  "triage-dial": { heading: "拨动分诊转盘，看看谁能承接", insight: "选择结论" },
 } satisfies Record<TermSceneKind, { heading: string; insight: string }>;
 
 type SceneControlKind = "range" | "select" | "step";
