@@ -149,6 +149,7 @@ import { DomTermPage } from "@/components/terms/frontend-foundations-pages/dom";
 import { FrameworkTermPage } from "@/components/terms/frontend-foundations-pages/framework";
 import { SsgSsrTermPage } from "@/components/terms/frontend-foundations-pages/ssg-ssr";
 import { LibraryTermPage } from "@/components/terms/frontend-foundations-pages/library";
+import { RuntimeTermPage } from "@/components/terms/frontend-foundations-pages/runtime";
 import { ResponsiveTermPage } from "@/components/terms/frontend-foundations-pages/responsive";
 
 const articleTermPages = {
@@ -161,6 +162,7 @@ const articleTermPages = {
   framework: FrameworkTermPage,
   "ssg-ssr": SsgSsrTermPage,
   library: LibraryTermPage,
+  runtime: RuntimeTermPage,
   'offline-first': OfflineFirstTermPage,
   'adaptive-layout': AdaptiveLayoutTermPage,
   'safe-area': SafeAreaTermPage,
