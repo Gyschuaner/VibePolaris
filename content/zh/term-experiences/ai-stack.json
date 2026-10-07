@@ -30636,7 +30636,7 @@
       },
       {
         "label": "先确认两张片能对齐",
-        "note": "维度一致时可直接相加；不一致就需要显式 projection。",
+        "note": "同形状时可直接相加；如果从 3 维变到 4 维，恒等支路先用 W_skip(x) 投影到 4 维。",
         "activeIds": [
           "projection"
         ],
@@ -30650,7 +30650,7 @@
           "gradient"
         ],
         "values": {
-          "projection": "d_in=d_out · identity"
+          "projection": "same 3→3：identity · mismatch 3→4：W_skip(x)→4维"
         },
         "activeEdgeIds": []
       },
@@ -30677,7 +30677,7 @@
       },
       {
         "label": "梯度也有一条直路",
-        "note": "当 F(x) 接近 0 时，输出和梯度仍可沿恒等支路传递；这改善条件，不保证结果。",
+        "note": "恒等支路始终提供 I 的梯度分量；F(x)≈0 只说明前向 y≈x，不单独保证完整梯度不消失。",
         "activeIds": [
           "gradient"
         ],
@@ -30690,7 +30690,7 @@
         ],
         "mutedIds": [],
         "values": {
-          "gradient": "F(x)≈0 → y≈x · 梯度仍可回到输入"
+          "gradient": "I + ∂F/∂x · F(x)≈0 仅表示 y≈x"
         },
         "activeEdgeIds": []
       }
