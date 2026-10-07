@@ -1,7 +1,8 @@
 import { ArrowDown, ArrowRight, Check, FileText, X } from '@phosphor-icons/react/dist/ssr';
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
 import { ConceptHero } from './ConceptHero';
-import { ModelRoutingLesson, ModelFallbackLesson, PromptCachingLesson } from './ModelDeliveryLessons';
+import { ModelRoutingLesson, ModelFallbackLesson } from './ModelDeliveryLessons';
+import { PromptCachingHero, PromptCachingLesson } from './ai-stack-lessons/prompt-caching';
 import { routingSources, fallbackSources, promptCachingSources } from '@/lib/model-delivery-sources';
 import base from './EventConcepts.module.css';
 import s from './ModelDeliveryConcepts.module.css';
@@ -69,7 +70,7 @@ export function PromptCachingTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={promptCachingSources}/>;
   return <ConceptArticle slug="prompt-caching" title="提示缓存" sources={promptCachingSources} sections={[["computation","复用处理输入的计算"],["prefix","从输入开头连续匹配"],["conditions","相同文字不保证命中"],["lifetime","缓存可用期与实际收益"]]}
     intro={<>提示缓存复用模型已经处理过的相同输入前缀，减少重复计算。前缀就是从输入开头连续完全相同的那一段。长指令、工具说明和背景资料保持稳定时，下一次请求可以从已有计算继续处理。它保存的不是可以拿来就用的旧答案。</>}
-    hero={<ConceptHero slug="prompt-caching" label="两次输入的前三段共享计算，末尾问题变化后仍单独处理并生成新回答"><div className={s.cachingHero}><span>首次输入</span><div>{['指令','资料','格式','问题 A'].map(text => <i key={text}>{text}</i>)}</div><span>下一次输入</span><div>{['复用','复用','复用','问题 B'].map((text,i) => <i key={i} data-reuse={i < 3}>{text}</i>)}</div><p><ArrowRight size={18}/>生成本次回答</p></div></ConceptHero>}>
+    hero={<PromptCachingHero/>}>
     <ArticleSection id="computation" title="复用处理输入的计算"><Legacy slug="prompt-caching" names={["question","definition"]}/>
       <p id="pcache-definition" className="vp-citation-target"><strong>提示缓存复用相同前缀的中间计算状态。</strong>可以把它想成模型读长提示时留下的“阅读笔记”，不是把旧答案存起来。OpenAI 文档也用中间计算状态解释这种复用：新请求不必重新处理已经匹配的输入部分，继续处理剩余输入，再生成回复。缓存命中不表示直接返回上次的回答。<Cite id="pcache-definition"/></p>
       <p>模型处理这段输入后会留下中间状态，下次遇到相同内容可以直接接着用，通常称作 KV cache。模型生成一次回答的过程中，本来就会复用已读输入的计算；提示缓存关注的是不同请求之间可复用的相同开头，常见于程序调用 AI 的情况。</p>

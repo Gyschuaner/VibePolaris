@@ -25,22 +25,3 @@ export function callBackup(policy: ReturnType<typeof fallbackPolicy>) {
   const pass = attempted && policy.backup === 'valid';
   return { attempted, attempts: attempted ? 2 : 1, pass, response: attempted ? pass ? '{"amount":120}' : '{"total":120}' : '', label: attempted ? pass ? '备用字段检查通过' : '缺少 amount，任务仍未完成' : policy.reason };
 }
-export type CacheChange = 'question' | 'material' | 'instruction';
-export const cachedPrefix = ['用中文回答', '退款通常三个工作日到账；费用未说明。', '返回简短文字'];
-export function cacheRequest(change: CacheChange) {
-  const parts = [...cachedPrefix, '退款多久到账？'];
-  if (change === 'question') parts[3] = '退款收费吗？';
-  if (change === 'material') parts[1] = '退款通常五个工作日到账；费用未说明。';
-  if (change === 'instruction') parts[0] = '用英文回答';
-  return parts;
-}
-export function reusePrefix(change: CacheChange, sameModel: boolean, available: boolean, saved: boolean) {
-  const parts = cacheRequest(change);
-  let reused = 0;
-  if (saved && available && sameModel) {
-    while (reused < cachedPrefix.length && parts[reused] === cachedPrefix[reused]) reused++;
-  }
-  const reason = !saved ? '尚未保存前缀计算' : !available ? '缓存已失效' : !sameModel ? '模型不同，本例不复用' : reused ? '从开头连续匹配' : '首段已改变';
-  const answer = change === 'question' ? '提供的资料没有说明退款费用。' : change === 'material' ? '通常五个工作日到账。' : 'It usually takes three business days.';
-  return { parts, reused, fresh: parts.length - reused, reason, answer };
-}

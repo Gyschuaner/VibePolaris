@@ -25,6 +25,7 @@ const sceneKinds = [
   "assembly",
   "terminal",
   "magnet-drawer",
+  "overlay-film",
 ] as const;
 
 const actorIcons = [

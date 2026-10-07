@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { ArrowCounterClockwise, ArrowRight, Check, FileText, X } from '@phosphor-icons/react';
 import { Reveal, States } from './ExtendedConceptLessons';
-import { routeRequest, routeTasks, fallbackPolicy, callBackup, primaryLabels, cachedPrefix, cacheRequest, reusePrefix, type RouteTask, type PrimaryOutcome, type BackupOutcome, type CacheChange } from '@/lib/model-delivery-teaching';
+import { routeRequest, routeTasks, fallbackPolicy, callBackup, primaryLabels, type RouteTask, type PrimaryOutcome, type BackupOutcome } from '@/lib/model-delivery-teaching';
 import base from './EventConcepts.module.css';
 import s from './ModelDeliveryConcepts.module.css';
 
@@ -32,18 +32,5 @@ export function ModelFallbackLesson() {
       <Reveal open={backupOpen}><div className={`${s.receipt} ${s.backupReceipt}`} role="status"><span>02 · 备用调用</span><pre>{second.response}</pre><h3>{second.label}</h3><p>共尝试 {second.attempts} 次。{second.pass ? '金额字段满足要求。' : '本例停止，不把收到回复计为任务成功。'}</p></div></Reveal>
     </div></Reveal>
     <button className={base.reset} onClick={() => { setPrimary('rate'); setBackup('valid'); setLimit(2); invalidate(); }}><ArrowCounterClockwise size={17}/>重置调用与预算</button>
-  </div>;
-}
-
-export function PromptCachingLesson() {
-  const [saved, setSaved] = useState(false), [change, setChange] = useState<CacheChange>('question'), [same, setSame] = useState(true), [available, setAvailable] = useState(true);
-  const [open, setOpen] = useState(false), [report, setReport] = useState(reusePrefix('question', true, true, true));
-  return <div className={`${base.lab} ${s.lab}`} aria-label="实验：复用连续相同的输入前缀">
-    <div className={s.cacheShelf}><h3>首次输入的前三段</h3>{cachedPrefix.map((part,i) => <div key={part}><span>0{i+1}</span><p>{part}</p></div>)}<button disabled={saved} onClick={() => setSaved(true)}>处理首次输入并保存计算<Check size={18}/></button><States index={saved ? 1 : 0}>{[<p key="empty">尚未保存</p>,<p key="saved">前三段计算已保存</p>]}</States></div>
-    <div className={s.controls}><label>下一次改变哪里<select value={change} onChange={e => { setChange(e.target.value as CacheChange); setOpen(false); }}><option value="question">最后的问题</option><option value="material">第二段资料</option><option value="instruction">第一段指令</option></select></label><label className={s.check}><input type="checkbox" checked={same} onChange={e => { setSame(e.target.checked); setOpen(false); }}/>使用相同模型</label><label className={s.check}><input type="checkbox" checked={available} onChange={e => { setAvailable(e.target.checked); setOpen(false); }}/>缓存仍有效</label></div>
-    <div className={s.nextInput}><h3>下一次输入</h3>{[0,1,2,3].map(i => <div key={i}><span>0{i+1}</span><States index={['question','material','instruction'].indexOf(change)}>{(['question','material','instruction'] as CacheChange[]).map(kind => <p key={kind}>{cacheRequest(kind)[i]}</p>)}</States></div>)}</div>
-    <button disabled={!saved || open} onClick={() => { setReport(reusePrefix(change, same, available, saved)); setOpen(true); }}>处理下一次输入<ArrowRight size={18}/></button>
-    <Reveal open={open}><div className={s.cacheResult} role="status"><h3>复用 {report.reused} 段，重新计算 {report.fresh} 段</h3><p>{report.reason}</p><div className={s.computation}>{report.parts.map((part,i) => <div key={i} data-reused={i < report.reused}><span>0{i+1} · {i < report.reused ? '复用计算' : '重新计算'}</span><p>{part}</p></div>)}</div><div className={s.generated}><span>本次新生成的回答</span><p>{report.answer}</p></div></div></Reveal>
-    <button className={base.reset} onClick={() => { setSaved(false); setChange('question'); setSame(true); setAvailable(true); setOpen(false); }}><ArrowCounterClockwise size={17}/>重置输入与演示缓存</button>
   </div>;
 }

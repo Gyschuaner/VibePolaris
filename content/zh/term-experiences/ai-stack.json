@@ -7075,154 +7075,197 @@
     "lead": "两次请求共享6000 token前缀，为什么第二次只改尾部问题就更快？",
     "definition": "服务端复用相同提示前缀的已处理计算，后续请求只需处理变化的尾部，从而降低首token延迟或计费输入。",
     "boundary": "缓存通常按前缀命中，不是把整段最终答案永久保存；改动前部内容可能让命中失效。",
-    "sceneKind": "layers",
-    "sceneTitle": "相同前缀被复用，尾部继续计算",
-    "actionLabel": "改动前缀位置",
+    "sceneKind": "overlay-film",
+    "sceneTitle": "透明底片叠上便签，缓存章只认连续前缀",
+    "actionLabel": "改变便签或底片",
     "actors": [
       {
-        "id": "prefix",
-        "label": "共享前缀",
-        "detail": "6000 token",
+        "id": "base-film",
+        "label": "稳定底片",
+        "detail": "规则 · 工具 · 格式",
         "icon": "memory",
-        "group": "缓存"
+        "group": "底片"
       },
       {
-        "id": "question-a",
-        "label": "首个问题",
-        "detail": "尾部 A",
+        "id": "system",
+        "label": "系统规则",
+        "detail": "用中文回答",
+        "icon": "gear",
+        "group": "固定层"
+      },
+      {
+        "id": "tools",
+        "label": "工具说明",
+        "detail": "billing.lookup",
+        "icon": "package",
+        "group": "固定层"
+      },
+      {
+        "id": "format",
+        "label": "输出格式",
+        "detail": "结论 + 原文位置",
+        "icon": "file",
+        "group": "固定层"
+      },
+      {
+        "id": "sticky",
+        "label": "问题便签",
+        "detail": "问题 A → 问题 B",
         "icon": "message",
-        "group": "请求1"
+        "group": "变化层"
       },
       {
-        "id": "question-b",
-        "label": "第二个问题",
-        "detail": "尾部 B",
-        "icon": "message",
-        "group": "请求2"
-      },
-      {
-        "id": "compute",
-        "label": "前缀计算",
-        "detail": "未命中",
-        "icon": "brain",
-        "group": "处理"
-      },
-      {
-        "id": "latency",
-        "label": "首token耗时",
-        "detail": "1.8s",
-        "icon": "clock",
-        "group": "结果"
+        "id": "cache-stamp",
+        "label": "缓存章",
+        "detail": "命中 0/4",
+        "icon": "spark",
+        "group": "证据"
       }
     ],
-    "edges": [
-      {
-        "id": "p-c",
-        "from": "prefix",
-        "to": "compute",
-        "label": "处理"
-      },
-      {
-        "id": "a-c",
-        "from": "question-a",
-        "to": "compute",
-        "label": "续算"
-      },
-      {
-        "id": "b-c",
-        "from": "question-b",
-        "to": "compute",
-        "label": "续算"
-      },
-      {
-        "id": "c-l",
-        "from": "compute",
-        "to": "latency",
-        "label": "计时"
-      }
-    ],
+    "edges": [],
     "frames": [
       {
-        "label": "首请求冷启动",
-        "note": "6000 token前缀首次处理，缓存命中为0。",
+        "label": "铺开底片",
+        "note": "稳定规则、工具和格式先排成连续前缀，问题便签还没有贴上去。",
         "activeIds": [
-          "prefix",
-          "question-a",
-          "compute"
+          "base-film",
+          "system",
+          "tools",
+          "format"
         ],
         "doneIds": [],
         "mutedIds": [
-          "question-b"
+          "sticky",
+          "cache-stamp"
         ],
         "values": {
-          "compute": "命中 0",
-          "latency": "1.8 s"
+          "base-film": "3 层固定输入",
+          "sticky": "待贴问题"
         },
-        "activeEdgeIds": [
-          "p-c",
-          "a-c",
-          "c-l"
-        ]
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "可复用前缀",
+          "value": "尚未处理"
+        }
       },
       {
-        "label": "前缀被缓存",
-        "note": "服务保存已处理的共同前缀，不保存最终答案。",
+        "label": "首轮叠印",
+        "note": "首轮读过底片后留下中间计算；缓存保存的不是最终回答。",
         "activeIds": [
-          "prefix"
+          "base-film",
+          "cache-stamp"
         ],
         "doneIds": [
-          "question-a",
-          "compute"
+          "system",
+          "tools",
+          "format"
         ],
         "mutedIds": [
-          "question-b"
+          "sticky"
         ],
         "values": {
-          "prefix": "缓存 6000 token"
+            "cache-stamp": "写入 3/4 层"
         },
-        "activeEdgeIds": []
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "缓存状态",
+          "value": "已盖章"
+        }
       },
       {
-        "label": "第二请求复用",
-        "note": "尾部B不同，但前6000 token完全相同。",
+        "label": "换问题便签",
+        "note": "只换尾部问题，前三层从开头连续相同，便签内容仍要重新参与生成。",
         "activeIds": [
-          "prefix",
-          "question-b",
-          "compute"
+          "base-film",
+          "sticky",
+          "cache-stamp"
         ],
         "doneIds": [
-          "question-a"
+          "system",
+          "tools",
+          "format"
         ],
         "mutedIds": [],
         "values": {
-          "compute": "命中 6000",
-          "latency": "0.7 s"
+          "sticky": "问题 B",
+          "cache-stamp": "命中 3/4 层"
         },
-        "activeEdgeIds": [
-          "p-c",
-          "b-c",
-          "c-l"
-        ]
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "前缀命中",
+          "value": "3 层"
+        }
       },
       {
-        "label": "改动开头失效",
-        "note": "把前缀首段改一个字，命中量从6000降为0。",
+        "label": "碰到底片",
+        "note": "工具说明一变，后面的格式也不再拥有相同前文，只剩第一层连续匹配。",
         "activeIds": [
-          "prefix",
-          "compute"
+          "base-film",
+          "tools",
+          "sticky",
+          "cache-stamp"
         ],
         "doneIds": [
-          "question-a",
-          "question-b"
+          "system"
+        ],
+        "mutedIds": [
+          "format"
+        ],
+        "values": {
+          "tools": "policy-v4",
+          "cache-stamp": "命中 1/4 层"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "前缀命中",
+          "value": "1 层"
+        }
+      },
+      {
+        "label": "切换模型",
+        "note": "相同文字放进另一模型，也不能拿旧模型的中间状态直接叠印。",
+        "activeIds": [
+          "base-film",
+          "sticky",
+          "cache-stamp"
+        ],
+        "doneIds": [
+          "system",
+          "tools",
+          "format"
         ],
         "mutedIds": [],
         "values": {
-          "prefix": "前部已变",
-          "compute": "命中 0"
+          "cache-stamp": "模型不一致 · 0/4"
         },
-        "activeEdgeIds": [
-          "p-c"
-        ]
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "可复用前缀",
+          "value": "0 层"
+        }
+      },
+      {
+        "label": "缓存章褪色",
+        "note": "缓存有有效期和资源边界；章褪色后，底片需要重新处理。",
+        "activeIds": [
+          "base-film",
+          "sticky",
+          "cache-stamp"
+        ],
+        "doneIds": [
+          "system",
+          "tools",
+          "format"
+        ],
+        "mutedIds": [],
+        "values": {
+          "cache-stamp": "TTL 失效 · 0/4"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "本次回答",
+          "value": "重新生成"
+        }
       }
     ],
     "insight": "提示缓存复用的是相同前缀的计算，不是把整份回答当作缓存值。",
@@ -7251,9 +7294,24 @@
     },
     "sources": [
       {
-        "url": "https://platform.openai.com/docs/guides/prompt-caching",
+        "url": "https://developers.openai.com/api/docs/guides/prompt-caching",
         "label": "OpenAI 官方文档 · prompt caching",
-        "note": "接口参数与调用行为"
+        "note": "中间计算复用与命中条件"
+      },
+      {
+        "url": "https://docs.vllm.ai/en/latest/design/prefix_caching/",
+        "label": "vLLM 文档 · Automatic Prefix Caching",
+        "note": "前缀连续匹配与块缓存"
+      },
+      {
+        "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+        "label": "Anthropic 文档 · prompt caching",
+        "note": "工具、系统提示与有效期边界"
+      },
+      {
+        "url": "https://papers.nips.cc/paper_files/paper/2024/file/724be4472168f31ba1c9ac630f15dec8-Paper-Conference.pdf",
+        "label": "SGLang 论文 · RadixAttention",
+        "note": "KV 状态复用与淘汰"
       }
     ]
   },
