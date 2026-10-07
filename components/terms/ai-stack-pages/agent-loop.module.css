@@ -1,0 +1,151 @@
+.hero,
+.lab { box-sizing: border-box; min-width: 0; color: var(--ink); }
+
+:global(.vp-concept[data-concept="agent-loop"] .vp-hero h1) { font-size: clamp(42px, 4.2vw, 64px); letter-spacing: -2px; text-wrap: nowrap; }
+:global(.vp-concept[data-concept="agent-loop"] .vp-hero h1 span) { display: block; margin: 12px 0 0; white-space: normal; }
+
+.hero { display: grid; gap: 8px; margin: 0; padding: 12px; border-radius: 16px; background: color-mix(in srgb, var(--accent-text) 5%, var(--paper)); }
+.heroTop,
+.labTop { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 11px; }
+.heroTop strong { font: 10px ui-monospace, monospace; }
+
+.heroControls,
+.lessonControls { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.heroControls > button,
+.lessonControls > button { display: inline-flex; align-items: center; gap: 4px; min-height: 28px; padding: 3px 6px; border: 0; border-radius: 999px; background: transparent; color: var(--accent-text); font-size: 10px; cursor: pointer; }
+.heroControls > button:hover,
+.lessonControls > button:hover { background: var(--tint); }
+.heroControls > button:focus-visible,
+.heroChapters button:focus-visible,
+.lessonControls > button:focus-visible,
+.lessonSteps button:focus-visible,
+.controlGroup button:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
+.heroChapters,
+.lessonSteps { display: flex; flex: 1; justify-content: center; gap: 2px; min-width: 0; }
+.heroChapters button,
+.lessonSteps button { display: inline-flex; align-items: baseline; gap: 4px; min-width: 0; padding: 3px 4px; border: 0; border-bottom: 1px solid transparent; background: transparent; color: var(--muted); cursor: pointer; }
+.heroChapters button span,
+.lessonSteps button span { font: 10px ui-monospace, monospace; opacity: .6; }
+.heroChapters button small,
+.lessonSteps button small { max-width: 0; overflow: hidden; white-space: nowrap; font-size: 9px; transition: max-width .3s ease, color .3s ease; }
+.heroChapters button[aria-pressed="true"],
+.lessonSteps button[aria-pressed="true"] { border-bottom-color: var(--accent-text); color: var(--accent-text); }
+.heroChapters button[aria-pressed="true"] small { max-width: 86px; }
+.lessonSteps button[aria-pressed="true"] small { max-width: 76px; }
+
+/* A repair desk, rather than a generic left-to-right flowchart. Each piece has
+   one fixed slot so the narrow hero cannot cover evidence with another object. */
+.bench,
+.workbench { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "ticket drawer" "receipt state" "verify verify" "gate gate"; gap: 7px; box-sizing: border-box; min-width: 0; padding: 10px; overflow: hidden; border-bottom: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); background: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 42%), linear-gradient(170deg, color-mix(in srgb, var(--paper) 91%, var(--accent) 9%), color-mix(in srgb, var(--paper) 98%, var(--ink) 2%)); }
+.bench { min-height: 238px; }
+.workbench { min-height: 300px; }
+.benchTicket,
+.taskTicket { grid-area: ticket; display: grid; align-content: start; gap: 3px; min-width: 0; padding: 8px 9px; border-left: 3px solid #b74a3e; background: color-mix(in srgb, var(--paper) 94%, #f1e4c3); transform: rotate(-2deg); }
+.benchTicket span,
+.taskTicket span { color: var(--muted); font-size: 9px; }
+.benchTicket strong,
+.taskTicket strong { min-width: 0; font-size: 13px; font-weight: 600; line-height: 1.35; overflow-wrap: anywhere; }
+.benchTicket code,
+.taskTicket code { color: #8e382e; font: 9px/1.4 ui-monospace, monospace; overflow-wrap: anywhere; }
+
+.benchDrawer,
+.repairDrawer { grid-area: drawer; display: grid; align-content: start; gap: 4px; box-sizing: border-box; min-width: 0; padding: 9px 9px; border: 1px solid color-mix(in srgb, var(--accent-text) 30%, transparent); border-radius: 10px; background: color-mix(in srgb, var(--accent-text) 9%, var(--paper)); color: var(--ink); box-shadow: inset 0 -3px color-mix(in srgb, var(--accent-text) 16%, transparent); transition: transform .45s ease, opacity .35s ease, box-shadow .35s ease; }
+.benchDrawer[data-open="false"],
+.repairDrawer[data-open="false"] { opacity: .52; transform: translateY(5px); }
+.benchDrawer[data-open="true"],
+.repairDrawer[data-open="true"] { box-shadow: inset 0 -3px var(--accent-text), 0 8px 17px color-mix(in srgb, var(--accent-text) 12%, transparent); }
+.benchDrawer svg,
+.repairDrawer svg { color: var(--accent-text); }
+.benchDrawer span,
+.repairDrawer span { color: var(--muted); font-size: 9px; }
+.benchDrawer strong,
+.repairDrawer strong { min-width: 0; font: 10px ui-monospace, monospace; overflow-wrap: anywhere; }
+.benchDrawer small,
+.repairDrawer small { color: var(--muted); font-size: 9px; line-height: 1.35; }
+
+.benchReceipt,
+.receipt { grid-area: receipt; display: grid; align-content: start; gap: 3px; box-sizing: border-box; min-width: 0; padding: 8px 9px; border-left: 3px solid #b74a3e; background: var(--paper); transform: translateX(8px) rotate(2deg); animation: receiptIn .4s ease both; }
+.benchReceipt[data-current="true"],
+.receipt[data-current="true"] { border-left-color: var(--accent-text); transform: rotate(2deg); }
+.benchReceipt span,
+.receipt span { color: var(--muted); font-size: 9px; }
+.benchReceipt strong,
+.receipt strong { color: #a44940; font: 700 14px ui-monospace, monospace; }
+.benchReceipt[data-current="true"] strong,
+.receipt[data-current="true"] strong { color: var(--accent-text); }
+.benchReceipt code,
+.receipt code { min-width: 0; color: #8e382e; font: 9px/1.35 ui-monospace, monospace; overflow-wrap: anywhere; }
+.benchReceipt[data-current="true"] code,
+.receipt[data-current="true"] code { color: var(--accent-text); }
+.benchReceipt small,
+.receipt small { color: var(--muted); font-size: 9px; line-height: 1.35; }
+
+.benchState,
+.stateCard { grid-area: state; display: grid; align-content: start; gap: 3px; box-sizing: border-box; min-width: 0; padding: 8px 9px; border-left: 3px solid var(--accent-text); background: color-mix(in srgb, var(--accent-text) 9%, var(--paper)); opacity: .45; transform: translateY(7px) rotate(-2deg); transition: opacity .4s ease, transform .45s ease; }
+.benchState[data-visible="true"],
+.stateCard[data-visible="true"] { opacity: 1; transform: rotate(-2deg); }
+.benchState span,
+.stateCard span { color: var(--muted); font-size: 9px; }
+.benchState strong,
+.stateCard strong { min-width: 0; color: var(--accent-text); font: 10px ui-monospace, monospace; overflow-wrap: anywhere; }
+.benchState small,
+.stateCard small { color: var(--muted); font-size: 9px; line-height: 1.35; }
+
+.benchVerification,
+.verification { grid-area: verify; display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; padding: 5px 8px; border-top: 1px dashed color-mix(in srgb, var(--ink) 20%, transparent); color: var(--muted); font-size: 9px; }
+.benchVerification strong,
+.verification strong { color: var(--muted); font: 11px ui-monospace, monospace; }
+.benchVerification[data-done="true"],
+.verification[data-done="true"] { color: var(--accent-text); }
+.benchVerification[data-done="true"] strong,
+.verification[data-done="true"] strong { color: var(--accent-text); }
+
+.benchGate,
+.gate { grid-area: gate; display: flex; align-items: center; justify-content: center; gap: 5px; box-sizing: border-box; min-width: 0; padding: 7px 9px; border: 1px dashed color-mix(in srgb, var(--ink) 21%, transparent); border-radius: 999px; color: var(--muted); font: 9px ui-monospace, monospace; transition: color .35s ease, border-color .35s ease, background .35s ease, transform .4s ease; }
+.benchGate[data-open="true"],
+.gate[data-open="true"] { border-color: var(--accent-text); color: var(--accent-text); background: color-mix(in srgb, var(--accent-text) 9%, var(--paper)); transform: translateY(-2px); }
+.benchGate[data-limited="true"],
+.gate[data-limited="true"] { border-color: #a44940; color: #a44940; background: color-mix(in srgb, #c96659 10%, var(--paper)); }
+
+.hero figcaption { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.lab { display: grid; gap: 13px; margin: 26px 0 18px; padding: 17px; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 16px; background: color-mix(in srgb, var(--accent-text) 5%, var(--paper)); }
+.labTop { font: 10px ui-monospace, monospace; }
+.labTop strong { font: 400 11px/1.4 inherit; }
+.labControls { display: flex; flex-wrap: wrap; gap: 7px; justify-content: space-between; }
+.controlGroup { display: flex; flex-wrap: wrap; gap: 6px; }
+.controlGroup button { display: inline-flex; align-items: center; gap: 4px; min-height: 34px; padding: 5px 10px; border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent); border-radius: 999px; background: var(--paper); color: var(--ink); font-size: 12px; cursor: pointer; }
+.controlGroup button[aria-pressed="true"] { background: var(--accent-text); color: var(--paper); }
+.labStatus { display: flex; align-items: flex-start; gap: 6px; min-height: 22px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.labStatus[data-safe="true"] { color: var(--accent-text); }
+
+@keyframes receiptIn { from { opacity: 0; transform: translateX(15px) rotate(5deg); } to { opacity: 1; } }
+
+@media (max-width: 600px) {
+  .heroChapters button small,
+  .lessonSteps button small { display: none; }
+  .heroChapters button,
+  .lessonSteps button { padding-inline: 3px; }
+  .labControls { display: grid; gap: 7px; }
+  .workbench { min-height: 320px; }
+  .benchTicket,
+  .taskTicket,
+  .benchDrawer,
+  .repairDrawer,
+  .benchReceipt,
+  .receipt,
+  .benchState,
+  .stateCard { padding: 7px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroChapters button small,
+  .lessonSteps button small,
+  .benchDrawer,
+  .repairDrawer,
+  .benchReceipt,
+  .receipt,
+  .benchState,
+  .stateCard,
+  .benchGate,
+  .gate { transition: none; animation: none; }
+}

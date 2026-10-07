@@ -1,200 +1,216 @@
 .hero,
 .lab {
-  position: relative;
-  overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent);
-  border-radius: 20px;
-  background: linear-gradient(145deg, color-mix(in srgb, var(--paper) 80%, #e8efeb), var(--paper));
+  min-width: 0;
   color: var(--ink);
 }
 
 .hero {
   display: grid;
-  gap: 11px;
-  padding: 17px 18px 15px;
-}
-
-.hero::before,
-.lab::before {
-  content: "";
-  position: absolute;
-  inset: 9px;
-  border: 1px solid color-mix(in srgb, var(--accent-text) 16%, transparent);
-  border-radius: 15px;
-  pointer-events: none;
+  gap: 7px;
+  max-width: 410px;
+  margin: 0;
+  padding: 12px;
+  border-radius: 18px;
+  background: radial-gradient(ellipse at 45% 50%, color-mix(in srgb, var(--accent-text) 8%, transparent), transparent 72%);
 }
 
 .heroTop,
 .labTop {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
   color: var(--muted);
-  font: 10px ui-monospace, SFMono-Regular, monospace;
-  letter-spacing: .05em;
+  font-size: 11px;
+  line-height: 1.4;
 }
 
-.heroTop strong,
-.labTop strong {
-  padding: 4px 7px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--accent-text) 10%, transparent);
-  color: var(--ink);
-  font-size: 9px;
-}
+.heroTop { margin-bottom: 1px; }
+.labTop small { color: var(--muted); font-size: 10px; }
 
-.hero :global(.sceneControls) { position: relative; }
-
-.lensBoard {
+.viewfinderBoard,
+.labViewfinder {
   position: relative;
-  display: grid;
-  grid-template-columns: minmax(130px, .8fr) 34px minmax(220px, 1.3fr) minmax(140px, .8fr);
-  gap: 8px;
-  align-items: center;
-  min-height: 190px;
-  padding: 8px 0 2px;
+  min-width: 0;
+  height: 208px;
 }
 
-.questionCard,
-.resultCard,
+.cameraFrame {
+  position: absolute;
+  inset: 26px 5px 8px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 22%, transparent);
+  border-radius: 14px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent-text) 4%, transparent) 1px, transparent 1px) 0 0 / 33.33% 100%, linear-gradient(0deg, color-mix(in srgb, var(--accent-text) 4%, transparent) 1px, transparent 1px) 0 0 / 100% 50%;
+  opacity: .56;
+  pointer-events: none;
+  transition: border-color .45s, opacity .35s, background-color .45s;
+}
+.cameraFrame[data-ready="true"] { border-color: color-mix(in srgb, var(--accent-text) 45%, transparent); opacity: .78; }
+.cameraFrame[data-focus="date"],
+.cameraFrame[data-focus="gate"] { border-color: color-mix(in srgb, var(--brand-star) 70%, var(--accent-text)); background-color: color-mix(in srgb, var(--brand-star) 5%, transparent); }
+.cameraCrosshair { position: absolute; inset: 50% auto auto 50%; width: 24px; height: 24px; transform: translate(-50%, -50%); opacity: .38; }
+.cameraCrosshair::before,
+.cameraCrosshair::after { position: absolute; background: var(--accent-text); content: ""; }
+.cameraCrosshair::before { top: 11px; left: 0; width: 24px; height: 1px; }
+.cameraCrosshair::after { top: 0; left: 11px; width: 1px; height: 24px; }
+.cameraScan { position: absolute; left: 7%; right: 7%; top: 18%; height: 1px; background: color-mix(in srgb, var(--brand-star) 70%, transparent); opacity: 0; transform: translateY(0); }
+.cameraFrame[data-focus="date"] .cameraScan,
+.cameraFrame[data-focus="gate"] .cameraScan { animation: viewfinder-scan .9s ease-out both; }
+@keyframes viewfinder-scan { 0% { opacity: 0; transform: translateY(0); } 15% { opacity: .8; } 100% { opacity: 0; transform: translateY(92px); } }
+
+.questionPin {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 1px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 4px 13px 13px 13px;
+  background: var(--accent-text);
+  color: var(--paper);
+  font-size: 11px;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--ink) 6%, transparent);
+  transform: rotate(-3deg);
+  transition: transform .5s;
+}
+
+.viewfinderBoard[data-phase="LENS"] .questionPin,
+.viewfinderBoard[data-phase="ANSWER"] .questionPin { transform: rotate(0); }
+
+.ticketSlot {
+  position: absolute;
+  top: 39px;
+  left: 50%;
+  width: min(100% - 14px, 278px);
+  transform: translateX(-50%);
+}
+
 .ticket {
   position: relative;
   min-width: 0;
-  padding: 12px 11px;
-  border: 1px solid color-mix(in srgb, var(--ink) 13%, transparent);
-  border-radius: 13px;
-  background: color-mix(in srgb, var(--paper) 78%, transparent);
+  height: 134px;
+  padding: 10px 12px;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--paper) 85%, var(--accent-text));
+  color: var(--ink);
+  box-shadow: 0 8px 17px color-mix(in srgb, var(--ink) 12%, transparent);
+  transform: rotate(-3deg);
+  transition: transform .55s, background .4s, box-shadow .4s;
 }
 
-.questionCard {
-  display: grid;
-  align-content: center;
-  gap: 7px;
-  border-left: 3px solid var(--accent-text);
+.ticket::before,
+.ticket::after {
+  content: "";
+  position: absolute;
+  top: 25px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--paper);
 }
 
-.questionCard > svg { color: var(--accent-text); }
-.questionCard span,
-.resultCard span { color: var(--muted); font-size: 9px; }
-.questionCard strong,
-.resultCard strong { overflow-wrap: anywhere; font-size: 12px; line-height: 1.45; }
-.questionCard code,
-.resultCard code { overflow-wrap: anywhere; color: var(--accent-text); font: 9px/1.4 ui-monospace, SFMono-Regular, monospace; }
+.ticket::before { left: -5px; }
+.ticket::after { right: -5px; }
+.ticket[data-visible="false"] { background: transparent; box-shadow: none; transform: rotate(0); outline: 1px dashed color-mix(in srgb, var(--muted) 30%, transparent); }
+.ticket[data-visible="false"]::before,
+.ticket[data-visible="false"]::after { opacity: 0; }
 
-.lensColumn {
-  display: grid;
-  gap: 8px;
-  justify-items: center;
+.ticketInk { opacity: 1; transform: translateY(0); transition: opacity .35s, transform .55s; }
+.ticket[data-visible="false"] .ticketInk { opacity: 0; transform: translateY(14px); }
+.ticketTop { display: flex; justify-content: space-between; padding-bottom: 6px; border-bottom: 1px dashed color-mix(in srgb, var(--accent-text) 25%, transparent); color: var(--accent-text); font: 8px ui-monospace, SFMono-Regular, monospace; letter-spacing: .06em; }
+.ticketFields { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.ticketField { display: grid; gap: 3px; min-width: 0; height: 31px; padding: 3px 6px; transition: background .4s; }
+.ticketField:first-child { grid-column: 1 / -1; height: 37px; }
+.ticketField small { color: var(--muted); font: 8px ui-monospace, SFMono-Regular, monospace; letter-spacing: .08em; }
+.ticketField strong { color: var(--ink); font-size: 11px; letter-spacing: .07em; line-height: 1; }
+.ticketField:first-child strong { font-size: 15px; }
+.ticketField[data-focus="true"] { background: color-mix(in srgb, var(--brand-star) 17%, transparent); }
+
+.fieldLens {
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  width: calc(100% + 6px);
+  height: 43px;
+  opacity: 1;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 24%, transparent);
+  border-radius: 4px;
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--brand-star) 8%, transparent);
+  pointer-events: none;
+  transition: transform .6s, width .6s, height .6s, opacity .3s;
+}
+
+.fieldLens[data-focus="none"] { opacity: 0; transform: translateY(14px); }
+.fieldLens[data-focus="gate"] { width: calc(50% + 2px); height: 37px; transform: translateY(45px); }
+.fieldLens i { position: absolute; width: 8px; height: 8px; border: solid var(--accent-text); }
+.fieldLens i:nth-child(1) { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+.fieldLens i:nth-child(2) { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
+.fieldLens i:nth-child(3) { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
+.fieldLens i:nth-child(4) { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+.ticketStripe { height: 6px; margin-top: 6px; background: repeating-linear-gradient(90deg, var(--accent-text) 0 2px, transparent 2px 5px, var(--accent-text) 5px 6px, transparent 6px 9px); opacity: .45; }
+.ticketMissing { position: absolute; inset: 0; display: grid; align-content: center; justify-items: center; gap: 10px; color: var(--muted); font-size: 11px; opacity: 0; transition: opacity .35s; }
+.ticket[data-visible="false"] .ticketMissing { opacity: 1; }
+
+.evidenceStamp {
+  position: absolute;
+  z-index: 3;
+  right: 3px;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(100% - 6px);
+  padding: 7px 9px;
+  border-radius: 3px;
+  border-bottom: 2px solid var(--accent-text);
+  background: var(--paper);
   color: var(--accent-text);
+  font-size: 11px;
+  transform: rotate(2deg);
+  transition: transform .45s, color .3s, border-color .3s, box-shadow .45s;
 }
 
-.lensBeam {
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
+.evidenceStamp strong { overflow-wrap: anywhere; line-height: 1.3; }
+.evidenceStamp[data-danger="true"] { color: var(--semantic-danger, #a65449); border-color: currentColor; transform: rotate(0); }
+.evidenceStamp[data-answer="true"] { transform: rotate(0) translateY(-2px); box-shadow: 0 5px 12px color-mix(in srgb, var(--ink) 8%, transparent); }
+.hero figcaption { min-height: 29px; color: var(--muted); font-size: 10px; line-height: 1.45; }
 
-.lensBeam i {
-  display: block;
-  flex: 1;
-  height: 1px;
-  background: color-mix(in srgb, var(--accent-text) 48%, transparent);
-}
-
-.lensLabel {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  color: var(--muted);
-  font: 9px ui-monospace, SFMono-Regular, monospace;
-  writing-mode: vertical-rl;
-}
-
-.ticket {
-  min-height: 150px;
-  padding: 13px 13px 12px;
-  background: linear-gradient(135deg, #eff4e8, #dce8db);
-  color: #2d4034;
-  transform: rotate(-1deg);
-  transition: opacity .35s, transform .35s, filter .35s;
-}
-
-.ticket[data-visible="false"] {
-  display: grid;
-  place-items: center;
-  background: color-mix(in srgb, var(--paper) 72%, transparent);
-  color: var(--muted);
-  transform: rotate(0);
-}
-
-.ticketTop,
-.ticketField small {
-  font: 9px ui-monospace, SFMono-Regular, monospace;
-  letter-spacing: .06em;
-}
-
-.ticketTop { display: flex; justify-content: space-between; color: #6e8574; }
-.ticketFields { display: grid; gap: 6px; margin-top: 16px; }
-.ticketField { position: relative; display: grid; gap: 2px; padding: 6px 7px; border-radius: 7px; background: rgba(255, 255, 255, .43); transition: background .3s, transform .3s, box-shadow .3s; }
-.ticketField small { color: #6e8574; }
-.ticketField strong { font-size: 12px; letter-spacing: .04em; }
-.ticketField[data-focus="true"] { background: #f5f6d9; box-shadow: 0 0 0 2px #a4b748, 0 0 0 5px rgba(164, 183, 72, .16); transform: translateX(3px); }
-.ticketStripe { height: 5px; margin-top: 12px; border-radius: 999px; background: repeating-linear-gradient(90deg, #7d9d81 0 4px, transparent 4px 8px); opacity: .65; }
-.ticketMissing { display: grid; justify-items: center; gap: 6px; color: var(--muted); text-align: center; }
-.ticketMissing code { color: #a65449; font: 9px ui-monospace, SFMono-Regular, monospace; }
-
-.resultCard { display: grid; align-content: center; gap: 6px; min-height: 123px; }
-.resultCard > svg { color: var(--accent-text); }
-.resultCard[data-danger="true"] { border-color: #a65449; background: #f6e3dd; color: #8f3f35; }
-.resultCard[data-danger="true"] > svg,
-.resultCard[data-danger="true"] code { color: #a65449; }
-
-.heroNote,
-.labStatus { position: relative; display: flex; align-items: flex-start; gap: 7px; padding: 9px 10px; border-radius: 9px; background: color-mix(in srgb, var(--accent-text) 8%, transparent); color: var(--muted); font-size: 11px; line-height: 1.5; }
-.heroNote[data-danger="true"], .labStatus[data-danger="true"] { background: #f6e3dd; color: #8f3f35; }
-.heroNote strong, .labStatus strong { color: var(--ink); }
-.heroNote[data-danger="true"] strong, .labStatus[data-danger="true"] strong { color: #8f3f35; }
-.hero figcaption { position: relative; color: var(--muted); font-size: 10px; line-height: 1.45; }
-
-.lab { display: grid; gap: 12px; margin: 25px 0 18px; padding: 17px 18px 16px; }
-.lab :global(.sceneControls) { position: relative; }
-.labControls { position: relative; display: flex; flex-wrap: wrap; gap: 6px; }
-.labControls button { border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent); border-radius: 999px; padding: 6px 9px; background: transparent; color: var(--muted); font: inherit; font-size: 10px; cursor: pointer; }
-.labControls button:hover, .labControls button[aria-pressed="true"] { border-color: var(--accent-text); background: color-mix(in srgb, var(--accent-text) 10%, var(--paper)); color: var(--ink); }
-.labBoard { position: relative; display: grid; grid-template-columns: minmax(125px, .72fr) minmax(190px, 1fr) 22px minmax(135px, .78fr); gap: 9px; align-items: center; }
-.labPrompt, .labAnswer { min-width: 0; display: grid; gap: 5px; padding: 11px 10px; border-radius: 11px; background: color-mix(in srgb, var(--paper) 75%, transparent); }
-.labPrompt { border-left: 3px solid var(--accent-text); }
-.labPrompt > svg { color: var(--accent-text); }
-.labPrompt span, .labAnswer span { color: var(--muted); font-size: 9px; }
-.labPrompt strong, .labAnswer strong { overflow-wrap: anywhere; font-size: 12px; line-height: 1.4; }
-.labPrompt code { color: var(--accent-text); font: 9px ui-monospace, SFMono-Regular, monospace; }
-.labTicket { min-width: 0; }
-.labTicket .ticket { transform: rotate(0); }
-.labArrow { color: var(--accent-text); }
-.labAnswer[data-danger="true"] { border: 1px solid #a65449; background: #f6e3dd; color: #8f3f35; }
-.labAnswer small { color: var(--muted); font-size: 9px; line-height: 1.4; }
-.labAnswer[data-danger="true"] small { color: #8f3f35; }
-.labStatus { margin-top: 1px; }
-
-@media (max-width: 760px) {
-  .lensBoard { grid-template-columns: minmax(125px, .78fr) 25px minmax(170px, 1.15fr); }
-  .resultCard { grid-column: 3; min-height: 0; }
-  .labBoard { grid-template-columns: 1fr 1fr; }
-  .labArrow { display: none; }
-  .labAnswer { grid-column: 1 / -1; }
-}
+.lab { display: grid; gap: 12px; margin: 25px 0 18px; padding: 18px; border-radius: 18px; background: color-mix(in srgb, var(--accent-text) 5%, var(--paper)); }
+.labControls { display: flex; flex-wrap: wrap; gap: 7px; }
+.labControls button { min-height: 36px; border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent); border-radius: 999px; padding: 7px 12px; background: transparent; color: var(--muted); font: inherit; font-size: 12px; cursor: pointer; }
+.labControls button:hover,
+.labControls button[aria-pressed="true"] { border-color: var(--accent-text); background: color-mix(in srgb, var(--accent-text) 10%, var(--paper)); color: var(--ink); }
+.labViewfinder { height: 253px; max-width: 390px; width: 100%; margin: 0 auto; }
+.labViewfinder .cameraFrame { inset: 34px 1px 6px; }
+.labViewfinder .cameraCrosshair { width: 30px; height: 30px; }
+.labViewfinder .cameraCrosshair::before { top: 14px; width: 30px; }
+.labViewfinder .cameraCrosshair::after { left: 14px; height: 30px; }
+.labViewfinder .cameraScan { top: 16%; }
+.labViewfinder .questionPin { top: 4px; font-size: 13px; }
+.labViewfinder .ticketSlot { top: 52px; width: min(100% - 14px, 345px); }
+.labViewfinder .ticket { height: 157px; padding: 13px 16px; }
+.labViewfinder .ticketTop { font-size: 10px; }
+.labViewfinder .ticketField small { font-size: 9px; }
+.labViewfinder .ticketField strong { font-size: 14px; }
+.labViewfinder .ticketField:first-child strong { font-size: 20px; }
+.labViewfinder .ticketStripe { margin-top: 13px; }
+.labViewfinder .evidenceStamp { right: 5px; bottom: 2px; font-size: 15px; }
+.labStatus { display: flex; align-items: flex-start; gap: 7px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.labStatus svg { flex: none; margin-top: 3px; color: var(--accent-text); }
+.labStatus strong { color: var(--ink); }
+.labStatus[data-danger="true"] svg,
+.labStatus[data-danger="true"] strong { color: var(--semantic-danger, #a65449); }
 
 @media (max-width: 560px) {
-  .hero, .lab { padding-left: 14px; padding-right: 14px; }
-  .lensBoard, .labBoard { grid-template-columns: 1fr; }
-  .lensColumn { grid-template-columns: 1fr auto; justify-items: stretch; align-items: center; }
-  .lensLabel { writing-mode: initial; }
-  .resultCard { grid-column: auto; min-height: 0; }
-  .labAnswer { grid-column: auto; }
+  .hero { width: 100%; max-width: 380px; justify-self: center; padding: 8px 6px; }
+  .lab { padding: 16px 12px; }
+  .labTop { align-items: flex-start; }
+  .labTop small { flex: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ticket, .ticketField { transition: none; }
+  .hero *,
+  .lab * { transition: none !important; animation: none !important; }
 }

@@ -1,0 +1,104 @@
+.hero,
+.lab { box-sizing: border-box; min-width: 0; color: var(--ink); }
+.hero { display: grid; gap: 8px; margin: 0; padding: 12px; border-radius: 16px; background: color-mix(in srgb, var(--accent-text) 5%, var(--paper)); }
+.heroTop,
+.labTop { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 11px; }
+.heroTop strong { font: 10px ui-monospace, monospace; }
+.heroControls,
+.lessonControls { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.heroControls > button,
+.lessonControls > button { display: inline-flex; align-items: center; gap: 4px; min-height: 28px; padding: 3px 6px; border: 0; border-radius: 999px; background: transparent; color: var(--accent-text); font-size: 10px; cursor: pointer; }
+.heroControls > button:hover,
+.lessonControls > button:hover { background: var(--tint); }
+.heroControls > button:focus-visible,
+.heroChapters button:focus-visible,
+.lessonControls > button:focus-visible,
+.lessonSteps button:focus-visible,
+.controlGroup button:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
+.heroChapters,
+.lessonSteps { display: flex; flex: 1; justify-content: center; gap: 2px; min-width: 0; }
+.heroChapters button,
+.lessonSteps button { display: inline-flex; align-items: baseline; gap: 4px; min-width: 0; padding: 3px 5px; border: 0; border-bottom: 1px solid transparent; background: transparent; color: var(--muted); cursor: pointer; }
+.heroChapters button span,
+.lessonSteps button span { font: 10px ui-monospace, monospace; opacity: .6; }
+.heroChapters button small,
+.lessonSteps button small { max-width: 0; overflow: hidden; white-space: nowrap; font-size: 9px; transition: max-width .3s ease, color .3s ease; }
+.heroChapters button[aria-pressed="true"],
+.lessonSteps button[aria-pressed="true"] { border-bottom-color: var(--accent-text); color: var(--accent-text); }
+.heroChapters button[aria-pressed="true"] small { max-width: 84px; }
+.lessonSteps button[aria-pressed="true"] small { max-width: 76px; }
+.desk { position: relative; height: 222px; overflow: hidden; border-bottom: 1px solid color-mix(in srgb, var(--ink) 17%, transparent); background: radial-gradient(circle at 48% 56%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 32%), linear-gradient(170deg, color-mix(in srgb, var(--paper) 91%, var(--accent) 9%), color-mix(in srgb, var(--paper) 98%, var(--ink) 2%)); }
+.taskSlip { position: absolute; top: 18px; left: 10px; display: grid; grid-template-columns: auto 1fr; gap: 1px 6px; padding: 5px 8px; color: var(--muted); transform: rotate(-4deg); }
+.taskSlip svg { grid-row: span 2; color: var(--accent-text); }
+.taskSlip span { font-size: 9px; }
+.taskSlip strong { font-size: 13px; font-weight: 600; }
+.turntable { position: absolute; left: 31%; top: 40px; width: 42%; aspect-ratio: 1; border: 1px solid color-mix(in srgb, var(--ink) 19%, transparent); border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--paper) 96%, var(--ink) 4%) 0 27%, color-mix(in srgb, var(--accent) 10%, var(--paper)) 28% 29%, transparent 30%); box-shadow: inset 0 0 0 9px color-mix(in srgb, var(--paper) 65%, transparent), 0 8px 14px color-mix(in srgb, var(--ink) 7%, transparent); transition: transform .65s ease; }
+.turntable[data-open="false"] { transform: scale(.86) rotate(-14deg); opacity: .65; }
+.turntable[data-open="true"] { transform: scale(1) rotate(7deg); }
+.dialMark { position: absolute; left: 50%; top: -4px; width: 2px; height: 15px; background: var(--accent-text); transform-origin: 50% 116px; transform: translateX(-50%) rotate(28deg); }
+.toolChip { position: absolute; display: grid; justify-items: center; gap: 2px; width: 53px; height: 39px; padding: 5px 3px; box-sizing: border-box; border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); border-radius: 6px; background: var(--paper); box-shadow: 0 3px 7px color-mix(in srgb, var(--ink) 8%, transparent); transition: color .35s ease, border-color .35s ease, background .35s ease, transform .55s ease, opacity .35s ease; }
+.toolChip span { font: 9px ui-monospace, monospace; }
+.toolChip small { font-size: 8px; color: var(--muted); }
+.toolChip[data-selected="true"] { border-color: var(--accent-text); background: color-mix(in srgb, var(--accent-text) 10%, var(--paper)); color: var(--accent-text); transform: scale(1.1); }
+.toolChip[data-selected="true"] small { color: var(--accent-text); }
+.chipRead { left: 7%; top: 40%; }
+.chipUpdate { right: 3%; top: 42%; }
+.chipSearch { left: 40%; bottom: 1%; }
+.approvalTicket { position: absolute; right: 8%; bottom: 12px; display: grid; gap: 3px; width: 29%; min-height: 73px; box-sizing: border-box; padding: 9px; border-left: 3px solid color-mix(in srgb, var(--ink) 22%, transparent); background: var(--paper); box-shadow: 0 6px 12px color-mix(in srgb, var(--ink) 7%, transparent); opacity: .62; transform: translateY(13px) rotate(3deg); transition: opacity .4s ease, transform .55s ease, border-color .35s ease, background .35s ease; }
+.approvalTicket[data-proposed="true"] { opacity: 1; transform: rotate(3deg); border-color: #a77934; background: color-mix(in srgb, #edc57a 18%, var(--paper)); }
+.approvalTicket[data-waiting="true"] { border-color: #a44940; background: color-mix(in srgb, #c96659 10%, var(--paper)); transform: rotate(-3deg); }
+.approvalTicket span { color: var(--muted); font-size: 9px; }
+.approvalTicket strong { font: 11px ui-monospace, monospace; }
+.approvalTicket small { color: var(--muted); font-size: 9px; }
+.approvalStamp { position: absolute; right: 4px; bottom: 4px; padding: 2px 4px; border: 1px solid #a44940; color: #a44940; font: 700 7px ui-monospace, monospace; transform: rotate(-8deg); }
+.lab { display: grid; gap: 13px; margin: 26px 0 18px; padding: 17px; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 16px; background: color-mix(in srgb, var(--accent-text) 5%, var(--paper)); }
+.labTop { font: 10px ui-monospace, monospace; }
+.labTop strong { font: 400 11px/1.4 inherit; }
+.labControls { display: flex; flex-wrap: wrap; gap: 7px; justify-content: space-between; }
+.controlGroup { display: flex; flex-wrap: wrap; gap: 6px; }
+.controlGroup button { display: inline-flex; align-items: center; gap: 4px; min-height: 34px; padding: 5px 10px; border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent); border-radius: 999px; background: var(--paper); color: var(--ink); font-size: 12px; cursor: pointer; }
+.controlGroup button[aria-pressed="true"] { background: var(--accent-text); color: var(--paper); }
+.labControls + .lessonControls { padding-bottom: 5px; border-bottom: 1px solid color-mix(in srgb, var(--ink) 11%, transparent); }
+.labBoard { position: relative; min-height: 270px; overflow: hidden; border-bottom: 1px solid color-mix(in srgb, var(--ink) 13%, transparent); background: radial-gradient(circle at 44% 52%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 34%), color-mix(in srgb, var(--paper) 93%, var(--accent) 7%); }
+.labRequest { position: absolute; top: 19px; left: 10px; display: grid; gap: 4px; width: 36%; padding: 11px; box-sizing: border-box; border-bottom: 2px solid var(--accent-text); transform: rotate(-3deg); }
+.labRequest span { color: var(--muted); font-size: 9px; }
+.labRequest strong { font-size: 14px; line-height: 1.45; }
+.labTable { position: absolute; top: 25px; left: 37%; width: 30%; aspect-ratio: 1; border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); border-radius: 50%; background: radial-gradient(circle, var(--paper) 0 27%, color-mix(in srgb, var(--accent) 10%, var(--paper)) 28% 29%, transparent 30%); box-shadow: inset 0 0 0 9px color-mix(in srgb, var(--paper) 70%, transparent); transition: transform .55s ease; }
+.labTable[data-open="false"] { transform: scale(.86) rotate(-14deg); opacity: .66; }
+.labTable[data-open="true"] { transform: rotate(7deg); }
+.labNeedle { position: absolute; left: 50%; top: 4px; width: 2px; height: 39%; background: var(--accent-text); opacity: .28; transform-origin: 50% 124%; transform: translateX(-50%) rotate(-18deg); transition: opacity .35s ease, transform .55s ease; }
+.labNeedle[data-selected="true"] { opacity: 1; transform: translateX(-50%) rotate(25deg); }
+.labNeedle::after { content: ""; position: absolute; left: 50%; bottom: -5px; width: 8px; height: 8px; border: 1px solid var(--accent-text); border-radius: 50%; background: var(--paper); transform: translateX(-50%); }
+.labChip { position: absolute; display: grid; justify-items: center; gap: 2px; width: 58px; padding: 6px 3px; box-sizing: border-box; border: 1px solid color-mix(in srgb, var(--ink) 17%, transparent); border-radius: 6px; background: var(--paper); font: 9px ui-monospace, monospace; transition: color .35s ease, border-color .35s ease, background .35s ease, transform .5s ease; }
+.labChip small { color: var(--muted); font: 8px/1.3 inherit; }
+.labChip[data-selected="true"] { border-color: var(--accent-text); background: color-mix(in srgb, var(--accent-text) 11%, var(--paper)); color: var(--accent-text); transform: scale(1.1); }
+.labChip[data-selected="true"] small { color: var(--accent-text); }
+.labRead { left: 6%; top: 44%; }
+.labUpdate { right: 3%; top: 44%; }
+.labSearch { left: 41%; bottom: 1%; }
+.labTicket { position: absolute; right: 9%; bottom: 12px; display: grid; gap: 4px; width: 31%; min-height: 80px; padding: 10px; box-sizing: border-box; border-left: 3px solid color-mix(in srgb, var(--ink) 22%, transparent); background: var(--paper); box-shadow: 0 6px 12px color-mix(in srgb, var(--ink) 7%, transparent); opacity: .62; transform: rotate(3deg) translateY(12px); transition: opacity .4s ease, transform .55s ease, border-color .35s ease, background .35s ease; }
+.labTicket[data-proposed="true"] { opacity: 1; transform: rotate(3deg); border-color: #a77934; background: color-mix(in srgb, #edc57a 18%, var(--paper)); }
+.labTicket[data-waiting="true"] { border-color: #a44940; background: color-mix(in srgb, #c96659 10%, var(--paper)); transform: rotate(-3deg); }
+.labTicket span { color: var(--muted); font-size: 9px; }
+.labTicket strong { font: 11px ui-monospace, monospace; }
+.labTicket small { color: var(--muted); font-size: 9px; line-height: 1.4; }
+.labTicket em { position: absolute; right: 4px; bottom: 4px; padding: 2px 4px; border: 1px solid #a44940; color: #a44940; font: 700 7px ui-monospace, monospace; font-style: normal; transform: rotate(-8deg); }
+.labStatus { display: flex; align-items: flex-start; gap: 6px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.labStatus svg { flex: none; margin-top: 2px; color: #a77934; }
+.labStatus[data-safe="true"] svg { color: var(--accent-text); }
+@media (max-width: 600px) {
+  .heroChapters button small,.lessonSteps button small { display: none; }
+  .heroChapters button,.lessonSteps button { padding-inline: 4px; }
+  .desk { height: 245px; }
+  .taskSlip { top: 12px; }
+  .turntable { left: 23%; top: 55px; width: 52%; }
+  .approvalTicket { right: 4%; width: 39%; }
+  .labControls { display: grid; gap: 7px; }
+  .labBoard { min-height: 325px; }
+  .labRequest { width: 57%; }
+  .labTable { left: 22%; top: 66px; width: 55%; }
+  .labTicket { right: 4%; bottom: 10px; width: 57%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .heroChapters button small,.lessonSteps button small,.turntable,.approvalTicket,.labTable,.labNeedle,.labChip,.labTicket { transition: none; }
+}

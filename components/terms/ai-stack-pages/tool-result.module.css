@@ -1,0 +1,111 @@
+.hero,
+.lab { box-sizing: border-box; min-width: 0; color: var(--ink); }
+.hero { display: grid; gap: 8px; margin: 0; padding: 12px; border-radius: 16px; background: color-mix(in srgb, var(--accent-text) 5%, var(--paper)); }
+.heroTop,
+.labTop { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 11px; }
+.heroTop strong { font: 10px ui-monospace, monospace; }
+.heroControls,
+.lessonControls { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.heroControls > button,
+.lessonControls > button { display: inline-flex; align-items: center; gap: 4px; min-height: 28px; padding: 3px 6px; border: 0; border-radius: 999px; background: transparent; color: var(--accent-text); font-size: 10px; cursor: pointer; }
+.heroControls > button:hover,
+.lessonControls > button:hover { background: var(--tint); }
+.heroControls > button:focus-visible,
+.heroChapters button:focus-visible,
+.lessonControls > button:focus-visible,
+.lessonSteps button:focus-visible,
+.controlGroup button:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
+.heroChapters,
+.lessonSteps { display: flex; flex: 1; justify-content: center; gap: 2px; min-width: 0; }
+.heroChapters button,
+.lessonSteps button { display: inline-flex; align-items: baseline; gap: 4px; min-width: 0; padding: 3px 5px; border: 0; border-bottom: 1px solid transparent; background: transparent; color: var(--muted); cursor: pointer; }
+.heroChapters button span,
+.lessonSteps button span { font: 10px ui-monospace, monospace; opacity: .6; }
+.heroChapters button small,
+.lessonSteps button small { max-width: 0; overflow: hidden; white-space: nowrap; font-size: 9px; transition: max-width .3s ease, color .3s ease; }
+.heroChapters button[aria-pressed="true"],
+.lessonSteps button[aria-pressed="true"] { border-bottom-color: var(--accent-text); color: var(--accent-text); }
+.heroChapters button[aria-pressed="true"] small { max-width: 86px; }
+.lessonSteps button[aria-pressed="true"] small { max-width: 76px; }
+.flipDesk,
+.labBoard { position: relative; overflow: hidden; border-bottom: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); background: radial-gradient(circle at 48% 50%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 34%), linear-gradient(170deg, color-mix(in srgb, var(--paper) 91%, var(--accent) 9%), color-mix(in srgb, var(--paper) 98%, var(--ink) 2%)); }
+.flipDesk { height: 222px; }
+.querySlip,
+.labQuery { position: absolute; display: grid; grid-template-columns: auto 1fr; gap: 1px 6px; align-items: center; padding: 5px 8px; transform: rotate(-4deg); }
+.querySlip { top: 17px; left: 11px; }
+.querySlip svg,
+.labQuery svg { grid-row: span 2; color: var(--accent-text); }
+.querySlip span,
+.labQuery span { color: var(--muted); font-size: 9px; }
+.querySlip strong,
+.labQuery strong { font-size: 13px; font-weight: 600; }
+.querySlip small,
+.labQuery small { grid-column: 2; color: var(--muted); font: 9px ui-monospace, monospace; }
+.flipbook,
+.labBook { position: absolute; left: 27%; top: 37px; width: 45%; aspect-ratio: 1.35; border: 1px solid color-mix(in srgb, var(--ink) 19%, transparent); border-radius: 5px 12px 12px 5px; background: color-mix(in srgb, var(--paper) 95%, var(--ink) 5%); box-shadow: 8px 8px 0 color-mix(in srgb, var(--ink) 6%, transparent), inset 8px 0 0 color-mix(in srgb, var(--accent) 9%, transparent); transform: rotate(2deg); transition: transform .55s ease, box-shadow .45s ease; }
+.flipbook[data-open="false"],
+.labBook[data-open="false"] { transform: translateY(7px) rotate(-4deg); box-shadow: 5px 5px 0 color-mix(in srgb, var(--ink) 5%, transparent), inset 8px 0 0 color-mix(in srgb, var(--accent) 7%, transparent); }
+.bookSpine { position: absolute; left: 11px; top: 9px; bottom: 9px; width: 1px; background: color-mix(in srgb, var(--ink) 20%, transparent); }
+.bookPage { position: absolute; inset: 12px 12px 12px 25px; display: grid; align-content: start; gap: 7px; padding: 11px 12px; border-left: 1px solid color-mix(in srgb, var(--ink) 12%, transparent); background: color-mix(in srgb, var(--paper) 98%, var(--accent) 2%); }
+.bookPage > span { color: var(--muted); font: 9px ui-monospace, monospace; }
+.bookPage code { min-height: 37px; padding: 6px; border-left: 2px solid color-mix(in srgb, var(--ink) 20%, transparent); color: var(--muted); font: 9px/1.45 ui-monospace, monospace; white-space: pre-wrap; }
+.bookPage > small { color: var(--muted); font-size: 9px; }
+.fieldLine { display: flex; align-items: center; gap: 5px; padding: 4px 5px; border-bottom: 1px solid transparent; color: var(--muted); opacity: .45; transform: translateX(-5px); transition: opacity .35s ease, transform .45s ease, border-color .35s ease, color .35s ease; }
+.fieldLine[data-visible="true"] { border-color: var(--accent-text); color: var(--accent-text); opacity: 1; transform: none; }
+.fieldLine[data-error="true"] { border-color: #a44940; color: #a44940; }
+.fieldLine strong { font: 10px ui-monospace, monospace; }
+.fieldTab { position: absolute; top: 74px; right: 9%; display: grid; gap: 3px; width: 26%; min-height: 48px; padding: 8px; box-sizing: border-box; border-left: 3px solid color-mix(in srgb, var(--ink) 18%, transparent); background: var(--paper); opacity: .52; transform: rotate(4deg) translateY(10px); transition: opacity .4s ease, transform .5s ease, border-color .35s ease, background .35s ease; }
+.fieldTab[data-visible="true"] { border-color: var(--accent-text); background: color-mix(in srgb, var(--accent-text) 9%, var(--paper)); opacity: 1; transform: rotate(4deg); }
+.fieldTab[data-error="true"] { border-color: #a44940; background: color-mix(in srgb, #c96659 10%, var(--paper)); }
+.fieldTab span { color: var(--muted); font-size: 9px; }
+.fieldTab strong { font: 10px ui-monospace, monospace; }
+.answerSticker { position: absolute; left: 38%; bottom: 12px; display: grid; gap: 3px; width: 40%; padding: 8px 10px; box-sizing: border-box; border-bottom: 2px solid color-mix(in srgb, var(--ink) 19%, transparent); color: var(--muted); opacity: .62; transform: translateY(12px) rotate(-2deg); transition: opacity .4s ease, transform .5s ease, border-color .35s ease, background .35s ease; }
+.answerSticker[data-ready="true"] { border-color: var(--accent-text); background: color-mix(in srgb, var(--accent-text) 8%, var(--paper)); color: var(--accent-text); opacity: 1; transform: rotate(-2deg); }
+.answerSticker[data-error="true"] { border-color: #a44940; color: #a44940; background: color-mix(in srgb, #c96659 9%, var(--paper)); }
+.answerSticker span { font-size: 9px; }
+.answerSticker strong { font-size: 13px; font-weight: 600; line-height: 1.4; }
+.answerSticker small { color: var(--muted); font-size: 9px; }
+.answerSticker em { position: absolute; right: 4px; bottom: 4px; padding: 2px 4px; border: 1px solid currentColor; font: 700 7px ui-monospace, monospace; font-style: normal; transform: rotate(-8deg); }
+.hero figcaption { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.lab { display: grid; gap: 13px; margin: 26px 0 18px; padding: 17px; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 16px; background: color-mix(in srgb, var(--accent-text) 5%, var(--paper)); }
+.labTop { font: 10px ui-monospace, monospace; }
+.labTop strong { font: 400 11px/1.4 inherit; }
+.labControls { display: flex; flex-wrap: wrap; gap: 7px; justify-content: space-between; }
+.controlGroup { display: flex; flex-wrap: wrap; gap: 6px; }
+.controlGroup button { display: inline-flex; align-items: center; gap: 4px; min-height: 34px; padding: 5px 10px; border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent); border-radius: 999px; background: var(--paper); color: var(--ink); font-size: 12px; cursor: pointer; }
+.controlGroup button[aria-pressed="true"] { background: var(--accent-text); color: var(--paper); }
+.labBoard { min-height: 270px; }
+.labQuery { top: 20px; left: 10px; width: 32%; }
+.labBook { top: 25px; left: 29%; width: 42%; }
+.labBook .bookPage { inset: 12px 12px 12px 25px; }
+.labBoard .fieldTab { top: 84px; right: 8%; width: 28%; }
+.labBoard .answerSticker { left: 37%; bottom: 12px; width: 42%; }
+.labStatus { display: flex; align-items: flex-start; gap: 6px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.labStatus svg { flex: none; margin-top: 2px; color: #a44940; }
+.labStatus[data-safe="true"] svg { color: var(--accent-text); }
+@media (max-width: 600px) {
+  .heroChapters button small,
+  .lessonSteps button small { display: none; }
+  .heroChapters button,
+  .lessonSteps button { padding-inline: 4px; }
+  .flipDesk { height: 245px; }
+  .querySlip { top: 12px; }
+  .flipbook { left: 8%; top: 72px; width: 62%; }
+  .fieldTab { top: 66px; right: 4%; width: 36%; }
+  .answerSticker { left: 34%; bottom: 9px; width: 58%; }
+  .labControls { display: grid; gap: 7px; }
+  .labBoard { min-height: 335px; }
+  .labQuery { top: 17px; left: 8px; width: 55%; }
+  .labBook { top: 81px; left: 8%; width: 62%; }
+  .labBoard .fieldTab { top: 73px; right: 4%; width: 37%; }
+  .labBoard .answerSticker { left: 31%; bottom: 10px; width: 63%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .heroChapters button small,
+  .lessonSteps button small,
+  .flipbook,
+  .labBook,
+  .fieldLine,
+  .fieldTab,
+  .answerSticker { transition: none; }
+}

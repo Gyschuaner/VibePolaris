@@ -271,11 +271,11 @@
     "slug": "tool-choice",
     "mechanism": "当多个工具可用时，系统决定让模型自动选择、强制选择某个工具或禁止调用；选择结果仍需经过参数与权限检查。",
     "misconception": "工具选择不是工具执行，也不是让模型获得工具背后的全部权限。",
-    "demoSignature": "输入：把会议改到周五；中间：候选calendar_read、calendar_update、web_search出现，auto/required/none改变可提出的选择，写操作停在待校验；输出：选中calendar_update但尚未执行，none则不调用工具。可视化：候选工具卡片经过策略闸门停在执行前；交互：切换auto、required、none观察路径。",
+    "demoSignature": "brass-turntable: 4 frames; actors=任务票/三枚工具筹码/选择针/审批票; phases=任务票放桌→筹码露出→选择针落在calendar_update→写操作停在审批台; action=切换auto/required/none并观察选择与执行分离",
     "sourceUrls": [
       "https://developers.openai.com/api/docs/guides/function-calling",
       "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
-      "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+      "https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works",
       "https://openai.github.io/openai-agents-python/tools/",
       "https://openai.github.io/openai-agents-python/human_in_the_loop/"
     ],
@@ -289,13 +289,13 @@
     "slug": "tool-result",
     "mechanism": "工具执行后的结构化结果被送回模型或应用，成为下一步判断的可观测状态；错误、空结果和元数据也属于结果。",
     "misconception": "工具结果不是最终回答，模型还可能误读它；应用应保留状态码、来源和校验信息。",
-    "demoSignature": "输入：库存查询sku=K7；中间：工具返回{stock:0,status:200}，模型候选“有货/缺货”→缺货；输出：“K7暂时缺货”。可视化：响应JSON字段高亮驱动答案状态切换。 建议4帧：查询参数发出、原始JSON返回、stock=0字段点亮、最终措辞切到缺货；交互：把stock改为8看答案状态翻转。",
+    "demoSignature": "inventory-flipbook: 4 frames; actors=库存查询票/原始JSON页/业务字段标签/回答贴纸; phases=查询票夹入→原始返回翻开→stock字段被抽出→回答贴纸改写; action=切换stock=0、stock=8、timeout并观察业务结论与传输状态分离",
     "sourceUrls": [
       "https://developers.openai.com/api/docs/guides/function-calling",
       "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
-      "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+      "https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works",
       "https://openai.github.io/openai-agents-python/tools/",
-      "https://openai.github.io/openai-agents-python/running_agents/"
+      "https://www.rfc-editor.org/rfc/rfc9110.html#name-200-ok"
     ],
     "rewriteRisk": "演示不可只放一段自然语言反馈，要显示原始结果字段如何改变下一步。",
     "nearDuplicates": [
@@ -307,7 +307,7 @@
     "slug": "agent-loop",
     "mechanism": "智能体在读取状态、执行动作、接收结果、更新状态和停止判断之间循环，直到完成、失败或达到限制。",
     "misconception": "一次工具调用不是循环；没有状态更新和停止条件的重复调用不能证明任务完成。",
-    "demoSignature": "发布前健康检查：任务从 GET /health=500 和缺失 API_BASE_URL 开始；首图用任务单、动作、工具回执、状态写回和完成闸门展示一次完整循环，结果在 200 OK 时停下。正文与工作台再切换 2/3 轮上限，验证达到上限时保持未完成而不是伪装成功。",
+    "demoSignature": "repair-workbench: 7 frames; actors=发布任务票/检修抽屉/工具回执/状态卡/复查灯/停止闸门; phases=失败票钉上桌→读取配置→回执带回500→issue=config写回票面→写入配置→重新健康检查→新的200 OK打开闸门; action=切换2/3轮上限并观察停止不等于成功",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/running_agents/",
       "https://arxiv.org/abs/2210.03629",
@@ -344,7 +344,7 @@
     "slug": "agent-orchestration",
     "mechanism": "智能体编排把任务分给不同的智能体、程序或工具，安排哪些步骤可以同时做、哪些必须等待，传递每步需要的材料和状态，并按规则处理冲突、超时和结果合并。",
     "misconception": "多个模型同时运行不等于编排；没有分工和汇总规则，只会增加调用和协调成本。负责调度的编排器可以是固定程序，也可以是智能体。",
-    "demoSignature": "输入：报告任务拆为检索、核对、撰写3份子任务；中间：检索8条证据、核对发现1处冲突，撰写被阻塞后按规则排除冲突证据；输出：合并7条一致证据的报告。可视化：任务依赖图中节点由等待转完成。建议6帧：总任务拆成三节点、检索和核对并行、冲突边亮红、撰写暂停、排除冲突证据、结果合并；交互：切换串行/并行比较等待时间。",
+    "demoSignature": "report-puzzle-desk: 6 frames; actors=编排台/检索磁片/核对磁片/撰写夹/报告合页; phases=拆开任务→并行或串行翻牌→冲突磁片卡住撰写→锁住合页→排除冲突→7条一致证据扣进报告; action=切换串行/并行并制造或排除冲突",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/multi_agent/",
       "https://openai.github.io/openai-agents-python/running_agents/",
@@ -559,7 +559,7 @@
     "slug": "retrieval",
     "mechanism": "检索根据查询从已有资料中返回候选内容，通常带相关性分数和来源标识，供排序、阅读、引用或生成使用。",
     "misconception": "检索不自动生成答案；候选可能遗漏、误召回或没有访问权限，RAG 还包含后续生成和核对。",
-    "demoSignature": "退款问题进入 200 段资料，top-k=1/3 改变返回原文集合，流程停止在来源卡片，不生成结论。交互：切换 top-k 观察候选数量变化。",
+    "demoSignature": "磁贴抽屉 + 相关性滑轨：查询磁贴拉开资料抽屉，词项/语义/混合滑轨改变候选排序；语义模式先把无来源问答摘录推到首位，抽走它后引用闸门只放行带来源原文。6 帧：写下查询→拉开抽屉→语义排序→扩大 top-k→抽走无来源卡→关上引用闸。交互：切换检索方式、top-k、资料范围与无来源卡。",
     "sourceUrls": [
       "https://developers.openai.com/api/docs/guides/retrieval",
       "https://arxiv.org/abs/2004.04906",
@@ -645,7 +645,7 @@
     "slug": "prompt-caching",
     "mechanism": "服务端复用相同提示前缀的已处理计算，后续请求只需处理变化的尾部，从而降低首token延迟或计费输入。",
     "misconception": "缓存通常按前缀命中，不是把整段最终答案永久保存；改动前部内容可能让命中失效。",
-    "demoSignature": "输入：四段输入由指令、资料、格式和问题组成；中间：首次处理并保存前三段，下一次只改问题时复用3段，改资料时复用1段，改指令或更换模型/失效缓存时复用0段；输出：回答仍按本次问题新生成。可视化：四段输入的复用/重算状态与计算篮同步变化；交互：切换改动位置、模型是否相同和缓存是否有效。",
+    "demoSignature": "输入：系统规则、工具说明、输出格式三层透明底片，加一张会变化的问题便签；中间：首轮叠印留下计算章，换问题复用3层，碰工具说明只复用首层，换模型或缓存褪色则回到0层；输出：回答仍按本次问题重新生成。可视化：便签在底片上移动，缓存章随前缀连续性亮起或褪色；建议6帧：铺开底片、首轮叠印、换问题便签、碰到底片、切换模型、缓存章褪色；交互：切换改动位置、模型一致性和缓存有效期。",
     "sourceUrls": [
       "https://developers.openai.com/api/docs/guides/prompt-caching",
       "https://docs.vllm.ai/en/latest/design/prefix_caching/",
@@ -673,7 +673,7 @@
     "slug": "model-routing",
     "mechanism": "路由器根据任务类型、质量要求、延迟、成本或实时状态，为每个请求选择合适模型。",
     "misconception": "模型路由不是失败后的备用切换；前者在请求前做选择，后者在首选模型失败后接管。",
-    "demoSignature": "输入：提取订单金额；中间：A=96/100、1单位，B=97/100、3单位，门槛90时选A；切到条款则A=76排除、B=92，切到截图则A不支持、B=94；门槛98时没有候选；输出：只产生调用前的选择，不执行回答。可视化：请求分叉到候选卡片，合格与排除状态随任务和门槛变化；交互：切换任务、门槛和B可用性。",
+    "demoSignature": "输入：一张待处理工单；中间：工单进入分诊转盘，转盘依次拨过任务能力、质量门槛和可用性，候选牌 A=96/100、1单位，B=97/100、3单位；提取金额时钉住 A，复杂条款转向 B，图片请求排除不具备图片能力的 A，门槛98时落到停机位；输出：只产生调用前的选择，不执行回答。可视化：选择盘指针、候选牌和停机位随任务条件变化；交互：切换任务、门槛和 B 的可用性。",
     "sourceUrls": [
       "https://arxiv.org/pdf/2406.18665",
       "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-routing.html",
@@ -690,7 +690,7 @@
     "slug": "model-fallback",
     "mechanism": "首选模型遇到超时、限流、不可用或不满足最低质量时，系统按预设条件切到备用模型并记录降级。",
     "misconception": "备用模型不是负载均衡，也不保证输出完全等价；能力、格式和上下文限制都要重新校验。",
-    "demoSignature": "输入：提取金额120；中间：主调用可选429/超时/401/成功，备用可选支持amount、返回错误字段、不支持结构化输出或不可用，总尝试上限包含主调用；输出：只有允许且兼容时才发起备用，返回{amount:120}才通过，否则保留未完成。可视化：主调用回执后分流到策略卡，再进入备用回执或停止状态；交互：切换主错误、备用能力与尝试上限。",
+    "demoSignature": "输入：提取金额120；中间：一条接力腕带依次扣上主调用、策略闸、备用调用、字段核对和留痕扣；主回执可选429、超时、401或成功，策略再检查备用能力与总尝试上限；输出：只有允许且兼容时才交给备用，返回amount=120并核对通过才完成，否则腕带停在边界并保留原因。可视化：接力扣与两份回执随状态亮起、锁住或断开；交互：切换主回执、备用能力和尝试上限。",
     "sourceUrls": [
       "https://docs.litellm.ai/docs/routing",
       "https://www.rfc-editor.org/rfc/rfc6585#section-4",
@@ -706,7 +706,7 @@
     "slug": "agent-memory",
     "mechanism": "应用为后续任务保存、检索、纠正和删除的信息；模型只有在记录被放入本轮输入时才会看到。",
     "misconception": "工作记忆是当前任务的临时状态；保存聊天不等于同意长期记忆，删除也不会倒写旧回答。",
-    "demoSignature": "代码偏好从当前消息开始：先请求同意，再写入带 source/scope 的一条记录；新任务从两条记录筛出一条并显式加入 context；纠正显示 TypeScript → Python，删除后显示旧回答仍在、未来取回被阻断。首图和 Lesson 都按六个有限步骤播放，前置条件未满足时按钮保持禁用。",
+    "demoSignature": "代码偏好从消息变成一张记忆卡：卡片先在抽屉外等候同意，写入后抽屉保留食谱卡和代码卡，新任务只抽出 code 范围的一张并压进 context；翻卡显示 TypeScript → Python，删除后抽屉只剩食谱卡，旧回答仍在、未来取回被阻断。首图和 Lesson 都按六个有限步骤播放，控件只改变纠正和删除这两个管理动作。",
     "sourceUrls": [
       "https://docs.langchain.com/oss/python/concepts/memory",
       "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
@@ -744,7 +744,7 @@
     "slug": "prompt-injection",
     "mechanism": "提示词注入把不可信文字带进模型上下文，试图冒充有权限的指令；应用要保留来源并把读取数据与执行工具分开。",
     "misconception": "模型可能分不清同样格式的文字来自谁；隐藏系统提示词或只过滤关键词不能代替工具层最小权限、隔离与确认。",
-    "demoSignature": "输入：用户要求摘要网页，网页夹带“发送密钥”；中间：程序标记 page=untrusted，若模型把它提升成指令而提出 send_secret，工具权限闸门仍拒绝；输出：正常分支摘要完成且调用0，错误分支调用被阻断。可视化：资料/指令选择、来源标记和工具权限闸门。",
+    "demoSignature": "trust-sticker-desk: 5 frames; actors=用户目标/网页资料/资料袋贴纸/send_secret工具/摘要小票; phases=任务摆桌→可疑句浮现→错误提升→闸门拒绝→放回资料袋; action=切换DATA与INSTRUCTION并观察工具提案和摘要结果",
     "sourceUrls": [
       "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
       "https://developers.openai.com/api/docs/guides/safety-best-practices",

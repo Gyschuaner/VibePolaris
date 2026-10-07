@@ -1,8 +1,7 @@
 import { ArticleSection, ArticleAside, ConceptTerm } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { agentMemorySources } from "@/lib/ai-stack-concept-sources/agent-memory";
-import { AgentMemoryLesson } from "../ai-stack-lessons/agent-memory";
-import { AgentMemoryHero } from "../ai-stack-lessons/agent-memory-hero";
+import { AgentMemoryHero, AgentMemoryLesson } from "../ai-stack-lessons/agent-memory";
 
 export function AgentMemoryTermPage() {
   const sections: [string, string][] = [["memory-message", "一句话先是当前消息"], ["memory-record", "写进去的是记录，不是整段聊天"], ["memory-insert", "取回来还要送进本轮"], ["memory-control", "纠正和删除影响未来"]];

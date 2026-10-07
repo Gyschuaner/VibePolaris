@@ -1,0 +1,96 @@
+.hero,
+.lab { box-sizing: border-box; min-width: 0; color: var(--ink); }
+
+:global(.vp-concept[data-concept="model-fallback"] .vp-hero h1) { font-size: clamp(42px, 4.2vw, 64px); letter-spacing: -2px; text-wrap: nowrap; }
+:global(.vp-concept[data-concept="model-fallback"] .vp-hero h1 span) { display: block; margin: 12px 0 0; white-space: normal; }
+
+.hero { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; width: 100%; max-width: 100%; margin: 0; padding: 12px; overflow: hidden; border-radius: 16px; background: radial-gradient(circle at 88% 20%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 38%), color-mix(in srgb, var(--accent-text) 5%, var(--paper)); }
+.heroTop,
+.labTop { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 11px; }
+.heroTop strong { color: var(--accent-text); font: 10px ui-monospace, monospace; }
+.hero figcaption { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.hero :global(.sceneControls),
+.lab :global(.sceneControls) { min-width: 0; }
+
+.desk { display: grid; gap: 9px; width: 100%; max-width: 100%; min-width: 0; padding: 11px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 14px; background: color-mix(in srgb, var(--paper) 94%, var(--accent) 6%); }
+.heroDesk { min-height: 278px; }
+.lessonDesk { min-height: 360px; padding: 16px; }
+.deskHeader { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 10px; }
+.deskHeader > span { display: inline-flex; align-items: center; gap: 5px; }
+.deskHeader svg { color: var(--accent-text); }
+.deskHeader code { color: var(--accent-text); font: 9px ui-monospace, monospace; }
+
+.bandTrack { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; min-width: 0; padding: 9px 5px 5px; }
+.bandRail { position: absolute; top: 25px; right: 8%; left: 8%; height: 5px; border-radius: 99px; background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--ink) 16%, transparent) 0 10px, transparent 10px 14px); }
+.bandSegment { position: relative; z-index: 1; display: grid; gap: 5px; min-width: 0; min-height: 50px; padding: 7px 5px; border: 1px solid color-mix(in srgb, var(--ink) 13%, transparent); border-radius: 9px; background: var(--paper); color: var(--muted); text-align: center; transition: transform .45s ease, border-color .35s ease, background .35s ease, color .35s ease, opacity .35s ease; }
+.bandSegment > span { font-size: 10px; font-weight: 600; }
+.bandSegment small { min-width: 0; overflow-wrap: anywhere; color: var(--muted); font-size: 8px; line-height: 1.25; }
+.bandSegment[data-state="active"] { color: var(--accent-text); border-color: color-mix(in srgb, var(--accent-text) 55%, transparent); background: color-mix(in srgb, var(--accent-text) 10%, var(--paper)); transform: translateY(-3px); }
+.bandSegment[data-state="done"] { color: var(--accent-text); border-color: color-mix(in srgb, var(--accent-text) 28%, transparent); }
+.bandSegment[data-state="locked"] { opacity: .42; }
+.bandSegment[data-state="blocked"] { color: #a34b40; border-color: #b45a47; background: color-mix(in srgb, #c96659 8%, var(--paper)); transform: rotate(-1deg); }
+.bandSegment[data-state="blocked"] small { color: #a34b40; }
+.relayToken { position: absolute; z-index: 3; top: 17px; left: var(--token-pos); display: grid; place-items: center; width: 22px; height: 22px; border: 2px solid var(--paper); border-radius: 50%; background: var(--accent-text); color: var(--paper); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-text) 25%, transparent), 0 3px 7px color-mix(in srgb, var(--ink) 18%, transparent); transform: translateX(-50%); transition: left .75s cubic-bezier(.2,.8,.2,1), background .35s ease; }
+.bandTrack[data-status="stopped"] .relayToken { background: #a34b40; }
+.bandTrack[data-status="verified"] .relayToken { background: var(--accent-text); }
+
+.receipts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; min-width: 0; }
+.receipt { position: relative; display: grid; gap: 5px; min-width: 0; padding: 9px; border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); border-radius: 10px; background: color-mix(in srgb, var(--surface) 70%, var(--paper)); color: var(--muted); transition: transform .45s ease, border-color .35s ease, background .35s ease, color .35s ease; }
+.receipt[data-state="verified"] { color: var(--accent-text); border-color: color-mix(in srgb, var(--accent-text) 45%, transparent); background: color-mix(in srgb, var(--accent-text) 9%, var(--paper)); }
+.receipt[data-state="stopped"] { color: #a34b40; border-color: #b45a47; background: color-mix(in srgb, #c96659 7%, var(--paper)); }
+.receiptHead { display: flex; align-items: center; justify-content: space-between; gap: 5px; }
+.receiptHead span { font-size: 9px; }
+.receiptHead svg { flex: none; }
+.receipt strong { min-width: 0; color: var(--ink); font: 12px ui-monospace, monospace; overflow-wrap: anywhere; }
+.receipt[data-state="verified"] strong { color: var(--accent-text); }
+.receipt[data-state="stopped"] strong { color: #9d4b40; }
+.receipt small { min-width: 0; overflow-wrap: anywhere; font-size: 8px; line-height: 1.35; }
+
+.relayStatus { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 7px; min-width: 0; padding: 8px 9px 2px; border-top: 1px dashed color-mix(in srgb, var(--ink) 21%, transparent); color: var(--muted); }
+.relayStatus > svg { margin-top: 1px; color: var(--accent-text); }
+.relayStatus > div { display: grid; gap: 2px; min-width: 0; }
+.relayStatus strong { color: var(--ink); font-size: 10px; overflow-wrap: anywhere; }
+.relayStatus span { font-size: 9px; line-height: 1.45; overflow-wrap: anywhere; }
+.relayStatus[data-status="verified"] { color: var(--accent-text); }
+.relayStatus[data-status="verified"] strong { color: var(--accent-text); }
+.relayStatus[data-status="stopped"] { color: #9d4b40; }
+.relayStatus[data-status="stopped"] > svg { color: #a34b40; }
+.relayStatus[data-status="stopped"] strong { color: #9d4b40; }
+
+.lab { display: grid; gap: 13px; width: 100%; max-width: 100%; margin: 26px 0 18px; padding: 17px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 16px; background: color-mix(in srgb, var(--accent-text) 5%, var(--paper)); }
+.labTop { font: 10px ui-monospace, monospace; }
+.labTop strong { font: 400 11px/1.4 inherit; }
+.controls { display: flex; flex-wrap: wrap; gap: 7px; }
+.controlGroup { display: flex; flex-wrap: wrap; gap: 6px; }
+.controls button { min-height: 34px; padding: 6px 10px; border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent); border-radius: 999px; background: var(--paper); color: var(--ink); font-size: 12px; cursor: pointer; }
+.controls button[aria-pressed="true"] { background: var(--accent-text); color: var(--paper); }
+.controls button:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
+.reset { display: inline-flex; align-items: center; gap: 5px; margin-left: auto; }
+.status { min-height: 25px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+.status[data-status="verified"] { color: var(--accent-text); }
+.status[data-status="stopped"] { color: #9d4b40; }
+
+.hero .desk { gap: 7px; padding: 9px; }
+.hero .bandTrack { padding-block: 6px 3px; }
+.hero .bandSegment { min-height: 39px; padding: 5px 3px; }
+.hero .bandSegment > span { font-size: 9px; }
+.hero .bandSegment small { font-size: 7px; }
+.hero .relayToken { top: 14px; width: 18px; height: 18px; }
+.hero .receipt { padding: 6px; }
+.hero .receipt strong { font-size: 10px; }
+.hero .receipt small { font-size: 7px; }
+
+@media (max-width: 600px) {
+  .hero { padding: 10px; }
+  .lessonDesk { padding: 12px; }
+  .bandSegment { min-height: 58px; padding-inline: 4px; }
+  .bandSegment > span { font-size: 9px; }
+  .bandSegment small { font-size: 7px; }
+  .reset { margin-left: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bandSegment,
+  .relayToken,
+  .receipt { transition: none; }
+}
