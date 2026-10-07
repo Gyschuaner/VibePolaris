@@ -25835,9 +25835,9 @@
         "note": "授权测试、风险探测与评测边界"
       },
       {
-        "url": "https://www.anthropic.com/research/red-teaming-language-models-to-reduce-harm",
-        "label": "Anthropic · Red teaming language models",
-        "note": "红队与危害发现研究"
+        "url": "https://www.nist.gov/publications/adversarial-machine-learning-taxonomy-and-terminology-attacks-and-mitigations",
+        "label": "NIST · Adversarial ML taxonomy",
+        "note": "对抗测试的攻击与缓解术语"
       },
       {
         "url": "https://www.nist.gov/itl/ai-risk-management-framework",
@@ -25845,14 +25845,45 @@
         "note": "风险识别、测量与治理"
       },
       {
-        "url": "https://genai.owasp.org/llm-top-10/",
-        "label": "OWASP · LLM Top 10",
-        "note": "常见生成式 AI 风险类别"
+        "url": "https://developers.openai.com/api/docs/guides/safety-best-practices",
+        "label": "OpenAI API · Safety best practices",
+        "note": "安全测试与生产防护建议"
       },
       {
         "url": "https://arxiv.org/abs/2505.04806",
         "label": "Pathade · Red Teaming the Mind of the Machine",
         "note": "越狱与提示注入系统评估"
+      }
+    ],
+    "teaching": [
+      {
+        "id": "surface",
+        "title": "先画授权范围，再找容易失守的入口",
+        "body": "红队要先写清测试资产、允许的输入、工具权限、成功标准和停止条件，再从聊天、文件、检索、插件等入口设计异常或对抗样例。这样测到的是一次可复现的产品风险，而不是把“我试出了一个怪答案”当成系统结论。",
+        "sourceIndices": [
+          1,
+          2,
+          5
+        ]
+      },
+      {
+        "id": "evidence",
+        "title": "一条样例要变成能修复的证据",
+        "body": "记录完整输入、模型版本、系统约束、工具回执、实际影响和复现次数；修复后用同一个样例回归，再加变体检查是否只是换了表面。红队的价值在于把发现交回训练、策略、权限或界面修复，而不是收藏一张截图。",
+        "sourceIndices": [
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "id": "safe",
+        "title": "攻击者视角不等于无授权攻击",
+        "body": "高风险测试需要隔离环境、最小数据和明确联系人；涉及真实用户或外部系统时，要先得到授权并限制副作用。研究报告应描述类别、条件和防护结果，避免把可滥用载荷变成公开教程。",
+        "sourceIndices": [
+          1,
+          5
+        ]
       }
     ]
   },

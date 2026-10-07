@@ -1,6 +1,6 @@
 "use client";
 
-import { Brain, Calculator, ChartLine, CheckCircle, FileText, GitBranch, ShieldCheck, User, WarningCircle } from "@phosphor-icons/react";
+import { Brain, Calculator, ChartLine, CheckCircle, FileText, GitBranch, ShieldCheck, Stack, User, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./AiAlignmentSignatureHeroes.module.css";
 
@@ -133,5 +133,29 @@ export function DirectPreferenceOptimizationSignatureHero() {
       </div>
     </div>
     <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 2 ? "DPO 先把一对回答和参考模型摆在同一张相对尺上。" : badLabel ? "链路更短不会替你判断标签；坏的偏好会被很有效地学进去。" : "它省去显式奖励模型，但仍然需要高质量偏好、参考基线和训练外评测。"}</p></figcaption>
+  </figure>;
+}
+
+
+export function RedTeamingSignatureHero() {
+  const scene = useScene(4);
+  const labels = ["圈定授权范围", "点亮一个入口", "放入对抗变体", "留下回归证据"];
+  const tested = scene.step >= 2;
+  const fixed = scene.step === 3;
+  return <figure ref={scene.ref} className={styles.hero} role="region" aria-label="红队测试在授权范围内检查多个产品入口并留下回归证据" data-step={scene.step}>
+    <SceneControls scene={scene} labels={labels} compact />
+    <div className={styles.canvas}>
+      <div className={styles.redTeamBoard}>
+        <div className={styles.surfaceGrid}>
+          <span>测试面 · 只看已授权资产</span>
+          {["聊天入口", "上传文件", "检索资料", "工具调用"].map((label, index) => <div className={styles.surfaceTile} key={label} data-active={scene.step === 1 && index === 0 || tested && index === 0} data-tested={tested && index === 0}><ShieldCheck size={15} /><strong>{label}</strong><small>{scene.step === 0 ? "待选" : index === 0 ? fixed ? "已修复 · 回归" : tested ? "复现 2 次" : "可探测" : "范围外不触碰"}</small></div>)}
+        </div>
+        <div className={styles.scopeLog}>
+          <div className={styles.scopeSeal} data-ok={scene.step >= 0}><ShieldCheck size={19} /><span>授权范围</span><strong>沙盒 · 无真实副作用</strong></div>
+          <div className={styles.redEvidence} data-visible={tested} data-fixed={fixed}><Stack size={18} /><span>{tested ? fixed ? "回归记录已补齐" : "发现可复现缺口" : "尚未放入样例"}</span><small>{tested ? fixed ? "原样例 + 2 个变体" : "输入、版本、工具回执" : "先写成功标准"}</small></div>
+        </div>
+      </div>
+    </div>
+    <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 1 ? "红队先把授权、成功标准和停止条件写在边界里。" : fixed ? "修复后要用原样例和变体回归；一张截图不能代表系统安全。" : tested ? "发现要带着版本、约束和影响回到修复，而不是只收藏一个漂亮的攻击。" : "只有被选中的入口才进入测试，范围外的真实系统保持不动。"}</p></figcaption>
   </figure>;
 }
