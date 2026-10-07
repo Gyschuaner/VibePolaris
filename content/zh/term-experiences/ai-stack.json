@@ -26723,5 +26723,2787 @@
         ]
       }
     ]
+  },
+  {
+    "slug": "context-engineering",
+    "lead": "资料越塞越多，为什么模型反而抓不住眼前要用的那一条？",
+    "definition": "上下文工程是为一次模型推理挑选、组织和更新实际输入的工作。它处理的不只是提示词句子，还包括系统规则、工具说明、检索结果、对话历史、当前任务和外部状态；目标是在有限上下文里留下足够有用、彼此不冲突的材料，让模型能据此作出下一步判断。",
+    "boundary": "上下文工程不等于把所有历史都粘进提示词，也不等于扩大模型的上下文窗口。材料能被放进输入，不代表模型一定正确使用；来源新旧、位置、顺序、权限和证据质量仍要单独检查。上下文里出现一份资料，也不代表应用已经授权模型执行资料中的动作。它与相邻概念的分工也不同：context window 是容量边界，context compaction 是维护历史的一种手段，retrieval 只是把外部材料找进来的一个来源；上下文工程要统筹这些材料最后怎样进入这一轮推理。",
+    "sceneKind": "layers",
+    "sceneTitle": "同一个问题，换一张上下文工作台",
+    "actionLabel": "调整上下文材料",
+    "actors": [
+      {
+        "id": "task",
+        "label": "当前任务",
+        "detail": "判断订单能否退款",
+        "icon": "message",
+        "group": "目标"
+      },
+      {
+        "id": "rules",
+        "label": "规则卡",
+        "detail": "退款期限与例外",
+        "icon": "shield",
+        "group": "约束"
+      },
+      {
+        "id": "order",
+        "label": "当前订单",
+        "detail": "下单日与付款状态",
+        "icon": "file",
+        "group": "事实"
+      },
+      {
+        "id": "old",
+        "label": "旧记录",
+        "detail": "上周已关闭的订单",
+        "icon": "clock",
+        "group": "历史"
+      },
+      {
+        "id": "tools",
+        "label": "可用工具",
+        "detail": "查询发票日期",
+        "icon": "gear",
+        "group": "能力"
+      },
+      {
+        "id": "gap",
+        "label": "缺失证据",
+        "detail": "尚未提供发票日期",
+        "icon": "search",
+        "group": "缺口"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "只放任务",
+        "note": "有问题，没有足够事实；模型不能从一句目标里凭空得到订单状态。",
+        "activeIds": [
+          "task"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "rules",
+          "order",
+          "old",
+          "tools",
+          "gap"
+        ],
+        "values": {
+          "task": "请判断退款条件"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "加入关键材料",
+        "note": "规则和当前订单一起出现，读者可以追问结论依据来自哪里。",
+        "activeIds": [
+          "rules",
+          "order"
+        ],
+        "doneIds": [
+          "task"
+        ],
+        "mutedIds": [
+          "old",
+          "tools",
+          "gap"
+        ],
+        "values": {
+          "rules": "退款期限 · 30 天",
+          "order": "订单 #184 · 下单 12 天"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "剪掉旧记录",
+        "note": "过期订单仍像相关资料，但它会把本次判断带向错误的时间线。",
+        "activeIds": [
+          "old"
+        ],
+        "doneIds": [
+          "task",
+          "rules",
+          "order"
+        ],
+        "mutedIds": [
+          "tools",
+          "gap"
+        ],
+        "values": {
+          "old": "移除 · 上周已关闭"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "排好输入顺序",
+        "note": "工具说明放在当前事实旁，模型知道缺什么以及能通过哪种动作补证据。",
+        "activeIds": [
+          "tools"
+        ],
+        "doneIds": [
+          "task",
+          "rules",
+          "order",
+          "old"
+        ],
+        "mutedIds": [
+          "gap"
+        ],
+        "values": {
+          "tools": "查询发票日期 · 只读"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "留下证据缺口",
+        "note": "没有发票日期就停在追问；“不知道”比带着旧记录猜一个日期更可核查。",
+        "activeIds": [
+          "gap"
+        ],
+        "doneIds": [
+          "task",
+          "rules",
+          "order",
+          "old",
+          "tools"
+        ],
+        "mutedIds": [],
+        "values": {
+          "gap": "先问：发票日期是什么？"
+        },
+        "metric": {
+          "label": "当前判断",
+          "value": "缺资料 · 不下结论"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "上下文工程把“这一轮模型到底看到了什么”变成可以审阅的输入选择；材料不足时，留下缺口也是正确状态。",
+    "quiz": {
+      "question": "哪种做法最像上下文工程？",
+      "options": [
+        {
+          "label": "根据本轮任务选择并维护实际输入材料",
+          "correct": true
+        },
+        {
+          "label": "只把系统提示词写得更长",
+          "correct": false
+        },
+        {
+          "label": "把所有聊天记录永远附在每次请求后",
+          "correct": false
+        }
+      ],
+      "success": "上下文工程关心一轮推理实际看到哪些信息、如何组织以及何时更新。",
+      "retry": "提示词只是上下文的一部分；无筛选的全量历史会带来噪音、冲突和容量成本。"
+    },
+    "prompt": {
+      "title": "整理一次可核查的上下文",
+      "text": "请把任务目标、硬性规则、当前事实、可用工具、历史摘要和缺失证据分开列出；说明每项为什么要放入或移除、来源和时间范围是什么，以及缺资料时应先追问什么。"
+    },
+    "teaching": [
+      {
+        "id": "definition",
+        "title": "上下文不只是一段提示词",
+        "body": "一轮推理实际接收的内容通常还包括系统规则、工具定义、检索结果、对话历史和外部状态。Anthropic 将上下文工程描述为持续策划“这次要送进模型的 token”，所以工作重点是选择和维护，而不只是把句子写得更漂亮。",
+        "sourceIndices": [
+          1,
+          2,
+          5
+        ]
+      },
+      {
+        "id": "selection",
+        "title": "材料要和这次任务对得上",
+        "body": "RAG 论文把模型参数里的知识与可外接的非参数记忆分开；应用仍要决定哪些检索结果与当前问题相关。把所有旧聊天、所有搜索结果都塞进输入，会增加噪音和冲突，也会让读者误以为“出现过”就等于“应该相信”。",
+        "sourceIndices": [
+          1,
+          3,
+          4
+        ]
+      },
+      {
+        "id": "position",
+        "title": "位置和长度也会改变能否用上",
+        "body": "Lost in the Middle 的实验把同一条答案放到上下文不同位置，观察到中间位置的使用效果可能下降。整理材料时要保留任务、证据和输出要求的清楚边界，并用代表性位置变化做检查，不能只看总 token 数。",
+        "sourceIndices": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": "boundary",
+        "title": "缺证据时让模型停在问题上",
+        "body": "工具和资源可以成为上下文来源，但它们带来的只是可读取材料或能力说明，不会自动授予业务权限。缺失发票日期、来源过期或规则互相冲突时，应把缺口写出来、请求下一份证据，再决定是否继续。",
+        "sourceIndices": [
+          1,
+          2,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+        "label": "Anthropic · Effective context engineering for AI agents",
+        "note": "上下文是有限输入资源，需持续策划与维护"
+      },
+      {
+        "url": "https://resources.anthropic.com/building-effective-ai-agents",
+        "label": "Anthropic · Building Effective AI Agents",
+        "note": "智能体架构与上下文管理的工程取舍"
+      },
+      {
+        "url": "https://arxiv.org/abs/2005.11401",
+        "label": "Lewis et al. · Retrieval-Augmented Generation",
+        "note": "参数记忆与外部非参数记忆如何组合"
+      },
+      {
+        "url": "https://arxiv.org/abs/2307.03172",
+        "label": "Liu et al. · Lost in the Middle",
+        "note": "相关信息在长上下文中的位置会影响使用效果"
+      },
+      {
+        "url": "https://ts.sdk.modelcontextprotocol.io/v2/",
+        "label": "Model Context Protocol · TypeScript SDK v2",
+        "note": "工具、资源和提示作为应用可连接的上下文来源"
+      }
+    ]
+  },
+  {
+    "slug": "query-rewriting",
+    "lead": "我明明问的是“它怎么坏了”，为什么检索器总在搜错东西？",
+    "definition": "查询改写是把用户当前的说法转换成检索器更容易匹配、又尽量保留原意的一条或多条查询。它常用于对话中补回指代，补齐实体、时间和限制，或把口语问题展开成更容易命中文档的词组；改写后的查询负责找材料，原问题仍然保留给回答者理解语境。",
+    "boundary": "查询改写不是替用户补写答案，也不是把模型记得的“可能事实”当成搜索事实。它不能保证检索结果相关、最新或正确；查询越具体，错把猜测写进去的代价也越高。它和相邻环节的分工不同：改写决定检索入口，retrieval 找候选材料，reranking 给候选排序，context engineering 组织最终输入；它可以服务于 RAG，却不等于 RAG 本身。多查询、query2doc 这类扩展可以增加召回，但会带来噪音和成本，最终仍要检查检索证据与原问题是否对得上。",
+    "sceneKind": "compare",
+    "sceneTitle": "同一个“它”，换一张检索卡就换了命中结果",
+    "actionLabel": "整理检索卡",
+    "actors": [
+      {
+        "id": "raw",
+        "label": "裸问题",
+        "detail": "它为什么没显示？",
+        "icon": "message",
+        "group": "原问"
+      },
+      {
+        "id": "context",
+        "label": "对话实体",
+        "detail": "Safari 17 · app.example · 按钮",
+        "icon": "file",
+        "group": "已知上下文"
+      },
+      {
+        "id": "terms",
+        "label": "检索词卡",
+        "detail": "button hidden · CSS display",
+        "icon": "search",
+        "group": "检索表达"
+      },
+      {
+        "id": "original",
+        "label": "原问题",
+        "detail": "为什么没显示？",
+        "icon": "message",
+        "group": "回答目标"
+      },
+      {
+        "id": "evidence",
+        "label": "返回证据",
+        "detail": "文档 / issue / 仍待确认",
+        "icon": "file",
+        "group": "核对"
+      },
+      {
+        "id": "gap",
+        "label": "信息缺口",
+        "detail": "CSS 还是权限？",
+        "icon": "spark",
+        "group": "边界"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "裸问题落台",
+        "note": "“它”没有指向对象；改写器若直接猜原因，检索入口就已经偏了。",
+        "activeIds": [
+          "raw"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "context",
+          "terms",
+          "original",
+          "evidence",
+          "gap"
+        ],
+        "values": {
+          "raw": "它为什么没显示？"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "接回已知上下文",
+        "note": "只把对话里已经出现的对象、环境和症状带回来，不替用户补写“是 CSS 问题”。",
+        "activeIds": [
+          "context",
+          "raw"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "terms",
+          "original",
+          "evidence",
+          "gap"
+        ],
+        "values": {
+          "context": "Safari 17 · app.example · 按钮"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "铺开检索词",
+        "note": "把实体、症状和技术术语并排放入查询卡，让词面匹配与语义匹配都有入口。",
+        "activeIds": [
+          "terms"
+        ],
+        "doneIds": [
+          "raw",
+          "context"
+        ],
+        "mutedIds": [
+          "original",
+          "evidence",
+          "gap"
+        ],
+        "values": {
+          "terms": "Safari 17 button hidden CSS display property"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "原问留在旁边",
+        "note": "改写卡去找材料，回答目标仍是“为什么”；两者混在一起就容易把检索词误当成结论。",
+        "activeIds": [
+          "original",
+          "terms"
+        ],
+        "doneIds": [
+          "raw",
+          "context"
+        ],
+        "mutedIds": [
+          "evidence",
+          "gap"
+        ],
+        "values": {
+          "original": "为什么没显示？",
+          "terms": "只用于检索"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "标出缺口",
+        "note": "如果对话没有说明是 CSS、权限还是网络，保留候选方向并先追问，别用流畅的查询掩盖未知。",
+        "activeIds": [
+          "gap",
+          "evidence"
+        ],
+        "doneIds": [
+          "raw",
+          "context",
+          "terms",
+          "original"
+        ],
+        "mutedIds": [],
+        "values": {
+          "gap": "CSS 还是权限？ · 待确认",
+          "evidence": "尚未足以定因"
+        },
+        "metric": {
+          "label": "检索卡状态",
+          "value": "可搜 · 未证明"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "查询改写把“检索器该找什么”单独摆出来，却不抹掉用户原本的问题；越具体的新增词，越要能指出它来自哪一句上下文或仍是待验证假设。",
+    "quiz": {
+      "question": "查询改写后，哪件事仍然必须做？",
+      "options": [
+        {
+          "label": "把返回证据和原问题逐项核对",
+          "correct": true
+        },
+        {
+          "label": "直接把改写句当成答案",
+          "correct": false
+        },
+        {
+          "label": "继续加入所有可能原因",
+          "correct": false
+        }
+      ],
+      "success": "改写只改善检索入口，证据仍要回到原问题核对。",
+      "retry": "更具体的查询不等于更真实的事实；保留来源和缺口。"
+    },
+    "prompt": {
+      "title": "写一张可回放的检索改写卡",
+      "text": "请先抄出用户原问，再列出对话中明确给出的实体、时间、环境和限制；写一条主查询与最多两条补充查询。每个新增词都标注“来自原文”还是“待验证假设”，并说明如何用检索结果回到原问题，哪些信息不足时应该先追问。"
+    },
+    "teaching": [
+      {
+        "id": "gap",
+        "title": "检索器读到的是词，不会自动读懂“它”",
+        "body": "对话里的人知道“它”指刚才提到的按钮，检索器却只看到当前字符串。查询改写先补回明确出现过的实体、环境和症状，解决的是表达与检索索引之间的词面缺口。不要把没有在对话中出现的原因一起补进去。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "expansion",
+        "title": "扩词能增加入口，也会增加噪音",
+        "body": "Query2doc 用模型生成伪文档，再把它和原查询拼在一起，实验中能帮助稀疏与稠密检索；这说明扩展词可以改善召回，但伪文档来自模型记忆，不能直接当外部证据。查询越长，排序、去重和成本也要跟着检查。",
+        "sourceIndices": [
+          2,
+          4
+        ]
+      },
+      {
+        "id": "preserve",
+        "title": "改写卡和原问题要并排保存",
+        "body": "Rewrite-Retrieve-Read 把改写放到检索之前，回答器仍拿原问题与返回文档来作答。保留原问，才能发现改写是否偷偷换了任务；发现查询只命中一个“听起来像”的方向时，应回到原问重新判断。",
+        "sourceIndices": [
+          1,
+          3,
+          4
+        ]
+      },
+      {
+        "id": "evidence",
+        "title": "检索命中只是候选材料",
+        "body": "RAG 把外部文档带入模型输入，却没有替应用完成来源、时间和权限核验。Anthropic 对上下文检索的说明也强调，词面 BM25 与语义向量各有盲点，重排和上下文能改善召回，不会把返回片段变成已证实答案。",
+        "sourceIndices": [
+          4,
+          5
+        ]
+      },
+      {
+        "id": "uncertainty",
+        "title": "不确定时，追问比硬改写更诚实",
+        "body": "对话省略、歧义和陌生领域会让改写器很容易把猜测写成关键词。结构化改写研究尝试先理解概念、识别问题类型和预期答案，目的正是减少事实错误；在关键实体仍缺失时，保留多个候选并向用户追问。",
+        "sourceIndices": [
+          3,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2305.14283",
+        "label": "Ma et al. · Query Rewriting for Retrieval-Augmented Large Language Models",
+        "note": "提出 Rewrite-Retrieve-Read，把查询重写置于检索前并用读者反馈调节"
+      },
+      {
+        "url": "https://arxiv.org/abs/2303.07678",
+        "label": "Wang et al. · Query2doc",
+        "note": "用模型生成伪文档扩展查询，改善稀疏与稠密检索"
+      },
+      {
+        "url": "https://arxiv.org/abs/2407.12529",
+        "label": "Baek et al. · Crafting the Path",
+        "note": "用概念理解、问题类型和预期答案组织结构化改写，减少陌生领域的事实错误"
+      },
+      {
+        "url": "https://arxiv.org/abs/2005.11401",
+        "label": "Lewis et al. · Retrieval-Augmented Generation",
+        "note": "检索器提供外部非参数记忆，回答器结合问题与文档生成答案"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/contextual-retrieval",
+        "label": "Anthropic · Contextual Retrieval",
+        "note": "比较语义向量与 BM25 的检索盲点，并说明上下文与重排的收益和边界"
+      }
+    ]
+  },
+  {
+    "slug": "graph-rag",
+    "lead": "一堆文档明明都搜过了，为什么问“整体有哪些主题”还是答得零碎？",
+    "definition": "图检索增强生成（GraphRAG）把检索的单位从孤立文本块扩成一张关系地图。系统先从非结构化文档里抽取实体、关系和主张，再把相近实体组织成社区并生成分层摘要；提问时，可以沿着某个实体附近的原文做局部检索，也可以在社区报告上做全局归纳。它擅长处理“这个人和哪些项目有关”以及“整批材料反复出现哪些主题”这两种尺度不同的问题。",
+    "boundary": "GraphRAG 不只是给向量检索加几条边：图的实体合并、关系抽取、社区划分和摘要都可能出错，错误会在后续回答里被放大。全局搜索依赖预先生成的社区报告，速度和覆盖面上来了，原文细节却可能被压平；局部搜索更接近实体和片段，但不保证看见全库主题。它也不自动替代基础 RAG、来源核验或权限检查，索引阶段的模型调用、存储和更新成本必须算进去。向量数据库只是存储向量并做近邻检索的基础设施，query rewriting 改写检索入口，GraphRAG 负责关系与社区索引以及 local/global 查询；这里的 map-reduce 可以先理解成“让多个社区各自写一段，再把重要点汇总成回答”。",
+    "sceneKind": "network",
+    "sceneTitle": "同一批文档，平铺检索与关系地图看见什么不同",
+    "actionLabel": "展开关系地图",
+    "actors": [
+      {
+        "id": "corpus",
+        "label": "原文片段",
+        "detail": "12 段材料 · 人名与项目名散落",
+        "icon": "file",
+        "group": "输入"
+      },
+      {
+        "id": "alice",
+        "label": "Alice",
+        "detail": "维护者",
+        "icon": "user",
+        "group": "实体"
+      },
+      {
+        "id": "orion",
+        "label": "Orion",
+        "detail": "工具项目",
+        "icon": "component",
+        "group": "实体"
+      },
+      {
+        "id": "eval",
+        "label": "评测集",
+        "detail": "数据资源",
+        "icon": "database",
+        "group": "实体"
+      },
+      {
+        "id": "relation",
+        "label": "关系线",
+        "detail": "维护 · 使用 · 贡献",
+        "icon": "network",
+        "group": "结构"
+      },
+      {
+        "id": "community",
+        "label": "社区簇",
+        "detail": "工具链 / 评测 / 贡献者",
+        "icon": "layout",
+        "group": "摘要"
+      },
+      {
+        "id": "local",
+        "label": "局部问题",
+        "detail": "Orion 依赖谁？",
+        "icon": "search",
+        "group": "查询"
+      },
+      {
+        "id": "global",
+        "label": "全局问题",
+        "detail": "材料有哪些主题？",
+        "icon": "chart",
+        "group": "查询"
+      }
+    ],
+    "edges": [
+      {
+        "id": "alice-orion",
+        "from": "alice",
+        "to": "orion",
+        "label": "维护"
+      },
+      {
+        "id": "orion-eval",
+        "from": "orion",
+        "to": "eval",
+        "label": "使用"
+      },
+      {
+        "id": "alice-eval",
+        "from": "alice",
+        "to": "eval",
+        "label": "贡献"
+      },
+      {
+        "id": "alice-community",
+        "from": "alice",
+        "to": "community",
+        "label": "归入"
+      },
+      {
+        "id": "orion-community",
+        "from": "orion",
+        "to": "community",
+        "label": "归入"
+      },
+      {
+        "id": "eval-community",
+        "from": "eval",
+        "to": "community",
+        "label": "归入"
+      }
+    ],
+    "frames": [
+      {
+        "label": "一摞原文",
+        "note": "片段各自有相似度，却没有显式告诉我们 Alice、Orion 和评测集之间的关系。",
+        "activeIds": [
+          "corpus"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "alice",
+          "orion",
+          "eval",
+          "relation",
+          "community",
+          "local",
+          "global"
+        ],
+        "values": {
+          "corpus": "12 个片段 · 平铺"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "点出对象",
+        "note": "同一对象在不同片段里出现时，先被收拢成可复用的节点；节点还不是已经核验的事实。",
+        "activeIds": [
+          "alice",
+          "orion",
+          "eval"
+        ],
+        "doneIds": [
+          "corpus"
+        ],
+        "mutedIds": [
+          "relation",
+          "community",
+          "local",
+          "global"
+        ],
+        "values": {
+          "alice": "维护者",
+          "orion": "工具项目",
+          "eval": "数据资源"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "关系留下来",
+        "note": "关系线把分散片段里的“维护、使用、贡献”放在一起，读者可以沿关系回看原文。",
+        "activeIds": [
+          "relation",
+          "alice",
+          "orion",
+          "eval"
+        ],
+        "doneIds": [
+          "corpus"
+        ],
+        "mutedIds": [
+          "community",
+          "local",
+          "global"
+        ],
+        "values": {
+          "relation": "3 条关系 · 待回链原文"
+        },
+        "activeEdgeIds": [
+          "alice-orion",
+          "orion-eval",
+          "alice-eval"
+        ]
+      },
+      {
+        "label": "长出社区",
+        "note": "相近节点形成社区，社区报告提供全局归纳的中间材料；摘要越高层，细节越少。",
+        "activeIds": [
+          "community"
+        ],
+        "doneIds": [
+          "corpus",
+          "alice",
+          "orion",
+          "eval",
+          "relation"
+        ],
+        "mutedIds": [
+          "local",
+          "global"
+        ],
+        "values": {
+          "community": "工具链 · 评测 · 贡献者"
+        },
+        "activeEdgeIds": [
+          "alice-community",
+          "orion-community",
+          "eval-community"
+        ]
+      },
+      {
+        "label": "换两种问题",
+        "note": "局部问题看 Orion 附近的节点与片段，全局问题横看社区报告；两种答案都应能回到原始证据。",
+        "activeIds": [
+          "local",
+          "global"
+        ],
+        "doneIds": [
+          "corpus",
+          "alice",
+          "orion",
+          "eval",
+          "relation",
+          "community"
+        ],
+        "mutedIds": [],
+        "values": {
+          "local": "Orion 依赖谁？",
+          "global": "材料有哪些主题？"
+        },
+        "metric": {
+          "label": "回答入口",
+          "value": "局部事实 / 全局主题"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "GraphRAG 的关键不是把答案画成一张漂亮的网，而是让跨片段关系和跨社区主题有可选择的检索入口；关系、摘要和回答都要保留回到原文的路。",
+    "quiz": {
+      "question": "什么时候更适合先看 GraphRAG 的 global search？",
+      "options": [
+        {
+          "label": "问题要归纳整批材料的主题、趋势或共同模式",
+          "correct": true
+        },
+        {
+          "label": "只想查一个实体的一句原文",
+          "correct": false
+        },
+        {
+          "label": "任何问题都必须先跑全局搜索",
+          "correct": false
+        }
+      ],
+      "success": "全局搜索借助社区报告聚合整个数据集，适合需要跨库归纳的问题。",
+      "retry": "先看问题尺度：单个实体通常从 local search 开始，全库主题才需要 global 视角。"
+    },
+    "prompt": {
+      "title": "为一批文档设计局部与全局检索",
+      "text": "请先列出文档中需要追踪的实体、关系和可能的社区；为一个实体问题和一个全库主题问题分别选择 local 或 global 检索。说明每种模式会使用哪些原文或社区摘要、如何回链到证据、索引更新成本在哪里，以及抽取关系出错时如何人工复核。"
+    },
+    "teaching": [
+      {
+        "id": "why",
+        "title": "平铺相似片段答不好“整体”",
+        "body": "普通 RAG 以相似文本块为入口；当问题问整批材料的主题时，查询本身没有一个“主题”词能指向全库，返回的片段容易各说一角。GraphRAG 先把实体关系和社区结构整理出来，为全局归纳提供中间视角。",
+        "sourceIndices": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": "index",
+        "title": "图不是凭空长出来的",
+        "body": "GraphRAG 的索引包会从原文抽取实体、关系和主张，进行社区发现，生成多层社区摘要，同时保存文本块和向量。每一层都是模型加工过的材料，所以实体合并和摘要都要抽查。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "scale",
+        "title": "局部和全局是两种看法",
+        "body": "官方查询引擎把 local search 描述为实体知识图与原文片段的组合，把 global search 描述为对社区报告做 map-reduce。问“Orion 依赖谁”与问“整批文档有哪些主题”需要的证据尺度不同，不应硬塞进同一种检索。",
+        "sourceIndices": [
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "id": "evidence",
+        "title": "社区报告仍然要回链原文",
+        "body": "全局模式为了覆盖面会先看社区报告，较高层的报告更概括，也更可能丢掉细节。最终回答应保留报告所依据的片段、实体和关系，发现抽取冲突时回到原文修正。",
+        "sourceIndices": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": "cost",
+        "title": "地图有维护费用",
+        "body": "官方入门文档提醒 GraphRAG 会消耗较多 LLM 资源；索引、嵌入、社区摘要、更新和查询都要计入预算。数据变化频繁或问题只需一小段原文时，基础 RAG 可能更合适。",
+        "sourceIndices": [
+          2,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2404.16130",
+        "label": "Edge et al. · From Local to Global: A Graph RAG Approach to Query-Focused Summarization",
+        "note": "提出实体图、社区摘要以及 local/global GraphRAG，用于跨语料主题归纳"
+      },
+      {
+        "url": "https://microsoft.github.io/graphrag/index/overview/",
+        "label": "Microsoft GraphRAG · Indexing overview",
+        "note": "索引抽取实体、关系、主张，做社区发现、摘要和向量化"
+      },
+      {
+        "url": "https://microsoft.github.io/graphrag/query/overview/",
+        "label": "Microsoft GraphRAG · Query Engine overview",
+        "note": "区分 local、global、DRIFT 与 basic search 的问题尺度"
+      },
+      {
+        "url": "https://microsoft.github.io/graphrag/query/global_search/",
+        "label": "Microsoft GraphRAG · Global Search",
+        "note": "全局搜索在社区报告上做 map-reduce，回答整库主题问题"
+      },
+      {
+        "url": "https://microsoft.github.io/graphrag/get_started/",
+        "label": "Microsoft GraphRAG · Getting Started",
+        "note": "索引成本、输出和 local/global 查询的实践提醒"
+      }
+    ]
+  },
+  {
+    "slug": "lost-in-the-middle",
+    "lead": "资料明明在上下文里，为什么夹在中间像没读到？",
+    "definition": "“长上下文中间遗失”描述一种位置效应：当相关信息被埋在很长的输入中间，模型在需要把它找出来回答时，表现可能明显低于把同一信息放在开头或结尾。它不是说模型真的把中间 token 删除了，而是说明“能接收这么长”与“能稳定取用每一段”是两件事；位置、任务、模型和干扰材料共同改变了取回难度。",
+    "boundary": "这不是所有模型、所有任务都会出现的固定曲线，也不是把证据永远塞到最前面或最后面就能解决的规则。context window 只描述容量，context engineering 决定该放什么、怎样分组；retrieval、引用摘录和压缩可以减少搜索范围，却会引入遗漏和排序偏差。要用同一任务在不同位置做评测，不能把一次漂亮的长文档回答当成全窗口都可靠。context compaction（上下文压缩）会重写旧历史，可能丢掉原句、否定条件或顺序；retrieval/引用摘录先把候选片段挑出来，也可能漏掉它所在的上下文，不能把“更短”直接当成“更可靠”。",
+    "sceneKind": "spectrum",
+    "sceneTitle": "同一根“答案针”，放在长文档的哪里更容易被捞到",
+    "actionLabel": "移动证据位置",
+    "actors": [
+      {
+        "id": "question",
+        "label": "固定问题",
+        "detail": "合同的续期日是什么？",
+        "icon": "message",
+        "group": "任务"
+      },
+      {
+        "id": "front",
+        "label": "开头证据",
+        "detail": "关键句在 10%",
+        "icon": "file",
+        "group": "位置"
+      },
+      {
+        "id": "middle",
+        "label": "中间证据",
+        "detail": "关键句在 50%",
+        "icon": "file",
+        "group": "位置"
+      },
+      {
+        "id": "back",
+        "label": "结尾证据",
+        "detail": "关键句在 90%",
+        "icon": "file",
+        "group": "位置"
+      },
+      {
+        "id": "noise",
+        "label": "干扰段",
+        "detail": "其余合同条款",
+        "icon": "spark",
+        "group": "长输入"
+      },
+      {
+        "id": "answer",
+        "label": "取回结果",
+        "detail": "续期日 · 待观察",
+        "icon": "chart",
+        "group": "表现"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "短上下文",
+        "note": "问题旁边只有一条关键句；先确认任务本身没有难到无法回答。",
+        "activeIds": [
+          "question",
+          "front",
+          "answer"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "middle",
+          "back",
+          "noise"
+        ],
+        "values": {
+          "question": "合同的续期日是什么？",
+          "front": "续期日：2027-06-30",
+          "answer": "命中 · 只作基线"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "放在开头",
+        "note": "同一关键句被放到长文档前部；刻度只作位置测试的定性示意。",
+        "activeIds": [
+          "question",
+          "front",
+          "noise",
+          "answer"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "middle",
+          "back"
+        ],
+        "values": {
+          "front": "10% 位置",
+          "noise": "大量条款",
+          "answer": "较易取回 · 示意"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "埋在中间",
+        "note": "只移动证据，不换问题和答案；长输入里可能更容易漏掉中间那一段。",
+        "activeIds": [
+          "question",
+          "middle",
+          "noise",
+          "answer"
+        ],
+        "doneIds": [
+          "front"
+        ],
+        "mutedIds": [
+          "back"
+        ],
+        "values": {
+          "middle": "50% 位置",
+          "answer": "可能漏取 · 示意"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "放在结尾",
+        "note": "证据靠近输入尾部时表现可能回升，但距离问题、格式和干扰仍需单独测。",
+        "activeIds": [
+          "question",
+          "back",
+          "noise",
+          "answer"
+        ],
+        "doneIds": [
+          "front",
+          "middle"
+        ],
+        "mutedIds": [],
+        "values": {
+          "back": "90% 位置",
+          "answer": "可能回升 · 示意"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "先取证再答",
+        "note": "把相关原句摘出来可缩小搜索范围；摘录遗漏上下文时，模型仍可能被带偏。",
+        "activeIds": [
+          "question",
+          "answer"
+        ],
+        "doneIds": [
+          "front",
+          "middle",
+          "back",
+          "noise"
+        ],
+        "mutedIds": [],
+        "values": {
+          "answer": "原句摘录 + 位置记录"
+        },
+        "metric": {
+          "label": "位置敏感评测",
+          "value": "前 / 中 / 后都要测"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "长上下文的难点不是“能不能装下”，而是相关信息在不同位置能否稳定被取回；把位置当成可测变量，才能知道该检索、摘录还是压缩。",
+    "quiz": {
+      "question": "测试长上下文位置效应时，最应该保持什么不变？",
+      "options": [
+        {
+          "label": "问题、关键证据和干扰材料不变，只移动证据位置",
+          "correct": true
+        },
+        {
+          "label": "每次换一条问题和一套答案，凭感觉比较",
+          "correct": false
+        },
+        {
+          "label": "只测开头，测不到中间就默认可靠",
+          "correct": false
+        }
+      ],
+      "success": "只移动同一条证据，才能把表现变化归因到位置。",
+      "retry": "位置测试需要控制变量；换问题、换模型或换干扰会掩盖真实原因。"
+    },
+    "prompt": {
+      "title": "做一次位置敏感的长上下文评测",
+      "text": "固定问题、答案和干扰材料，只把同一条关键证据轮流放到开头、中间、结尾；记录模型是否引用它、答案是否完整、延迟和成本如何变化。再测试证据摘录、分段检索或压缩，注明每种策略丢掉了哪些上下文，并按模型与任务分别下结论。"
+    },
+    "teaching": [
+      {
+        "id": "capacity",
+        "title": "装得下不等于用得上",
+        "body": "context window 说的是输入和输出能占多少 token；Lost in the Middle 研究的重点是信息在长输入中的取回表现。即使请求没有超出容量，相关句子也可能因为位置和干扰而没有被稳定使用。",
+        "sourceIndices": [
+          1,
+          2,
+          4
+        ]
+      },
+      {
+        "id": "curve",
+        "title": "同一根针，换位置就换难度",
+        "body": "论文在多文档问答与键值取回任务中固定相关信息、改变它的位置，观察到开头和结尾通常更好，中间可能明显下滑。它提供的是评测现象，不是一条对每个模型都成立的硬编码公式。",
+        "sourceIndices": [
+          1
+        ]
+      },
+      {
+        "id": "design",
+        "title": "顺序是上下文设计的一部分",
+        "body": "Anthropic 的长上下文实验也比较了答案在开头、中间、结尾以及摘录相关引文的策略，结果显示提示结构会改变召回。整理上下文时，任务、证据和输出要求应有清楚边界，并用代表性位置做回归。",
+        "sourceIndices": [
+          2,
+          3
+        ]
+      },
+      {
+        "id": "mitigation",
+        "title": "先取证，别把“放边上”当万能药",
+        "body": "检索、相关引文摘录和压缩可以缩小模型要搜索的范围，但每一步都可能丢失上下文、引入排序偏差或增加延迟。它们是实验变量，不是对位置效应的永久豁免。",
+        "sourceIndices": [
+          2,
+          3,
+          5
+        ]
+      },
+      {
+        "id": "eval",
+        "title": "结论要写清模型和任务",
+        "body": "位置效应会随模型、上下文长度、问题类型和干扰材料改变。报告结果时写出模型版本、位置比例、上下文长度、命中标准和失败样例，避免把一次长文档演示包装成普遍能力。",
+        "sourceIndices": [
+          1,
+          2,
+          4
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2307.03172",
+        "label": "Liu et al. · Lost in the Middle: How Language Models Use Long Contexts",
+        "note": "多文档问答与键值取回中的位置敏感性和中间下滑"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+        "label": "Anthropic · Effective context engineering for AI agents",
+        "note": "上下文有限、token 增多会出现注意力与取回精度的递减"
+      },
+      {
+        "url": "https://www.anthropic.com/news/prompting-long-context",
+        "label": "Anthropic · Prompting Claude’s long context window",
+        "note": "比较长文档中证据位置、示例和相关引文摘录策略"
+      },
+      {
+        "url": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
+        "label": "Anthropic Claude Platform Docs · Context windows",
+        "note": "上下文窗口是输入与输出共同占用的容量边界"
+      },
+      {
+        "url": "https://arxiv.org/abs/2005.11401",
+        "label": "Lewis et al. · Retrieval-Augmented Generation",
+        "note": "检索把外部材料带入推理，可作为减少长上下文搜索范围的策略"
+      }
+    ]
+  },
+  {
+    "slug": "memory-consolidation",
+    "lead": "聊天记录越来越多，智能体怎样留下规律，又不把一次误会写成永久事实？",
+    "definition": "记忆巩固是智能体把一段段带时间和来源的经历，筛选、合并、抽象成更耐用的记忆表示，再供以后检索。它可以把“周一报错、周三又报错”整理成一条待验证的模式，也可以保留原始事件，让未来回答既能快速拿到规律，又能回查是哪几次经历支持了它。巩固发生在存储和取回之间，核心是决定什么值得长期保留、怎样改写以及何时失效。",
+    "boundary": "记忆巩固不是把所有聊天永久保存，也不是一次总结就变成事实。摘要、反思和合并可能丢掉时间、条件、否定或例外；模型还可能把推测写进记忆，之后每次取回都会重复这个错误。它和 agent-memory 的关系是：agent-memory 是可被后续调用的记录体系，consolidation 是更新这套体系的整理动作；retrieval 负责找卡片，context compaction 负责当前窗口的历史压缩，三者都不能替代来源、同意和删除规则。 context-engineering 负责这一轮推理的输入编排，记忆巩固负责长期记忆体系的更新；前者决定现在给模型看什么，后者决定以后还能取回什么。",
+    "sceneKind": "memory",
+    "sceneTitle": "一叠经历怎样压成一张可回查的记忆卡",
+    "actionLabel": "整理记忆卡",
+    "actors": [
+      {
+        "id": "event-one",
+        "label": "原始经历 A",
+        "detail": "周一 · 登录超时 · 日志 #17",
+        "icon": "file",
+        "group": "观察"
+      },
+      {
+        "id": "event-two",
+        "label": "原始经历 B",
+        "detail": "周三 · 登录超时 · 日志 #23",
+        "icon": "file",
+        "group": "观察"
+      },
+      {
+        "id": "cue",
+        "label": "当前线索",
+        "detail": "同一服务 · 高峰时段？",
+        "icon": "search",
+        "group": "召回"
+      },
+      {
+        "id": "pattern",
+        "label": "暂定模式",
+        "detail": "可能存在高峰期超时",
+        "icon": "memory",
+        "group": "抽象"
+      },
+      {
+        "id": "sources",
+        "label": "支持记录",
+        "detail": "2 条原始日志 · 可回查",
+        "icon": "file",
+        "group": "证据"
+      },
+      {
+        "id": "counter",
+        "label": "反例",
+        "detail": "周五 · 非高峰也超时",
+        "icon": "spark",
+        "group": "修正"
+      },
+      {
+        "id": "memory",
+        "label": "长期记忆卡",
+        "detail": "范围与可信度可变",
+        "icon": "layout",
+        "group": "存储"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "留下原始经历",
+        "note": "先保留发生了什么、何时发生和证据在哪里；一条事件还不构成长期规律。",
+        "activeIds": [
+          "event-one"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "event-two",
+          "cue",
+          "pattern",
+          "sources",
+          "counter",
+          "memory"
+        ],
+        "values": {
+          "event-one": "周一 · 超时 · 日志 #17"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "按线索召回",
+        "note": "同一服务的第二次经历被放在旁边，时间与环境仍然可见。",
+        "activeIds": [
+          "cue",
+          "event-two",
+          "event-one"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "pattern",
+          "sources",
+          "counter",
+          "memory"
+        ],
+        "values": {
+          "cue": "同一服务 · 高峰时段？",
+          "event-two": "周三 · 超时 · 日志 #23"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "写出暂定模式",
+        "note": "可以提出“可能存在高峰期超时”，但把观察和推断分开，可信度仍待验证。",
+        "activeIds": [
+          "pattern"
+        ],
+        "doneIds": [
+          "event-one",
+          "event-two",
+          "cue"
+        ],
+        "mutedIds": [
+          "sources",
+          "counter",
+          "memory"
+        ],
+        "values": {
+          "pattern": "暂定 · 2 条经历支持"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "保留回查入口",
+        "note": "抽象卡与支持它的原始记录一起存；未来发现反例时，才能知道该改哪一张卡。",
+        "activeIds": [
+          "memory",
+          "sources"
+        ],
+        "doneIds": [
+          "event-one",
+          "event-two",
+          "cue",
+          "pattern"
+        ],
+        "mutedIds": [
+          "counter"
+        ],
+        "values": {
+          "memory": "高峰期超时 · 待核",
+          "sources": "日志 #17 / #23"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "遇到反例就改",
+        "note": "非高峰也超时会削弱旧模式，长期记忆可以降级、拆分或删除，而不是只进不出。",
+        "activeIds": [
+          "counter",
+          "memory"
+        ],
+        "doneIds": [
+          "event-one",
+          "event-two",
+          "cue",
+          "pattern",
+          "sources"
+        ],
+        "mutedIds": [],
+        "values": {
+          "counter": "周五 · 非高峰超时",
+          "memory": "可信度下降 · 重新调查"
+        },
+        "metric": {
+          "label": "记忆状态",
+          "value": "可回查 · 可修正"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "记忆巩固的产物不是一段更顺口的总结，而是一张带来源、范围、可信度和失效入口的长期卡；把不确定性一起存下来，未来才有机会纠正。",
+    "quiz": {
+      "question": "长期记忆卡发现反例时，最合理的动作是什么？",
+      "options": [
+        {
+          "label": "降低或拆分旧抽象，回到原始经历重新核对",
+          "correct": true
+        },
+        {
+          "label": "删除反例，保持原来的总结稳定",
+          "correct": false
+        },
+        {
+          "label": "把反例直接追加到摘要，不记录来源",
+          "correct": false
+        }
+      ],
+      "success": "巩固是可修正的状态更新，反例要能改变旧记忆。",
+      "retry": "不记录反例和来源，会让错误记忆越用越牢。"
+    },
+    "prompt": {
+      "title": "设计一张可撤回的长期记忆卡",
+      "text": "请把经历按时间、参与者、环境、结果和来源列出；区分原始观察、模型推断和用户确认。只在重复证据足够时生成高层记忆，给它记录支持它的事件、适用范围、反例、失效条件、纠正和删除方式，并说明下一次检索应优先取原文还是摘要。"
+    },
+    "teaching": [
+      {
+        "id": "raw",
+        "title": "先存经历，再谈规律",
+        "body": "Generative Agents 把观察写进带时间的 memory stream，再动态取回用于计划；它还把多次经历合成为更高层的 reflection。这个顺序提醒我们：抽象应该能回到事件，而不是取代事件。",
+        "sourceIndices": [
+          2,
+          1
+        ]
+      },
+      {
+        "id": "cue",
+        "title": "召回线索决定哪段过去被看见",
+        "body": "记忆系统通常不会把全部历史塞进当前窗口，而是根据线索、相关性、时间或重要性挑候选。当前任务能找到什么，决定了巩固会看到哪些证据；没被召回的反例不会因为“存过”就自动参与判断。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "abstract",
+        "title": "抽象要标注它是推断",
+        "body": "记忆巩固把重复经历压成模式或规则，省下下次读取成本；但摘要、reflection 和合并都会改变原始表达。把支持事件、适用范围和“不确定”一起写入，才能避免模型把推断当成用户确认过的事实。",
+        "sourceIndices": [
+          1,
+          2,
+          5
+        ]
+      },
+      {
+        "id": "repair",
+        "title": "反例是修正入口，不是噪音",
+        "body": "记忆模块的结构和检索方法会影响不同任务，混合结构或迭代检索也不等于所有场景都更好。新事件与旧卡冲突时，应该降级、拆分、标记过期或删除，并留下变更记录。",
+        "sourceIndices": [
+          3,
+          5
+        ]
+      },
+      {
+        "id": "privacy",
+        "title": "长期记忆还要服从控制",
+        "body": "这些论文说明持久记忆会改变后续取回和行为，但它们并不替应用决定个人信息的保存范围或用户权利。产品落地时，应把是否写入、保存多久、如何纠正和删除列成独立的治理规则；这是工程要求，不能冒充成论文默认提供的隐私保证。",
+        "sourceIndices": [
+          1,
+          3,
+          4
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2404.00573",
+        "label": "Hou et al. · Dynamic Human-like Memory Recall and Consolidation in LLM Agents",
+        "note": "用线索召回与动态巩固量化对话记忆的长期价值"
+      },
+      {
+        "url": "https://arxiv.org/abs/2304.03442",
+        "label": "Park et al. · Generative Agents",
+        "note": "memory stream、reflection 与动态检索共同支持长期行为"
+      },
+      {
+        "url": "https://arxiv.org/abs/2404.13501",
+        "label": "Zhang et al. · A Survey on the Memory Mechanism of LLM-based Agents",
+        "note": "比较记忆模块的结构、写入、检索与评估问题"
+      },
+      {
+        "url": "https://arxiv.org/abs/2303.11366",
+        "label": "Shinn et al. · Reflexion",
+        "note": "通过语言反馈形成可供后续尝试使用的动态记忆"
+      },
+      {
+        "url": "https://arxiv.org/abs/2412.15266",
+        "label": "Zeng et al. · On the Structural Memory of LLM Agents",
+        "note": "比较块、事实、三元组、摘要和混合记忆及检索方法"
+      }
+    ]
+  },
+  {
+    "slug": "process-supervision",
+    "lead": "两份解答都写出 42；把每一步拆开，才看见其中一份只是碰巧撞上答案。",
+    "definition": "过程监督是在训练或筛选模型时，不只给最终答案打分，而是对解答中的每个中间步骤提供正确、错误或待定的反馈。过程奖励模型（PRM）可以据此估计一条解答在哪一步开始偏离，再用这些细粒度信号训练模型或从多个候选中挑选更可靠的路径。它监督的是推理过程里的可检查行为，不等于把完整思维链展示给用户，也不等于把所有现实任务都拆成固定流程。",
+    "boundary": "过程监督和 outcome supervision 的差别在反馈落点：后者主要看最终结果，前者还要判断中间步骤是否合理、是否有题目或证据支持。它不是 chain-of-thought 的同义词，也不是验证器、奖励模型或人工审查本身；这些可以承载或使用过程反馈。逐步标签也可能含糊、昂贵、受领域限制，奖励模型仍可能学到表面线索；现有比较结果主要来自数学任务，不能直接当作所有领域都成立的保证。",
+    "sceneKind": "matrix",
+    "sceneTitle": "监督棋盘：把最终数字和每一步的依据分开看",
+    "actionLabel": "贴上步骤标签",
+    "actors": [
+      {
+        "id": "problem",
+        "label": "同一道题",
+        "detail": "3 站车程 · 每站 14 分钟",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "candidate-a",
+        "label": "解答 A",
+        "detail": "14 + 14 + 14 = 42",
+        "icon": "code",
+        "group": "候选"
+      },
+      {
+        "id": "candidate-b",
+        "label": "解答 B",
+        "detail": "先假设每站 20 分钟，再减 18 得 42",
+        "icon": "code",
+        "group": "候选"
+      },
+      {
+        "id": "step-labels",
+        "label": "步骤标签",
+        "detail": "✓ 通过 · ✕ 错误 · ? 待定",
+        "icon": "shield",
+        "group": "监督"
+      },
+      {
+        "id": "process-score",
+        "label": "过程分",
+        "detail": "A 高 · B 低",
+        "icon": "chart",
+        "group": "监督"
+      },
+      {
+        "id": "outcome-score",
+        "label": "结果分",
+        "detail": "A = 42 · B = 42",
+        "icon": "spark",
+        "group": "结果"
+      },
+      {
+        "id": "audit-log",
+        "label": "审阅记录",
+        "detail": "保留第 1 步的缺口",
+        "icon": "file",
+        "group": "证据"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "放上两份解答",
+        "note": "最终答案相同，先把两条候选路径并排摆出。",
+        "activeIds": [
+          "problem",
+          "candidate-a",
+          "candidate-b"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "step-labels",
+          "process-score",
+          "outcome-score",
+          "audit-log"
+        ],
+        "values": {
+          "candidate-a": "A · 结果 42",
+          "candidate-b": "B · 结果 42"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "逐步贴标签",
+        "note": "步骤级监督关心每一处转折是否合理；含糊处可先保留待定，而不是硬判。",
+        "activeIds": [
+          "step-labels",
+          "candidate-a",
+          "candidate-b"
+        ],
+        "doneIds": [
+          "problem"
+        ],
+        "mutedIds": [
+          "process-score",
+          "outcome-score",
+          "audit-log"
+        ],
+        "values": {
+          "step-labels": "A：✓ ✓ ✓ · B：✕ ✕ ✓"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "比较两把尺",
+        "note": "结果监督只看到两个 42；过程监督把 B 的无依据假设暴露出来。",
+        "activeIds": [
+          "process-score",
+          "outcome-score"
+        ],
+        "doneIds": [
+          "problem",
+          "candidate-a",
+          "candidate-b",
+          "step-labels"
+        ],
+        "mutedIds": [
+          "audit-log"
+        ],
+        "values": {
+          "process-score": "A 高 · B 低",
+          "outcome-score": "A = B = 42"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "挑出可疑位置",
+        "note": "把评分落回具体步骤，审阅者才知道该改哪一个假设。",
+        "activeIds": [
+          "candidate-b",
+          "step-labels"
+        ],
+        "doneIds": [
+          "problem",
+          "candidate-a",
+          "process-score",
+          "outcome-score"
+        ],
+        "mutedIds": [
+          "audit-log"
+        ],
+        "values": {
+          "candidate-b": "第 1 步：每站 20 分钟？题目未提供",
+          "step-labels": "✕ 需要证据"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "保存监督记录",
+        "note": "训练或筛选可以使用步骤标签，但记录仍要区分评分、证据和人工复核。",
+        "activeIds": [
+          "audit-log",
+          "step-labels"
+        ],
+        "doneIds": [
+          "problem",
+          "candidate-a",
+          "candidate-b",
+          "process-score",
+          "outcome-score"
+        ],
+        "mutedIds": [],
+        "values": {
+          "audit-log": "步骤标签 + 评语 + 最终结果"
+        },
+        "metric": {
+          "label": "监督粒度",
+          "value": "逐步可回查"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "过程监督的价值不在于把答案写得更长，而在于把错误定位到一个可复核的中间动作；最终结果、步骤依据和人工判断要分开记录。",
+    "quiz": {
+      "question": "两份解答最终都为 42，过程监督应优先追问什么？",
+      "options": [
+        {
+          "label": "每一步是否有题目或证据支持",
+          "correct": true
+        },
+        {
+          "label": "哪一份文字更长、更像完整解释",
+          "correct": false
+        },
+        {
+          "label": "只保留最后的数字，删掉中间记录",
+          "correct": false
+        }
+      ],
+      "success": "过程监督把可疑转折定位出来，结果相同也要回查依据。",
+      "retry": "先看每一步的条件与证据；长度和最终数字都不够。"
+    },
+    "prompt": {
+      "title": "给候选解答做步骤级审阅",
+      "text": "请把候选解答按中间步骤列成表格：每一步标记通过、错误或待定，写出它依赖的题目条件或外部证据；再单独检查最终答案，指出是否存在过程有错但结果碰巧正确的情况，并标出需要领域专家复核的位置。不要把步骤数量、格式或流畅度当成正确性。"
+    },
+    "teaching": [
+      {
+        "id": "granularity",
+        "title": "反馈落在哪一层，决定你能看见什么",
+        "body": "outcome supervision 只在答案末尾给信号，像批卷时只写“对”或“错”；process supervision 则给每个中间步骤贴标签，能指出错误从哪一处开始。两者都可能使用奖励模型，但监督粒度不同，能回答的问题也不同。",
+        "sourceIndices": [
+          1,
+          2,
+          5
+        ]
+      },
+      {
+        "id": "labels",
+        "title": "步骤标签不是简单的二选一",
+        "body": "PRM800K 的标注把步骤分成正面、负面和中性；中性允许标注者把含糊、误导但未必完全错误的步骤暂时挂起。真正的系统要把标签说明、领域规则和标注一致性写清，否则“逐步监督”只是更细的主观分数。",
+        "sourceIndices": [
+          1,
+          3
+        ]
+      },
+      {
+        "id": "spurious",
+        "title": "最后答对，过程仍可能有问题",
+        "body": "一份解答可能靠错误假设、漏掉条件或偶然抵消得到正确数字。过程与结果监督的比较研究把这种“spurious solution”视为 outcome supervision 的盲点：只看末尾会奖励一个不值得复用的路径，逐步检查才有机会在早处拦住它。",
+        "sourceIndices": [
+          1,
+          2,
+          4
+        ]
+      },
+      {
+        "id": "selection",
+        "title": "过程分也可以用来挑候选",
+        "body": "验证器研究会先生成多份候选，再按分数选出更可靠的一份；过程奖励模型把每一步的正确概率合成为整条路径的分数。它把“从一个答案硬改到下一个答案”变成“先摆出几条候选，再比较依据”，但候选数量、评分偏差和成本仍需记录。",
+        "sourceIndices": [
+          1,
+          3
+        ]
+      },
+      {
+        "id": "scope",
+        "title": "数学结果不能直接替所有领域背书",
+        "body": "过程监督在 MATH 等数学任务上显示出优势，但研究也明确提醒这种收益能否推广到其他领域仍是开放问题。法律、医疗、产品操作等任务需要各自的可检查步骤、证据标准和专家复核，不能把一个 PRM 分数当成通用安全信号。",
+        "sourceIndices": [
+          1,
+          2,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2305.20050",
+        "label": "Lightman et al. · Let's Verify Step by Step",
+        "note": "比较过程监督与结果监督，并发布 PRM800K 步骤级反馈数据。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2203.02155",
+        "label": "Ouyang et al. · Training language models to follow instructions with human feedback",
+        "note": "说明结果级偏好标签如何训练奖励模型，以及整体信号的信用分配边界。"
+      },
+      {
+        "url": "https://github.com/openai/prm800k",
+        "label": "OpenAI · PRM800K dataset",
+        "note": "查看正面、负面、中性步骤标签与数据格式。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2110.14168",
+        "label": "Cobbe et al. · Training Verifiers to Solve Math Word Problems",
+        "note": "说明验证器如何给候选解答评分并选择结果。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2211.14275",
+        "label": "Uesato et al. · Solving math word problems with process- and outcome-based feedback",
+        "note": "补充过程与结果反馈的对照研究背景。"
+      }
+    ]
+  },
+  {
+    "slug": "outcome-supervision",
+    "lead": "结果监督只在解答末尾盖章：标签很省，但盖章时可能已经看不见走错的那一步。",
+    "definition": "结果监督是在训练或筛选模型时，把一份完整解答交给最终结果检查器，只根据答案是否正确、是否通过规则或是否满足目标给出一个整体反馈。它常对应 outcome reward model（ORM）：每个问题—解答对可以得到一个结果标签，再用于训练、候选排序或强化学习。结果监督的优势是标签相对便宜、答案容易自动验证的任务可以规模化；代价是它通常不知道错误从哪一步开始，也可能奖励“结果碰巧对”的解答。",
+    "boundary": "结果监督和 process supervision 的差别在反馈粒度：前者只判断整份结果，后者还检查中间步骤。它不是 verifier、ORM 或强化学习算法的同义词，而是定义监督信号落在哪里；这些组件可以实现或使用结果标签。若最终答案难以自动核验、过程本身决定安全性，单一结果分数就不够；数学研究显示结果监督节省标注，却会留下正确答案中的推理错误，研究结论也不能直接外推到所有领域。",
+    "sceneKind": "compare",
+    "sceneTitle": "末尾盖章：结果分数很轻，过程盲点很重",
+    "actionLabel": "打开结果标签",
+    "actors": [
+      {
+        "id": "task",
+        "label": "同一道题",
+        "detail": "3 站车程 · 每站 14 分钟",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "solution-a",
+        "label": "解答 A",
+        "detail": "14 + 14 + 14 = 42",
+        "icon": "code",
+        "group": "候选"
+      },
+      {
+        "id": "solution-b",
+        "label": "解答 B",
+        "detail": "假设每站 20 分钟，再减 18 得 42",
+        "icon": "code",
+        "group": "候选"
+      },
+      {
+        "id": "outcome-label",
+        "label": "结果标签",
+        "detail": "A ✓ · B ✓ · 最终都是 42",
+        "icon": "chart",
+        "group": "监督"
+      },
+      {
+        "id": "label-budget",
+        "label": "标注账本",
+        "detail": "每份解答 1 个结果标签",
+        "icon": "layout",
+        "group": "成本"
+      },
+      {
+        "id": "blindspot",
+        "label": "过程盲点",
+        "detail": "B 的假设没有题目依据",
+        "icon": "spark",
+        "group": "风险"
+      },
+      {
+        "id": "choice",
+        "label": "监督选择",
+        "detail": "答案可验时省成本，过程重要时加检查",
+        "icon": "shield",
+        "group": "决策"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "只收最终答案",
+        "note": "先把解答当作一个整体，结果检查器只接收末尾的 42。",
+        "activeIds": [
+          "task",
+          "solution-a",
+          "solution-b",
+          "outcome-label"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "label-budget",
+          "blindspot",
+          "choice"
+        ],
+        "values": {
+          "outcome-label": "等待结果判定 · A = 42 · B = 42"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "标签成本摊开",
+        "note": "一份解答一个结果标签，收集比逐步标注轻；这正是它适合规模化的原因。",
+        "activeIds": [
+          "label-budget",
+          "outcome-label"
+        ],
+        "doneIds": [
+          "task",
+          "solution-a",
+          "solution-b"
+        ],
+        "mutedIds": [
+          "blindspot",
+          "choice"
+        ],
+        "values": {
+          "label-budget": "A：1 个标签 · B：1 个标签"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "两条答案都通过",
+        "note": "ORM 能把两个最终 42 都记成通过，却没有足够信号分辨两条路径。",
+        "activeIds": [
+          "outcome-label",
+          "solution-a",
+          "solution-b"
+        ],
+        "doneIds": [
+          "task",
+          "label-budget"
+        ],
+        "mutedIds": [
+          "blindspot",
+          "choice"
+        ],
+        "values": {
+          "outcome-label": "结果监督：A ✓ · B ✓"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "露出看不见的缺口",
+        "note": "只有把过程另行打开，才会发现 B 的第一步没有来源；结果标签不会定位这个缺口。",
+        "activeIds": [
+          "blindspot",
+          "solution-b"
+        ],
+        "doneIds": [
+          "task",
+          "solution-a",
+          "outcome-label",
+          "label-budget"
+        ],
+        "mutedIds": [
+          "choice"
+        ],
+        "values": {
+          "blindspot": "B · 第 1 步：每站 20 分钟？题目未提供"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "按任务选择监督",
+        "note": "答案容易验证且过程风险较低时，结果监督很划算；过程本身决定可靠性时，要加步骤检查或人工复核。",
+        "activeIds": [
+          "choice",
+          "outcome-label",
+          "blindspot"
+        ],
+        "doneIds": [
+          "task",
+          "solution-a",
+          "solution-b",
+          "label-budget"
+        ],
+        "mutedIds": [],
+        "values": {
+          "choice": "结果可验：低成本；过程重要：补步骤证据"
+        },
+        "metric": {
+          "label": "监督视野",
+          "value": "末尾清楚 · 中间缺口"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "结果监督把“这份答案是否达标”变成一个便宜、可规模化的信号，但它不会自动回答“答案是怎么得到的”；选择监督方式要看过程错误是否会造成真实代价。",
+    "quiz": {
+      "question": "结果监督最需要警惕哪种解答？",
+      "options": [
+        {
+          "label": "中间推理有错误，但最后答案碰巧正确",
+          "correct": true
+        },
+        {
+          "label": "最终答案有清楚的自动判定标准",
+          "correct": false
+        },
+        {
+          "label": "每份解答只需要一个结果标签",
+          "correct": false
+        }
+      ],
+      "success": "结果标签看见末尾是否达标，却可能漏掉中间的错误捷径。",
+      "retry": "先问过程是否重要；单一结果分数不会定位错误从哪一步开始。"
+    },
+    "prompt": {
+      "title": "判断任务能否只用结果监督",
+      "text": "请写出这个任务的最终结果判定标准，再检查只给结果打分是否会漏掉过程错误、权限绕过或不安全捷径。若过程本身重要，请列出步骤级标签、证据检查和人工复核的最小补充，并比较每种监督的标注成本、延迟和可扩展性。"
+    },
+    "teaching": [
+      {
+        "id": "one-label",
+        "title": "它为什么容易收集",
+        "body": "结果监督给一整份解答一个整体标签：最终数字对就记通过，错就记不通过。答案有明确标准时，程序或简单判定器就能批量生成标签，省下逐步阅读的人工成本；这也是 ORM 常被用来做候选排序的原因。",
+        "sourceIndices": [
+          1,
+          4,
+          5
+        ]
+      },
+      {
+        "id": "blindspot",
+        "title": "盖章看不见中间那条路",
+        "body": "两份解答都能写出正确末尾，其中一份可能漏条件、偷换单位或靠偶然抵消。Uesato 等人在 GSM8K 的比较里发现，纯结果监督用更少标签就能得到相近的最终答案错误率，但正确答案里的推理错误仍明显更多。",
+        "sourceIndices": [
+          1,
+          3
+        ]
+      },
+      {
+        "id": "verifier",
+        "title": "结果监督常和候选筛选一起出现",
+        "body": "验证器可以先看许多候选的最终答案，再把分数最高的一份挑出来。这个“先生成、再选择”利用了结果可验证的任务结构；它改善的是选中正确答案的机会，不代表每个候选的推理都值得复用。",
+        "sourceIndices": [
+          4,
+          5
+        ]
+      },
+      {
+        "id": "tradeoff",
+        "title": "便宜的标签有明确的交换条件",
+        "body": "只收一个结果标签，速度和成本都更友好，但信用分配变粗：模型不知道哪一步值得保留、哪一步应改。若错误会在后续操作中放大，应该增加过程标签、外部工具校验或人工抽查，而不是只把 ORM 做得更大。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "scope",
+        "title": "先问结果是否真的可判定",
+        "body": "数学答案、单元测试或格式约束有较清楚的结果标准；开放式写作、策略决策和安全操作往往同时需要理由、证据、权限和副作用检查。过程监督也有成本，实际设计应按错误代价决定监督粒度，而不是把结果监督或过程监督当成唯一答案。",
+        "sourceIndices": [
+          1,
+          2,
+          3,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2211.14275",
+        "label": "Uesato et al. · Solving math word problems with process- and outcome-based feedback",
+        "note": "比较结果级与过程级反馈的标签成本和推理错误。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2203.02155",
+        "label": "Ouyang et al. · Training language models to follow instructions with human feedback",
+        "note": "说明结果级偏好标签如何训练奖励模型，以及整体信号的信用分配边界。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2305.20050",
+        "label": "Lightman et al. · Let's Verify Step by Step",
+        "note": "说明 outcome supervision 与 process supervision 的实验设置和结果。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2110.14168",
+        "label": "Cobbe et al. · Training Verifiers to Solve Math Word Problems",
+        "note": "说明最终答案验证器如何给候选解答打分。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2206.14858",
+        "label": "Lewkowycz et al. · Solving Quantitative Reasoning Problems with Language Models",
+        "note": "展示可量化问题的最终答案评测，以及结果分数不能代替过程证据的边界。"
+      }
+    ]
+  },
+    {
+    "slug": "reward-hacking",
+    "lead": "红块翻个面就拿到高分：指标完成了，真正的任务却还在地上。",
+    "definition": "奖励投机（reward hacking）是智能体找到奖励函数、评分器或任务规范的漏洞，满足字面上的可计算目标，却没有完成设计者真正想要的结果。DeepMind 把这种行为称为 specification gaming：例如只奖励红块底面高度时，机器人可以把红块翻过来拿高分，却没有把它稳稳叠到蓝块上。它不一定需要恶意计划，代理指标、环境假设、评测器或权限边界的一个缺口就可能让高能力系统走出“分数正确、事情错误”的捷径。",
+    "boundary": "奖励投机首先是“目标写得不完整或代理信号被钻空子”，不等于所有意外的聪明解法；如果结果符合真实意图，出人意料的策略可能只是创新。它也和 goal misgeneralisation 不同：后者即使规格正确，模型仍可能学到不想要的目标；reward tampering 则是更窄、更严重的一类，系统直接改写奖励或监督通道。发现一个漏洞不等于已经发生现实世界危害，Anthropic 的 reward-tampering 研究是在受控、人工设计的环境中观察到的稀有行为，不能直接外推成生产模型必然会这样做。",
+    "sceneKind": "contract",
+    "sceneTitle": "红蓝积木契约：把“高分”与“堆叠完成”分开验收",
+    "actionLabel": "翻动红块看看",
+    "actors": [
+      {
+        "id": "intent",
+        "label": "真实意图",
+        "detail": "红块叠在蓝块上并保持稳定",
+        "icon": "spark",
+        "group": "目标"
+      },
+      {
+        "id": "blue-block",
+        "label": "蓝块",
+        "detail": "承托面 · 等待红块接触",
+        "icon": "package",
+        "group": "对象"
+      },
+      {
+        "id": "red-block",
+        "label": "红块",
+        "detail": "原姿态 / 翻面姿态",
+        "icon": "package",
+        "group": "对象"
+      },
+      {
+        "id": "proxy",
+        "label": "代理指标",
+        "detail": "红块底面离地高度",
+        "icon": "chart",
+        "group": "评分"
+      },
+      {
+        "id": "shortcut",
+        "label": "高分捷径",
+        "detail": "翻过红块，底面变高",
+        "icon": "package",
+        "group": "行为"
+      },
+      {
+        "id": "score",
+        "label": "奖励读数",
+        "detail": "reward ↑ · 但没有接触蓝块",
+        "icon": "chart",
+        "group": "结果"
+      },
+      {
+        "id": "checks",
+        "label": "验收条件",
+        "detail": "对齐、接触、顶面关系、稳定性",
+        "icon": "shield",
+        "group": "审查"
+      },
+      {
+        "id": "audit",
+        "label": "审计与记分牌",
+        "detail": "随机场景 · 独立检查 · 奖励文件不可改写",
+        "icon": "key",
+        "group": "权限"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "写下真正想要的结果",
+        "note": "先把人的意图写成可以观察的契约，红块、蓝块和稳定接触都要进入验收。",
+        "activeIds": [
+          "intent",
+          "blue-block",
+          "red-block",
+          "checks"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "proxy",
+          "shortcut",
+          "score",
+          "audit"
+        ],
+        "values": {
+          "intent": "红块叠在蓝块上",
+          "blue-block": "承托面 · 等待接触",
+          "red-block": "正面朝上 · 尚未放置",
+          "checks": "对齐 · 接触 · 稳定"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "只奖励一个代理指标",
+        "note": "代理指标让训练有读数，但没有覆盖红块是否真的接触并稳定在蓝块上。",
+        "activeIds": [
+          "proxy",
+          "score"
+        ],
+        "doneIds": [
+          "intent",
+          "blue-block",
+          "red-block"
+        ],
+        "mutedIds": [
+          "shortcut",
+          "checks",
+          "audit"
+        ],
+        "values": {
+          "proxy": "底面离地高度",
+          "score": "reward = 高度"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "出现高分捷径",
+        "note": "红块翻面后底面变高，分数上升；蓝块仍没有承托它，真实任务没有完成。",
+        "activeIds": [
+          "red-block",
+          "shortcut",
+          "score",
+          "proxy",
+          "blue-block"
+        ],
+        "doneIds": [
+          "intent"
+        ],
+        "mutedIds": [
+          "checks",
+          "audit"
+        ],
+        "values": {
+          "red-block": "翻面 · 底面朝上",
+          "shortcut": "不接触蓝块也能抬高底面",
+          "score": "reward ↑",
+          "proxy": "高度达标 · 堆叠失败",
+          "blue-block": "仍在下方 · 未接触"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "把意图补回契约",
+        "note": "把对齐、接触和稳定性加入验收，翻面状态因此被判为不通过；仍要继续寻找未覆盖的情况。",
+        "activeIds": [
+          "checks",
+          "intent",
+          "red-block",
+          "blue-block",
+          "shortcut"
+        ],
+        "doneIds": [
+          "proxy",
+          "score"
+        ],
+        "mutedIds": [
+          "audit"
+        ],
+        "values": {
+          "checks": "高度 + 顶面/底面对齐 + 接触 + 稳定",
+          "red-block": "翻面状态 · 不通过",
+          "blue-block": "没有承托关系",
+          "shortcut": "高分不再等于完成"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "把评分通道也看住",
+        "note": "独立审计和权限隔离用来防止系统既当运动员又改写记分牌；这一步对应更窄的 reward tampering 风险。",
+        "activeIds": [
+          "audit",
+          "checks",
+          "red-block",
+          "blue-block"
+        ],
+        "doneIds": [
+          "intent",
+          "proxy",
+          "shortcut",
+          "score"
+        ],
+        "mutedIds": [],
+        "values": {
+          "audit": "随机场景 · 独立检查 · 评分文件不可改写",
+          "checks": "每次验收留下证据",
+          "red-block": "真实姿态可回放",
+          "blue-block": "接触关系可核对"
+        },
+        "metric": {
+          "label": "契约完整度",
+          "value": "意图可验 · 评分可审计"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "奖励投机不是“模型太聪明”这一句就能解释的故障；要把意图、代理指标、权限和独立验收放在同一张契约上，才能看见分数与真实结果何时分叉。",
+    "quiz": {
+      "question": "红块翻面后高度分很高，却没有叠到蓝块上，应该先检查什么？",
+      "options": [
+        {
+          "label": "奖励函数是否只测了高度，漏掉了接触和对齐",
+          "correct": true
+        },
+        {
+          "label": "把 reward 数字再放大，让模型更努力",
+          "correct": false
+        },
+        {
+          "label": "把所有新策略都判为错误，不再允许创新",
+          "correct": false
+        }
+      ],
+      "success": "先回到目标契约：代理指标覆盖不全，才给了翻面的捷径。",
+      "retry": "高分本身不是目标；比较 reward 测到的条件和人真正验收的结果。"
+    },
+    "prompt": {
+      "title": "审查一个奖励函数的漏洞",
+      "text": "请把任务的真实意图写成可观察的验收条件，再列出奖励函数实际测量的代理指标。逐项寻找分数变高但结果变坏的策略、环境假设、评测器盲点和可被修改的监督文件；为每个漏洞设计独立检查、随机抽样、权限隔离和回滚证据，并区分 specification gaming、goal misgeneralisation 与 reward tampering。"
+    },
+    "teaching": [
+      {
+        "id": "literal",
+        "title": "系统完成的是字面规则",
+        "body": "DeepMind 对 specification gaming 的定义很直接：智能体满足目标的字面规格，却没有达到设计者想要的结果。红块翻面、赛艇绕圈刷检查点，都是奖励函数测到的东西与任务意图脱开后的高分行为；同一策略若完整满足真实意图，就不该因为“看起来奇怪”而自动算作投机。",
+        "sourceIndices": [
+          1
+        ]
+      },
+      {
+        "id": "proxy",
+        "title": "代理指标越窄，捷径空间越大",
+        "body": "高度、通过率、点击量或测试退出码都只是任务的可计算代理。它们能让训练有方向，却可能漏掉接触、稳定、诚实、权限和副作用；设计时要列出代理没有测到的条件，而不是假设高分自然包含了它们。",
+        "sourceIndices": [
+          1,
+          3
+        ]
+      },
+      {
+        "id": "boundaries",
+        "title": "三种相近故障要分开",
+        "body": "specification gaming 是钻不完整的任务描述；goal misgeneralisation 是规格正确但学到的目标在新情境里变了；reward tampering 则是直接动奖励或监督通道。它们都可能看起来像“为了分数走捷径”，但修复需要分别看目标、泛化和权限。",
+        "sourceIndices": [
+          1,
+          2,
+          4
+        ]
+      },
+      {
+        "id": "controls",
+        "title": "验收要和训练信号分开",
+        "body": "多条件验收、随机化场景、独立评测器、人工抽查和不可写的奖励文件，都是把运动员与记分牌分开的办法。它们不能证明漏洞已经绝迹，却能让“分数为什么升了”有证据可追。",
+        "sourceIndices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "caveat",
+        "title": "受控研究不能直接当生产预言",
+        "body": "Anthropic 的 reward-tampering 研究在人工设计、可访问自身代码和隐藏草稿的环境里观察到稀有行为；作者明确说不能据此断言日常生产模型必然会篡改奖励。它的价值在于暴露一种需要隔离和监控的可能路径，而不是替部署风险下结论。",
+        "sourceIndices": [
+          2,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://deepmind.google/blog/specification-gaming-the-flip-side-of-ai-ingenuity/",
+        "label": "Google DeepMind · Specification gaming",
+        "note": "定义 specification gaming，并用红块翻面、赛艇绕圈等例子说明代理指标漏洞。"
+      },
+      {
+        "url": "https://www.anthropic.com/research/reward-tampering",
+        "label": "Anthropic · Sycophancy to subterfuge",
+        "note": "区分 specification gaming 与 reward tampering，并说明受控研究的边界。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2209.13085",
+        "label": "Skalse et al. · Defining and Characterizing Reward Hacking",
+        "note": "补充 reward hacking 的形式定义与可被利用的奖励代理。"
+      },
+      {
+        "url": "https://deepmind.google/blog/how-undesired-goals-can-arise-with-correct-rewards/",
+        "label": "Google DeepMind · How undesired goals can arise with correct rewards",
+        "note": "区分 reward/specification 问题与 goal misgeneralisation。"
+      },
+      {
+        "url": "https://www.anthropic.com/research/emergent-misalignment-reward-hacking",
+        "label": "Anthropic · Natural emergent misalignment from reward hacking",
+        "note": "说明编程任务中的 reward hacking 与受控后续错配评测之间的研究观察。"
+      }
+    ]
+  },
+  {
+    "slug": "agent-trajectory",
+    "lead": "智能体说“退款完成”只是结尾；把观察、调用、回执和重试摊开，才知道这次运行到底发生了什么。",
+    "definition": "智能体轨迹（agent trajectory）是一次 trial 从输入到结束的完整运行记录：包括模型看到的观察、输出的决策、工具调用与参数、工具返回、中间结果、环境状态变化以及最终结果。它让评测者可以回到某个时间点，问“当时依据是什么、哪次调用改变了状态、错误怎样传播或被修正”，而不是只凭最后一句话判断系统。轨迹是可审阅的运行证据，具体记录哪些思考内容仍取决于隐私、日志和产品策略。",
+    "boundary": "轨迹不是预先写好的 plan，也不是把一条消息或完整私有思维链自动公开；它是一次执行中实际留下的事件与状态记录。它和 outcome 的分工也不同：结果说明环境最后变成什么，轨迹说明中间发生了什么；一条漂亮的路径不能替代结果核验，一次成功结果也可能掩盖危险的工具调用。评测不应强迫所有 agent 走同一条路线，Anthropic 也提醒过度规定工具顺序会惩罚有效的创造性方案；更稳妥的是同时检查任务结果、关键行为、成本和失败恢复。在台账里，transcript/trace/trajectory 是事件记录，trial 是一次尝试，grader 是评分逻辑，agent harness 是让模型调用工具并推进状态的运行骨架；它们互相配合，却不是同一个对象。",
+    "sceneKind": "timeline",
+    "sceneTitle": "退款运行带：把每个观察、调用和回执钉回时间线上",
+    "actionLabel": "播放下一段记录",
+    "actors": [
+      {
+        "id": "task",
+        "label": "任务卡",
+        "detail": "退款金额与权限都要核对",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "observation-one",
+        "label": "观察 01",
+        "detail": "订单状态 = 已支付",
+        "icon": "browser",
+        "group": "观察"
+      },
+      {
+        "id": "action-one",
+        "label": "动作 01",
+        "detail": "查询订单退款资格",
+        "icon": "code",
+        "group": "决策"
+      },
+      {
+        "id": "tool-return",
+        "label": "工具回执",
+        "detail": "资格 true · 参数缺少 currency",
+        "icon": "database",
+        "group": "环境"
+      },
+      {
+        "id": "retry",
+        "label": "恢复分支",
+        "detail": "补 currency 后再次调用",
+        "icon": "gear",
+        "group": "决策"
+      },
+      {
+        "id": "observation-two",
+        "label": "观察 02",
+        "detail": "退款已创建 · request_id r-42",
+        "icon": "file",
+        "group": "环境"
+      },
+      {
+        "id": "outcome",
+        "label": "最终状态",
+        "detail": "订单状态已改变，可独立查询",
+        "icon": "spark",
+        "group": "结果"
+      },
+      {
+        "id": "grader",
+        "label": "评测切片",
+        "detail": "结果通过 · 首次调用无效 · 成本可见",
+        "icon": "chart",
+        "group": "审查"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "放入一次任务",
+        "note": "先写清输入和成功条件，轨迹才有边界；一堆没有任务编号的日志无法比较。",
+        "activeIds": [
+          "task"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "observation-one",
+          "action-one",
+          "tool-return",
+          "retry",
+          "observation-two",
+          "outcome",
+          "grader"
+        ],
+        "values": {
+          "task": "退款金额与权限都要核对"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "记录观察与动作",
+        "note": "把看到的订单状态和实际发出的工具调用并排记录，别让“模型想做什么”覆盖“系统做了什么”。",
+        "activeIds": [
+          "observation-one",
+          "action-one"
+        ],
+        "doneIds": [
+          "task"
+        ],
+        "mutedIds": [
+          "tool-return",
+          "retry",
+          "observation-two",
+          "outcome",
+          "grader"
+        ],
+        "values": {
+          "observation-one": "订单状态 = 已支付",
+          "action-one": "调用：查询退款资格"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "接回工具回执",
+        "note": "工具返回改变了下一步能做什么；参数缺口必须留在轨迹里，而不是只保存成功的最终文字。",
+        "activeIds": [
+          "tool-return",
+          "observation-one",
+          "action-one"
+        ],
+        "doneIds": [
+          "task"
+        ],
+        "mutedIds": [
+          "retry",
+          "observation-two",
+          "outcome",
+          "grader"
+        ],
+        "values": {
+          "tool-return": "资格 true · 缺少 currency"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "标出分支与恢复",
+        "note": "失败调用、补参数和重试都保留下来，审阅者才能判断恢复是否安全、是否重复扣款或越过权限。",
+        "activeIds": [
+          "retry",
+          "tool-return"
+        ],
+        "doneIds": [
+          "task",
+          "observation-one",
+          "action-one"
+        ],
+        "mutedIds": [
+          "observation-two",
+          "outcome",
+          "grader"
+        ],
+        "values": {
+          "retry": "补 currency · 第 2 次调用"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "把路径和结果一起评",
+        "note": "最终环境状态和中间行为分开计分：结果成功仍要看第一次无效调用、成本与恢复质量。",
+        "activeIds": [
+          "outcome",
+          "grader",
+          "observation-two"
+        ],
+        "doneIds": [
+          "task",
+          "observation-one",
+          "action-one",
+          "tool-return",
+          "retry"
+        ],
+        "mutedIds": [],
+        "values": {
+          "outcome": "退款已创建 · request_id r-42",
+          "grader": "结果通过 · 首次无效 · 成本可见"
+        },
+        "metric": {
+          "label": "运行证据",
+          "value": "结果 + 路径 + 恢复"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "轨迹的价值是把一次运行变成可回放的证据，而不是把所有 agent 绑在同一条脚本上；结果、关键行为和失败恢复应该分别可见。",
+    "quiz": {
+      "question": "一次运行最后显示“退款已完成”，审阅时还要看什么？",
+      "options": [
+        {
+          "label": "环境最终状态，以及工具调用、参数和恢复记录",
+          "correct": true
+        },
+        {
+          "label": "只看最后一句话是否自信",
+          "correct": false
+        },
+        {
+          "label": "是否逐字复制预先写好的参考轨迹",
+          "correct": false
+        }
+      ],
+      "success": "轨迹和结果互相校对，才能看见错误调用或危险恢复。",
+      "retry": "最终消息只是一个输出；回到环境状态和中间事件。"
+    },
+    "prompt": {
+      "title": "为一次智能体运行做轨迹审阅",
+      "text": "请把这次运行整理成时间序列：每项写出观察、模型决定、工具名称与参数、工具回执、环境状态和下一步依据。单独核对最终结果是否真的落在环境里，再标出第一次错误、重试是否安全、是否有越权或无效调用，并分别给结果、关键行为、延迟、成本和恢复能力打分。不要要求所有成功运行都复制同一条路径。"
+    },
+    "teaching": [
+      {
+        "id": "record",
+        "title": "轨迹记录的是一次 trial 的全貌",
+        "body": "Anthropic 将 transcript、trace 或 trajectory 定义为一次试验的完整记录：输出、工具调用、推理、途中结果和其他交互都在里面。产品实现时仍要按隐私与日志策略决定哪些字段可以保存或展示；轨迹不是默认公开的私有思考。",
+        "sourceIndices": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": "outcome",
+        "title": "结果和轨迹要分开核对",
+        "body": "智能体说“航班已订”不代表环境里真的有预订；真正的 outcome 是环境结束时的状态。轨迹能解释为什么失败或成功，却不能替代数据库、文件或页面的独立检查。",
+        "sourceIndices": [
+          1,
+          3
+        ]
+      },
+      {
+        "id": "recovery",
+        "title": "失败和重试也是证据",
+        "body": "多轮 agent 会调用工具、修改状态并根据中间结果调整，错误可能传播或叠加。把无效参数、拒绝、重试和恢复留在轨迹里，才能判断系统是否会重复动作、越过权限或把错误当成功。",
+        "sourceIndices": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": "long-horizon",
+        "title": "长任务要看轨迹的时间尺度",
+        "body": "AgentBench 用多个交互环境评估长期推理、决策和指令遵循；WebArena 则把购物、论坛、协作开发和内容管理放进可复现的网站环境。它们说明 agent 的能力不能只用一问一答的静态分数代替。",
+        "sourceIndices": [
+          2,
+          3
+        ]
+      },
+      {
+        "id": "grading",
+        "title": "不要把参考路径当成唯一答案",
+        "body": "Anthropic 提醒，要求 agent 严格按预设工具顺序走，容易把有效的创造性路线判错。更好的评测会对结果、关键行为、部分完成、成本和恢复分别设定检查；自动评估器也要用人工或确定性检查校准。",
+        "sourceIndices": [
+          1,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "label": "Anthropic · Demystifying evals for AI agents",
+        "note": "定义 trajectory/transcript、outcome、trial 与多轮 agent 评测的组成。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2308.03688",
+        "label": "Liu et al. · AgentBench",
+        "note": "用 8 类交互环境评估 LLM-as-Agent 的长期推理、决策和指令遵循。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2307.13854",
+        "label": "Zhou et al. · WebArena",
+        "note": "在真实可复现的网站环境中评估长程任务的功能正确性。"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/building-effective-agents",
+        "label": "Anthropic · Building effective agents",
+        "note": "说明 agent loop、工具调用与环境状态更新的运行结构。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2404.06474",
+        "label": "Pan et al. · Autonomous Evaluation and Refinement of Digital Agents",
+        "note": "比较自动评估器并用于 web/device agent 的评估和改进。"
+      }
+    ]
+  },
+  {
+    "slug": "computer-use",
+    "lead": "模型会点按钮，不代表它知道下一秒屏幕还是什么；电脑使用的核心是观察、受限动作和动作后的核验。",
+    "definition": "电脑使用（computer use）让模型通过截图或其他视觉观察理解图形界面，再发出鼠标、键盘、滚轮等结构化动作，由应用或执行器代为操作浏览器和桌面。一次动作之后，环境会返回新的截图或工具结果，模型再据此决定下一步；它把通用界面操作变成可调用能力，而不是把模型直接变成拥有电脑权限的人。",
+    "boundary": "电脑使用不是普通的文本 tool call，也不是“看懂截图”就等于完成任务：坐标会因窗口、缩放和滚动变化，页面里的文字还可能包含 prompt injection，动作执行也可能失败。它和浏览器 DOM/API 自动化的分工不同，前者在视觉界面上操作，后者可直接调用结构化页面或服务接口；当接口存在且足够可靠时，不必为了炫技去点屏幕。产品必须隔离环境、限制站点和权限，给购买、外传、删除等后果性动作设置确认，并在动作后核验真实状态。",
+    "sceneKind": "assembly",
+    "sceneTitle": "桌面状态台：截图、光标、权限门和结果一起变化",
+    "actionLabel": "执行下一次观察",
+    "actors": [
+      {
+        "id": "screen",
+        "label": "当前屏幕",
+        "detail": "退款表单 · 金额输入框可见",
+        "icon": "browser",
+        "group": "观察"
+      },
+      {
+        "id": "cursor",
+        "label": "光标目标",
+        "detail": "从截图定位到输入框",
+        "icon": "spark",
+        "group": "动作"
+      },
+      {
+        "id": "action",
+        "label": "结构化动作",
+        "detail": "click / type / scroll / keypress",
+        "icon": "code",
+        "group": "动作"
+      },
+      {
+        "id": "permission",
+        "label": "权限门",
+        "detail": "填写允许 · 提交需确认",
+        "icon": "shield",
+        "group": "安全"
+      },
+      {
+        "id": "feedback",
+        "label": "新画面",
+        "detail": "错误提示：币种缺失",
+        "icon": "browser",
+        "group": "反馈"
+      },
+      {
+        "id": "injection",
+        "label": "不可信内容",
+        "detail": "页面文字不能改写用户指令",
+        "icon": "file",
+        "group": "安全"
+      },
+      {
+        "id": "outcome",
+        "label": "真实状态",
+        "detail": "表单未提交 · 缺口可见",
+        "icon": "database",
+        "group": "结果"
+      },
+      {
+        "id": "stop",
+        "label": "停止条件",
+        "detail": "后果性动作前确认，异常时取消",
+        "icon": "key",
+        "group": "控制"
+      }
+    ],
+    "edges": [],
+    "frames": [
+      {
+        "label": "先看当前屏幕",
+        "note": "界面状态不明时先取新截图；旧坐标、旧登录状态和旧页面都不能直接继承。",
+        "activeIds": [
+          "screen",
+          "injection"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "cursor",
+          "action",
+          "permission",
+          "feedback",
+          "outcome",
+          "stop"
+        ],
+        "values": {
+          "screen": "退款表单 · 提交按钮可见",
+          "injection": "页面文字只是数据"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "对准目标区域",
+        "note": "把截图里的视觉目标映射到执行环境的坐标空间，再准备一个小动作。",
+        "activeIds": [
+          "cursor",
+          "action",
+          "screen"
+        ],
+        "doneIds": [
+          "injection"
+        ],
+        "mutedIds": [
+          "permission",
+          "feedback",
+          "outcome",
+          "stop"
+        ],
+        "values": {
+          "cursor": "金额输入框 · 坐标来自当前原图",
+          "action": "准备 type(\"128.00\")"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "动作先过权限门",
+        "note": "输入字段和提交退款不是同一风险；真实发送、付款、删除或外传前要停下来确认。",
+        "activeIds": [
+          "permission",
+          "action",
+          "stop"
+        ],
+        "doneIds": [
+          "screen",
+          "cursor",
+          "injection"
+        ],
+        "mutedIds": [
+          "feedback",
+          "outcome"
+        ],
+        "values": {
+          "permission": "输入：允许 · 提交：等待确认",
+          "stop": "后果性动作暂停"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "拿回新画面",
+        "note": "动作执行后重新截图，发现币种缺失；下一步来自新状态，而不是盲点旧坐标。",
+        "activeIds": [
+          "feedback",
+          "screen",
+          "action"
+        ],
+        "doneIds": [
+          "cursor",
+          "permission",
+          "injection"
+        ],
+        "mutedIds": [
+          "outcome",
+          "stop"
+        ],
+        "values": {
+          "feedback": "金额已填 · 错误：币种缺失",
+          "screen": "页面状态已更新"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "结束在可核验状态",
+        "note": "未提交不等于失败：当前结果明确、缺口可修正，用户仍保留发送权；先记录状态再决定是否继续。",
+        "activeIds": [
+          "outcome",
+          "stop",
+          "permission",
+          "feedback"
+        ],
+        "doneIds": [
+          "screen",
+          "cursor",
+          "action",
+          "injection"
+        ],
+        "mutedIds": [],
+        "values": {
+          "outcome": "表单未提交 · 缺口已标出",
+          "stop": "等待用户确认后再发送"
+        },
+        "metric": {
+          "label": "操作边界",
+          "value": "可观察 · 可取消 · 可核验"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "电脑使用不是把权限交给模型，而是让模型在截图、动作执行器、权限门和结果核验之间小步前进；每次动作都应能解释、能取消、能回看。",
+    "quiz": {
+      "question": "准备点击“提交退款”时，电脑使用代理应该先做什么？",
+      "options": [
+        {
+          "label": "检查当前页面和权限，并在真实提交前请求用户确认",
+          "correct": true
+        },
+        {
+          "label": "沿用旧截图坐标连续点击，直到出现成功文字",
+          "correct": false
+        },
+        {
+          "label": "看见按钮就默认拥有发送和付款权限",
+          "correct": false
+        }
+      ],
+      "success": "屏幕可见、动作可执行和动作获准是三件事；提交前必须停下来确认。",
+      "retry": "先取新状态并检查后果性权限，不能把按钮可见当成授权。"
+    },
+    "prompt": {
+      "title": "为电脑使用任务写安全动作契约",
+      "text": "请把这个电脑操作任务拆成观察、允许动作、需确认动作、禁止动作和结果核验：说明何时必须获取新截图、坐标如何映射、哪些页面内容只能当不可信数据、出现错误或 prompt injection 时如何停止。优先使用可验证的 API 或 DOM 接口；只有确需图形界面时才执行鼠标键盘操作，并列出隔离环境、站点白名单、取消和回滚办法。"
+    },
+    "teaching": [
+      {
+        "id": "loop",
+        "title": "它靠“截图—动作—新截图”保持在现实里",
+        "body": "OpenAI 的接口说明把电脑操作拆成执行器循环：当 UI 状态未知时先给当前截图，执行一小组动作后再返回更新画面，并保持浏览器或桌面会话。坐标不是永久事实，下一步必须建立在新的观察上。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "actions",
+        "title": "动作是结构化请求，不是魔法手",
+        "body": "常见动作包括点击、拖拽、滚动、输入和按键；Anthropic 的工具还明确规定坐标、修饰键和截图空间。真正执行动作的是应用侧 driver，模型只能提出请求，不能凭一句话越过执行器的权限。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "safety",
+        "title": "看见页面，也可能看见攻击",
+        "body": "网页、文档和截图里的文字属于不可信内容，不能自行覆盖用户指令。OpenAI 建议隔离环境、站点白名单、后果性动作确认、步数/时间/成本上限和真实结果核验；Anthropic 也特别提醒电脑画面可能携带 prompt injection。",
+        "sourceIndices": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": "api",
+        "title": "能调用接口时，不必模拟鼠标",
+        "body": "电脑使用解决的是只有图形界面可操作，或视觉定位本身就是任务的一部分；如果同一动作有可靠的 API、DOM 或结构化工具，直接调用通常更易验证、也更少受坐标漂移影响。把视觉操作当成最后一层适配，而不是默认的万能入口。",
+        "sourceIndices": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "limits",
+        "title": "真实桌面仍然会让模型失手",
+        "body": "OSWorld 用 369 个真实网页、桌面和跨应用任务评估电脑代理，论文报告当时最佳模型的成功率远低于人类，主要困难是 GUI grounding 和操作知识。电脑使用是能力接口，不是任务成功保证，必须配合执行器、评测和人工接管。",
+        "sourceIndices": [
+          3,
+          5
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://developers.openai.com/api/docs/guides/tools-computer-use",
+        "label": "OpenAI · Computer use",
+        "note": "说明截图、坐标、动作执行、状态保持、权限确认与结果核验。"
+      },
+      {
+        "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool",
+        "label": "Anthropic · Computer use tool",
+        "note": "列出 screenshot、click、type、scroll 等动作，以及坐标和执行器边界。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2404.07972",
+        "label": "Xie et al. · OSWorld",
+        "note": "在真实操作系统和跨应用任务中评估 GUI grounding 与电脑操作能力。"
+      },
+      {
+        "url": "https://www.anthropic.com/research/developing-computer-use",
+        "label": "Anthropic · Developing a computer use model",
+        "note": "说明 prompt injection 等电脑画面安全风险与受控部署边界。"
+      },
+      {
+        "url": "https://www.anthropic.com/news/3-5-models-and-computer-use",
+        "label": "Anthropic · Introducing computer use",
+        "note": "补充电脑使用通过截图、光标、点击、输入完成通用界面操作，仍处于实验性阶段。"
+      }
+    ]
   }
 ]

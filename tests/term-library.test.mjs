@@ -17,7 +17,7 @@ const experienceFiles = readdirSync(new URL("../content/zh/term-experiences/", i
 const experiences = experienceFiles.flatMap((name) => readJson(`content/zh/term-experiences/${name}`));
 const demoTypes = new Set(["flow", "state", "comparison", "hierarchy", "lifecycle", "queue", "branch", "request"]);
 const categories = new Set(["前端", "后端", "AI·Agent", "技术栈", "Git", "产品与设计"]);
-const sceneKinds = new Set(["route", "pipeline", "transform", "compare", "layers", "tree", "network", "timeline", "queue", "state-machine", "memory", "contract", "branch", "loop", "matrix", "spectrum", "assembly", "terminal", "magnet-drawer", "overlay-film", "triage-dial", "relay-band", "memory-drawer"]);
+const sceneKinds = new Set(["route", "pipeline", "transform", "compare", "layers", "tree", "network", "timeline", "queue", "state-machine", "memory", "contract", "branch", "loop", "matrix", "spectrum", "assembly", "terminal", "magnet-drawer", "overlay-film", "triage-dial", "relay-band", "memory-drawer", "example-gallery"]);
 const actorIcons = new Set(["browser", "server", "database", "file", "code", "user", "robot", "brain", "gear", "package", "git", "shield", "key", "cloud", "clock", "queue", "search", "chart", "layout", "component", "message", "network", "memory", "spark"]);
 
 test("公开词条与已完成升级清单一致", () => {
@@ -86,7 +86,7 @@ test("全部正式词条均有独立研究卡、权威来源与唯一分镜", ()
 });
 
 test("本批十条专属页逐条对齐研究、体验与非流程视觉约束", () => {
-  const slugs = ["quantization", "knowledge-distillation", "mixture-of-experts", "speculative-decoding", "beam-search", "confidence-calibration", "data-contamination", "out-of-distribution", "parameter-efficient-fine-tuning", "model-card"];
+  const slugs = ["quantization", "knowledge-distillation", "mixture-of-experts", "speculative-decoding", "beam-search", "confidence-calibration", "data-contamination", "out-of-distribution", "parameter-efficient-fine-tuning", "model-card", "chain-of-thought", "self-consistency", "constitutional-ai", "rlhf", "direct-preference-optimization", "red-teaming", "jailbreak", "model-spec", "prompt-chaining", "evaluator-optimizer"];
   const flowKinds = new Set(["pipeline", "route", "loop"]);
   const flowCount = experiences.filter((experience) => flowKinds.has(experience.sceneKind)).length;
 
@@ -103,7 +103,7 @@ test("本批十条专属页逐条对齐研究、体验与非流程视觉约束",
 });
 
 test("除专属页面外，每个词条都有可验证的独立互动体验", () => {
-  const specialSlugs = new Set(["component", "css", "html", "javascript", "grounding", "citation", "structured-output", "eval", "benchmark", "grader", "reranking", "model-routing", "quantization", "knowledge-distillation", "mixture-of-experts", "speculative-decoding", "beam-search", "confidence-calibration", "data-contamination", "out-of-distribution", "parameter-efficient-fine-tuning", "model-card"]);
+  const specialSlugs = new Set(["component", "css", "html", "javascript", "grounding", "citation", "structured-output", "eval", "benchmark", "grader", "reranking", "model-routing", "quantization", "knowledge-distillation", "mixture-of-experts", "speculative-decoding", "beam-search", "confidence-calibration", "data-contamination", "out-of-distribution", "parameter-efficient-fine-tuning", "model-card", "chain-of-thought", "self-consistency", "constitutional-ai", "rlhf", "direct-preference-optimization", "red-teaming", "jailbreak", "model-spec", "prompt-chaining", "evaluator-optimizer"]);
   const expectedSlugs = new Set(allTerms.filter((term) => !specialSlugs.has(term.slug)).map((term) => term.slug));
   const genericExperiences = experiences.filter((experience) => !specialSlugs.has(experience.slug));
   const experienceSlugs = new Set(genericExperiences.map((experience) => experience.slug));
