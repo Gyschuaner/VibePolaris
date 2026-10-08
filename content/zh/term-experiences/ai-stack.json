@@ -7148,137 +7148,115 @@
   },
   {
     "slug": "reranking",
-    "lead": "初次召回排A、B、C，为什么精排后B会跳到第一？",
-    "definition": "重排序接收召回阶段的一小组候选，用更精细的相关性模型重新打分，再把最合适的内容排到前面。",
-    "boundary": "它不负责从全库找文档，也不能补回召回阶段完全漏掉的资料。",
+    "lead": "退款问题搜出了取消操作，怎样把直接回答到账时间的材料挪到前面？",
+    "definition": "重排序接收查询与已有候选，以新的相关性规则或模型重新评分和排列；关键词和向量检索结果都可以进入这一步。",
+    "boundary": "它不能补回未召回的材料，也不核实文档事实。分数、输出截取和重排失败应分开呈现，不能把召回分与重排分直接相减证明质量提高。",
     "sceneKind": "compare",
-    "sceneTitle": "同三份候选的两次排序",
-    "actionLabel": "切换评分阶段",
+    "sceneTitle": "退款候选保持身份，重新排位",
+    "actionLabel": "按问题重排",
     "actors": [
       {
         "id": "query",
         "label": "查询",
-        "detail": "退款到账时间",
+        "detail": "会员取消后，退款多久到银行卡？",
         "icon": "search",
-        "group": "输入"
+        "group": "问题"
       },
       {
         "id": "a",
-        "label": "文档 A",
-        "detail": "召回0.81 · 精排0.54",
+        "label": "A · 取消会员的操作",
+        "detail": "召回 0.87 · 重排 0.31",
         "icon": "file",
         "group": "候选"
       },
       {
         "id": "b",
-        "label": "文档 B",
-        "detail": "召回0.78 · 精排0.91",
+        "label": "B · 退款到账时间",
+        "detail": "召回 0.75 · 重排 0.94",
         "icon": "file",
         "group": "候选"
       },
       {
         "id": "c",
-        "label": "文档 C",
-        "detail": "召回0.70 · 精排0.62",
+        "label": "C · 余额退回方式",
+        "detail": "召回 0.81 · 重排 0.18",
         "icon": "file",
         "group": "候选"
       },
       {
+        "id": "d",
+        "label": "D · 银行延迟说明",
+        "detail": "未进入候选，没有重排分",
+        "icon": "file",
+        "group": "范围外"
+      },
+      {
         "id": "rank",
-        "label": "当前顺序",
-        "detail": "A-B-C",
+        "label": "当前排列",
+        "detail": "A、C、B",
         "icon": "chart",
-        "group": "结果"
-      }
-    ],
-    "edges": [
-      {
-        "id": "q-a",
-        "from": "query",
-        "to": "a",
-        "label": "打分"
+        "group": "排名"
       },
       {
-        "id": "q-b",
-        "from": "query",
-        "to": "b",
-        "label": "打分"
-      },
-      {
-        "id": "q-c",
-        "from": "query",
-        "to": "c",
-        "label": "打分"
+        "id": "returned",
+        "label": "取用结果",
+        "detail": "最多取 2 段：A、C",
+        "icon": "message",
+        "group": "输出"
       }
     ],
+    "edges": [],
     "frames": [
       {
         "label": "召回顺序",
-        "note": "快速检索先给出A、B、C。",
+        "note": "教学候选原先按召回分排列为 A、C、B；D 不在输入范围内。",
         "activeIds": [
           "a",
           "b",
           "c",
-          "rank"
-        ],
-        "doneIds": [],
-        "mutedIds": [],
-        "values": {
-          "rank": "A → B → C"
-        },
-        "activeEdgeIds": [
-          "q-a",
-          "q-b",
-          "q-c"
-        ]
-      },
-      {
-        "label": "逐对精评",
-        "note": "更细的模型同时阅读查询和每份候选。",
-        "activeIds": [
-          "query",
-          "a",
-          "b",
-          "c"
+          "rank",
+          "returned"
         ],
         "doneIds": [],
         "mutedIds": [
-          "rank"
+          "d"
         ],
         "values": {
-          "a": "0.54",
-          "b": "0.91",
-          "c": "0.62"
-        },
-        "activeEdgeIds": [
-          "q-a",
-          "q-b",
-          "q-c"
-        ]
-      },
-      {
-        "label": "卡片换位",
-        "note": "按新分数排序后，B和C向前移动。",
-        "activeIds": [
-          "rank"
-        ],
-        "doneIds": [
-          "query",
-          "a",
-          "b",
-          "c"
-        ],
-        "mutedIds": [],
-        "values": {
-          "rank": "B → C → A"
+          "rank": "A、C、B",
+          "returned": "A、C"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "第一名锁定",
-        "note": "B成为送往下一步的首条资料。",
+        "label": "重排顺序",
+        "note": "直接回答到账时间的 B 按教学重排分升到第一，同一份材料只改变位置。",
         "activeIds": [
-          "b"
+          "query",
+          "a",
+          "b",
+          "c",
+          "rank",
+          "returned"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "d"
+        ],
+        "values": {
+          "a": "0.31",
+          "b": "0.94",
+          "c": "0.18",
+          "rank": "B、A、C",
+          "returned": "B、A"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "只取前一段",
+        "note": "取用边界设为 1，所有候选仍参与评分，返回 B。",
+        "activeIds": [
+          "b",
+          "returned"
         ],
         "doneIds": [
           "query",
@@ -7286,16 +7264,57 @@
           "c",
           "rank"
         ],
-        "mutedIds": [],
+        "mutedIds": [
+          "d"
+        ],
         "values": {
-          "b": "Top 1 · 0.91"
+          "rank": "B、A、C",
+          "returned": "B"
         },
-        "activeEdgeIds": [
-          "q-b"
-        ]
+        "activeEdgeIds": []
+      },
+      {
+        "label": "漏掉到账时间",
+        "note": "初次检索漏掉 B 后只剩 A、C；重排无法把缺失的 B 补回。",
+        "activeIds": [
+          "a",
+          "c",
+          "rank",
+          "returned"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "b",
+          "d"
+        ],
+        "values": {
+          "rank": "A、C",
+          "returned": "A、C；没有到账时间的 B"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "重排失败",
+        "note": "本例在重排失败时明确沿用召回顺序；没有冒充重排成功。",
+        "activeIds": [
+          "a",
+          "b",
+          "c",
+          "rank",
+          "returned"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "d"
+        ],
+        "values": {
+          "rank": "失败：沿用 A、C、B",
+          "returned": "A、C"
+        },
+        "activeEdgeIds": []
       }
     ],
-    "insight": "重排序只能重新审视已召回的候选，无法救回一开始完全漏掉的文档。",
+    "insight": "重排改次序，不改候选范围；返回数量、原文条件和失败状态仍要核对。",
     "quiz": {
       "question": "正确文档没进入召回前20，重排序能把它排第一吗？",
       "options": [
@@ -7321,14 +7340,24 @@
     },
     "sources": [
       {
-        "url": "https://arxiv.org/abs/1910.14424",
-        "label": "原始论文 · 1910.14424",
-        "note": "原论文的方法与实验"
+        "url": "https://sbert.net/examples/sentence_transformer/applications/retrieve_rerank/README.html",
+        "label": "Sentence Transformers · Retrieve & Re-Rank",
+        "note": "先召回再重排与成本取舍"
       },
       {
-        "url": "https://arxiv.org/abs/2004.04906",
-        "label": "原始论文 · 2004.04906",
-        "note": "原论文的方法与实验"
+        "url": "https://sbert.net/examples/cross_encoder/applications/README.html",
+        "label": "Sentence Transformers · Cross-Encoders",
+        "note": "查询和候选共同评分"
+      },
+      {
+        "url": "https://arxiv.org/html/1901.04085v5",
+        "label": "Nogueira & Cho · Passage Re-ranking with BERT",
+        "note": "候选范围、截断与漏召回边界"
+      },
+      {
+        "url": "https://docs.cloud.google.com/generative-ai-app-builder/docs/ranking",
+        "label": "Google Cloud · Ranking API",
+        "note": "返回数量限制与相关性分数"
       }
     ]
   },

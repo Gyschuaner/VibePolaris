@@ -30,6 +30,17 @@
 - 验证已执行：修复后 build（1111 页）与 typecheck 通过；桌面查询切换、查看原文、range 键盘推进通过；390px 测得 viewport/pageWidth 均为 390，排名对象实际换位。查询点与方向线整体运动，避免中间帧脱节。独立审读 PASS，唯一正文 P2 已关闭；reviewer 确认减弱动效规则有效。
 - 画面证据：本地 `embedding-geometry-20261008.jpg` 已保存在本任务的 visualization 目录；不将截图放入产品包。
 
+### 3. 重排序（本地已验收）
+
+- 读者任务：问退款到银行卡需要多久，初次检索第一条却只说取消会员；已有资料如何换位，哪些资料重排仍然看不到。
+- 旧页问题：A/B/C 只作为结果字符串轮换，候选实体未换位；原有台账的排序与分数也未对应新正文。
+- 专属形式：标题旁三张纸直接换位置，控制按钮留在纸外；主体保留候选身份和原文，A/C/B 实际移为 B/A/C。取用边界随 topN 移动，未取用的纸变淡；漏掉 B 时移除实体；失败时明确回到召回次序。D 始终在框外且没有重排分。
+- 读者追问：同一话题为什么答非所问；交叉编码器如何同时读问题与正文；候选缺失能否靠重排补救；返回数量是否等于评分数量；分数能否当正确概率；截短正文、服务失败之后如何处理。
+- 实读来源：Sentence Transformers `Retrieve & Re-Rank` 与 `Cross-Encoders`；Nogueira & Cho 的 `Passage Re-ranking with BERT` v5 HTML 正文（版本日期 2020-04-14）；Google Cloud Ranking API 的输入、topN 与输出说明。正文 7 处引用映射；四来源在 helper/research/experience 同序。
+- 边界：资料与分数为教学示例，未调用模型；关键词召回也可进入重排；重排不补回漏掉的候选，不保证真实性。失败保留召回顺序是本例策略，不是所有服务的约定。
+- 验证已执行：build 与 typecheck 通过；真实浏览器核对换位、查看原文、漏 B、topN=1/2 和失败降级；390px 首图 225px，viewport/pageWidth 均为 390。独立审读 PASS；其 P1 台账漂移已关闭，experience 与 batch 同步五个自由长度的条件，不设固定三步。
+- 画面证据：`reranking-papers-20261008.jpg` 保存在本任务 visualization 目录，展示同一候选换位与输出边界。
+
 ## 后续优先修复对象
 
 独立 reviewer 在当前主线确认 embedding、reranking、execution-sandbox、bundler、hmr、dependency、semantic-versioning、hot-reload、jwt、load-balancer 的活动路由仍有缺口。当前批次第一条已先处理 TypeScript，随后逐条推进上述名单，不一次修改十条。已有正确交互只保留并复核，不因首图有问题而重写全部正文。
