@@ -759,17 +759,18 @@
   },
   {
     "slug": "execution-sandbox",
-    "mechanism": "执行沙箱在隔离环境中运行代码，并限制文件、网络、进程、时间和资源访问；结束或超时后销毁临时环境。",
-    "misconception": "沙箱不是绝对安全盒子；内核、运行时、挂载、依赖和结果检查仍然决定风险。",
-    "demoSignature": "脚本尝试读项目文件、联网和运行 10 秒；文件/网络请求被拒，2 秒预算终止进程，只保留标准输出。交互：逐项切换文件、网络和时间权限。",
+    "mechanism": "执行沙箱用运行环境实际限制代码可访问的文件、网络和资源；时限、清理与产物保留由具体执行服务和存储策略决定。",
+    "misconception": "容器不默认禁网或限制资源；只读目录仍可读取；停止进程不等于销毁所有数据，隔离也不检查计算结果正确性。",
+    "demoSignature": "临时目录里显示两条 CSV 费用，读取实际数值求和并创建报告实体；只读策略拒绝写入，宿主密钥和外网访问被拒；取回报告生成框外副本，手动到期清掉框内文件，框外副本保留。首图使用边界与文件、计算对象及销毁，无流程箭头。",
     "sourceUrls": [
-      "https://developers.openai.com/api/docs/guides/tools-code-interpreter",
-      "https://developers.openai.com/api/docs/guides/agents-api/environments/security",
       "https://docs.docker.com/engine/security/",
-      "https://docs.docker.com/engine/security/rootless/",
-      "https://csrc.nist.gov/pubs/sp/800/190/final"
+      "https://docs.docker.com/engine/storage/bind-mounts/",
+      "https://docs.docker.com/engine/network/drivers/none/",
+      "https://docs.docker.com/engine/containers/resource_constraints/",
+      "https://docs.docker.com/engine/storage/",
+      "https://gvisor.dev/docs/architecture_guide/security/"
     ],
-    "rewriteRisk": "正文要把本概念的实际作用、前置条件、可观察证据和不适用边界写在一起，不把相邻机制或虚构教学数字说成厂商保证。",
+    "rewriteRisk": "清楚区分页面内生命周期模型与真实容器；不承诺通用沙箱默认权限、固定两秒或自动清理全部持久数据。",
     "nearDuplicates": [
       "container",
       "permission-boundary"

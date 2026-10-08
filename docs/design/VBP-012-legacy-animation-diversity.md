@@ -43,6 +43,18 @@
 - 验证已执行：build 与 typecheck 通过；真实浏览器核对换位、查看原文、漏 B、topN=1/2 和失败降级；390px 首图 225px，viewport/pageWidth 均为 390。独立审读 PASS；其 P1 台账漂移已关闭，experience 与 batch 同步五个自由长度的条件，不设固定三步。
 - 画面证据：`reranking-papers-20261008.jpg` 保存在本任务 visualization 目录，展示同一候选换位与输出边界。
 
+### 4. 执行沙箱（本地已验收）
+
+- 读者任务：汇总纸 12 元、笔 8 元的费用表，决定脚本需要哪些权限，以及生成的报告怎样在环境销毁后留下。
+- 旧页问题：文件、网络和时间只是卡片上的允许/拒绝字符串；“两秒销毁”没有发生实体清理，正文也未区分停止、销毁与持久存储。
+- 专属形式：首图是有限边界内的文件与计算对象，越界密钥停在外面，到期内部对象消失。主体实际解析 CSV 求和并创建报告；只读拒绝写入，密钥和外网分别拒绝；取回复制报告到框外，手动到期把临时文件状态清空，已取回副本保留。
+- 读者追问：提示词的禁止与实际权限有什么不同；挂载是什么意思；只读能否读取秘密；默认容器是否禁网/限资源；结束进程和销毁存储是否相同；隔离能否保证报告正确。
+- 实读来源：Docker `Engine security`（namespaces/cgroups、配置）、`Bind mounts`（默认读写与 readonly）、`None network driver`、`Resource constraints`（默认无上限）、`Storage`（可写层/volume/tmpfs）；gVisor `Security Model`（系统接口与剩余依赖）。六份在 helper/research/experience 同序，7 段有对应 Cite。
+- 边界：这是页面内权限和生命周期模型，没有启动容器、访问本机文件或联网；手动触发本例到期策略。资源、网络、时限及持久存储分开配置，不宣称所有沙箱自动销毁一切文件。预算细节不是新的产品配置界面。
+- 验证已执行：修复后 build（1111 页）与 typecheck 通过；真实浏览器验证求和 20、未取回就销毁不可取回、只读写入拒绝、密钥/网络拒绝、取回后销毁副本保留；Space/Enter 操作通过。390px viewport/pageWidth 均为 390，首图 225px；未见 console error。
+- 独立 review PASS；发现的 P1 已关闭：销毁后只读 checkbox 禁用，不能再宣称不存在的目录可读或可写。experience/batch 已同步六个独立条件，无流程边。
+- 画面证据：`sandbox-boundary-20261008.jpg` 展示销毁的临时目录、已取回的 20 元报告及失效权限控件。
+
 ## 后续优先修复对象
 
 独立 reviewer 在当前主线确认 embedding、reranking、execution-sandbox、bundler、hmr、dependency、semantic-versioning、hot-reload、jwt、load-balancer 的活动路由仍有缺口。当前批次第一条已先处理 TypeScript，随后逐条推进上述名单，不一次修改十条。已有正确交互只保留并复核，不因首图有问题而重写全部正文。

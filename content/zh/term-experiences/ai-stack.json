@@ -9242,158 +9242,154 @@
   },
   {
     "slug": "execution-sandbox",
-    "lead": "一段脚本想读项目文件、联网并运行10秒，隔离环境会在哪些边界停住它？",
-    "definition": "执行沙箱在隔离环境中运行不可信代码，并限制可访问的文件、网络、进程、时间和资源。",
-    "boundary": "沙箱不是“绝对安全盒子”；配置错误、内核漏洞和过宽挂载仍可能越界。",
-    "sceneKind": "layers",
-    "sceneTitle": "文件、网络和时间限制逐层生效",
-    "actionLabel": "切换沙箱权限",
+    "lead": "汇总一张费用表，需要把项目密钥和任意外网也交给脚本吗？报告怎样才能在临时环境销毁后留下？",
+    "definition": "执行沙箱用运行环境实际限制代码可访问的文件、网络和资源；时限、清理与产物保留由具体执行服务和存储策略决定。",
+    "boundary": "容器不默认禁网或限制资源；只读目录仍可读取；停止进程不等于销毁所有数据，隔离也不检查计算结果正确性。",
+    "sceneKind": "contract",
+    "sceneTitle": "临时边界内的文件，取回后的报告",
+    "actionLabel": "操作临时环境",
     "actors": [
       {
-        "id": "script",
-        "label": "待运行脚本",
-        "detail": "读文件+联网+循环",
-        "icon": "code",
-        "group": "输入"
+        "id": "input",
+        "label": "expenses.csv",
+        "detail": "纸 12 元、笔 8 元",
+        "icon": "file",
+        "group": "框内"
       },
       {
-        "id": "files",
-        "label": "文件边界",
-        "detail": "挂载0项",
+        "id": "report",
+        "label": "report.txt",
+        "detail": "尚未生成",
         "icon": "file",
-        "group": "限制"
+        "group": "框内"
+      },
+      {
+        "id": "key",
+        "label": "项目密钥",
+        "detail": "未交给任务",
+        "icon": "key",
+        "group": "框外"
       },
       {
         "id": "network",
-        "label": "网络边界",
-        "detail": "禁用",
+        "label": "外网",
+        "detail": "本例未开放",
         "icon": "network",
-        "group": "限制"
+        "group": "框外"
       },
       {
-        "id": "clock",
-        "label": "时间上限",
-        "detail": "2秒",
+        "id": "saved",
+        "label": "取回的报告",
+        "detail": "尚未取回",
+        "icon": "file",
+        "group": "框外"
+      },
+      {
+        "id": "life",
+        "label": "临时环境",
+        "detail": "/work 可读写",
         "icon": "clock",
-        "group": "限制"
-      },
-      {
-        "id": "stdout",
-        "label": "导出结果",
-        "detail": "仅标准输出",
-        "icon": "code",
-        "group": "输出"
+        "group": "环境"
       }
     ],
-    "edges": [
-      {
-        "id": "s-f",
-        "from": "script",
-        "to": "files",
-        "label": "访问"
-      },
-      {
-        "id": "s-n",
-        "from": "script",
-        "to": "network",
-        "label": "访问"
-      },
-      {
-        "id": "s-c",
-        "from": "script",
-        "to": "clock",
-        "label": "计时"
-      },
-      {
-        "id": "s-o",
-        "from": "script",
-        "to": "stdout",
-        "label": "允许输出"
-      }
-    ],
+    "edges": [],
     "frames": [
       {
-        "label": "脚本进入隔离盒",
-        "note": "进程启动，但默认看不到项目文件。",
+        "label": "计算并写入",
+        "note": "实际读取示例表格，求和后创建框内报告；没有启动真实容器。",
         "activeIds": [
-          "script",
-          "files"
+          "input",
+          "report"
         ],
         "doneIds": [],
-        "mutedIds": [
-          "network",
-          "stdout"
-        ],
-        "values": {
-          "files": "可见0项"
-        },
-        "activeEdgeIds": [
-          "s-f"
-        ]
-      },
-      {
-        "label": "联网被拒",
-        "note": "脚本发起1次网络请求，边界直接拒绝。",
-        "activeIds": [
-          "script",
-          "network"
-        ],
-        "doneIds": [
-          "files"
-        ],
-        "mutedIds": [
-          "stdout"
-        ],
-        "values": {
-          "network": "拒绝 1 次"
-        },
-        "activeEdgeIds": [
-          "s-n"
-        ]
-      },
-      {
-        "label": "达到时间上限",
-        "note": "循环运行到2秒时被终止，没有等满10秒。",
-        "activeIds": [
-          "script",
-          "clock"
-        ],
-        "doneIds": [
-          "files",
-          "network"
-        ],
-        "mutedIds": [
-          "stdout"
-        ],
-        "values": {
-          "clock": "2s · terminated"
-        },
-        "activeEdgeIds": [
-          "s-c"
-        ]
-      },
-      {
-        "label": "只带出标准输出",
-        "note": "隔离环境销毁，只允许一段标准输出返回。",
-        "activeIds": [
-          "stdout"
-        ],
-        "doneIds": [
-          "script",
-          "files",
-          "network",
-          "clock"
-        ],
         "mutedIds": [],
         "values": {
-          "stdout": "1 段文本"
+          "report": "2 条 · 合计 20 元"
         },
-        "activeEdgeIds": [
-          "s-o"
-        ]
+        "activeEdgeIds": []
+      },
+      {
+        "label": "目录只读",
+        "note": "读权限仍在，但写入被拒；已有文件保持原样。",
+        "activeIds": [
+          "life",
+          "report"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "life": "/work 只读",
+          "report": "未生成；写入被拒"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "越界访问",
+        "note": "宿主密钥和外网均不在本例允许范围，分别返回拒绝。",
+        "activeIds": [
+          "key",
+          "network"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "key": "读取被拒",
+          "network": "访问被拒"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "取回报告",
+        "note": "把报告副本复制到环境外；框内原件仍在。",
+        "activeIds": [
+          "report",
+          "saved"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "report": "2 条 · 合计 20 元",
+          "saved": "2 条 · 合计 20 元"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "未取回就销毁",
+        "note": "手动触发本例到期策略：终止运行并清空临时目录。",
+        "activeIds": [
+          "life",
+          "input",
+          "report"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "life": "已销毁",
+          "input": "已清空",
+          "report": "已清空",
+          "saved": "没有副本"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "取回后再销毁",
+        "note": "框内文件清空，已经取回的报告保留；持久存储需另外约定。",
+        "activeIds": [
+          "life",
+          "saved"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "life": "已销毁",
+          "input": "已清空",
+          "report": "已清空",
+          "saved": "2 条 · 合计 20 元"
+        },
+        "activeEdgeIds": []
       }
     ],
-    "insight": "沙箱降低执行不可信代码的影响面，但隔离强度取决于实际文件、网络和资源配置。",
+    "insight": "把可访问资源、运行预算和产物保留分别落实；临时环境内的报告需要先取回，再确认可交付。",
     "quiz": {
       "question": "使用容器运行代码，就一定等于安全沙箱吗？",
       "options": [
@@ -9419,9 +9415,34 @@
     },
     "sources": [
       {
-        "url": "https://csrc.nist.gov/pubs/sp/800/190/final",
-        "label": "NIST CSRC · final",
-        "note": "安全要求与风险边界"
+        "url": "https://docs.docker.com/engine/security/",
+        "label": "Docker Engine security",
+        "note": "隔离、资源控制与配置风险"
+      },
+      {
+        "url": "https://docs.docker.com/engine/storage/bind-mounts/",
+        "label": "Bind mounts",
+        "note": "挂载范围、默认可写与只读"
+      },
+      {
+        "url": "https://docs.docker.com/engine/network/drivers/none/",
+        "label": "None network driver",
+        "note": "无外网需明确配置"
+      },
+      {
+        "url": "https://docs.docker.com/engine/containers/resource_constraints/",
+        "label": "Resource constraints",
+        "note": "默认无资源上限、CPU 与内存配置"
+      },
+      {
+        "url": "https://docs.docker.com/engine/storage/",
+        "label": "Storage",
+        "note": "可写层、持久存储与销毁差别"
+      },
+      {
+        "url": "https://gvisor.dev/docs/architecture_guide/security/",
+        "label": "Security Model",
+        "note": "Sentry 的隔离边界与剩余依赖"
       }
     ]
   },
