@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent } from "react";
+import { Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import { ArrowUpRight, CaretDown, CornersOut, MagnifyingGlass, Minus, Plus, X } from "@phosphor-icons/react";
 import { useRouteMeteor } from "@/components/RouteMeteorProvider";
 import { createGraphSimulation, graphNeighbors, nudgeGraph, searchGraphNodes, type GraphNode, type GraphEdge } from "@/lib/term-graph";
@@ -32,7 +32,7 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
   const onLocationChange = useCallback((search: string) => {
     if (search !== location.current) restoreLocation.current?.();
   }, []);
-  const [hovered, setHovered] = useState("");
+  const hovered = useRef("");
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
   const [showLines, setShowLines] = useState(false);
@@ -43,6 +43,7 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
   const searchPanel = useRef<HTMLDivElement>(null);
   const nodeElements = useRef(new Map<string, HTMLButtonElement>());
   const lineElements = useRef(new Map<string, { element: SVGLineElement; source: string; target: string }>());
+  const paintedTransforms = useRef(new WeakMap<HTMLButtonElement, string>());
   const size = useRef({ width: 1000, height: 700 });
   const gesture = useRef<{ start: Point; view: View; slug?: string; point?: Point } | null>(null);
   const pointers = useRef(new Map<number, Point>());
@@ -60,21 +61,36 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
   const needle = query.trim().toLocaleLowerCase();
   const matches = needle ? searchGraphNodes(nodes, query, category).slice(0, 12) : [];
 
+  // Hover changes only the two affected stars, without reconciling the graph.
+  const setHovered = useCallback((slug: string) => {
+    if (hovered.current === slug) return;
+    nodeElements.current.get(hovered.current)?.classList.remove(styles.hovered);
+    nodeElements.current.get(slug)?.classList.add(styles.hovered);
+    hovered.current = slug;
+  }, []);
+
   // Physics owns coordinates; React owns content and interaction state.
-  // Updating transforms avoids 301 React renders and layout work on every tick.
+  // Ignore changes below .01 world pixels instead of repainting settled stars.
   const paintPositions = useCallback(() => {
     const moving = simulation.current?.nodes();
     if (!moving) return;
-    const positions = new Map(moving.map(node => [node.slug, node]));
     for (const node of moving) {
       const element = nodeElements.current.get(node.slug);
-      if (element) element.style.transform = `translate(${node.x}px, ${node.y}px) translate(-50%, -50%)`;
+      if (!element) continue;
+      const transform = `translate(${node.x.toFixed(2)}px, ${node.y.toFixed(2)}px) translate(-50%, -50%)`;
+      if (paintedTransforms.current.get(element) === transform) continue;
+      element.style.transform = transform;
+      paintedTransforms.current.set(element, transform);
     }
+    if (!lineElements.current.size) return;
+    const positions = new Map(moving.map(node => [node.slug, node]));
     for (const { element, source, target } of lineElements.current.values()) {
       const from = positions.get(source)!;
       const to = positions.get(target)!;
-      element.setAttribute("x1", String(from.x)); element.setAttribute("y1", String(from.y));
-      element.setAttribute("x2", String(to.x)); element.setAttribute("y2", String(to.y));
+      for (const [attribute, value] of [["x1", from.x], ["y1", from.y], ["x2", to.x], ["y2", to.y]] as const) {
+        const coordinate = value.toFixed(2);
+        if (element.getAttribute(attribute) !== coordinate) element.setAttribute(attribute, coordinate);
+      }
     }
   }, []);
 
@@ -94,7 +110,8 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
       if (preference.matches || document.hidden) engine.stop();
       else if (engine.alpha() >= engine.alphaMin()) engine.restart();
     };
-    engine.alpha(.18);
+    // The server already settled the layout. Match NewsAtlas's dense-graph policy.
+    engine.alpha(initialNodes.length > 180 ? 0 : .18);
     syncMotion();
     preference.addEventListener("change", syncMotion);
     document.addEventListener("visibilitychange", syncMotion);
@@ -283,7 +300,7 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
       const target = (event.target as HTMLElement).closest<HTMLElement>("[data-graph-node]")?.dataset.graphNode || "";
       // Only a real pointer movement changes hover; moving stars cannot flicker it.
       setHovered(target);
-      if (target || reducedMotion.current || !engine || event.timeStamp - lastNudge.current < 64) return;
+      if (target || reducedMotion.current || !engine || nodes.length > 180 && view.scale < .75 || event.timeStamp - lastNudge.current < 64) return;
       lastNudge.current = event.timeStamp;
       if (nudgeGraph(engine.nodes(), (point.x - view.x) / view.scale, (point.y - view.y) / view.scale, 65 / view.scale)) engine.alpha(Math.max(.025, engine.alpha())).restart();
       return;
@@ -322,6 +339,38 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
     if (!pointers.current.size) { gesture.current = null; pinch.current = null; }
   }
 
+  // Pan and zoom change the world transform and inherited CSS values only.
+  const graphContents = useMemo(() => <>
+    <svg className={styles.lines} aria-hidden="true">{edges.map(edge => {
+      const connected = edge.source === selected || edge.target === selected;
+      if (!inline && !showLines && !connected) return null;
+      const from = bySlug.get(edge.source)!; const to = bySlug.get(edge.target)!;
+      return <line key={`${edge.source}|${edge.target}`} style={{ strokeOpacity: !showLines && !connected ? 0 : undefined }} ref={element => {
+        const key = `${edge.source}|${edge.target}`;
+        if (element) lineElements.current.set(key, { element, ...edge });
+        else lineElements.current.delete(key);
+      }} x1={from.x} y1={from.y} x2={to.x} y2={to.y} className={connected ? styles.connectedLine : styles.quietLine} />;
+    })}</svg>
+    {nodes.map(node => {
+      const connected = selectedNeighbors.has(node.slug);
+      const highlighted = node.slug === selected || connected;
+      const central = node.slug === centerSlug;
+      const named = highlighted || central;
+      const muted = selected ? !named : category && node.cat !== category && !named;
+      const starSize = inline ? central ? 64 : 44 : `min(52px, max(${23 + node.degree}px, calc(20px / var(--graph-scale))))`;
+      return <button type="button" key={node.slug} ref={element => {
+        if (element) nodeElements.current.set(node.slug, element);
+        else nodeElements.current.delete(node.slug);
+      }} data-graph-node={node.slug} aria-label={`${node.zh}${node.en ? ` · ${node.en}` : ""}`} aria-pressed={node.slug === selected}
+        className={`${styles.node} ${central ? styles.center : ""} ${node.slug === selected ? styles.selected : ""} ${muted ? styles.dimmed : ""}`}
+        style={{ transform: `translate(${node.x}px, ${node.y}px) translate(-50%, -50%)` }}
+        onFocus={() => setHovered(node.slug)} onBlur={() => setHovered("")}
+        onClick={event => { if (event.detail === 0) selectNode(node.slug); }}>
+        <span className="brand-star-only" aria-hidden="true" style={{ width: starSize, height: starSize }} /><span className={styles.label} style={{ fontSize: `calc(${central ? 22 : 14}px / var(--graph-scale))`, opacity: named ? 1 : undefined }}>{central && node.slug === "agent-harness" ? "Harness" : node.zh}</span>
+      </button>;
+    })}
+  </>, [edges, selected, inline, showLines, bySlug, nodes, selectedNeighbors, centerSlug, category, setHovered]);
+
   return <Root className={`${styles.page} ${inline ? styles.inline : ""} ${categories ? styles.withDomains : ""}`} id={inline ? undefined : "main-content"} aria-label={inline ? "相关词条星图" : undefined}>
     {!inline && <h1 className={styles.visuallyHidden}>概念星图</h1>}
     {!inline && <Suspense fallback={null}><GraphLocation onChange={onLocationChange} /></Suspense>}
@@ -352,35 +401,8 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
           if (event.key === "0") frame(positions());
           if (event.key.startsWith("Arrow")) setView(value => ({ ...value, x: value.x + (event.key === "ArrowLeft" ? 50 : event.key === "ArrowRight" ? -50 : 0), y: value.y + (event.key === "ArrowUp" ? 50 : event.key === "ArrowDown" ? -50 : 0) }));
         }}>
-        <div className={`${styles.world} ${reframing ? styles.reframing : ""}`} style={{ transform: `translate(${view.x}px, ${view.y}px) scale(${view.scale})`, opacity: ready ? 1 : 0 }}>
-          <svg className={styles.lines} aria-hidden="true">{edges.map(edge => {
-            const connected = edge.source === selected || edge.target === selected;
-            if (!inline && !showLines && !connected) return null;
-            const from = bySlug.get(edge.source)!; const to = bySlug.get(edge.target)!;
-            return <line key={`${edge.source}|${edge.target}`} style={{ strokeOpacity: !showLines && !connected ? 0 : undefined }} ref={element => {
-              const key = `${edge.source}|${edge.target}`;
-              if (element) lineElements.current.set(key, { element, ...edge });
-              else lineElements.current.delete(key);
-            }} x1={from.x} y1={from.y} x2={to.x} y2={to.y} className={connected ? styles.connectedLine : styles.quietLine} />;
-          })}</svg>
-          {nodes.map(node => {
-            const connected = selectedNeighbors.has(node.slug);
-            const highlighted = node.slug === selected || connected;
-            const central = node.slug === centerSlug;
-            const named = node.slug === hovered || highlighted || central;
-            const muted = selected ? !named : category && node.cat !== category && !named;
-            const starSize = inline ? central ? 64 : 44 : Math.min(52, Math.max(23 + node.degree, 20 / view.scale));
-            return <button type="button" key={node.slug} ref={element => {
-              if (element) nodeElements.current.set(node.slug, element);
-              else nodeElements.current.delete(node.slug);
-            }} data-graph-node={node.slug} aria-label={`${node.zh}${node.en ? ` · ${node.en}` : ""}`} aria-pressed={node.slug === selected}
-              className={`${styles.node} ${central ? styles.center : ""} ${node.slug === selected ? styles.selected : ""} ${node.slug === hovered ? styles.hovered : ""} ${muted ? styles.dimmed : ""}`}
-              style={{ transform: `translate(${node.x}px, ${node.y}px) translate(-50%, -50%)` }}
-              onFocus={() => setHovered(node.slug)} onBlur={() => setHovered("")}
-              onClick={event => { if (event.detail === 0) selectNode(node.slug); }}>
-              <span className="brand-star-only" aria-hidden="true" style={{ width: starSize, height: starSize }} /><span className={styles.label} style={{ fontSize: (central ? 22 : 14) / view.scale, opacity: named ? 1 : labelOpacity }}>{central && node.slug === "agent-harness" ? "Harness" : node.zh}</span>
-            </button>;
-          })}
+        <div className={`${styles.world} ${reframing ? styles.reframing : ""}`} style={{ transform: `translate(${view.x}px, ${view.y}px) scale(${view.scale})`, opacity: ready ? 1 : 0, "--graph-scale": view.scale, "--graph-label-opacity": labelOpacity } as CSSProperties}>
+          {graphContents}
         </div>
       </div>
       <div className={styles.controls} aria-label="星图视图控制">
