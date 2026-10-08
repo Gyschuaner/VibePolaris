@@ -901,16 +901,16 @@
   },
   {
     "slug": "hmr",
-    "mechanism": "开发服务器把变更模块送到浏览器更新运行时，运行时按应用声明的更新边界执行旧模块清理和新模块接受；边界失败时退回整页重载。",
-    "misconception": "HMR 只发生在开发阶段，做的也只是局部更新，不保证所有状态都保留；状态能否继续取决于模块及其依赖是否接受更新，未接受时会整页重载。",
-    "demoSignature": "输入：浏览器应用20个模块，Button发生改动，计数7、姓名小林；中间：开发服务器发送Button模块，运行时dispose旧模块、accept新模块；输出：按钮变绿、状态保留。回退分支：边界未接受时整页重载，状态7→0。可视化：服务器→运行时→模块边界→应用；交互：展示回退路径。",
+    "mechanism": "热模块替换让运行中的应用尝试接入变化的模块，而不必先重新加载整页；模块或框架的更新边界负责处理新代码，能够保留哪些状态取决于状态归属与更新方式。",
+    "misconception": "主要用于开发反馈；不是所有更新都能局部接受，也不承诺所有内部状态保留。无可接受位置时常回退整页加载，旧监听等副作用需要清理；开发更新不等于生产部署。",
+    "demoSignature": "紧凑页面槽位首图：旧按钮滑出、新按钮接入，姓名与计数不动。主体是可填写、可点击的真实状态；接受只换按钮节点，拒绝实际重新挂载示例页面。另以监听实体堆叠展示重复处理与清理。无流程箭头或预设步进。",
     "sourceUrls": [
-      "https://vite.dev/guide/api-hmr",
       "https://webpack.js.org/concepts/hot-module-replacement/",
+      "https://vite.dev/guide/api-hmr",
       "https://webpack.js.org/api/hot-module-replacement/",
-      "https://github.com/pmmmwh/react-refresh-webpack-plugin"
+      "https://nextjs.org/docs/architecture/fast-refresh"
     ],
-    "rewriteRisk": "不要承诺零刷新或所有状态保留；需展示开发服务器传输、dispose/accept 边界以及失败回退。",
+    "rewriteRisk": "不要承诺只有一个文件被下载、所有状态保留或所有失败都刷新；本例只模拟边界与重新挂载，不访问开发服务器。清理不撤销过去的处理。",
     "nearDuplicates": [
       "hot-reload",
       "dev-server"

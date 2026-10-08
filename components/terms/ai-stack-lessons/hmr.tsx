@@ -1,49 +1,77 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, Broadcast, CheckCircle, Code, Cube, Gauge, UserCircle, Warning } from "@phosphor-icons/react";
-import { SceneControls, useScene } from "../HarnessStoryScenes";
-import styles from "../ToolchainConcepts.module.css";
+import { ConceptHero } from "../ConceptHero";
+import styles from "./HmrWorkbench.module.css";
 
-type HmrCase = "accepted" | "fallback";
-const cases: Record<HmrCase, string> = { accepted: "边界接受", fallback: "边界拒绝" };
-const labels: Record<HmrCase, string[]> = {
-  accepted: ["改动前", "变更消息到达", "dispose → accept", "状态继续保留"],
-  fallback: ["改动前", "变更消息到达", "边界没有接受", "退回整页重载"],
-};
+export function HmrHero() {
+  return <ConceptHero slug="hmr" label="正在填写的页面不动，旧按钮滑出槽位，新按钮进入同一位置；姓名与计数保持原样">
+    <svg className={styles.hero} viewBox="0 0 360 210" aria-hidden="true">
+      <rect className={styles.window} x="26" y="22" width="270" height="158" rx="9" />
+      <path className={styles.line} d="M26 46H296" /><circle className={styles.dot} cx="41" cy="34" r="3" />
+      <text x="44" y="70">姓名</text><rect className={styles.field} x="44" y="80" width="123" height="30" rx="4" /><text x="55" y="99">小林</text>
+      <text x="207" y="71">计数</text><text className={styles.number} x="220" y="108">3</text>
+      <g className={styles.oldModule}><rect x="65" y="129" width="173" height="33" rx="4" /><text x="151" y="150" textAnchor="middle">Button v1</text></g>
+      <g className={styles.newModule}><rect x="65" y="129" width="173" height="33" rx="4" /><text x="151" y="150" textAnchor="middle">Button v2</text></g>
+    </svg>
+  </ConceptHero>;
+}
+
+function RunningPage({ version }: { version: number }) {
+  const [name, setName] = useState("");
+  const [count, setCount] = useState(0);
+  return <div className={styles.page}>
+    <div className={styles.chrome}>正在运行的示例页面</div>
+    <div className={styles.state}>
+      <label>姓名<input value={name} placeholder="先填一个名字" onChange={e => setName(e.target.value)} /></label>
+      <div className={styles.counter}>页面计数<output aria-live="polite">{count}</output></div>
+    </div>
+    <div className={styles.slot}>
+      <span>可替换的 Button 模块</span>
+      <button key={version} className={styles.liveButton} data-updated={version > 1} type="button" onClick={() => setCount(value => value + 1)}>点击加 1 · v{version}</button>
+    </div>
+  </div>;
+}
 
 export function HmrLesson() {
-  const [scenario, setScenario] = useState<HmrCase>("accepted");
-  const scene = useScene(labels[scenario].length);
-  const step = scene.step;
-  const fallback = scenario === "fallback";
-  const delivered = step >= 1;
-  const applied = step >= 2;
-  const finished = step >= 3;
-  const preserved = !fallback && finished;
-
-  function selectScenario(next: HmrCase) {
-    setScenario(next);
-    scene.seek(0);
+  const [accepts, setAccepts] = useState(true);
+  const [version, setVersion] = useState(1);
+  const [pageGeneration, setPageGeneration] = useState(0);
+  const [outcome, setOutcome] = useState<"initial" | "replaced" | "reloaded">("initial");
+  function save() {
+    setVersion(value => value + 1);
+    if (!accepts) setPageGeneration(value => value + 1);
+    setOutcome(accepts ? "replaced" : "reloaded");
   }
+  return <figure className={styles.lab} aria-label="保留真实表单状态的模块替换实验">
+    <RunningPage key={pageGeneration} version={version} />
+    <div className={styles.settings}>
+      <label><input type="checkbox" checked={accepts} onChange={e => setAccepts(e.target.checked)} />有能接受本次变化的更新边界</label>
+      <button type="button" onClick={save}>保存按钮模块的新版本</button>
+      <button type="button" onClick={() => { setAccepts(true); setVersion(1); setPageGeneration(value => value + 1); setOutcome("initial"); }}>重置本例</button>
+    </div>
+    <p className={styles.result} role="status">{outcome === "initial" ? "先填写姓名、点击加 1，再保存模块，看状态是否留下。" : outcome === "replaced" ? `Button v${version} 已替换；页面实例没有重建，姓名和计数继续留在原处。` : `本例无法局部接受更新，改为重新初始化示例页面；Button v${version} 生效，姓名和计数回到初始值。`}</p>
+    <figcaption>这是页面内的状态模型：接受时只替换按钮节点；回退时实际重新挂载示例页面。未修改源码或请求开发服务器，也不会刷新整篇词条。切换边界只影响下一次保存。</figcaption>
+  </figure>;
+}
 
-  return <div className={styles.hmrStory} ref={scene.ref} role="region" aria-label="热模块替换的消息与更新边界演示">
-    <div className={styles.hmrChoices} role="group" aria-label="选择 HMR 更新结果">
-      {(Object.keys(cases) as HmrCase[]).map(key => <button key={key} type="button" aria-pressed={scenario === key} onClick={() => selectScenario(key)}>{cases[key]}</button>)}
+export function HmrSubscriptions() {
+  const [cleanup, setCleanup] = useState(true);
+  const [generation, setGeneration] = useState(1);
+  const [listeners, setListeners] = useState([1]);
+  const [handled, setHandled] = useState(0);
+  function replace() {
+    const next = generation + 1;
+    setGeneration(next);
+    setListeners(old => [...(cleanup ? old.filter(id => id !== generation) : old), next]);
+  }
+  function emit() { for (const _id of listeners) setHandled(value => value + 1); }
+  return <figure className={styles.subscription} aria-label="模块更新后的重复监听实验">
+    <div className={styles.settings}><label><input type="checkbox" checked={cleanup} onChange={e => setCleanup(e.target.checked)} />更新前清理旧监听</label><button type="button" onClick={replace}>替换监听模块</button></div>
+    <div className={styles.listeners} aria-label={`当前保留 ${listeners.length} 个监听`}>
+      {listeners.map(id => <span key={id}>监听 v{id}</span>)}
     </div>
-    <div className={styles.hmrFlow}>
-      <div className={`${styles.hmrNode} ${delivered ? styles.hmrNodeDone : styles.hmrNodeActive}`}><Code size={21} aria-hidden="true" /><span>Button 模块</span><code>{delivered ? "Button.tsx · changed" : "Button.tsx"}</code><small>{delivered ? "只改 1 / 20 个模块" : "准备修改"}</small></div>
-      <ArrowRight className={styles.hmrArrow} size={18} aria-hidden="true" />
-      <div className={`${styles.hmrNode} ${delivered && !applied ? styles.hmrNodeActive : delivered ? styles.hmrNodeDone : styles.hmrNodeWaiting}`}><Broadcast size={21} aria-hidden="true" /><span>开发服务器</span><code>{delivered ? "update: Button" : "等待文件变化"}</code><small>{delivered ? "发送一个模块" : "消息通道空闲"}</small></div>
-      <ArrowRight className={styles.hmrArrow} size={18} aria-hidden="true" />
-      <div className={`${styles.hmrNode} ${applied && !finished ? styles.hmrNodeActive : applied ? styles.hmrNodeDone : styles.hmrNodeWaiting}`}><Gauge size={21} aria-hidden="true" /><span>浏览器运行时</span><code>{applied ? (fallback ? "boundary · reject" : "dispose → accept") : "等待更新"}</code><small>{applied ? (fallback ? "没有可接受边界" : "清理旧模块并接收") : "尚未处理"}</small></div>
-      <ArrowRight className={styles.hmrArrow} size={18} aria-hidden="true" />
-      <div className={`${styles.hmrState} ${finished ? (preserved ? styles.hmrStateKept : styles.hmrStateReset) : styles.hmrStateWaiting}`}><UserCircle size={21} aria-hidden="true" /><span>页面状态</span><div><strong>{preserved ? "7" : fallback && finished ? "0" : "7"}</strong><small>次点击 · {fallback && finished ? "未填写" : "小林"}</small></div><small>{finished ? (preserved ? "继续运行" : "整页重载后初始化") : "计数仍在内存"}</small></div>
-    </div>
-    <div className={`${styles.hmrStatus} ${fallback && finished ? styles.hmrStatusWarn : ""}`} role="status" aria-live="polite">
-      {fallback && finished ? <><Warning size={19} aria-hidden="true" /><p><strong>更新边界拒绝了这次替换。</strong>浏览器退回整页重载，内存里的计数 7 和姓名“小林”一起回到初始值；这是 HMR 的回退路径。</p></> : preserved ? <><CheckCircle size={19} aria-hidden="true" /><p><strong>局部更新完成。</strong>Button 变了，表单姓名和计数仍由未替换的应用状态继续持有。</p></> : applied ? <><Gauge size={19} aria-hidden="true" /><p><strong>{fallback ? "运行时正在判断更新边界。" : "运行时正在执行更新边界。"}</strong>{fallback ? "因为没有 accept，下一步会走整页重载。" : "先 dispose 旧模块，再让 accept 处理新模块。"}</p></> : delivered ? <><Broadcast size={19} aria-hidden="true" /><p><strong>只送来一个模块。</strong>开发服务器把 Button 的变更消息交给浏览器，其他 19 个模块没有重新下载。</p></> : <><Cube size={19} aria-hidden="true" /><p><strong>页面正在运行。</strong>计数 7 和姓名“小林”属于当前应用状态，Button 还没有变化。</p></>}
-    </div>
-    <div className={styles.hmrControls}><SceneControls scene={scene} labels={labels[scenario]} /></div>
-    <p className={styles.hmrBoundary}><strong>局部替换的边界。</strong>HMR 只在开发阶段工作，是否保留状态取决于模块和框架有没有可接受的更新边界；它不是“永不刷新”的保证。</p>
-  </div>;
+    <div className={styles.settings}><button type="button" onClick={emit}>发出一次消息</button><output aria-live="polite">累计处理 {handled} 次</output><button type="button" onClick={() => { setGeneration(1); setListeners([1]); setHandled(0); }}>清空并重试</button></div>
+    <figcaption>本例每个保留的监听处理一次消息。取消清理后连续替换，会看到旧监听留下，一次消息被处理多次；重新启用清理后，只移除当前被替换模块的监听；更早漏掉的监听仍在，已经发生的处理次数也不撤销。清空并重试可以重新观察没有历史泄漏的情况。</figcaption>
+  </figure>;
 }

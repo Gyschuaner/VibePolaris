@@ -10863,185 +10863,135 @@
   },
   {
     "slug": "hmr",
-    "lead": "只改 Button 模块时，为什么计数和表单内容还能留在页面里？",
-    "definition": "HMR（热模块替换）由开发服务器把变更模块送到浏览器更新运行时；运行时先清理旧模块，再交给应用里声明了“可以原地接收更新”的那段代码（更新边界）接受新模块，应用里没被换的部分继续运行。",
-    "boundary": "HMR 只发生在开发阶段，做的也只是局部更新，不保证所有状态都保留。模块或它的依赖没有声明可接受更新时，浏览器会退回整页重载；被替换模块自己管理的状态也可能重置。",
-    "sceneKind": "network",
-    "sceneTitle": "模块边界内的局部替换",
-    "actionLabel": "展示回退路径",
+    "lead": "改了按钮代码后，刚填写的姓名和点击计数为什么有时保留、有时归零？",
+    "definition": "热模块替换让运行中的应用尝试接入变化的模块，而不必先重新加载整页；模块或框架的更新边界负责处理新代码，能够保留哪些状态取决于状态归属与更新方式。",
+    "boundary": "主要用于开发反馈；不是所有更新都能局部接受，也不承诺所有内部状态保留。无可接受位置时常回退整页加载，旧监听等副作用需要清理；开发更新不等于生产部署。",
+    "sceneKind": "memory",
+    "sceneTitle": "页面不重建，按钮换入槽位",
+    "actionLabel": "保存按钮模块的新版本",
     "actors": [
       {
-        "id": "app",
-        "label": "浏览器中的应用",
-        "detail": "20 个模块",
+        "id": "page",
+        "label": "正在运行的页面",
+        "detail": "外层页面实例",
         "icon": "browser",
-        "group": "运行时"
+        "group": "保留"
+      },
+      {
+        "id": "state",
+        "label": "姓名与计数",
+        "detail": "由读者亲手输入",
+        "icon": "memory",
+        "group": "外层状态"
       },
       {
         "id": "button",
         "label": "Button 模块",
-        "detail": "发生改动",
+        "detail": "可替换的按钮节点",
         "icon": "component",
-        "group": "更新"
+        "group": "变化"
       },
       {
-        "id": "state",
-        "label": "页面状态",
-        "detail": "计数 7 · 姓名小林",
-        "icon": "memory",
-        "group": "保留"
+        "id": "listener",
+        "label": "消息监听",
+        "detail": "不清理会累积",
+        "icon": "message",
+        "group": "副作用"
       },
       {
-        "id": "runtime",
-        "label": "浏览器更新运行时",
-        "detail": "dispose → accept",
-        "icon": "gear",
-        "group": "控制"
-      },
-      {
-        "id": "server",
-        "label": "开发服务器",
-        "detail": "发送变更模块",
-        "icon": "server",
-        "group": "通道"
-      },
-      {
-        "id": "fallback",
-        "label": "整页重载",
-        "detail": "回退 ·状态重置",
-        "icon": "clock",
-        "group": "回退"
+        "id": "event",
+        "label": "一次消息",
+        "detail": "每个保留监听处理一次",
+        "icon": "network",
+        "group": "证据"
       }
     ],
-    "edges": [
-      {
-        "id": "b-s",
-        "from": "button",
-        "to": "server",
-        "label": "文件变更"
-      },
-      {
-        "id": "s-r",
-        "from": "server",
-        "to": "runtime",
-        "label": "发送模块"
-      },
-      {
-        "id": "r-a",
-        "from": "runtime",
-        "to": "app",
-        "label": "接受更新"
-      },
-      {
-        "id": "s-a",
-        "from": "state",
-        "to": "app",
-        "label": "继续运行"
-      },
-      {
-        "id": "r-f",
-        "from": "runtime",
-        "to": "fallback",
-        "label": "未接受时"
-      }
-    ],
+    "edges": [],
     "frames": [
       {
-        "label": "改动前",
-        "note": "浏览器里的应用有 20 个模块，表单姓名是小林，页面状态中的计数器为 7。",
+        "label": "亲手准备状态",
+        "note": "读者先填写小林、点击三次，姓名与计数由外层示例页面持有。",
         "activeIds": [
-          "app",
+          "page",
           "state"
         ],
         "doneIds": [],
-        "mutedIds": [
-          "button",
-          "server",
-          "runtime",
-          "fallback"
-        ],
+        "mutedIds": [],
         "values": {
-          "app": "20 个模块",
-          "state": "7 · 小林"
+          "state": "小林 · 3",
+          "button": "v1",
+          "page": "原页面"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "变更消息到达",
-        "note": "Button 文件变化后，开发服务器把对应的模块送到浏览器更新运行时。",
+        "label": "只换按钮",
+        "note": "接受更新后按钮节点换为 v2，外层页面实例未重建，真实输入与计数保留。",
         "activeIds": [
           "button",
-          "server",
-          "runtime"
-        ],
-        "doneIds": [
-          "app"
-        ],
-        "mutedIds": [
-          "fallback"
-        ],
-        "values": {
-          "button": "变更 1 / 20"
-        },
-        "activeEdgeIds": [
-          "b-s",
-          "s-r"
-        ]
-      },
-      {
-        "label": "边界接受更新",
-        "note": "运行时先执行旧模块的 dispose 清理，再由声明了 accept 的更新边界接手；其他模块继续运行，页面状态原样保留。",
-        "activeIds": [
-          "runtime",
-          "app",
           "state"
         ],
-        "doneIds": [
-          "button",
-          "server"
-        ],
-        "mutedIds": [
-          "fallback"
-        ],
+        "doneIds": [],
+        "mutedIds": [],
         "values": {
-          "runtime": "accepted",
-          "state": "7 · 小林"
+          "state": "小林 · 3",
+          "button": "v2",
+          "page": "原页面"
         },
-        "activeEdgeIds": [
-          "r-a",
-          "s-a"
-        ]
+        "activeEdgeIds": []
       },
       {
-        "label": "无法接受时回退",
-        "note": "如果更新边界没有接受这次变化，浏览器退回整页重载，记在内存里的页面状态从 7 重置为 0。",
+        "label": "无法局部接受",
+        "note": "取消边界只影响下一次保存；保存时重新挂载示例页面，新按钮仍生效，内存状态清空。",
         "activeIds": [
-          "runtime",
-          "fallback",
-          "state"
+          "page",
+          "button"
         ],
-        "doneIds": [
-          "button",
-          "server"
-        ],
-        "mutedIds": [
-          "app"
-        ],
+        "doneIds": [],
+        "mutedIds": [],
         "values": {
-          "fallback": "reload · 1 次",
-          "state": "7 → 0"
+          "state": "空姓名 · 0",
+          "button": "v2",
+          "page": "新页面"
         },
-        "activeEdgeIds": [
-          "r-f"
-        ]
+        "activeEdgeIds": []
+      },
+      {
+        "label": "旧监听留下",
+        "note": "关闭清理并替换两次，三份监听留在模型中，一条消息被处理三次。",
+        "activeIds": [
+          "listener"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "listener": "v1、v2、v3",
+          "event": "1 条消息 · 处理 3 次"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "补清理不回收历史泄漏",
+        "note": "漏清理两次后再开启清理并替换，只移除当前 v3，v1/v2 仍在；需要保留句柄才能主动取消历史订阅。清空重试另建干净场景。",
+        "activeIds": [
+          "listener",
+          "event"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "listener": "v1、v2、v4",
+          "event": "下一条仍处理 3 次"
+        },
+        "activeEdgeIds": []
       }
     ],
-    "insight": "HMR 通过开发服务器把变化模块送到浏览器，按更新边界执行 dispose/accept；边界成功时保留未替换状态，失败时退回整页重载。",
+    "insight": "局部接入新代码与整页重建的不同，能在真实表单状态中观察；更新成功仍要处理旧模块留下的副作用。",
     "quiz": {
       "question": "HMR 与整页重载的主要区别是什么？",
       "options": [
         {
-          "label": "HMR 尝试只替换受影响模块，页面其余部分的状态保持不变",
+          "label": "HMR 尝试局部接入新代码，状态是否保留取决于边界及状态归属",
           "correct": true
         },
         {
@@ -11062,24 +11012,24 @@
     },
     "sources": [
       {
-        "url": "https://vite.dev/guide/api-hmr",
-        "label": "Vite 官方文档 · HMR API",
-        "note": "更新消息、accept 和 dispose 边界"
+        "url": "https://webpack.js.org/concepts/hot-module-replacement/",
+        "label": "webpack · Hot Module Replacement",
+        "note": "运行中替换与更新传播、更新范围"
       },
       {
-        "url": "https://webpack.js.org/concepts/hot-module-replacement/",
-        "label": "webpack 官方文档 · Hot Module Replacement",
-        "note": "开发服务器与局部模块替换"
+        "url": "https://vite.dev/guide/api-hmr",
+        "label": "Vite · HMR API",
+        "note": "接收边界及手动 API 的适用者"
       },
       {
         "url": "https://webpack.js.org/api/hot-module-replacement/",
-        "label": "webpack 官方文档 · HMR API",
-        "note": "模块接受、清理和回退路径"
+        "label": "webpack · HMR API",
+        "note": "旧模块副作用清理与状态传递"
       },
       {
-        "url": "https://github.com/pmmmwh/react-refresh-webpack-plugin",
-        "label": "React Refresh Webpack Plugin",
-        "note": "组件刷新与状态保留限制"
+        "url": "https://nextjs.org/docs/architecture/fast-refresh",
+        "label": "Next.js · Fast Refresh",
+        "note": "React 状态保留及回退/重新挂载限制"
       }
     ]
   },

@@ -1,32 +1,41 @@
-import { ArrowRight, Broadcast, Code, Cube, Gauge, UserCircle } from "@phosphor-icons/react/dist/ssr";
 import { ArticleSection, ArticleAside, ConceptTerm } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
-import { ConceptHero } from "../ConceptHero";
-import { HmrLesson } from "../ai-stack-lessons/hmr";
+import { HmrHero, HmrLesson, HmrSubscriptions } from "../ai-stack-lessons/hmr";
 import { hmrSources } from "@/lib/ai-stack-concept-sources/hmr";
-import styles from "../ToolchainConcepts.module.css";
 
-const sections: [string, string][] = [["hmr-definition", "HMR 到底替换了什么"], ["hmr-loop", "一个模块怎样走到页面"], ["hmr-boundary", "为什么有时还是会整页刷新"]];
+const sections: [string, string][] = [["hmr-definition", "按钮换了，刚填的名字还在"], ["hmr-workbench", "把页面状态留在槽位之外"], ["hmr-boundary", "谁来接住新的模块"], ["hmr-cleanup", "旧监听不能一直留着"], ["hmr-limits", "刷新后名字没了，先看什么"]];
 
 export function HmrTermPage() {
-  return <Article slug="hmr" title="热模块替换" subtitle="Hot Module Replacement · 只把受影响模块送进正在运行的页面" sources={hmrSources} sections={sections}
-    hero={<ConceptHero slug="hmr" label="Button 变化只走一条模块消息，运行时 dispose → accept，计数和姓名继续留在页面"><div className={styles.toolchainHero}><div className={styles.hmrHero}><div><Code size={23} /><span>Button.tsx</span><code>改动 1 / 20</code></div><ArrowRight size={18} aria-hidden="true" /><div><Broadcast size={23} /><span>更新消息</span><code>update: Button</code></div><ArrowRight size={18} aria-hidden="true" /><div><Gauge size={23} /><span>运行时</span><code>dispose → accept</code></div><ArrowRight size={18} aria-hidden="true" /><div><UserCircle size={23} /><span>页面状态</span><code>7 · 小林</code></div></div><p className={styles.heroNote}>局部替换能保留状态，但前提是更新边界愿意接住这次变化。</p></div></ConceptHero>}
-    intro={<>你只改了一个 `Button` 模块，页面里的计数和表单姓名却没有消失。<strong>HMR 把变化的模块送进已经运行的页面，再由运行时决定这次更新能不能在原地接住。</strong>它追求的是短路径更新，状态是否保留要看边界。</>}> 
-    <ArticleSection id="hmr-definition" title="HMR 到底替换了什么">
-      <p id="hmr-definition-text" className="vp-citation-target">HMR（Hot Module Replacement，热模块替换）在开发期间把发生变化的模块送到浏览器运行时，让运行中的应用尝试替换它，而不必先整页重载。webpack 把它定义成开发时替换或增删模块的机制；Vite 的 HMR API 也把模块更新、接受和清理作为一组运行时接口。<Cite id="hmr-definition-text" sources={hmrSources}/></p>
-      <p>“只改一个模块”不是说服务器只知道一个文件，而是这次消息带着受影响的模块边界。页面里其余模块、表单和计数仍在原来的运行时里，所以它们有机会继续工作。</p>
-      <ArticleAside title="它和整页热重载的分界"><p id="hmr-boundary-text" className="vp-citation-target">整页热重载会重建页面脚本；HMR 则先尝试局部替换。局部替换成功时状态可以留下，边界不接受时通常要回退到整页刷新。两者都需要开发服务器提供文件变化和更新消息。<Cite id="hmr-boundary-text" sources={hmrSources}/></p></ArticleAside>
+  return <Article slug="hmr" title="热模块替换" subtitle="Hot Module Replacement · 换进新代码，尽量留住正在使用的页面" sources={hmrSources} sections={sections} hero={<HmrHero />}
+    intro={<>你正在调试一张报名表，姓名已经填好，按钮也点了三次。只是想把按钮换个样式，保存代码后却又得从头填表，会很烦。<strong>HMR 尝试把改过的代码接进正在运行的页面，让不需要重建的部分继续留在原处。</strong>但新代码能不能接住旧页面，还需要有人处理这次变化。</>}>
+    <ArticleSection id="hmr-definition" title="按钮换了，刚填的名字还在">
+      <p id="hmr-definition-text" className="vp-citation-target">HMR 是 Hot Module Replacement，中文叫热模块替换。模块就是一块有独立职责的代码，例如负责画按钮的文件。普通整页刷新会重新启动页面脚本；HMR 则尝试在应用还运行着的时候更新、增加或移除模块。对正在调试的人来说，直接的好处是不用每次改个按钮，都重新走一遍填表和点击的过程。<Cite id="hmr-definition-text" sources={hmrSources} /></p>
+      <p>这里的“热”是说应用还在运行，不是说把源码变得更快。它也不替你保存填写内容到数据库。如果页面最终还是重建了，原本只放在内存里的姓名和计数就可能回到初始值。</p>
+      <p>没有 HMR 也能开发：保存文件后重新加载网页，看修改是否生效。区别在于，HMR 多做了一件事：在重建整页之前，先试着把局部变化接进去。编辑器保存、代码编译和模块在页面里生效，是不同的事情；保存成功不能单凭颜色变化来判断。</p>
     </ArticleSection>
-    <ArticleSection id="hmr-loop" title="一个模块怎样走到页面">
-      <p id="hmr-update" className="vp-citation-target">一次 HMR 更新可以沿四个节点观察：文件变化进入开发服务器，服务器发送 `Button` 模块，浏览器运行时执行旧模块的清理，再把新模块交给可接受更新的边界。只有消息抵达不代表页面已经应用了它。<Cite id="hmr-update" sources={hmrSources}/></p>
-      <p id="hmr-accept" className="vp-citation-target">更新边界是模块或框架声明的“我能接住这次变化”的位置。Vite 用 `import.meta.hot.accept()` 和 `dispose()` 暴露接受与清理接口；在 React Refresh 这类工具里，组件能否保留状态还受组件结构和依赖关系限制。<Cite id="hmr-accept" sources={hmrSources}/></p>
-      <p>切换下面的两个结果：接受分支会让 Button 变更而计数仍是 7；拒绝分支会走同一条消息路径，却在边界处转向整页重载。</p>
+    <ArticleSection id="hmr-workbench" title="把页面状态留在槽位之外">
+      <p>先在下面写一个名字，点几次按钮。然后保存按钮的新版本。按钮会换成绿色的新版，名字和计数仍是你刚才亲手输入的内容。这个示例让外层页面持有姓名与计数，只把里面的按钮节点换掉，所以状态不会跟着按钮一起丢掉。</p>
       <HmrLesson />
+      <p>再取消“有能接受本次变化的更新边界”，重新保存。新版按钮仍然会出现，但整个示例页面从头初始化：姓名清空，计数归零。只是改变能否接受更新这一个条件，你就能看到局部替换和整页重建的差别。切换开关本身不会抹去已经填写的内容。</p>
+      <p id="hmr-state" className="vp-citation-target">真实工具对状态的保留会更细。例如 Next.js 的 Fast Refresh 会尽量保留函数组件里的 React 状态，但组件形态、其他导出、Hook 的顺序或渲染错误都可能改变结果。它在 HMR 之上处理 React 组件更新，不能从“用了 HMR”直接推断所有组件的内部状态都留下。<Cite id="hmr-state" sources={hmrSources} /></p>
     </ArticleSection>
-    <ArticleSection id="hmr-boundary" title="为什么有时还是会整页刷新">
-      <p id="hmr-fallback" className="vp-citation-target">如果模块本身、它的父模块或框架运行时没有可接受的更新边界，开发工具无法安全地把新模块接在旧状态上，就会退回整页重载。演示把计数从 7 变成 0，是为了显示这条回退路径，不是说所有 HMR 失败都只表现为这一种错误。<Cite id="hmr-fallback" sources={hmrSources}/></p>
-      <p>即便更新被接受，状态也不是无条件永久保存：被替换模块自己持有的局部状态可能重新初始化，副作用清理如果写错也会留下重复订阅。排查问题时要同时看开发服务器消息、运行时日志和模块的 accept/dispose 代码。</p>
-      <p><strong>读者判断</strong>：如果 `Button` 已经变绿，但计数和姓名仍在，说明局部更新边界接住了它；如果页面闪过整页重建，先检查哪个模块没有接受这次更新。</p>
+    <ArticleSection id="hmr-boundary" title="谁来接住新的模块">
+      <p id="hmr-transport" className="vp-citation-target">保存源码后，开发工具发现变化，准备更新代码并通知页面里的更新运行时。运行时是浏览器里负责接收和应用更新的那部分代码。它处理的范围可能包含变化文件以及受影响的依赖，不能简单理解成“只改一个文件，就绝对只下载那一个文件”。webpack 的更新会用清单和更新代码块描述这些变化。<Cite id="hmr-transport" sources={hmrSources} /></p>
+      <p id="hmr-accept" className="vp-citation-target">拿到新代码还不够。原来引用按钮的那部分应用，需要知道怎样把新的按钮接到旧页面上。模块或框架声明能处理这次变化的地方，就叫更新边界。Vite 的 <code>import.meta.hot.accept()</code> 提供这样的接收接口；有些边界接自己的变化，有些接某个依赖的变化。接收回调还需要做相应的更新工作，不是写一句 accept 就能自动保留任意状态。<Cite id="hmr-accept" sources={hmrSources} /></p>
+      <p id="hmr-bubble" className="vp-citation-target">也不是每个模块都要亲自接受更新。在 webpack 中，变化可以沿“谁引用了我”向外寻找接受位置：按钮自己不会处理，引用它的外层页面可能会。如果一直找不到可接受的位置，运行时无法完成这次局部更新；开发服务器通常会改为重新加载整页。无边界时的处理也受工具配置影响。<Cite id="hmr-bubble" sources={hmrSources} /></p>
+      <ArticleAside title="普通使用者需要写这些接口吗？"><p id="hmr-framework" className="vp-citation-target">用框架的常见开发模板时，这些处理通常已经由插件或框架提供。Vite 明确把手动 HMR API 主要面向框架和工具作者。对初学者，更有用的是认出局部更新与整页重建的差别，出问题时再检查具体框架的更新限制。<Cite id="hmr-framework" sources={hmrSources} /></p></ArticleAside>
+    </ArticleSection>
+    <ArticleSection id="hmr-cleanup" title="旧监听不能一直留着">
+      <p>有的模块加载时，会订阅消息：以后每来一条消息，就执行一次处理函数。假如换新版时又订阅一次，却没移除旧订阅，页面看起来更新好了，后台实际上留着两份处理函数。一条消息来了，就处理两次；再更新一次，可能变成三次。</p>
+      <p id="hmr-dispose" className="vp-citation-target">这类持续存在的工作叫副作用。HMR 提供 <code>dispose</code> 清理接口，让被替换的旧模块释放自己注册的监听、计时器或其他资源。有需要转交的状态，也可以使用工具提供的传递机制。清理负责处理旧模块留下的东西，接受更新负责接上新代码，两者并不是同一个动作。<Cite id="hmr-dispose" sources={hmrSources} /></p>
+      <HmrSubscriptions />
+      <p>取消清理，替换两次监听模块，再发一条消息：三枚监听会一起留下，处理次数增加三次。重新启用清理并替换，只会移除当前旧模块的监听，更早漏掉的监听还在。想看从头正确清理的效果，点“清空并重试”，保持清理开启再替换几次。真实代码里的清理函数也需要拿到取消订阅的句柄，不会自动找出所有历史泄漏。已经处理过的消息不会因为清理而“没发生过”。这个实验没有开后台定时器，只在你点击时触发，方便观察一次消息究竟被谁处理。</p>
+    </ArticleSection>
+    <ArticleSection id="hmr-limits" title="刷新后名字没了，先看什么">
+      <p id="hmr-fallback" className="vp-citation-target">先分清页面是局部重绘、组件重新挂载，还是整个网页重新加载。比如 Next.js 的 Fast Refresh，文件被 React 树之外的代码引用时可能回退整页加载；函数组件的渲染错误可能触发重新挂载。两种现象都可能丢失局部状态，却不能只凭计数归零就断定网络断了。<Cite id="hmr-fallback" sources={hmrSources} /></p>
+      <p>接着看刚才改了什么：只是按钮样式，还是改了组件结构、导出或共享模块？开发工具有没有报编译错误、连接错误或无法接受更新？如果保存一次后收到两条相同消息，再查旧订阅有没有清理。问题不同，排查位置也不同。</p>
+      <p>HMR 主要服务开发时的反馈。上线给访客看的版本仍要走构建和部署；开发页面已经更新，不代表生产站点也更新了。它也不证明新版按钮的逻辑正确，仍要实际点击并检查结果。</p>
+      <p>继续读 <ConceptTerm slug="hot-reload">热重载</ConceptTerm>，可以对比开发工具几种刷新方式；读 <ConceptTerm slug="component">组件</ConceptTerm>，可以进一步看页面状态放在哪里。</p>
     </ArticleSection>
   </Article>;
 }

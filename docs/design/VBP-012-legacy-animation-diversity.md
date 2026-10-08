@@ -67,6 +67,17 @@
 - 独立 review PASS；浏览器发现的 SVG 黑底已修复：使用项目实际存在的 --surface 背景变量。experience/batch 同步六个独立条件、无流程边。
 - 画面证据：`bundler-module-assembly-20261008.jpg` 保存在本任务 visualization 目录。
 
+### 6. 热模块替换（本地已验收）
+
+- 读者任务：亲手填写姓名和点击计数后，保存按钮模块；区分局部接入新代码、组件重新挂载与整页重建，以及旧订阅为何导致重复处理。
+- 旧页问题：四个节点连箭头，7 和小林只是预设文字；“只改一个文件就只下载一个模块”与清理/回退的描述过于绝对。
+- 专属形式：首图把旧按钮滑出、新按钮滑入同一槽位，姓名与计数不动。主体实际填写、计数，接受时只重建按钮节点，拒绝时用 key 重新挂载示例页面；另用监听实体积累展示单条消息被多次处理。无流程箭头或步进控制器。
+- 实读来源：webpack HMR Concepts 的更新范围、沿引用寻找接受位置与回退；Vite HMR API 的 accept 和工具作者范围；webpack HMR API 的 dispose 与状态传递；Next.js Fast Refresh 的组件状态及错误限制。四份映射八个 Cite，三层台账同步五个独立条件。
+- 边界：未修改源码、请求开发服务器或刷新词条；真实 HMR 的更新范围、状态保存和回退受框架/config 影响。清理不撤销历史处理，也不能自动回收更早泄漏的监听。
+- 独立 review PASS；其 P1 已关闭：清理只过滤当前被替换实例，漏清理两次后再启用得到 v1/v2/v4，单消息仍处理三次。清空后从头正确清理才只有一份监听。两处 P2 已关闭：完整重置恢复 accepts，HMR 专属标题字号消除 1470px 的孤字，不影响其他词条。
+- 验证已执行：最终 build（1111 页）与 typecheck 通过；浏览器验证真实姓名/计数保留、关闭边界本身不清空状态、下一次保存重建状态、历史监听泄漏与干净场景；键盘 Space/Enter 和 390px 操作通过。viewport/pageWidth 均 390，首图 225px；1470px 标题正常；console error 为空。
+- 画面证据：`hmr-live-slot-20261008.jpg` 保存在本任务 visualization 目录。
+
 ## 后续优先修复对象
 
 独立 reviewer 在当前主线确认 embedding、reranking、execution-sandbox、bundler、hmr、dependency、semantic-versioning、hot-reload、jwt、load-balancer 的活动路由仍有缺口。当前批次第一条已先处理 TypeScript，随后逐条推进上述名单，不一次修改十条。已有正确交互只保留并复核，不因首图有问题而重写全部正文。
