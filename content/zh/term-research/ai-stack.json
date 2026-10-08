@@ -848,16 +848,16 @@
   },
   {
     "slug": "bundler",
-    "mechanism": "打包器从入口沿静态和动态导入建立模块依赖图，把入口与静态依赖放入主包，把动态依赖拆成用户需要时再加载的块。",
-    "misconception": "打包不等于压缩、转译或单文件输出；代码分割可以生成主包和多个按需块，入口与动态导入决定加载边界。",
-    "demoSignature": "输入：src/main.js、5个静态依赖和1个动态依赖；中间：依赖图分出首屏路径和按需路径；输出：dist/main.js含入口+5静态，dist/lazy.js含1动态，点击功能才请求lazy.js。切换静态导入：主包变为入口+6、按需块消失。失败边界：按需块请求失败时，主包仍可用，问题落在运行时请求路径而非主包生成。",
+    "mechanism": "打包器从入口分析直接与间接导入关系，按配置组织为一个或多个可加载产物；代码分割影响文件归属和加载时机。",
+    "misconception": "拆包不让全部功能的代码凭空变少；文件已生成不等于浏览器已加载。输出也可以包括独立 CSS，打包不证明类型或业务正确。",
+    "demoSignature": "App、Nav、utils、chart 四模块实体从散列聚合到主包与按需包；依赖遍历计算归属，切静态导入时 chart 移入主包。浏览器首屏5KB、打开图表后17KB，404仅让图表失败，主页面按钮可加一；已载入的模块继续复用。无流程箭头与阶段卡片。",
     "sourceUrls": [
-      "https://rollupjs.org/introduction/",
       "https://webpack.js.org/concepts/",
-      "https://esbuild.github.io/",
-      "https://vite.dev/guide/dep-pre-bundling"
+      "https://webpack.js.org/guides/code-splitting/",
+      "https://rollupjs.org/introduction/",
+      "https://vite.dev/guide/features"
     ],
-    "rewriteRisk": "不要用压缩或编译替代打包定义；必须展示入口、静态/动态导入、首屏主包和按需块的数量关系。",
+    "rewriteRisk": "明确固定图、KB 教学设定和网络故障模型；不把例子的分包/去重布局当成所有工具默认策略，不把动态导入都说成首次点击才联网。",
     "nearDuplicates": [
       "build-tool",
       "dependency",

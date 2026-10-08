@@ -55,6 +55,18 @@
 - 独立 review PASS；发现的 P1 已关闭：销毁后只读 checkbox 禁用，不能再宣称不存在的目录可读或可写。experience/batch 已同步六个独立条件，无流程边。
 - 画面证据：`sandbox-boundary-20261008.jpg` 展示销毁的临时目录、已取回的 20 元报告及失效权限控件。
 
+### 5. 打包器（本地已验收）
+
+- 读者任务：理解几个互相 import 的文件怎样成为交付文件；为什么图表可以单独加载，主页面已经打开也可能打不开图表。
+- 旧页问题：依赖、打包、分块和下载被串成文字节点；没有看到模块实体进入输出，也未展示重复依赖如何只计一次。
+- 专属形式：同一组 app、Nav、utils、chart 模块在空间中聚合。递归读取固定依赖并去重，切换动态/静态导入后 chart 实体实际移入独立包或主包；CSS 独立保留。首图是有限的模块拼合，不使用箭头或流程控制器。
+- 读者追问：入口是什么；源码文件是否等于交付文件；共享工具会不会计算两次；拆包和压缩有何不同；动态 import 何时加载；构建成功后为什么仍有 404；打包能否替代类型检查。
+- 实读来源：webpack Concepts、Code Splitting；Rollup Introduction 的模块和 tree-shaking；Vite Features 的 CSS 拆分与 TypeScript 转译说明。四份原始资料映射八处正文 Cite，helper/research/experience 同序。
+- 边界：固定教学模块的 KB 不表示真实压缩尺寸或网络开销；页面未运行打包器、发起模块请求。404 时保留主页面是本例分块结果，实际项目还取决于出错位置。动态 import 并不禁止预加载，已加载模块不会因下一次请求故障倒退。
+- 验证已执行：最终 build（1111 页）与 typecheck 通过；浏览器验证动态首屏 5 KB、打开图表累计 17 KB、404 时主按钮仍可用、重试成功、缓存后故障不影响已加载图表；静态导入一次载入 17 KB，404 控件禁用。390px 首图 225px，无页面横向溢出；Space/Enter 操作通过，未见 console error。
+- 独立 review PASS；浏览器发现的 SVG 黑底已修复：使用项目实际存在的 --surface 背景变量。experience/batch 同步六个独立条件、无流程边。
+- 画面证据：`bundler-module-assembly-20261008.jpg` 保存在本任务 visualization 目录。
+
 ## 后续优先修复对象
 
 独立 reviewer 在当前主线确认 embedding、reranking、execution-sandbox、bundler、hmr、dependency、semantic-versioning、hot-reload、jwt、load-balancer 的活动路由仍有缺口。当前批次第一条已先处理 TypeScript，随后逐条推进上述名单，不一次修改十条。已有正确交互只保留并复核，不因首图有问题而重写全部正文。

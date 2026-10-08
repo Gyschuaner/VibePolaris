@@ -10213,206 +10213,173 @@
   },
   {
     "slug": "bundler",
-    "lead": "点开按需功能时，为什么浏览器才去加载 lazy.js？",
-    "definition": "打包器从入口文件沿静态和动态导入建立依赖图，把入口与静态依赖放进主包，把被动态导入的模块单独拆成需要时再加载的块。",
-    "boundary": "打包器负责把模块图中的模块组合成产物文件、按需分块，并把重复引入的模块只保留一份。它不负责把源码转成另一种语言；代码里要划分出哪些模块，是写代码时决定的，打包器不插手。打包不等于压缩，结果也不一定只有一个文件。",
+    "lead": "导航和图表分开写，发布时哪些先到浏览器？为什么主页面正常，打开图表却会失败？",
+    "definition": "打包器从入口分析直接与间接导入关系，按配置组织为一个或多个可加载产物；代码分割影响文件归属和加载时机。",
+    "boundary": "拆包不让全部功能的代码凭空变少；文件已生成不等于浏览器已加载。输出也可以包括独立 CSS，打包不证明类型或业务正确。",
     "sceneKind": "assembly",
-    "sceneTitle": "依赖图聚合成主包与动态块",
-    "actionLabel": "切换动态导入",
+    "sceneTitle": "同一批模块聚合到主包与按需包",
+    "actionLabel": "打包本例",
     "actors": [
       {
-        "id": "entry",
-        "label": "入口",
-        "detail": "src/main.js",
+        "id": "app",
+        "label": "app.js",
+        "detail": "入口 · 1 KB",
         "icon": "code",
-        "group": "起点"
+        "group": "源码"
       },
       {
-        "id": "static",
-        "label": "静态依赖",
-        "detail": "5 个",
-        "icon": "component",
-        "group": "首屏依赖"
+        "id": "nav",
+        "label": "Nav.js",
+        "detail": "导航 · 2 KB",
+        "icon": "code",
+        "group": "源码"
       },
       {
-        "id": "dynamic",
-        "label": "动态依赖",
-        "detail": "1 个按需模块",
-        "icon": "component",
-        "group": "延迟依赖"
+        "id": "utils",
+        "label": "utils.js",
+        "detail": "共用函数 · 1 KB",
+        "icon": "code",
+        "group": "源码"
+      },
+      {
+        "id": "chart",
+        "label": "chart.js",
+        "detail": "图表 · 12 KB",
+        "icon": "chart",
+        "group": "源码"
+      },
+      {
+        "id": "css",
+        "label": "theme.css",
+        "detail": "独立样式 · 1 KB",
+        "icon": "file",
+        "group": "样式"
       },
       {
         "id": "main",
-        "label": "主包",
-        "detail": "dist/main.js",
+        "label": "main.js",
+        "detail": "尚未生成",
         "icon": "package",
         "group": "产物"
       },
       {
         "id": "lazy",
-        "label": "按需块",
-        "detail": "dist/lazy.js",
+        "label": "图表包",
+        "detail": "尚未生成",
         "icon": "package",
         "group": "产物"
+      },
+      {
+        "id": "browser",
+        "label": "浏览器预览",
+        "detail": "尚未打开",
+        "icon": "browser",
+        "group": "运行"
       }
     ],
-    "edges": [
-      {
-        "id": "e-s",
-        "from": "entry",
-        "to": "static",
-        "label": "静态导入"
-      },
-      {
-        "id": "e-d",
-        "from": "entry",
-        "to": "dynamic",
-        "label": "动态导入"
-      },
-      {
-        "id": "s-m",
-        "from": "static",
-        "to": "main",
-        "label": "进入主包"
-      },
-      {
-        "id": "d-l",
-        "from": "dynamic",
-        "to": "lazy",
-        "label": "拆成按需块"
-      }
-    ],
+    "edges": [],
     "frames": [
       {
-        "label": "沿入口建图",
-        "note": "从 src/main.js 出发，依赖图共有入口、5 个静态依赖和 1 个动态依赖。",
+        "label": "源码散列",
+        "note": "App 导入 Nav，Nav 与 Chart 共用 utils；尚未聚合。",
         "activeIds": [
-          "entry",
-          "static",
-          "dynamic"
+          "app",
+          "nav",
+          "utils",
+          "chart"
         ],
         "doneIds": [],
-        "mutedIds": [
+        "mutedIds": [],
+        "values": {
+          "main": "尚未生成",
+          "lazy": "尚未生成",
+          "browser": "尚未打开"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "按需拆包后的首屏",
+        "note": "依赖遍历将 App/Nav/utils 放入主包，Chart 独立成包，样式另行输出。",
+        "activeIds": [
           "main",
-          "lazy"
+          "lazy",
+          "css",
+          "browser"
         ],
-        "values": {
-          "static": "5 个静态",
-          "dynamic": "1 个动态"
-        },
-        "activeEdgeIds": [
-          "e-s",
-          "e-d"
-        ]
-      },
-      {
-        "label": "生成主包",
-        "note": "src/main.js 和 5 个静态依赖进入 dist/main.js；按需模块暂不随首屏加载。",
-        "activeIds": [
-          "entry",
-          "static",
-          "main"
-        ],
-        "doneIds": [
-          "dynamic"
-        ],
-        "mutedIds": [
-          "lazy"
-        ],
-        "values": {
-          "main": "入口 + 5"
-        },
-        "activeEdgeIds": [
-          "s-m"
-        ]
-      },
-      {
-        "label": "生成按需块",
-        "note": "被动态导入的模块单独生成 dist/lazy.js；用户打开对应功能时，浏览器才请求这个文件。",
-        "activeIds": [
-          "dynamic",
-          "lazy"
-        ],
-        "doneIds": [
-          "entry",
-          "static",
-          "main"
-        ],
+        "doneIds": [],
         "mutedIds": [],
         "values": {
-          "lazy": "1 个按需模块"
+          "main": "App + Nav + utils · 4 KB",
+          "lazy": "Chart · 12 KB",
+          "browser": "主页面已打开 · 5 KB"
         },
-        "activeEdgeIds": [
-          "d-l"
-        ]
+        "activeEdgeIds": []
       },
       {
-        "label": "改成静态导入",
-        "note": "如果把动态导入改成静态导入，1 个按需模块会并入主包，主包变成入口 + 6 个依赖，按需块消失。",
+        "label": "打开图表",
+        "note": "本例此时加载图表包，主包中的共用工具函数不重复装一份。",
         "activeIds": [
-          "dynamic",
-          "main"
+          "lazy",
+          "browser"
         ],
-        "doneIds": [
-          "entry",
-          "static"
-        ],
-        "mutedIds": [
-          "lazy"
-        ],
-        "values": {
-          "main": "入口 + 6",
-          "lazy": "0"
-        },
-        "activeEdgeIds": [
-          "e-s",
-          "s-m"
-        ]
-      },
-      {
-        "label": "请求按需块",
-        "note": "主包已经可用；用户打开对应功能后，浏览器刚发出 dist/lazy.js 请求，响应还没有回来。",
-        "activeIds": [
-          "dynamic",
-          "lazy"
-        ],
-        "doneIds": [
-          "entry",
-          "static",
-          "main"
-        ],
+        "doneIds": [],
         "mutedIds": [],
         "values": {
-          "main": "入口 + 5 · 可用",
-          "lazy": "请求中"
+          "main": "4 KB",
+          "lazy": "12 KB · 已载入",
+          "browser": "共已载入 17 KB"
         },
-        "activeEdgeIds": [
-          "d-l"
-        ]
+        "activeEdgeIds": []
       },
       {
-        "label": "按需块请求失败",
-        "note": "主包已经生成并可用；运行时请求 dist/lazy.js 返回 404，失败发生在按需加载边界，不等于整个打包失败。",
+        "label": "图表包 404",
+        "note": "文件生成与请求成功分开判断；本例有独立错误反馈，主页面按钮仍可操作。",
         "activeIds": [
-          "dynamic",
-          "lazy"
+          "lazy",
+          "browser"
         ],
-        "doneIds": [
-          "entry",
-          "static",
-          "main"
-        ],
+        "doneIds": [],
         "mutedIds": [],
         "values": {
-          "main": "入口 + 5 · 可用",
-          "lazy": "lazy.js · 404"
+          "lazy": "请求返回 404",
+          "browser": "已载入 5 KB · 主页面按钮可用"
         },
-        "activeEdgeIds": [
-          "d-l"
-        ]
+        "activeEdgeIds": []
+      },
+      {
+        "label": "静态导入图表",
+        "note": "Chart 移入主包，初次加载 JS 16 KB 加样式 1 KB，打开图表不用请求独立图表包。",
+        "activeIds": [
+          "main",
+          "chart",
+          "browser"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "main": "App + Nav + utils + Chart · 16 KB",
+          "lazy": "没有独立图表包",
+          "browser": "初次已载入 17 KB"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "复用已经加载的模块",
+        "note": "图表包已成功加载后，再把下一次请求设为 404 不会移除现有模块。",
+        "activeIds": [
+          "browser",
+          "lazy"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "lazy": "已载入；继续复用",
+          "browser": "图表仍可显示 · 17 KB"
+        },
+        "activeEdgeIds": []
       }
     ],
-    "insight": "打包器围绕入口和依赖图生成主包与按需块；动态导入让不一定首屏需要的代码延后加载，结果可以有多个文件。",
+    "insight": "依赖决定需要哪些模块；分包安排代码何时到达，文件生成与运行时加载分别验收。",
     "quiz": {
       "question": "为什么打包器不一定只输出一个文件？",
       "options": [
@@ -10438,24 +10405,24 @@
     },
     "sources": [
       {
-        "url": "https://rollupjs.org/introduction/",
-        "label": "Rollup 官方文档 · Introduction",
-        "note": "入口、模块图和输出块"
-      },
-      {
         "url": "https://webpack.js.org/concepts/",
-        "label": "webpack 官方文档 · Concepts",
-        "note": "依赖图、代码分割与产物"
+        "label": "Concepts",
+        "note": "入口、依赖图与输出"
       },
       {
-        "url": "https://esbuild.github.io/",
-        "label": "esbuild 官方文档",
-        "note": "快速打包、分块与格式输出"
+        "url": "https://webpack.js.org/guides/code-splitting/",
+        "label": "Code Splitting",
+        "note": "拆包、共用依赖及运行时块加载错误"
       },
       {
-        "url": "https://vite.dev/guide/dep-pre-bundling",
-        "label": "Vite 官方文档 · Dependency Pre-Bundling",
-        "note": "依赖预构建与浏览器请求边界"
+        "url": "https://rollupjs.org/introduction/",
+        "label": "Introduction",
+        "note": "模块组合与未使用代码的静态分析"
+      },
+      {
+        "url": "https://vite.dev/guide/features",
+        "label": "Features",
+        "note": "CSS 输出安排和 TypeScript 转译边界"
       }
     ]
   },
