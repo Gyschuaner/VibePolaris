@@ -6257,161 +6257,124 @@
   },
   {
     "slug": "embedding",
-    "lead": "“重置密码”和“忘记登录密码”没有相同词，为什么向量仍能靠近？",
-    "definition": "嵌入模型把输入映射成固定维度的数值向量，使语义相近的内容在向量空间中距离更近。",
-    "boundary": "嵌入不是压缩后的原文，也不能直接生成答案；相似度高只表示表示空间里接近。",
-    "sceneKind": "network",
-    "sceneTitle": "三句话在向量空间中的相对距离",
-    "actionLabel": "改写一句话",
+    "lead": "搜“忘记密码”，怎样找到字面不同的资料？相近的向量为什么也会指向过期说明？",
+    "definition": "嵌入模型把文字等输入变成数值向量；应用按选定的距离或相似度指标比较这些表示，支持检索、聚类等任务。",
+    "boundary": "向量是模型学到的表示，不是原文的无损副本。相似度不证明事实、权限或版本有效；不同模型即使维度相同，也不能直接混用向量。",
+    "sceneKind": "compare",
+    "sceneTitle": "查询方向改变，文档点保持不动",
+    "actionLabel": "移动教学查询",
     "actors": [
       {
+        "id": "query",
+        "label": "教学查询向量",
+        "detail": "50° · 忘记密码",
+        "icon": "search",
+        "group": "查询"
+      },
+      {
         "id": "a",
-        "label": "重置密码",
-        "detail": "句子 A",
-        "icon": "message",
-        "group": "输入"
+        "label": "A · 邮件链接重置密码",
+        "detail": "30° · 2026",
+        "icon": "file",
+        "group": "文档"
       },
       {
         "id": "b",
-        "label": "忘记登录密码",
-        "detail": "句子 B",
-        "icon": "message",
-        "group": "输入"
+        "label": "B · 找回登录账号",
+        "detail": "75° · 2026",
+        "icon": "file",
+        "group": "文档"
       },
       {
         "id": "c",
-        "label": "修改头像",
-        "detail": "句子 C",
-        "icon": "message",
-        "group": "输入"
+        "label": "C · 上传新的头像",
+        "detail": "145° · 2026",
+        "icon": "file",
+        "group": "文档"
       },
       {
-        "id": "encoder",
-        "label": "嵌入模型",
-        "detail": "编码到固定维度",
-        "icon": "brain",
-        "group": "转换"
-      },
-      {
-        "id": "space",
-        "label": "向量空间",
-        "detail": "二维投影仅作展示",
-        "icon": "network",
-        "group": "结果"
+        "id": "d",
+        "label": "D · 旧版密码找回说明",
+        "detail": "53° · 2020 已过期",
+        "icon": "file",
+        "group": "文档"
       }
     ],
-    "edges": [
-      {
-        "id": "a-e",
-        "from": "a",
-        "to": "encoder",
-        "label": "编码"
-      },
-      {
-        "id": "b-e",
-        "from": "b",
-        "to": "encoder",
-        "label": "编码"
-      },
-      {
-        "id": "c-e",
-        "from": "c",
-        "to": "encoder",
-        "label": "编码"
-      },
-      {
-        "id": "e-s",
-        "from": "encoder",
-        "to": "space",
-        "label": "投影"
-      }
-    ],
+    "edges": [],
     "frames": [
       {
-        "label": "三句进入",
-        "note": "输入有两句语义相关，一句无关。",
+        "label": "查询密码",
+        "note": "二维教学向量的余弦由单位向量点积计算；本例排名 D/A/B/C，并非真实模型输出。",
         "activeIds": [
-          "a",
-          "b",
-          "c"
+          "query",
+          "d"
         ],
         "doneIds": [],
-        "mutedIds": [
-          "space"
-        ],
+        "mutedIds": [],
         "values": {
-          "a": "密码",
-          "b": "登录密码",
-          "c": "头像"
+          "a": "0.940 · 30°",
+          "b": "0.906 · 75°",
+          "c": "-0.087 · 145°",
+          "d": "0.999 · 53°",
+          "query": "50° · [0.64, 0.77]"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "编码成向量",
-        "note": "每句变成同维度数值表示。",
+        "label": "查询头像",
+        "note": "文档点不变，查询转到头像方向，排名变为 C/B/D/A。",
         "activeIds": [
-          "encoder"
-        ],
-        "doneIds": [
-          "a",
-          "b",
+          "query",
           "c"
         ],
-        "mutedIds": [
-          "space"
-        ],
-        "values": {
-          "encoder": "3 个向量"
-        },
-        "activeEdgeIds": [
-          "a-e",
-          "b-e",
-          "c-e"
-        ]
-      },
-      {
-        "label": "距离拉开",
-        "note": "A与B相似度0.88，A与C只有0.21。",
-        "activeIds": [
-          "space"
-        ],
-        "doneIds": [
-          "a",
-          "b",
-          "c",
-          "encoder"
-        ],
+        "doneIds": [],
         "mutedIds": [],
         "values": {
-          "space": "A-B 0.88 · A-C 0.21"
+          "a": "-0.375 · 30°",
+          "b": "0.391 · 75°",
+          "c": "0.999 · 145°",
+          "d": "0.017 · 53°",
+          "query": "142° · [-0.79, 0.62]"
         },
-        "activeEdgeIds": [
-          "e-s"
-        ]
+        "activeEdgeIds": []
       },
       {
-        "label": "换同义表达",
-        "note": "B改成“无法进入账号”后，点位移动但仍靠近A。",
+        "label": "手动改变方向",
+        "note": "教学查询转到 10°；实际余弦随夹角变化，排名为 A/D/B/C。",
         "activeIds": [
-          "b",
-          "encoder",
-          "space"
+          "query",
+          "a"
         ],
-        "doneIds": [
-          "a",
-          "c"
-        ],
+        "doneIds": [],
         "mutedIds": [],
         "values": {
-          "space": "A-B 0.81"
+          "a": "0.940 · 30°",
+          "b": "0.423 · 75°",
+          "c": "-0.707 · 145°",
+          "d": "0.731 · 53°",
+          "query": "10° · [0.98, 0.17]"
         },
-        "activeEdgeIds": [
-          "b-e",
-          "e-s"
-        ]
+        "activeEdgeIds": []
+      },
+      {
+        "label": "核对最高分的原文",
+        "note": "D 约 0.999 但内容要求拨打已停用的旧号码；高相似度不能代替版本核对。",
+        "activeIds": [
+          "d"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "a": "0.940 · 30°",
+          "b": "0.906 · 75°",
+          "c": "-0.087 · 145°",
+          "d": "0.999 · 53°",
+          "query": "50° · [0.64, 0.77]"
+        },
+        "activeEdgeIds": []
       }
     ],
-    "insight": "嵌入是可比较的数值表示，不是原文压缩包，也不会自己生成答案。",
+    "insight": "相近取决于模型表示与比较指标；选中候选后，还要回到原文核对版本、条件和权限。",
     "quiz": {
       "question": "两个向量相似度很高，最稳妥的结论是什么？",
       "options": [
@@ -6437,14 +6400,24 @@
     },
     "sources": [
       {
-        "url": "https://platform.openai.com/docs/guides/embeddings",
-        "label": "OpenAI 官方文档 · embeddings",
-        "note": "接口参数与调用行为"
+        "url": "https://arxiv.org/html/1908.10084v1",
+        "label": "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks",
+        "note": "训练、句子表示与相似度任务"
       },
       {
-        "url": "https://arxiv.org/abs/1908.10084",
-        "label": "原始论文 · 1908.10084",
-        "note": "原论文的方法与实验"
+        "url": "https://sbert.net/examples/sentence_transformer/applications/semantic-search/README.html",
+        "label": "Semantic Search",
+        "note": "查询和语料表示支持检索"
+      },
+      {
+        "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.pairwise.cosine_similarity.html",
+        "label": "cosine_similarity",
+        "note": "归一化点积与本例实际计算"
+      },
+      {
+        "url": "https://sbert.net/docs/sentence_transformer/usage/semantic_textual_similarity.html",
+        "label": "Semantic Textual Similarity",
+        "note": "不同相似度指标与比较用途"
       }
     ]
   },

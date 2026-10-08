@@ -29,6 +29,7 @@
 - 实读来源：Sentence-BERT HTML 正文的引言、模型和训练段；Sentence Transformers `Semantic Search` 与 `Semantic Textual Similarity`；scikit-learn `cosine_similarity`。正文共 6 个映射，引用在 `lib/ai-stack-concept-sources/embedding.ts`。
 - 修正边界：重排序和 RAG 也可使用关键词检索，不把嵌入说成所有方法的前提。教学坐标不是模型输出，也不把教学分数称为真实概率。
 - 验证已执行：修复后 build（1111 页）与 typecheck 通过；桌面查询切换、查看原文、range 键盘推进通过；390px 测得 viewport/pageWidth 均为 390，排名对象实际换位。查询点与方向线整体运动，避免中间帧脱节。独立审读 PASS，唯一正文 P2 已关闭；reviewer 确认减弱动效规则有效。
+- 后续台账复核：experience/batch 使用同一 A/B/C/D 文档、角度和余弦计算，来源同步四份实读资料；不再保留旧的预设 0.88/0.21 或把教学坐标称为真实模型投影。
 - 画面证据：本地 `embedding-geometry-20261008.jpg` 已保存在本任务的 visualization 目录；不将截图放入产品包。
 
 ### 3. 重排序（本地已验收）
@@ -52,4 +53,4 @@ JSON 标签统计 `pipeline/route/loop` 为 44/372（11.8%），只作为索引�
 
 ## 当前交付状态
 
-变更逐条本地提交，本轮尚未集成或发布，不改动公开词条清单。DP 需求列表查询两次均遇到 `SSL: UNEXPECTED_EOF_WHILE_READING`；未创建任务或写入状态。使用已有父需求 VBP-012 继续本地独立工作，连接恢复后按真实结果补录。当前 Mac 不存在规则指定的 `D:/Obsidian/gysnote`，研发记录保留在本文，未写入不存在的库。
+变更逐条本地提交，本轮尚未集成或发布，不改动公开词条清单。DP 最初两次查询遇到 `SSL: UNEXPECTED_EOF_WHILE_READING`，随后连接恢复；已按用户最新要求更新父需求 VBP-012（version 84，仍 in_development），创建并重新查询确认任务 `7b9eddd4-0c1a-4eb8-ad4f-ea37b9870e9f` 为 in_progress。任务记录本批十条范围、顾毅盛各阶段负责人、三条本地验收及提交；未将本地验收标为集成或发布。当前 Mac 不存在规则指定的 `D:/Obsidian/gysnote`，研发记录保留在本文，未写入不存在的库。
