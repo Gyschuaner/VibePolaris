@@ -19,6 +19,17 @@
 - 验证已执行：修复后 `npm run build` 与 `npm run typecheck` 通过（构建 1111 页）；桌面实际操作字符串/数字、擦除类型、断言/真实校验，结果分别为 `"23"`、`5` 与拒绝字符串。390px 首图保持紧凑，测得 viewport/pageWidth 均为 390。
 - 独立 review PASS；其发现的 P2 已关闭：JavaScript 视图真正移除类型标注节点，AX 与复制文本不再保留 `: number`。切换输入清除旧结果，reviewer 的浏览器核对未见 console error。
 
+### 2. 嵌入（本地已验收）
+
+- 读者任务：用“忘记密码”找到字面不同的资料；相近是什么意思，为什么最高分的旧材料也可能不可用。
+- 旧页问题：正文提到二维点，但首图/主体没有几何对象；三卡箭头和预设分数字符串不展示任何比较关系。
+- 专属形式：单位圆上的文档点保持不动，查询方向和查询圈同组旋转；二维单位向量的实际点积形成余弦分数，并推动候选实体换位。按钮查看原文，键盘滑块改变方向；旧说明 D 的高分与过期状态共同呈现边界。
+- 读者追问：向量是什么；维度能否对应词义；余弦为什么看方向；二维图能否当真实距离；高分是否等于正确概率；换模型后旧向量能否混用。
+- 实读来源：Sentence-BERT HTML 正文的引言、模型和训练段；Sentence Transformers `Semantic Search` 与 `Semantic Textual Similarity`；scikit-learn `cosine_similarity`。正文共 6 个映射，引用在 `lib/ai-stack-concept-sources/embedding.ts`。
+- 修正边界：重排序和 RAG 也可使用关键词检索，不把嵌入说成所有方法的前提。教学坐标不是模型输出，也不把教学分数称为真实概率。
+- 验证已执行：修复后 build（1111 页）与 typecheck 通过；桌面查询切换、查看原文、range 键盘推进通过；390px 测得 viewport/pageWidth 均为 390，排名对象实际换位。查询点与方向线整体运动，避免中间帧脱节。独立审读 PASS，唯一正文 P2 已关闭；reviewer 确认减弱动效规则有效。
+- 画面证据：本地 `embedding-geometry-20261008.jpg` 已保存在本任务的 visualization 目录；不将截图放入产品包。
+
 ## 后续优先修复对象
 
 独立 reviewer 在当前主线确认 embedding、reranking、execution-sandbox、bundler、hmr、dependency、semantic-versioning、hot-reload、jwt、load-balancer 的活动路由仍有缺口。当前批次第一条已先处理 TypeScript，随后逐条推进上述名单，不一次修改十条。已有正确交互只保留并复核，不因首图有问题而重写全部正文。
