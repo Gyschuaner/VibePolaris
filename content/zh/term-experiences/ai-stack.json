@@ -11035,182 +11035,170 @@
   },
   {
     "slug": "dependency",
-    "lead": "清单只写了 A，为什么安装图里还会出现 B？",
-    "definition": "直接依赖是项目自己声明的包；传递依赖是这些包继续需要的包。包管理器（负责安装的工具）会顺着这些包自己的声明，一层层找出还需要哪些包，凑齐完整清单；再结合版本约束和锁文件，决定每个包实际装哪个版本。",
-    "boundary": "开发依赖主要服务构建和测试，可选依赖是否安装或使用由包管理器和环境条件决定；它们和运行时依赖的用途不同。能从应用节点到达一个包，不等于应用运行时一定会用到它；删掉一条依赖关系后，只要还有别的路径能指向这个包，它就不会从安装结果里消失。",
+    "lead": "只装日历，为什么有好几个陌生包；撤掉日历以后，日期工具还需要吗？",
+    "definition": "依赖是代码之间的需要关系；应用声明的是直接依赖，依赖继续需要的包沿关系进入项目，成为传递依赖。",
+    "boundary": "清单声明、锁记录、逻辑依赖关系和现有安装目录是不同证据。共享包仍有别的来处就不能一并删除；依赖数量不等于浏览器交付量，装包也不证明兼容或安全。",
     "sceneKind": "tree",
-    "sceneTitle": "直接依赖与传递依赖的边方向",
-    "actionLabel": "增删依赖节点",
+    "sceneTitle": "共享包的需要关系",
+    "actionLabel": "撤掉日历声明",
     "actors": [
       {
         "id": "app",
-        "label": "应用",
-        "detail": "根节点 · 应用清单",
-        "icon": "package",
-        "group": "项目"
+        "label": "我的应用",
+        "detail": "声明两个直接包",
+        "icon": "browser",
+        "group": "根"
       },
       {
-        "id": "a",
-        "label": "包 A",
-        "detail": "直接依赖",
+        "id": "calendar",
+        "label": "日历",
+        "detail": "calendar@1.0.0",
         "icon": "package",
-        "group": "一层"
+        "group": "直接"
       },
       {
-        "id": "b",
-        "label": "包 B",
-        "detail": "A 的传递依赖",
+        "id": "exporter",
+        "label": "导出",
+        "detail": "exporter@1.0.0",
         "icon": "package",
-        "group": "二层"
+        "group": "直接"
       },
       {
-        "id": "report",
-        "label": "依赖报告",
-        "detail": "可达 2 个",
+        "id": "date",
+        "label": "日期工具",
+        "detail": "date-format@2.1.0",
+        "icon": "package",
+        "group": "共享传递"
+      },
+      {
+        "id": "locale",
+        "label": "语言数据",
+        "detail": "locale-data@1.0.0",
         "icon": "file",
-        "group": "结果"
+        "group": "传递"
       },
       {
-        "id": "lock",
-        "label": "锁文件",
-        "detail": "A@1.4 · B@2.1",
-        "icon": "file",
-        "group": "版本"
+        "id": "disk",
+        "label": "示例安装目录",
+        "detail": "与声明独立，直到同步才改变",
+        "icon": "memory",
+        "group": "文件状态"
       }
     ],
-    "edges": [
-      {
-        "id": "app-a",
-        "from": "app",
-        "to": "a",
-        "label": "直接依赖"
-      },
-      {
-        "id": "a-b",
-        "from": "a",
-        "to": "b",
-        "label": "传递依赖"
-      },
-      {
-        "id": "tree-report",
-        "from": "app",
-        "to": "report",
-        "label": "统计可达"
-      },
-      {
-        "id": "app-lock",
-        "from": "app",
-        "to": "lock",
-        "label": "记录版本"
-      }
-    ],
+    "edges": [],
     "frames": [
       {
-        "label": "只看根节点",
-        "note": "应用清单还没有外部包，依赖报告可达数为 0，锁文件里还没有 A 和 B 的任何版本记录。",
+        "label": "两个来处",
+        "note": "应用同时声明日历和导出；两者都需要日期工具，日期工具还需要语言数据。",
         "activeIds": [
-          "app",
-          "report",
-          "lock"
+          "calendar",
+          "exporter",
+          "date",
+          "locale"
         ],
         "doneIds": [],
-        "mutedIds": [
-          "a",
-          "b"
-        ],
+        "mutedIds": [],
         "values": {
-          "report": "0",
-          "lock": "空"
+          "app": "直接2 · 传递2",
+          "disk": "4个包"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "加入 A",
-        "note": "应用向 A 画出一条依赖边（一条指向关系）；清单只说“要 A”，这次演示装的是 A@1.4。",
+        "label": "撤掉日历",
+        "note": "日历不再可达，但导出继续需要日期工具和语言数据；当前目录保留旧日历直到同步。",
         "activeIds": [
-          "app",
-          "a",
-          "report",
-          "lock"
+          "exporter",
+          "date",
+          "locale"
         ],
         "doneIds": [],
-        "mutedIds": [
-          "b"
-        ],
-        "values": {
-          "report": "直接 1",
-          "lock": "A@1.4"
-        },
-        "activeEdgeIds": [
-          "app-a",
-          "tree-report",
-          "app-lock"
-        ]
-      },
-      {
-        "label": "展开 B",
-        "note": "顺着 A 自己的声明找到 B：B 是传递依赖；应用清单没有写它，但包管理器会把它加进这次要安装的包里面。",
-        "activeIds": [
-          "a",
-          "b",
-          "report",
-          "lock"
-        ],
-        "doneIds": [
-          "app"
-        ],
         "mutedIds": [],
         "values": {
-          "report": "直接 1 · 传递 1",
-          "lock": "A@1.4 · B@2.1"
+          "app": "直接1 · 传递2",
+          "disk": "旧目录4个"
         },
-        "activeEdgeIds": [
-          "a-b",
-          "app-lock"
-        ]
+        "activeEdgeIds": []
       },
       {
-        "label": "删除 A",
-        "note": "移除应用到 A 的边后，若没有其他路径，B 对应用不再可达；B 不一定会立刻从磁盘删掉：还要看有没有别的包继续需要它，以及这个工具自己怎么清理。",
+        "label": "所有直接声明撤掉",
+        "note": "应用可达包为0，示例目录仍有以前装过的4个包。",
         "activeIds": [
-          "app",
-          "report",
-          "lock"
+          "disk"
         ],
         "doneIds": [],
-        "mutedIds": [
-          "a",
-          "b"
-        ],
+        "mutedIds": [],
         "values": {
-          "report": "2 → 0",
-          "lock": "重新解析"
+          "app": "可达0",
+          "disk": "旧目录4个"
         },
-        "activeEdgeIds": [
-          "tree-report",
-          "app-lock"
-        ]
+        "activeEdgeIds": []
+      },
+      {
+        "label": "按当前清单同步",
+        "note": "仅同步操作改变独立目录状态；没有需要关系时目录变为空。",
+        "activeIds": [
+          "disk"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "app": "可达0",
+          "disk": "空目录"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "日期工具缺失",
+        "note": "恢复两个直接声明，模拟下一次同步缺少日期工具；关系仍需要4个包，目录缺date-format。",
+        "activeIds": [
+          "date",
+          "disk"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "app": "可达4",
+          "date": "需要但缺失",
+          "disk": "只有3个包"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "修复示例目录",
+        "note": "关闭故障后再同步才补回日期工具；只关闭开关不会修复已有缺失。",
+        "activeIds": [
+          "date",
+          "disk"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "app": "可达4",
+          "disk": "4个包齐全"
+        },
+        "activeEdgeIds": []
       }
     ],
-    "insight": "依赖图说明包之间的需要关系，版本约束和锁文件决定具体版本；直接、传递、开发、可选和运行用途要分开看。",
+    "insight": "先追溯谁需要这个包，再把当前关系、锁记录和目录对上；撤掉一条需要关系不等于删掉共享包。",
     "quiz": {
-      "question": "B 没有写在应用清单里，却出现在安装结果中，最可能为什么？",
+      "question": "撤掉日历后，导出仍需要日期工具，能直接删掉日期工具吗？",
       "options": [
         {
-          "label": "B 是直接依赖 A 的传递依赖",
+          "label": "不能，导出仍通过依赖关系需要它",
           "correct": true
         },
         {
-          "label": "安装工具随机添加了 B",
+          "label": "能，根清单没直接写日期工具",
           "correct": false
         },
         {
-          "label": "B 一定是操作系统文件",
+          "label": "能，传递依赖都没有用途",
           "correct": false
         }
       ],
-      "success": "安装工具会沿 A 的依赖关系继续解析 B。",
-      "retry": "想想依赖图里的下一层边。"
+      "success": "要看全部来处，共享包仍可能被别的直接依赖需要。",
+      "retry": "根清单没有直接声明，不表示其他包不需要它。"
     },
     "prompt": {
       "title": "梳理一项依赖",
@@ -11218,29 +11206,29 @@
     },
     "sources": [
       {
-        "url": "https://docs.npmjs.com/cli/v11/configuring-npm/package-json",
-        "label": "npm 官方文档 · package.json",
-        "note": "dependencies、devDependencies 和 optionalDependencies"
+        "url": "https://docs.npmjs.com/cli/v11/configuring-npm/package-json/",
+        "label": "npm · package.json",
+        "note": "依赖声明、开发/可选/宿主用途"
       },
       {
-        "url": "https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json",
-        "label": "npm 官方文档 · package-lock.json",
-        "note": "记录解析后的确切依赖树，帮助后续安装复现相同结果"
+        "url": "https://docs.npmjs.com/cli/v11/commands/npm-ls/",
+        "label": "npm · npm ls",
+        "note": "逻辑依赖树与追溯来处"
       },
       {
-        "url": "https://semver.org/",
-        "label": "Semantic Versioning 规范",
-        "note": "版本号和版本范围的比较规则"
+        "url": "https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json/",
+        "label": "npm · package-lock.json",
+        "note": "确切树和具体版本的锁记录"
       },
       {
-        "url": "https://nodejs.org/api/packages.html",
-        "label": "Node.js 官方文档 · Packages",
-        "note": "包解析、exports 和运行时加载边界"
+        "url": "https://docs.npmjs.com/cli/v11/commands/npm-ci/",
+        "label": "npm · npm ci",
+        "note": "清单锁记录不符会失败、目录布局策略"
       },
       {
-        "url": "https://docs.npmjs.com/cli/v11/using-npm/scripts",
-        "label": "npm 官方文档 · Scripts",
-        "note": "开发脚本、安装生命周期与用途区分"
+        "url": "https://docs.npmjs.com/cli/v11/commands/npm-prune/",
+        "label": "npm · npm prune",
+        "note": "正常清理与异常残留"
       }
     ]
   },

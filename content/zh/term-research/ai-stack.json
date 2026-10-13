@@ -918,21 +918,21 @@
   },
   {
     "slug": "dependency",
-    "mechanism": "依赖图从应用声明的直接依赖出发，包管理器会顺着这些包自己的声明，一层层找出传递依赖；再根据版本约束和锁文件解析具体版本。",
-    "misconception": "可达不等于运行时一定使用；开发、可选、运行依赖用途不同，删除一条依赖关系后若仍有其他路径，包也不会从安装结果里消失。",
-    "demoSignature": "输入：应用直接依赖A，A依赖B；中间：图从应用→A→B，锁文件记录A@1.4、B@2.1；输出：报告直接1、传递1。删除应用→A后，若无其他路径B不再可达，安装结果重算但磁盘清理取决于工具。",
+    "mechanism": "依赖是代码之间的需要关系；应用声明的是直接依赖，依赖继续需要的包沿关系进入项目，成为传递依赖。",
+    "misconception": "清单声明、锁记录、逻辑依赖关系和现有安装目录是不同证据。共享包仍有别的来处就不能一并删除；依赖数量不等于浏览器交付量，装包也不证明兼容或安全。",
+    "demoSignature": "分叉汇合的需要关系：日历与导出共同需要日期工具，日期工具需要语言数据。切换根声明重新遍历并去重，日期工具由另一条路径保留。独立示例目录直到同步才改变，可显示旧包和缺失。紧凑首图只淡出一条分支，另一条与共享包不动；不画安装流程。",
     "sourceUrls": [
-      "https://docs.npmjs.com/cli/v11/configuring-npm/package-json",
-      "https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json",
-      "https://semver.org/",
-      "https://nodejs.org/api/packages.html",
-      "https://docs.npmjs.com/cli/v11/using-npm/scripts"
+      "https://docs.npmjs.com/cli/v11/configuring-npm/package-json/",
+      "https://docs.npmjs.com/cli/v11/commands/npm-ls/",
+      "https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json/",
+      "https://docs.npmjs.com/cli/v11/commands/npm-ci/",
+      "https://docs.npmjs.com/cli/v11/commands/npm-prune/"
     ],
-    "rewriteRisk": "不要只讲第三方库；让边方向、版本约束、锁文件、直接/传递/开发/可选/运行用途和删除后的条件都可见。",
+    "rewriteRisk": "虚构固定兼容包；不把需要关系当下载或执行先后，不声称逻辑图等于物理目录。目录同步不是完整npm安装，故障开关只影响下一次同步。",
     "nearDuplicates": [
-      "lockfile",
-      "semantic-versioning",
-      "bundler"
+      "package-manager",
+      "package-json",
+      "semantic-versioning"
     ]
   },
   {
