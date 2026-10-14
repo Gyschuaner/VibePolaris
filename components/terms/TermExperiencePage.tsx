@@ -37,6 +37,7 @@ import Link from "next/link";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import type { Term } from "@/lib/content";
+import { TermIcon } from "./TermIcon";
 import { flowSceneKinds, topologySceneKinds, type TermActorIcon, type TermExperience, type TermSceneKind } from "@/lib/term-experiences";
 import { DesignSystemSignatureHero, MvpSignatureHero, PackageSignatureHero, RuntimeSignatureHero, TypeScriptSignatureHero } from "./ProductCoreSignatureHeroes";
 import { AppManifestSignatureHero, CodeSigningSignatureHero, DeepLinkSignatureHero, EmulatorSignatureHero, GestureSignatureHero, HapticFeedbackSignatureHero, SemanticHtmlSignatureHero, TouchTargetSignatureHero } from "./FrontendInteractionSignatureHeroes";
@@ -378,7 +379,7 @@ export function TermExperiencePage({ term, experience, previous, next, related }
 
         <header className="term-story-header">
           <span className="brand-star-only term-route-star term-story-star" data-route-star-target aria-hidden="true" />
-          <h1>{term.zh}</h1>
+          <h1>{term.zh}<TermIcon slug={term.slug} size={44} /></h1>
           {term.en ? <span className="term-story-en">{term.en}</span> : null}
           {term.en ? <button className="term-speak" type="button" onClick={pronounce} aria-label={`朗读 ${term.en}`} title="朗读术语"><SpeakerHigh size={22} /></button> : null}
         </header>
