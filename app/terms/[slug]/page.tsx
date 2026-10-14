@@ -150,6 +150,7 @@ import { FrameworkTermPage } from "@/components/terms/frontend-foundations-pages
 import { SsgSsrTermPage } from "@/components/terms/frontend-foundations-pages/ssg-ssr";
 import { LibraryTermPage } from "@/components/terms/frontend-foundations-pages/library";
 import { RuntimeTermPage } from "@/components/terms/frontend-foundations-pages/runtime";
+import { TypeScriptTermPage } from "@/components/terms/typescript-pages/typescript-page";
 import { ResponsiveTermPage } from "@/components/terms/frontend-foundations-pages/responsive";
 
 const articleTermPages = {
@@ -163,6 +164,7 @@ const articleTermPages = {
   "ssg-ssr": SsgSsrTermPage,
   library: LibraryTermPage,
   runtime: RuntimeTermPage,
+  typescript: TypeScriptTermPage,
   'offline-first': OfflineFirstTermPage,
   'adaptive-layout': AdaptiveLayoutTermPage,
   'safe-area': SafeAreaTermPage,

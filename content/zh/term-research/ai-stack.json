@@ -521,17 +521,16 @@
   },
   {
     "slug": "embedding",
-    "mechanism": "嵌入模型把输入映射为固定维度的向量，应用用距离或相似度比较表示，并将相近项作为搜索或聚类候选。",
-    "misconception": "嵌入不是原文压缩包，也不能由高相似度推出事实、权限或最终答案。",
-    "demoSignature": "“忘记密码”、 “重置密码”和“修改头像”进入编码器；二维投影只是示意，查询切换后相似度和首条候选变化。",
+    "mechanism": "嵌入把输入表示为向量，使查询与文档在兼容表示空间内可比较；此页通过二维单位向量的方向差和余弦相似度解释关系。",
+    "misconception": "相似度不是正确概率，也不验证版本与权限；真实高维嵌入的二维投影可能改变远近；不是所有检索、重排序或RAG都依赖嵌入。",
+    "demoSignature": "单位圆几何：文档点固定、查询方向转动；查询线与标记同组旋转，实际余弦计算推动候选实体换位；查看最相近的旧说明展示过期边界。",
     "sourceUrls": [
-      "https://developers.openai.com/api/docs/guides/embeddings",
-      "https://platform.openai.com/docs/guides/embeddings",
-      "https://arxiv.org/abs/1908.10084",
-      "https://sbert.net/docs/sentence_transformer/usage/usage.html",
-      "https://arxiv.org/abs/1706.03762"
+      "https://arxiv.org/html/1908.10084v1",
+      "https://sbert.net/examples/sentence_transformer/applications/semantic-search/README.html",
+      "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.pairwise.cosine_similarity.html",
+      "https://sbert.net/docs/sentence_transformer/usage/semantic_textual_similarity.html"
     ],
-    "rewriteRisk": "正文要把本概念的实际作用、前置条件、可观察证据和不适用边界写在一起，不把相邻机制或虚构教学数字说成厂商保证。",
+    "rewriteRisk": "教学坐标和分数必须标为构造，不能冒充真实模型输出；不同模型/编码约定下的同长度向量不能随意混用。",
     "nearDuplicates": [
       "semantic-search",
       "vector-store"
@@ -594,17 +593,16 @@
   },
   {
     "slug": "reranking",
-    "mechanism": "重排序接收初次召回的一小组候选，用更精细的规则或模型重新评分和排序，再截取前几条。",
-    "misconception": "它不能补回完全漏掉的文档；候选数量、长度和初次过滤决定这一步的上限。",
-    "demoSignature": "初次候选 A/B/C 按 0.82/0.78/0.76 排列，联合评分后 B/A/C 变为 0.94/0.71/0.12；D 从未进入候选。交互：切换召回分与重排分。",
+    "mechanism": "重排序接收问题与已有候选，以新的相关性判断重排同一批材料；可以接入关键词或向量检索结果。",
+    "misconception": "重排不能找回未召回的材料；topN限制返回数，不一定限制评分范围；相关性分数不等于正确概率，失败不能写成优化完成。",
+    "demoSignature": "候选资料排名架：A/C/B保持身份、实体换位；取用线改变返回范围；漏掉B后名单只剩A/C，未召回D始终在范围外；重排失败时保留召回次序并标明状态。",
     "sourceUrls": [
-      "https://docs.cohere.com/v2/docs/rerank",
       "https://sbert.net/examples/sentence_transformer/applications/retrieve_rerank/README.html",
-      "https://arxiv.org/abs/1901.04085",
-      "https://arxiv.org/abs/2004.12832",
-      "https://developers.openai.com/api/docs/guides/retrieval"
+      "https://sbert.net/examples/cross_encoder/applications/README.html",
+      "https://arxiv.org/html/1901.04085v5",
+      "https://docs.cloud.google.com/generative-ai-app-builder/docs/ranking"
     ],
-    "rewriteRisk": "正文要把本概念的实际作用、前置条件、可观察证据和不适用边界写在一起，不把相邻机制或虚构教学数字说成厂商保证。",
+    "rewriteRisk": "候选内容和分数明确是教学构造，不声称调用了模型；区分召回分与重排分，不用相减证明提升。",
     "nearDuplicates": [
       "retrieval",
       "semantic-search"
@@ -761,17 +759,18 @@
   },
   {
     "slug": "execution-sandbox",
-    "mechanism": "执行沙箱在隔离环境中运行代码，并限制文件、网络、进程、时间和资源访问；结束或超时后销毁临时环境。",
-    "misconception": "沙箱不是绝对安全盒子；内核、运行时、挂载、依赖和结果检查仍然决定风险。",
-    "demoSignature": "脚本尝试读项目文件、联网和运行 10 秒；文件/网络请求被拒，2 秒预算终止进程，只保留标准输出。交互：逐项切换文件、网络和时间权限。",
+    "mechanism": "执行沙箱用运行环境实际限制代码可访问的文件、网络和资源；时限、清理与产物保留由具体执行服务和存储策略决定。",
+    "misconception": "容器不默认禁网或限制资源；只读目录仍可读取；停止进程不等于销毁所有数据，隔离也不检查计算结果正确性。",
+    "demoSignature": "临时目录里显示两条 CSV 费用，读取实际数值求和并创建报告实体；只读策略拒绝写入，宿主密钥和外网访问被拒；取回报告生成框外副本，手动到期清掉框内文件，框外副本保留。首图使用边界与文件、计算对象及销毁，无流程箭头。",
     "sourceUrls": [
-      "https://developers.openai.com/api/docs/guides/tools-code-interpreter",
-      "https://developers.openai.com/api/docs/guides/agents-api/environments/security",
       "https://docs.docker.com/engine/security/",
-      "https://docs.docker.com/engine/security/rootless/",
-      "https://csrc.nist.gov/pubs/sp/800/190/final"
+      "https://docs.docker.com/engine/storage/bind-mounts/",
+      "https://docs.docker.com/engine/network/drivers/none/",
+      "https://docs.docker.com/engine/containers/resource_constraints/",
+      "https://docs.docker.com/engine/storage/",
+      "https://gvisor.dev/docs/architecture_guide/security/"
     ],
-    "rewriteRisk": "正文要把本概念的实际作用、前置条件、可观察证据和不适用边界写在一起，不把相邻机制或虚构教学数字说成厂商保证。",
+    "rewriteRisk": "清楚区分页面内生命周期模型与真实容器；不承诺通用沙箱默认权限、固定两秒或自动清理全部持久数据。",
     "nearDuplicates": [
       "container",
       "permission-boundary"
@@ -849,16 +848,16 @@
   },
   {
     "slug": "bundler",
-    "mechanism": "打包器从入口沿静态和动态导入建立模块依赖图，把入口与静态依赖放入主包，把动态依赖拆成用户需要时再加载的块。",
-    "misconception": "打包不等于压缩、转译或单文件输出；代码分割可以生成主包和多个按需块，入口与动态导入决定加载边界。",
-    "demoSignature": "输入：src/main.js、5个静态依赖和1个动态依赖；中间：依赖图分出首屏路径和按需路径；输出：dist/main.js含入口+5静态，dist/lazy.js含1动态，点击功能才请求lazy.js。切换静态导入：主包变为入口+6、按需块消失。失败边界：按需块请求失败时，主包仍可用，问题落在运行时请求路径而非主包生成。",
+    "mechanism": "打包器从入口分析直接与间接导入关系，按配置组织为一个或多个可加载产物；代码分割影响文件归属和加载时机。",
+    "misconception": "拆包不让全部功能的代码凭空变少；文件已生成不等于浏览器已加载。输出也可以包括独立 CSS，打包不证明类型或业务正确。",
+    "demoSignature": "App、Nav、utils、chart 四模块实体从散列聚合到主包与按需包；依赖遍历计算归属，切静态导入时 chart 移入主包。浏览器首屏5KB、打开图表后17KB，404仅让图表失败，主页面按钮可加一；已载入的模块继续复用。无流程箭头与阶段卡片。",
     "sourceUrls": [
-      "https://rollupjs.org/introduction/",
       "https://webpack.js.org/concepts/",
-      "https://esbuild.github.io/",
-      "https://vite.dev/guide/dep-pre-bundling"
+      "https://webpack.js.org/guides/code-splitting/",
+      "https://rollupjs.org/introduction/",
+      "https://vite.dev/guide/features"
     ],
-    "rewriteRisk": "不要用压缩或编译替代打包定义；必须展示入口、静态/动态导入、首屏主包和按需块的数量关系。",
+    "rewriteRisk": "明确固定图、KB 教学设定和网络故障模型；不把例子的分包/去重布局当成所有工具默认策略，不把动态导入都说成首次点击才联网。",
     "nearDuplicates": [
       "build-tool",
       "dependency",
@@ -902,16 +901,16 @@
   },
   {
     "slug": "hmr",
-    "mechanism": "开发服务器把变更模块送到浏览器更新运行时，运行时按应用声明的更新边界执行旧模块清理和新模块接受；边界失败时退回整页重载。",
-    "misconception": "HMR 只发生在开发阶段，做的也只是局部更新，不保证所有状态都保留；状态能否继续取决于模块及其依赖是否接受更新，未接受时会整页重载。",
-    "demoSignature": "输入：浏览器应用20个模块，Button发生改动，计数7、姓名小林；中间：开发服务器发送Button模块，运行时dispose旧模块、accept新模块；输出：按钮变绿、状态保留。回退分支：边界未接受时整页重载，状态7→0。可视化：服务器→运行时→模块边界→应用；交互：展示回退路径。",
+    "mechanism": "热模块替换让运行中的应用尝试接入变化的模块，而不必先重新加载整页；模块或框架的更新边界负责处理新代码，能够保留哪些状态取决于状态归属与更新方式。",
+    "misconception": "主要用于开发反馈；不是所有更新都能局部接受，也不承诺所有内部状态保留。无可接受位置时常回退整页加载，旧监听等副作用需要清理；开发更新不等于生产部署。",
+    "demoSignature": "紧凑页面槽位首图：旧按钮滑出、新按钮接入，姓名与计数不动。主体是可填写、可点击的真实状态；接受只换按钮节点，拒绝实际重新挂载示例页面。另以监听实体堆叠展示重复处理与清理。无流程箭头或预设步进。",
     "sourceUrls": [
-      "https://vite.dev/guide/api-hmr",
       "https://webpack.js.org/concepts/hot-module-replacement/",
+      "https://vite.dev/guide/api-hmr",
       "https://webpack.js.org/api/hot-module-replacement/",
-      "https://github.com/pmmmwh/react-refresh-webpack-plugin"
+      "https://nextjs.org/docs/architecture/fast-refresh"
     ],
-    "rewriteRisk": "不要承诺零刷新或所有状态保留；需展示开发服务器传输、dispose/accept 边界以及失败回退。",
+    "rewriteRisk": "不要承诺只有一个文件被下载、所有状态保留或所有失败都刷新；本例只模拟边界与重新挂载，不访问开发服务器。清理不撤销过去的处理。",
     "nearDuplicates": [
       "hot-reload",
       "dev-server"
@@ -919,21 +918,21 @@
   },
   {
     "slug": "dependency",
-    "mechanism": "依赖图从应用声明的直接依赖出发，包管理器会顺着这些包自己的声明，一层层找出传递依赖；再根据版本约束和锁文件解析具体版本。",
-    "misconception": "可达不等于运行时一定使用；开发、可选、运行依赖用途不同，删除一条依赖关系后若仍有其他路径，包也不会从安装结果里消失。",
-    "demoSignature": "输入：应用直接依赖A，A依赖B；中间：图从应用→A→B，锁文件记录A@1.4、B@2.1；输出：报告直接1、传递1。删除应用→A后，若无其他路径B不再可达，安装结果重算但磁盘清理取决于工具。",
+    "mechanism": "依赖是代码之间的需要关系；应用声明的是直接依赖，依赖继续需要的包沿关系进入项目，成为传递依赖。",
+    "misconception": "清单声明、锁记录、逻辑依赖关系和现有安装目录是不同证据。共享包仍有别的来处就不能一并删除；依赖数量不等于浏览器交付量，装包也不证明兼容或安全。",
+    "demoSignature": "分叉汇合的需要关系：日历与导出共同需要日期工具，日期工具需要语言数据。切换根声明重新遍历并去重，日期工具由另一条路径保留。独立示例目录直到同步才改变，可显示旧包和缺失。紧凑首图只淡出一条分支，另一条与共享包不动；不画安装流程。",
     "sourceUrls": [
-      "https://docs.npmjs.com/cli/v11/configuring-npm/package-json",
-      "https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json",
-      "https://semver.org/",
-      "https://nodejs.org/api/packages.html",
-      "https://docs.npmjs.com/cli/v11/using-npm/scripts"
+      "https://docs.npmjs.com/cli/v11/configuring-npm/package-json/",
+      "https://docs.npmjs.com/cli/v11/commands/npm-ls/",
+      "https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json/",
+      "https://docs.npmjs.com/cli/v11/commands/npm-ci/",
+      "https://docs.npmjs.com/cli/v11/commands/npm-prune/"
     ],
-    "rewriteRisk": "不要只讲第三方库；让边方向、版本约束、锁文件、直接/传递/开发/可选/运行用途和删除后的条件都可见。",
+    "rewriteRisk": "虚构固定兼容包；不把需要关系当下载或执行先后，不声称逻辑图等于物理目录。目录同步不是完整npm安装，故障开关只影响下一次同步。",
     "nearDuplicates": [
-      "lockfile",
-      "semantic-versioning",
-      "bundler"
+      "package-manager",
+      "package-json",
+      "semantic-versioning"
     ]
   },
   {
