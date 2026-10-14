@@ -6,7 +6,7 @@ import { dependencySources } from "@/lib/ai-stack-concept-sources/dependency";
 const sections: [string, string][] = [["dependency-definition", "我只想要日历，为什么装了好多包"], ["dependency-shared", "撤掉日历，日期工具还不能删"], ["dependency-files", "清单、锁记录与目录各自说什么"], ["dependency-types", "开发时需要，也算依赖"], ["dependency-trouble", "缺少一个包，先查是谁需要它"]];
 export function DependencyTermPage() {
   return <Article slug="dependency" title="依赖" subtitle="Dependency · 你用的代码，还需要别的代码才能工作" sources={dependencySources} sections={sections} hero={<DependencyHero />}
-    intro={<>给记账网站加个日历，你安装了一个包，目录里却出现了好几个陌生名字。不是日历偷偷长大了：<strong>日历自己也要借用别的代码，例如日期格式和语言数据。你的应用需要日历，日历又需要这些包，这些“需要”就是依赖关系。</strong>别急着按陌生名字删文件，先看看是谁把它带进来的。</>}>
+    intro={<>给记账网站加个日历，你安装了一个包，目录里却出现了好几个陌生名字。<strong>日历自己也要借用别的代码，例如日期格式和语言数据。你的应用需要日历，日历又需要这些包，这些“需要”就是依赖关系。</strong>别急着按陌生名字删文件，先看看是谁把它带进来的。</>}>
     <ArticleSection id="dependency-definition" title="我只想要日历，为什么装了好多包">
       <p id="dependency-definition-text" className="vp-citation-target">这里说的包，是一份可以安装、复用的代码及其相关文件。npm 项目通常在 <code>package.json</code> 里声明需要哪些包：<code>dependencies</code> 把包名对应到版本要求。你给自己的应用写下日历包，它就是直接依赖；日历也有自己的清单，写明它需要什么。<Cite id="dependency-definition-text" sources={dependencySources} /></p>
       <p id="dependency-chain" className="vp-citation-target">如果日历需要日期工具，日期工具又需要语言数据，安装工具就要继续追踪这些需要关系。后两者通过别的包进入你的项目，叫传递依赖。它们没写在你那张根清单里，也不等于多装了；要看中间哪个包需要它们。npm 可以用 <code>npm ls --all</code> 查看完整逻辑依赖树，用 <code>npm explain 包名</code> 追溯一个包为何被包含。<Cite id="dependency-chain" sources={dependencySources} /></p>
