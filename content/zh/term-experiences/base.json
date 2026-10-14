@@ -6016,194 +6016,163 @@
   },
   {
     "slug": "typescript",
-    "lead": "函数声明只接收数字，却被传入字符串时，怎样在代码运行前发现？",
+    "lead": "购物车的数量明明是 2，为什么加 3 后显示 23？类型检查与真实数据校验分别能挡住什么？",
     "definition": "TypeScript 让变量、函数参数和对象带上可检查的类型信息。类型检查器会在代码运行前检查各处调用是否符合声明的要求，编译或构建工具再把带类型标注的代码转换成 JavaScript。",
     "boundary": "类型信息通常不会保留在输出 JavaScript 中，也不会自动检查接口返回的 JSON；外部数据进入程序时，仍需在运行时用代码检查实际内容和格式，确认无误后再按声明的类型使用它。",
-    "sceneKind": "pipeline",
-    "sceneTitle": "先拦住代码错误，再验证外部数据",
-    "actionLabel": "运行检查",
+    "sceneKind": "compare",
+    "sceneTitle": "同一个 2：类型标注、实际值与结果",
+    "actionLabel": "比较当前值",
     "actors": [
       {
-        "id": "source",
-        "label": "TypeScript 源码",
-        "detail": "add('2', 3)",
+        "id": "call",
+        "label": "函数调用",
+        "detail": "add(\"2\", 3)",
         "icon": "code",
-        "group": "输入"
+        "group": "代码"
       },
       {
-        "id": "declaration",
-        "label": "函数声明",
-        "detail": "add(a: number, b: number)",
+        "id": "types",
+        "label": "参数类型",
+        "detail": "a: number, b: number",
         "icon": "file",
-        "group": "类型"
-      },
-      {
-        "id": "checker",
-        "label": "类型检查器",
-        "detail": "对照声明要求和传入的值",
-        "icon": "search",
-        "group": "编译"
+        "group": "静态标注"
       },
       {
         "id": "diagnostic",
-        "label": "诊断",
-        "detail": "等待结果",
-        "icon": "message",
-        "group": "反馈"
+        "label": "检查结果",
+        "detail": "string 与 number 不符",
+        "icon": "search",
+        "group": "诊断"
       },
       {
-        "id": "javascript",
-        "label": "JavaScript 输出",
-        "detail": "尚未生成",
-        "icon": "gear",
-        "group": "产物"
+        "id": "value",
+        "label": "实际值",
+        "detail": "\"2\" · string",
+        "icon": "database",
+        "group": "数据"
       },
       {
-        "id": "runtime",
-        "label": "运行时输入",
-        "detail": "API JSON 未验证",
-        "icon": "server",
-        "group": "运行"
+        "id": "result",
+        "label": "执行结果",
+        "detail": "尚未计算",
+        "icon": "chart",
+        "group": "结果"
       }
     ],
-    "edges": [
-      {
-        "id": "source-checker",
-        "from": "source",
-        "to": "checker",
-        "label": "检查调用"
-      },
-      {
-        "id": "declaration-checker",
-        "from": "declaration",
-        "to": "checker",
-        "label": "提供约束"
-      },
-      {
-        "id": "checker-diagnostic",
-        "from": "checker",
-        "to": "diagnostic",
-        "label": "报告错误"
-      },
-      {
-        "id": "checker-js",
-        "from": "checker",
-        "to": "javascript",
-        "label": "通过后输出"
-      },
-      {
-        "id": "runtime-js",
-        "from": "runtime",
-        "to": "javascript",
-        "label": "运行时才校验"
-      }
-    ],
+    "edges": [],
     "frames": [
       {
-        "label": "读取声明",
-        "note": "类型声明告诉检查器两个参数都必须是 number。",
+        "label": "文字参数与诊断",
+        "note": "类型检查在运行前发现参数错配；数字 2 与文字 \"2\" 是不同的值。",
         "activeIds": [
-          "declaration",
-          "checker"
+          "call",
+          "types",
+          "diagnostic"
         ],
         "doneIds": [],
-        "mutedIds": [
-          "diagnostic",
-          "javascript",
-          "runtime"
-        ],
-        "values": {},
-        "activeEdgeIds": [
-          "declaration-checker"
-        ]
-      },
-      {
-        "label": "检查调用",
-        "note": "第一个传入值是字符串，与 number 约束不一致；错误还没进入运行时。",
-        "activeIds": [
-          "source",
-          "checker"
-        ],
-        "doneIds": [
-          "declaration"
-        ],
-        "mutedIds": [
-          "javascript",
-          "runtime"
-        ],
-        "values": {
-          "source": "'2' is string"
-        },
-        "activeEdgeIds": [
-          "source-checker"
-        ]
-      },
-      {
-        "label": "给出诊断",
-        "note": "类型检查器把错误定位到调用位置，程序还没有运行就能看到诊断。",
-        "activeIds": [
-          "checker",
-          "diagnostic"
-        ],
-        "doneIds": [
-          "source",
-          "declaration"
-        ],
-        "mutedIds": [
-          "javascript",
-          "runtime"
-        ],
-        "values": {
-          "diagnostic": "类型错误 · 字符串不能当作 number 使用"
-        },
-        "activeEdgeIds": [
-          "checker-diagnostic"
-        ]
-      },
-      {
-        "label": "修正并输出",
-        "note": "把参数改为数字后通过检查；类型标记不会进入最终 JavaScript。",
-        "activeIds": [
-          "source",
-          "javascript"
-        ],
-        "doneIds": [
-          "checker",
-          "diagnostic"
-        ],
-        "mutedIds": [
-          "runtime"
-        ],
-        "values": {
-          "source": "add(2, 3)",
-          "javascript": "add(2, 3)"
-        },
-        "activeEdgeIds": [
-          "checker-js"
-        ]
-      },
-      {
-        "label": "验证外部数据",
-        "note": "API 返回的 JSON 在代码写完时还不存在，类型检查看不到它；程序运行时要用一段校验代码检查字段和值。",
-        "activeIds": [
-          "runtime",
-          "javascript"
-        ],
-        "doneIds": [
-          "source",
-          "declaration",
-          "checker"
-        ],
         "mutedIds": [],
         "values": {
-          "runtime": "未知数据 → 校验"
+          "call": "add(\"2\", 3)",
+          "diagnostic": "string 不能赋给 number",
+          "value": "\"2\" · string",
+          "result": "还未运行"
         },
-        "activeEdgeIds": [
-          "runtime-js"
-        ]
+        "activeEdgeIds": []
+      },
+      {
+        "label": "擦除类型后运行",
+        "note": "JavaScript 视图移除类型标注；运行对应的加法，文字与数字拼成文字。",
+        "activeIds": [
+          "call",
+          "value",
+          "result"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "call": "function add(a, b) { return a + b; }",
+          "types": "JavaScript 中没有 : number",
+          "value": "\"2\" · string",
+          "result": "\"23\""
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "换成数字",
+        "note": "把实际输入改成数字，而不是只改标签，类型检查和执行结果都改变。",
+        "activeIds": [
+          "call",
+          "diagnostic",
+          "value",
+          "result"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "call": "add(2, 3)",
+          "diagnostic": "两个参数均为 number",
+          "value": "2 · number",
+          "result": "5"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "只做类型断言",
+        "note": "as number 不验证或转换接口数据；收到的文字仍是文字。",
+        "activeIds": [
+          "value",
+          "types",
+          "result"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "call": "count + 3",
+          "types": "quantity as number",
+          "value": "\"2\" · string",
+          "diagnostic": "断言没有执行数据校验",
+          "result": "\"23\""
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "真实校验拒绝文字",
+        "note": "typeof 检查实际值，字符串在计算前被拒绝。",
+        "activeIds": [
+          "value",
+          "diagnostic",
+          "result"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "types": "typeof quantity !== \"number\"",
+          "value": "\"2\" · string",
+          "diagnostic": "收到 string",
+          "result": "拒绝：需要数字"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "真实校验通过数字",
+        "note": "数字通过本例的 typeof 检查后相加；正整数等业务条件仍要另外检查。",
+        "activeIds": [
+          "value",
+          "diagnostic",
+          "result"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "types": "typeof quantity === \"number\"",
+          "value": "2 · number",
+          "diagnostic": "数字通过",
+          "result": "5"
+        },
+        "activeEdgeIds": []
       }
     ],
-    "insight": "TypeScript 先检查代码里已经写出的类型关系；外部数据进入程序后，还要在运行时验证。",
+    "insight": "类型标注帮助检查代码关系；类型断言不会改值，运行时校验才会检查外部输入。",
     "quiz": {
       "question": "TypeScript 类型能否自动验证接口返回的真实 JSON？",
       "options": [
@@ -6229,29 +6198,29 @@
     },
     "sources": [
       {
-        "url": "https://www.typescriptlang.org/docs/handbook/intro",
-        "label": "TypeScript Handbook",
-        "note": "TypeScript 的静态类型检查定位"
+        "url": "https://www.typescriptlang.org/docs/handbook/typescript-from-scratch.html",
+        "label": "TypeScript for the New Programmer",
+        "note": "静态检查、运行前发现问题与类型擦除"
       },
       {
         "url": "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html",
-        "label": "TypeScript Handbook · Everyday Types",
-        "note": "变量、函数与对象的类型写法"
+        "label": "Everyday Types",
+        "note": "参数、推断、断言与 any 的边界"
       },
       {
         "url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
-        "label": "TypeScript Handbook · Narrowing",
-        "note": "校验后如何获得更具体的类型"
+        "label": "Narrowing",
+        "note": "typeof 校验实际值后收窄类型"
       },
       {
-        "url": "https://www.typescriptlang.org/docs/handbook/type-compatibility",
-        "label": "TypeScript Handbook · Type Compatibility",
-        "note": "类型关系与编译期兼容判断"
+        "url": "https://www.typescriptlang.org/tsconfig/noEmitOnError.html",
+        "label": "noEmitOnError",
+        "note": "是否因诊断阻止生成 JavaScript 由构建配置决定"
       },
       {
-        "url": "https://www.typescriptlang.org/tsconfig/strict.html",
-        "label": "TypeScript · strict",
-        "note": "更严格的类型检查选项"
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Addition",
+        "label": "Addition (+)",
+        "note": "字符串拼接与数字相加"
       }
     ]
   },

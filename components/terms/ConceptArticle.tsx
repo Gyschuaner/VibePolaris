@@ -8,6 +8,7 @@ import { HarnessV4Toc } from "./HarnessV4Toc";
 import { HarnessReferences } from "./HarnessReferences";
 import { HarnessLearningMap } from "./HarnessLearningMap";
 import { ConceptHero } from "./ConceptHero";
+import { TermIcon } from "./TermIcon";
 import story from "./HarnessStory.module.css";
 import styles from "./ConceptArticle.module.css";
 
@@ -37,7 +38,7 @@ export function ConceptArticle({ slug, title, intro, sections, sources, children
     <div className="vp-reading-content">
       <div className="vp-meta"><nav className="vp-crumb" aria-label="面包屑"><Link href="/"><ArrowLeft size={15} aria-hidden="true" />星图</Link><em>/</em><Link href={`/?cat=${encodeURIComponent(term.cat)}`}>{term.cat.replace("AI·Agent", "AI · Agent")}</Link><em>/</em><span>{term.zh}</span></nav></div>
       <header className="vp-hero">
-        <div className={styles.hero}><div className="vp-hero-top"><span className="brand-star-only term-route-star term-story-star" data-route-star-target aria-hidden="true" /><h1>{title}<span>{subtitle ?? (title === term.zh ? term.en : term.zh)}</span></h1></div>{hero ?? <ConceptHero slug={slug} />}</div>
+        <div className={styles.hero}><div className="vp-hero-top"><span className="brand-star-only term-route-star term-story-star" data-route-star-target aria-hidden="true" /><h1>{title}<TermIcon slug={term.slug} size={44} /><span>{subtitle ?? (title === term.zh ? term.en : term.zh)}</span></h1></div>{hero ?? <ConceptHero slug={slug} />}</div>
         <p className="vp-hero-intro">{intro}</p>
       </header>
       {children}

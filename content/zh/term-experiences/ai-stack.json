@@ -6257,161 +6257,124 @@
   },
   {
     "slug": "embedding",
-    "lead": "“重置密码”和“忘记登录密码”没有相同词，为什么向量仍能靠近？",
-    "definition": "嵌入模型把输入映射成固定维度的数值向量，使语义相近的内容在向量空间中距离更近。",
-    "boundary": "嵌入不是压缩后的原文，也不能直接生成答案；相似度高只表示表示空间里接近。",
-    "sceneKind": "network",
-    "sceneTitle": "三句话在向量空间中的相对距离",
-    "actionLabel": "改写一句话",
+    "lead": "搜“忘记密码”，怎样找到字面不同的资料？相近的向量为什么也会指向过期说明？",
+    "definition": "嵌入模型把文字等输入变成数值向量；应用按选定的距离或相似度指标比较这些表示，支持检索、聚类等任务。",
+    "boundary": "向量是模型学到的表示，不是原文的无损副本。相似度不证明事实、权限或版本有效；不同模型即使维度相同，也不能直接混用向量。",
+    "sceneKind": "compare",
+    "sceneTitle": "查询方向改变，文档点保持不动",
+    "actionLabel": "移动教学查询",
     "actors": [
       {
+        "id": "query",
+        "label": "教学查询向量",
+        "detail": "50° · 忘记密码",
+        "icon": "search",
+        "group": "查询"
+      },
+      {
         "id": "a",
-        "label": "重置密码",
-        "detail": "句子 A",
-        "icon": "message",
-        "group": "输入"
+        "label": "A · 邮件链接重置密码",
+        "detail": "30° · 2026",
+        "icon": "file",
+        "group": "文档"
       },
       {
         "id": "b",
-        "label": "忘记登录密码",
-        "detail": "句子 B",
-        "icon": "message",
-        "group": "输入"
+        "label": "B · 找回登录账号",
+        "detail": "75° · 2026",
+        "icon": "file",
+        "group": "文档"
       },
       {
         "id": "c",
-        "label": "修改头像",
-        "detail": "句子 C",
-        "icon": "message",
-        "group": "输入"
+        "label": "C · 上传新的头像",
+        "detail": "145° · 2026",
+        "icon": "file",
+        "group": "文档"
       },
       {
-        "id": "encoder",
-        "label": "嵌入模型",
-        "detail": "编码到固定维度",
-        "icon": "brain",
-        "group": "转换"
-      },
-      {
-        "id": "space",
-        "label": "向量空间",
-        "detail": "二维投影仅作展示",
-        "icon": "network",
-        "group": "结果"
+        "id": "d",
+        "label": "D · 旧版密码找回说明",
+        "detail": "53° · 2020 已过期",
+        "icon": "file",
+        "group": "文档"
       }
     ],
-    "edges": [
-      {
-        "id": "a-e",
-        "from": "a",
-        "to": "encoder",
-        "label": "编码"
-      },
-      {
-        "id": "b-e",
-        "from": "b",
-        "to": "encoder",
-        "label": "编码"
-      },
-      {
-        "id": "c-e",
-        "from": "c",
-        "to": "encoder",
-        "label": "编码"
-      },
-      {
-        "id": "e-s",
-        "from": "encoder",
-        "to": "space",
-        "label": "投影"
-      }
-    ],
+    "edges": [],
     "frames": [
       {
-        "label": "三句进入",
-        "note": "输入有两句语义相关，一句无关。",
+        "label": "查询密码",
+        "note": "二维教学向量的余弦由单位向量点积计算；本例排名 D/A/B/C，并非真实模型输出。",
         "activeIds": [
-          "a",
-          "b",
-          "c"
+          "query",
+          "d"
         ],
         "doneIds": [],
-        "mutedIds": [
-          "space"
-        ],
+        "mutedIds": [],
         "values": {
-          "a": "密码",
-          "b": "登录密码",
-          "c": "头像"
+          "a": "0.940 · 30°",
+          "b": "0.906 · 75°",
+          "c": "-0.087 · 145°",
+          "d": "0.999 · 53°",
+          "query": "50° · [0.64, 0.77]"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "编码成向量",
-        "note": "每句变成同维度数值表示。",
+        "label": "查询头像",
+        "note": "文档点不变，查询转到头像方向，排名变为 C/B/D/A。",
         "activeIds": [
-          "encoder"
-        ],
-        "doneIds": [
-          "a",
-          "b",
+          "query",
           "c"
         ],
-        "mutedIds": [
-          "space"
-        ],
-        "values": {
-          "encoder": "3 个向量"
-        },
-        "activeEdgeIds": [
-          "a-e",
-          "b-e",
-          "c-e"
-        ]
-      },
-      {
-        "label": "距离拉开",
-        "note": "A与B相似度0.88，A与C只有0.21。",
-        "activeIds": [
-          "space"
-        ],
-        "doneIds": [
-          "a",
-          "b",
-          "c",
-          "encoder"
-        ],
+        "doneIds": [],
         "mutedIds": [],
         "values": {
-          "space": "A-B 0.88 · A-C 0.21"
+          "a": "-0.375 · 30°",
+          "b": "0.391 · 75°",
+          "c": "0.999 · 145°",
+          "d": "0.017 · 53°",
+          "query": "142° · [-0.79, 0.62]"
         },
-        "activeEdgeIds": [
-          "e-s"
-        ]
+        "activeEdgeIds": []
       },
       {
-        "label": "换同义表达",
-        "note": "B改成“无法进入账号”后，点位移动但仍靠近A。",
+        "label": "手动改变方向",
+        "note": "教学查询转到 10°；实际余弦随夹角变化，排名为 A/D/B/C。",
         "activeIds": [
-          "b",
-          "encoder",
-          "space"
+          "query",
+          "a"
         ],
-        "doneIds": [
-          "a",
-          "c"
-        ],
+        "doneIds": [],
         "mutedIds": [],
         "values": {
-          "space": "A-B 0.81"
+          "a": "0.940 · 30°",
+          "b": "0.423 · 75°",
+          "c": "-0.707 · 145°",
+          "d": "0.731 · 53°",
+          "query": "10° · [0.98, 0.17]"
         },
-        "activeEdgeIds": [
-          "b-e",
-          "e-s"
-        ]
+        "activeEdgeIds": []
+      },
+      {
+        "label": "核对最高分的原文",
+        "note": "D 约 0.999 但内容要求拨打已停用的旧号码；高相似度不能代替版本核对。",
+        "activeIds": [
+          "d"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "a": "0.940 · 30°",
+          "b": "0.906 · 75°",
+          "c": "-0.087 · 145°",
+          "d": "0.999 · 53°",
+          "query": "50° · [0.64, 0.77]"
+        },
+        "activeEdgeIds": []
       }
     ],
-    "insight": "嵌入是可比较的数值表示，不是原文压缩包，也不会自己生成答案。",
+    "insight": "相近取决于模型表示与比较指标；选中候选后，还要回到原文核对版本、条件和权限。",
     "quiz": {
       "question": "两个向量相似度很高，最稳妥的结论是什么？",
       "options": [
@@ -6437,14 +6400,24 @@
     },
     "sources": [
       {
-        "url": "https://platform.openai.com/docs/guides/embeddings",
-        "label": "OpenAI 官方文档 · embeddings",
-        "note": "接口参数与调用行为"
+        "url": "https://arxiv.org/html/1908.10084v1",
+        "label": "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks",
+        "note": "训练、句子表示与相似度任务"
       },
       {
-        "url": "https://arxiv.org/abs/1908.10084",
-        "label": "原始论文 · 1908.10084",
-        "note": "原论文的方法与实验"
+        "url": "https://sbert.net/examples/sentence_transformer/applications/semantic-search/README.html",
+        "label": "Semantic Search",
+        "note": "查询和语料表示支持检索"
+      },
+      {
+        "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.pairwise.cosine_similarity.html",
+        "label": "cosine_similarity",
+        "note": "归一化点积与本例实际计算"
+      },
+      {
+        "url": "https://sbert.net/docs/sentence_transformer/usage/semantic_textual_similarity.html",
+        "label": "Semantic Textual Similarity",
+        "note": "不同相似度指标与比较用途"
       }
     ]
   },
@@ -7148,137 +7121,115 @@
   },
   {
     "slug": "reranking",
-    "lead": "初次召回排A、B、C，为什么精排后B会跳到第一？",
-    "definition": "重排序接收召回阶段的一小组候选，用更精细的相关性模型重新打分，再把最合适的内容排到前面。",
-    "boundary": "它不负责从全库找文档，也不能补回召回阶段完全漏掉的资料。",
+    "lead": "退款问题搜出了取消操作，怎样把直接回答到账时间的材料挪到前面？",
+    "definition": "重排序接收查询与已有候选，以新的相关性规则或模型重新评分和排列；关键词和向量检索结果都可以进入这一步。",
+    "boundary": "它不能补回未召回的材料，也不核实文档事实。分数、输出截取和重排失败应分开呈现，不能把召回分与重排分直接相减证明质量提高。",
     "sceneKind": "compare",
-    "sceneTitle": "同三份候选的两次排序",
-    "actionLabel": "切换评分阶段",
+    "sceneTitle": "退款候选保持身份，重新排位",
+    "actionLabel": "按问题重排",
     "actors": [
       {
         "id": "query",
         "label": "查询",
-        "detail": "退款到账时间",
+        "detail": "会员取消后，退款多久到银行卡？",
         "icon": "search",
-        "group": "输入"
+        "group": "问题"
       },
       {
         "id": "a",
-        "label": "文档 A",
-        "detail": "召回0.81 · 精排0.54",
+        "label": "A · 取消会员的操作",
+        "detail": "召回 0.87 · 重排 0.31",
         "icon": "file",
         "group": "候选"
       },
       {
         "id": "b",
-        "label": "文档 B",
-        "detail": "召回0.78 · 精排0.91",
+        "label": "B · 退款到账时间",
+        "detail": "召回 0.75 · 重排 0.94",
         "icon": "file",
         "group": "候选"
       },
       {
         "id": "c",
-        "label": "文档 C",
-        "detail": "召回0.70 · 精排0.62",
+        "label": "C · 余额退回方式",
+        "detail": "召回 0.81 · 重排 0.18",
         "icon": "file",
         "group": "候选"
       },
       {
+        "id": "d",
+        "label": "D · 银行延迟说明",
+        "detail": "未进入候选，没有重排分",
+        "icon": "file",
+        "group": "范围外"
+      },
+      {
         "id": "rank",
-        "label": "当前顺序",
-        "detail": "A-B-C",
+        "label": "当前排列",
+        "detail": "A、C、B",
         "icon": "chart",
-        "group": "结果"
-      }
-    ],
-    "edges": [
-      {
-        "id": "q-a",
-        "from": "query",
-        "to": "a",
-        "label": "打分"
+        "group": "排名"
       },
       {
-        "id": "q-b",
-        "from": "query",
-        "to": "b",
-        "label": "打分"
-      },
-      {
-        "id": "q-c",
-        "from": "query",
-        "to": "c",
-        "label": "打分"
+        "id": "returned",
+        "label": "取用结果",
+        "detail": "最多取 2 段：A、C",
+        "icon": "message",
+        "group": "输出"
       }
     ],
+    "edges": [],
     "frames": [
       {
         "label": "召回顺序",
-        "note": "快速检索先给出A、B、C。",
+        "note": "教学候选原先按召回分排列为 A、C、B；D 不在输入范围内。",
         "activeIds": [
           "a",
           "b",
           "c",
-          "rank"
-        ],
-        "doneIds": [],
-        "mutedIds": [],
-        "values": {
-          "rank": "A → B → C"
-        },
-        "activeEdgeIds": [
-          "q-a",
-          "q-b",
-          "q-c"
-        ]
-      },
-      {
-        "label": "逐对精评",
-        "note": "更细的模型同时阅读查询和每份候选。",
-        "activeIds": [
-          "query",
-          "a",
-          "b",
-          "c"
+          "rank",
+          "returned"
         ],
         "doneIds": [],
         "mutedIds": [
-          "rank"
+          "d"
         ],
         "values": {
-          "a": "0.54",
-          "b": "0.91",
-          "c": "0.62"
-        },
-        "activeEdgeIds": [
-          "q-a",
-          "q-b",
-          "q-c"
-        ]
-      },
-      {
-        "label": "卡片换位",
-        "note": "按新分数排序后，B和C向前移动。",
-        "activeIds": [
-          "rank"
-        ],
-        "doneIds": [
-          "query",
-          "a",
-          "b",
-          "c"
-        ],
-        "mutedIds": [],
-        "values": {
-          "rank": "B → C → A"
+          "rank": "A、C、B",
+          "returned": "A、C"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "第一名锁定",
-        "note": "B成为送往下一步的首条资料。",
+        "label": "重排顺序",
+        "note": "直接回答到账时间的 B 按教学重排分升到第一，同一份材料只改变位置。",
         "activeIds": [
-          "b"
+          "query",
+          "a",
+          "b",
+          "c",
+          "rank",
+          "returned"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "d"
+        ],
+        "values": {
+          "a": "0.31",
+          "b": "0.94",
+          "c": "0.18",
+          "rank": "B、A、C",
+          "returned": "B、A"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "只取前一段",
+        "note": "取用边界设为 1，所有候选仍参与评分，返回 B。",
+        "activeIds": [
+          "b",
+          "returned"
         ],
         "doneIds": [
           "query",
@@ -7286,16 +7237,57 @@
           "c",
           "rank"
         ],
-        "mutedIds": [],
+        "mutedIds": [
+          "d"
+        ],
         "values": {
-          "b": "Top 1 · 0.91"
+          "rank": "B、A、C",
+          "returned": "B"
         },
-        "activeEdgeIds": [
-          "q-b"
-        ]
+        "activeEdgeIds": []
+      },
+      {
+        "label": "漏掉到账时间",
+        "note": "初次检索漏掉 B 后只剩 A、C；重排无法把缺失的 B 补回。",
+        "activeIds": [
+          "a",
+          "c",
+          "rank",
+          "returned"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "b",
+          "d"
+        ],
+        "values": {
+          "rank": "A、C",
+          "returned": "A、C；没有到账时间的 B"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "重排失败",
+        "note": "本例在重排失败时明确沿用召回顺序；没有冒充重排成功。",
+        "activeIds": [
+          "a",
+          "b",
+          "c",
+          "rank",
+          "returned"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "d"
+        ],
+        "values": {
+          "rank": "失败：沿用 A、C、B",
+          "returned": "A、C"
+        },
+        "activeEdgeIds": []
       }
     ],
-    "insight": "重排序只能重新审视已召回的候选，无法救回一开始完全漏掉的文档。",
+    "insight": "重排改次序，不改候选范围；返回数量、原文条件和失败状态仍要核对。",
     "quiz": {
       "question": "正确文档没进入召回前20，重排序能把它排第一吗？",
       "options": [
@@ -7321,14 +7313,24 @@
     },
     "sources": [
       {
-        "url": "https://arxiv.org/abs/1910.14424",
-        "label": "原始论文 · 1910.14424",
-        "note": "原论文的方法与实验"
+        "url": "https://sbert.net/examples/sentence_transformer/applications/retrieve_rerank/README.html",
+        "label": "Sentence Transformers · Retrieve & Re-Rank",
+        "note": "先召回再重排与成本取舍"
       },
       {
-        "url": "https://arxiv.org/abs/2004.04906",
-        "label": "原始论文 · 2004.04906",
-        "note": "原论文的方法与实验"
+        "url": "https://sbert.net/examples/cross_encoder/applications/README.html",
+        "label": "Sentence Transformers · Cross-Encoders",
+        "note": "查询和候选共同评分"
+      },
+      {
+        "url": "https://arxiv.org/html/1901.04085v5",
+        "label": "Nogueira & Cho · Passage Re-ranking with BERT",
+        "note": "候选范围、截断与漏召回边界"
+      },
+      {
+        "url": "https://docs.cloud.google.com/generative-ai-app-builder/docs/ranking",
+        "label": "Google Cloud · Ranking API",
+        "note": "返回数量限制与相关性分数"
       }
     ]
   },
@@ -9240,158 +9242,154 @@
   },
   {
     "slug": "execution-sandbox",
-    "lead": "一段脚本想读项目文件、联网并运行10秒，隔离环境会在哪些边界停住它？",
-    "definition": "执行沙箱在隔离环境中运行不可信代码，并限制可访问的文件、网络、进程、时间和资源。",
-    "boundary": "沙箱不是“绝对安全盒子”；配置错误、内核漏洞和过宽挂载仍可能越界。",
-    "sceneKind": "layers",
-    "sceneTitle": "文件、网络和时间限制逐层生效",
-    "actionLabel": "切换沙箱权限",
+    "lead": "汇总一张费用表，需要把项目密钥和任意外网也交给脚本吗？报告怎样才能在临时环境销毁后留下？",
+    "definition": "执行沙箱用运行环境实际限制代码可访问的文件、网络和资源；时限、清理与产物保留由具体执行服务和存储策略决定。",
+    "boundary": "容器不默认禁网或限制资源；只读目录仍可读取；停止进程不等于销毁所有数据，隔离也不检查计算结果正确性。",
+    "sceneKind": "contract",
+    "sceneTitle": "临时边界内的文件，取回后的报告",
+    "actionLabel": "操作临时环境",
     "actors": [
       {
-        "id": "script",
-        "label": "待运行脚本",
-        "detail": "读文件+联网+循环",
-        "icon": "code",
-        "group": "输入"
+        "id": "input",
+        "label": "expenses.csv",
+        "detail": "纸 12 元、笔 8 元",
+        "icon": "file",
+        "group": "框内"
       },
       {
-        "id": "files",
-        "label": "文件边界",
-        "detail": "挂载0项",
+        "id": "report",
+        "label": "report.txt",
+        "detail": "尚未生成",
         "icon": "file",
-        "group": "限制"
+        "group": "框内"
+      },
+      {
+        "id": "key",
+        "label": "项目密钥",
+        "detail": "未交给任务",
+        "icon": "key",
+        "group": "框外"
       },
       {
         "id": "network",
-        "label": "网络边界",
-        "detail": "禁用",
+        "label": "外网",
+        "detail": "本例未开放",
         "icon": "network",
-        "group": "限制"
+        "group": "框外"
       },
       {
-        "id": "clock",
-        "label": "时间上限",
-        "detail": "2秒",
+        "id": "saved",
+        "label": "取回的报告",
+        "detail": "尚未取回",
+        "icon": "file",
+        "group": "框外"
+      },
+      {
+        "id": "life",
+        "label": "临时环境",
+        "detail": "/work 可读写",
         "icon": "clock",
-        "group": "限制"
-      },
-      {
-        "id": "stdout",
-        "label": "导出结果",
-        "detail": "仅标准输出",
-        "icon": "code",
-        "group": "输出"
+        "group": "环境"
       }
     ],
-    "edges": [
-      {
-        "id": "s-f",
-        "from": "script",
-        "to": "files",
-        "label": "访问"
-      },
-      {
-        "id": "s-n",
-        "from": "script",
-        "to": "network",
-        "label": "访问"
-      },
-      {
-        "id": "s-c",
-        "from": "script",
-        "to": "clock",
-        "label": "计时"
-      },
-      {
-        "id": "s-o",
-        "from": "script",
-        "to": "stdout",
-        "label": "允许输出"
-      }
-    ],
+    "edges": [],
     "frames": [
       {
-        "label": "脚本进入隔离盒",
-        "note": "进程启动，但默认看不到项目文件。",
+        "label": "计算并写入",
+        "note": "实际读取示例表格，求和后创建框内报告；没有启动真实容器。",
         "activeIds": [
-          "script",
-          "files"
+          "input",
+          "report"
         ],
         "doneIds": [],
-        "mutedIds": [
-          "network",
-          "stdout"
-        ],
-        "values": {
-          "files": "可见0项"
-        },
-        "activeEdgeIds": [
-          "s-f"
-        ]
-      },
-      {
-        "label": "联网被拒",
-        "note": "脚本发起1次网络请求，边界直接拒绝。",
-        "activeIds": [
-          "script",
-          "network"
-        ],
-        "doneIds": [
-          "files"
-        ],
-        "mutedIds": [
-          "stdout"
-        ],
-        "values": {
-          "network": "拒绝 1 次"
-        },
-        "activeEdgeIds": [
-          "s-n"
-        ]
-      },
-      {
-        "label": "达到时间上限",
-        "note": "循环运行到2秒时被终止，没有等满10秒。",
-        "activeIds": [
-          "script",
-          "clock"
-        ],
-        "doneIds": [
-          "files",
-          "network"
-        ],
-        "mutedIds": [
-          "stdout"
-        ],
-        "values": {
-          "clock": "2s · terminated"
-        },
-        "activeEdgeIds": [
-          "s-c"
-        ]
-      },
-      {
-        "label": "只带出标准输出",
-        "note": "隔离环境销毁，只允许一段标准输出返回。",
-        "activeIds": [
-          "stdout"
-        ],
-        "doneIds": [
-          "script",
-          "files",
-          "network",
-          "clock"
-        ],
         "mutedIds": [],
         "values": {
-          "stdout": "1 段文本"
+          "report": "2 条 · 合计 20 元"
         },
-        "activeEdgeIds": [
-          "s-o"
-        ]
+        "activeEdgeIds": []
+      },
+      {
+        "label": "目录只读",
+        "note": "读权限仍在，但写入被拒；已有文件保持原样。",
+        "activeIds": [
+          "life",
+          "report"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "life": "/work 只读",
+          "report": "未生成；写入被拒"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "越界访问",
+        "note": "宿主密钥和外网均不在本例允许范围，分别返回拒绝。",
+        "activeIds": [
+          "key",
+          "network"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "key": "读取被拒",
+          "network": "访问被拒"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "取回报告",
+        "note": "把报告副本复制到环境外；框内原件仍在。",
+        "activeIds": [
+          "report",
+          "saved"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "report": "2 条 · 合计 20 元",
+          "saved": "2 条 · 合计 20 元"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "未取回就销毁",
+        "note": "手动触发本例到期策略：终止运行并清空临时目录。",
+        "activeIds": [
+          "life",
+          "input",
+          "report"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "life": "已销毁",
+          "input": "已清空",
+          "report": "已清空",
+          "saved": "没有副本"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "取回后再销毁",
+        "note": "框内文件清空，已经取回的报告保留；持久存储需另外约定。",
+        "activeIds": [
+          "life",
+          "saved"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "life": "已销毁",
+          "input": "已清空",
+          "report": "已清空",
+          "saved": "2 条 · 合计 20 元"
+        },
+        "activeEdgeIds": []
       }
     ],
-    "insight": "沙箱降低执行不可信代码的影响面，但隔离强度取决于实际文件、网络和资源配置。",
+    "insight": "把可访问资源、运行预算和产物保留分别落实；临时环境内的报告需要先取回，再确认可交付。",
     "quiz": {
       "question": "使用容器运行代码，就一定等于安全沙箱吗？",
       "options": [
@@ -9417,9 +9415,34 @@
     },
     "sources": [
       {
-        "url": "https://csrc.nist.gov/pubs/sp/800/190/final",
-        "label": "NIST CSRC · final",
-        "note": "安全要求与风险边界"
+        "url": "https://docs.docker.com/engine/security/",
+        "label": "Docker Engine security",
+        "note": "隔离、资源控制与配置风险"
+      },
+      {
+        "url": "https://docs.docker.com/engine/storage/bind-mounts/",
+        "label": "Bind mounts",
+        "note": "挂载范围、默认可写与只读"
+      },
+      {
+        "url": "https://docs.docker.com/engine/network/drivers/none/",
+        "label": "None network driver",
+        "note": "无外网需明确配置"
+      },
+      {
+        "url": "https://docs.docker.com/engine/containers/resource_constraints/",
+        "label": "Resource constraints",
+        "note": "默认无资源上限、CPU 与内存配置"
+      },
+      {
+        "url": "https://docs.docker.com/engine/storage/",
+        "label": "Storage",
+        "note": "可写层、持久存储与销毁差别"
+      },
+      {
+        "url": "https://gvisor.dev/docs/architecture_guide/security/",
+        "label": "Security Model",
+        "note": "Sentry 的隔离边界与剩余依赖"
       }
     ]
   },
@@ -10190,206 +10213,173 @@
   },
   {
     "slug": "bundler",
-    "lead": "点开按需功能时，为什么浏览器才去加载 lazy.js？",
-    "definition": "打包器从入口文件沿静态和动态导入建立依赖图，把入口与静态依赖放进主包，把被动态导入的模块单独拆成需要时再加载的块。",
-    "boundary": "打包器负责把模块图中的模块组合成产物文件、按需分块，并把重复引入的模块只保留一份。它不负责把源码转成另一种语言；代码里要划分出哪些模块，是写代码时决定的，打包器不插手。打包不等于压缩，结果也不一定只有一个文件。",
+    "lead": "导航和图表分开写，发布时哪些先到浏览器？为什么主页面正常，打开图表却会失败？",
+    "definition": "打包器从入口分析直接与间接导入关系，按配置组织为一个或多个可加载产物；代码分割影响文件归属和加载时机。",
+    "boundary": "拆包不让全部功能的代码凭空变少；文件已生成不等于浏览器已加载。输出也可以包括独立 CSS，打包不证明类型或业务正确。",
     "sceneKind": "assembly",
-    "sceneTitle": "依赖图聚合成主包与动态块",
-    "actionLabel": "切换动态导入",
+    "sceneTitle": "同一批模块聚合到主包与按需包",
+    "actionLabel": "打包本例",
     "actors": [
       {
-        "id": "entry",
-        "label": "入口",
-        "detail": "src/main.js",
+        "id": "app",
+        "label": "app.js",
+        "detail": "入口 · 1 KB",
         "icon": "code",
-        "group": "起点"
+        "group": "源码"
       },
       {
-        "id": "static",
-        "label": "静态依赖",
-        "detail": "5 个",
-        "icon": "component",
-        "group": "首屏依赖"
+        "id": "nav",
+        "label": "Nav.js",
+        "detail": "导航 · 2 KB",
+        "icon": "code",
+        "group": "源码"
       },
       {
-        "id": "dynamic",
-        "label": "动态依赖",
-        "detail": "1 个按需模块",
-        "icon": "component",
-        "group": "延迟依赖"
+        "id": "utils",
+        "label": "utils.js",
+        "detail": "共用函数 · 1 KB",
+        "icon": "code",
+        "group": "源码"
+      },
+      {
+        "id": "chart",
+        "label": "chart.js",
+        "detail": "图表 · 12 KB",
+        "icon": "chart",
+        "group": "源码"
+      },
+      {
+        "id": "css",
+        "label": "theme.css",
+        "detail": "独立样式 · 1 KB",
+        "icon": "file",
+        "group": "样式"
       },
       {
         "id": "main",
-        "label": "主包",
-        "detail": "dist/main.js",
+        "label": "main.js",
+        "detail": "尚未生成",
         "icon": "package",
         "group": "产物"
       },
       {
         "id": "lazy",
-        "label": "按需块",
-        "detail": "dist/lazy.js",
+        "label": "图表包",
+        "detail": "尚未生成",
         "icon": "package",
         "group": "产物"
+      },
+      {
+        "id": "browser",
+        "label": "浏览器预览",
+        "detail": "尚未打开",
+        "icon": "browser",
+        "group": "运行"
       }
     ],
-    "edges": [
-      {
-        "id": "e-s",
-        "from": "entry",
-        "to": "static",
-        "label": "静态导入"
-      },
-      {
-        "id": "e-d",
-        "from": "entry",
-        "to": "dynamic",
-        "label": "动态导入"
-      },
-      {
-        "id": "s-m",
-        "from": "static",
-        "to": "main",
-        "label": "进入主包"
-      },
-      {
-        "id": "d-l",
-        "from": "dynamic",
-        "to": "lazy",
-        "label": "拆成按需块"
-      }
-    ],
+    "edges": [],
     "frames": [
       {
-        "label": "沿入口建图",
-        "note": "从 src/main.js 出发，依赖图共有入口、5 个静态依赖和 1 个动态依赖。",
+        "label": "源码散列",
+        "note": "App 导入 Nav，Nav 与 Chart 共用 utils；尚未聚合。",
         "activeIds": [
-          "entry",
-          "static",
-          "dynamic"
+          "app",
+          "nav",
+          "utils",
+          "chart"
         ],
         "doneIds": [],
-        "mutedIds": [
+        "mutedIds": [],
+        "values": {
+          "main": "尚未生成",
+          "lazy": "尚未生成",
+          "browser": "尚未打开"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "按需拆包后的首屏",
+        "note": "依赖遍历将 App/Nav/utils 放入主包，Chart 独立成包，样式另行输出。",
+        "activeIds": [
           "main",
-          "lazy"
+          "lazy",
+          "css",
+          "browser"
         ],
-        "values": {
-          "static": "5 个静态",
-          "dynamic": "1 个动态"
-        },
-        "activeEdgeIds": [
-          "e-s",
-          "e-d"
-        ]
-      },
-      {
-        "label": "生成主包",
-        "note": "src/main.js 和 5 个静态依赖进入 dist/main.js；按需模块暂不随首屏加载。",
-        "activeIds": [
-          "entry",
-          "static",
-          "main"
-        ],
-        "doneIds": [
-          "dynamic"
-        ],
-        "mutedIds": [
-          "lazy"
-        ],
-        "values": {
-          "main": "入口 + 5"
-        },
-        "activeEdgeIds": [
-          "s-m"
-        ]
-      },
-      {
-        "label": "生成按需块",
-        "note": "被动态导入的模块单独生成 dist/lazy.js；用户打开对应功能时，浏览器才请求这个文件。",
-        "activeIds": [
-          "dynamic",
-          "lazy"
-        ],
-        "doneIds": [
-          "entry",
-          "static",
-          "main"
-        ],
+        "doneIds": [],
         "mutedIds": [],
         "values": {
-          "lazy": "1 个按需模块"
+          "main": "App + Nav + utils · 4 KB",
+          "lazy": "Chart · 12 KB",
+          "browser": "主页面已打开 · 5 KB"
         },
-        "activeEdgeIds": [
-          "d-l"
-        ]
+        "activeEdgeIds": []
       },
       {
-        "label": "改成静态导入",
-        "note": "如果把动态导入改成静态导入，1 个按需模块会并入主包，主包变成入口 + 6 个依赖，按需块消失。",
+        "label": "打开图表",
+        "note": "本例此时加载图表包，主包中的共用工具函数不重复装一份。",
         "activeIds": [
-          "dynamic",
-          "main"
+          "lazy",
+          "browser"
         ],
-        "doneIds": [
-          "entry",
-          "static"
-        ],
-        "mutedIds": [
-          "lazy"
-        ],
-        "values": {
-          "main": "入口 + 6",
-          "lazy": "0"
-        },
-        "activeEdgeIds": [
-          "e-s",
-          "s-m"
-        ]
-      },
-      {
-        "label": "请求按需块",
-        "note": "主包已经可用；用户打开对应功能后，浏览器刚发出 dist/lazy.js 请求，响应还没有回来。",
-        "activeIds": [
-          "dynamic",
-          "lazy"
-        ],
-        "doneIds": [
-          "entry",
-          "static",
-          "main"
-        ],
+        "doneIds": [],
         "mutedIds": [],
         "values": {
-          "main": "入口 + 5 · 可用",
-          "lazy": "请求中"
+          "main": "4 KB",
+          "lazy": "12 KB · 已载入",
+          "browser": "共已载入 17 KB"
         },
-        "activeEdgeIds": [
-          "d-l"
-        ]
+        "activeEdgeIds": []
       },
       {
-        "label": "按需块请求失败",
-        "note": "主包已经生成并可用；运行时请求 dist/lazy.js 返回 404，失败发生在按需加载边界，不等于整个打包失败。",
+        "label": "图表包 404",
+        "note": "文件生成与请求成功分开判断；本例有独立错误反馈，主页面按钮仍可操作。",
         "activeIds": [
-          "dynamic",
-          "lazy"
+          "lazy",
+          "browser"
         ],
-        "doneIds": [
-          "entry",
-          "static",
-          "main"
-        ],
+        "doneIds": [],
         "mutedIds": [],
         "values": {
-          "main": "入口 + 5 · 可用",
-          "lazy": "lazy.js · 404"
+          "lazy": "请求返回 404",
+          "browser": "已载入 5 KB · 主页面按钮可用"
         },
-        "activeEdgeIds": [
-          "d-l"
-        ]
+        "activeEdgeIds": []
+      },
+      {
+        "label": "静态导入图表",
+        "note": "Chart 移入主包，初次加载 JS 16 KB 加样式 1 KB，打开图表不用请求独立图表包。",
+        "activeIds": [
+          "main",
+          "chart",
+          "browser"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "main": "App + Nav + utils + Chart · 16 KB",
+          "lazy": "没有独立图表包",
+          "browser": "初次已载入 17 KB"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "复用已经加载的模块",
+        "note": "图表包已成功加载后，再把下一次请求设为 404 不会移除现有模块。",
+        "activeIds": [
+          "browser",
+          "lazy"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "lazy": "已载入；继续复用",
+          "browser": "图表仍可显示 · 17 KB"
+        },
+        "activeEdgeIds": []
       }
     ],
-    "insight": "打包器围绕入口和依赖图生成主包与按需块；动态导入让不一定首屏需要的代码延后加载，结果可以有多个文件。",
+    "insight": "依赖决定需要哪些模块；分包安排代码何时到达，文件生成与运行时加载分别验收。",
     "quiz": {
       "question": "为什么打包器不一定只输出一个文件？",
       "options": [
@@ -10415,24 +10405,24 @@
     },
     "sources": [
       {
-        "url": "https://rollupjs.org/introduction/",
-        "label": "Rollup 官方文档 · Introduction",
-        "note": "入口、模块图和输出块"
-      },
-      {
         "url": "https://webpack.js.org/concepts/",
-        "label": "webpack 官方文档 · Concepts",
-        "note": "依赖图、代码分割与产物"
+        "label": "Concepts",
+        "note": "入口、依赖图与输出"
       },
       {
-        "url": "https://esbuild.github.io/",
-        "label": "esbuild 官方文档",
-        "note": "快速打包、分块与格式输出"
+        "url": "https://webpack.js.org/guides/code-splitting/",
+        "label": "Code Splitting",
+        "note": "拆包、共用依赖及运行时块加载错误"
       },
       {
-        "url": "https://vite.dev/guide/dep-pre-bundling",
-        "label": "Vite 官方文档 · Dependency Pre-Bundling",
-        "note": "依赖预构建与浏览器请求边界"
+        "url": "https://rollupjs.org/introduction/",
+        "label": "Introduction",
+        "note": "模块组合与未使用代码的静态分析"
+      },
+      {
+        "url": "https://vite.dev/guide/features",
+        "label": "Features",
+        "note": "CSS 输出安排和 TypeScript 转译边界"
       }
     ]
   },
@@ -10873,185 +10863,135 @@
   },
   {
     "slug": "hmr",
-    "lead": "只改 Button 模块时，为什么计数和表单内容还能留在页面里？",
-    "definition": "HMR（热模块替换）由开发服务器把变更模块送到浏览器更新运行时；运行时先清理旧模块，再交给应用里声明了“可以原地接收更新”的那段代码（更新边界）接受新模块，应用里没被换的部分继续运行。",
-    "boundary": "HMR 只发生在开发阶段，做的也只是局部更新，不保证所有状态都保留。模块或它的依赖没有声明可接受更新时，浏览器会退回整页重载；被替换模块自己管理的状态也可能重置。",
-    "sceneKind": "network",
-    "sceneTitle": "模块边界内的局部替换",
-    "actionLabel": "展示回退路径",
+    "lead": "改了按钮代码后，刚填写的姓名和点击计数为什么有时保留、有时归零？",
+    "definition": "热模块替换让运行中的应用尝试接入变化的模块，而不必先重新加载整页；模块或框架的更新边界负责处理新代码，能够保留哪些状态取决于状态归属与更新方式。",
+    "boundary": "主要用于开发反馈；不是所有更新都能局部接受，也不承诺所有内部状态保留。无可接受位置时常回退整页加载，旧监听等副作用需要清理；开发更新不等于生产部署。",
+    "sceneKind": "memory",
+    "sceneTitle": "页面不重建，按钮换入槽位",
+    "actionLabel": "保存按钮模块的新版本",
     "actors": [
       {
-        "id": "app",
-        "label": "浏览器中的应用",
-        "detail": "20 个模块",
+        "id": "page",
+        "label": "正在运行的页面",
+        "detail": "外层页面实例",
         "icon": "browser",
-        "group": "运行时"
+        "group": "保留"
+      },
+      {
+        "id": "state",
+        "label": "姓名与计数",
+        "detail": "由读者亲手输入",
+        "icon": "memory",
+        "group": "外层状态"
       },
       {
         "id": "button",
         "label": "Button 模块",
-        "detail": "发生改动",
+        "detail": "可替换的按钮节点",
         "icon": "component",
-        "group": "更新"
+        "group": "变化"
       },
       {
-        "id": "state",
-        "label": "页面状态",
-        "detail": "计数 7 · 姓名小林",
-        "icon": "memory",
-        "group": "保留"
+        "id": "listener",
+        "label": "消息监听",
+        "detail": "不清理会累积",
+        "icon": "message",
+        "group": "副作用"
       },
       {
-        "id": "runtime",
-        "label": "浏览器更新运行时",
-        "detail": "dispose → accept",
-        "icon": "gear",
-        "group": "控制"
-      },
-      {
-        "id": "server",
-        "label": "开发服务器",
-        "detail": "发送变更模块",
-        "icon": "server",
-        "group": "通道"
-      },
-      {
-        "id": "fallback",
-        "label": "整页重载",
-        "detail": "回退 ·状态重置",
-        "icon": "clock",
-        "group": "回退"
+        "id": "event",
+        "label": "一次消息",
+        "detail": "每个保留监听处理一次",
+        "icon": "network",
+        "group": "证据"
       }
     ],
-    "edges": [
-      {
-        "id": "b-s",
-        "from": "button",
-        "to": "server",
-        "label": "文件变更"
-      },
-      {
-        "id": "s-r",
-        "from": "server",
-        "to": "runtime",
-        "label": "发送模块"
-      },
-      {
-        "id": "r-a",
-        "from": "runtime",
-        "to": "app",
-        "label": "接受更新"
-      },
-      {
-        "id": "s-a",
-        "from": "state",
-        "to": "app",
-        "label": "继续运行"
-      },
-      {
-        "id": "r-f",
-        "from": "runtime",
-        "to": "fallback",
-        "label": "未接受时"
-      }
-    ],
+    "edges": [],
     "frames": [
       {
-        "label": "改动前",
-        "note": "浏览器里的应用有 20 个模块，表单姓名是小林，页面状态中的计数器为 7。",
+        "label": "亲手准备状态",
+        "note": "读者先填写小林、点击三次，姓名与计数由外层示例页面持有。",
         "activeIds": [
-          "app",
+          "page",
           "state"
         ],
         "doneIds": [],
-        "mutedIds": [
-          "button",
-          "server",
-          "runtime",
-          "fallback"
-        ],
+        "mutedIds": [],
         "values": {
-          "app": "20 个模块",
-          "state": "7 · 小林"
+          "state": "小林 · 3",
+          "button": "v1",
+          "page": "原页面"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "变更消息到达",
-        "note": "Button 文件变化后，开发服务器把对应的模块送到浏览器更新运行时。",
+        "label": "只换按钮",
+        "note": "接受更新后按钮节点换为 v2，外层页面实例未重建，真实输入与计数保留。",
         "activeIds": [
           "button",
-          "server",
-          "runtime"
-        ],
-        "doneIds": [
-          "app"
-        ],
-        "mutedIds": [
-          "fallback"
-        ],
-        "values": {
-          "button": "变更 1 / 20"
-        },
-        "activeEdgeIds": [
-          "b-s",
-          "s-r"
-        ]
-      },
-      {
-        "label": "边界接受更新",
-        "note": "运行时先执行旧模块的 dispose 清理，再由声明了 accept 的更新边界接手；其他模块继续运行，页面状态原样保留。",
-        "activeIds": [
-          "runtime",
-          "app",
           "state"
         ],
-        "doneIds": [
-          "button",
-          "server"
-        ],
-        "mutedIds": [
-          "fallback"
-        ],
+        "doneIds": [],
+        "mutedIds": [],
         "values": {
-          "runtime": "accepted",
-          "state": "7 · 小林"
+          "state": "小林 · 3",
+          "button": "v2",
+          "page": "原页面"
         },
-        "activeEdgeIds": [
-          "r-a",
-          "s-a"
-        ]
+        "activeEdgeIds": []
       },
       {
-        "label": "无法接受时回退",
-        "note": "如果更新边界没有接受这次变化，浏览器退回整页重载，记在内存里的页面状态从 7 重置为 0。",
+        "label": "无法局部接受",
+        "note": "取消边界只影响下一次保存；保存时重新挂载示例页面，新按钮仍生效，内存状态清空。",
         "activeIds": [
-          "runtime",
-          "fallback",
-          "state"
+          "page",
+          "button"
         ],
-        "doneIds": [
-          "button",
-          "server"
-        ],
-        "mutedIds": [
-          "app"
-        ],
+        "doneIds": [],
+        "mutedIds": [],
         "values": {
-          "fallback": "reload · 1 次",
-          "state": "7 → 0"
+          "state": "空姓名 · 0",
+          "button": "v2",
+          "page": "新页面"
         },
-        "activeEdgeIds": [
-          "r-f"
-        ]
+        "activeEdgeIds": []
+      },
+      {
+        "label": "旧监听留下",
+        "note": "关闭清理并替换两次，三份监听留在模型中，一条消息被处理三次。",
+        "activeIds": [
+          "listener"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "listener": "v1、v2、v3",
+          "event": "1 条消息 · 处理 3 次"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "补清理不回收历史泄漏",
+        "note": "漏清理两次后再开启清理并替换，只移除当前 v3，v1/v2 仍在；需要保留句柄才能主动取消历史订阅。清空重试另建干净场景。",
+        "activeIds": [
+          "listener",
+          "event"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "listener": "v1、v2、v4",
+          "event": "下一条仍处理 3 次"
+        },
+        "activeEdgeIds": []
       }
     ],
-    "insight": "HMR 通过开发服务器把变化模块送到浏览器，按更新边界执行 dispose/accept；边界成功时保留未替换状态，失败时退回整页重载。",
+    "insight": "局部接入新代码与整页重建的不同，能在真实表单状态中观察；更新成功仍要处理旧模块留下的副作用。",
     "quiz": {
       "question": "HMR 与整页重载的主要区别是什么？",
       "options": [
         {
-          "label": "HMR 尝试只替换受影响模块，页面其余部分的状态保持不变",
+          "label": "HMR 尝试局部接入新代码，状态是否保留取决于边界及状态归属",
           "correct": true
         },
         {
@@ -11072,205 +11012,193 @@
     },
     "sources": [
       {
-        "url": "https://vite.dev/guide/api-hmr",
-        "label": "Vite 官方文档 · HMR API",
-        "note": "更新消息、accept 和 dispose 边界"
+        "url": "https://webpack.js.org/concepts/hot-module-replacement/",
+        "label": "webpack · Hot Module Replacement",
+        "note": "运行中替换与更新传播、更新范围"
       },
       {
-        "url": "https://webpack.js.org/concepts/hot-module-replacement/",
-        "label": "webpack 官方文档 · Hot Module Replacement",
-        "note": "开发服务器与局部模块替换"
+        "url": "https://vite.dev/guide/api-hmr",
+        "label": "Vite · HMR API",
+        "note": "接收边界及手动 API 的适用者"
       },
       {
         "url": "https://webpack.js.org/api/hot-module-replacement/",
-        "label": "webpack 官方文档 · HMR API",
-        "note": "模块接受、清理和回退路径"
+        "label": "webpack · HMR API",
+        "note": "旧模块副作用清理与状态传递"
       },
       {
-        "url": "https://github.com/pmmmwh/react-refresh-webpack-plugin",
-        "label": "React Refresh Webpack Plugin",
-        "note": "组件刷新与状态保留限制"
+        "url": "https://nextjs.org/docs/architecture/fast-refresh",
+        "label": "Next.js · Fast Refresh",
+        "note": "React 状态保留及回退/重新挂载限制"
       }
     ]
   },
   {
     "slug": "dependency",
-    "lead": "清单只写了 A，为什么安装图里还会出现 B？",
-    "definition": "直接依赖是项目自己声明的包；传递依赖是这些包继续需要的包。包管理器（负责安装的工具）会顺着这些包自己的声明，一层层找出还需要哪些包，凑齐完整清单；再结合版本约束和锁文件，决定每个包实际装哪个版本。",
-    "boundary": "开发依赖主要服务构建和测试，可选依赖是否安装或使用由包管理器和环境条件决定；它们和运行时依赖的用途不同。能从应用节点到达一个包，不等于应用运行时一定会用到它；删掉一条依赖关系后，只要还有别的路径能指向这个包，它就不会从安装结果里消失。",
+    "lead": "只装日历，为什么有好几个陌生包；撤掉日历以后，日期工具还需要吗？",
+    "definition": "依赖是代码之间的需要关系；应用声明的是直接依赖，依赖继续需要的包沿关系进入项目，成为传递依赖。",
+    "boundary": "清单声明、锁记录、逻辑依赖关系和现有安装目录是不同证据。共享包仍有别的来处就不能一并删除；依赖数量不等于浏览器交付量，装包也不证明兼容或安全。",
     "sceneKind": "tree",
-    "sceneTitle": "直接依赖与传递依赖的边方向",
-    "actionLabel": "增删依赖节点",
+    "sceneTitle": "共享包的需要关系",
+    "actionLabel": "撤掉日历声明",
     "actors": [
       {
         "id": "app",
-        "label": "应用",
-        "detail": "根节点 · 应用清单",
-        "icon": "package",
-        "group": "项目"
+        "label": "我的应用",
+        "detail": "声明两个直接包",
+        "icon": "browser",
+        "group": "根"
       },
       {
-        "id": "a",
-        "label": "包 A",
-        "detail": "直接依赖",
+        "id": "calendar",
+        "label": "日历",
+        "detail": "calendar@1.0.0",
         "icon": "package",
-        "group": "一层"
+        "group": "直接"
       },
       {
-        "id": "b",
-        "label": "包 B",
-        "detail": "A 的传递依赖",
+        "id": "exporter",
+        "label": "导出",
+        "detail": "exporter@1.0.0",
         "icon": "package",
-        "group": "二层"
+        "group": "直接"
       },
       {
-        "id": "report",
-        "label": "依赖报告",
-        "detail": "可达 2 个",
+        "id": "date",
+        "label": "日期工具",
+        "detail": "date-format@2.1.0",
+        "icon": "package",
+        "group": "共享传递"
+      },
+      {
+        "id": "locale",
+        "label": "语言数据",
+        "detail": "locale-data@1.0.0",
         "icon": "file",
-        "group": "结果"
+        "group": "传递"
       },
       {
-        "id": "lock",
-        "label": "锁文件",
-        "detail": "A@1.4 · B@2.1",
-        "icon": "file",
-        "group": "版本"
+        "id": "disk",
+        "label": "示例安装目录",
+        "detail": "与声明独立，直到同步才改变",
+        "icon": "memory",
+        "group": "文件状态"
       }
     ],
-    "edges": [
-      {
-        "id": "app-a",
-        "from": "app",
-        "to": "a",
-        "label": "直接依赖"
-      },
-      {
-        "id": "a-b",
-        "from": "a",
-        "to": "b",
-        "label": "传递依赖"
-      },
-      {
-        "id": "tree-report",
-        "from": "app",
-        "to": "report",
-        "label": "统计可达"
-      },
-      {
-        "id": "app-lock",
-        "from": "app",
-        "to": "lock",
-        "label": "记录版本"
-      }
-    ],
+    "edges": [],
     "frames": [
       {
-        "label": "只看根节点",
-        "note": "应用清单还没有外部包，依赖报告可达数为 0，锁文件里还没有 A 和 B 的任何版本记录。",
+        "label": "两个来处",
+        "note": "应用同时声明日历和导出；两者都需要日期工具，日期工具还需要语言数据。",
         "activeIds": [
-          "app",
-          "report",
-          "lock"
+          "calendar",
+          "exporter",
+          "date",
+          "locale"
         ],
         "doneIds": [],
-        "mutedIds": [
-          "a",
-          "b"
-        ],
+        "mutedIds": [],
         "values": {
-          "report": "0",
-          "lock": "空"
+          "app": "直接2 · 传递2",
+          "disk": "4个包"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "加入 A",
-        "note": "应用向 A 画出一条依赖边（一条指向关系）；清单只说“要 A”，这次演示装的是 A@1.4。",
+        "label": "撤掉日历",
+        "note": "日历不再可达，但导出继续需要日期工具和语言数据；当前目录保留旧日历直到同步。",
         "activeIds": [
-          "app",
-          "a",
-          "report",
-          "lock"
+          "exporter",
+          "date",
+          "locale"
         ],
         "doneIds": [],
-        "mutedIds": [
-          "b"
-        ],
-        "values": {
-          "report": "直接 1",
-          "lock": "A@1.4"
-        },
-        "activeEdgeIds": [
-          "app-a",
-          "tree-report",
-          "app-lock"
-        ]
-      },
-      {
-        "label": "展开 B",
-        "note": "顺着 A 自己的声明找到 B：B 是传递依赖；应用清单没有写它，但包管理器会把它加进这次要安装的包里面。",
-        "activeIds": [
-          "a",
-          "b",
-          "report",
-          "lock"
-        ],
-        "doneIds": [
-          "app"
-        ],
         "mutedIds": [],
         "values": {
-          "report": "直接 1 · 传递 1",
-          "lock": "A@1.4 · B@2.1"
+          "app": "直接1 · 传递2",
+          "disk": "旧目录4个"
         },
-        "activeEdgeIds": [
-          "a-b",
-          "app-lock"
-        ]
+        "activeEdgeIds": []
       },
       {
-        "label": "删除 A",
-        "note": "移除应用到 A 的边后，若没有其他路径，B 对应用不再可达；B 不一定会立刻从磁盘删掉：还要看有没有别的包继续需要它，以及这个工具自己怎么清理。",
+        "label": "所有直接声明撤掉",
+        "note": "应用可达包为0，示例目录仍有以前装过的4个包。",
         "activeIds": [
-          "app",
-          "report",
-          "lock"
+          "disk"
         ],
         "doneIds": [],
-        "mutedIds": [
-          "a",
-          "b"
-        ],
+        "mutedIds": [],
         "values": {
-          "report": "2 → 0",
-          "lock": "重新解析"
+          "app": "可达0",
+          "disk": "旧目录4个"
         },
-        "activeEdgeIds": [
-          "tree-report",
-          "app-lock"
-        ]
+        "activeEdgeIds": []
+      },
+      {
+        "label": "按当前清单同步",
+        "note": "仅同步操作改变独立目录状态；没有需要关系时目录变为空。",
+        "activeIds": [
+          "disk"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "app": "可达0",
+          "disk": "空目录"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "日期工具缺失",
+        "note": "恢复两个直接声明，模拟下一次同步缺少日期工具；关系仍需要4个包，目录缺date-format。",
+        "activeIds": [
+          "date",
+          "disk"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "app": "可达4",
+          "date": "需要但缺失",
+          "disk": "只有3个包"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "修复示例目录",
+        "note": "关闭故障后再同步才补回日期工具；只关闭开关不会修复已有缺失。",
+        "activeIds": [
+          "date",
+          "disk"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "app": "可达4",
+          "disk": "4个包齐全"
+        },
+        "activeEdgeIds": []
       }
     ],
-    "insight": "依赖图说明包之间的需要关系，版本约束和锁文件决定具体版本；直接、传递、开发、可选和运行用途要分开看。",
+    "insight": "先追溯谁需要这个包，再把当前关系、锁记录和目录对上；撤掉一条需要关系不等于删掉共享包。",
     "quiz": {
-      "question": "B 没有写在应用清单里，却出现在安装结果中，最可能为什么？",
+      "question": "撤掉日历后，导出仍需要日期工具，能直接删掉日期工具吗？",
       "options": [
         {
-          "label": "B 是直接依赖 A 的传递依赖",
+          "label": "不能，导出仍通过依赖关系需要它",
           "correct": true
         },
         {
-          "label": "安装工具随机添加了 B",
+          "label": "能，根清单没直接写日期工具",
           "correct": false
         },
         {
-          "label": "B 一定是操作系统文件",
+          "label": "能，传递依赖都没有用途",
           "correct": false
         }
       ],
-      "success": "安装工具会沿 A 的依赖关系继续解析 B。",
-      "retry": "想想依赖图里的下一层边。"
+      "success": "要看全部来处，共享包仍可能被别的直接依赖需要。",
+      "retry": "根清单没有直接声明，不表示其他包不需要它。"
     },
     "prompt": {
       "title": "梳理一项依赖",
@@ -11278,29 +11206,29 @@
     },
     "sources": [
       {
-        "url": "https://docs.npmjs.com/cli/v11/configuring-npm/package-json",
-        "label": "npm 官方文档 · package.json",
-        "note": "dependencies、devDependencies 和 optionalDependencies"
+        "url": "https://docs.npmjs.com/cli/v11/configuring-npm/package-json/",
+        "label": "npm · package.json",
+        "note": "依赖声明、开发/可选/宿主用途"
       },
       {
-        "url": "https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json",
-        "label": "npm 官方文档 · package-lock.json",
-        "note": "记录解析后的确切依赖树，帮助后续安装复现相同结果"
+        "url": "https://docs.npmjs.com/cli/v11/commands/npm-ls/",
+        "label": "npm · npm ls",
+        "note": "逻辑依赖树与追溯来处"
       },
       {
-        "url": "https://semver.org/",
-        "label": "Semantic Versioning 规范",
-        "note": "版本号和版本范围的比较规则"
+        "url": "https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json/",
+        "label": "npm · package-lock.json",
+        "note": "确切树和具体版本的锁记录"
       },
       {
-        "url": "https://nodejs.org/api/packages.html",
-        "label": "Node.js 官方文档 · Packages",
-        "note": "包解析、exports 和运行时加载边界"
+        "url": "https://docs.npmjs.com/cli/v11/commands/npm-ci/",
+        "label": "npm · npm ci",
+        "note": "清单锁记录不符会失败、目录布局策略"
       },
       {
-        "url": "https://docs.npmjs.com/cli/v11/using-npm/scripts",
-        "label": "npm 官方文档 · Scripts",
-        "note": "开发脚本、安装生命周期与用途区分"
+        "url": "https://docs.npmjs.com/cli/v11/commands/npm-prune/",
+        "label": "npm · npm prune",
+        "note": "正常清理与异常残留"
       }
     ]
   },

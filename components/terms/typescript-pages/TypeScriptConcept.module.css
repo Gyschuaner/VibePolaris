@@ -1,0 +1,47 @@
+.miniEditor{position:relative;height:202px;max-width:330px;margin:0 auto;padding:16px 19px;border-left:2px solid var(--hairline);background:linear-gradient(110deg,var(--surface),transparent);color:var(--ink)}
+.miniLabel{position:relative;height:22px;font-size:11px;color:var(--muted)}
+.miniLabel span:last-child{position:absolute;left:0;opacity:0;animation:showRuntime 6s ease both}
+.miniLabel span:first-child{animation:hideTypes 6s ease both}
+.miniCode{display:block;white-space:nowrap;font-size:13px;line-height:1.6}
+.miniType{display:inline-block;width:8ch;color:var(--accent-text);background:var(--tint);overflow:hidden;vertical-align:bottom;animation:eraseType 6s ease both}
+.miniCall{display:block;margin-top:8px;font-size:19px}
+.miniCall span{position:relative}
+.miniCall span::after{content:"";position:absolute;left:0;right:0;bottom:-3px;border-bottom:2px wavy #a44a3f;transform-origin:left;animation:underlineMismatch 6s ease both}
+.miniNotice{position:relative;margin-top:9px;height:27px;font-size:11px;color:#a44a3f}
+.miniNotice span{animation:hideTypes 6s ease both}.miniNotice strong{position:absolute;left:0;top:0;font-size:23px;font-weight:600;color:var(--accent-text);animation:showRuntime 6s ease both}
+@keyframes eraseType{0%,55%{width:8ch;opacity:1}75%,100%{width:0;opacity:0}}
+@keyframes hideTypes{0%,55%{opacity:1}70%,100%{opacity:0}}
+@keyframes showRuntime{0%,70%{opacity:0;transform:translateY(5px)}88%,100%{opacity:1;transform:none}}
+@keyframes underlineMismatch{0%,8%{transform:scaleX(0);opacity:0}25%,55%{transform:scaleX(1);opacity:1}70%,100%{opacity:0}}
+.lab{margin:28px 0 16px;padding:22px;border:1px solid var(--hairline);border-radius:16px;background:color-mix(in srgb,var(--surface) 75%,transparent);color:var(--ink);font-size:14px;line-height:1.5}
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:7px}
+.controls>span{margin-right:7px;color:var(--muted);font-size:12px}
+.lab button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:8px 13px;border:1px solid var(--hairline);border-radius:8px;background:transparent;color:var(--ink);font:inherit;font-size:12px;cursor:pointer}
+.lab button[aria-pressed="true"]{background:var(--tint);border-color:var(--accent-text);color:var(--accent-text)}
+.lab button:hover{background:var(--tint)}.lab button:focus-visible{outline:2px solid var(--accent-text);outline-offset:3px}
+.editor{margin-top:18px;border:1px solid var(--hairline);border-radius:10px;overflow:hidden;background:var(--paper)}
+.editorHead{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:10px 15px;border-bottom:1px solid var(--hairline);font-size:12px;color:var(--muted)}
+.lab pre{margin:0;padding:21px 16px;overflow:auto;font-size:14px;line-height:1.85;tab-size:2}
+.lab pre code{font:inherit;font-family:var(--font-mono),monospace;background:none;padding:0;white-space:pre}
+.keyword{color:var(--accent-text)}
+.typeAnnotation{display:inline-block;max-width:9ch;background:var(--tint);color:var(--accent-text);overflow:hidden;vertical-align:bottom;animation:revealType .35s ease both}
+.argument{display:inline-block;animation:placeValue .35s ease both}
+.argument[data-error="true"]{text-decoration:underline wavy #a44a3f;text-underline-offset:5px}
+.diagnostic{display:flex;align-items:center;gap:9px;min-height:48px;padding:10px 16px;border-top:1px solid var(--hairline);color:var(--accent-text);font-size:12px}
+.diagnostic svg{flex-shrink:0}.diagnostic[data-error="true"]{color:#a44a3f;background:color-mix(in srgb,#a44a3f 4%,var(--paper))}
+.runStrip{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin-top:18px}
+.runStrip output{display:flex;align-items:baseline;gap:12px;min-height:40px}
+.runStrip output>span{color:var(--muted);font-size:11px}.runStrip strong{font-family:var(--font-mono),monospace;font-size:25px;color:var(--accent-text);animation:placeValue .35s ease both}
+.runStrip output[data-rejected="true"] strong{font-family:inherit;font-size:15px;color:#a44a3f}
+.lab figcaption{margin-top:16px;color:var(--muted);font-size:12px;line-height:1.7}
+.lab figcaption code{font-size:inherit}
+.boundaryBoard{display:grid;grid-template-columns:155px minmax(0,1fr);align-items:center;gap:22px;margin-top:20px}
+.specimen{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:200px;border:1px dashed var(--hairline);border-radius:50%;background:var(--paper)}
+.specimen>span{font-size:11px;color:var(--muted)}.specimen>code{font-size:42px;font-weight:500;color:var(--ink);background:none;animation:placeValue .35s ease both}
+.typeSticker{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%) rotate(-5deg);width:max-content;padding:5px 10px;border:1px solid var(--hairline);border-radius:3px;background:var(--tint);font-size:11px;color:var(--accent-text);transition:transform .3s}
+.typeSticker[data-check="true"]{transform:translateX(-50%) rotate(0)}
+.boundaryCode{min-width:0}.boundaryCode pre{margin-top:10px;padding:18px 12px;background:var(--paper);border-radius:8px;font-size:12px}
+@keyframes placeValue{from{opacity:.4;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes revealType{from{max-width:0;opacity:0}to{max-width:9ch;opacity:1}}
+@media(max-width:600px){.lab{padding:16px 12px}.lab pre{font-size:12px;padding:17px 12px}.boundaryBoard{grid-template-columns:1fr;gap:24px}.specimen{width:155px;min-height:155px;margin:auto}.runStrip{align-items:flex-start}.runStrip output{width:100%;justify-content:flex-end}.boundaryCode pre{font-size:11px}.miniEditor{max-width:310px}}
+@media(prefers-reduced-motion:reduce){.miniEditor *, .miniEditor *::after, .lab *{animation:none!important;transition:none!important}.miniType{width:8ch;opacity:1}.miniLabel span:last-child,.miniNotice strong{display:none}.miniCall span::after{opacity:1;transform:none}}
