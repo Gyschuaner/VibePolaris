@@ -1,0 +1,134 @@
+{
+  "slug": "cloudflare-clef-decision-models-20261001",
+  "title": "Cloudflare 发布 Clef 决策模型：从给定选项中返回结构化结果",
+  "summary": "Clef 与 Clef-flash 已在 Workers AI 提供，并开放 Apache 2.0 权重。模型面向工单分流等明确选择，直接为允许的答案评分。",
+  "body": "10 月 1 日，Cloudflare 发布 Clef 和 Clef-flash 两款决策模型。开发者先写明可选答案和返回类型，模型读取输入后给出相应分数，无需先生成一段自由文本再解析。\n\n例如，客服工单可以在账单、技术和销售几个部门间分流。任务的重点是选出合适去向，系统仍要决定什么情况下转交人工。",
+  "publishedAt": "2026-10-01",
+  "eventDate": "2026-10-01",
+  "isExample": false,
+  "hero": {
+    "url": "https://blog.cloudflare.com/_emdash/api/media/file/01M3TJV43SPQCPKJ6GBXFCDKNE.01M3TJV53VYDMVNCZDPH1FBFYN.png",
+    "alt": "Clef 决策模型发布公告配图",
+    "sourceUrl": "https://blog.cloudflare.com/clef-decision-models/",
+    "license": "原文配图，版权归原发布方；未声明开放许可。",
+    "credit": "Cloudflare"
+  },
+  "sections": [
+    {
+      "id": "part-1",
+      "title": "把输出限制在明确选项里",
+      "body": "模型根据开发者提供的结构给允许答案评分，支持文字与图像输入。Cloudflare 表示它基于 Qwen 做后训练；有限选项能减少格式解析工作，但不保证分类一定正确。",
+      "kind": "technical"
+    },
+    {
+      "id": "part-2",
+      "title": "已经开放哪些入口",
+      "body": "两款模型可在 Workers AI 调用，也可从 Hugging Face 获取 Apache 2.0 权重。面向特定业务的微调服务先由工程团队协作提供，面向客户的自助微调平台属于后续安排。",
+      "kind": "narrative"
+    },
+    {
+      "id": "part-3",
+      "title": "结构合规仍要核对判断",
+      "body": "工单被分到一个合法部门，仍可能分错。公告的性能比较属于 Cloudflare 的评估，部署者需要使用自己的业务样本检查误判和人工接手条件。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "data-motion",
+    "title": "一张工单怎样变成一个去向？",
+    "question": "限定输出选项解决了哪一步的问题？",
+    "steps": [
+      {
+        "label": "规定选项",
+        "detail": "列出账单、技术和销售等允许答案。"
+      },
+      {
+        "label": "读取工单",
+        "detail": "模型根据文字或图像给选项评分。"
+      },
+      {
+        "label": "执行分流",
+        "detail": "工作流读取结构化结果，处理需人工接手的情况。"
+      }
+    ]
+  },
+  "source": {
+    "name": "Cloudflare",
+    "url": "https://blog.cloudflare.com/clef-decision-models/"
+  },
+  "relatedSlugs": [
+    "structured-output",
+    "eval"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://blog.cloudflare.com/clef-decision-models/",
+      "claim": "Cloudflare 于 2026-10-01 发布 Clef 与 Clef-flash 决策模型，提供 Workers AI 托管调用和 Apache 2.0 权重；自助微调平台为后续安排。",
+      "excerpt": "核对要点（意译）：给定有类型的选项并评分；微调先由工程团队协作，后续才提供自助平台。"
+    }
+  ],
+  "canonicalUrl": "https://blog.cloudflare.com/clef-decision-models",
+  "sourceHash": "sha256:a728b1fe89b8a88506743685c4190298c77022bb38c8096f5cf2fe951478942d",
+  "status": "published",
+  "discoveredAt": "2026-10-15T15:53:06Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "structured-output",
+      "score": 1,
+      "evidence": [
+        "Cloudflare 于 2026-10-01 发布 Clef 与 Clef-flash 决策模型，提供 Workers AI 托管调用和 Apache 2.0 权重；自助微调平台为后续安排。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 1,
+      "evidence": [
+        "Cloudflare 于 2026-10-01 发布 Clef 与 Clef-flash 决策模型，提供 Workers AI 托管调用和 Apache 2.0 权重；自助微调平台为后续安排。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://blog.cloudflare.com/clef-decision-models/",
+      "claim": "Cloudflare 于 2026-10-01 发布 Clef 与 Clef-flash 决策模型，提供 Workers AI 托管调用和 Apache 2.0 权重；自助微调平台为后续安排。",
+      "excerpt": "核对要点（意译）：给定有类型的选项并评分；微调先由工程团队协作，后续才提供自助平台。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-15T15:56:11Z",
+    "method": "source",
+    "notes": "按本日来源逐条核对后，由独立子智能体再次联网审读；具体意见见 readerReview 与逐日证据。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-15T15:53:06Z",
+    "notes": "主助手按 humanizer-zh 审读并自审；独立子智能体结论记录在 readerReview。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-15T15:56:11Z",
+    "questions": [
+      "有限选项的结构化结果是否保证判断正确？",
+      "已开放哪些功能，自助微调何时可用？"
+    ],
+    "notes": "独立复审核实已删除不对应的模型路由关联；正文保留有限选项评分、Qwen 背景、开放范围和自助微调后续安排的边界，内容审查通过。",
+    "changes": [
+      "补入本日遗漏的官方决策模型发布。",
+      "删除与部门分流不对应的 model-routing 词条及关系建议。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-october-review-2026-10-01",
+  "promotedAt": "2026-10-15T15:56:12.225Z"
+}
