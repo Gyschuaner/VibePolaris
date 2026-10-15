@@ -1,0 +1,131 @@
+{
+  "slug": "anthropic-distillation-defenses-update-20261012",
+  "title": "Anthropic 介绍反蒸馏措施：限制批量提取推理数据，也带来接入取舍",
+  "summary": "公司称新措施减少了被提取的数据，并讨论推理摘要与异常请求识别。相关效果和对其他公司的指控均来自 Anthropic 自身判断。",
+  "body": "10 月 12 日，Anthropic 介绍对抗未经授权模型蒸馏的措施。它称，一些行动通过大量账号和请求收集 Claude 的回答或推理材料，再用于训练其他模型；新的防御试图降低这类收集的价值和规模。\n\n蒸馏本身是一种训练方法：用教师模型的输出帮助学生模型学习。文章讨论的是公司认定未经授权的提取活动，不能把所有蒸馏研究都归为攻击。",
+  "publishedAt": "2026-10-12",
+  "eventDate": "2026-10-12",
+  "isExample": false,
+  "hero": {
+    "url": "https://www-cdn.anthropic.com/images/4zrzovbb/website/a5934d1ae8428b2a97fae1963a5f427594fc7202-1200x630.jpg",
+    "alt": "Anthropic 介绍反蒸馏措施：限制批量提取推理数据，也带来接入取舍：原文配图",
+    "sourceUrl": "https://www.anthropic.com/research/distillation-defenses",
+    "license": "原文配图，版权归原发布方；未声明开放许可。",
+    "credit": "Anthropic"
+  },
+  "sections": [
+    {
+      "id": "part-1",
+      "title": "为什么推理材料受到关注",
+      "body": "学生模型除了模仿最终答案，也可能从解题过程学习。Anthropic 因此讨论推理摘要、识别索取隐藏推理的异常请求等措施。可提供给用户的解释，与服务内部完整推理材料之间，存在产品和安全边界。",
+      "kind": "technical"
+    },
+    {
+      "id": "part-2",
+      "title": "防御措施会影响正常接入",
+      "body": "原文承认这些措施存在取舍，包括拒绝部分付费流量、投入研发资源，以及要求部分合法用户调整集成方式。对开发者而言，输出变化和接口约束可能需要在自己的应用中重新检查。",
+      "kind": "narrative"
+    },
+    {
+      "id": "part-3",
+      "title": "如何理解效果与归因",
+      "body": "公司给出的九成至九成九提取量下降属于早期自身观察，不能换成模型被复制风险已经降低同等比例。文中对其他公司的描述和安全判断也属于 Anthropic 的指控与评估，本条不将其表述为独立定论。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "secure-memory",
+    "title": "教师模型的回答为什么能成为训练数据？",
+    "question": "当平台改变可见输出时，会影响哪一段学习链条？",
+    "steps": [
+      {
+        "label": "收集教师输出",
+        "detail": "训练方取得回答或推理材料。"
+      },
+      {
+        "label": "训练学生模型",
+        "detail": "学生据此学习模仿相应能力。"
+      },
+      {
+        "label": "限制异常提取",
+        "detail": "服务商调整输出与访问控制。"
+      }
+    ]
+  },
+  "source": {
+    "name": "Anthropic",
+    "url": "https://www.anthropic.com/research/distillation-defenses"
+  },
+  "relatedSlugs": [
+    "knowledge-distillation",
+    "chain-of-thought",
+    "rate-limiting"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.anthropic.com/research/distillation-defenses",
+      "claim": "Anthropic 于 2026-10-12 介绍反蒸馏防御，讨论推理摘要、异常请求识别与正常用户接入的取舍。",
+      "excerpt": "核对要点（意译）：防御重点是让推理材料更难提取；公司承认存在成本和接入影响。"
+    }
+  ],
+  "canonicalUrl": "https://www.anthropic.com/research/distillation-defenses",
+  "sourceHash": "sha256:96bdca2be8279072abb3668b9d941b8e4560720ae46c4e0896cebaa4f28ddd58",
+  "status": "published",
+  "discoveredAt": "2026-10-15T15:21:45Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "knowledge-distillation",
+      "score": 1,
+      "evidence": [
+        "区分训练方法与未经授权提取；效果和对其他公司的判断均保留公司归属。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "chain-of-thought",
+      "score": 1,
+      "evidence": [
+        "区分训练方法与未经授权提取；效果和对其他公司的判断均保留公司归属。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "rate-limiting",
+      "score": 1,
+      "evidence": [
+        "区分训练方法与未经授权提取；效果和对其他公司的判断均保留公司归属。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.anthropic.com/research/distillation-defenses",
+      "claim": "Anthropic 于 2026-10-12 介绍反蒸馏防御，讨论推理摘要、异常请求识别与正常用户接入的取舍。",
+      "excerpt": "核对要点（意译）：防御重点是让推理材料更难提取；公司承认存在成本和接入影响。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-15T15:21:45Z",
+    "method": "source",
+    "notes": "核对原始发布页正文、日期及可用范围；来源指纹取实际抓取的规范化可读文本。区分训练方法与未经授权提取；效果和对其他公司的判断均保留公司归属。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-15T15:21:45Z",
+    "notes": "主助手按 humanizer-zh 自审中文，并模拟零基础读者追问后修订；未委派读者子代理。区分训练方法与未经授权提取；效果和对其他公司的判断均保留公司归属。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-october-2026-10-12",
+  "promotedAt": "2026-10-15T15:22:32.578Z"
+}
