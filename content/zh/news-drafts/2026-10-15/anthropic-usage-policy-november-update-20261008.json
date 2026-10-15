@@ -8,7 +8,7 @@
   "isExample": false,
   "hero": {
     "url": "https://www-cdn.anthropic.com/images/4zrzovbb/website/6d4a0d28992ade92d6fa63646fd9c9d318245c6c-2400x1260.jpg",
-    "alt": "Anthropic 公布新版使用政策，11 月 12 日生效：原文配图",
+    "alt": "Anthropic 使用政策更新公告配图",
     "sourceUrl": "https://www.anthropic.com/news/2026-usage-policy-update",
     "license": "原文配图，版权归原发布方；未声明开放许可。",
     "credit": "Anthropic"
@@ -17,7 +17,7 @@
     {
       "id": "part-1",
       "title": "规则为什么要从聊天延伸到动作",
-      "body": "当模型能够持续调用工具、发送内容或控制设备时，风险不只来自一段文字。原文增加自主物理动作的控制要求，并用新例子说明既有禁令怎样适用于这些能力。部署者需要对照自己的实际流程判断影响。",
+      "body": "原文明确，高风险用途仍需有权审阅和改变建议的合格人员参与，并告知受影响者使用了 AI。对可能致伤的自主设备，还要求合格操作员能观察并停止设备，Claude 断开后设备仍能保持安全状态。",
       "kind": "technical"
     },
     {
@@ -29,7 +29,7 @@
     {
       "id": "part-3",
       "title": "两个日期分别代表什么",
-      "body": "10 月 8 日是公开更新内容的日期，11 月 12 日才是公告给出的生效日期。把消息归档到十月，可以帮助读者了解即将变化的条件；正文不能因此声称新规则当天已经执行。",
+      "body": "10 月 8 日公开的是即将执行的条款，11 月 12 日才是公告给出的生效日期。企业可以利用这段间隔，对照自己的工具调用、人员复核和设备控制流程调整部署。",
       "kind": "boundary"
     }
   ],
@@ -57,8 +57,8 @@
     "url": "https://www.anthropic.com/news/2026-usage-policy-update"
   },
   "relatedSlugs": [
-    "model-spec",
     "guardrail",
+    "human-in-the-loop",
     "permission-boundary"
   ],
   "relatedArticleSlugs": [],
@@ -76,20 +76,20 @@
   "relationSuggestions": [
     {
       "kind": "term",
-      "slug": "model-spec",
+      "slug": "guardrail",
       "score": 1,
       "evidence": [
-        "保留生效日，区分服务政策与法律；准确写明政治内容规则的收窄及仍存在的限制。"
+        "Anthropic 于 2026-10-08 公布新版使用政策，明确 2026-11-12 生效并解释欺骗活动和自主物理动作等变化。"
       ],
       "method": "manual",
       "status": "confirmed"
     },
     {
       "kind": "term",
-      "slug": "guardrail",
+      "slug": "human-in-the-loop",
       "score": 1,
       "evidence": [
-        "保留生效日，区分服务政策与法律；准确写明政治内容规则的收窄及仍存在的限制。"
+        "Anthropic 于 2026-10-08 公布新版使用政策，明确 2026-11-12 生效并解释欺骗活动和自主物理动作等变化。"
       ],
       "method": "manual",
       "status": "confirmed"
@@ -99,7 +99,7 @@
       "slug": "permission-boundary",
       "score": 1,
       "evidence": [
-        "保留生效日，区分服务政策与法律；准确写明政治内容规则的收窄及仍存在的限制。"
+        "Anthropic 于 2026-10-08 公布新版使用政策，明确 2026-11-12 生效并解释欺骗活动和自主物理动作等变化。"
       ],
       "method": "manual",
       "status": "confirmed"
@@ -114,18 +114,33 @@
   ],
   "verification": {
     "status": "verified",
-    "checkedAt": "2026-10-15T15:21:45Z",
+    "checkedAt": "2026-10-15T16:56:04Z",
     "method": "source",
-    "notes": "核对原始发布页正文、日期及可用范围；来源指纹取实际抓取的规范化可读文本。保留生效日，区分服务政策与法律；准确写明政治内容规则的收窄及仍存在的限制。"
+    "notes": "按本日来源逐条核对后，由独立子智能体再次联网审读；具体意见见 readerReview 与逐日证据。"
   },
   "riskLevel": "major",
   "publishDecision": "auto",
   "modelReview": {
     "decision": "publish",
-    "checkedAt": "2026-10-15T15:21:45Z",
-    "notes": "主助手按 humanizer-zh 自审中文，并模拟零基础读者追问后修订；未委派读者子代理。保留生效日，区分服务政策与法律；准确写明政治内容规则的收窄及仍存在的限制。"
+    "checkedAt": "2026-10-15T16:56:04Z",
+    "notes": "主助手按当日一手来源核实并依 humanizer-zh 自审；本轮独立子智能体结论单独记录在 readerReview。"
   },
   "mechanicalErrors": [],
   "runId": "vbp-049-news-october-2026-10-08",
-  "promotedAt": "2026-10-15T15:22:30.371Z"
+  "promotedAt": "2026-10-15T15:22:30.371Z",
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-15T16:56:04Z",
+    "questions": [
+      "何时生效？",
+      "政治用途怎样调整？",
+      "自主设备必须具备什么控制？"
+    ],
+    "notes": "独立复审通过：公告日与生效日清楚，人工参与、停止设备和断连安全要求准确，关联及实际 OG 已核对。",
+    "changes": [
+      "补合格人员及自主设备控制条件。",
+      "删除 model-spec 弱关联与编辑口吻，使用功能性 alt。"
+    ]
+  }
 }

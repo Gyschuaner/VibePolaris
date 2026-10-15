@@ -1,0 +1,166 @@
+{
+  "slug": "aleph-alpha-kolibri-open-weights-20261003",
+  "title": "Aleph Alpha 开放 Kolibri 权重，面向德英双语企业应用",
+  "summary": "Kolibri 于 10 月 3 日开放，5 日另发新闻稿。模型共有约 780 亿参数，每个词元激活约 34.6 亿；较少的计算量不等于只需装下一个小模型。",
+  "body": "10 月 3 日，德国 AI 公司 Aleph Alpha 发布 Kolibri，开放可下载的模型权重。它专注德语和英语，面向企业文档处理、资料问答与工具调用。官方同日技术文章和模型卡均确认开放日期；10 月 5 日的新闻稿也回溯说明了这一点。\n\n企业可以把模型部署到自己控制的基础设施上。官方还介绍了根据输入文档回答、证据不足时拒答的训练，但这仍需在实际业务资料上检验。",
+  "publishedAt": "2026-10-03",
+  "eventDate": "2026-10-03",
+  "isExample": false,
+  "hero": {
+    "url": "https://aleph-alpha.com/_astro/00-cover.DUwFlxIO_ZzchVg.jpeg",
+    "alt": "绿色渐变背景上的 Kolibri 蜂鸟标志与名称",
+    "sourceUrl": "https://aleph-alpha.com/en/blog/kolibri-has-landed-a-sovereign-open-weight-model/",
+    "license": "原文配图，版权归原发布方；未声明开放许可。",
+    "credit": "Aleph Alpha"
+  },
+  "sections": [
+    {
+      "id": "part-1",
+      "title": "参数少算一些，内存仍要装下全部",
+      "body": "Kolibri 采用混合专家架构，共约 780 亿参数，每个词元激活约 34.6 亿。可以把它理解为每一步只调用部分专家，但完整模型仍须留在内存中。模型卡列出的 FP8 权重占用约 78GB，不能把激活参数当作设备容量要求。",
+      "kind": "technical"
+    },
+    {
+      "id": "part-2",
+      "title": "长文档有适用条件",
+      "body": "官方验证了最高 1,048,576 个词元的上下文，约为一百万。模型原生训练窗口为 262,144 个词元，针对复杂任务或延迟、吞吐要求较高的部署，官方建议不超过这个范围。窗口更大也不保证每处细节都能答对。",
+      "kind": "narrative"
+    },
+    {
+      "id": "part-3",
+      "title": "开放权重之后还要部署和评估",
+      "body": "模型卡将 Apache 2.0 许可用于权重与配置文件；其他软件和组件仍须分别核对条款。公开权重让使用者可以自行运行，所需硬件、部署维护和效果检查仍由使用者安排。官方比较表来自厂商自评，不能直接当作所有业务的排名。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "data-motion",
+    "title": "一大组专家怎样参与一次推理？",
+    "question": "只激活部分参数，为什么仍需要较大的内存？",
+    "steps": [
+      {
+        "label": "完整模型留在内存",
+        "detail": "部署时需要容纳全部权重与运行开销。"
+      },
+      {
+        "label": "每一步选择部分专家",
+        "detail": "不同词元只调用专家中的一部分参与计算。"
+      },
+      {
+        "label": "结合材料生成回答",
+        "detail": "模型根据输入文档与问题组织输出，再由使用者核对。"
+      }
+    ]
+  },
+  "source": {
+    "name": "Aleph Alpha",
+    "url": "https://aleph-alpha.com/en/blog/kolibri-has-landed-a-sovereign-open-weight-model/"
+  },
+  "relatedSlugs": [
+    "mixture-of-experts",
+    "context-window",
+    "model-card"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://aleph-alpha.com/en/blog/kolibri-has-landed-a-sovereign-open-weight-model/",
+      "claim": "Aleph Alpha 于 2026-10-03 开放 Kolibri；官方技术文章和模型卡确认日期，模型卡区分总参数、激活参数及推荐上下文范围。",
+      "excerpt": "核对要点（意译）：10 月 3 日开放；约 780 亿总参数、34.6 亿激活参数；复杂任务建议上下文不超过 262,144 词元。"
+    },
+    {
+      "url": "https://huggingface.co/Aleph-Alpha/Kolibri-1",
+      "claim": "官方模型卡列出释放日期、精确激活参数、权重占用、上下文建议及许可范围。",
+      "excerpt": "核对要点（意译）：Release Date 为 3rd of October 2026；总参数 78B、每词元激活 3.46B，复杂任务建议不超过 262,144 词元。"
+    },
+    {
+      "url": "https://aleph-alpha.com/en/news/kolibri-sovereign-ai-made-in-germany/",
+      "claim": "10 月 5 日新闻稿回溯确认模型自 10 月 3 日可用。",
+      "excerpt": "简要意译：新闻稿 dated 5 October，注明 available since 3 October。"
+    }
+  ],
+  "canonicalUrl": "https://aleph-alpha.com/en/blog/kolibri-has-landed-a-sovereign-open-weight-model",
+  "sourceHash": "sha256:b192d8dbccc949f6a558f267b1fb1f173c2ae42085c6823ab775cdaa6afb348f",
+  "status": "published",
+  "discoveredAt": "2026-10-15T16:07:51Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "mixture-of-experts",
+      "score": 1,
+      "evidence": [
+        "Aleph Alpha 于 2026-10-03 开放 Kolibri；官方技术文章和模型卡确认日期，模型卡区分总参数、激活参数及推荐上下文范围。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context-window",
+      "score": 1,
+      "evidence": [
+        "Aleph Alpha 于 2026-10-03 开放 Kolibri；官方技术文章和模型卡确认日期，模型卡区分总参数、激活参数及推荐上下文范围。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "model-card",
+      "score": 1,
+      "evidence": [
+        "Aleph Alpha 于 2026-10-03 开放 Kolibri；官方技术文章和模型卡确认日期，模型卡区分总参数、激活参数及推荐上下文范围。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://aleph-alpha.com/en/blog/kolibri-has-landed-a-sovereign-open-weight-model/",
+      "claim": "Aleph Alpha 于 2026-10-03 开放 Kolibri；官方技术文章和模型卡确认日期，模型卡区分总参数、激活参数及推荐上下文范围。",
+      "excerpt": "核对要点（意译）：10 月 3 日开放；约 780 亿总参数、34.6 亿激活参数；复杂任务建议上下文不超过 262,144 词元。"
+    },
+    {
+      "url": "https://huggingface.co/Aleph-Alpha/Kolibri-1",
+      "claim": "官方模型卡列出释放日期、精确激活参数、权重占用、上下文建议及许可范围。",
+      "excerpt": "核对要点（意译）：Release Date 为 3rd of October 2026；总参数 78B、每词元激活 3.46B，复杂任务建议不超过 262,144 词元。"
+    },
+    {
+      "url": "https://aleph-alpha.com/en/news/kolibri-sovereign-ai-made-in-germany/",
+      "claim": "10 月 5 日新闻稿回溯确认模型自 10 月 3 日可用。",
+      "excerpt": "简要意译：新闻稿 dated 5 October，注明 available since 3 October。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-15T16:13:56Z",
+    "method": "source",
+    "notes": "按本日来源逐条核对后，由独立子智能体再次联网审读；具体意见见 readerReview 与逐日证据。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-15T16:13:56Z",
+    "notes": "主助手按当日一手来源核实并依 humanizer-zh 自审；本轮独立子智能体结论单独记录在 readerReview。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-15T16:13:56Z",
+    "questions": [
+      "到底是 3 日还是 5 日开放？",
+      "780 亿总参数为何只激活 34.6 亿，还要约 78GB？",
+      "百万词元是否随便可用？"
+    ],
+    "notes": "独立联网复审通过：同日技术文章及模型卡确认 3 日开放；许可范围、总参数与激活参数、内存占用及长上下文条件准确，原图链接与三个词条关系成立。",
+    "changes": [
+      "补入原空档漏掉的开放权重事件。",
+      "按建议追加 10 月 5 日回溯新闻稿来源。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-october-review-2026-10-03",
+  "promotedAt": "2026-10-15T16:13:56.452Z"
+}

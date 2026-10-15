@@ -1,0 +1,113 @@
+{
+  "eventDate": "2026-10-05",
+  "reviewer": "codex-subagent-reader",
+  "agent": "/root/october_news_review",
+  "status": "passed",
+  "searchedAt": "2026-10-15T16:22:54Z",
+  "queries": [
+    "AI October 5 2026 official Beam Reflection",
+    "2026年10月5日 AI 发布 新闻",
+    "site.openai.com October 5 2026 textGrain"
+  ],
+  "sourceUrls": [
+    "https://openai.com/index/new-chatgpt-ads-format-and-measurement/",
+    "https://reflection.ai/blog/introducing-beam",
+    "https://openai.com/index/eu-text-provenance/",
+    "https://cdn.openai.com/pdf/e9508624-d767-41b6-a26d-e34ca798ada6/textgrain-entropy-calibrated-watermarking-for-language-model-text.pdf"
+  ],
+  "excludedCandidates": [
+    {
+      "title": "Rosalind 计费生效",
+      "reason": "既有公告中的 10 月 5 日价格生效，不是新模型发布；本轮优先收录新公告。"
+    },
+    {
+      "title": "NASA/IBM 月球模型",
+      "url": "https://science.nasa.gov/science-research/artificial-intelligence-lunar-foundation-model/",
+      "reason": "原文为 9 月 10 日，不能按汇总日 10 月 5 日收录。"
+    },
+    {
+      "title": "ThinkingBox",
+      "url": "https://huggingface.co/blog/microsoft/thinkingbox",
+      "reason": "官方新文章为 10 月 3 日，不按 10 月 5 日转载算新事件。"
+    }
+  ],
+  "rounds": [
+    {
+      "checkedAt": "2026-10-15T16:22:54Z",
+      "decision": "needs-revision",
+      "findings": [
+        {
+          "severity": "P2",
+          "issue": "首轮漏掉 Beam 介绍与文本水印新公告；广告稿 alt 重复标题。"
+        }
+      ]
+    },
+    {
+      "checkedAt": "2026-10-15T16:26:03Z",
+      "decision": "needs-revision",
+      "findings": [
+        {
+          "slug": "openai-textgrain-eu-watermark-plan-20261005",
+          "severity": "P2",
+          "issue": "原样复制并不改变措辞信号，不应与编辑并列成信号削弱的原因。"
+        }
+      ]
+    },
+    {
+      "checkedAt": "2026-10-15T16:27:03Z",
+      "decision": "passed",
+      "reports": {
+        "openai-chatgpt-visual-ads-test-20261005": {
+          "questions": [
+            "5 日已经上线了吗？",
+            "哪些地区和套餐参与？",
+            "广告会进入图片或影响回答吗？"
+          ],
+          "notes": "独立复审通过：公告日、后续测试、美国 Free/Go 范围及广告分离的公司承诺有一手支持；功能性 alt 已复核，应用图片加载留最终验收。",
+          "changes": [
+            "将标题重复的 alt 改为功能性说明。"
+          ]
+        },
+        "reflection-beam-early-access-20261005": {
+          "questions": [
+            "现在能下载权重吗？",
+            "OCR 演示意味着原生识图吗？",
+            "计算量估算等于价格吗？"
+          ],
+          "notes": "独立复审通过：少数用户早期访问与未来权重及许可计划分开；参数、文本模型边界和后续评测修订准确，实际缓存确认当前图片来自 OG 元标签。",
+          "changes": [
+            "补入原先遗漏的 Beam 介绍及早期访问公告。"
+          ]
+        },
+        "openai-textgrain-eu-watermark-plan-20261005": {
+          "questions": [
+            "哪些用户当天能开启？",
+            "检测器人人可用吗？",
+            "原样复制会去掉水印吗？",
+            "检测能判断人类贡献吗？"
+          ],
+          "notes": "独立公告与 PDF 核对后通过：API、欧盟产品、检测器的开放范围分开，误报漏报与人类贡献边界准确；已实际查看图 1 节选，与原报告第 4 页相符。复制机制修订后再次复核。",
+          "changes": [
+            "补入文本水印公告。",
+            "澄清原样复制不削弱措辞信号，改写删减翻译可能减弱。",
+            "将编辑者式提醒改为面向读者的事实陈述。"
+          ]
+        }
+      }
+    }
+  ],
+  "selectedSlugs": [
+    "openai-chatgpt-visual-ads-test-20261005",
+    "reflection-beam-early-access-20261005",
+    "openai-textgrain-eu-watermark-plan-20261005"
+  ],
+  "imageProvenance": {
+    "article": "openai-textgrain-eu-watermark-plan-20261005",
+    "sourceUrl": "https://cdn.openai.com/pdf/e9508624-d767-41b6-a26d-e34ca798ada6/textgrain-entropy-calibrated-watermarking-for-language-model-text.pdf",
+    "page": 4,
+    "figure": 1,
+    "method": "Poppler 渲染原始矢量图，不重绘；主助手已查看渲染结果。",
+    "asset": "public/images/news/textgrain-figure1-20261005.png"
+  },
+  "completedAt": "2026-10-15T16:27:03Z"
+}

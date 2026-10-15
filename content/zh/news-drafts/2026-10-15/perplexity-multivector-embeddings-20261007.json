@@ -1,0 +1,149 @@
+{
+  "slug": "perplexity-multivector-embeddings-20261007",
+  "title": "Perplexity 开放多向量嵌入模型，让检索保留文档内部细节",
+  "summary": "pplx-embed-v2-late 支持文字和图片检索，两种规模共享向量空间。小模型可查询大模型建立的索引，代价是索引和比较需要处理更多向量。",
+  "body": "10 月 7 日，Perplexity 发布 pplx-embed-v2-late 系列，官方首帖确认两款模型已在 Hugging Face 公开。它们面向文字、图片和视觉文档的检索，不是直接撰写回答的聊天模型。\n\n与把整个输入压缩成一个向量不同，模型为词元保留多个向量，让问题中的不同部分分别匹配文档细节。",
+  "publishedAt": "2026-10-07",
+  "eventDate": "2026-10-07",
+  "isExample": false,
+  "hero": {
+    "url": "https://us1.discourse-cdn.com/flex001/uploads/sonar1/optimized/2X/4/461dd0a04599752be55cb24628acd7ed5939d874_2_1024x537.jpeg",
+    "alt": "Perplexity 多向量嵌入模型公告的官方配图",
+    "sourceUrl": "https://community.perplexity.ai/t/were-releasing-pplx-embed-v2-late-two-late-interaction-embedding-models-that-retrieve-text-images-and-pages-with-a-shared-embedding-space-for-cross-model-querying/6296",
+    "license": "原文配图，版权归原发布方；未声明开放许可。",
+    "credit": "Perplexity"
+  },
+  "sections": [
+    {
+      "id": "part-1",
+      "title": "两种规模怎样配合",
+      "body": "官方模型卡列出 0.6B 和 9B 两个型号，每个词元输出 128 维向量。两者共享嵌入空间，因此可以先用较大的模型建立文档索引，再用较小模型处理查询。",
+      "kind": "technical"
+    },
+    {
+      "id": "part-2",
+      "title": "保留细节也有开销",
+      "body": "多向量表示需要存储和比较更多数据，选择方案时要看检索质量、文档长度和服务开销。官方导出用法还要求分别编码纯文字批次与纯图片批次，不支持把图文混在同一输入中；检索到相关内容也不证明内容属实。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "data-motion",
+    "title": "一个问题怎样匹配一页文档中的不同细节？",
+    "question": "为什么多个向量可能保留更多线索？",
+    "steps": [
+      {
+        "label": "建立文档表示",
+        "detail": "为内容片段保留多个向量。"
+      },
+      {
+        "label": "编码查询",
+        "detail": "把问题也转成便于比较的表示。"
+      },
+      {
+        "label": "聚合匹配",
+        "detail": "比较局部线索，得到整页相关性。"
+      }
+    ]
+  },
+  "source": {
+    "name": "Perplexity",
+    "url": "https://community.perplexity.ai/t/were-releasing-pplx-embed-v2-late-two-late-interaction-embedding-models-that-retrieve-text-images-and-pages-with-a-shared-embedding-space-for-cross-model-querying/6296"
+  },
+  "relatedSlugs": [
+    "embedding",
+    "semantic-search",
+    "multimodal"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://community.perplexity.ai/t/were-releasing-pplx-embed-v2-late-two-late-interaction-embedding-models-that-retrieve-text-images-and-pages-with-a-shared-embedding-space-for-cross-model-querying/6296",
+      "claim": "Perplexity 官方首帖 10 月 7 日发布两款公开的多向量检索模型；模型卡说明共享空间与使用限制。",
+      "excerpt": "核对要点（意译）：两款模型在 Hugging Face 可得，支持文字及视觉文档检索。"
+    },
+    {
+      "url": "https://huggingface.co/perplexity-ai/pplx-embed-v2-late-0.6b",
+      "claim": "官方模型卡提供 128 维逐词元向量、共享空间、两型号及批次输入限制。",
+      "excerpt": "较小模型可查询较大模型的索引；纯文字与纯图片需分别编码。"
+    }
+  ],
+  "canonicalUrl": "https://community.perplexity.ai/t/were-releasing-pplx-embed-v2-late-two-late-interaction-embedding-models-that-retrieve-text-images-and-pages-with-a-shared-embedding-space-for-cross-model-querying/6296",
+  "sourceHash": "sha256:f03d4784fca353adcbca30b8baa846483049646826b3e40b487587503628e195",
+  "status": "published",
+  "discoveredAt": "2026-10-15T16:40:22Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "embedding",
+      "score": 1,
+      "evidence": [
+        "Perplexity 官方首帖 10 月 7 日发布两款公开的多向量检索模型；模型卡说明共享空间与使用限制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "semantic-search",
+      "score": 1,
+      "evidence": [
+        "Perplexity 官方首帖 10 月 7 日发布两款公开的多向量检索模型；模型卡说明共享空间与使用限制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "multimodal",
+      "score": 1,
+      "evidence": [
+        "Perplexity 官方首帖 10 月 7 日发布两款公开的多向量检索模型；模型卡说明共享空间与使用限制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://community.perplexity.ai/t/were-releasing-pplx-embed-v2-late-two-late-interaction-embedding-models-that-retrieve-text-images-and-pages-with-a-shared-embedding-space-for-cross-model-querying/6296",
+      "claim": "Perplexity 官方首帖 10 月 7 日发布两款公开的多向量检索模型；模型卡说明共享空间与使用限制。",
+      "excerpt": "核对要点（意译）：两款模型在 Hugging Face 可得，支持文字及视觉文档检索。"
+    },
+    {
+      "url": "https://huggingface.co/perplexity-ai/pplx-embed-v2-late-0.6b",
+      "claim": "官方模型卡提供 128 维逐词元向量、共享空间、两型号及批次输入限制。",
+      "excerpt": "较小模型可查询较大模型的索引；纯文字与纯图片需分别编码。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-15T16:44:53Z",
+    "method": "source",
+    "notes": "按本日来源逐条核对后，由独立子智能体再次联网审读；具体意见见 readerReview 与逐日证据。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-15T16:44:53Z",
+    "notes": "主助手按当日一手来源核实并依 humanizer-zh 自审；本轮独立子智能体结论单独记录在 readerReview。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-15T16:44:53Z",
+    "questions": [
+      "它负责检索还是回答？",
+      "小模型为何能查大模型索引？",
+      "多向量有什么代价？"
+    ],
+    "notes": "独立首帖与两份模型卡核查通过，日期、逐词元向量、共享空间和编码限制准确；未扩大为 API 全开放，实际图片 OG 一致。",
+    "changes": [
+      "补入当日多向量嵌入模型公告。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-october-review-2026-10-07",
+  "promotedAt": "2026-10-15T16:44:54.098Z"
+}
