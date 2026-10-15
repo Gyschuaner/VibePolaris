@@ -2074,6 +2074,164 @@
     "sourceHash": "sha256:97fbbc867d6e6ba933a78c7dbca192eb580720d271e347da64a081aaddc1eb7c"
   },
   {
+    "slug": "aleph-alpha-kolibri-open-weights-20261003",
+    "title": "Aleph Alpha 开放 Kolibri 权重，面向德英双语企业应用",
+    "summary": "Kolibri 于 10 月 3 日开放，5 日另发新闻稿。模型共有约 780 亿参数，每个词元激活约 34.6 亿；较少的计算量不等于只需装下一个小模型。",
+    "body": "10 月 3 日，德国 AI 公司 Aleph Alpha 发布 Kolibri，开放可下载的模型权重。它专注德语和英语，面向企业文档处理、资料问答与工具调用。官方同日技术文章和模型卡均确认开放日期；10 月 5 日的新闻稿也回溯说明了这一点。\n\n企业可以把模型部署到自己控制的基础设施上。官方还介绍了根据输入文档回答、证据不足时拒答的训练，但这仍需在实际业务资料上检验。",
+    "publishedAt": "2026-10-03",
+    "eventDate": "2026-10-03",
+    "isExample": false,
+    "hero": {
+      "url": "https://aleph-alpha.com/_astro/00-cover.DUwFlxIO_ZzchVg.jpeg",
+      "alt": "绿色渐变背景上的 Kolibri 蜂鸟标志与名称",
+      "sourceUrl": "https://aleph-alpha.com/en/blog/kolibri-has-landed-a-sovereign-open-weight-model/",
+      "license": "原文配图，版权归原发布方；未声明开放许可。",
+      "credit": "Aleph Alpha"
+    },
+    "sections": [
+      {
+        "id": "part-1",
+        "title": "参数少算一些，内存仍要装下全部",
+        "body": "Kolibri 采用混合专家架构，共约 780 亿参数，每个词元激活约 34.6 亿。可以把它理解为每一步只调用部分专家，但完整模型仍须留在内存中。模型卡列出的 FP8 权重占用约 78GB，不能把激活参数当作设备容量要求。",
+        "kind": "technical"
+      },
+      {
+        "id": "part-2",
+        "title": "长文档有适用条件",
+        "body": "官方验证了最高 1,048,576 个词元的上下文，约为一百万。模型原生训练窗口为 262,144 个词元，针对复杂任务或延迟、吞吐要求较高的部署，官方建议不超过这个范围。窗口更大也不保证每处细节都能答对。",
+        "kind": "narrative"
+      },
+      {
+        "id": "part-3",
+        "title": "开放权重之后还要部署和评估",
+        "body": "模型卡将 Apache 2.0 许可用于权重与配置文件；其他软件和组件仍须分别核对条款。公开权重让使用者可以自行运行，所需硬件、部署维护和效果检查仍由使用者安排。官方比较表来自厂商自评，不能直接当作所有业务的排名。",
+        "kind": "boundary"
+      }
+    ],
+    "explainer": {
+      "variant": "data-motion",
+      "title": "一大组专家怎样参与一次推理？",
+      "question": "只激活部分参数，为什么仍需要较大的内存？",
+      "steps": [
+        {
+          "label": "完整模型留在内存",
+          "detail": "部署时需要容纳全部权重与运行开销。"
+        },
+        {
+          "label": "每一步选择部分专家",
+          "detail": "不同词元只调用专家中的一部分参与计算。"
+        },
+        {
+          "label": "结合材料生成回答",
+          "detail": "模型根据输入文档与问题组织输出，再由使用者核对。"
+        }
+      ]
+    },
+    "source": {
+      "name": "Aleph Alpha",
+      "url": "https://aleph-alpha.com/en/blog/kolibri-has-landed-a-sovereign-open-weight-model/"
+    },
+    "relatedSlugs": [
+      "mixture-of-experts",
+      "context-window",
+      "model-card"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://aleph-alpha.com/en/blog/kolibri-has-landed-a-sovereign-open-weight-model/",
+        "claim": "Aleph Alpha 于 2026-10-03 开放 Kolibri；官方技术文章和模型卡确认日期，模型卡区分总参数、激活参数及推荐上下文范围。",
+        "excerpt": "核对要点（意译）：10 月 3 日开放；约 780 亿总参数、34.6 亿激活参数；复杂任务建议上下文不超过 262,144 词元。"
+      },
+      {
+        "url": "https://huggingface.co/Aleph-Alpha/Kolibri-1",
+        "claim": "官方模型卡列出释放日期、精确激活参数、权重占用、上下文建议及许可范围。",
+        "excerpt": "核对要点（意译）：Release Date 为 3rd of October 2026；总参数 78B、每词元激活 3.46B，复杂任务建议不超过 262,144 词元。"
+      },
+      {
+        "url": "https://aleph-alpha.com/en/news/kolibri-sovereign-ai-made-in-germany/",
+        "claim": "10 月 5 日新闻稿回溯确认模型自 10 月 3 日可用。",
+        "excerpt": "简要意译：新闻稿 dated 5 October，注明 available since 3 October。"
+      }
+    ],
+    "canonicalUrl": "https://aleph-alpha.com/en/blog/kolibri-has-landed-a-sovereign-open-weight-model",
+    "sourceHash": "sha256:b192d8dbccc949f6a558f267b1fb1f173c2ae42085c6823ab775cdaa6afb348f"
+  },
+  {
+    "slug": "david-robinson-safety-culture-essay-20261003",
+    "title": "Robinson 公开批评 OpenAI 安全文化，呼吁借鉴其他行业经验",
+    "summary": "这位前安全团队成员在 3 日发表署名文章；离职日没有具体说明。文中的批评属于作者观点。",
+    "body": "10 月 3 日，曾负责 OpenAI 安全报告写作的 David Robinson 在《大西洋月刊》发表文章，质疑行业依靠试错完善护栏的做法。",
+    "publishedAt": "2026-10-03",
+    "eventDate": "2026-10-03",
+    "isExample": false,
+    "hero": {
+      "url": "https://cdn.theatlantic.com/thumbor/psLczJmDNwFE8ncJkyxPIxRD4tk%3D/0x0%3A2000x1125/960x540/media/img/mt/2026/10/2026_10_02_Robinsons_open_ai_safety_final/original.jpg",
+      "alt": "白色铁丝围栏上有 OpenAI 标志形状缺口的插画",
+      "sourceUrl": "https://www.theatlantic.com/technology/2026/10/openai-safety-team-resignation/688881/",
+      "license": "原文配图，版权归原发布方；未声明开放许可。",
+      "credit": "Akshita Chandra / The Atlantic"
+    },
+    "sections": [
+      {
+        "id": "part-1",
+        "title": "他提出了什么",
+        "body": "Robinson 主张引入航空、核电等领域的安全经验，并加强对齐研究，研究怎样让模型在无人监督时仍按人类意图行事。文中自述本周已辞职，没有给出具体日期。",
+        "kind": "narrative"
+      },
+      {
+        "id": "part-2",
+        "title": "用一个例子理解多重防护",
+        "body": "假设一个智能体只能读取测试目录：应用应限制文件范围，运行环境也可阻止它访问外部目录。两处分别检查，能减少单处配置错误造成的影响。这是帮助理解防护思路的例子，并非对某家公司实际系统的描述。",
+        "kind": "example"
+      },
+      {
+        "id": "part-3",
+        "title": "公开意见与事故记录分开",
+        "body": "本条记录的是署名文章发表，旧事故仍归原日期。作者的批评有助于理解争议，也应与独立审计结论、公司的回应分别阅读。",
+        "kind": "boundary"
+      }
+    ],
+    "explainer": {
+      "variant": "policy-governance",
+      "title": "怎样减少一次失误的影响？",
+      "question": "一处控制失效时，还有什么能够限制后果？",
+      "steps": [
+        {
+          "label": "明确允许范围",
+          "detail": "先规定智能体可以访问哪些资源。"
+        },
+        {
+          "label": "在不同位置检查",
+          "detail": "应用与运行环境分别限制访问。"
+        },
+        {
+          "label": "复核执行记录",
+          "detail": "检查实际动作是否符合允许范围。"
+        }
+      ]
+    },
+    "source": {
+      "name": "The Atlantic",
+      "url": "https://www.theatlantic.com/technology/2026/10/openai-safety-team-resignation/688881/"
+    },
+    "relatedSlugs": [
+      "guardrail",
+      "safety-evaluation",
+      "permission-boundary"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.theatlantic.com/technology/2026/10/openai-safety-team-resignation/688881/",
+        "claim": "David Robinson 于 2026-10-03 发表第一人称安全文化评论；文章没有给出具体离职日。",
+        "excerpt": "简要意译：作者主张借鉴其他行业的安全经验；公开文章日与具体离职日分开。"
+      }
+    ],
+    "canonicalUrl": "https://www.theatlantic.com/technology/2026/10/openai-safety-team-resignation/688881",
+    "sourceHash": "sha256:f1d52d0b4e6e7568c83224e15ef38bbbef1ec999a957a08e731e2f28f0aae124"
+  },
+  {
     "slug": "ai2-astabrief-open-model-20261002",
     "title": "Ai2 开放 AstaBrief：把检索文献写成带引用的研究报告",
     "summary": "这款 8B（约 80 亿参数）模型基于 Qwen3-8B，已用于 Asta 的 Fast 模式，并开放权重与训练数据。原文评测主要完成于 2025 年，不能据此比较今天所有前沿模型。",
