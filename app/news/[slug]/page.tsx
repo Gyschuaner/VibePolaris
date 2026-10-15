@@ -57,7 +57,7 @@ export default async function NewsDetailPage({ params }: NewsPageProps) {
                   <div className="news-detail-meta"><time dateTime={article.eventDate}>事件：{formatDate(article.eventDate)}</time><span>来源发布：{formatDate(article.publishedAt)}</span><span>来源：{article.source.name}</span></div>
                   {article.hero && !article.hero.license.startsWith("VibePolaris 自制") && <figure className="news-hero">
                     {/* eslint-disable-next-line @next/next/no-img-element -- News hero URLs are validated by the content contract and may be local or official assets. */}
-                    <img src={article.hero.url} alt={article.hero.alt} loading="eager" />
+                    <img src={article.hero.url} alt={article.hero.alt} style={{ objectFit: article.hero.fit }} loading="eager" />
                     <figcaption>
                       <span>头图</span>
                       <a href={article.hero.sourceUrl} target="_blank" rel="noreferrer">{article.hero.credit ?? "图片来源"}</a>

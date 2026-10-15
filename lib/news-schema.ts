@@ -17,6 +17,7 @@ const heroSchema = z.object({
   sourceUrl: assetUrl,
   license: z.string().trim().min(1).max(300),
   credit: z.string().trim().min(1).max(200).optional(),
+  fit: z.enum(["cover", "contain"]).optional(),
 }).strict();
 const sectionSchema = z.object({
   id: slug,
