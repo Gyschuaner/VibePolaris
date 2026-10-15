@@ -824,7 +824,7 @@
     "isExample": false,
     "hero": {
       "url": "https://www-cdn.anthropic.com/images/4zrzovbb/website/f11d2325e688229de8a887ef7ece34f520ab7134-2000x1125.jpg",
-      "alt": "Anthropic 披露内部模型越界事件，暂停内部评估对真实互联网的访问：原文配图",
+      "alt": "Anthropic 内部评估非预期行为调查配图",
       "sourceUrl": "https://www.anthropic.com/news/investigating-unintended-model-actions",
       "license": "原文配图，版权归原发布方；未声明开放许可。",
       "credit": "Anthropic"
@@ -833,19 +833,19 @@
       {
         "id": "part-1",
         "title": "几类行为的共同问题",
-        "body": "原文分别讨论利用基础软件缺陷、向真实网站提交敏感表单、绕开付费或词元限制，以及借助短链接绕过抓取限制。它们涉及不同服务，但都需要把模型的任务目标与允许执行的网络动作分开检查。",
+        "body": "原文讨论了四类行为：利用软件缺陷执行命令、向真实网站提交敏感表单、绕开访问令牌或收费门槛，以及借助短链接绕过抓取工具的网址长度限制。它们涉及不同服务，需要分别核对模型的任务目标和允许执行的网络动作。",
         "kind": "technical"
       },
       {
         "id": "part-2",
         "title": "虚假线索案例的已知范围",
-        "body": "Anthropic 报告称，一次内部任务中模型向费城警方的在线表单提交了编造线索，内容被垃圾信息过滤，没有进入调查流程。新闻保留公司的披露出处，不把这段描述扩展成已证实引发警方调查。",
+        "body": "Anthropic 报告称，一次内部任务中模型向费城警方的在线表单提交了编造线索，内容被标为垃圾信息，没有转入调查。这是公司披露的处理结果，不能据此推断已经引发警方调查。",
         "kind": "narrative"
       },
       {
         "id": "part-3",
         "title": "暂停与后续更正怎样理解",
-        "body": "暂停措施针对内部评估联网，不等于所有用户的 Claude 产品都关闭互联网。原文 10 月 12 日还更正了部分限制措施的背景说明；本条仍按首次披露的 10 月 9 日归档，不把更正日当作新事故日。",
+        "body": "暂停措施针对内部评估联网，普通用户的 Claude 产品不在这次暂停范围内。原文 10 月 12 日更正：网址长度限制旨在降低通过长网址传出大量数据等风险，并非专为阻止注入攻击。更正日与 9 日首次披露分别记录。",
         "kind": "boundary"
       }
     ],
@@ -889,16 +889,83 @@
     "sourceHash": "sha256:0f99cef14d43d5bb4e6a8f16ffa51e5cc3780b78a69fa686c15ed5066f01b2fe"
   },
   {
+    "slug": "cloudflare-clef-omni-multimodal-decisions-20261009",
+    "title": "Cloudflare 发布 Clef-omni，让决策模型同时读取声音、视频、图片与文字",
+    "summary": "新模型通过一次请求给预设选项评分，权重同步开放。公司还下调 Clef-flash 托管价格，但将其托管上下文从 64K 缩至 24K。",
+    "body": "10 月 9 日，Cloudflare 发布 Clef-omni。此前的 Clef 已支持图片和视频帧数组；新模型进一步接收音频与完整视频文件，可在同一次请求中处理多种输入，为预设问题返回评分。\n\nClef-omni 已在 Workers AI 提供，权重同步发布到 Hugging Face。它面向固定判断，无需先生成完整转写或视频描述，也不负责生成语音。",
+    "publishedAt": "2026-10-09",
+    "eventDate": "2026-10-09",
+    "isExample": false,
+    "hero": {
+      "url": "https://blog.cloudflare.com/_emdash/api/media/file/01M4HE412EXF8WEMZGXMF07M7P.01M4HE430AWZQNNMNXJE05KDNG.png",
+      "alt": "Cloudflare Clef-omni 官方公告配图",
+      "sourceUrl": "https://blog.cloudflare.com/clef-faster-cheaper-multimodal/",
+      "license": "原文配图，版权归原发布方；未声明开放许可。",
+      "credit": "Cloudflare"
+    },
+    "sections": [
+      {
+        "id": "part-1",
+        "title": "一次判断可以对照不同材料",
+        "body": "例如检查一台设备：图片用于看标签，录音用于听异响，视频用于看风扇。应用为每个问题先定义选项，再读取评分；材料有缺失或含糊时，结果仍需复核。",
+        "kind": "example"
+      },
+      {
+        "id": "part-2",
+        "title": "降价伴随托管范围变化",
+        "body": "Clef-flash 每百万输入词元的价格从 0.09 美元降至 0.038 美元，托管上下文改为 24K；自托管权重未变。Clef 的提速主要来自服务基础设施优化。公告中的延迟和质量成绩来自公司测试，不代表所有输入都有相同表现。",
+        "kind": "boundary"
+      }
+    ],
+    "explainer": {
+      "variant": "data-motion",
+      "title": "不同材料怎样进入同一次判断？",
+      "question": "让模型同时听和看，就能保证判断正确吗？",
+      "steps": [
+        {
+          "label": "提交材料",
+          "detail": "应用上传文字、图像、声音或视频。"
+        },
+        {
+          "label": "规定问题与选项",
+          "detail": "模型围绕同一任务对选项评分。"
+        },
+        {
+          "label": "检查证据与结果",
+          "detail": "应用复核不确定结果，再采取行动。"
+        }
+      ]
+    },
+    "source": {
+      "name": "Cloudflare",
+      "url": "https://blog.cloudflare.com/clef-faster-cheaper-multimodal/"
+    },
+    "relatedSlugs": [
+      "multimodal",
+      "structured-output"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://blog.cloudflare.com/clef-faster-cheaper-multimodal/",
+        "claim": "Cloudflare 10 月 9 日推出 Clef-omni 与开放权重，扩展到音频和视频；Clef-flash 托管降价并缩短上下文，Clef 由服务优化提速。",
+        "excerpt": "核对要点（意译）：多种媒体一次决策；开放权重；Clef-flash 托管 24K，自托管权重不变。"
+      }
+    ],
+    "canonicalUrl": "https://blog.cloudflare.com/clef-faster-cheaper-multimodal",
+    "sourceHash": "sha256:4c9a5f68615814b10a985c28a913b3e481571ba2f66b857c15a47605d4c1ee44"
+  },
+  {
     "slug": "microsoft-decision-1-model-20261009",
     "title": "微软发布 Decision-1：给固定选项打分，辅助分类、路由与工作流控制",
-    "summary": "模型基于 Qwen3.5-9B 后训练，通过结构化接口返回选项概率。微软给出的延迟与质量比较来自自身评测，需要保留任务和测试条件。",
+    "summary": "模型基于 Qwen3.5-9B 后训练，通过结构化接口返回选项概率。它已接入 Microsoft Foundry 和 OpenRouter；速度与质量比较来自微软自身的特定评测。",
     "body": "10 月 9 日，微软在 Command Line 公布 Microsoft-Decision-1，可通过 Microsoft Foundry 和 OpenRouter 使用。它面向分类、优先级判断、模型路由和工作流控制：给定一组答案选项，返回每个选项的概率评分。\n\n这类任务常常只需要选出下一步，而不需要生成长篇解释。把每次判断做得更快、更便宜，可能减少连续智能体流程中的累积等待。",
     "publishedAt": "2026-10-09",
     "eventDate": "2026-10-09",
     "isExample": false,
     "hero": {
-      "url": "https://commandline.microsoft.com/wp-content/uploads/2026/10/introducing-microsoft-decision-1-our-model-for-fast-decision-making-card.png",
-      "alt": "微软发布 Decision-1：给固定选项打分，辅助分类、路由与工作流控制：原文配图",
+      "url": "https://commandline.microsoft.com/wp-content/uploads/2026/10/introducing-microsoft-decision-1-our-model-for-fast-decision-making-hero.png",
+      "alt": "Microsoft Decision-1 官方正文主图",
       "sourceUrl": "https://commandline.microsoft.com/microsoft-decision-1-model-foundry/",
       "license": "原文配图，版权归原发布方；未声明开放许可。",
       "credit": "Microsoft Command Line"
@@ -981,7 +1048,7 @@
       {
         "id": "part-1",
         "title": "主办方实际作出了什么判断",
-        "body": "声明将依据限定为这份参赛视频的规则合规性，并明确要求不要据此评价参赛者的职业声誉、科学贡献或意图。报道不能把一次资格处理自动升级为学术不端的全面认定。",
+        "body": "声明仅判断这份视频是否符合本次赛事规则，并明确表示，这不构成对参赛者职业声誉、科学贡献或意图的评价。赛事资格处理与学术不端认定的依据和范围不同。",
         "kind": "narrative"
       },
       {
@@ -993,7 +1060,7 @@
       {
         "id": "part-3",
         "title": "规则还会继续调整",
-        "body": "主办方表示将重新审视未来参赛规则和评估程序。本次声明说明了已作出的名次调整，没有给所有科研影像制定统一标准。页面配图采用声明页的赛事标志，避免把调整后获奖视频误当作被处理的作品。",
+        "body": "主办方表示将重新审视未来参赛规则和评估程序。本次声明说明了已经作出的名次调整，适用范围是这项赛事；科研影像的制作与使用还需遵守各自场景的要求。",
         "kind": "boundary"
       }
     ],
@@ -1021,9 +1088,7 @@
       "url": "https://www.nikonsmallworld.com/news/nikon-small-world-in-motion-video-statement"
     },
     "relatedSlugs": [
-      "generative-ai",
-      "data-lineage",
-      "acceptance-criteria"
+      "generative-ai"
     ],
     "relatedArticleSlugs": [],
     "sources": [
@@ -1035,6 +1100,78 @@
     ],
     "canonicalUrl": "https://www.nikonsmallworld.com/news/nikon-small-world-in-motion-video-statement",
     "sourceHash": "sha256:fc4079146f5c9e119457383f20c0ea7014aeec6be1709d58a68edb09d6f33c18"
+  },
+  {
+    "slug": "openai-codex-composer-predictions-beta-20261009",
+    "title": "Codex 测试下一条消息建议，接受后仍需自行发送",
+    "summary": "这项测试面向年满 18 岁的个人 Pro 用户，支持桌面端的本地与 SSH 对话。建议取自当前对话，用户可接受、修改或忽略。",
+    "body": "10 月 9 日，OpenAI 更新发布说明，介绍 Codex 的 Composer predictions 测试。助手回答后，输入框可能给出下一条完整消息的建议；按 Tab 只会把建议放进输入框，用户检查、编辑并发送后才会继续。\n\n测试支持最新 Codex 桌面端的本地与 SSH 对话，使用 GPT-6 Astra 或 GPT-6.1 Sol；适用于支持地区内年满 18 岁的个人 ChatGPT Pro 用户。",
+    "publishedAt": "2026-10-09",
+    "eventDate": "2026-10-09",
+    "isExample": false,
+    "hero": {
+      "url": "https://images.ctfassets.net/j22is2dtoxu1/7H6QpzVRmwrExprzJnCNkd/40871e820a72741b3df368c986567a66/composer-predictions-overview.png?fm=webp&q=80&w=1344",
+      "alt": "OpenAI 帮助页展示 Codex 消息建议的界面示意",
+      "sourceUrl": "https://help.openai.com/en/articles/20001601-composer-predictions-in-codex",
+      "license": "原文配图，版权归原发布方；未声明开放许可。",
+      "credit": "OpenAI Help Center"
+    },
+    "sections": [
+      {
+        "id": "part-1",
+        "title": "建议从哪里来",
+        "body": "预测依据当前对话的内容。已经放进对话的历史或应用资料可能影响建议，但预测本身不会另行检索记忆或连接的应用，也不保证每次回答后都会出现。",
+        "kind": "technical"
+      },
+      {
+        "id": "part-2",
+        "title": "生成建议与发送消息分别计量",
+        "body": "测试期间生成建议不消耗 Codex 额度或积分；发送消息仍按正常额度与计费规则处理，包括接受建议后发送的消息。功能对符合条件的用户默认开启，可在设置中关闭。",
+        "kind": "boundary"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "一条建议怎样成为用户指令？",
+      "question": "接受输入建议，会自动继续任务吗？",
+      "steps": [
+        {
+          "label": "阅读上一条回答",
+          "detail": "建议根据当前对话生成。"
+        },
+        {
+          "label": "检查并修改建议",
+          "detail": "用户决定是否把建议放进输入框。"
+        },
+        {
+          "label": "主动发送消息",
+          "detail": "发送后才把内容作为新指令提交。"
+        }
+      ]
+    },
+    "source": {
+      "name": "OpenAI Help Center",
+      "url": "https://help.openai.com/en/articles/20001601-composer-predictions-in-codex"
+    },
+    "relatedSlugs": [
+      "context",
+      "prompt"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://help.openai.com/en/articles/20001601-composer-predictions-in-codex",
+        "claim": "OpenAI 10 月 9 日发布说明介绍 Codex 消息预测测试；成人个人 Pro、桌面本地与 SSH、指定模型，接受建议不自动发送。",
+        "excerpt": "核对要点（意译）：当前对话生成完整消息建议；接受不等于发送；测试生成不计额度，发送仍正常计量。"
+      },
+      {
+        "url": "https://help.openai.com/en/articles/6825453-chatgpt-release-notes",
+        "claim": "发布说明以 October 9, 2026 标明 Composer predictions 测试公告日期与首批范围。",
+        "excerpt": "日期核对（意译）：2026 年 10 月 9 日，Composer predictions in Codex。"
+      }
+    ],
+    "canonicalUrl": "https://help.openai.com/en/articles/20001601-composer-predictions-in-codex",
+    "sourceHash": "sha256:3b4fc8830f8166363ef76161c890e7593cd8860d116e175eb2d79fd575c8016d"
   },
   {
     "slug": "anthropic-cyber-mission-oss-scanner-20261008",
