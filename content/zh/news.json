@@ -157,7 +157,7 @@
     "isExample": false,
     "hero": {
       "url": "https://www.anthropic.com/api/opengraph-illustration?name=Node%20Globe&backgroundColor=olive",
-      "alt": "Anthropic 开设新加坡办公室，与政府签署 AI 安全与应用合作备忘录：原文配图",
+      "alt": "Anthropic 新加坡办公室公告的官方插画",
       "sourceUrl": "https://www.anthropic.com/news/singapore-office-opening",
       "license": "原文配图，版权归原发布方；未声明开放许可。",
       "credit": "Anthropic"
@@ -207,8 +207,7 @@
     },
     "relatedSlugs": [
       "safety-evaluation",
-      "red-teaming",
-      "acceptance-criteria"
+      "red-teaming"
     ],
     "relatedArticleSlugs": [],
     "sources": [
@@ -231,7 +230,7 @@
     "isExample": false,
     "hero": {
       "url": "https://www-cdn.anthropic.com/images/4zrzovbb/website/609927c7af2a454cedad848e4b2adc980c1f5fe6-2000x1125.jpg",
-      "alt": "Anthropic 更新美国中期选举防护：计划把权威投票信息直接带进回答：原文配图",
+      "alt": "Anthropic 美国中期选举防护说明配图",
       "sourceUrl": "https://www.anthropic.com/news/2026-us-midterms",
       "license": "原文配图，版权归原发布方；未声明开放许可。",
       "credit": "Anthropic"
@@ -252,7 +251,7 @@
       {
         "id": "part-3",
         "title": "样本统计有自己的边界",
-        "body": "原文分析的是近期一周内约二十五万段美国 Claude.ai 对话，相关比例反映这份样本。它不能直接代表所有模型、地区和时间，也不能用来证明模型完全没有政治偏向。接入新来源则仍是当月稍后的安排。",
+        "body": "分析样本是 2026 年 9 月 21 至 27 日约二十五万段美国 Claude.ai 消费者对话，相关比例只反映这份样本，不能代表所有模型、地区和时间，也不证明完全没有政治偏向。Democracy Works 信息接入仍是当月稍后的安排。",
         "kind": "boundary"
       }
     ],
@@ -296,16 +295,84 @@
     "sourceHash": "sha256:a3b8411cf17be5154183ebeb26dadfc4a2f19bc9704280991f0074a873712e56"
   },
   {
+    "slug": "github-hydrafusion-max-research-preview-20261014",
+    "title": "GitHub 更新 HydraFusion 多模型编排，并推出 Max 研究预览",
+    "summary": "模型池扩展，草拟与审查阶段可使用不同推理力度。Max 与普通版仍是研究预览，需要合适套餐、预览开关和组织策略允许。",
+    "body": "10 月 14 日，GitHub 更新 HydraFusion，并增加 HydraFusion Max。它们在 VS Code、GitHub Copilot 应用及 CLI 中提供，仍属研究预览；适用于 Pro、Pro+、Business、Enterprise，需启用实验或预览功能，并遵守组织模型策略。",
+    "publishedAt": "2026-10-14",
+    "eventDate": "2026-10-14",
+    "isExample": false,
+    "hero": {
+      "url": "https://github.blog/wp-content/themes/github-2021-child/dist/img/social-v3-new-releases.jpg",
+      "alt": "GitHub HydraFusion 更新公告分享配图",
+      "sourceUrl": "https://github.blog/changelog/2026-10-14-hydrafusion-updates-and-new-max-option/",
+      "license": "原文配图，版权归原发布方；未声明开放许可。",
+      "credit": "GitHub"
+    },
+    "sections": [
+      {
+        "id": "part-1",
+        "title": "编排选择工作方式，也选择模型",
+        "body": "更新后的模型池包含 Claude Opus 5.5、GPT-6 Astra、GPT-6.1 Sol 与 GPT-6 Luna，不同任务使用的模型随工作流而变。初稿可用中等推理力度，审查使用较高力度；Cascade 可增加判断及按需修复，Critique 更直接检查工作区，并可并行安排审查模型。",
+        "kind": "technical"
+      },
+      {
+        "id": "part-2",
+        "title": "Max 仍需衡量具体任务",
+        "body": "Max 沿用同类架构，在较难步骤投入更高推理力度。它不是所有模型每次都同时运行，也没有保证每项任务必然更快、更便宜或正确；实际收益需要按工作负载评估。",
+        "kind": "boundary"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "草拟和审查为什么可以分给不同模型？",
+      "question": "选择多模型选项后，每次都会调用所有模型吗？",
+      "steps": [
+        {
+          "label": "选择工作流",
+          "detail": "根据任务安排直接处理、逐级处理或审查。"
+        },
+        {
+          "label": "生成并检查实际工作",
+          "detail": "按阶段选择模型和推理力度。"
+        },
+        {
+          "label": "按需要修改",
+          "detail": "检查结果决定是否修复，再返回输出。"
+        }
+      ]
+    },
+    "source": {
+      "name": "GitHub",
+      "url": "https://github.blog/changelog/2026-10-14-hydrafusion-updates-and-new-max-option/"
+    },
+    "relatedSlugs": [
+      "agent-orchestration",
+      "agent-workflow",
+      "code-review"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://github.blog/changelog/2026-10-14-hydrafusion-updates-and-new-max-option/",
+        "claim": "GitHub 于 14 日更新 HydraFusion 模型池和编排，推出 Max；仍为研究预览并受套餐、预览和组织策略限制。",
+        "excerpt": "要点意译：updated pool；medium drafting/high review；Max；research preview。"
+      }
+    ],
+    "canonicalUrl": "https://github.blog/changelog/2026-10-14-hydrafusion-updates-and-new-max-option",
+    "sourceHash": "sha256:5accb4115ca7996f8cf782030980a8f981ad80ffadc29a6f99995ed1a44302e0"
+  },
+  {
     "slug": "google-research-deep-review-public-launch-20261014",
     "title": "Google Research 宣布公开推出 Deep Review，用 AI 辅助检查技术文档",
-    "summary": "工具此前参与过一万五千余份会议投稿的分析。公开推出的是辅助检查能力，评审意见的取舍和论文结论仍需研究者判断。",
-    "body": "10 月 14 日，Google Research 在 Research@ 活动中介绍新进展，宣布 Deep Review 向公众推出。该工具用于分析技术文档，此前已在 STOC、ICML、NeurIPS、ICLR 等会议的一万五千余份投稿中应用。\n\n同场公告也介绍了实验性的地理空间推理智能体等工作。本条聚焦 Deep Review 的公开推出，避免把一组研究进展都混写成已经普遍可用的成熟产品。",
+    "summary": "Deep Review 向公众提供技术文档检查，支持 PDF 和纯文本，每周有两次免费审查。作者仍需判断意见是否成立，工具不负责决定论文录用。",
+    "body": "10 月 14 日，Google Research 宣布 Deep Review 公开推出。它此前以论文助手形式，为多个计算机会议中作者自愿提交的逾万份稿件提供反馈；现在扩展到更多技术与知识文档。公开入口初期支持 PDF 和纯文本，多文件支持仍将随后提供。",
     "publishedAt": "2026-10-14",
     "eventDate": "2026-10-14",
     "isExample": false,
     "hero": {
       "url": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Research-at.width-1300.png",
-      "alt": "Google Research 宣布公开推出 Deep Review，用 AI 辅助检查技术文档：原文配图",
+      "alt": "Google Research 2026 活动公告配图",
       "sourceUrl": "https://blog.google/innovation-and-ai/technology/research/research-capabilities-intelligence-2026/",
       "license": "原文配图，版权归原发布方；未声明开放许可。",
       "credit": "Google"
@@ -313,21 +380,21 @@
     "sections": [
       {
         "id": "part-1",
-        "title": "辅助检查可以放在哪一步",
-        "body": "作者在提交技术文档前，可以利用工具寻找需要进一步核对的论证或表述。这里的输出更适合作为检查线索：作者回到原始推导、数据和实验，判断意见是否成立，再决定如何修改。",
-        "kind": "example"
+        "title": "长文档如何分开检查",
+        "body": "系统先把全文分段，按内容难度分配计算量，再由不同智能体并行检查各段；每个检查者仍可参考全文。最后汇总跨段问题，并通过外部资料核对和工具调用约束缺乏依据的结论。",
+        "kind": "technical"
       },
       {
         "id": "part-2",
-        "title": "投稿数量为什么不等于评审质量",
-        "body": "一万五千余份是此前部署涉及的投稿规模，说明工具已有实际使用场景。这个数值不能直接说明所有建议正确，更不意味着相关会议把录用决定交给了模型。质量需要具体任务和检查结果支撑。",
+        "title": "反馈仍需回到证据判断",
+        "body": "此前投稿规模说明工具已有使用场景，不能直接证明每条意见正确，也不代表会议把录用决定交给了模型。作者需要回到推导、实验和资料，判断建议是否成立。",
         "kind": "boundary"
       },
       {
         "id": "part-3",
-        "title": "公开工具仍要对应使用条件",
-        "body": "技术文档可能包含尚未发表的数据或方法，使用者需要核对具体入口、资料处理方式和权限。总览公告确认公开推出，但不是每个研究项目都在同一阶段；其中地理空间系统仍明确标为实验性。",
-        "kind": "technical"
+        "title": "公开入口有次数与资料保存规则",
+        "body": "每位用户每周有两次免费文档审查，可连接 Gemini API key 获得更高使用上限和程序接口。Google 表示上传文档不用于训练、微调或改进模型，但会保存一年，用于在工具界面中向用户展示。",
+        "kind": "narrative"
       }
     ],
     "explainer": {
@@ -354,9 +421,9 @@
       "url": "https://blog.google/innovation-and-ai/technology/research/research-capabilities-intelligence-2026/"
     },
     "relatedSlugs": [
-      "eval",
-      "human-grader",
-      "citation"
+      "agent-orchestration",
+      "grounding",
+      "context"
     ],
     "relatedArticleSlugs": [],
     "sources": [
@@ -364,10 +431,290 @@
         "url": "https://blog.google/innovation-and-ai/technology/research/research-capabilities-intelligence-2026/",
         "claim": "Google Research 于 2026-10-14 宣布 Deep Review 公开推出，并说明此前参与一万五千余份会议投稿分析。",
         "excerpt": "Following successful deployments across 15,000+ submissions at STOC, ICML, NeurIPS, and ICLR, Deep Review is launching publicly."
+      },
+      {
+        "url": "https://research.google/blog/analyzing-technical-documents-with-deep-review/",
+        "claim": "详细说明公开入口、四阶段检查机制、PDF和纯文本、每周两次以及一年保存期；投稿为自愿参与的提交前反馈。",
+        "excerpt": "要点意译：PDF and plain text initially；two reviews weekly；four-stage pipeline；documents not used for model training, stored one year for user display。"
       }
     ],
     "canonicalUrl": "https://blog.google/innovation-and-ai/technology/research/research-capabilities-intelligence-2026",
     "sourceHash": "sha256:8789139c4cc6d9657c9196eb54bb7757232aa7df297ee51c812d4370e92aaea5"
+  },
+  {
+    "slug": "google-singapore-on-device-scam-model-20261014",
+    "title": "Google DeepMind 与新加坡公布设备端反诈骗模型，计划分阶段接入应用",
+    "summary": "系统先用轻量分类器筛查，再由微调的 Gemma 查看更完整对话。部署后需用户同意，模型在设备上分析；公告没有宣布所有用户已可使用。",
+    "body": "10 月 14 日，Google DeepMind 与新加坡 GovTech 介绍联合微调的 Gemma 反诈骗模型。它针对当地冒充机构、银行和熟人的对话模式，计划与政府合作分阶段接入应用，并在用户同意后于设备上分析对话。",
+    "publishedAt": "2026-10-14",
+    "eventDate": "2026-10-14",
+    "isExample": false,
+    "hero": {
+      "url": "https://lh3.googleusercontent.com/5PC4h7MzjC0ojOxiK-nPcRz0b6kUybKnCBjLL3nsb9T9qt7-2ciORJPnrObeFaYbAMqPxIhH4Wq9HD-U73lCivpFBcK8gABvhXXDo2lzUUSk9olsZQ=w1200-h630-n-nu-rw",
+      "alt": "Google DeepMind 新加坡反诈骗合作官方插画",
+      "sourceUrl": "https://deepmind.google/blog/on-device-ai-scam-detection-mddi/",
+      "license": "原文配图，版权归原发布方；未声明开放许可。",
+      "credit": "Google DeepMind"
+    },
+    "sections": [
+      {
+        "id": "part-1",
+        "title": "先筛查，再读取更长上下文",
+        "body": "轻量分类器先用较少电量筛选传入消息，发现可疑内容后，再由 Gemma 分析更多轮对话，决定提示风险还是排除误报。警告旨在提醒用户暂停并核查，不负责自动认定每一笔交易是否安全。",
+        "kind": "technical"
+      },
+      {
+        "id": "part-2",
+        "title": "本地分析与训练环境分别说明",
+        "body": "Google 表示，部署的模型完全在设备运行，双方不会通过它读取用户对话；微调则在 GovTech 管理的云端隔离环境进行，使用匿名化诈骗报告等资料，排除私人或可识别个人的信息。分阶段部署仍需具体应用落实。",
+        "kind": "boundary"
+      }
+    ],
+    "explainer": {
+      "variant": "data-motion",
+      "title": "反诈骗检查为什么分成两步？",
+      "question": "聊天内容一定要发到云端才能识别风险吗？",
+      "steps": [
+        {
+          "label": "轻量检查消息",
+          "detail": "先筛出需要进一步查看的内容。"
+        },
+        {
+          "label": "本地读取对话上下文",
+          "detail": "得到同意后，在设备上分析可疑模式。"
+        },
+        {
+          "label": "提示用户核查",
+          "detail": "提醒暂停，不把一次模型判断当成最终结论。"
+        }
+      ]
+    },
+    "source": {
+      "name": "Google DeepMind",
+      "url": "https://deepmind.google/blog/on-device-ai-scam-detection-mddi/"
+    },
+    "relatedSlugs": [
+      "fine-tuning",
+      "context",
+      "safety-evaluation"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://deepmind.google/blog/on-device-ai-scam-detection-mddi/",
+        "claim": "14日官方说明设备端反诈骗模型与两阶段筛查；应用部署分阶段并需同意，训练云端隔离与运行设备端不混同。",
+        "excerpt": "要点意译：carefully phased；user consent；on-device；two-stage pipeline。"
+      }
+    ],
+    "canonicalUrl": "https://deepmind.google/blog/on-device-ai-scam-detection-mddi",
+    "sourceHash": "sha256:ce61e5a9099a789d3cc1014e7265b8b71d7b68a827f5700161fc26ea08b4a216"
+  },
+  {
+    "slug": "openai-gpt4-snapshots-retirement-notice-20261014",
+    "title": "OpenAI 通知部分 GPT-4 系列 API 将于 2027 年 1 月停用",
+    "summary": "14 日发出的是弃用通知。指定 GPT-4o、4o mini、4.1 和4.1 mini 快照及其微调版本计划于 2027 年 1 月 14 日停止 API 访问，官方建议迁往 GPT-6 Luna。",
+    "body": "10 月 14 日，OpenAI 通知开发者，部分 GPT-4 系列模型将于 2027 年 1 月 14 日从 API 移除。涉及 GPT-4o 的 2024-08-06、2024-11-20 快照，GPT-4o mini 的 2024-07-18，以及 GPT-4.1、4.1 mini 的 2025-04-14 快照。它们的微调版本遵循相同停用时间。",
+    "publishedAt": "2026-10-14",
+    "eventDate": "2026-10-14",
+    "isExample": false,
+    "hero": {
+      "url": "https://developers.openai.com/og/api/docs/deprecations.png",
+      "alt": "OpenAI API 模型弃用文档的官方分享配图",
+      "sourceUrl": "https://developers.openai.com/api/docs/deprecations",
+      "license": "原文配图，版权归原发布方；未声明开放许可。",
+      "credit": "OpenAI"
+    },
+    "sections": [
+      {
+        "id": "part-1",
+        "title": "弃用通知与停止访问分属两个日期",
+        "body": "弃用表示进入退出安排，停用日到来后才无法访问该模型。官方将 GPT-6 Luna 列为这些条目的建议替代；这份通知针对列出的 API 模型，未宣布 ChatGPT 所有同名体验在14日关闭。",
+        "kind": "technical"
+      },
+      {
+        "id": "part-2",
+        "title": "替换名称之后仍需检查实际任务",
+        "body": "调用服务的程序需要识别所用模型及快照，微调版本也要纳入范围。迁移到建议模型后，应检查原有提示、输出格式和任务结果，不能只靠改一个名称证明行为完全相同。",
+        "kind": "example"
+      }
+    ],
+    "explainer": {
+      "variant": "policy-governance",
+      "title": "应用怎样应对模型停用？",
+      "question": "收到弃用通知，当天就不能调用了吗？",
+      "steps": [
+        {
+          "label": "找到受影响调用",
+          "detail": "核对模型快照与微调版本。"
+        },
+        {
+          "label": "安排替换并检查",
+          "detail": "在停用前验证新模型处理实际任务的表现。"
+        },
+        {
+          "label": "完成切换",
+          "detail": "停止依赖即将退出的接口版本。"
+        }
+      ]
+    },
+    "source": {
+      "name": "OpenAI",
+      "url": "https://developers.openai.com/api/docs/deprecations"
+    },
+    "relatedSlugs": [
+      "api",
+      "fine-tuning",
+      "eval"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://developers.openai.com/api/docs/deprecations",
+        "claim": "OpenAI 于14日通知指定GPT-4系列快照及微调版本在2027年1月14日停用，推荐替代为gpt-6-luna；通知日不是停用日。",
+        "excerpt": "要点意译：notified October14；API removal January14 2027；fine-tuned same schedule。"
+      }
+    ],
+    "canonicalUrl": "https://developers.openai.com/api/docs/deprecations",
+    "sourceHash": "sha256:88f1158da7b14df76b49f4133bf35fe8549ce3eb0ae203eb8c476fbe9ce90100"
+  },
+  {
+    "slug": "paper-ultramarine-1-flash-knowledge-work-20261014",
+    "title": "Paper Instruments 公布 Ultramarine 1 Flash，针对文档与专业工作后训练",
+    "summary": "模型基于 GLM-5.3 Flash，使用合成任务和评分规则训练。官方提供 API 入口，权重仍待发布；每任务成本来自公司内部评测。",
+    "body": "10 月 14 日，Paper Instruments 发布 Ultramarine 1 Flash 技术报告，介绍在 GLM-5.3 Flash 上进行专业知识工作的强化学习后训练。任务覆盖金融、法律、咨询及运营，目标交付物包括表格、演示和文档。产品页提供 API 入口，同时明确模型权重将随后提供。",
+    "publishedAt": "2026-10-14",
+    "eventDate": "2026-10-14",
+    "isExample": false,
+    "hero": {
+      "url": "https://www.paperinstruments.com/reports/ultramarine/opengraph-image.png",
+      "alt": "Ultramarine 1 Flash 官方技术报告分享配图",
+      "sourceUrl": "https://www.paperinstruments.com/blog/ultramarine",
+      "license": "原文配图，版权归原发布方；未声明开放许可。",
+      "credit": "Paper Instruments"
+    },
+    "sections": [
+      {
+        "id": "part-1",
+        "title": "没有唯一答案，也需要明确评分标准",
+        "body": "一份分析报告不能只靠编译或单元测试判断。团队将任务、环境和评分规则一起合成，按结论、依据及交付条件评分；标准过窄会排斥其他合理解法，过于含糊则可能奖励看似专业的错误。",
+        "kind": "technical"
+      },
+      {
+        "id": "part-2",
+        "title": "成本比较取决于同一套任务",
+        "body": "公司在内部知识工作评测中报告每任务约0.13美元，并与其他模型比较。这一成本在特定任务、推理设置及工具环境下测得，不能当成所有工作都便宜同样倍数的独立结论；开放权重仍是后续安排。",
+        "kind": "boundary"
+      }
+    ],
+    "explainer": {
+      "variant": "benchmark",
+      "title": "开放式任务怎样判断完成质量？",
+      "question": "报告写得像专业人士，就算任务做对了吗？",
+      "steps": [
+        {
+          "label": "明确任务与资料",
+          "detail": "说明目标、可用材料及交付物。"
+        },
+        {
+          "label": "逐项检查条件",
+          "detail": "按具体评分规则核对结论和证据。"
+        },
+        {
+          "label": "汇总结果与成本",
+          "detail": "结合质量及实际消耗比较同类任务。"
+        }
+      ]
+    },
+    "source": {
+      "name": "Paper Instruments",
+      "url": "https://www.paperinstruments.com/blog/ultramarine"
+    },
+    "relatedSlugs": [
+      "grading-rubric",
+      "eval"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.paperinstruments.com/blog/ultramarine",
+        "claim": "Paper Instruments 技术报告明确14日发布，介绍专业工作强化学习与合成评分；API入口可见，权重仍coming soon，0.13美元为内部任务成本。",
+        "excerpt": "要点意译：Oct14；GLM-5.3 Flash post-training；synthetic tasks/rubrics；PI Knowledge Work cost。"
+      },
+      {
+        "url": "https://www.paperinstruments.com/ultramarine",
+        "claim": "官方产品页有API入口，并写明模型权重coming soon；每任务成本来自PI Knowledge Work内部评测。",
+        "excerpt": "提供状态核对：API入口；Model weights coming soon；internal benchmark。"
+      }
+    ],
+    "canonicalUrl": "https://www.paperinstruments.com/blog/ultramarine",
+    "sourceHash": "sha256:d758bf8f22b46f2da45b181c14474dbcf392507502dbe50c8336dde943123416"
+  },
+  {
+    "slug": "xai-grok-voice-3-api-20261014",
+    "title": "Grok Voice 3.0 开放 API，使用 latest 别名的应用已自动升级",
+    "summary": "语音对语音模型于 14 日发布，API 价格维持每分钟 0.08 美元。公告引用的语音榜单属于特定测试，响应速度仍受实际应用条件影响。",
+    "body": "10 月 14 日，xAI 发布 Grok Voice 3.0，当日通过 Voice Agent API 提供，价格与上一代相同，为每分钟 0.08 美元。公司表示，使用 grok-voice-latest 别名的智能体已经自动切换到新版本。",
+    "publishedAt": "2026-10-14",
+    "eventDate": "2026-10-14",
+    "isExample": false,
+    "hero": {
+      "url": "https://media.x.ai/v1/website/og-grok-voice-3-0-b281361b.webp",
+      "alt": "Grok Voice 3.0 官方发布分享配图",
+      "sourceUrl": "https://x.ai/news/grok-voice-3",
+      "license": "原文配图，版权归原发布方；未声明开放许可。",
+      "credit": "xAI"
+    },
+    "sections": [
+      {
+        "id": "part-1",
+        "title": "语音任务还要处理轮流讲话",
+        "body": "模型接收语音并生成语音，客服场景除了回答是否正确，还涉及停顿、打断、背景噪声和首段声音何时返回。公告援引 Artificial Analysis 的语音综合指数和双向对话测试，指标各自测量不同部分。",
+        "kind": "technical"
+      },
+      {
+        "id": "part-2",
+        "title": "榜单成绩不能替代业务验证",
+        "body": "公告引用的 Artificial Analysis 数据日期为 13 日，模型公告是 14 日。公司还披露 Tesla、Starlink 等部署情况；这些使用量和自动解决比例属于特定业务描述，不能推断每个新客服系统都有同样效果。",
+        "kind": "boundary"
+      }
+    ],
+    "explainer": {
+      "variant": "agentic-calling",
+      "title": "一次语音客服交互要检查什么？",
+      "question": "声音回得快，是否就代表问题已解决？",
+      "steps": [
+        {
+          "label": "听取并理解请求",
+          "detail": "识别用户目标，也处理噪声和打断。"
+        },
+        {
+          "label": "产生回复或提出操作",
+          "detail": "语音回复与业务操作需要分别安排。"
+        },
+        {
+          "label": "核对任务是否完成",
+          "detail": "用实际解决结果检查，保留转人工入口。"
+        }
+      ]
+    },
+    "source": {
+      "name": "xAI",
+      "url": "https://x.ai/news/grok-voice-3"
+    },
+    "relatedSlugs": [
+      "multimodal",
+      "latency-evaluation"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://x.ai/news/grok-voice-3",
+        "claim": "xAI 于 14 日发布 Grok Voice 3.0 API，维持每分钟0.08美元，latest别名已升级；榜单数据与公告日期应区分。",
+        "excerpt": "要点意译：Oct14 announcement；API today；same price；latest automatically switched。"
+      }
+    ],
+    "canonicalUrl": "https://x.ai/news/grok-voice-3",
+    "sourceHash": "sha256:cf1339d12f95ff97732277f41ee49c027723a4d1098830fc699c90ade8a93aaf"
   },
   {
     "slug": "anthropic-scion-source-control-20261013",
