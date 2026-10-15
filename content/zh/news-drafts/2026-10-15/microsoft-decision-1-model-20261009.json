@@ -1,0 +1,131 @@
+{
+  "slug": "microsoft-decision-1-model-20261009",
+  "title": "微软发布 Decision-1：给固定选项打分，辅助分类、路由与工作流控制",
+  "summary": "模型基于 Qwen3.5-9B 后训练，通过结构化接口返回选项概率。微软给出的延迟与质量比较来自自身评测，需要保留任务和测试条件。",
+  "body": "10 月 9 日，微软在 Command Line 公布 Microsoft-Decision-1，可通过 Microsoft Foundry 和 OpenRouter 使用。它面向分类、优先级判断、模型路由和工作流控制：给定一组答案选项，返回每个选项的概率评分。\n\n这类任务常常只需要选出下一步，而不需要生成长篇解释。把每次判断做得更快、更便宜，可能减少连续智能体流程中的累积等待。",
+  "publishedAt": "2026-10-09",
+  "eventDate": "2026-10-09",
+  "isExample": false,
+  "hero": {
+    "url": "https://commandline.microsoft.com/wp-content/uploads/2026/10/introducing-microsoft-decision-1-our-model-for-fast-decision-making-card.png",
+    "alt": "微软发布 Decision-1：给固定选项打分，辅助分类、路由与工作流控制：原文配图",
+    "sourceUrl": "https://commandline.microsoft.com/microsoft-decision-1-model-foundry/",
+    "license": "原文配图，版权归原发布方；未声明开放许可。",
+    "credit": "Microsoft Command Line"
+  },
+  "sections": [
+    {
+      "id": "part-1",
+      "title": "一次选择怎样接入应用",
+      "body": "应用可以预先定义“继续、重试、转人工”三个选项，把当前状态交给模型评分，再根据阈值采取动作。这与让模型自由写下一大段计划不同：输出格式受限，应用能直接读取，但选项是否完整仍由开发者设计。",
+      "kind": "example"
+    },
+    {
+      "id": "part-2",
+      "title": "概率校准为什么有用",
+      "body": "如果一组被打出九成把握的代表性判断，实际也约有九成正确，就称得上较好的校准。应用可据此设置复核阈值。换了数据分布以后仍需检查校准，不能把任意一次九成评分当作确定事实。",
+      "kind": "technical"
+    },
+    {
+      "id": "part-3",
+      "title": "速度数字的适用范围",
+      "body": "微软介绍了三十六项基准、近十五万题的比较，并报告比部分通用模型更低的延迟。这些是供应商测试结果。Decision-1 基于 Qwen3.5-9B 后训练，不是能够替代所有开放式推理和生成任务的通用结论。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "只有几个选项的任务，为何需要另一类模型？",
+    "question": "应用怎样把一次概率评分变成可执行的下一步？",
+    "steps": [
+      {
+        "label": "定义允许的选项",
+        "detail": "应用先列出可采取的动作。"
+      },
+      {
+        "label": "给各选项评分",
+        "detail": "模型返回结构化概率。"
+      },
+      {
+        "label": "按阈值处理",
+        "detail": "应用执行、延后或交给人工复核。"
+      }
+    ]
+  },
+  "source": {
+    "name": "Microsoft Command Line",
+    "url": "https://commandline.microsoft.com/microsoft-decision-1-model-foundry/"
+  },
+  "relatedSlugs": [
+    "model-routing",
+    "structured-output",
+    "confidence-calibration"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://commandline.microsoft.com/microsoft-decision-1-model-foundry/",
+      "claim": "微软于 2026-10-09 发布 Decision-1，通过 Foundry 与 OpenRouter 提供基于固定选项的概率评分。",
+      "excerpt": "When given a fixed set of answer options, Microsoft-Decision-1 provides a calibrated probability score for each option."
+    }
+  ],
+  "canonicalUrl": "https://commandline.microsoft.com/microsoft-decision-1-model-foundry",
+  "sourceHash": "sha256:e9c0db8c8d4aacc3d500b00ea10e7429e4d772076ae48373a655a01ee3ac4c09",
+  "status": "published",
+  "discoveredAt": "2026-10-15T15:21:45Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "model-routing",
+      "score": 1,
+      "evidence": [
+        "核对官方 10 月 9 日日期；解释校准而非确定性，评测比较归于微软。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "structured-output",
+      "score": 1,
+      "evidence": [
+        "核对官方 10 月 9 日日期；解释校准而非确定性，评测比较归于微软。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "confidence-calibration",
+      "score": 1,
+      "evidence": [
+        "核对官方 10 月 9 日日期；解释校准而非确定性，评测比较归于微软。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://commandline.microsoft.com/microsoft-decision-1-model-foundry/",
+      "claim": "微软于 2026-10-09 发布 Decision-1，通过 Foundry 与 OpenRouter 提供基于固定选项的概率评分。",
+      "excerpt": "When given a fixed set of answer options, Microsoft-Decision-1 provides a calibrated probability score for each option."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-15T15:21:45Z",
+    "method": "source",
+    "notes": "核对原始发布页正文、日期及可用范围；来源指纹取实际抓取的规范化可读文本。核对官方 10 月 9 日日期；解释校准而非确定性，评测比较归于微软。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-15T15:21:45Z",
+    "notes": "主助手按 humanizer-zh 自审中文，并模拟零基础读者追问后修订；未委派读者子代理。核对官方 10 月 9 日日期；解释校准而非确定性，评测比较归于微软。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-october-2026-10-09",
+  "promotedAt": "2026-10-15T15:22:31.037Z"
+}

@@ -1,0 +1,142 @@
+{
+  "slug": "anthropic-scion-source-control-20261013",
+  "title": "Anthropic 介绍 Scion：代码变更激增后，把版本控制改为面向在线代理的服务",
+  "summary": "公司称单体仓库在五个月内完成迁移，服务端承担历史查询与合并，客户端按需取文件。它也明确表示 Git 仍适合绝大多数仓库。",
+  "body": "10 月 13 日，Anthropic 工程团队介绍内部版本控制系统 Scion。公司称，随着每天合入的代码变更从五月约两千五百次增长到九月三万余次，仓库复制和持续集成的负担成为瓶颈。\n\n团队在五个月内迁移了单体仓库。Scion 假设多数客户端是持续在线的代理或自动化任务，把历史查询、提交和合并等工作集中到服务端，让客户端只取需要的数据。",
+  "publishedAt": "2026-10-13",
+  "eventDate": "2026-10-13",
+  "isExample": false,
+  "hero": {
+    "url": "https://www-cdn.anthropic.com/images/4zrzovbb/website/d344b849251502fade67ad16f09bb86fa6f42363-500x263.png",
+    "alt": "Anthropic 介绍 Scion：代码变更激增后，把版本控制改为面向在线代理的服务：原文配图",
+    "sourceUrl": "https://www.anthropic.com/engineering/redesigning-source-control",
+    "license": "原文配图，版权归原发布方；未声明开放许可。",
+    "credit": "Anthropic"
+  },
+  "sections": [
+    {
+      "id": "part-1",
+      "title": "为什么完整克隆变得昂贵",
+      "body": "Git 的完整本地副本适合离线工作，也让每个副本拥有丰富能力。但同一个大仓库每天被自动任务检出数千万次时，反复复制历史和文件会产生很大负担。Anthropic 的问题来自其特殊规模和使用方式。",
+      "kind": "technical"
+    },
+    {
+      "id": "part-2",
+      "title": "按需取得文件如何改变工作流",
+      "body": "某个检查任务只需要计算两次变更的差异时，可以直接请求服务端，不必先建立完整本地仓库。必须读文件的任务则使用稀疏或虚拟检出，减少下载和落盘的内容。",
+      "kind": "example"
+    },
+    {
+      "id": "part-3",
+      "title": "这不是普遍替换 Git 的结论",
+      "body": "原文承认 Git 的设计适合绝大多数仓库。Scion 选择依赖始终在线的服务，也改变了离线能力和运维责任。读者应先检查自己的实际瓶颈，再判断这种集中服务方式是否有价值。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "data-motion",
+    "title": "自动任务为什么不一定需要完整仓库？",
+    "question": "从复制整个仓库改成按需查询，省掉了哪一段工作？",
+    "steps": [
+      {
+        "label": "任务请求资料",
+        "detail": "自动任务说明需要的文件或差异。"
+      },
+      {
+        "label": "服务端按需处理",
+        "detail": "查询和变更计算在服务端完成。"
+      },
+      {
+        "label": "返回最少结果",
+        "detail": "客户端只取得当前任务用到的数据。"
+      }
+    ]
+  },
+  "source": {
+    "name": "Anthropic",
+    "url": "https://www.anthropic.com/engineering/redesigning-source-control"
+  },
+  "relatedSlugs": [
+    "monorepo",
+    "ci",
+    "client-server",
+    "checkout-switch"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.anthropic.com/engineering/redesigning-source-control",
+      "claim": "Anthropic 于 2026-10-13 介绍内部 Scion 系统，说明在线客户端、服务端查询与稀疏检出的设计。",
+      "excerpt": "For the vast majority of repositories, this is the right design"
+    }
+  ],
+  "canonicalUrl": "https://www.anthropic.com/engineering/redesigning-source-control",
+  "sourceHash": "sha256:86bcbabddcdfbb901c52506160de7e1d07130714e4f64e51555c78f2f2799771",
+  "status": "published",
+  "discoveredAt": "2026-10-15T15:21:45Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "monorepo",
+      "score": 1,
+      "evidence": [
+        "规模数据归于公司；保留 Git 对多数仓库适用的原文判断，不把内部系统写成公开可安装产品。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "ci",
+      "score": 1,
+      "evidence": [
+        "规模数据归于公司；保留 Git 对多数仓库适用的原文判断，不把内部系统写成公开可安装产品。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "client-server",
+      "score": 1,
+      "evidence": [
+        "规模数据归于公司；保留 Git 对多数仓库适用的原文判断，不把内部系统写成公开可安装产品。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "checkout-switch",
+      "score": 1,
+      "evidence": [
+        "规模数据归于公司；保留 Git 对多数仓库适用的原文判断，不把内部系统写成公开可安装产品。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.anthropic.com/engineering/redesigning-source-control",
+      "claim": "Anthropic 于 2026-10-13 介绍内部 Scion 系统，说明在线客户端、服务端查询与稀疏检出的设计。",
+      "excerpt": "For the vast majority of repositories, this is the right design"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-15T15:21:45Z",
+    "method": "source",
+    "notes": "核对原始发布页正文、日期及可用范围；来源指纹取实际抓取的规范化可读文本。规模数据归于公司；保留 Git 对多数仓库适用的原文判断，不把内部系统写成公开可安装产品。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-15T15:21:45Z",
+    "notes": "主助手按 humanizer-zh 自审中文，并模拟零基础读者追问后修订；未委派读者子代理。规模数据归于公司；保留 Git 对多数仓库适用的原文判断，不把内部系统写成公开可安装产品。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-october-2026-10-13",
+  "promotedAt": "2026-10-15T15:22:33.220Z"
+}
