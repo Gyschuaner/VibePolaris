@@ -2009,7 +2009,7 @@
     "isExample": false,
     "hero": {
       "url": "https://images.ctfassets.net/kftzwdyauwt9/rK0Bn1sDSa03vTiJvEqEk/e693b91273247f332181de385845fa52/building-advertising-for-the-way-people-use-ai-social.png?w=1600&h=900&fit=fill",
-      "alt": "OpenAI 公布 ChatGPT 新广告测试：等待图片生成时展示独立广告位：原文配图",
+      "alt": "OpenAI ChatGPT 视觉广告测试公告配图",
       "sourceUrl": "https://openai.com/index/new-chatgpt-ads-format-and-measurement/",
       "license": "原文配图，版权归原发布方；未声明开放许可。",
       "credit": "OpenAI"
@@ -2072,6 +2072,158 @@
     ],
     "canonicalUrl": "https://openai.com/index/new-chatgpt-ads-format-and-measurement",
     "sourceHash": "sha256:97fbbc867d6e6ba933a78c7dbca192eb580720d271e347da64a081aaddc1eb7c"
+  },
+  {
+    "slug": "openai-textgrain-eu-watermark-plan-20261005",
+    "title": "OpenAI 公布文本水印安排：API 可选开启，欧盟产品分阶段加入",
+    "summary": "textGrain 通过措辞中的统计信号留下来源线索。检测可能误报或漏报，也不能据此判断一篇文章有多少人类贡献。",
+    "body": "10 月 5 日，OpenAI 公布文本水印 textGrain 的实施安排。全球 API 客户当日起可为部分模型选择开启，默认仍为关闭；欧盟符合条件的 ChatGPT 和 Codex 文本输出，则计划在未来数周分阶段加入水印。\n\n公司同时开放检测器申请，初期仅向获批研究者和专业机构提供，没有在上线时直接开放给所有公众。",
+    "publishedAt": "2026-10-05",
+    "eventDate": "2026-10-05",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/textgrain-figure1-20261005.png",
+      "alt": "textGrain 技术报告图 1：词元分组、概率计算与选择机制原图",
+      "sourceUrl": "https://cdn.openai.com/pdf/e9508624-d767-41b6-a26d-e34ca798ada6/textgrain-entropy-calibrated-watermarking-for-language-model-text.pdf",
+      "license": "OpenAI textGrain 技术报告第 4 页图 1 原图节选，版权归原作者；未声明开放许可。",
+      "credit": "OpenAI"
+    },
+    "sections": [
+      {
+        "id": "part-1",
+        "title": "水印藏在统计规律里",
+        "body": "textGrain 在模型选词时嵌入不可见的统计信号，检测器再寻找这种规律。它不是在文字里加一个可见标志，也不是普通的隐藏字符。配图节选自公告链接的官方技术报告第 4 页图 1，展示词元分组与选择的机制。",
+        "kind": "technical"
+      },
+      {
+        "id": "part-2",
+        "title": "改写会影响检测",
+        "body": "OpenAI 的评测显示，短文本、表达选择少的内容以及后续改写，都可能让水印更难检测。检测器也可能把没有水印的文本判为有水印。这些是统计判断的局限，不能把检测结果当作确定无误的鉴定。",
+        "kind": "narrative"
+      },
+      {
+        "id": "part-3",
+        "title": "来源线索不等于作者判定",
+        "body": "检出水印不能说明人类修改、判断或创作贡献有多少，也不证明内容正确。没检出同样不能证明由人类写成。欧盟产品将在未来数周分批加入，API 仍由客户选择开启。",
+        "kind": "boundary"
+      }
+    ],
+    "explainer": {
+      "variant": "data-motion",
+      "title": "文本怎样留下可检测的来源信号？",
+      "question": "为什么没有肉眼可见的标记，仍可能检测到水印？",
+      "steps": [
+        {
+          "label": "生成时调整选择",
+          "detail": "模型在选词中嵌入统计信号。"
+        },
+        {
+          "label": "保留一段文本",
+          "detail": "原样复制保留文本中的信号；改写、删减或翻译可能让信号变弱。"
+        },
+        {
+          "label": "检测并解释局限",
+          "detail": "检测器寻找信号，使用者同时考虑误报与漏报。"
+        }
+      ]
+    },
+    "source": {
+      "name": "OpenAI",
+      "url": "https://openai.com/index/eu-text-provenance/"
+    },
+    "relatedSlugs": [
+      "token",
+      "eval",
+      "generative-ai"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://openai.com/index/eu-text-provenance/",
+        "claim": "OpenAI 于 2026-10-05 开放部分 API 模型水印选项并宣布欧盟产品分阶段计划；检测器初期仅供获批研究者与专业机构。",
+        "excerpt": "核对要点（意译）：API 可选且默认关闭；欧盟产品未来数周推出；水印不判定人类贡献或文本准确性。"
+      },
+      {
+        "url": "https://cdn.openai.com/pdf/e9508624-d767-41b6-a26d-e34ca798ada6/textgrain-entropy-calibrated-watermarking-for-language-model-text.pdf",
+        "claim": "官方技术报告第 4 页图 1 展示水印嵌入机制；配图直接从原始矢量图渲染。",
+        "excerpt": "图 1 以词元分组、概率计算和选择说明机制；没有重绘或生成替代图片。"
+      }
+    ],
+    "canonicalUrl": "https://openai.com/index/eu-text-provenance",
+    "sourceHash": "sha256:ae841d8ad9e30e29feda690bb5d90e11d32ce95d5b28531012da8860248db7cc"
+  },
+  {
+    "slug": "reflection-beam-early-access-20261005",
+    "title": "Reflection AI 介绍 Beam：先开放早期访问，权重计划本月稍后提供",
+    "summary": "这款面向编程、推理和智能体任务的模型有 5010 亿总参数、每词元激活 230 亿。5 日公告提供候补名单，不能写成权重已能下载。",
+    "body": "10 月 5 日，Reflection AI 介绍首款模型 Beam，并向少数用户提供早期访问，其他用户可报名候补名单。公司计划在当月稍后开放权重、技术报告、模型卡和开发资料，计划中的权重许可为 Apache 2.0。\n\nBeam 面向编程、推理和调用工具完成任务。官方说明它本身接收文本；演示中借助 OCR 等工具取得其他形式的信息，不等于模型原生就能理解图像。",
+    "publishedAt": "2026-10-05",
+    "eventDate": "2026-10-05",
+    "isExample": false,
+    "hero": {
+      "url": "https://cdn.sanity.io/images/sp40emik/production/771cfe201a3d24d7a340c3372e6a1654ec1a6e42-1800x1013.png",
+      "alt": "Reflection AI Beam 发布文章配图",
+      "sourceUrl": "https://reflection.ai/blog/introducing-beam",
+      "license": "原文配图，版权归原发布方；未声明开放许可。",
+      "credit": "Reflection AI"
+    },
+    "sections": [
+      {
+        "id": "part-1",
+        "title": "混合专家怎样影响计算",
+        "body": "Beam 共有约 5010 亿参数，但每生成一个词元激活约 230 亿。混合专家架构让每一步只调用部分参数参与计算；部署时仍需为完整权重及运行过程准备内存。",
+        "kind": "technical"
+      },
+      {
+        "id": "part-2",
+        "title": "训练结果是厂商披露",
+        "body": "Reflection 介绍了大规模预训练和强化学习。强化学习让模型在任务环境里尝试操作，再根据结果反馈改进。官方给出的性能比较属于厂商披露，不能直接替代团队在自己任务上的验证。",
+        "kind": "narrative"
+      },
+      {
+        "id": "part-3",
+        "title": "不要把后续评测当首发成绩",
+        "body": "目前原文能力表注明 10 月 8 日更新。本条记录 5 日介绍和早期访问，不把修订后的榜单数值写成首发成绩。文中的推理计算量估算也排除了部分处理与服务开销，不能直接换算成实际价格。",
+        "kind": "boundary"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "模型怎样借工具完成任务？",
+      "question": "一个只接收文本的模型，怎样处理工具取回的其他信息？",
+      "steps": [
+        {
+          "label": "读取任务",
+          "detail": "模型理解要完成的目标与材料。"
+        },
+        {
+          "label": "调用适合的工具",
+          "detail": "例如让文字识别工具把图片内容转换为文本。"
+        },
+        {
+          "label": "继续推理与交付",
+          "detail": "模型读取工具结果并组织输出。"
+        }
+      ]
+    },
+    "source": {
+      "name": "Reflection AI",
+      "url": "https://reflection.ai/blog/introducing-beam"
+    },
+    "relatedSlugs": [
+      "mixture-of-experts",
+      "tools"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://reflection.ai/blog/introducing-beam",
+        "claim": "Reflection 于 2026-10-05 介绍 Beam 并提供少数用户早期访问；权重等资料及 Apache 2.0 许可发布计划在本月稍后。",
+        "excerpt": "核对要点（意译）：501B 总参数、23B 激活；5 日为早期访问，当前表含 10 月 8 日修订。"
+      }
+    ],
+    "canonicalUrl": "https://reflection.ai/blog/introducing-beam",
+    "sourceHash": "sha256:430f42e50e2dc3fbc1d5b2295455f769986bddf480c018cc45cd6ce6495aeb8b"
   },
   {
     "slug": "kyoto-vision-ai-science-cooperation-20261004",

@@ -1,0 +1,158 @@
+{
+  "slug": "openai-textgrain-eu-watermark-plan-20261005",
+  "title": "OpenAI 公布文本水印安排：API 可选开启，欧盟产品分阶段加入",
+  "summary": "textGrain 通过措辞中的统计信号留下来源线索。检测可能误报或漏报，也不能据此判断一篇文章有多少人类贡献。",
+  "body": "10 月 5 日，OpenAI 公布文本水印 textGrain 的实施安排。全球 API 客户当日起可为部分模型选择开启，默认仍为关闭；欧盟符合条件的 ChatGPT 和 Codex 文本输出，则计划在未来数周分阶段加入水印。\n\n公司同时开放检测器申请，初期仅向获批研究者和专业机构提供，没有在上线时直接开放给所有公众。",
+  "publishedAt": "2026-10-05",
+  "eventDate": "2026-10-05",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/textgrain-figure1-20261005.png",
+    "alt": "textGrain 技术报告图 1：词元分组、概率计算与选择机制原图",
+    "sourceUrl": "https://cdn.openai.com/pdf/e9508624-d767-41b6-a26d-e34ca798ada6/textgrain-entropy-calibrated-watermarking-for-language-model-text.pdf",
+    "license": "OpenAI textGrain 技术报告第 4 页图 1 原图节选，版权归原作者；未声明开放许可。",
+    "credit": "OpenAI"
+  },
+  "sections": [
+    {
+      "id": "part-1",
+      "title": "水印藏在统计规律里",
+      "body": "textGrain 在模型选词时嵌入不可见的统计信号，检测器再寻找这种规律。它不是在文字里加一个可见标志，也不是普通的隐藏字符。配图节选自公告链接的官方技术报告第 4 页图 1，展示词元分组与选择的机制。",
+      "kind": "technical"
+    },
+    {
+      "id": "part-2",
+      "title": "改写会影响检测",
+      "body": "OpenAI 的评测显示，短文本、表达选择少的内容以及后续改写，都可能让水印更难检测。检测器也可能把没有水印的文本判为有水印。这些是统计判断的局限，不能把检测结果当作确定无误的鉴定。",
+      "kind": "narrative"
+    },
+    {
+      "id": "part-3",
+      "title": "来源线索不等于作者判定",
+      "body": "检出水印不能说明人类修改、判断或创作贡献有多少，也不证明内容正确。没检出同样不能证明由人类写成。欧盟产品将在未来数周分批加入，API 仍由客户选择开启。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "data-motion",
+    "title": "文本怎样留下可检测的来源信号？",
+    "question": "为什么没有肉眼可见的标记，仍可能检测到水印？",
+    "steps": [
+      {
+        "label": "生成时调整选择",
+        "detail": "模型在选词中嵌入统计信号。"
+      },
+      {
+        "label": "保留一段文本",
+        "detail": "原样复制保留文本中的信号；改写、删减或翻译可能让信号变弱。"
+      },
+      {
+        "label": "检测并解释局限",
+        "detail": "检测器寻找信号，使用者同时考虑误报与漏报。"
+      }
+    ]
+  },
+  "source": {
+    "name": "OpenAI",
+    "url": "https://openai.com/index/eu-text-provenance/"
+  },
+  "relatedSlugs": [
+    "token",
+    "eval",
+    "generative-ai"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://openai.com/index/eu-text-provenance/",
+      "claim": "OpenAI 于 2026-10-05 开放部分 API 模型水印选项并宣布欧盟产品分阶段计划；检测器初期仅供获批研究者与专业机构。",
+      "excerpt": "核对要点（意译）：API 可选且默认关闭；欧盟产品未来数周推出；水印不判定人类贡献或文本准确性。"
+    },
+    {
+      "url": "https://cdn.openai.com/pdf/e9508624-d767-41b6-a26d-e34ca798ada6/textgrain-entropy-calibrated-watermarking-for-language-model-text.pdf",
+      "claim": "官方技术报告第 4 页图 1 展示水印嵌入机制；配图直接从原始矢量图渲染。",
+      "excerpt": "图 1 以词元分组、概率计算和选择说明机制；没有重绘或生成替代图片。"
+    }
+  ],
+  "canonicalUrl": "https://openai.com/index/eu-text-provenance",
+  "sourceHash": "sha256:ae841d8ad9e30e29feda690bb5d90e11d32ce95d5b28531012da8860248db7cc",
+  "status": "published",
+  "discoveredAt": "2026-10-15T16:23:43Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "token",
+      "score": 1,
+      "evidence": [
+        "OpenAI 于 2026-10-05 开放部分 API 模型水印选项并宣布欧盟产品分阶段计划；检测器初期仅供获批研究者与专业机构。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 1,
+      "evidence": [
+        "OpenAI 于 2026-10-05 开放部分 API 模型水印选项并宣布欧盟产品分阶段计划；检测器初期仅供获批研究者与专业机构。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "generative-ai",
+      "score": 1,
+      "evidence": [
+        "OpenAI 于 2026-10-05 开放部分 API 模型水印选项并宣布欧盟产品分阶段计划；检测器初期仅供获批研究者与专业机构。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://openai.com/index/eu-text-provenance/",
+      "claim": "OpenAI 于 2026-10-05 开放部分 API 模型水印选项并宣布欧盟产品分阶段计划；检测器初期仅供获批研究者与专业机构。",
+      "excerpt": "核对要点（意译）：API 可选且默认关闭；欧盟产品未来数周推出；水印不判定人类贡献或文本准确性。"
+    },
+    {
+      "url": "https://cdn.openai.com/pdf/e9508624-d767-41b6-a26d-e34ca798ada6/textgrain-entropy-calibrated-watermarking-for-language-model-text.pdf",
+      "claim": "官方技术报告第 4 页图 1 展示水印嵌入机制；配图直接从原始矢量图渲染。",
+      "excerpt": "图 1 以词元分组、概率计算和选择说明机制；没有重绘或生成替代图片。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-15T16:27:03Z",
+    "method": "source",
+    "notes": "按本日来源逐条核对后，由独立子智能体再次联网审读；具体意见见 readerReview 与逐日证据。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-15T16:23:43Z",
+    "notes": "主助手按 humanizer-zh 审读并自审；独立子智能体结论记录在 readerReview。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-15T16:27:03Z",
+    "questions": [
+      "哪些用户当天能开启？",
+      "检测器人人可用吗？",
+      "原样复制会去掉水印吗？",
+      "检测能判断人类贡献吗？"
+    ],
+    "notes": "独立公告与 PDF 核对后通过：API、欧盟产品、检测器的开放范围分开，误报漏报与人类贡献边界准确；已实际查看图 1 节选，与原报告第 4 页相符。复制机制修订后再次复核。",
+    "changes": [
+      "补入文本水印公告。",
+      "澄清原样复制不削弱措辞信号，改写删减翻译可能减弱。",
+      "将编辑者式提醒改为面向读者的事实陈述。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-october-review-2026-10-05",
+  "promotedAt": "2026-10-15T16:27:03.413Z"
+}
