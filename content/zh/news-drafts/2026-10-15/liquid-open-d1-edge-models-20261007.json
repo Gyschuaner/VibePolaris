@@ -1,0 +1,156 @@
+{
+  "slug": "liquid-open-d1-edge-models-20261007",
+  "title": "Liquid AI 开放两款 d1 决策模型，支持在本地作多模态判断",
+  "summary": "d1-3B 接收文字与图片；实验版 d1-omni-600M 还可处理文字与音频组合。它们直接返回判断结果，不生成长篇回答。",
+  "body": "10 月 7 日，Liquid AI 发布可下载权重的 d1-3B 与 d1-omni-600M。两款模型属于 d1 决策模型家族，可通过 Hugging Face 获取并在本地运行；这是与 5 日云端 d1 公告不同的一次发布。\n\n决策模型先读取输入和问题，再直接输出判断结果，不逐词生成回答。它适合需要反复判断的环节，例如从摄像头画面识别预先定义的状态。",
+  "publishedAt": "2026-10-07",
+  "eventDate": "2026-10-07",
+  "isExample": false,
+  "hero": {
+    "url": "https://aypchzzf9pftwuto.public.blob.vercel-storage.com/d1-3b-y3MEyu3FPjYY339B6FLO8aw7Vd1Id8.png",
+    "alt": "Liquid AI 原文中的 d1-3B 架构图",
+    "sourceUrl": "https://www.liquid.ai/blog/d1-open",
+    "license": "原文配图，版权归原发布方；未声明开放许可。",
+    "credit": "Liquid AI"
+  },
+  "sections": [
+    {
+      "id": "part-1",
+      "title": "两款模型接收的输入不同",
+      "body": "d1-3B 接收文字和图片。d1-omni-600M 是首个实验检查点，可接收文字与图片，或文字与音频组合，不能据此推断所有媒体都能同时任意混合输入。",
+      "kind": "technical"
+    },
+    {
+      "id": "part-2",
+      "title": "端侧延迟有具体测试条件",
+      "body": "公司展示的低延迟来自特定设备、问题数量、输入长度和图片尺寸的测试。单个短问题的时间不能直接代表长输入或完整视频应用。较小型号仍处于早期研究阶段，任务质量也需单独检查。",
+      "kind": "boundary"
+    },
+    {
+      "id": "part-3",
+      "title": "开放权重仍有许可条件",
+      "body": "d1-3B 的实际许可证为 LFM Open License v1.0，商业使用设有年营收 1000 万美元门槛，不能概括为不受限制商用；d1-omni-600M 的模型卡也标注同类许可。使用时应核对具体权重文件随附条款。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "本地模型怎样反复判断画面状态？",
+    "question": "一次模型判断的时间，等于整套应用的响应时间吗？",
+    "steps": [
+      {
+        "label": "取一帧输入",
+        "detail": "应用准备画面及要判断的问题。"
+      },
+      {
+        "label": "运行一次判断",
+        "detail": "本地模型返回对应结果。"
+      },
+      {
+        "label": "结合后续处理",
+        "detail": "应用决定动作，并计入采集与处理时间。"
+      }
+    ]
+  },
+  "source": {
+    "name": "Liquid AI",
+    "url": "https://www.liquid.ai/blog/d1-open"
+  },
+  "relatedSlugs": [
+    "multimodal",
+    "inference",
+    "eval"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.liquid.ai/blog/d1-open",
+      "claim": "Liquid AI 10 月 7 日开放 d1-3B 与实验版 d1-omni-600M，区分两款输入能力及设备测试条件。",
+      "excerpt": "核对要点（意译）：公开权重可本地运行；3B 为文字和图片，600M 实验版还支持文字与音频。"
+    },
+    {
+      "url": "https://huggingface.co/LiquidAI/d1-3B/raw/main/LICENSE",
+      "claim": "实际许可证为 LFM Open License v1.0，含商业使用限制和年营收门槛。",
+      "excerpt": "许可证定义 1000 万美元年营收门槛，并限定超过门槛实体的商业使用不在此协议授权内。"
+    }
+  ],
+  "canonicalUrl": "https://www.liquid.ai/blog/d1-open",
+  "sourceHash": "sha256:70ca2e51bdb6b8deedb9e666686c263c1da567023cd953365e64dda7891981f9",
+  "status": "published",
+  "discoveredAt": "2026-10-15T16:40:22Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "multimodal",
+      "score": 1,
+      "evidence": [
+        "Liquid AI 10 月 7 日开放 d1-3B 与实验版 d1-omni-600M，区分两款输入能力及设备测试条件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "inference",
+      "score": 1,
+      "evidence": [
+        "Liquid AI 10 月 7 日开放 d1-3B 与实验版 d1-omni-600M，区分两款输入能力及设备测试条件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 1,
+      "evidence": [
+        "Liquid AI 10 月 7 日开放 d1-3B 与实验版 d1-omni-600M，区分两款输入能力及设备测试条件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.liquid.ai/blog/d1-open",
+      "claim": "Liquid AI 10 月 7 日开放 d1-3B 与实验版 d1-omni-600M，区分两款输入能力及设备测试条件。",
+      "excerpt": "核对要点（意译）：公开权重可本地运行；3B 为文字和图片，600M 实验版还支持文字与音频。"
+    },
+    {
+      "url": "https://huggingface.co/LiquidAI/d1-3B/raw/main/LICENSE",
+      "claim": "实际许可证为 LFM Open License v1.0，含商业使用限制和年营收门槛。",
+      "excerpt": "许可证定义 1000 万美元年营收门槛，并限定超过门槛实体的商业使用不在此协议授权内。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-15T16:44:53Z",
+    "method": "source",
+    "notes": "按本日来源逐条核对后，由独立子智能体再次联网审读；具体意见见 readerReview 与逐日证据。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-15T16:40:22Z",
+    "notes": "主助手按 humanizer-zh 审读并自审；独立子智能体结论记录在 readerReview。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-15T16:44:53Z",
+    "questions": [
+      "它会写聊天回答吗？",
+      "图像与音频能任意混合吗？",
+      "开放权重是否无限制商用？"
+    ],
+    "notes": "独立核实与 5 日事件的区别、输入组合、实验状态、延迟条件及实际许可后通过；正文架构图来源已核对。",
+    "changes": [
+      "补入当日开放权重公告。",
+      "根据实际许可证补商业使用门槛。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-october-review-2026-10-07",
+  "promotedAt": "2026-10-15T16:44:54.098Z"
+}
