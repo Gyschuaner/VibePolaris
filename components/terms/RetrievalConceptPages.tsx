@@ -1,5 +1,4 @@
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
-import { ConceptHero } from './ConceptHero';
 import { FrameLesson, TextLesson, VectorLesson } from './RetrievalConceptLessons';
 import { frameSources, textSources, vectorSources } from '@/lib/retrieval-sources';
 import base from './EventConcepts.module.css';
@@ -10,7 +9,7 @@ export function FrameTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={frameSources}/>;
   return <ConceptArticle slug="dataframe" title="数据帧" sources={frameSources} sections={[["shape", "行与列有各自的含义"], ["selection", "筛选记录与选择字段"], ["operations", "计算会改变结果的形状"], ["execution", "表格接口与执行方式"]]}
     intro={<>把四条借阅记录读进程序后，先筛出逾期的两条，再只保留需要的字段。DataFrame 把这些记录放进一张有列名的二维表，程序就能按列选择、按行筛选和计算。</>}
-    hero={<ConceptHero slug="dataframe" label="原始四行三列筛出B与D，输出仍是有列定义的二维表"><div className={s.frameHero}><div className={s.heroSheet}><strong>4 × 3</strong><code>A　42　0　北</code><code>B　78　3　南</code><code>C　42　0　南</code><code>D　91　7　北</code></div><div className={s.heroSheet}><strong>2 × 3</strong><code>逾期 ≥ 1 天</code><code>B　78　3　南</code><code>D　91　7　北</code></div></div></ConceptHero>}>
+    >
     <ArticleSection id="shape" title="行与列有各自的含义"><Legacy slug="dataframe" names={["question", "definition"]}/>
       <p><strong>DataFrame 是用命名的列组织二维数据的结构。</strong>一行代表一条记录，一列代表一个字段。在本例里，每行代表一次借阅；借阅记录有书目编号、逾期天数和馆名这三列。换一个业务，每行可能代表一个读者或一本书，仍要先说明它代表什么。</p>
       <p id="frame-selection" className="vp-citation-target">pandas 的教程区分两种选择：只取一个列名时，单独得到那一列，pandas 把它叫一维 Series；把要保留的几个列名一起写出来，得到二维 DataFrame。<strong>结果有多少行、多少列，是理解一次操作的基本证据。</strong>本例选择列时传的始终是列名列表，所以结果仍是二维表。<Cite id="frame-selection"/></p>
@@ -40,7 +39,7 @@ export function FullTextTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={textSources}/>;
   return <ConceptArticle slug="full-text-search" title="全文搜索" sources={textSources} sections={[["terms", "把文档整理成可查的词项"], ["postings", "从词项找到文档"], ["analysis", "匹配规则与语言处理"], ["ranking", "命中以后，还要决定顺序"]]}
     intro={<>读者输入“借阅 续借”，系统要找到相关说明。先按解析规则把文档处理成可检索的词项；系统常把处理结果保存为索引来加速重复查询，但“全文搜索”不等于某一种索引实现。有了索引，查询时就不必每次从头读完全部正文，再按词项找到文档并判断哪些满足条件。</>}
-    hero={<ConceptHero slug="full-text-search" label="借阅对应ABE，续借对应ACE，两份文档集合求交得到AE"><div className={s.textHero}><div className={s.heroPosting}><strong>借阅</strong><code>A　B　E</code></div><div className={s.heroPosting}><strong>续借</strong><code>A　C　E</code></div><div className={s.heroMatch}><span>同时包含两词</span><strong>A　E</strong></div></div></ConceptHero>}>
+    >
     <ArticleSection id="terms" title="把文档整理成可查的词项"><Legacy slug="full-text-search" names={["question", "definition"]}/>
       <p id="text-definition" className="vp-citation-target"><strong>全文搜索根据文本查询找到匹配文档，并可按相关性排序。</strong>PostgreSQL 的介绍说明，索引前可以把正文拆成 token（切出来的词或片段），再由词典把它们归一成适合检索的词项，例如英文 <code>books</code> 可能按配置归一为 <code>book</code>。原始文字、处理后的词项与查询条件，各有自己的作用；索引里存的不是原文，而是处理后的词项和位置。<Cite id="text-definition"/></p>
       <p>普通字符串匹配关心一串字符是否出现；全文搜索比较处理后的词项和查询规则，所以字面写法相同不是唯一条件。比如启用词形归一后，搜 <code>book</code> 可能命中 <code>books</code>，而字面匹配未必会。<strong>能否找到不同写法，不只由输入框决定，还由索引与查询的处理配置决定。</strong></p>
@@ -68,7 +67,7 @@ export function VectorDatabaseTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={vectorSources}/>;
   return <ConceptArticle slug="vector-database" title="向量数据库" sources={vectorSources} sections={[["records", "向量与记录一起保存"], ["neighbours", "限定候选，再比较距离"], ["indexing", "数据增长时的检索开销"], ["limits", "相似结果仍要核对内容"]]}
     intro={<>真实使用时，编码器先把查询和文档变成同一表示空间里的向量。向量数据库保存这些向量及对应记录，帮助找出相近的候选；标题、原文、范围与版本也要和它们一起管理。</>}
-    hero={<ConceptHero slug="vector-database" label="二维查询q连接距离较近的B与A，其他候选保持在各自坐标"><div className={s.vectorHero}><svg viewBox="0 0 290 210" aria-hidden="true"><path className={s.heroLink} d="M65 145L88 132M65 145L132 150"/><circle className={s.heroQuery} cx="65" cy="145" r="14"/><text x="40" y="180">q</text><g className={s.heroNear}><circle cx="88" cy="132" r="6"/><text x="95" y="125">B</text><circle cx="132" cy="150" r="6"/><text x="140" y="175">A</text></g><g className={s.heroFar}><circle cx="170" cy="74" r="5"/><text x="179" y="68">C</text><circle cx="245" cy="45" r="5"/><text x="252" y="40">E</text><circle cx="228" cy="160" r="5"/><text x="238" y="176">D</text></g></svg></div></ConceptHero>}>
+    >
     <ArticleSection id="records" title="向量与记录一起保存"><Legacy slug="vector-database" names={["question", "definition"]}/>
       <p id="vector-records" className="vp-citation-target"><strong>向量数据库围绕向量相似性组织存储、索引和查询，并把向量关联到可识别的记录。</strong>Qdrant 是这类工具的一个例子；它的 Point 包含向量、ID 和可选 payload（附带元数据）。向量用来比较，ID 用来找到对象，payload 可记录类别、来源或原文入口；它们不能相互替代。<Cite id="vector-records"/></p>
       <p>文档检索里，通常先用选定的编码器把文档和查询变成兼容的向量，再按约定的距离或相似度比较。<strong>生成表示与检索表示，是不同环节。</strong>不能把随便两组数字放到一起，就断言它们在比较文本含义。</p>

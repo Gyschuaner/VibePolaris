@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowCounterClockwise, ArrowRight, CheckCircle, GitBranch, Key, LockSimple, Pause, Play, ShieldCheck, Stack, UserCircle, WarningCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowRight, GitBranch, Key, LockSimple, Pause, Play, ShieldCheck, Stack, UserCircle } from "@phosphor-icons/react";
 import { useState } from "react";
 
 import { ArticleCitation, ArticleSection, ConceptArticle } from "../ConceptArticle";
@@ -68,7 +68,7 @@ function RbacLab() {
 
 export function RbacRoleTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={rbacSources} />;
-  return <ConceptArticle slug="rbac" title="基于角色的访问控制" subtitle="RBAC · 让权限跟着角色走，再把对象边界补回来" sources={rbacSources} sections={[["rbac-model-section", "权限为什么先放进角色"], ["rbac-decision-section", "角色通过以后还要查什么"], ["rbac-boundary-section", "哪些条件不该硬塞进角色"], ["rbac-revoke-section", "角色变化怎样影响结果"]]} hero={<RbacHero />} intro={<>RBAC 把“谁能做什么”拆成两段关系：权限先归到角色，用户再获得角色。请求到来时，系统算出当前角色带来的权限，再检查资源本身的范围；这样一条允许或拒绝，才有可追溯的来路。</>}>
+  return <ConceptArticle slug="rbac" title="基于角色的访问控制" subtitle="RBAC · 让权限跟着角色走，再把对象边界补回来" sources={rbacSources} sections={[["rbac-model-section", "权限为什么先放进角色"], ["rbac-decision-section", "角色通过以后还要查什么"], ["rbac-boundary-section", "哪些条件不该硬塞进角色"], ["rbac-revoke-section", "角色变化怎样影响结果"]]} intro={<>RBAC 把“谁能做什么”拆成两段关系：权限先归到角色，用户再获得角色。请求到来时，系统算出当前角色带来的权限，再检查资源本身的范围；这样一条允许或拒绝，才有可追溯的来路。</>}>
     <ArticleSection id="rbac-model-section" title="权限为什么先放进角色">
       <p id="rbac-model" className="vp-citation-target">RBAC 的基本关系是用户、角色和权限：权限描述动作，角色把一组动作收成一份职责，用户通过角色获得这些权限。相同岗位的授权可以复用，人员调整时也只需改变角色关系。<Cite id="rbac-model" /></p>
       <p id="rbac-role" className="vp-citation-target">例如 viewer 可以 invoice.read，finance 可以 invoice.approve；阿青同时持有两个角色时，有效权限是两组关系带来的结果。角色层级还能表达继承，但每一项权限都应能追溯到具体角色关系。<Cite id="rbac-role" /></p>

@@ -1,5 +1,4 @@
 import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptTerm } from "./ConceptArticle";
-import { ConceptHero } from "./ConceptHero";
 import { AsyncLegacyAnchors } from "./AsyncConceptPages";
 import { JsonLesson, SchemaLesson } from "./DataConceptLessons";
 import { jsonSources, schemaSources } from "@/lib/async-concept-sources";
@@ -11,14 +10,7 @@ export function JsonTermPage() {
   return <ConceptArticle slug="json" title="JSON" subtitle="用文本传递结构化数据" sources={jsonSources}
     intro={<>书目服务要把书名、数量和是否可借交给网页，可以先把这些信息写成 JSON 文本。网页按它的规则读出每一项，再用来显示书单。JSON 约定的是数据的写法，数据具体表示什么，仍要由发送方和接收方商量好。</>}
     sections={[["text", "文本和对象"], ["parse", "把文本读成值"], ["types", "引号改变了类型"], ["exchange", "交换数据的约定"]]}
-    hero={<ConceptHero slug="json" label="同一段 JSON 文本经解析展开为对象，其中 title 是字符串、copies 是数字；原文本仍留在上方"><div className={styles.jsonHero}>
-      <div className={styles.jsonRibbon}><code>{'{"title":"灯塔","copies":2}'}</code></div>
-      <div className={styles.jsonFold}><span>JSON.parse()</span><div className={styles.jsonObject}>
-        <small>{'{}'} object</small>
-        <div className={styles.jsonField}><code>title</code><strong className={styles.jsonString}>“灯塔”</strong><small>string</small></div>
-        <div className={styles.jsonField}><code>copies</code><strong className={styles.jsonNumber}>2</strong><small>number</small></div>
-      </div></div>
-    </div></ConceptHero>}>
+    >
     <ArticleSection id="text" title="文本和对象">
       <AsyncLegacyAnchors slug="json" names={["question", "definition"]} />
       <p id="json-purpose" className="vp-citation-target">JSON 是一种用文本交换数据的格式，不限于 JavaScript 程序使用。也可以直接发送“《小岛上的灯塔》有 2 本，可借”这句话，但接收程序得另外约定怎样从句子里取出书名和数量。JSON 给这些内容固定的结构：字段名指出这项内容叫什么，值给出它的具体内容。<Cite id="json-purpose" /></p>
@@ -55,11 +47,7 @@ export function JsonSchemaTermPage() {
   return <ConceptArticle slug="json-schema" title="JSON Schema" subtitle="把数据约定写成可检查的规则" sources={schemaSources}
     intro={<>JSON 能把状态、数量等数据写成程序可以读取的文本，但写法正确不代表内容符合要求：数量可能漏了，也可能被写成带引号的文字。JSON Schema 用来写下数据应遵守的规则，再交给程序检查实际收到的数据。</>}
     sections={[["contract", "数据之外的那份约定"], ["validate", "找出不合约定的字段"], ["keywords", "规则的不同职责"], ["boundary", "通过校验之后"]]}
-    hero={<ConceptHero slug="json-schema" label="左侧规则与右侧数据逐字段对照：done 不在 status 的候选值中，count 的 -1 低于下限；规则和数据都没有被自动改写"><div className={styles.schemaHero}>
-      <div className={styles.schemaHeroSheet}><span>规则</span><div className={styles.schemaHeroField}><code>status</code><strong>pending / success</strong></div><div className={styles.schemaHeroField}><code>count</code><strong>整数 ≥ 0</strong></div></div>
-      <div className={styles.schemaHeroBridge}><div><i /><b>×</b><i /></div><div><i /><b>×</b><i /></div></div>
-      <div className={styles.schemaHeroInstance}><span>数据</span><div className={styles.schemaHeroField}><code>status</code><strong>done</strong><small>不在候选</small></div><div className={styles.schemaHeroField}><code>count</code><strong>-1</strong><small>低于 0</small></div></div>
-    </div></ConceptHero>}
+
     relatedIntro={<>在 <ConceptTerm slug="structured-output">结构化输出</ConceptTerm> 中，Schema 帮助约束结果的结构；回到 <ConceptTerm slug="tools">工具调用</ConceptTerm>，同样要区分“参数符合约定”和“操作已经成功”。</>}>
     <ArticleSection id="contract" title="数据之外的那份约定">
       <AsyncLegacyAnchors slug="json-schema" names={["question", "definition"]} />

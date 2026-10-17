@@ -8,7 +8,7 @@ import { HarnessV4Toc } from "./HarnessV4Toc";
 import { HarnessLearningMap } from "./HarnessLearningMap";
 import { HarnessReferences } from "./HarnessReferences";
 import { HarnessContextFlow, HarnessOutcomeFlow, HarnessRequestFlow } from "./HarnessStoryScenes";
-import { HarnessHeroOverview } from "./HarnessHeroOverview";
+import { ConceptMotion } from "./ConceptMotion";
 import { harnessSectionTitles } from "@/lib/harness-sections";
 import { harnessSources } from "@/lib/harness-references";
 import { TermIcon } from "./TermIcon";
@@ -35,7 +35,7 @@ export function AgentHarnessTermPage() {
         <header className="vp-hero">
           <div className={styles.heroComposition}>
           <div className="vp-hero-top"><span className="brand-star-only term-route-star term-story-star" data-route-star-target aria-hidden="true" /><h1>Harness<TermIcon slug="agent-harness" size={44} /><span>智能体运行框架</span></h1></div>
-          <HarnessHeroOverview />
+          <ConceptMotion slug="agent-harness" />
           </div>
           <p className="vp-hero-intro">Harness 是 AI 应用里<strong>组织任务运行的程序与配置</strong>。它把<Term slug="llm">模型</Term>提出的操作交给工具执行，保存结果，再把需要的信息交回模型，让一件事能接着做下去。</p>
         </header>

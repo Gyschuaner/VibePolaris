@@ -1,10 +1,10 @@
 import { typescriptSources as sources } from "@/lib/typescript-sources";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { ArticleAside, ArticleSection, ConceptTerm } from "../ConceptArticle";
-import { RuntimeValidationLab, TypeAnnotationLab, TypeScriptHero } from "./typescript-experiments";
+import { RuntimeValidationLab, TypeAnnotationLab } from "./typescript-experiments";
 
 export function TypeScriptTermPage() {
-  return <Article slug="typescript" title="TypeScript" subtitle="写代码时，先看见类型不合的地方" hero={<TypeScriptHero />} sources={sources} intro={<>购物车本来有 2 件，再加 3 件，结果却显示“23 件”。计算公式没变，传进去的 <code>2</code> 多了一对引号。<strong>TypeScript 能在运行前发现这类类型错配；数据真正进来时，仍要检查它是什么。</strong></>} sections={[
+  return <Article slug="typescript" title="TypeScript" subtitle="写代码时，先看见类型不合的地方"  sources={sources} intro={<>购物车本来有 2 件，再加 3 件，结果却显示“23 件”。计算公式没变，传进去的 <code>2</code> 多了一对引号。<strong>TypeScript 能在运行前发现这类类型错配；数据真正进来时，仍要检查它是什么。</strong></>} sections={[
     ["ts-two-section", "2 和“2”，差的可不只是引号"],
     ["ts-check-section", "红色下划线为什么能提前出现"],
     ["ts-javascript-section", "标注擦掉后，运行的是 JavaScript"],

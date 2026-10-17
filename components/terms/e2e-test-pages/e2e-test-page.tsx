@@ -1,7 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { e2eTestSources } from "@/lib/e2e-test-sources";
-import { E2eTestSignatureHero } from "../DataTestSignatureHeroes";
 import { E2eTestLesson } from "./e2e-test";
 
 const sections: [string, string][] = [
@@ -12,10 +11,10 @@ const sections: [string, string][] = [
 ];
 
 export function E2eTestTermPage() {
-  return <Article slug="e2e-test" title="端到端测试" subtitle="End-to-End Test · 让一条关键旅程穿过真实系统" sources={e2eTestSources} sections={sections} hero={<E2eTestSignatureHero />} intro={<>如果浏览器亮出“支付成功”，你就敢给用户发货吗？真正的端到端测试会让一个新用户从真实入口走完旅程，再把页面、服务端状态、回调和邮件放在同一张验收单上；任何一层没跟上，测试停在那一层。</>}>
+  return <Article slug="e2e-test" title="端到端测试" subtitle="End-to-End Test · 让一条关键旅程穿过真实系统" sources={e2eTestSources} sections={sections} intro={<>如果浏览器亮出“支付成功”，你就敢给用户发货吗？真正的端到端测试会让一个新用户从真实入口走完旅程，再把页面、服务端状态、回调和邮件放在同一张验收单上；任何一层没跟上，测试停在那一层。</>}>
     <ArticleSection id="e2e-journey" title="它测的是一段旅程，不是一张截图">
       <p id="e2e-definition" className="vp-citation-target">Martin Fowler 把端到端测试放在最宽的一层：通过用户界面测试已经部署的应用，让整个集成系统完成一次真实使用。它的价值不是“点了很多按钮”，而是回答一个外部问题——用户能不能完成这件事，系统有没有留下应该留下的结果。<Cite id="e2e-definition" sources={e2eTestSources} /></p>
-      <p id="e2e-user-visible" className="vp-citation-target">Playwright 的测试建议把视线放在用户能看见或操作的结果上，少依赖函数名、数组形状或 CSS class。首图里的定位写成 `getByRole("button", &#123; name: "确认订单" &#125;)`，因为按钮的语义是产品契约；`.buy-btn-17` 只是今天的实现细节。<Cite id="e2e-user-visible" sources={e2eTestSources} /></p>
+      <p id="e2e-user-visible" className="vp-citation-target">Playwright 的测试建议把视线放在用户能看见或操作的结果上，少依赖函数名、数组形状或 CSS class。例如定位写成 `getByRole("button", &#123; name: "确认订单" &#125;)`，因为按钮的语义是产品契约；`.buy-btn-17` 只是今天的实现细节。<Cite id="e2e-user-visible" sources={e2eTestSources} /></p>
       <p>一笔订单的“通过”要有一串相互咬合的事实：浏览器发出请求，服务端创建 `order-42`，数据库先是 `pending`，有效的 `payment.paid` 回调把它推进到 `paid`，页面刷新后显示已支付，邮件沙箱还要收到一封确认信。页面先亮绿灯，却没有邮件，这条旅程仍然没有走到终点。</p>
       <p id="e2e-browser" className="vp-citation-target">Playwright 把浏览器自动化、断言和测试运行器放在同一套工具里，适合从真实页面动作开始，再观察跨页面或跨请求的结果。浏览器只是入口，E2E 的“端”还包括旅程末端的系统事实。<Cite id="e2e-browser" sources={e2eTestSources} /></p>
     </ArticleSection>

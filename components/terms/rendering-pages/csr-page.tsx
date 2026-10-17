@@ -1,7 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { csrSources } from "@/lib/csr-sources";
-import { CsrSignatureHero as CsrHero } from "../RenderingLayoutSignatureHeroes";
 
 const sections: [string, string][] = [
   ["csr-definition-section", "先收到的是壳，不是内容"],
@@ -10,7 +9,7 @@ const sections: [string, string][] = [
 ];
 
 export function CsrTermPage() {
-  return <Article slug="csr" title="客户端渲染" subtitle="Client-side rendering · 页面主要在浏览器里长出来" sources={csrSources} sections={sections} hero={<CsrHero />} intro={<>CSR 把主要的首屏生成交给浏览器。<strong>服务器先交付壳和脚本，浏览器再下载、执行、取数并写入 DOM</strong>；空白持续多久，取决于这条链每一段的速度。</>}>
+  return <Article slug="csr" title="客户端渲染" subtitle="Client-side rendering · 页面主要在浏览器里长出来" sources={csrSources} sections={sections} intro={<>CSR 把主要的首屏生成交给浏览器。<strong>服务器先交付壳和脚本，浏览器再下载、执行、取数并写入 DOM</strong>；空白持续多久，取决于这条链每一段的速度。</>}>
     <ArticleSection id="csr-definition-section" title="先收到的是壳，不是内容">
       <p id="csr-shell" className="vp-citation-target">客户端渲染常从一份很薄的 HTML 开始：里面有应用挂载点和脚本地址，真正的界面由 JavaScript 在浏览器中创建。<Cite id="csr-shell" sources={csrSources} />因此“HTML 已返回”不等于主要内容已经可见。</p>
       <p id="csr-runtime" className="vp-citation-target">脚本下载后还要解析、执行并建立应用运行时。<Cite id="csr-runtime" sources={csrSources} />设备性能和脚本体积会改变这段等待，页面壳可能已经出现，按钮却还没有内容或事件。</p>

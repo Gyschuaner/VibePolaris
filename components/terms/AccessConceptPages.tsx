@@ -1,7 +1,5 @@
-import type { CSSProperties } from 'react';
-import { CheckCircle, HardDrives, IdentificationCard, LockKey, XCircle } from '@phosphor-icons/react/dist/ssr';
+
 import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptTerm } from './ConceptArticle';
-import { ConceptHero } from './ConceptHero';
 import { AuthLesson, AuthorizationLesson, BalanceLesson } from './AccessConceptLessons';
 import { authSources, authorizationSources, balanceSources } from '@/lib/access-concept-sources';
 import s from './AccessConcepts.module.css';
@@ -11,7 +9,7 @@ export function LoadBalancerTermPage() {
   return <ConceptArticle slug="load-balancer" title="负载均衡" sources={balanceSources}
     intro={<>同一项服务开了三台实例（可独立接请求的服务副本），请求不必都挤到第一台。请求到了入口，负载均衡器从可用实例里选出一台，把这次请求交给它；下一次请求再重新选。</>}
     sections={[["distribution", "把请求分给可用实例"], ["round-robin", "轮流分配怎样工作"], ["health", "实例停用与恢复"], ["limits", "分流不等于修好服务"]]}
-    hero={<ConceptHero slug="load-balancer" label="三个服务实例收到数量不同的请求"><div className={s.heroBalance}><span style={{'--height':'74%'} as CSSProperties}><HardDrives size={22} />实例 A<small>4 个请求</small></span><span style={{'--height':'58%'} as CSSProperties}><HardDrives size={22} />实例 B<small>3 个请求</small></span><span style={{'--height':'42%'} as CSSProperties}><HardDrives size={22} />实例 C<small>2 个请求</small></span></div></ConceptHero>}>
+    >
     <ArticleSection id="distribution" title="把请求分给可用实例">
       <p id="balance-role" className="vp-citation-target"><strong>负载均衡，就是在多台能接收请求的实例之间，按一定规则决定这次请求交给谁。</strong>入口可以保持不变，后面的服务实例却不止一个。NGINX 文档列出轮询、最少连接和基于客户端 IP 的选择方法；它们解决的是“送到哪台”，不是替实例执行业务逻辑。<Cite id="balance-role" /></p>
       <p>例如书目服务同时运行在 A、B、C 三台实例上。用户仍访问同一入口，均衡器把请求转给其中一台，再将处理结果交还客户端。它与 <ConceptTerm slug="reverse-proxy">反向代理</ConceptTerm>可以由同一个程序实现，但“代理”描述入口与转交位置，“均衡”描述多个目标之间的选择。</p>
@@ -41,7 +39,7 @@ export function AuthTermPage() {
   return <ConceptArticle slug="auth" title="认证" sources={authSources}
     intro={<>用户说“我是阿青”，服务不能仅凭这句话就相信。它要核对用户持有的凭据，让后续请求带上可验证的身份状态。</>}
     sections={[["claim", "先核对身份声明"], ["session", "下一次请求怎样认出用户"], ["methods", "密码之外的证明方式"], ["boundary", "知道是谁，还不能决定能做什么"]]}
-    hero={<ConceptHero slug="auth" label="凭据通过核验后得到可供后续请求使用的身份状态"><div className={s.heroAuth}><span><LockKey size={27} />核对凭据</span><span><IdentificationCard size={30} />阿青 · 已确认</span></div></ConceptHero>}>
+    >
     <ArticleSection id="claim" title="先核对身份声明">
       <p id="auth-definition" className="vp-citation-target"><strong>认证要核对的是：对方声称的那个身份，他是否真的持有与之对应的凭据。</strong>NIST 把主体（要证明身份的人或账号）、验证者（负责检查的一方）和认证器（密码、密钥等证明材料）区分开：提交一个用户名只是提出身份声明，验证者还要检查认证器。通过后，服务才有理由把后续活动关联到该身份。<Cite id="auth-definition" /></p>
       <p>常见登录会要求账号和密码，但密码对不对，必须由可信的服务端来核对。网页表单把密码填进去的瞬间，不代表用户已经通过认证；服务端收到并核对后才给出结果。本页演示只切换“匹配／不匹配”的教学凭据，不收集真实密码。</p>
@@ -71,7 +69,7 @@ export function AuthorizationTermPage() {
   return <ConceptArticle slug="authorization" title="授权" sources={authorizationSources}
     intro={<>服务已经认出阿青，仍要看她要访问哪份文档、做什么操作。同一个人能读一份文档，不代表能修改所有文档；阿青和柏舟对同一份文档也可能有不同结果。</>}
     sections={[["decision", "一次请求要判断三件事"], ["policy", "规则如何给出允许或拒绝"], ["roles", "角色只是组织权限的一种办法"], ["response", "拒绝发生在执行之前"]]}
-    hero={<ConceptHero slug="authorization" label="同一用户对两份文档的读取与修改权限不同"><div className={s.heroAuthorization}><span>自己的 · 读取 <CheckCircle size={20}/></span><span>自己的 · 修改 <CheckCircle size={20}/></span><span>别人的 · 读取 <CheckCircle size={20}/></span><span>别人的 · 修改 <XCircle size={20}/></span></div></ConceptHero>}>
+    >
     <ArticleSection id="decision" title="一次请求要判断三件事">
       <p id="authorization-definition" className="vp-citation-target"><strong>授权是在已知请求主体的前提下，判断它能否对指定资源执行指定操作。</strong>OWASP 强调检查要落到具体对象或功能；能访问一种资源，不表示能访问该类型的每个对象。<Cite id="authorization-definition" /></p>
       <p>阿青要修改一份文档，服务至少要知道谁在请求、文档属于谁、操作是读取还是修改。只检查“阿青已登录”会漏掉文档归属；只检查“这是文档”会漏掉操作差异。本例里，阿青和柏舟各拥有一份文档：两人都能读两份文档，但只能修改自己的那份。</p>

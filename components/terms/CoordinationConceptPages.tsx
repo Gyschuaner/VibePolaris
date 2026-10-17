@@ -1,18 +1,16 @@
-import { ShieldCheck, EnvelopeSimple, Database } from '@phosphor-icons/react/dist/ssr';
+
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
-import { ConceptHero } from './ConceptHero';
 import { PipelineLesson, WebhookLesson, DistributedLesson } from './CoordinationConceptLessons';
 import { pipelineSources, webhookSources, distributedSources } from '@/lib/coordination-sources';
 import base from './EventConcepts.module.css';
 import s from './CoordinationConcepts.module.css';
-import { DataPipelineSignatureHero } from './DataTestSignatureHeroes';
 function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{names.map(name => <span key={name} id={`${slug}-${name}`} className={base.anchor} aria-hidden="true"/>)}</>; }
 
 export function PipelineTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={pipelineSources}/>;
   return <ConceptArticle slug="data-pipeline" title="数据管道" sources={pipelineSources} sections={[["work", "把数据处理组织起来"], ["depends", "前置成功，后续才能开始"], ["replay", "重跑同一份输入"], ["trace", "留下结果的来路"]]}
     intro={<>图书馆每天收到一批借阅记录，先把这批输入固定成快照 s1，后面重跑时仍读取这份快照；读入后分成校验和原始归档两路，再汇总借阅次数，最后更新报表。按计划触发的一整轮处理称作一次运行；计划何时触发是调度时间，要处理哪一天是数据范围；实际开始执行的时刻，则可能和调度时间对不上。数据管道把这些步骤连接起来，让每一步拿到约定的输入，也让结果能够追溯到这次运行。</>}
-    hero={<DataPipelineSignatureHero />}>
+    >
     <ArticleSection id="work" title="把数据处理组织起来"><Legacy slug="data-pipeline" names={["question", "definition"]}/>
       <p id="pipeline-workflow" className="vp-citation-target"><strong>数据管道把读取、处理与输出连接成一套可运行的数据流程。</strong>它既要描述各步怎样交接，也要记录这一轮真正执行到了哪里。实际系统会用编排工具把这些约定变成可运行的任务，例如 AWS Glue 或 Airflow；数据管道不依赖某一个产品。以 AWS Glue 为例，一个 workflow 可以把多个任务和触发条件组合起来，触发方式可以是计划、手动或事件；在 Glue 里，静态视图展示流程设计好的样子，动态视图展示某次运行实际进行到哪里、有没有出错，其他工具可能使用不同的名称。设计好的流程是计划，某次运行的状态与结果是实际发生的，两者需要分开看。<Cite id="pipeline-workflow"/></p>
       <p>管道可以处理固定范围的一批数据，也可以持续接收记录；本页只用固定批次的每日借阅报表解释依赖。读取与业务校验是不同职责，归档原始输入只保证原始材料还在，不能说明统计已经正确。<strong>先约定每一步的输入、输出和成功条件，再连接任务。</strong></p>
@@ -44,7 +42,7 @@ export function WebhookTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={webhookSources}/>;
   return <ConceptArticle slug="webhook" title="Webhook" subtitle="事件通知" sources={webhookSources} sections={[["notification", "让事件主动通知你的服务"], ["verify", "先判断通知是否可信"], ["accept", "确认受理与后台处理"], ["recover", "重复、乱序与重新交付"]]}
     intro={<>外部平台完成了一笔支付，你可以先在自己的服务上准备一个公开网址，把它登记给平台；平台就能向这个接收地址发送 HTTP 通知。这样你的服务就不必不停询问支付结果。但这个地址通常公开可访问，任何人都可能向它发请求，所以你的服务要判断通知是否可信、怎样确认受理，以及重复或失败的通知如何处理。</>}
-    hero={<ConceptHero slug="webhook" label="通知通过验证后先确认受理，后台继续处理订单"><div className={s.webHero}><div className={s.heroLetter}><EnvelopeSimple size={26}/><code>evt-42</code><ShieldCheck size={24}/></div><div className={s.heroAck}>← 2xx · 已受理</div><div className={s.heroOrder}><span>后台工作</span><strong>更新订单状态</strong></div></div></ConceptHero>}>
+    >
     <ArticleSection id="notification" title="让事件主动通知你的服务"><Legacy slug="webhook" names={["question", "definition"]}/>
       <p id="webhook-notify" className="vp-citation-target"><strong>Webhook 是事件发生后，由平台向预先登记的接收地址发送 HTTP 请求的通知方式。</strong>这里的“事件”是对已发生事情的一条带类型和标识的通知记录；平台每发送一次这样的通知，就形成一次投递。Stripe（支付平台）用它通知支付确认、订阅变更等异步事件，也允许端点只订阅需要的事件类型；“端点”就是接收这类请求的地址，“异步”就是先通知，不等你的服务当场完成后续工作。平台是这次请求的发送者，你的服务是接收者；这份请求由平台服务器发出，与用户是否打开过你的页面无关。正式服务一般使用 HTTPS；HTTPS 负责保护传输，但不能替代对通知的签名验证，也不能阻止知道地址的人自己发请求。<Cite id="webhook-notify"/></p>
       <div className={base.contrast}><div><h3>主动查询</h3><p>你的服务带自己的凭证请求平台：“这笔订单现在是什么状态？”请求频率和补查由你安排。</p></div><div><h3>Webhook 通知</h3><p>平台向你登记的地址发送事件。接收服务要处理来源验证、投递失败和业务更新。</p></div></div>
@@ -73,7 +71,7 @@ export function DistributedTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={distributedSources}/>;
   return <ConceptArticle slug="distributed-system" title="分布式系统" sources={distributedSources} sections={[["nodes", "多处执行，通过消息协作"], ["observe", "同一次请求，两端所见不同"], ["timeout", "超时以后，执行结果仍需核对"], ["ordering", "顺序与重试需要共同约定"]]}
     intro={<>读者在借阅服务点击借书。本文把借阅服务记作 A，把库存服务记作 B：A 把带有操作 ID <code>reserve-42</code> 的请求发给 B，请它扣掉一本书。两个服务之间通过网络传消息；B 可能已经扣减，确认却没回来，A 只看到超时。分布式系统让跑在不同地方的程序互相协作，代价是延迟、局部故障和信息不完整都会成为设计上经常要处理的问题。</>}
-    hero={<ConceptHero slug="distributed-system" label="B 已扣减一本库存，确认未送达，A 侧仍是：执行结果未知"><div className={s.distributedHero}><div><span>A · 借阅服务</span><EnvelopeSimple size={27}/><strong>未知</strong><code>确认未到达</code></div><div><span>B · 库存服务</span><Database size={27}/><strong className={s.heroStock}>5 → 4</strong><code>已执行 reserve-42</code></div></div></ConceptHero>}>
+    >
     <ArticleSection id="nodes" title="多处执行，通过消息协作"><Legacy slug="distributed-system" names={["question", "definition"]}/>
       <p id="distributed-definition" className="vp-citation-target"><strong>分布式系统把任务交给多个独立运行的程序或服务，它们通过网络消息协作；这里把每一方叫作一个节点。</strong>这里的“程序”是代码，“进程”是正在运行的一份程序，“服务”是按职责对外提供某种能力的运行中的程序；在这个例子里，借阅服务和库存服务各自运行，也各算一个节点。消息需要传输，各节点不能瞬间知道其他节点刚发生了什么。<strong>事件谁先谁后</strong>因此需要重新定义：Lamport 的经典论文把分布式进程中的事件顺序建立在进程内顺序和消息发送、接收关系上。即使多个进程在同一台机器上，只要它们独立运行并靠消息协作，也会遇到类似的信息延迟。<Cite id="distributed-definition"/></p>
       <p>借阅服务 A 处理读者请求，库存服务 B 保管可借数量。职责分开后，两边可以各自独立运行，但 A 对 B 的了解只来自已经收到的消息。<strong>“有多台机器”还不是设计的全部，关键是它们如何协作，以及失去联系时怎样判断和恢复。</strong></p>

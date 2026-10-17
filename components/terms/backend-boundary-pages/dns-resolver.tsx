@@ -162,7 +162,7 @@ function DnsResolverLab() {
 
 export function DnsResolverTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={dnsResolverSources} />;
-  return <ConceptArticle slug="dns-resolver" title="DNS 解析器" subtitle="DNS Resolver · 替客户端把名字问到有答案的地方" sources={dnsResolverSources} sections={[["resolver-roles-section", "先分清谁在问、谁在回答"], ["resolver-cache-section", "缓存命中会把路剪短"], ["resolver-walk-section", "没命中时沿着委派继续问"], ["resolver-result-section", "有答案、没数据和没回信不是一回事"]]} hero={<DnsResolverHero />} intro={<>你在地址栏里输入一个名字，通常不是电脑直接跑到 DNS 根服务器门口。<strong>本机的 stub 把问题交给 resolver，resolver 再决定查缓存、追委派，还是把失败暂时记住。</strong><Cite id="resolver-roles" /></>}>
+  return <ConceptArticle slug="dns-resolver" title="DNS 解析器" subtitle="DNS Resolver · 替客户端把名字问到有答案的地方" sources={dnsResolverSources} sections={[["resolver-roles-section", "先分清谁在问、谁在回答"], ["resolver-cache-section", "缓存命中会把路剪短"], ["resolver-walk-section", "没命中时沿着委派继续问"], ["resolver-result-section", "有答案、没数据和没回信不是一回事"]]} intro={<>你在地址栏里输入一个名字，通常不是电脑直接跑到 DNS 根服务器门口。<strong>本机的 stub 把问题交给 resolver，resolver 再决定查缓存、追委派，还是把失败暂时记住。</strong><Cite id="resolver-roles" /></>}>
     <ArticleSection id="resolver-roles-section" title="先分清谁在问、谁在回答">
       <p id="resolver-roles" className="vp-citation-target">DNS 里常被叫作“服务器”的东西，职责并不相同。stub resolver 只负责把本机应用的问题交出去；recursive resolver 代表它继续查；authoritative server 保存某个 zone 的正式数据。把三者都叫 DNS 服务器，排查时就会不知道是哪一层在说话。<Cite id="resolver-roles" /></p>
       <p id="resolver-query" className="vp-citation-target">一次查询至少带着 QNAME、QTYPE 和 class。客户端把请求里的 RD（Recursion Desired）置上，表示希望对方替自己追下去；返回里的 RA 只能说明这个服务器提供递归能力，不能证明答案一定来自权威区。<Cite id="resolver-query" /></p>

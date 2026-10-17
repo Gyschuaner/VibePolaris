@@ -1,6 +1,5 @@
-import { Archive, ArrowRight, FileText, Globe, LockSimple, ShieldCheck, Wrench } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight, FileText, Globe, LockSimple, ShieldCheck } from "@phosphor-icons/react/dist/ssr";
 import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptTerm } from "./ConceptArticle";
-import { MemoryHero, WindowHero, PromptHero, SandboxHero } from "./ExtendedConceptHeroes";
 import { MemoryLesson, WindowLesson, PromptLesson, SandboxLesson } from "./ExtendedConceptLessons";
 import { memorySources, windowSources, promptSources, sandboxSources } from "@/lib/extended-concept-sources";
 import styles from "./ExtendedConcepts.module.css";
@@ -10,7 +9,7 @@ function OldAnchor({ slug, part }: { slug: string; part: string }) { return <spa
 
 export function MemoryTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={memorySources} />;
-  return <ConceptArticle slug="memory" title="Memory" hero={<MemoryHero />} sources={memorySources} sections={[["save", "保存与取回"], ["scope", "记录的归属"], ["handoff", "留下可继续的进度"], ["maintenance", "更新与删除"]]} intro={<>记忆让应用把有用的信息留到以后。<strong>信息先被保存；以后需要时，应用再取回相关部分，放进这次给模型的输入。</strong>保存在哪里、何时读取，取决于应用怎样设计。</>}>
+  return <ConceptArticle slug="memory" title="Memory"  sources={memorySources} sections={[["save", "保存与取回"], ["scope", "记录的归属"], ["handoff", "留下可继续的进度"], ["maintenance", "更新与删除"]]} intro={<>记忆让应用把有用的信息留到以后。<strong>信息先被保存；以后需要时，应用再取回相关部分，放进这次给模型的输入。</strong>保存在哪里、何时读取，取决于应用怎样设计。</>}>
     <ArticleSection id="save" title="保存与取回">
       <OldAnchor slug="memory" part="definition" />
       <p id="memory-status" className="vp-citation-target">你在修一个处理网页请求的服务。<code>app.py</code> 是示例代码文件，<code>/health</code> 是检查服务的入口。昨天你补上了代码里缺少的冒号，服务终于能启动；但再检查 <code>/health</code> 时，返回的仍是表示服务器出错的 500。明天换一个独立的新会话，只说“接着做”，模型未必知道昨天改过哪里、还剩什么问题。<Cite id="memory-status" /></p>
@@ -29,7 +28,7 @@ export function MemoryTermPage() {
 
 export function ContextWindowTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={windowSources} />;
-  return <ConceptArticle slug="context-window" title="Context window" hero={<WindowHero />} sources={windowSources} sections={[["capacity", "一次调用的容量"], ["count", "输入与输出共用容量"], ["compression", "接近上限时"], ["quality", "装得下与用得好"]]} intro={<>上下文窗口是模型一次处理输入并生成回答时可用的容量，通常按 <ConceptTerm slug="token">Token</ConceptTerm> 计量。<strong>窗口决定能放多少；上下文是这次实际放进去的信息。</strong></>}>
+  return <ConceptArticle slug="context-window" title="Context window"  sources={windowSources} sections={[["capacity", "一次调用的容量"], ["count", "输入与输出共用容量"], ["compression", "接近上限时"], ["quality", "装得下与用得好"]]} intro={<>上下文窗口是模型一次处理输入并生成回答时可用的容量，通常按 <ConceptTerm slug="token">Token</ConceptTerm> 计量。<strong>窗口决定能放多少；上下文是这次实际放进去的信息。</strong></>}>
     <ArticleSection id="capacity" title="一次调用的容量">
       <OldAnchor slug="context-window" part="definition" />
       <p id="window-budget" className="vp-citation-target">应用向模型发一次请求时，交进去的内容和这次生成的回答都要占用窗口。Claude 和 Gemini 的文档都这样计算；不同模型还会规定各自的输入和输出上限。昨天的聊天如果这轮没有被应用带入，就不占这轮的输入。具体上限应看正在使用的模型与调用方式。<Cite id="window-budget" /></p>
@@ -46,7 +45,7 @@ export function ContextWindowTermPage() {
 
 export function PromptTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={promptSources} />;
-  return <ConceptArticle slug="prompt" title="Prompt" hero={<PromptHero />} sources={promptSources} sections={[["draft", "把任务写清楚"], ["material", "给出依据与要求"], ["examples", "用样例说明格式"], ["check", "拿真实任务检查"]]} intro={<>提示词是一次请求中交给模型的任务说明，可以写明目标、可用材料、范围和想要的回答形式。<strong>写清条件，模型才有依据朝你的目标回答；提示词本身不替你执行或验证。</strong></>}>
+  return <ConceptArticle slug="prompt" title="Prompt"  sources={promptSources} sections={[["draft", "把任务写清楚"], ["material", "给出依据与要求"], ["examples", "用样例说明格式"], ["check", "拿真实任务检查"]]} intro={<>提示词是一次请求中交给模型的任务说明，可以写明目标、可用材料、范围和想要的回答形式。<strong>写清条件，模型才有依据朝你的目标回答；提示词本身不替你执行或验证。</strong></>}>
     <ArticleSection id="draft" title="把任务写清楚">
       <OldAnchor slug="prompt" part="definition" />
       <p>假设你在排查一个启动失败的网页服务：<code>app.py</code> 是启动服务的示例代码，启动日志是程序运行失败时留下的报错。你问“帮我分析服务为什么启动失败”，目标有了，却没给这次报错。模型可能只能列出几种常见原因，无法指出这次错在哪一行。</p>
@@ -81,7 +80,7 @@ export { McpTermPage } from "./McpTermPage";
 
 export function SandboxTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={sandboxSources} />;
-  return <ConceptArticle slug="execution-sandbox" title="Sandbox" hero={<SandboxHero />} sources={sandboxSources} sections={[["boundary", "操作能到哪里"], ["dimensions", "目录与网络分别限制"], ["approval", "批准与隔离"], ["limits", "边界内仍要检查"]]} intro={<>执行沙箱为运行中的程序划定可访问的范围。<strong>限制由执行环境落实，而不只是一句写给模型的提醒。</strong>文件、网络和资源能访问多少，取决于实际配置。</>}>
+  return <ConceptArticle slug="execution-sandbox" title="Sandbox"  sources={sandboxSources} sections={[["boundary", "操作能到哪里"], ["dimensions", "目录与网络分别限制"], ["approval", "批准与隔离"], ["limits", "边界内仍要检查"]]} intro={<>执行沙箱为运行中的程序划定可访问的范围。<strong>限制由执行环境落实，而不只是一句写给模型的提醒。</strong>文件、网络和资源能访问多少，取决于实际配置。</>}>
     <ArticleSection id="boundary" title="操作能到哪里"><OldAnchor slug="execution-sandbox" part="definition" /><p id="sandbox-enforcement" className="vp-citation-target">模型提出一个命令后，真正执行它的是程序。沙箱可以在系统层限制这个程序，以及命令再启动的其他程序的访问范围。Claude 的开发公司 Anthropic 用沙箱同时控制文件系统与网络，让命令能访问的宿主环境资源更少。<Cite id="sandbox-enforcement" /></p><p>这里设定：只允许读写工作目录；工作目录外的登录密钥不能读取；文档站点默认不开放。<code>app.py</code> 是工作区里的示例代码文件，<code>~/.ssh/id_rsa</code> 是工作区外的登录密钥。选择一次操作，看它停在哪里。全部是本地教学模拟，不会读写文件或发出网络请求。</p><OldAnchor slug="execution-sandbox" part="scene-heading" /><SandboxLesson /><p id="sandbox-access" className="vp-citation-target">前两项都是读取文件：<code>/workspace/app.py</code> 在许可目录内，<code>~/.ssh/id_rsa</code> 在外面。换了目标路径，同一种操作就从允许变成拒绝。读和写也可以分别限制：能读一个文件，不代表能改它。判断依据是操作、目标和当前规则，而非模型是否声称它“很安全”。<Cite id="sandbox-access" /></p></ArticleSection>
     <ArticleSection id="dimensions" title="目录与网络分别限制"><OldAnchor slug="execution-sandbox" part="prompt-heading" /><p id="sandbox-dimensions" className="vp-citation-target">限制网络访问代替不了文件权限；只限制文件也挡不住网络请求。Anthropic 的实现把两者结合：按目录限制文件操作，网络请求先经过检查，只连接获准的站点。<Cite id="sandbox-dimensions" /></p><div className={styles.permissionColumns}><div><FileText size={29} weight="light" /><h3>文件系统</h3><p>哪些目录可读？哪些目录可写？外部凭据是否暴露给进程？</p><code>/workspace</code></div><div><Globe size={29} weight="light" /><h3>网络</h3><p>是否能联网？能访问哪些目标？请求是否经过受控出口？</p><code>docs.example.com</code></div></div><p id="sandbox-resources" className="vp-citation-target">演示中，允许访问文档站点不会同时开放外部密钥。沙箱还可以另设资源额度，例如 Docker 容器可限制内存和 CPU；是否设置这些上限，要看实际环境。<Cite id="sandbox-resources" /></p></ArticleSection>
     <ArticleSection id="approval" title="批准与隔离" className={styles.offsetSection}><p id="sandbox-approval" className="vp-citation-target">操作批准和沙箱隔离管的是两件事。批准决定某个动作是否可以执行；沙箱限制运行时能访问哪些资源。在预先限定的范围内，应用可以允许部分操作直接运行，越界请求则按规则停止或进入授权流程。<Cite id="sandbox-approval" /></p><div className={styles.approvalPair}><div><ShieldCheck size={26} /><strong>是否允许这次动作</strong><p>例如，是否允许修改项目文件。</p></div><div><LockSimple size={26} /><strong>执行时能访问哪里</strong><p>即使允许修改，也只能触及许可目录。</p></div></div><p>工具描述和提示词能帮助模型理解边界；实际约束仍应在程序侧落实。遇到拒绝后，应说明需要什么访问权限，或使用现有范围内的办法继续，而非反复换一种命令绕过限制。</p></ArticleSection>

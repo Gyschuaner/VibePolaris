@@ -1,6 +1,5 @@
-import { BookOpen, BookmarkSimple, Check, Image as ImageIcon, X } from "@phosphor-icons/react/dist/ssr";
+
 import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptTerm } from "./ConceptArticle";
-import { ConceptHero } from "./ConceptHero";
 import { AwaitLesson, FetchLesson, PromiseLesson } from "./AsyncConceptLessons";
 import { awaitSources, fetchSources, promiseSources } from "@/lib/async-concept-sources";
 import base from "./EventConcepts.module.css";
@@ -15,10 +14,7 @@ export function FetchTermPage() {
   return <ConceptArticle slug="fetch-api" title="Fetch API" subtitle="发出请求，接住响应" sources={fetchSources}
     intro={<>页面要显示一份书单。如果把书名直接写在页面里，每次改书单都得改页面；当书单放在另一个地址时，浏览器就需要去取。Fetch API 负责发出请求，把收到的响应交给程序；这份响应能不能成为书单，还要接着检查。</>}
     sections={[["response", "从地址到响应"], ["inspect", "拆开一份书目响应"], ["checks", "三种不同的失败"], ["cancel", "请求过期以后"]]}
-    hero={<ConceptHero slug="fetch-api" label="同一份 Response 先显示 200 状态与内容类型，正文仍未读取；随后读取并解析正文，书名才显现"><div className={styles.fetchHero}><div className={styles.fetchPanel}>
-      <div className={styles.fetchStatus}><span>Response</span><strong>200</strong><code>application/json</code></div>
-      <div className={styles.fetchBody}><span className={styles.fetchUnread}>body · 未读取</span><div className={styles.fetchBookList}><code>response.json()</code><span>小岛上的灯塔</span><span>读懂浏览器</span></div></div>
-    </div></div></ConceptHero>}
+
     relatedIntro={<>请求过程用 <ConceptTerm slug="promise">Promise</ConceptTerm> 表示；<ConceptTerm slug="async-await">await</ConceptTerm> 让程序等到这一轮结果，再继续处理。</>}>
     <ArticleSection id="response" title="从地址到响应">
       <AsyncLegacyAnchors slug="fetch-api" names={["question", "definition"]} />
@@ -53,10 +49,7 @@ export function PromiseTermPage() {
   return <ConceptArticle slug="promise" title="Promise" subtitle="记录一次异步操作的结果" sources={promiseSources}
     intro={<>请求发出后，结果未必马上回来。Promise 先代表这份尚未取得的结果；拿到值或遇到错误以后，登记好的处理函数再接着工作。</>}
     sections={[["result", "一份结果，三种状态"], ["order", "让一份订单落定"], ["timing", "回调执行的时机"], ["chain", "把结果交给下一步"]]}
-    hero={<ConceptHero slug="promise" label="第一份 Promise 从等待变成成功 A17 并封口；第二份独立 Promise 从等待变成拒绝售罄，第一份保持不变"><div className={styles.promiseHero}>
-      <div className={styles.promiseCell}><span>Promise 01</span><div className={styles.promiseWindow}><i>···</i><strong><Check size={19} />A17</strong></div><small>fulfilled</small></div>
-      <div className={styles.promiseCell}><span>Promise 02</span><div className={styles.promiseWindow}><i>···</i><strong><X size={19} />售罄</strong></div><small>rejected</small></div>
-    </div></ConceptHero>}>
+    >
     <ArticleSection id="result" title="一份结果，三种状态">
       <AsyncLegacyAnchors slug="promise" names={["question", "definition"]} />
       <p id="promise-receipt" className="vp-citation-target">拿到取餐凭条时，食物还没有做好，但你已经知道到哪里取结果。程序也可以先拿到一个 Promise，把成功后要做的事、失败时怎么办登记进去，再让当前代码继续执行。凭条不是厨房：取餐任务由下单动作启动，Promise 只让程序跟踪它的结果。<Cite id="promise-receipt" /></p>
@@ -92,11 +85,7 @@ export function AwaitTermPage() {
   return <ConceptArticle slug="async-await" title="async / await" subtitle="等到结果，再接着执行" sources={awaitSources}
     intro={<>文章卡片需要标题和封面。await 让一段代码在结果回来以后继续，写起来像按行往下走；任务什么时候开始，仍由函数调用的位置决定。</>}
     sections={[["function", "暂停的是当前函数"], ["assemble", "等两份材料到齐"], ["start", "先开始，再谈等待"], ["failure", "失败后的剩余工作"], ["compute", "等待和计算是两回事"]]}
-    hero={<ConceptHero slug="async-await" label="当前函数执行到 await 后停住，旁边的收藏操作照常完成；封面任务返回时，函数从暂停的位置继续"><div className={styles.awaitHero}>
-      <span className={styles.awaitPath} /><span className={styles.awaitMarker} /><span className={styles.awaitGate} /><code className={styles.awaitWord}>await</code><BookOpen className={styles.awaitBook} size={29} weight="light" /><span className={styles.awaitFunctionLabel}>当前函数</span>
-      <div className={styles.awaitSource}><ImageIcon size={28} /><span>封面任务</span></div><span className={styles.awaitReturnDot} />
-      <div className={styles.awaitBookmark}><BookmarkSimple size={23} weight="regular" /><BookmarkSimple size={23} weight="fill" /><span>收藏文章</span></div>
-    </div></ConceptHero>}>
+    >
     <ArticleSection id="function" title="暂停的是当前函数">
       <AsyncLegacyAnchors slug="async-await" names={["question", "definition"]} />
       <p>函数是一组可以按名字调用的步骤。比如“加载文章”这组步骤，要先取得标题和封面，再把它们放到卡片里。加载任务先交回一个 Promise，也就是代表这次操作结果的对象；真正的标题或图片可能稍后才回来。</p>

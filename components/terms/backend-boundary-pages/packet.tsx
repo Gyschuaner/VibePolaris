@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowCounterClockwise, ArrowRight, CheckCircle, Gauge, Globe, MapPinLine, Package, Pause, Play, Stack, WarningCircle, XCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowRight, CheckCircle, Gauge, Globe, MapPinLine, Package, Pause, Play, Stack, WarningCircle } from "@phosphor-icons/react";
 import { useState } from "react";
 
 import { ArticleCitation, ArticleSection, ConceptArticle } from "../ConceptArticle";
@@ -113,7 +113,7 @@ function PacketLab() {
 
 export function PacketTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={packetSources} />;
-  return <ConceptArticle slug="packet" title="数据包" subtitle="Packet · 网络层一次次搬运的独立小件" sources={packetSources} sections={[["packet-shape", "一个包裹着什么"], ["packet-path", "路由器只看这一跳"], ["packet-mtu", "链路太窄时发生什么"], ["packet-reassemble", "重组和报错都留下证据"]]} hero={<PacketHero />} intro={<>浏览器传出的不是一整块“网页数据”，而是一件件带着首部的网络层数据报。<strong>数据包负责把这一件送过路径：</strong>它不替应用保证顺序，也不携带完整的端到端路线。<Cite id="packet-definition" /></>}>
+  return <ConceptArticle slug="packet" title="数据包" subtitle="Packet · 网络层一次次搬运的独立小件" sources={packetSources} sections={[["packet-shape", "一个包裹着什么"], ["packet-path", "路由器只看这一跳"], ["packet-mtu", "链路太窄时发生什么"], ["packet-reassemble", "重组和报错都留下证据"]]} intro={<>浏览器传出的不是一整块“网页数据”，而是一件件带着首部的网络层数据报。<strong>数据包负责把这一件送过路径：</strong>它不替应用保证顺序，也不携带完整的端到端路线。<Cite id="packet-definition" /></>}>
     <ArticleSection id="packet-shape" title="一个包裹着什么">
       <p id="packet-definition" className="vp-citation-target">IP 数据包由首部和负载组成。首部带着源地址、目的地址、上层协议和控制字段；负载可以是 TCP 段、UDP 数据报或别的上层内容。IP 层把它们当成独立数据报处理，不因为属于同一次网页请求就自动建立一条“包的队列”。<Cite id="packet-definition" /></p>
       <p id="packet-layer" className="vp-citation-target">所以“一个请求”与“一个包”不是同一件事：应用数据可能先被传输层分成几段，再被 IP 层分别封装。抓包时看到的每个包，先回答的是“这一跳要把什么送到哪里”，不是“业务已经完成了什么”。<Cite id="packet-layer" /></p>

@@ -1,7 +1,5 @@
-import { FileText, Funnel, Scissors, ListChecks } from '@phosphor-icons/react/dist/ssr';
-import type { CSSProperties } from 'react';
+
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
-import { ConceptHero } from './ConceptHero';
 import { RetrievalLesson, ChunkingLesson, RerankingLesson } from './SelectionConceptLessons';
 import { retrievalSources, chunkingSources, rerankingSources } from '@/lib/selection-sources';
 import base from './EventConcepts.module.css';
@@ -12,7 +10,7 @@ export function RetrievalTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={retrievalSources}/>;
   return <ConceptArticle slug="retrieval" title="检索" sources={retrievalSources} sections={[["collection", "从资料集合里找到候选"], ["selection", "查询、范围与返回数量"], ["reading", "找到资料，再读原文"], ["relevance", "相关性要按任务判断"]]}
     intro={<>问“退款多久到账”，资料库里可能有申请入口、到账规则和内部记录。检索负责从这些材料中找出候选；哪些候选可用、是否足够回答，还要继续检查。</>}
-    hero={<ConceptHero slug="retrieval" label="退款查询从四篇文档中选出A和B，候选仍然是资料"><div className={s.retrievalHero}><span><Funnel size={20}/> 查询：退款</span><div>{['A', 'B', 'C', 'D'].map(id => <div key={id} data-selected={id === 'A' || id === 'B'}><FileText size={26}/><strong>{id}</strong></div>)}</div><p>候选 A、B</p></div></ConceptHero>}>
+    >
     <ArticleSection id="collection" title="从资料集合里找到候选"><Legacy slug="retrieval" names={["question", "definition"]}/>
       <p id="retrieval-definition" className="vp-citation-target"><strong>检索是从一组材料中，找出满足信息需求的内容。</strong>《Introduction to Information Retrieval》用文档集合、查询与信息需求解释这个问题。它可以用于网站搜索、图书查找或 AI 应用；不一定伴随生成回答，也不限于向量搜索。查询是用户输入的几个词，例如“退款”；信息需求是想解决的完整问题，例如“线上退款审核通过后多久到账”。<Cite id="retrieval-definition"/></p>
       <p>“退款”可能同时匹配申请入口与到账规则。两篇都提到同一主题，却只各自覆盖问题的一部分。<strong>找到同主题的文档，是继续阅读的起点。</strong>如果想知道审核通过后的线上退款时效，就要检查渠道、条件与具体时间。</p>
@@ -39,7 +37,7 @@ export function ChunkingTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={chunkingSources}/>;
   return <ConceptArticle slug="chunking" title="分块" sources={chunkingSources} sections={[["units", "让一篇长文变成可用片段"], ["cuts", "看见切口与重叠"], ["structure", "按结构保留完整意思"], ["evaluation", "块长没有统一答案"]]}
     intro={<>退款规则里，“审核通过后”和“三个工作日内到账”属于同一个条件句。用户提问后，系统从索引里找出相关片段交给模型；模型一次能读的内容有限，怎么分块决定了哪些内容会一起被检索、一起送到模型面前。切口放在哪里，会影响后续理解。</>}
-    hero={<ConceptHero slug="chunking" label="一页退款说明沿段落分成三个片段，到账条件留在同一个片段"><div className={s.chunkHero}><Scissors size={24}/>{['退款申请', '审核通过 → 三个工作日', '打印服务'].map((text, i) => <div key={text} style={{ '--piece': i } as CSSProperties}><FileText size={18}/><strong>{text}</strong></div>)}</div></ConceptHero>}>
+    >
     <ArticleSection id="units" title="让一篇长文变成可用片段"><Legacy slug="chunking" names={["question", "definition"]}/>
       <p><strong>分块是把较长内容切成能独立处理的小片段。</strong>每块可以单独编码成可检索的表示、存入索引、参与检索，再按需要取回。它改变的是资料的处理单位，原始文档仍应保存，块也需要能回到原文的位置，以便回答时核对完整语境或标注出处。</p>
       <p id="chunk-purpose" className="vp-citation-target">Azure AI Search 的文档说明，分块能把内容控制在模型一次能读的范围内，也能避免整篇讲多个主题的长文只得到一个表示（向量），各主题的信息互相混在一起。<strong>能塞进模型，并不代表整篇作为一块就适合检索。</strong>块长需要结合资料结构、问题类型和表示方法决定，不能只用输入上限反推。<Cite id="chunk-purpose"/></p>
@@ -67,7 +65,7 @@ export function RerankingTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={rerankingSources}/>;
   return <ConceptArticle slug="reranking" title="重排序" sources={rerankingSources} sections={[["second-pass", "对已有候选再排一次"], ["pairs", "带着查询逐篇核对"], ["models", "规则与模型给出的新顺序"], ["window", "候选以外的资料不会出现"]]}
     intro={<>检索先返回三篇候选，用户却问“线上退款审核通过后，多久到账”。重排序再读取查询与这批候选，把满足条件的资料排到前面；没有进入候选的资料，无法靠重排找回来。</>}
-    hero={<ConceptHero slug="reranking" label="查询条件逐项核对线上退款文档，三个条件一起决定优先阅读"><div className={s.rerankHero}><ListChecks size={27}/><strong>线上退款时效</strong><div>{['线上', '审核通过', '到账时间'].map((text, i) => <span key={text} style={{ '--check': i } as CSSProperties}>✓ {text}</span>)}</div><p>优先读取 B</p></div></ConceptHero>}>
+    >
     <ArticleSection id="second-pass" title="对已有候选再排一次"><Legacy slug="reranking" names={["question", "definition"]}/>
       <p><strong>重排序是在已取回的候选里，按新的判断重新安排顺序。</strong>第一阶段通常先从大集合找出一批内容，后续可以使用更细的规则或模型比较。它改变阅读的优先级，原文内容和已有候选范围并不会因此自动改变。</p>
       <p id="rerank-pairs" className="vp-citation-target">Sentence Transformers 的 Retrieve &amp; Re-Rank 先检索候选，再让 Cross-Encoder 这种重排模型把查询和每篇候选放在一起比较，输出排序分数。<strong>每篇候选都要和查询配对算一次，比第一轮检索更费算力。</strong>这是重排的一种实现；不必把“使用 Cross-Encoder”当成重排序的定义。<Cite id="rerank-pairs"/></p>

@@ -1,18 +1,16 @@
-import { ArrowRight, Check, FileText, X } from '@phosphor-icons/react/dist/ssr';
+
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
-import { ConceptHero } from './ConceptHero';
 import { BenchmarkLesson, GraderLesson, EvalDatasetLesson, EvaluationRunLesson, GradingRubricLesson, RegressionEvaluationLesson, SafetyEvaluationLesson, CostEvaluationLesson, LatencyEvaluationLesson, HumanGraderLesson, ModelGraderLesson, PassFailLesson, ContextOverflowLesson } from './AssessmentConceptLessons';
 import { benchmarkSources, graderSources, evalDatasetSources, evaluationRunSources, gradingRubricSources, regressionEvaluationSources, safetyEvaluationSources, costEvaluationSources, latencyEvaluationSources, humanGraderSources, modelGraderSources, passFailGraderSources, contextOverflowSources } from '@/lib/assessment-sources';
 import base from './EventConcepts.module.css';
 import s from './AssessmentConcepts.module.css';
-import { ContextOverflowSignatureHero, ModelGraderSignatureHero, RegressionEvaluationSignatureHero } from './AiStackSignatureHeroes';
 function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{names.map(name => <span key={name} id={`${slug}-${name}`} className={base.anchor} aria-hidden="true"/>)}</>; }
 
 export function BenchmarkTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={benchmarkSources}/>;
   return <ConceptArticle slug="benchmark" title="基准测试" sources={benchmarkSources} sections={[["suite", "任务、指标与比较条件"], ["comparison", "先对齐记录，再看成绩"], ["dimensions", "通过更多，还是响应更快"], ["scope", "榜单以外的任务"]]}
     intro={<>基准测试把一组任务、指标和运行约定组织起来，让不同方案的成绩有比较依据。读一个排名之前，先看它测了哪些任务、按什么规则计分，以及模型、工具和运行条件分别是什么。</>}
-    hero={<ConceptHero slug="benchmark" label="A与B两条成绩带对齐到同一题集版本，显示八题与九题通过"><div className={s.benchHero}><p>同一题集 · v1</p>{['A', 'B'].map((name, i) => <div key={name}><strong>{name}</strong><div>{Array.from({ length: 10 }, (_, n) => <span key={n} data-pass={n < 8 + i}/>)}</div><span>{8 + i}/10</span></div>)}<p>先对齐，再比较</p></div></ConceptHero>}>
+    >
     <ArticleSection id="suite" title="任务、指标与比较条件"><Legacy slug="benchmark" names={["question", "definition"]}/>
       <p id="bench-definition" className="vp-citation-target"><strong>基准测试是一套用于比较表现的任务和评测约定。</strong>GLUE 把九种自然语言理解任务放入同一评测平台，各任务使用相应指标，并提供诊断数据。它测的是这些任务上的表现，不是模型的一切能力。一个基准可以包含多种任务，也不必只报告一个分数。<Cite id="bench-definition"/></p>
       <p>“A 比 B 好”需要补上条件：在哪组任务、哪个版本、哪种输入和判据下更好？两份成绩使用不同题集，分数差异就可能来自题目本身的变化，不能直接归到能力差别上。对智能体，还要说明可用工具、运行预算（单次任务允许的时间、token 或费用上限）与 <ConceptTerm slug="agent-harness">Harness</ConceptTerm>，因为这些也影响完成任务的能力。</p>
@@ -40,7 +38,7 @@ export function GraderTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={graderSources}/>;
   return <ConceptArticle slug="grader" title="评分器" sources={graderSources} sections={[["criterion", "把要求变成可检查的判据"], ["evidence", "回复与实际结果"], ["rubric", "开放回答的评分依据"], ["review", "检查评分器的判断"]]}
     intro={<>评分器根据判据检查一次尝试，输出分数、通过与否或其他评价。判据写错，评测就可能奖励错误行为。需要文件写入成功时，“回答里出现完成”与“目标文件存在且内容正确”检查的是两件事。</>}
-    hero={<ConceptHero slug="grader" label="助手说已完成，但文件检查未发现answer.json，回复措辞与任务结果分开"><div className={s.gradeHero}><div><span>助手回复</span><strong>已完成。</strong></div><div><FileText size={25}/><code>answer.json</code><X size={22}/><span>文件不存在</span></div></div></ConceptHero>}>
+    >
     <ArticleSection id="criterion" title="把要求变成可检查的判据"><Legacy slug="grader" names={["question"]}/>
       <p id="grader-definition" className="vp-citation-target"><strong>评分器按事先写好的判据（也就是可检查的判定依据），把输出或执行结果转换成评价。</strong>Inspect 的评分系统支持文本匹配、数学答案、模型评分和自定义检查，再把逐条分数汇总成指标。评分器可以是程序，可以是模型，也可以是人。评分器是 <ConceptTerm slug="eval">评测</ConceptTerm> 中的一部分：题目规定要做什么，它规定怎样判断做得如何。<Cite id="grader-definition"/></p>
       <p>判据应对应任务目标。选择题可以检查选项；金额字段可以按数值核对；代码任务可以运行测试。开放回答可能需要评价准确性、相关性或写作质量，但回答写得长、说得自信，本身并不等于准确或相关；除非判据里写明了为什么可以这样判，否则不能拿它们顶替。</p>
@@ -71,7 +69,7 @@ export function EvalDatasetTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={evalDatasetSources}/>;
   return <ConceptArticle slug="evaluation-dataset" title="评测数据集" sources={evalDatasetSources} sections={[["case", "一条样本的必要信息"], ["split", "把关联样本放在同一组"], ["holdout", "留出集要测新的输入"], ["record", "记录范围与版本"]]}
     intro={<>评测数据集收集用来检查系统表现的输入、必要背景与评价信息。选哪些案例、怎样划分开发与留出样本，决定分数能够说明什么。把几百条问题放在一起，还不足以证明它代表真实任务。</>}
-    hero={<ConceptHero slug="evaluation-dataset" label="工单A的两条不同问题作为同一组移动进入开发区，不分散到留出区"><div className={s.dataHero}><div><span>工单 A · 同一背景</span><div><FileText size={17}/>A1 · 配送时间</div><div><FileText size={17}/>A2 · 物流入口</div></div><p><span>开发</span><span>留出</span></p></div></ConceptHero>}>
+    >
     <ArticleSection id="case" title="一条样本的必要信息"><Legacy slug="evaluation-dataset" names={["question", "definition"]}/>
       <p id="evaldata-definition" className="vp-citation-target"><strong>评测数据集组织一组可检查的任务样本。</strong>Anthropic 的智能体评测文章强调任务描述与成功标准应明确。样本如果只有一句问题，出题时的资料、环境和预期行为都没有留下，后来就无从重现这道题怎么判；样本数量多，也不等于覆盖了重要输入。<Cite id="evaldata-definition"/></p>
       <div className={s.caseSheet}><span>示例 · 一条退款案例</span><dl><dt>输入</dt><dd>退款多久到账？</dd><dt>背景</dt><dd>线上退款规则：审核通过后，通常三个工作日。</dd><dt>预期行为</dt><dd>回答保留审核条件与通常时效，不新增费用保证。</dd></dl></div>
@@ -103,7 +101,7 @@ export function EvaluationRunTermPage() {
   return <ConceptArticle slug="evaluation-run" title="评测运行" subtitle="Evaluation Run · 把一次试跑的条件、轨迹和结果绑在一起" sources={evaluationRunSources}
     sections={[['run-definition', '一次运行到底记录什么'], ['run-evidence', '从试跑到逐项证据'], ['run-compare', '什么时候可以比较'], ['run-boundary', '缺记录时不要补成分数']]}
     intro={<>评测运行是一次具体的评测执行记录：它把哪一版题集、哪一版系统、什么评分器和运行环境放在一起，并留下每道题的尝试、轨迹与汇总结果。看到“9/12”时，先问这十二道题和这些条件是否真的来自同一次、可核对的运行。</>}
-    hero={<ConceptHero slug="evaluation-run" label="同一题集的两次运行保留逐项轨迹，切换版本或缺一条轨迹时停止比较"><div className={s.runHero}><div className={s.runHeroHeader}><span>评测运行记录</span><strong>run-18</strong></div><div className={s.runHeroTracks}>{['题集 support-v1', '评分器 rubric-v2', '轨迹 12/12'].map(item => <span key={item}>{item}</span>)}</div><div className={s.runHeroScore}><b>10/12</b><span>逐项证据可回查</span></div></div></ConceptHero>}>
+    >
     <ArticleSection id="run-definition" title="一次运行到底记录什么"><Legacy slug="evaluation-run" names={['question', 'definition']}/>
       <p id="evalrun-definition" className="vp-citation-target"><strong>评测运行是把一次评测执行的输入、条件、输出和判断结果放在同一份记录里的实例。</strong>OpenAI 的 evals 文档把评测组织成数据集、被测对象、运行和结果；运行记录让一次“试了什么”能够与后来的分数对应，而不是只留下一个孤立数字。<Cite id="evalrun-definition"/></p>
       <p>先把几个容易混在一起的词拆开：<ConceptTerm slug="evaluation-dataset">评测数据集</ConceptTerm> 保存要问的案例；一次运行把这组案例交给某个被测版本；<ConceptTerm slug="grader">评分器</ConceptTerm> 按判据检查每条尝试；汇总分数只是把逐条结果压缩后的读数。题集、运行和评分器各自变化，都会改变最后看到的数字。</p>
@@ -136,7 +134,7 @@ export function GradingRubricTermPage() {
   return <ConceptArticle slug="grading-rubric" title="评分规则" subtitle="Grading Rubric · 把“好不好”拆成可核对的要求" sources={gradingRubricSources}
     sections={[['rubric-definition', '评分规则不是一句“请打分”'], ['rubric-dimensions', '把回答拆成多个维度'], ['rubric-calibration', '让不同评分有共同尺度'], ['rubric-boundary', '规则能判断什么，不能判断什么']]}
     intro={<>评分规则把一个开放目标拆成维度、等级和判定依据，让人、程序或模型可以逐项检查。它不是把“感觉不错”换成一个更大的数字，而是先说明哪些证据算满足、缺什么会扣分，以及资料不足时如何停在未评分。</>}
-    hero={<ConceptHero slug="grading-rubric" label="一条回答按事实、条件和越界承诺三条规则逐项检查，显示哪些要求满足"><div className={s.rubricHero}><div className={s.rubricHeroAnswer}><span>回答样本</span><strong>审核通过后，通常三个工作日到账。</strong></div><div className={s.rubricHeroChecks}>{['事实准确', '条件保留', '没有越界承诺'].map((item, i) => <span key={item} data-delay={i}>{item}<Check size={17}/></span>)}</div><p>3 / 3 项满足</p></div></ConceptHero>}>
+    >
     <ArticleSection id="rubric-definition" title="评分规则不是一句“请打分”"><Legacy slug="grading-rubric" names={['question', 'definition']}/>
       <p id="rubric-definition-detail" className="vp-citation-target"><strong>评分规则（rubric）是一份把任务要求写成可检查维度、等级和证据的说明。</strong>OpenAI 的 graders 文档把评分标准作为评分器输入的一部分：评分器负责执行判定，规则先说明什么结果算好、什么结果不满足。<Cite id="rubric-definition-detail"/></p>
       <p>“请给这段回答打 1 到 5 分”没有告诉评分者怎样区分 2 分和 4 分，也没有告诉它缺少关键资料时该怎么办。一个可用的规则会把任务目标写成几条可以回看的要求，例如事实是否正确、前提是否保留、有没有添加资料没有支持的承诺。评分器是执行者，规则是它执行的标准，两者不要混成同一个词。</p>
@@ -167,7 +165,7 @@ export function RegressionEvaluationTermPage() {
   return <ConceptArticle slug="regression-evaluation" title="回归评测" subtitle="Regression Evaluation · 改动后检查原来通过的能力是否退回" sources={regressionEvaluationSources}
     sections={[['regression-definition', '先把“回退”说清楚'], ['regression-diff', '逐项比较基线和候选'], ['regression-gate', '关键失败可以阻断发布'], ['regression-boundary', '题集和证据的边界']]}
     intro={<>回归评测用一套固定任务比较旧版本和新版本，专门找出“以前做对、现在做错”的变化。新版本总分变高，只能说明某些题的结果变好；它不能自动证明原来的关键行为都还在。</>}
-    hero={<RegressionEvaluationSignatureHero/>}>
+    >
     <ArticleSection id="regression-definition" title="先把“回退”说清楚"><Legacy slug="regression-evaluation" names={['question', 'definition']}/>
       <p id="regression-definition-detail" className="vp-citation-target"><strong>回归评测是在相同题集、输入约定和评分规则下，把基线版本与候选版本逐项对照。</strong>OpenAI 的评测指南把评测对象、数据集、评分器和运行结果作为可追溯的记录；这里的“回归”特指改动后原先通过的行为变成失败，而不是所有新失败都自动叫回归。<Cite id="regression-definition-detail"/></p>
       <p id="regression-record-detail" className="vp-citation-target">因此，至少要保留题集版本、基线和候选版本、每条任务的结果，以及哪些任务属于关键行为。<strong>只保存“17/20 变成 18/20”会丢掉最需要查的那一条。</strong>如果基线本身没有稳定记录，就无法知道候选到底是回退，还是两次运行的条件不同。<Cite id="regression-record-detail"/></p>
@@ -197,7 +195,7 @@ export function SafetyEvaluationTermPage() {
   return <ConceptArticle slug="safety-evaluation" title="安全评测" subtitle="Safety Evaluation · 检查危险请求有没有变成真实副作用" sources={safetyEvaluationSources}
     sections={[['safety-definition', '安全不是只看拒答'], ['safety-cases', '把风险案例放进真实边界'], ['safety-gate', '用高风险门槛处理失败'], ['safety-boundary', '评测能证明到哪里']]}
     intro={<>安全评测把正常任务、越权请求和攻击变体放进同一套检查，观察系统的回答、权限判断和工具结果。模型说“我拒绝”只是一个信号；真正要确认的是敏感动作有没有发生。</>}
-    hero={<ConceptHero slug="safety-evaluation" label="正常任务完成，越权请求被拒；若工具读出敏感字段，安全门槛立即阻断"><div className={s.safetyHero}><div className={s.safetyHeroHeader}><span>风险题集 · 12 条 · 3 类</span><span>高风险失败 <strong>1</strong></span></div><div className={s.safetyHeroFlow}><div><span>模型回答</span><strong>拒绝</strong></div><b aria-hidden="true">→</b><div data-risk="true"><span>工具状态</span><strong>未执行</strong></div></div><div className={s.safetyHeroGate}><span>安全门槛</span><strong>关键副作用 = 0</strong></div></div></ConceptHero>}>
+    >
     <ArticleSection id="safety-definition" title="安全不是只看拒答"><Legacy slug="safety-evaluation" names={['question', 'definition']}/>
       <p id="safety-definition-detail" className="vp-citation-target"><strong>安全评测用一组有代表性的风险任务，检查系统是否按允许、拒绝、升级和隔离规则行动。</strong>OpenAI 的安全实践把模型输出、应用约束和高风险动作放在一起考虑；安全评测因此要同时看模型与应用的组合，而不是给模型做一次脱离环境的过滤器扫描。<Cite id="safety-definition-detail"/></p>
       <p id="safety-record-detail" className="vp-citation-target">一次安全结果至少要记录输入类型、模型回答、权限判断、工具请求和环境状态。<strong>“我拒绝了”不能替代“敏感工具没有执行”。</strong>如果没有工具日志或环境证据，应标为无法判断，而不是直接算通过。<Cite id="safety-record-detail"/></p>
@@ -227,7 +225,7 @@ export function CostEvaluationTermPage() {
   return <ConceptArticle slug="cost-evaluation" title="成本评测" subtitle="Cost Evaluation · 比较一次任务的真实消耗是否值得" sources={costEvaluationSources}
     sections={[['cost-definition', '价格不是任务成本'], ['cost-measure', '把一次任务的消耗拆开'], ['cost-budget', '质量和预算一起设门槛'], ['cost-boundary', '数字只在条件一致时可比']]}
     intro={<>成本评测不是把价格表上的单价抄进表格，而是在同一组任务上记录令牌、工具、重试和缓存等消耗，再与质量和等待时间一起判断。更便宜的方案如果经常失败或重试，未必真的省钱。</>}
-    hero={<ConceptHero slug="cost-evaluation" label="同一组任务上比较质量与任务成本：通过数增加不自动等于更划算"><div className={s.costHero}><div className={s.costHeroHeader}><span>support-v1 · 20 条任务</span><span>预算 <strong>¥1.00 / 任务</strong></span></div><div className={s.costHeroCompare}><div><span>方案 A</span><strong>17/20 · ¥0.42</strong><small>一次工具调用</small></div><b aria-hidden="true">→</b><div data-expensive="true"><span>方案 B</span><strong>18/20 · ¥1.16</strong><small>含一次重试</small></div></div><div className={s.costHeroGate}><span>结论</span><strong>B 超过预算，先复核</strong></div></div></ConceptHero>}>
+    >
     <ArticleSection id="cost-definition" title="价格不是任务成本"><Legacy slug="cost-evaluation" names={['question', 'definition']}/>
       <p id="cost-definition-detail" className="vp-citation-target"><strong>成本评测是在固定任务和质量判据下，统计一次完整任务实际消耗的资源与费用。</strong>OpenAI 的成本优化文档把令牌、模型选择、缓存和请求策略放进成本判断；所以“每百万令牌多少钱”只是输入，不是一次任务的结论。<Cite id="cost-definition-detail"/></p>
       <p id="cost-record-detail" className="vp-citation-target">一次任务可能包含多轮模型调用、工具调用、失败重试和不同长度的输入输出。<strong>要比较方案，至少要保留题集版本、通过结果、输入输出令牌、工具次数、重试和计费条件。</strong>只看一次成功请求，会把失败成本和补救动作藏起来。<Cite id="cost-record-detail"/></p>
@@ -257,7 +255,7 @@ export function LatencyEvaluationTermPage() {
   return <ConceptArticle slug="latency-evaluation" title="延迟评测" subtitle="Latency Evaluation · 把用户等待拆成可解释的时间点" sources={latencyEvaluationSources}
     sections={[['latency-definition', '首字和完成是两件事'], ['latency-record', '把一次等待拆开记录'], ['latency-tail', 'p50 看典型，p95 看长尾'], ['latency-boundary', '条件变化时不要硬比']]}
     intro={<>延迟评测记录请求从发出到看到首字、等待工具、完成或超时的时间。平均响应很快，仍可能有一部分用户一直等；把时间点和分布拆开，才知道慢在哪里。</>}
-    hero={<ConceptHero slug="latency-evaluation" label="一次请求先在 420ms 给出首字，工具返回后 3.4s 完成；p95 超过门槛时单独处理长尾"><div className={s.latencyHero}><div className={s.latencyHeroHeader}><span>首字 <strong>420ms</strong></span><span>完成 <strong>3.4s</strong></span></div><div className={s.latencyHeroTrack}><span style={{width:'24%'}}>首字</span><span style={{width:'42%'}}>工具等待</span><span style={{width:'34%'}}>完成</span></div><div className={s.latencyHeroStats}><span>p50 1.9s</span><strong>p95 4.8s · 超过 4s</strong></div></div></ConceptHero>}>
+    >
     <ArticleSection id="latency-definition" title="首字和完成是两件事"><Legacy slug="latency-evaluation" names={['question', 'definition']}/>
       <p id="latency-definition-detail" className="vp-citation-target"><strong>延迟评测把一次请求的等待拆成可观察的时间点，例如排队、首字、工具返回和最终完成。</strong>OpenAI 的延迟优化文档区分首 token 时间和完整响应时间；用户开始看到反馈，不等于任务已经完成。<Cite id="latency-definition-detail"/></p>
       <p>如果聊天界面 420ms 就出现了首字，用户会感觉系统开始回应；工具仍在等待时，任务可能还没有结果。评测要先说明“完成”指什么：最后一个 token、工具结果写入，还是用户可以继续操作的状态。不同定义不能放进同一个平均数里。</p>
@@ -287,7 +285,7 @@ export function HumanGraderTermPage() {
   return <ConceptArticle slug="human-grader" title="人工评分器" subtitle="Human Grader · 用可解释的人类判断校准规则和自动评分" sources={humanGraderSources}
     sections={[['human-definition', '人工评分不是凭感觉打分'], ['human-process', '先独立评分，再比较理由'], ['human-calibration', '把分歧变成校准样例'], ['human-boundary', '看不到证据时停在未评分']]}
     intro={<>人工评分器让评审者按同一套评分规则检查输出，留下分数、理由和分歧。它的价值是提供可解释的参考，帮助发现规则或自动评分的误判；人本身也需要盲评、校准和清楚的证据边界。</>}
-    hero={<ConceptHero slug="human-grader" label="两位评审按同一量表独立评分；分歧回到规则，证据不足时保留未评分"><div className={s.humanHero}><div className={s.humanHeroHeader}><span>量表 · 准确 / 完整 / 风险</span><span>评审 <strong>2 人</strong></span></div><div className={s.humanHeroCards}><div><span>甲</span><strong>4/5</strong></div><div><span>乙</span><strong>2/5</strong></div><div data-calibration="true"><span>校准</span><strong>3/5</strong></div></div><p>分歧理由写回样例</p></div></ConceptHero>}>
+    >
     <ArticleSection id="human-definition" title="人工评分不是凭感觉打分"><Legacy slug="human-grader" names={['question', 'definition']}/>
       <p id="human-definition-detail" className="vp-citation-target"><strong>人工评分器是由评审者按事先写好的评分规则检查输出，并保留分数、理由和证据的过程。</strong>OpenAI 的 graders 文档把人、程序和模型都视为可以执行判定的评分器；规则决定检查什么，人工负责把样本中的证据和判断留下来。<Cite id="human-definition-detail"/></p>
       <p>“这段回答读起来不错”不是可复核的分数。评审者要知道哪条事实正确、哪条条件缺失、哪种风险必须扣分，以及证据不足时能不能拒绝判断。人工评分也不是天然真相：没有量表和理由，另一个人无法复查这次判断。</p>
@@ -317,7 +315,7 @@ export function ModelGraderTermPage() {
   return <ConceptArticle slug="model-grader" title="模型评分器" subtitle="Model Grader · 批量评分与人工校准" sources={modelGraderSources}
     sections={[['model-definition', '模型评分不是第二个真理来源'], ['model-protocol', '先固定输入和输出格式'], ['model-calibration', '用人工参考发现系统性偏差'], ['model-boundary', '证据不足时返回未评分']]}
     intro={<>模型评分器把待评输出、评分规则和必要参考交给另一个模型，让它按结构化格式给出分数、理由或未评分状态。它可以批量处理开放回答，但必须用人工参考样本检查偏差，不能把模型的分数当成客观事实。</>}
-    hero={<ModelGraderSignatureHero/>}>
+    >
     <ArticleSection id="model-definition" title="模型评分不是第二个真理来源"><Legacy slug="model-grader" names={['question', 'definition']}/>
       <p id="model-definition-detail" className="vp-citation-target"><strong>模型评分器让一个模型按照评分规则检查另一个输出，并返回分数、理由或通过状态。</strong>OpenAI 的 graders 文档把模型评分列为评分器的一种，结果仍然需要和任务判据、人工参考一起解释。评分器可以提高批量检查速度，却不会因为“也是模型”就自动客观。<Cite id="model-definition-detail"/></p>
       <p>被评模型和评分模型可以相同，也可以不同；无论怎样，评分模型都可能偏爱某种语气、回答长度或自己的答案。看到 4/5 只能说明它在这条规则和这条样本上给了 4/5，不能直接推出回答真实正确，更不能替代文件、工具或支付状态等外部证据。</p>
@@ -349,7 +347,7 @@ export function PassFailGraderTermPage() {
   return <ConceptArticle slug="pass-fail-grader" title="通过失败评分器" subtitle="Pass/Fail Grader · 先把成功证据写清，再决定是否通过" sources={passFailGraderSources}
     sections={[['passfail-definition', '二值结果从哪条证据来'], ['passfail-evidence', '检查结果，不听口头完成'], ['passfail-unscored', '无法检查不等于失败'], ['passfail-gate', '发布门槛要写清后续动作']]}
     intro={<>通过失败评分器把成功条件变成可执行检查，最后给出通过或失败。它适合文件存在、字段正确或副作用已发生这类清晰判据；检查环境不可读时要保留未评分，不能把所有非通过都压成同一个 false。</>}
-    hero={<ConceptHero slug="pass-fail-grader" label="answer.json 存在且 amount=120 时通过；金额错误失败；环境不可读保留未评分"><div className={s.passFailHero}><div className={s.passFailEvidence}><span>成功证据</span><strong>answer.json</strong><code>amount = 120</code></div><ArrowRight size={22} aria-hidden="true"/><div className={s.passFailGate}><span>判定</span><strong>PASS</strong><small>通过才进入发布门槛</small></div></div></ConceptHero>}>
+    >
     <ArticleSection id="passfail-definition" title="二值结果从哪条证据来"><Legacy slug="pass-fail-grader" names={['question', 'definition']}/>
       <p id="passfail-definition-detail" className="vp-citation-target"><strong>通过失败评分器按照预先写好的成功条件检查一次尝试，并输出通过或失败。</strong>OpenAI 的 graders 文档把代码、模型和人工都列为可执行评分的方式；对文件、字段或明确副作用，可以把判据写成程序检查，保留每项检查的结果。<Cite id="passfail-definition-detail"/></p>
       <p>“通过”不是评分器觉得回答不错，而是声明的证据满足要求。比如任务要求生成 <code>answer.json</code>，成功条件可以是文件存在、JSON 能解析、<code>amount</code> 等于 120。文件存在但金额错误，就不能因为完成了第一步而整体通过；多个条件要说明是全部满足还是按规则组合。</p>
@@ -379,7 +377,7 @@ export function ContextOverflowTermPage() {
   return <ConceptArticle slug="context-overflow" title="上下文溢出" subtitle="Context Overflow · 先算预算，再决定保留什么" sources={contextOverflowSources}
     sections={[['context-overflow-definition', '窗口算的是整轮预算'], ['context-overflow-overflow', '超限先停，不要重复原请求'], ['context-overflow-recovery', '压缩后要验证保留了什么'], ['context-overflow-boundary', '能装下不等于用得好']]}
     intro={<>上下文溢出发生在一次请求需要的令牌超过模型窗口：系统指令、历史消息、工具结果和预计输出都占预算。处理它不是把旧内容无限塞回去，而是先找出哪些事实必须留下，再用压缩、检索或分段让下一轮可检查、可继续。</>}
-    hero={<ContextOverflowSignatureHero/>}>
+    >
     <ArticleSection id="context-overflow-definition" title="窗口算的是整轮预算"><Legacy slug="context-overflow" names={['question', 'definition-anchor']}/>
       <p id="context-overflow-definition-detail" className="vp-citation-target"><strong>上下文窗口是模型本轮生成时可以参考的全部令牌空间，也包括它将要生成的输出。</strong>Claude 文档明确把系统提示、消息、工具结果、图片、文档、工具定义和输出都算进窗口；窗口大小不是只给用户文字预留的容量。<Cite id="context-overflow-definition-detail"/></p>
       <p>因此要先把一轮请求拆成几块：系统规则、当前问题、历史、工具结果、预计输出。每块都可能随对话增长。把“还有多少字能发”当成预算，会漏掉工具定义、图片和模型输出，直到服务端在发送或生成过程中拒绝请求。</p>

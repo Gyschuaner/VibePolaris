@@ -1,6 +1,5 @@
-import { ArrowCounterClockwise, BookOpen, Database, Files, MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
+import { Files, MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
 import { ConceptArticle, ArticleAside, ArticleCitation, ArticleSection, ConceptTerm } from "./ConceptArticle";
-import { ConceptHero } from "./ConceptHero";
 import { DatabaseLesson, IndexLesson, TransactionLesson } from "./StorageConceptLessons";
 import { databaseSources, indexSources, transactionSources } from "@/lib/storage-sources";
 import s from "./StorageConcepts.module.css";
@@ -15,15 +14,7 @@ export function DatabaseTermPage() {
   return <ConceptArticle slug="database" title="数据库" sources={databaseSources}
     sections={[["records", "界面背后的记录"], ["catalogue", "保存一次，再查一次"], ["rules", "数据也有规则"], ["where", "数据放在哪里"]]}
     intro={<>在下面的图书室演示里，把 #42 的草稿改成“已借出”但不保存，重开编辑界面时，草稿又会变回“可借”。点“保存修改”后，书目里的记录才改成“已借出”；另一位读者若通过同一个图书室服务访问这份书目，重新查询也能看到新状态。数据库负责组织、保存和取回记录，页面只是入口。实际网站若会自动保存，草稿的表现可能不同。</>}
-    hero={<ConceptHero slug="database" label="编辑页将42号书改为已借出并保存；编辑页关闭后，书目记录保留，重新打开或另一位读者查询都能读到已借出状态"><div className={s.databaseHero}>
-      <div className={s.heroEditor}>
-        <div className={s.heroDraft}><span>编辑 #42</span><strong>已借出</strong></div>
-        <div className={s.heroReopen}><span>重新打开</span><strong>#42　已借出</strong></div>
-      </div>
-      <span className={s.heroSave}>保存</span>
-      <div className={s.heroTable}><div><Database size={21} /><span>书目</span></div><p>#42 <span className={s.heroOld}>可借</span><strong className={s.heroNew}>已借出</strong></p><p>#78 <span>可借</span></p></div>
-      <div className={s.heroQuery}><MagnifyingGlass size={18} /><span>另一位读者查 #42</span><strong>已借出</strong></div>
-    </div></ConceptHero>}>
+    >
     <ArticleSection id="records" title="界面背后的记录">
       <Legacy slug="database" names={["question", "definition"]} />
       <p id="database-relations" className="vp-citation-target"><strong>数据库是按一定结构组织的数据集合；管理这些数据的软件叫数据库管理系统，简称 DBMS。</strong>日常说“用 PostgreSQL 做数据库”，往往把两者放在一起说。本文以关系型数据库为例，这里的“关系”可以先理解为表：书目是一张表，一行是一条记录，编号、书名、可借状态是列。<Cite id="database-relations" /></p>
@@ -59,7 +50,7 @@ export function IndexTermPage() {
   return <ConceptArticle slug="index" title="索引" sources={indexSources}
     sections={[["lookup", "给记录多一条查找路径"], ["search", "先定位，再读记录"], ["tradeoff", "读得更快，也要多维护"], ["plan", "用执行计划核对路径"]]}
     intro={<>按编号找一本书，可以逐条检查书目，也可以先查一份按编号排列的目录。目录告诉我们书目中的位置，再去那里读书名。两种方法找到的是同一本书，区别在于中途翻查了多少无关内容。</>}
-    hero={<ConceptHero slug="index" label="查找64号书：先比较目录中间的42，排除左半；再找到64号对应的原书目位置5，读取设计札记"><div className={s.indexHero}><div className={s.indexTarget}><MagnifyingGlass size={21} />找 #64</div><div className={s.indexDirectory}>{[8, 12, 29, 37, 42, 51, 64, 78, 90].map(id => <span key={id}>{id}</span>)}</div><div className={s.indexRecord}><BookOpen size={23} /><span>原书目位置 5</span><strong>#64 · 设计札记</strong></div></div></ConceptHero>}>
+    >
     <ArticleSection id="lookup" title="给记录多一条查找路径">
       <Legacy slug="index" names={["question", "definition"]} />
       <p id="index-purpose" className="vp-citation-target"><strong>索引是数据库额外维护的查找结构，用来更快地定位特定查询需要的数据。</strong>没有合适的索引时，数据库可能逐行扫描；有索引时，可以沿着另一条路径找到候选记录。是否走索引，要看查询条件和预计花费的工作量，并非建了就一定用。<Cite id="index-purpose" /></p>
@@ -94,18 +85,7 @@ export function TransactionTermPage() {
   return <ConceptArticle slug="transaction" title="事务" sources={transactionSources}
     sections={[["unit", "一次借书，两处修改"], ["borrow", "一起提交，或者撤回"], ["visibility", "并发事务的可见性"], ["recovery", "提交之后与事务之外"]]}
     intro={<>借出一本书，要减少可借数量，还要新增借阅记录。如果第一步成功，第二步失败，就会出现“书少了一本，却找不到谁借走”的情况。把两次写入放在同一事务里，第二步失败时就能回滚整组，不留下半成品。</>}
-    hero={<ConceptHero slug="transaction" label="一次借书先把事务内可借数量从2改到1，借阅记录写入失败后回滚为2本、0条；另一客户端的新查询始终只看到已提交的2本、0条"><div className={s.transactionHero}>
-      <div className={s.transactionHeroWork}>
-        <span>本次事务内</span>
-        <div className={s.transactionHeroFigures}>
-          <div><BookOpen size={20} /><span>可借</span><strong><span className={s.transactionHeroOriginal}>2</span><span className={s.transactionHeroChanged}>1</span></strong></div>
-          <div><Files size={20} /><span>借阅</span><strong>0</strong></div>
-        </div>
-        <span className={s.transactionHeroError}>借阅写入失败</span>
-        <span className={s.transactionHeroRollback}><ArrowCounterClockwise size={17} />回滚</span>
-      </div>
-      <div className={s.transactionHeroOutside}><span>新查询可见</span><strong>可借 2 · 借阅 0</strong></div>
-    </div></ConceptHero>}>
+    >
     <ArticleSection id="unit" title="一次借书，两处修改">
       <Legacy slug="transaction" names={["question", "definition"]} />
       <p id="transaction-unit" className="vp-citation-target"><strong>事务把一组数据库操作放在同一个工作单元中：提交使整组改动生效，回滚撤销这组尚未提交的改动。</strong>这体现了原子性。对于这里的借书业务，只成功减少数量还不算完成，借阅记录也必须写入。<Cite id="transaction-unit" /></p>

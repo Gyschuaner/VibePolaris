@@ -1,0 +1,42 @@
+.motion{--motion-alt:color-mix(in srgb,var(--ink) 48%,var(--accent-text));--motion-faint:color-mix(in srgb,var(--ink) 16%,transparent);--motion-risk:color-mix(in srgb,#dc786c 78%,var(--ink));position:relative;width:280px;max-width:100%;height:140px;margin:0;align-self:center;color:var(--ink);isolation:isolate}
+.drawing{width:100%;height:100%}.drawing>svg{display:block;width:100%;height:100%;overflow:visible;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.drawing text{font-family:inherit;font-size:11px;fill:var(--muted);stroke:none;text-anchor:middle;letter-spacing:0}.drawing .word{font-size:13px;fill:var(--ink);font-weight:500}.drawing .large{font-size:24px;fill:var(--accent-text);font-weight:600}.accent{color:var(--accent-text)}.alt{color:var(--motion-alt)}.risk{color:var(--motion-risk)}.faint{color:var(--motion-faint)}.solid{fill:currentColor;stroke:none}.wash{fill:color-mix(in srgb,var(--accent) 9%,transparent)}.dash{stroke-dasharray:3 5}
+.controls{position:absolute;right:1px;bottom:0;display:flex;gap:0;opacity:.52;transition:opacity .2s}.motion:hover .controls,.motion:focus-within .controls{opacity:1}.controls button{display:grid;place-items:center;width:28px;height:28px;border:0;padding:0;background:transparent;color:var(--muted);cursor:pointer;border-radius:50%}.controls button:hover{color:var(--accent-text);background:var(--tint)}.controls button:focus-visible{outline:2px solid var(--accent-text);outline-offset:1px}
+.timer{position:absolute;pointer-events:none;animation:timer 8s linear both}
+.travel{offset-rotate:0deg;animation:travel 2.4s cubic-bezier(.3,0,.2,1) both;animation-delay:var(--delay,0s)}
+.shift{animation:shift 2.8s cubic-bezier(.3,0,.2,1) both;animation-delay:var(--delay,0s)}
+.arrive{animation:arrive 2.8s cubic-bezier(.2,.7,.2,1) both;animation-delay:var(--delay,0s)}
+.appear{transform-box:fill-box;transform-origin:center;animation:appear 2s ease both;animation-delay:var(--delay,0s)}
+.vanish{animation:vanish 2.8s ease both;animation-delay:var(--delay,0s)}
+.draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 2.8s ease both;animation-delay:var(--delay,0s)}
+.turn{transform-box:fill-box;transform-origin:var(--origin,center);animation:turn 2.4s cubic-bezier(.3,0,.2,1) both;animation-delay:var(--delay,0s)}
+.pulse{transform-box:fill-box;transform-origin:center;animation:pulse 5.8s ease both;animation-delay:var(--delay,0s)}
+.grow{transform-box:fill-box;transform-origin:left bottom;animation:grow 5.8s cubic-bezier(.2,.7,.2,1) both;animation-delay:var(--delay,0s)}
+.rise{transform-box:fill-box;transform-origin:center bottom;animation:rise 4s ease both;animation-delay:var(--delay,0s)}
+.stretch{transform-box:fill-box;transform-origin:left center;animation:stretch 4s ease both}
+.trace{animation:trace 5.8s ease both;animation-delay:var(--delay,0s)}
+.typing{animation:typing 5.8s steps(8,end) both;clip-path:inset(0 100% 0 0)}
+.swap{animation:swap 5.8s ease both;animation-delay:var(--delay,0s)}
+.weight{animation:weight 4s ease both}.leave{animation-name:travel-leave}
+.reshape{transform-box:fill-box;transform-origin:center bottom;animation:reshape 4s ease both}
+.motion[data-running="false"] .drawing *{animation-play-state:paused!important}
+@keyframes timer{from{opacity:1}to{opacity:1}}
+@keyframes travel{0%{offset-distance:0%;opacity:0}12%{offset-distance:0%;opacity:1}68%,100%{offset-distance:100%;opacity:1}}
+@keyframes travel-leave{0%{offset-distance:0%;opacity:0}12%{offset-distance:0%;opacity:1}68%{offset-distance:100%;opacity:1}100%{offset-distance:100%;opacity:0}}
+@keyframes weight{0%,12%{stroke-width:1}70%,100%{stroke-width:3.5}}
+@keyframes shift{0%,14%{transform:translate(0,0)}65%,100%{transform:translate(var(--x,0px),var(--y,0px))}}
+@keyframes arrive{0%,15%{transform:translate(var(--x,0px),var(--y,0px));opacity:.25}62%,100%{transform:translate(0,0);opacity:1}}
+@keyframes appear{0%,35%{opacity:0;transform:scale(.78)}70%,100%{opacity:1;transform:scale(1)}}
+@keyframes vanish{0%,20%{opacity:1}65%,100%{opacity:0}}
+@keyframes draw{0%,12%{stroke-dashoffset:1}70%,100%{stroke-dashoffset:0}}
+@keyframes turn{0%,20%{transform:rotate(0deg)}65%,100%{transform:rotate(var(--angle,90deg))}}
+@keyframes pulse{0%,15%{transform:scale(1);opacity:.4}30%{transform:scale(1.25);opacity:1}45%{transform:scale(1);opacity:1}60%{transform:scale(1.12)}75%,100%{transform:scale(1);opacity:1}}
+@keyframes grow{0%,12%{transform:scaleX(.08);opacity:.25}70%,100%{transform:scaleX(1);opacity:1}}
+@keyframes rise{0%,12%{transform:scaleY(.08);opacity:.25}70%,100%{transform:scaleY(1);opacity:1}}
+@keyframes stretch{0%,15%{transform:scaleX(.55)}70%,100%{transform:scaleX(1)}}
+@keyframes trace{0%,10%{opacity:.2}35%,100%{opacity:1}}
+@keyframes typing{0%,12%{clip-path:inset(0 100% 0 0)}70%,100%{clip-path:inset(0 0 0 0)}}
+@keyframes reshape{0%,15%{transform:scaleY(var(--scale,1))}70%,100%{transform:scaleY(1)}}
+@keyframes swap{0%,20%{fill:var(--motion-faint)}60%,100%{fill:var(--accent-text)}}
+@media(max-width:600px){.motion{width:240px;height:120px;margin-left:40px}.controls{right:-4px;bottom:-2px}.controls button{width:32px;height:32px}}
+@media(prefers-reduced-motion:reduce){.motion[data-running] .drawing *{animation-delay:0s!important;animation-duration:1ms!important;animation-play-state:running!important}.motion .controls{display:none}}

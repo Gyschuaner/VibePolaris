@@ -48,7 +48,7 @@ function ResponsiveLab() {
 }
 
 export function ResponsiveTermPage(_props: BespokeTermPageProps) {
-  return <Article slug="responsive" title="响应式布局" subtitle="Responsive design · 空间变了，内容重新站位" sources={responsiveSources} hero={<ResponsiveHero />} sections={[
+  return <Article slug="responsive" title="响应式布局" subtitle="Responsive design · 空间变了，内容重新站位" sources={responsiveSources} sections={[
     ["responsive-definition-section", "把窗口缩窄，页面该怎么办"],
     ["responsive-rules-section", "同一份内容，几条不同的摆放规则"],
     ["responsive-container-section", "看整扇窗口，还是看自己的格子"],

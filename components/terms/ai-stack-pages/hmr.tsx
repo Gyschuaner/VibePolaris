@@ -1,12 +1,12 @@
 import { ArticleSection, ArticleAside, ConceptTerm } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
-import { HmrHero, HmrLesson, HmrSubscriptions } from "../ai-stack-lessons/hmr";
+import { HmrLesson, HmrSubscriptions } from "../ai-stack-lessons/hmr";
 import { hmrSources } from "@/lib/ai-stack-concept-sources/hmr";
 
 const sections: [string, string][] = [["hmr-definition", "按钮换了，刚填的名字还在"], ["hmr-workbench", "把页面状态留在槽位之外"], ["hmr-boundary", "谁来接住新的模块"], ["hmr-cleanup", "旧监听不能一直留着"], ["hmr-limits", "刷新后名字没了，先看什么"]];
 
 export function HmrTermPage() {
-  return <Article slug="hmr" title="热模块替换" subtitle="Hot Module Replacement · 换进新代码，尽量留住正在使用的页面" sources={hmrSources} sections={sections} hero={<HmrHero />}
+  return <Article slug="hmr" title="热模块替换" subtitle="Hot Module Replacement · 换进新代码，尽量留住正在使用的页面" sources={hmrSources} sections={sections}
     intro={<>你正在调试一张报名表，姓名已经填好，按钮也点了三次。只是想把按钮换个样式，保存代码后却又得从头填表，会很烦。<strong>HMR 尝试把改过的代码接进正在运行的页面，让不需要重建的部分继续留在原处。</strong>但新代码能不能接住旧页面，还需要有人处理这次变化。</>}>
     <ArticleSection id="hmr-definition" title="按钮换了，刚填的名字还在">
       <p id="hmr-definition-text" className="vp-citation-target">HMR 是 Hot Module Replacement，中文叫热模块替换。模块就是一块有独立职责的代码，例如负责画按钮的文件。普通整页刷新会重新启动页面脚本；HMR 则尝试在应用还运行着的时候更新、增加或移除模块。对正在调试的人来说，直接的好处是不用每次改个按钮，都重新走一遍填表和点击的过程。<Cite id="hmr-definition-text" sources={hmrSources} /></p>

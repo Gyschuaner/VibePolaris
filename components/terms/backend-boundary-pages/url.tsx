@@ -126,7 +126,7 @@ function UrlLab() {
 
 export function UrlTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={urlSources} />;
-  return <ConceptArticle slug="url" title="URL" subtitle="Uniform Resource Locator · 一条会被解析的资源引用" sources={urlSources} sections={[["url-shape", "一条地址先拆开"], ["url-normalize", "路径不是字符串拼接"], ["url-request", "发给服务器的目标更短"], ["url-base", "相对引用要有基准"]]} hero={<UrlHero />} intro={<>你在地址栏里看到的是一条文字，浏览器眼里却是一张有边界的地图。<strong>URL 先拆组件、再归一路径，最后才决定要发给服务器什么。</strong><Cite id="url-components" /></>}>
+  return <ConceptArticle slug="url" title="URL" subtitle="Uniform Resource Locator · 一条会被解析的资源引用" sources={urlSources} sections={[["url-shape", "一条地址先拆开"], ["url-normalize", "路径不是字符串拼接"], ["url-request", "发给服务器的目标更短"], ["url-base", "相对引用要有基准"]]} intro={<>你在地址栏里看到的是一条文字，浏览器眼里却是一张有边界的地图。<strong>URL 先拆组件、再归一路径，最后才决定要发给服务器什么。</strong><Cite id="url-components" /></>}>
     <ArticleSection id="url-shape" title="一条地址先拆开">
       <p id="url-components" className="vp-citation-target">URL 的语法把引用拆成 scheme、authority、path、query 和 fragment。authority 还可以继续分出 userinfo、host 与 port；这些字段各自有边界，不能靠“看起来像域名”来猜。<Cite id="url-components" /></p>
       <p id="url-identity" className="vp-citation-target">URL 解决的是“怎样定位或访问这个资源”的表达问题，不是资源本身，也不是一次已经成功的请求。地址写得合法，只说明解析器能理解它；主机是否存在、服务是否响应，还要到后面的网络步骤才知道。<Cite id="url-identity" /></p>

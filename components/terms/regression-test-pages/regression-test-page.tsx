@@ -1,7 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { regressionTestSources } from "@/lib/regression-test-sources";
-import { RegressionTestSignatureHero as RegressionTestHero } from "../TestSecuritySignatureHeroes";
 import { RegressionTestLesson } from "./regression-test";
 
 const sections: [string, string][] = [
@@ -12,11 +11,11 @@ const sections: [string, string][] = [
 ];
 
 export function RegressionTestTermPage() {
-  return <Article slug="regression-test" title="回归测试" subtitle="Regression Test · 改完以后，旧功能还站得住吗" sources={regressionTestSources} sections={sections} hero={<RegressionTestHero />} intro={<>只改了认证中间件，为什么订单和后台权限也要重测？回归测试不是把所有旧用例机械地再按一遍，而是从这次变更出发，找出那些<strong>原本应该继续成立、却可能被这次改动碰到的行为</strong>，再用实际结果把倒退钉在现场。</>}>
+  return <Article slug="regression-test" title="回归测试" subtitle="Regression Test · 改完以后，旧功能还站得住吗" sources={regressionTestSources} sections={sections} intro={<>只改了认证中间件，为什么订单和后台权限也要重测？回归测试不是把所有旧用例机械地再按一遍，而是从这次变更出发，找出那些<strong>原本应该继续成立、却可能被这次改动碰到的行为</strong>，再用实际结果把倒退钉在现场。</>}>
     <ArticleSection id="regression-definition" title="它要找回哪些“原来能工作”的行为">
       <p id="reg-definition" className="vp-citation-target">Microsoft 把回归测试定义为：在解决方案发生代码、配置或数据变化后，重新检查原来的行为是否仍按预期工作。它可以手工做，也可以自动做；关键不在“重复”这个动作，而在验证变化没有悄悄带来新的问题。<Cite id="reg-definition" sources={regressionTestSources} /></p>
       <p id="reg-change-trigger" className="vp-citation-target">所以回归测试的起点不是“今天有哪些页面”，而是“这次动了什么”。例子里，改动落在 `auth middleware`：它把请求交给权限规则判断。登录、会话、订单和后台列表虽然不是同一个文件，却都可能依赖这个判断；只重跑登录的单元测试，无法证明这些旧行为还在。<Cite id="reg-change-trigger" sources={regressionTestSources} /></p>
-      <p>首图把一条提交差异画成一根拉绳。拉动中间的鉴权规则，几条旧路径会跟着晃：普通用户可以登录，订单服务仍要识别会话，编辑器请求后台列表时还必须得到 `403`。回归测试要找的是这些外部能观察到的结果，而不是某个内部变量有没有保持原名。</p>
+      <p>一处提交差异可能牵动多个已有行为。拉动中间的鉴权规则，几条旧路径会跟着晃：普通用户可以登录，订单服务仍要识别会话，编辑器请求后台列表时还必须得到 `403`。回归测试要找的是这些外部能观察到的结果，而不是某个内部变量有没有保持原名。</p>
       <p id="reg-sensor" className="vp-citation-target">Fowler 把测试套件称为回归传感器：它记录系统想保持的行为，改动后如果旧测试失败，就提醒团队问一句——这是无意的倒退，还是需求真的改了？这一步很重要，因为“测试失败”本身不自动等于“代码一定错”，还需要和新的产品约定对照。<Cite id="reg-sensor" sources={regressionTestSources} /></p>
     </ArticleSection>
     <ArticleSection id="regression-scope" title="范围从改动出发，再被风险补全">

@@ -1,9 +1,7 @@
-import { ArrowRight, User } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from "./ConceptArticle";
-import { ConceptHero } from "./ConceptHero";
 import { QueryParameterLesson, QueryEncodingLesson, PathParameterLesson, RequestBodyLesson } from "./RequestInputLessons";
 import { queryParameterSources, pathParameterSources, requestBodySources } from "@/lib/request-input-sources";
-import { queryBooks } from "@/lib/request-input-teaching";
 import base from "./EventConcepts.module.css";
 import s from "./RequestInputs.module.css";
 
@@ -16,10 +14,7 @@ export function QueryParameterTermPage() {
   return <ConceptArticle slug="query-parameter" title="查询参数" sources={queryParameterSources}
     intro={<>你在书店网页上选择“科学”，AI 写的程序把地址改成了 /books?tag=science。问号后面这段是在做什么？它把这次筛选条件留在地址里，让读取地址的程序知道你想看哪些书。</>}
     sections={[["conditions", "地址中的条件"], ["selection", "用查询条件筛选集合"], ["encoding", "特殊字符的编码"], ["contract", "共享地址与接口约定"]]}
-    hero={<ConceptHero slug="query-parameter" label="本例中，路径 /books 不变；应用读取 ?tag=science 后，六本书仍在原位，科学类别的《星空手记》《潮汐与月亮》突出显示，其他类别变淡但未删除"><div className={s.queryHero}>
-      <div className={s.queryAddress}><code>/books</code><code>?tag=science</code></div>
-      <div className={s.queryCatalog}><span>本例 tag 对照分类</span><div className={s.queryCards}>{queryBooks.map(book => <div key={book.id} data-match={book.tag === "science"}><strong>{book.title}</strong><code>{book.tag}</code></div>)}</div></div>
-    </div></ConceptHero>}>
+    >
     <ArticleSection id="conditions" title="地址中的条件">
       <Legacy slug="query-parameter" names={["question", "definition"]} />
       <p>URL 就是网页或其他资源的地址。这里省略了网站域名，只看 <code>/books?tag=science</code>：/books 是路径，指向书目列表；问号后面的 tag=science 是本次附带的输入。</p>
@@ -62,13 +57,7 @@ export function PathParameterTermPage() {
   return <ConceptArticle slug="path-parameter" title="路径参数" sources={pathParameterSources}
     intro={<>AI 帮你做读者资料页，给出的地址里有 /readers/42。把 42 换成 43，就改成请求另一位读者的资料。这一段数字怎样交给程序？为什么改对了数字，仍可能看不到资料？路径参数从这里开始起作用。</>}
     sections={[["template", "模板里的可替换位置"], ["matching", "请求落在哪条路由"], ["checks", "匹配之后还有检查"], ["framework", "路由决定路径规则"]]}
-    hero={<ConceptHero slug="path-parameter" label="固定路径 /readers/ 后有可替换的 id 槽位；42 和 43 先后占据槽位，最终只捕获到 id 等于 43，尚未读取读者资料"><div className={s.pathHero}>
-      <div className={s.pathFrame}>
-        <div className={s.pathFixed}><span>固定部分</span><code>/readers/</code></div>
-        <div className={s.pathSlot}><span>槽位 {"{id}"}</span><div className={s.pathWindow}><div className={s.pathRoll}><code>42</code><code>43</code></div></div></div>
-      </div>
-      <div className={s.pathCaptured}><span>匹配后捕获</span><code>id = 43</code></div>
-    </div></ConceptHero>}>
+    >
     <ArticleSection id="template" title="模板里的可替换位置">
       <Legacy slug="path-parameter" names={["question", "definition"]} />
       <p>URL 就是网页或服务的地址。比如 <code>https://example.com/readers/42</code> 中，<code>/readers/42</code> 是路径。程序用一组规则决定“这种请求交给哪段代码处理”，这组规则叫路由；检查路径是否符合某条规则，就是匹配。</p>
@@ -106,13 +95,7 @@ export function RequestBodyTermPage() {
   return <ConceptArticle slug="request-body" title="请求体" sources={requestBodySources}
     intro={<>你让 AI 做一个读书会报名页，填好书名和名额，却被告知“请求体格式不对”。网页程序需要把填好的字段组织成接口约定的格式，再随请求提交。请求体就是携带这些内容的部分。</>}
     sections={[["payload", "消息里携带的内容"], ["workshop", "从字段到接收结果"], ["formats", "选择内容的表示方式"], ["validation", "能解析与能使用"]]}
-    hero={<ConceptHero slug="request-body" label="POST /bookings 的地址与 Content-Type 类型说明保持在上方；请求体区域沿折线展开，显示已经编码好的书名和名额 JSON 示例，不表示发送或保存成功"><div className={s.bodyHero}>
-      <div className={s.bodyMessage}>
-        <code className={s.bodyAddress}>POST /bookings</code>
-        <div className={s.bodyContentType}><span>Content-Type</span><code>application/json</code></div>
-        <div className={s.bodyFold}><div className={s.bodyContents}><span>请求体 · JSON 示例</span><code>{'{'}<br />　&quot;title&quot;: &quot;星空手记&quot;,<br />　&quot;seats&quot;: 2<br />{'}'}</code></div></div>
-      </div>
-    </div></ConceptHero>}>
+    >
     <ArticleSection id="payload" title="消息里携带的内容">
       <Legacy slug="request-body" names={["question", "definition"]} />
       <p>网页程序发出请求，服务器接收并处理它。这里向 <code>/bookings</code> 这个报名入口提交内容，POST 表示请求方法，也就是这次要执行哪类操作。书名和名额放在请求体里，不是拼在这个地址后面。</p>

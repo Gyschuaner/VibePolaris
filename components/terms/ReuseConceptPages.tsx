@@ -1,6 +1,5 @@
-import { Database, Lightning, ArrowDownLeft } from "@phosphor-icons/react/dist/ssr";
+
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from "./ConceptArticle";
-import { ConceptHero } from "./ConceptHero";
 import { CacheLesson, PoolLesson, ReplicationLesson } from "./ReuseConceptLessons";
 import { cacheSources, poolSources, replicationSources } from "@/lib/reuse-sources";
 import base from "./EventConcepts.module.css";
@@ -10,7 +9,7 @@ export function CacheTermPage() {
   const Cite=({id}:{id:string})=><ArticleCitation id={id} sources={cacheSources}/>;
   return <ConceptArticle slug="cache" title="缓存" sources={cacheSources} sections={[["copy","为重复读取留一份副本"],["read","命中与回源"],["fresh","副本与原数据一起变化吗"],["capacity","过期与容量淘汰"]]}
     intro={<>每次打开书目详情页，页面都要显示编号为 #42 的书名。负责页面逻辑的应用可以先保留一次读取的结果，下一次按同一个键取回。少访问一次数据库，这是眼前的好处。但要是数据库里改了书名，这份旧副本还能接着用多久，就得另外拿主意。</>}
-    hero={<ConceptHero slug="cache" label="数据库书名先被读取，再保存为book:42:title的缓存副本"><div className={s.cacheHero}><div><Database size={24}/><span>数据库 · #42</span><strong>山间来信</strong></div><div><Lightning size={24}/><code>book:42:title</code><strong>山间来信</strong></div></div></ConceptHero>}>
+    >
     <ArticleSection id="copy" title="为重复读取留一份副本"><Legacy slug="cache" names={["question","definition"]}/>
       <p id="cache-mechanism" className="vp-citation-target"><strong>缓存保留可重复使用的数据或计算结果，让后续访问有机会复用它。</strong>这里采用由应用自己维护副本的 Cache-Aside：先查缓存，找不到就读数据库，把结果放入缓存并返回。Microsoft 的模式文档说明，这种按需加载需要应用维护副本；缓存产品本身不会自动知道数据库里的书名变了。<Cite id="cache-mechanism"/></p>
       <p>缓存可以放在应用进程自己的内存里，也可以由独立缓存服务保存，让多个应用实例共享同一份副本。本文只跟着书名这一项数据走。浏览器的 HTTP 缓存、数据库内部的缓存、AI 提示缓存各有各的规则，这里不把它们混在一起讲。<ConceptTerm slug="cache-control">Cache-Control</ConceptTerm>负责浏览器或代理如何缓存 HTTP 响应，是另一层机制。</p>
@@ -36,8 +35,8 @@ export function CacheTermPage() {
 export function PoolTermPage() {
   const Cite=({id}:{id:string})=><ArticleCitation id={id} sources={poolSources}/>;
   return <ConceptArticle slug="connection-pool" title="连接池" sources={poolSources} sections={[["reuse","请求结束，连接可以留下"],["lease","两条连接，三个请求"],["return","结束事务，再归还连接"],["limit","池大小与数据库容量"]]}
-    intro={<>这里的“连接”是一条应用与数据库服务器之间已经建立并完成认证的通信通道。每次查书目都重新建立它，等于每次都要重走连接和认证。应用可以借用已有连接，用完交还。多个请求同时到来时，问题又变成：谁正在占用连接，后来者等在哪里，等多久。首图里的两个 C 标的是同一个请求的两个阶段：前半段它在排队等待，请求 A 归还连接后，它才借到连接 1。</>}
-    hero={<ConceptHero slug="connection-pool" label="两条既有连接分别被A和B借用，C先等待，A归还后C借用同一连接"><div className={s.poolHero}><div><span>连接 1</span><strong>A</strong><em>C</em></div><div><span>连接 2</span><strong>B</strong></div><span>C</span><ArrowDownLeft size={25}/></div></ConceptHero>}>
+   intro={<>这里的“连接”是一条应用与数据库服务器之间已经建立并完成认证的通信通道。每次查书目都重新建立它，等于每次都要重走连接和认证。应用可以借用已有连接，用完交还。多个请求同时到来时，问题又变成：谁正在占用连接，后来者等在哪里，等多久。例如请求 C 可以先排队，等请求 A 归还连接 1 后，再借用这条连接。</>}
+    >
     <ArticleSection id="reuse" title="请求结束，连接可以留下"><Legacy slug="connection-pool" names={["question","definition"]}/>
       <p id="pool-mechanism" className="vp-citation-target"><strong>连接池维护一组可借出、可归还的连接，供请求复用，并控制同时占用连接的请求数。</strong>Psycopg 是 Python 程序连接 PostgreSQL 的库；需要访问数据库时向池要连接，池里有空闲连接就直接给，用完再还回来。池保存的是连接资源，不是上一条 SQL 的查询结果。<Cite id="pool-mechanism"/></p>
       <p id="pool-lazy" className="vp-citation-target">“有一个池”也不一定代表启动时已创建全部连接。SQLAlchemy 是 Python 的数据库工具；它的 QueuePool 要到第一次用到时才建立连接。<code>pool_size</code>表示常驻连接数，<code>max_overflow</code>表示临时允许多开的连接数，等待上限表示没有连接时最多等多久。Psycopg 创建连接的时机不同，不能把一个实现的默认值套给所有应用。<Cite id="pool-lazy"/></p>
@@ -66,7 +65,7 @@ export function ReplicationTermPage() {
   const Cite=({id}:{id:string})=><ArticleCitation id={id} sources={replicationSources}/>;
   return <ConceptArticle slug="replication" title="复制" sources={replicationSources} sections={[["changes","把变更持续传到另一台库"],["apply","收到变更与查到新值"],["choices","复制范围与确认条件"],["recovery","副本会接收正确操作，也会接收误删"]]}
     intro={<>为什么要维护两份数据库？常见答案是让副本承接一部分读取，或在主库故障时接管；代价是两边在一段时间内可能不一样。书名在主库里已经改好，请求落到副本上，查到的却还是原名。理解复制，需要把主库提交、变更传过去、副本应用、这次查询读到什么分开看。开场图展示的是复制追平之后的样子；这篇要看的，是追平之前的那段路。</>}
-    hero={<ConceptHero slug="replication" label="主库已提交新书名，变更记录向副本移动，副本应用后才出现新书名"><div className={s.replicationHero}><div><Database size={24}/><span>主库 · 已提交</span><strong>山间来信 · 修订版</strong></div><code>变更</code><div><Database size={24}/><span>副本 · 已应用</span><strong>山间来信 · 修订版</strong></div></div></ConceptHero>}>
+    >
     <ArticleSection id="changes" title="把变更持续传到另一台库"><Legacy slug="replication" names={["question","definition"]}/>
       <p id="replica-stream" className="vp-citation-target"><strong>数据库复制将主库的数据变更传播到另一台机器，让副本跟随变化。</strong>PostgreSQL 会把变更先写进 WAL（预写日志），物理流复制把这些记录传给备库，也就是这里说的副本；副本再按顺序把这些记录重新执行一遍，也就是重放。下文演示里的“应用下一条变更”按钮，做的就是这个重放。这里的“提交”是指变更在主库正式落定，之后不会再撤销。默认的流复制是异步的：主库提交完就返回，不等副本确认。所以从主库提交到变更在副本上可见，中间可以有延迟；复制不是每次查询时再去主库取一次结果。<Cite id="replica-stream"/></p>
       <p>副本常见两种用法：承接能接受稍旧数据的读取（比如刷列表），以及在主库故障后顶替它。应用程序自己决定哪些请求发给副本、要求数据新到什么程度；故障后由哪台机器接管、客户端怎么转过去，都不随复制自动发生，要另行安排。本文只解释传播与读取。</p>

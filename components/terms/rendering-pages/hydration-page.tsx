@@ -1,7 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { hydrationSources } from "@/lib/hydration-sources";
-import { HydrationSignatureHero as HydrationHero } from "../RenderingLayoutSignatureHeroes";
 
 const sections: [string, string][] = [
   ["hydration-definition-section", "先有 HTML，不代表已经能点"],
@@ -10,7 +9,7 @@ const sections: [string, string][] = [
 ];
 
 export function HydrationTermPage() {
-  return <Article slug="hydration" title="水合" subtitle="Hydration · 把已有 HTML 接成可交互页面" sources={hydrationSources} sections={sections} hero={<HydrationHero />} intro={<>服务器可以先把页面画出来，但<strong>按钮什么时候真正接上事件，取决于客户端水合是否完成</strong>。把“看得见”“匹配上”和“能交互”分开，才能读懂首屏的等待。</>}>
+  return <Article slug="hydration" title="水合" subtitle="Hydration · 把已有 HTML 接成可交互页面" sources={hydrationSources} sections={sections} intro={<>服务器可以先把页面画出来，但<strong>按钮什么时候真正接上事件，取决于客户端水合是否完成</strong>。把“看得见”“匹配上”和“能交互”分开，才能读懂首屏的等待。</>}>
     <ArticleSection id="hydration-definition-section" title="先有 HTML，不代表已经能点">
       <p id="hydration-server" className="vp-citation-target">服务端先输出 HTML，浏览器可以马上把标题、列表或按钮画出来。<Cite id="hydration-server" sources={hydrationSources} />这一步只说明内容已经到达，不说明客户端组件的状态和事件已经恢复。</p>
       <p id="hydration-events" className="vp-citation-target">客户端脚本到达后，框架会在现有 DOM 上恢复组件关系并注册事件。<Cite id="hydration-events" sources={hydrationSources} />所以一个按钮可能已经可见，却要再等一段时间才会响应点击。</p>

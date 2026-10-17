@@ -1,6 +1,6 @@
 "use client";
 
-import { BracketsCurly, Browser, CheckCircle, Gear, GitBranch, Package, SquaresFour, Wrench } from "@phosphor-icons/react";
+import { Browser, CheckCircle, Gear, GitBranch, Package, SquaresFour, Wrench } from "@phosphor-icons/react";
 import { useState } from "react";
 import { frameworkSources } from "@/lib/frontend-foundation-sources";
 import { Article, Cite } from "../AiStackConceptPageShared";
@@ -45,7 +45,7 @@ function FrameworkLab() {
 }
 
 export function FrameworkTermPage(_props: BespokeTermPageProps) {
-  return <Article slug="framework" title="框架" subtitle="Framework · 约定应用怎样被组织和运行" sources={frameworkSources} hero={<FrameworkHero />} sections={[
+  return <Article slug="framework" title="框架" subtitle="Framework · 约定应用怎样被组织和运行" sources={frameworkSources} sections={[
     ["framework-definition-section", "框架先规定一副骨架"],
     ["framework-convention-section", "约定会替你放置一些东西"],
     ["framework-library-section", "框架和库，控制权方向不同"],

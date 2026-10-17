@@ -51,7 +51,7 @@ function TcpBoundaryLab() {
 
 export function TcpTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={tcpSources} />;
-  return <ConceptArticle slug="tcp" title="TCP" subtitle="Transmission Control Protocol · 把连续字节可靠地送到对端" sources={tcpSources} sections={[["tcp-stream-section", "TCP 交付的是字节流"], ["tcp-sequence-section", "缺口怎样被找回"], ["tcp-congestion-section", "发送速度也要看窗口"], ["tcp-boundary-section", "连接成功还差哪一步"]]} hero={<TcpHero />} intro={<>下载文件时，网络中的数据会被切成一段段 segment。中间丢掉一段，应用最后仍可能读到完整内容，因为 TCP 维护的是一条有序字节流：它记住缺口、确认已经收到的范围，并在需要时重传。这个保证停在传输层，消息边界和业务结果仍在上面。</>}>
+  return <ConceptArticle slug="tcp" title="TCP" subtitle="Transmission Control Protocol · 把连续字节可靠地送到对端" sources={tcpSources} sections={[["tcp-stream-section", "TCP 交付的是字节流"], ["tcp-sequence-section", "缺口怎样被找回"], ["tcp-congestion-section", "发送速度也要看窗口"], ["tcp-boundary-section", "连接成功还差哪一步"]]} intro={<>下载文件时，网络中的数据会被切成一段段 segment。中间丢掉一段，应用最后仍可能读到完整内容，因为 TCP 维护的是一条有序字节流：它记住缺口、确认已经收到的范围，并在需要时重传。这个保证停在传输层，消息边界和业务结果仍在上面。</>}>
     <ArticleSection id="tcp-stream-section" title="TCP 交付的是字节流">
       <p id="tcp-stream" className="vp-citation-target">TCP 在两个端点之间提供可靠、有序的字节流。发送方写入的内容会被协议拆成 segment，接收方按序号放回接收缓冲区；应用读取时看到的是连续字节，不会看到“这一段正好来自哪一次 send”。<Cite id="tcp-stream" /></p>
       <p id="tcp-port" className="vp-citation-target">端口让同一台主机上的多个 TCP 服务共享网络地址：连接由地址和端口等信息区分。端口只回答“交给哪个传输端点”，不回答“登录的是谁”，也不保证端口后面的 HTTP 或业务代码已经准备好。<Cite id="tcp-port" /></p>

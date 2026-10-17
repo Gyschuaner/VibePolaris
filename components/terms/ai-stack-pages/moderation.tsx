@@ -1,6 +1,5 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
-import { ModerationConveyorHero } from "../ai-stack-lessons/ai-interaction-heroes";
 import { moderationSources } from "@/lib/ai-stack-concept-sources/moderation";
 import { ModerationLesson } from "../ai-stack-lessons/moderation";
 
@@ -12,7 +11,7 @@ export function ModerationTermPage() {
     ["moderation-boundary", "审核只覆盖它声明的范围"],
   ];
 
-  return <Article slug="moderation" title="内容审核" subtitle="Moderation · 按风险类别决定内容去向" sources={moderationSources} sections={sections} hero={<ModerationConveyorHero />} intro={<>内容审核先把文本、图片或其他输入转换成<strong>可解释的风险信号</strong>，再由产品规则决定展示、拦截、降权还是人工复核。模型报出的类别和分数是判断材料，不是法律裁决，也不是一枚可以替代权限、事实核对和申诉流程的“安全章”。</>}>
+  return <Article slug="moderation" title="内容审核" subtitle="Moderation · 按风险类别决定内容去向" sources={moderationSources} sections={sections} intro={<>内容审核先把文本、图片或其他输入转换成<strong>可解释的风险信号</strong>，再由产品规则决定展示、拦截、降权还是人工复核。模型报出的类别和分数是判断材料，不是法律裁决，也不是一枚可以替代权限、事实核对和申诉流程的“安全章”。</>}>
     <ArticleSection id="moderation-question" title="先把内容变成风险信号">
       <p>假设社区收到三条评论：一条只是讨论退款政策，一条包含可能冒犯人的词，另一条明确威胁他人。审核模型可以为不同风险类别给出标签和分数，但它先回答的是“这段内容像不像某类风险”，不是“这条内容在所有地方都应该被删除”。</p>
       <p id="moderation-score" className="vp-citation-target">OpenAI 的 Moderation API 返回类别及其概率式信号，调用者仍要把信号放回自己的语言、用户群和产品规则里解释。分数越高通常表示模型越倾向于某类判断，却没有自动告诉你应该采用哪个处置阈值。<Cite id="moderation-score" sources={moderationSources} /></p>

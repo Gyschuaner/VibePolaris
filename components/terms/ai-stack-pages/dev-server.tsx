@@ -1,7 +1,6 @@
-import { ArrowRight, FileCode, Globe, Wrench } from "@phosphor-icons/react/dist/ssr";
+
 import { ArticleSection, ArticleAside } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
-import { ConceptHero } from "../ConceptHero";
 import { DevServerLesson } from "../ai-stack-lessons/dev-server";
 import { devServerSources } from "@/lib/ai-stack-concept-sources/dev-server";
 import styles from "../ToolchainConcepts.module.css";
@@ -10,7 +9,7 @@ const sections: [string, string][] = [["dev-server-definition", "开发服务器
 
 export function DevServerTermPage() {
   return <Article slug="dev-server" title="开发服务器" subtitle="Development Server · 让本地页面按请求得到最新模块" sources={devServerSources} sections={sections}
-    hero={<ConceptHero slug="dev-server" label="浏览器请求本地模块，保存文件后由监听器和更新连接把反馈送回页面"><div className={styles.toolchainHero}><div className={styles.devServerHero}><div><FileCode size={22} /><span>button.css</span><code>保存一次</code></div><ArrowRight size={18} aria-hidden="true" /><div><Wrench size={22} /><span>localhost</span><code>按需处理</code></div><ArrowRight size={18} aria-hidden="true" /><div><Globe size={22} /><span>浏览器</span><code>看到变化</code></div></div><p className={styles.heroNote}>本地服务缩短反馈时间，生产服务的稳定性和安全配置仍是另一件事。</p></div></ConceptHero>}
+
     intro={<>你打开 `localhost` 后保存一个 CSS 或模块文件，页面很快就能看到变化。<strong>开发服务器在本机按请求提供资源，监听文件变化并把受影响的处理结果通过更新连接送回浏览器。</strong>它服务的是开发反馈，不是生产上线。</>}> 
     <ArticleSection id="dev-server-definition" title="开发服务器正在提供什么">
       <p id="dev-server-definition-text" className="vp-citation-target">开发服务器通常同时做两件事：给浏览器提供本地页面和模块，并在开发期间提供比静态文件服务器更多的反馈能力。Vite 把 dev server 和生产 build 命令分开列出，前者面向开发体验，后者生成生产静态资源。<Cite id="dev-server-definition-text" sources={devServerSources}/></p>

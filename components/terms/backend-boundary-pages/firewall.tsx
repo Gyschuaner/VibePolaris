@@ -114,7 +114,7 @@ export function FirewallTermPage() {
     ["firewall-rule", "门口先看规则，不看网页按钮"],
     ["firewall-scope", "规则解决边界，不解决身份"],
     ["firewall-operation", "默认拒绝、记录和验证"],
-  ]} hero={<FirewallHero />} intro={<>你在仓库里开了一扇给报表服务用的门，却发现公网一直有人敲 <code>admin:22</code>。防火墙像门口的值班员：它先看流量从哪里来、要去哪里、走哪个端口，再决定这只“包裹”能不能继续。它管的是网络边界，不是登录页面。</>}>
+  ]} intro={<>你在仓库里开了一扇给报表服务用的门，却发现公网一直有人敲 <code>admin:22</code>。防火墙像门口的值班员：它先看流量从哪里来、要去哪里、走哪个端口，再决定这只“包裹”能不能继续。它管的是网络边界，不是登录页面。</>}>
     <ArticleSection id="firewall-rule" title="门口先看规则，不看网页按钮">
       <p id="firewall-definition" className="vp-citation-target">防火墙可以是主机上的程序，也可以是夹在网络之间的设备或云规则。它根据来源、目标、协议、端口和方向等条件控制流量，动作通常是允许、拒绝或记录。NIST 把它描述成控制不同安全姿态的网络或主机之间流量的机制。<Cite id="firewall-definition" /></p>
       <p id="firewall-policy" className="vp-citation-target">一条规则不是“这个网页能不能打开”，而是“这类流量能不能经过这一道边界”。例如只允许办公网访问报表服务的 443 端口，意味着报表服务仍需自己检查请求、登录和数据权限；防火墙只负责把明显不该到达的流量挡在更外面。<Cite id="firewall-policy" /></p>

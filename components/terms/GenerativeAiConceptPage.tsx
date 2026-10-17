@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowCounterClockwise, CheckCircle, MagicWand, Sparkle, WarningCircle, XCircle } from "@phosphor-icons/react";
+import { CheckCircle, MagicWand, Sparkle, WarningCircle, XCircle } from "@phosphor-icons/react";
 import { useState } from "react";
 
 import { Article, Cite } from "./AiStackConceptPageShared";
@@ -59,7 +59,7 @@ function GenerativeAiLab() {
 const sections: [string, string][] = [["generative-definition", "先分清生成和查找"], ["generative-process", "一粒提示怎样长成一句话"], ["generative-risk", "新内容不等于新事实"]];
 
 export function GenerativeAiConceptTermPage() {
-  return <Article slug="generative-ai" title="生成式 AI" subtitle="Generative AI · 从提示种子长出新内容" sources={generativeAiConceptSources} sections={sections} hero={<GenerativeAiHero />} intro={<>你给模型一句要求，它没有从一个固定答案柜里取出整句话，而是沿着输入条件逐步选择后续片段。<strong>生成式 AI 的关键变化发生在“候选如何出现、哪一个被采样、结果怎样被核验”这三个位置。</strong></>}>
+  return <Article slug="generative-ai" title="生成式 AI" subtitle="Generative AI · 从提示种子长出新内容" sources={generativeAiConceptSources} sections={sections} intro={<>你给模型一句要求，它没有从一个固定答案柜里取出整句话，而是沿着输入条件逐步选择后续片段。<strong>生成式 AI 的关键变化发生在“候选如何出现、哪一个被采样、结果怎样被核验”这三个位置。</strong></>}>
     <ArticleSection id="generative-definition" title="先分清生成和查找"><p id="gen-definition" className="vp-citation-target"><strong>生成式 AI 产生一份新的合成内容。</strong>NIST 将它描述为能够生成文本、图像、音频或其他内容的模型类别；“新”指这次输出是依据输入与模型参数组织出来的结果，不代表内容自动真实，也不等于它没有参考训练材料中的模式。<Cite id="gen-definition" sources={generativeAiConceptSources} /></p><p id="gen-prompt" className="vp-citation-target">一次生成至少有三个条件：任务提示、使用的模型和生成设置。提示决定要解决什么，模型决定它能用什么能力表达，采样设置影响候选如何被选；少写一个条件，读者就很难解释为什么两次结果不同。<Cite id="gen-prompt" sources={generativeAiConceptSources} /></p><p>查找是从指定资料或索引里取回已有内容；生成可以和查找组合，但它们交付的东西不同。先取回一段订单政策，再让模型改写成给用户看的提醒，前半段提供材料，后半段负责组织语言。</p></ArticleSection>
     <ArticleSection id="generative-process" title="一粒提示怎样长成一句话"><p id="gen-output" className="vp-citation-target">文本生成通常为下一个 token 形成一组候选，再选出一个接回序列，继续预测下一步，直到达到停止条件。OpenAI 与 Google 的文本生成文档都把提示、模型和生成配置作为请求的一部分；“一句话”是许多小步连接出来的结果。<Cite id="gen-output" sources={generativeAiConceptSources} /></p><p id="gen-sequence" className="vp-citation-target">Transformer 论文解释了注意力如何让序列中不同位置交换信息；这说明模型如何利用前文条件继续处理序列，却没有为输出加上一层现实世界核验。动画里飞出的句子是可观察的结果，不是模型私有思维过程的展示。<Cite id="gen-sequence" sources={generativeAiConceptSources} /></p><GenerativeAiLab /><p>点击“再抽一条”只是在本地轮换三个预先写好的候选，方便观察“同一提示、不同措辞”。它没有调用模型，也不会模拟真实概率；教学要让输入、候选和结果各自有名字。</p></ArticleSection>
     <ArticleSection id="generative-risk" title="新内容不等于新事实"><p id="gen-generalization" className="vp-citation-target">GPT-3 论文展示了模型可以仅凭文字说明和示例，在没有为每个任务单独更新参数的情况下完成多种任务。这说明提示能改变任务表现，不代表模型拥有实时资料或知道这次问题的真实答案。<Cite id="gen-generalization" sources={generativeAiConceptSources} /></p><p id="gen-risk" className="vp-citation-target">遇到日期、金额、政策、医疗或个人信息时，应另外安排检索原文、工具调用或人工确认。NIST 将不可靠输出、隐私和安全风险放在生成式系统的治理范围内；一句顺滑的话不能替代证据。<Cite id="gen-risk" sources={generativeAiConceptSources} /></p><p><strong>读者判断</strong>：把提示、材料和生成结果分成三张卡。如果结果卡上找不到它依据的原文，先把它当作候选草稿，再决定是否需要核验。</p><ArticleAside title="和温度、检索怎样分工"><p>温度等采样设置影响候选被选中的分布；检索负责把已有材料带回来；生成负责把条件和材料组织成输出。改变温度不会补齐缺少的事实，加入检索也不会自动保证模型正确引用。</p></ArticleAside></ArticleSection>

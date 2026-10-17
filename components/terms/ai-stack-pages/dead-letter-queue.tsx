@@ -1,7 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { deadLetterQueueSources } from "@/lib/ai-stack-concept-sources/dead-letter-queue";
-import { DeadLetterQueueHero } from "../ai-stack-lessons/dead-letter-queue-hero";
 import { DeadLetterQueueLesson } from "../ai-stack-lessons/dead-letter-queue";
 
 const sections: [string, string][] = [
@@ -12,7 +11,7 @@ const sections: [string, string][] = [
 ];
 
 export function DeadLetterQueueTermPage() {
-  return <Article slug="dead-letter-queue" title="死信队列" subtitle="Dead-Letter Queue · 把反复失败的消息隔离出来，等待调查与重放" sources={deadLetterQueueSources} sections={sections} hero={<DeadLetterQueueHero />} intro={<>一条消息失败一次，可能只是网络抖了一下；同一条消息失败三次，可能已经是格式、权限或业务条件出了问题。死信队列把它从主队列移到一条可调查的支路，留下原消息和失败原因，让后面的正常消息继续走。</>}>
+  return <Article slug="dead-letter-queue" title="死信队列" subtitle="Dead-Letter Queue · 把反复失败的消息隔离出来，等待调查与重放" sources={deadLetterQueueSources} sections={sections} intro={<>一条消息失败一次，可能只是网络抖了一下；同一条消息失败三次，可能已经是格式、权限或业务条件出了问题。死信队列把它从主队列移到一条可调查的支路，留下原消息和失败原因，让后面的正常消息继续走。</>}>
     <ArticleSection id="dead-letter-arrive" title="先把失败消息从主路径看清楚">
       <p>消费者从队列取出一条消息，通常要在处理成功后确认（ack）。如果处理失败或确认没有完成，消息可能再次投递；这让暂时的网络故障有机会恢复，也让一条“每次都会失败”的 poison message 有机会重复撞上同一个消费者。</p>
       <p id="dlq-purpose" className="vp-citation-target">Amazon SQS 把 dead-letter queue 定义为源队列处理失败消息的目标，并用 redrive policy 的 maxReceiveCount 决定尝试多少次后转移。DLQ 的作用是把未消费成功的消息隔离出来，方便查看异常和决定是否 redrive，不是把失败改写成成功。<Cite id="dlq-purpose" sources={deadLetterQueueSources} /></p>

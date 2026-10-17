@@ -92,7 +92,7 @@ function HallucinationLab() {
 const sections: [string, string][] = [["hallucination-definition", "说得像真的，为什么仍可能是错"], ["hallucination-evidence", "先问证据表有没有这一格"], ["hallucination-boundary", "缺证据、算错和引错不是一回事"], ["hallucination-practice", "怎样让回答留下可检查的落点"]];
 
 export function HallucinationConceptTermPage() {
-  return <Article slug="hallucination" title="幻觉" subtitle="Hallucination · 说得像真的，资料里却找不到" sources={hallucinationConceptSources} sections={sections} hero={<HallucinationHero />} intro={<>资料只写“季度收入 120 万”，你问利润，模型却回答“48 万”。这句话读起来很正常，可数字是从哪里来的？<strong>模型生成了错误、无事实依据或与输入冲突的内容，就可能发生了幻觉。它甚至会连解释和引用一起补出来。</strong></>}>
+  return <Article slug="hallucination" title="幻觉" subtitle="Hallucination · 说得像真的，资料里却找不到" sources={hallucinationConceptSources} sections={sections} intro={<>资料只写“季度收入 120 万”，你问利润，模型却回答“48 万”。这句话读起来很正常，可数字是从哪里来的？<strong>模型生成了错误、无事实依据或与输入冲突的内容，就可能发生了幻觉。它甚至会连解释和引用一起补出来。</strong></>}>
     <ArticleSection id="hallucination-definition" title="说得像真的，为什么仍可能是错">
       <p id="hallucination-definition-claim" className="vp-citation-target">NIST 把这类现象称为 confabulation，并说明它也就是常说的 hallucination 或 fabrication：系统可能自信地生成错误内容，偏离提示或输入，甚至和同一上下文里先前说过的话冲突。<Cite id="hallucination-definition-claim" sources={hallucinationConceptSources} /></p>
       <p id="hallucination-confidence" className="vp-citation-target">它危险的地方不在于句子一定荒谬，反而在于句子很顺、数字很整齐、语气很确定。NIST 还提醒，模型可能连解释步骤和引用一起编出来，让人误以为“有理由”就等于“有证据”。<Cite id="hallucination-confidence" sources={hallucinationConceptSources} /></p>

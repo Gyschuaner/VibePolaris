@@ -1,7 +1,6 @@
-import { ArrowRight, FileCode, FolderOpen, GitBranch, Package, ShieldCheck } from "@phosphor-icons/react/dist/ssr";
+
 import { ArticleSection, ArticleAside } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
-import { ConceptHero } from "../ConceptHero";
 import { BuildToolLesson } from "../ai-stack-lessons/build-tool";
 import { buildToolSources } from "@/lib/ai-stack-concept-sources/build-tool";
 import styles from "../ToolchainConcepts.module.css";
@@ -10,7 +9,7 @@ const sections: [string, string][] = [["build-tool-definition", "构建工具在
 
 export function BuildToolTermPage() {
   return <Article slug="build-tool" title="构建工具" subtitle="Build Tool · 把项目任务按依赖组织成一次构建" sources={buildToolSources} sections={sections}
-    hero={<ConceptHero slug="build-tool" label="检查阻塞转译，资源独立并行，两个分支汇合成未部署的本机产物"><div className={styles.toolchainHero}><div className={styles.buildToolHero}><div className={styles.buildHeroNode}><FileCode size={22} /><span>源码</span><strong>3 模块</strong></div><ArrowRight size={18} aria-hidden="true" /><div className={styles.buildHeroSplit}><div><ShieldCheck size={20} /><span>检查 → 转译</span></div><div><Package size={20} /><span>资源复制</span></div></div><ArrowRight size={18} aria-hidden="true" /><div className={styles.buildHeroNode}><FolderOpen size={22} /><span>本机产物</span><strong>dist · 未部署</strong></div></div><p className={styles.heroNote}>构建结束说明产物准备好了，不说明它已经被服务器接收。</p></div></ConceptHero>}
+
     intro={<>你执行一条 `build` 命令时，背后可能同时发生类型检查、源码转换、模块整理和资源复制。<strong>构建工具负责读配置、安排这些任务的依赖关系，并把成功结果汇总成一组本机文件。</strong>它让流程可重复，但不会把每个下游动作都变成自己的职责。</>}> 
     <ArticleSection id="build-tool-definition" title="构建工具在安排什么">
       <p id="build-definition" className="vp-citation-target">构建工具把项目输入、配置和一组任务连成可执行的流程：任务有自己的输入和输出，依赖决定谁必须先完成，最后由流程汇总产物。Vite 的文档也把开发服务器和生产构建命令分开描述，说明“能本地反馈”和“生成生产静态资源”是不同入口。<Cite id="build-definition" sources={buildToolSources}/></p>

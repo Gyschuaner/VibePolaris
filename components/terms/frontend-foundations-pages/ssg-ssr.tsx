@@ -83,7 +83,7 @@ function GenerationLab() {
 }
 
 export function SsgSsrTermPage(_props: BespokeTermPageProps) {
-  return <Article slug="ssg-ssr" title="静态生成与服务端渲染" subtitle="SSG / SSR · 页面是在什么时候做好的？" sources={ssgSsrSources} hero={<SsgSsrHero />} sections={[
+  return <Article slug="ssg-ssr" title="静态生成与服务端渲染" subtitle="SSG / SSR · 页面是在什么时候做好的？" sources={ssgSsrSources} sections={[
     ["ssg-ssr-definition-section", "先把一张网页想成一份做好的 HTML"],
     ["ssg-ssr-time-section", "同一张票，两个生成时机"],
     ["ssg-ssr-update-section", "静态页怎样更新，失败时留下什么"],

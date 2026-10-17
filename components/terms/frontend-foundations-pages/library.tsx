@@ -40,7 +40,7 @@ function LibraryLab() {
 }
 
 export function LibraryTermPage(_props: BespokeTermPageProps) {
-  return <Article slug="library" title="库" subtitle="Library · 把一组能力装进可调用的接口" sources={librarySources} hero={<LibraryHero />} sections={[
+  return <Article slug="library" title="库" subtitle="Library · 把一组能力装进可调用的接口" sources={librarySources} sections={[
     ["library-definition-section", "库不是魔法，是别人写好的接口"],
     ["library-native-section", "先打开平台自带的抽屉"],
     ["library-interface-section", "你调用它，它才做事"],

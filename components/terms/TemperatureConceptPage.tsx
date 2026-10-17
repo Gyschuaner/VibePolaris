@@ -74,7 +74,7 @@ function TemperatureLab() {
 const sections: [string, string][] = [["temperature-candidates", "下一小段文字怎样被选中"], ["temperature-chances", "调温度，改的是机会"], ["temperature-limits", "更稳定，也可能稳定地答错"], ["temperature-practice", "实际使用时怎样调"]];
 
 export function TemperatureConceptTermPage() {
-  return <Article slug="temperature" title="温度" subtitle="Temperature · 改变候选被选中的机会" sources={temperatureConceptSources} sections={sections} hero={<TemperatureHero />} intro={<>让 AI 写一句雨天提醒，第一次是“出门记得带伞”，第二次成了“出门记得慢走”。你在设置里看见了 temperature。<strong>这个数字会改变生成时的选择分布：低温更偏向原本占优势的候选，高温让其他候选也更有机会。</strong></>}>
+  return <Article slug="temperature" title="温度" subtitle="Temperature · 改变候选被选中的机会" sources={temperatureConceptSources} sections={sections} intro={<>让 AI 写一句雨天提醒，第一次是“出门记得带伞”，第二次成了“出门记得慢走”。你在设置里看见了 temperature。<strong>这个数字会改变生成时的选择分布：低温更偏向原本占优势的候选，高温让其他候选也更有机会。</strong></>}>
     <ArticleSection id="temperature-candidates" title="下一小段文字怎样被选中">
       <p>先把一整段回答缩到一个小位置：“出门记得___”。模型会根据已经看到的文字，为接下来可能出现的片段打分。我们把候选简化成“带伞、慢走、看路”，原来的机会分别是 70%、20%、10%。这些数字是本站设定的例子。</p>
       <p>模型实际处理的片段叫 <ConceptTerm slug="token">token</ConceptTerm>，可能是一个字、一个词的一部分或符号。“带伞”在某个模型里未必恰好是一个 token；这里把它当成一枚候选，方便先看懂选择。选完这一小段，模型再根据新的前文继续选下一段，很多小步才连成完整回答。</p>

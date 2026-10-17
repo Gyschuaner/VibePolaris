@@ -1,6 +1,5 @@
-import { BookBookmark, Check, CalendarBlank } from "@phosphor-icons/react/dist/ssr";
+
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from "./ConceptArticle";
-import { ConceptHero } from "./ConceptHero";
 import { ApiContractLesson, EndpointLesson, RestLesson, PaginationLesson, RateLimitLesson } from "./ApiConceptLessons";
 import { apiSources, endpointSources, restSources, paginationSources, rateSources } from "@/lib/api-concept-sources";
 import base from "./EventConcepts.module.css";
@@ -14,14 +13,7 @@ export function ApiTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={apiSources} />;
   return <ConceptArticle slug="api" title="API" sources={apiSources} sections={[["contract", "程序之间的约定"], ["mapping", "内部变化，对外约定不变"], ["compatibility", "调用方的依赖"]]}
     intro={<>你让 AI 给读书会做一张书签，书名要从图书服务取得。AI 说需要接 API：页面该向谁要书、怎样提问、收到什么，得先与提供图书的程序约好。</>}
-    hero={<ConceptHero slug="api" label="左侧调用方的书签与中间对外约定保持不变；右侧服务内部从 id、title 翻转为 book_id、display_name，表示内部变化仍可按原约定输出"><div className={s.apiHero}>
-      <div className={s.apiCaller}><BookBookmark size={27} weight="light" /><strong>星空手记</strong><span>调用方</span></div>
-      <div className={s.apiPort}><span>对外约定</span><code>id<br />title</code></div>
-      <div className={s.apiService}><span>服务内部</span><div className={s.apiInternal}>
-        <div className={s.apiLayerA}><code>id</code><code>title</code></div>
-        <div className={s.apiLayerB}><code>book_id</code><code>display_name</code></div>
-      </div></div>
-    </div></ConceptHero>}>
+    >
     <ArticleSection id="contract" title="程序之间的约定">
       <Legacy slug="api" names={["question", "definition"]} />
       <p>这里有两个程序：读书会网页是调用方，图书服务是提供方。网页向服务发出“给我编号 42 的书”这样的请求，服务查找后把书的信息交回来，网页再用书名画出书签。若把书名预先写死在网页里，也能显示这张书签；书库里的书名后来变了，网页却不会从服务取得新值。</p>
@@ -51,11 +43,11 @@ export function EndpointTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={endpointSources} />;
   return <ConceptArticle slug="endpoint" title="端点" sources={endpointSources} sections={[["address", "地址与方法"], ["routing", "找到对应的处理程序"], ["boundary", "匹配之后还有检查"]]}
     intro={<>读书会网页要从图书服务取一本书。AI 给了 <code>/books/42</code>，还特意标着 GET。这个 GET 为什么不能省？</>}
-    hero={<ConceptHero slug="endpoint" label="路径和方法交叉定位到 getBook 操作"><div className={s.endpointHero}><code>/books/42</code><div>{["GET", "POST", "DELETE"].map((verb, index) => <span key={verb} data-active={index === 0}>{verb}{index === 0 && <Check size={18} />}</span>)}</div><strong>getBook</strong></div></ConceptHero>}>
+    >
     <ArticleSection id="address" title="地址与方法">
       <Legacy slug="endpoint" names={["question", "definition"]} />
       <p>读书会网页是发起调用的一方，图书服务是提供书目的一方。若把书目预先写在网页里，也能显示列表；要读到以后新上架的书，网页就得知道到哪里、用什么方式提出请求。</p>
-      <p id="endpoint-address" className="vp-citation-target"><strong>在 HTTP API 中，端点先帮调用方找到服务开放的位置。</strong>本例的服务基址是 <code>https://api.example.com</code>，可以理解为提供图书服务的网址；路径 <code>/books</code> 指向书目，拼起来是 <code>https://api.example.com/books</code>。首图里的 <code>/books/42</code> 则指向本例编号为 42 的书。路径只是完整地址的一部分。OpenAPI 是描述 HTTP API 的一种规范，它也把服务网址和路径分开写。<Cite id="endpoint-address" /></p>
+      <p id="endpoint-address" className="vp-citation-target"><strong>在 HTTP API 中，端点先帮调用方找到服务开放的位置。</strong>本例的服务基址是 <code>https://api.example.com</code>，可以理解为提供图书服务的网址；路径 <code>/books</code> 指向书目，拼起来是 <code>https://api.example.com/books</code>。例如 <code>/books/42</code> 指向本例编号为 42 的书。路径只是完整地址的一部分。OpenAPI 是描述 HTTP API 的一种规范，它也把服务网址和路径分开写。<Cite id="endpoint-address" /></p>
       <p id="endpoint-verb" className="vp-citation-target">同一个地址还要配上 <ConceptTerm slug="http-method">HTTP 方法</ConceptTerm>，告诉服务这次想做哪类操作。本例里，<code>GET /books</code> 读取书目，<code>POST /books</code> 向同一位置提交新书的信息；GET 通常用于读取，POST 用于提交内容，也可能改变服务端保存的信息。服务是否真的接受某个组合，仍要看它开放了什么。<Cite id="endpoint-verb" /></p>
       <p id="endpoint-operation" className="vp-citation-target">“端点”有时指这条可访问的路径，有时指方法加路径的组合。OpenAPI 在同一路径下分别写 GET、POST，并把其中每个方法的定义称为 <strong>operation（操作）</strong>。所以只说“调用 <code>/books</code> 端点”还不够：调用方还得知道完整地址、方法、要给什么信息，以及预期会收到什么。端点说的是服务开放的调用位置；整个 API 还包含输入、返回和失败等约定。<Cite id="endpoint-operation" /></p>
     </ArticleSection>
@@ -81,10 +73,10 @@ export function RestTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={restSources} />;
   return <ConceptArticle slug="rest" title="REST" sources={restSources} sections={[["resource", "资源与表示"], ["actions", "表示带来的后续选择"], ["stateless", "无状态与持久数据"], ["constraints", "一组共同工作的约束"]]}
     intro={<>预约网页刚读到“待确认”，也拿到了“确认”这个选择。服务端后来把预约判为过期，网页手里的旧信息却不会自己改。这时再点确认，为什么可能被拒绝？</>}
-    hero={<ConceptHero slug="rest" label="服务端预约已过期，网页上次收到的表示仍写着待确认与确认选项"><div className={s.restHero}><code>/reservations/42</code><div className={s.restHeroPair}><div className={s.restHeroResource}><span><CalendarBlank size={17} weight="light" />服务端预约</span><div><strong className={s.restHeroPending}>待确认</strong><strong className={s.restHeroExpired}>已过期</strong></div></div><div className={s.restHeroSnapshot}><span>网页上次收到</span><strong>待确认</strong><div><i>确认</i><i>取消</i></div></div></div></div></ConceptHero>}>
+    >
     <ArticleSection id="resource" title="资源与表示">
       <Legacy slug="rest" names={["question", "definition"]} />
-      <p>先分清两处：预约服务保存着 42 号预约，网页只拿到上次读取的内容。首图左边是服务端当前状态，右边是网页收到的那一份。左边变为“已过期”时，右边不会凭空同步。</p>
+      <p>先分清两处：预约服务保存着 42 号预约，网页只拿到上次读取的内容。服务端当前状态和网页已经收到的副本，可能暂时不同。服务端变为“已过期”时，网页上的副本不会凭空同步。</p>
       <p id="rest-resource" className="vp-citation-target"><strong>REST 是一套架构风格，讲的是网络应用中客户端（比如这个网页）和服务端怎样交互。</strong>在本例中，<code>/reservations/42</code> 是预约的标识，预约是<strong>资源</strong>；服务返回的 JSON（一种常见的数据格式）可以描述它当时的状态，这份返回内容是资源的<strong>表示</strong>。同一个资源后来仍可用原标识找到，但新读到的表示可能不同。资源不等于某一份 JSON，也不要求等于数据库里的一行。<Cite id="rest-resource" /></p>
       <p>开发者也可以事先把“确认”按钮和请求地址写在网页里，预约照样能用；只是网页得提前知道后面每一步的地址，服务改动流程时网页也得跟着改。本例采用另一种做法：网页先读取预约，从收到的内容取得当前可用的选择。无论哪种做法，旧页面上的按钮都不能保证服务现在会接受确认。</p>
     </ArticleSection>
@@ -115,11 +107,7 @@ export function PaginationTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={paginationSources} />;
   return <ConceptArticle slug="pagination" title="分页" sources={paginationSources} sections={[["order", "先确定顺序"], ["pages", "位置与边界"], ["continuation", "读到哪里，何时停止"]]}
     intro={<>书目第一次返回 9、8、7；点击“加载更多”，7 却又出现了。两次读取之间，有人往列表最前面加了一本书。</>}
-    hero={<ConceptHero slug="pagination" label="上次已读9、8、7；队首插入10后，按当前列表跳过三条，下一批再次出现7"><div className={s.paginationHero}>
-      <div className={s.paginationRead}><small>上次已读</small>{[9, 8, 7].map(id => <span key={id} data-repeat={id === 7}>{id}</span>)}</div>
-      <div className={s.paginationCurrent}><small>现在</small>{[10, 9, 8, 7, 6, 5].map(id => <span key={id} data-new={id === 10}>{id === 10 ? "+10" : id}</span>)}</div>
-      <div className={s.paginationNext}><small>跳过 3 条</small>{[7, 6, 5].map(id => <span key={id} data-repeat={id === 7}>{id}</span>)}</div>
-    </div></ConceptHero>}>
+    >
     <ArticleSection id="order" title="先确定顺序">
       <Legacy slug="pagination" names={["question", "definition"]} />
       <p><strong>分页把较长的结果分批返回，并约定怎样取下一批。</strong>网页只需接收和展示眼前这批，不必一开始就拿完整书目。界面上的页码和“加载更多”都是入口；服务端实际可能按位置跳过、从某个边界继续，或直接给下一页的链接。如果书目只有十来条，一次返回也可以。</p>
@@ -146,12 +134,7 @@ export function RateLimitingTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={rateSources} />;
   return <ConceptArticle slug="rate-limiting" title="限流" sources={rateSources} sections={[["budget", "流量需要一个预算"], ["buckets", "额度共享的范围"], ["rejection", "被拒绝之后"]]}
     intro={<>A 和 B 在同一个项目中调用 AI 接口。A 连发 7 次，B 随后只发 1 次，却也收到表示“请求过多”的 429。B 再试时能否通过限流检查，取决于两者是否共用额度，以及服务还设置了哪些限额。</>}
-    hero={<ConceptHero slug="rate-limiting" label="容量五枚的桶起初装满；A 连发七次，前五次耗尽额度，第六、七次收到429；一秒后只补回一枚，先前被拒的请求不会自动通过"><div className={s.rateHero}>
-      <div className={s.rateHeroRequest}><span>A 发 7 次</span><span>第 6、7 次 · 429</span></div>
-      <div className={s.rateHeroBucket}>{[0, 1, 2, 3, 4].map(id => <i key={id} />)}</div>
-      <div className={s.rateHeroCount}><span>5 / 5</span><span>0 / 5</span><strong>1 / 5</strong></div>
-      <code>+ 1 秒 · 补回 1 枚</code>
-    </div></ConceptHero>}>
+    >
     <ArticleSection id="budget" title="流量需要一个预算">
       <Legacy slug="rate-limiting" names={["question", "definition"]} />
       <p><strong>限流按事先定好的规则，限制一段时间内接受的请求量。</strong>一次请求是应用向接口发起的一次调用。比如你点一次“生成”，应用可能先查资料，再请求 AI 接口；这已经是两次不同的调用，是否共用额度还得看服务的规则。限制请求进入的节奏，可以避免大量调用同时压到服务上，也能控制成本，减少调用方之间争抢额度。服务也可以排队或增加容量来应对突发；本页只看超额后直接拒绝的做法。</p>

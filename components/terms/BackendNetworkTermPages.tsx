@@ -48,7 +48,7 @@ function renderBackendNetworkPage(spec: PageSpec) {
     sections={spec.sections.map(({ id, title }) => [id, title])}
     relatedIntro={spec.relatedIntro}
     intro={spec.intro}
-    hero={spec.mechanismHero ?? <BackendNetworkHero slug={spec.slug} hero={spec.hero} />}
+
   >
     {spec.sections.map(section => <ArticleSection id={section.id} title={section.title} key={section.id}>
       {section.blocks.map(block => <p id={block.id} className="vp-citation-target" key={block.id}>{block.text}<Cite id={block.id} /></p>)}

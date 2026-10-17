@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowCounterClockwise, ArrowRight, BracketsCurly, CheckCircle, Code, FileCode, FileText, Funnel, Gear, Globe, Pause, Play, Radio, Stack, WarningCircle, XCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowRight, CheckCircle, Code, FileCode, FileText, Gear, Globe, Pause, Play, Radio, Stack, WarningCircle, XCircle } from "@phosphor-icons/react";
 import { useState } from "react";
 
 import { ArticleCitation, ArticleSection, ConceptArticle } from "../ConceptArticle";
@@ -160,7 +160,7 @@ function MimeTypeLab() {
 
 export function MimeTypeTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={mimeTypeSources} />;
-  return <ConceptArticle slug="mime-type" title="MIME 类型" subtitle="Media Type · 给字节挑一条解释规则" sources={mimeTypeSources} sections={[["mime-type-shape", "一条类型名有两半"], ["mime-type-content", "Content-Type 选解释器"], ["mime-type-parameters", "参数补足细节"], ["mime-type-multipart", "一份消息也能装多个部分"], ["mime-type-sniffing", "声明错了，浏览器可能猜"]]} hero={<MimeTypeHero />} intro={<>MIME 类型像贴在数据外面的解释标签：<code>text/html</code>、<code>image/png</code>、<code>application/json</code> 会告诉接收端该用哪类规则处理字节。<strong>标签不会替你修改内容，也不会替你证明内容合法。</strong><Cite id="mime-type-content-type" /></>}>
+  return <ConceptArticle slug="mime-type" title="MIME 类型" subtitle="Media Type · 给字节挑一条解释规则" sources={mimeTypeSources} sections={[["mime-type-shape", "一条类型名有两半"], ["mime-type-content", "Content-Type 选解释器"], ["mime-type-parameters", "参数补足细节"], ["mime-type-multipart", "一份消息也能装多个部分"], ["mime-type-sniffing", "声明错了，浏览器可能猜"]]} intro={<>MIME 类型像贴在数据外面的解释标签：<code>text/html</code>、<code>image/png</code>、<code>application/json</code> 会告诉接收端该用哪类规则处理字节。<strong>标签不会替你修改内容，也不会替你证明内容合法。</strong><Cite id="mime-type-content-type" /></>}>
     <ArticleSection id="mime-type-shape" title="一条类型名有两半">
       <p id="mime-type-shape-detail" className="vp-citation-target">媒体类型由 <code>type/subtype</code> 组成，后面可以跟用分号分开的参数。type 先划出大类，subtype 再说明具体格式；两部分的名字不区分大小写，<code>application/problem+json</code> 里的 <code>+json</code> 还可以表示它遵循某种结构化语法。<Cite id="mime-type-shape" /></p>
       <p id="mime-type-parameters" className="vp-citation-target">这串名字不是文件扩展名的另一种写法。扩展名是文件名的一部分，媒体类型是协议和接收端使用的表示描述；一个文件可以被改名，字节本身却没有因此换格式。<Cite id="mime-type-parameters" /></p>

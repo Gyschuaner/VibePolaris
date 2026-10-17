@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle, Compass, FileText, MagicWand, MapPin, SlidersHorizontal, Sparkle, Target, WarningCircle, XCircle } from "@phosphor-icons/react";
+import { CheckCircle, Compass, FileText, MagicWand, MapPin, SlidersHorizontal, Target, WarningCircle, XCircle } from "@phosphor-icons/react";
 import { useState } from "react";
 
 import { Article, Cite } from "./AiStackConceptPageShared";
@@ -79,7 +79,7 @@ function ZeroShotLab() {
 const sections: [string, string][] = [["zeroshot-definition", "零样本少了什么"], ["zeroshot-instruction", "任务牌怎样承担边界"], ["zeroshot-limit", "一次判断不是通用能力"]];
 
 export function ZeroShotPromptingConceptTermPage() {
-  return <Article slug="zero-shot-prompting" title="零样本提示" subtitle="Zero-Shot Prompting · 没有校样，也要把任务说清" sources={zeroShotPromptingConceptSources} sections={sections} hero={<ZeroShotHero />} intro={<>“零样本”只删掉了输入—输出示例，没有删掉目标、约束、输入和输出格式。<strong>模型要靠这张任务牌直接判断；任务说不清或输入证据不足时，正确动作可以是停下提问。</strong></>}> 
+  return <Article slug="zero-shot-prompting" title="零样本提示" subtitle="Zero-Shot Prompting · 没有校样，也要把任务说清" sources={zeroShotPromptingConceptSources} sections={sections} intro={<>“零样本”只删掉了输入—输出示例，没有删掉目标、约束、输入和输出格式。<strong>模型要靠这张任务牌直接判断；任务说不清或输入证据不足时，正确动作可以是停下提问。</strong></>}>
     <ArticleSection id="zeroshot-definition" title="零样本少了什么"><p id="zeroshot-definition-evidence" className="vp-citation-target">零样本提示（zero-shot prompting）是在当前请求里不提供任何输入—输出示例，只给自然语言任务说明，让模型直接完成一次推断。GPT-3 论文把它和 one-shot、few-shot 分开：区别在于有没有 demonstration，并不意味着请求里没有任务描述。<Cite id="zeroshot-definition-evidence" sources={zeroShotPromptingConceptSources} /></p><p>因此，“没有示例”和“没有提示”是两件事。你仍然可以写目标、输入字段、允许的标签、拒答条件和输出格式；只是没有拿一张已经做好的小票给模型照着抄。</p><ZeroShotLab /></ArticleSection>
     <ArticleSection id="zeroshot-instruction" title="任务牌怎样承担边界"><p id="zeroshot-instruction-evidence" className="vp-citation-target">没有示例时，任务说明承担更多边界工作：OpenAI 建议把提示写得简单直接、明确目标和约束；Google 的提示指南也把约束、响应格式和零样本与少样本的区别拆开说明。标签集合、拒答条件和“只输出一个标签”这类文字，都是任务定义，不是示例。<Cite id="zeroshot-instruction-evidence" sources={zeroShotPromptingConceptSources} /></p><p id="zeroshot-constraint-evidence" className="vp-citation-target">“把故障分成前端、后端或网络”只给了候选集合；再加上“按最先失败的组件归类，无法判断就补信息”，才让新输入有一个可检查的落点。约束能收窄输出空间，却不能凭空制造缺失的日志、订单或事实。<Cite id="zeroshot-constraint-evidence" sources={zeroShotPromptingConceptSources} /></p><p id="zeroshot-reasoning" className="vp-citation-target">在需要多步判断的场景里，零样本推理研究观察到一句简短的思路提示可能改变表现；这仍然只是提示条件，效果依赖模型和任务，不能把一次答对当成通用证明。<Cite id="zeroshot-reasoning" sources={zeroShotPromptingConceptSources} /></p></ArticleSection>
     <ArticleSection id="zeroshot-limit" title="一次判断不是通用能力"><p id="zeroshot-limit-evidence" className="vp-citation-target">零样本省去了准备示例的成本，也省去了示例能提供的版式和边界线索。GPT-3 论文把 zero-shot 称为方便但更有挑战的设置；后续 instruction tuning 研究也说明，零样本表现取决于模型是否被训练成能读懂指令。<Cite id="zeroshot-limit-evidence" sources={zeroShotPromptingConceptSources} /></p><p>上线前要拿没有写进提示的样本做独立评估，检查语言变化、歧义输入和模型升级后的结果。如果任务需要稳定的格式或细致的边界，可以比较少样本、结构化输出、检索、规则和人工复核，而不是不断把“模型应该懂”写得更响。</p><p><strong>读者判断</strong>：删掉一条约束词后结果是否改变？如果改变，它就是任务定义的一部分；换一句含糊输入后能否说明为什么停下？如果不能，说明还缺少信息或评测。</p><ArticleAside title="和少样本提示怎样分工"><p>零样本适合先用清楚的直接指令验证一个简单任务；少样本再用几张输入—输出校样补足格式、标签空间或边界。两者都在当前上下文里工作，都不能替代独立评测和事实来源；差别是有没有把示例一起放进请求。</p></ArticleAside></ArticleSection>

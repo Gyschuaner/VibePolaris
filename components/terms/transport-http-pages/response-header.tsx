@@ -57,7 +57,7 @@ function ResponseHeaderLab() {
 
 export function ResponseHeaderTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={responseHeaderSources} />;
-  return <ConceptArticle slug="response-header" title="响应头" subtitle="Response Headers · 一张字段牌，改变下一步处理" sources={responseHeaderSources} sections={[["header-metadata-section", "字段牌在说什么"], ["header-control-section", "Location 和 Retry-After 会推动什么动作"], ["header-cache-section", "Vary 与 Cache-Control 怎样管住缓存"], ["header-boundary-section", "元信息不能替 body 负责"]]} hero={<ResponseHeaderHero />} intro={<>响应头不是响应体旁边的注释。它们把内容格式、跳转位置、等待窗口和缓存条件写在 body 之外；同一份 body 换一张字段牌，浏览器、客户端库或中间缓存就可能走向完全不同的下一步。</>}>
+  return <ConceptArticle slug="response-header" title="响应头" subtitle="Response Headers · 一张字段牌，改变下一步处理" sources={responseHeaderSources} sections={[["header-metadata-section", "字段牌在说什么"], ["header-control-section", "Location 和 Retry-After 会推动什么动作"], ["header-cache-section", "Vary 与 Cache-Control 怎样管住缓存"], ["header-boundary-section", "元信息不能替 body 负责"]]} intro={<>响应头不是响应体旁边的注释。它们把内容格式、跳转位置、等待窗口和缓存条件写在 body 之外；同一份 body 换一张字段牌，浏览器、客户端库或中间缓存就可能走向完全不同的下一步。</>}>
     <ArticleSection id="header-metadata-section" title="字段牌在说什么">
       <p id="header-metadata" className="vp-citation-target">响应字段是跟着状态一起返回的元信息，用来说明这次表示怎样处理、来自哪里、能不能缓存或下一步应该做什么。字段的值不是业务 body 的替身，而是接收方执行协议规则时用的输入。<Cite id="header-metadata" /></p>
       <p id="header-fields" className="vp-citation-target">字段名不等于任意字符串：标准字段有明确语义，扩展字段也应保持稳定、必要并避免冲突。排查时同时记录字段名、值、来源和接收方，否则“服务器发了什么”与“客户端据此做了什么”很容易混在一起。<Cite id="header-fields" /></p>

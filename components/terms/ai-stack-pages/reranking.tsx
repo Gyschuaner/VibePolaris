@@ -1,10 +1,10 @@
 import { ArticleSection, ConceptTerm } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { rerankingSources as sources } from "@/lib/ai-stack-concept-sources/reranking";
-import { RerankingHero, RerankingRackLab } from "../ai-stack-lessons/reranking-rack";
+import { RerankingRackLab } from "../ai-stack-lessons/reranking-rack";
 
 export function RerankingTermPage() {
-  return <Article slug="reranking" title="重排序" subtitle="Reranking · 找到一批资料后，再看谁更能回答问题" sources={sources} hero={<RerankingHero />} sections={[
+  return <Article slug="reranking" title="重排序" subtitle="Reranking · 找到一批资料后，再看谁更能回答问题" sources={sources} sections={[
     ["rerank-start", "排在第一的，怎么答非所问？"],
     ["rerank-pairs", "把问题与每段正文放在一起看"],
     ["rerank-missing", "桌上没有的资料，换位置也变不出来"],

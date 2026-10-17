@@ -67,7 +67,7 @@ function JavascriptLab() {
 }
 
 export function JavascriptTermPage(_props: BespokeTermPageProps) {
-  return <Article slug="javascript" title="JavaScript" subtitle="Language · 让页面对事件和数据作出回应" sources={javascriptSources} hero={<JavascriptHero />} sections={[
+  return <Article slug="javascript" title="JavaScript" subtitle="Language · 让页面对事件和数据作出回应" sources={javascriptSources} sections={[
     ["javascript-definition-section", "JavaScript 不等于浏览器"],
     ["javascript-events-section", "事件只是一次通知"],
     ["javascript-state-section", "变量改变，页面不一定跟着变"],

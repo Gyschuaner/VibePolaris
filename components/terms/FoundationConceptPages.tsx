@@ -1,7 +1,6 @@
-import { Brain, CalendarBlank, ChatCircleText, EnvelopeSimple, GearSix, Wrench } from "@phosphor-icons/react/dist/ssr";
+import { Brain, GearSix, Wrench } from "@phosphor-icons/react/dist/ssr";
 import { ConceptArticle, ArticleSection, ArticleCitation, ArticleAside, ConceptTerm } from "./ConceptArticle";
-import { ConceptHero } from "./ConceptHero";
-import { AgentLesson, LlmLesson, TokenLesson, ProbabilityHeroArt } from "./FoundationConceptLessons";
+import { AgentLesson, LlmLesson, TokenLesson } from "./FoundationConceptLessons";
 import { agentSources, llmSources, tokenSources } from "@/lib/foundation-concept-sources";
 import styles from "./FoundationConcepts.module.css";
 
@@ -12,7 +11,7 @@ function OldAnchor({ slug, part }: { slug: string; part: string }) {
 export function LlmTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={llmSources} />;
   return <ConceptArticle slug="llm" title="LLM" sources={llmSources}
-    hero={<ConceptHero slug="llm" label="已有文字之后出现不同候选，选中的片段加入句子"><ProbabilityHeroArt /></ConceptHero>}
+
     sections={[["generation", "逐步生成文字"], ["training", "训练与这次回答"], ["choice", "同一句话的不同续写"], ["evidence", "回答仍需要依据"]]}
     intro={<>大语言模型从大量数据中学习语言的规律，用学到的参数处理新的输入。对常见的生成式 LLM 来说，<strong>回答会根据前文逐步接成一串 Token。</strong>Token 是模型处理文字的单位，一个词也可能被拆成几块。</>}>
     <ArticleSection id="generation" title="逐步生成文字">
@@ -47,7 +46,7 @@ export function LlmTermPage() {
 export function TokenTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={tokenSources} />;
   return <ConceptArticle slug="token" title="Token" subtitle="词元" sources={tokenSources}
-    hero={<ConceptHero slug="token" label="lower 沿 low 与 er 的分界拆开，两段分别对应编号 1 与 2"><div className={styles.tokenHero}><div className={styles.tokenPieces}><span>low<small>1</small></span><span>er<small>2</small></span></div></div></ConceptHero>}
+
     sections={[["pieces", "文字与编号"], ["vocabulary", "边界由词表决定"], ["decode", "从编号回到文字"], ["budget", "按分词器核算请求"]]}
     intro={<>你输入的文字先经过分词器，变成一串编号，再由语言模型处理。<strong>一个 Token 是其中的一个单位，可能对应一个词、词的一部分，或更小的片段。</strong></>}>
     <ArticleSection id="pieces" title="文字与编号">
@@ -83,24 +82,7 @@ export function TokenTermPage() {
 export function AgentTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={agentSources} />;
   return <ConceptArticle slug="agent" title="Agent" sources={agentSources}
-    hero={<ConceptHero slug="agent" label="同一目标下，两人有共同空档时准备草稿但不发送；没有共同空档时询问其他时间，任务未完成">
-      <div className={styles.agentForkHero}>
-        <div className={styles.agentGoal}><CalendarBlank size={18} /><span>找共同空档</span></div>
-        <div className={styles.agentForkLine} />
-        <div className={styles.agentBranches}>
-          <div className={styles.agentBranch}>
-            <div className={styles.agentSlots}><i /><i /></div>
-            <span>10:00 两人空闲</span>
-            <div className={styles.agentOutcome}><EnvelopeSimple size={18} /><strong>草稿 · 未发送</strong></div>
-          </div>
-          <div className={`${styles.agentBranch} ${styles.agentNoSlot}`}>
-            <div className={styles.agentSlots}><i /><i /></div>
-            <span>没有共同空档</span>
-            <div className={styles.agentOutcome}><ChatCircleText size={18} /><strong>询问 · 未完成</strong></div>
-          </div>
-        </div>
-      </div>
-    </ConceptHero>}
+
     sections={[["goal", "从一个目标开始"], ["calendar", "根据查到的结果行动"], ["roles", "模型与运行程序"], ["workflow", "固定步骤与自主选择"], ["stop", "完成和停止"]]}
     intro={<>智能体围绕目标工作：模型选择下一步，运行程序调用工具获取外部信息或执行动作。<strong>它要根据实际结果继续判断，直到完成任务，或遇到需要停下的条件。</strong></>}>
     <ArticleSection id="goal" title="从一个目标开始">

@@ -1,10 +1,10 @@
 import { ArticleAside, ArticleSection, ConceptTerm } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { embeddingSources as sources } from "@/lib/ai-stack-concept-sources/embedding";
-import { EmbeddingGeometryLab, EmbeddingHero } from "../ai-stack-lessons/embedding-geometry";
+import { EmbeddingGeometryLab } from "../ai-stack-lessons/embedding-geometry";
 
 export function EmbeddingTermPage() {
-  return <Article slug="embedding" title="嵌入" subtitle="Embedding · 给内容一个可比较的数值位置" sources={sources} hero={<EmbeddingHero />} sections={[
+  return <Article slug="embedding" title="嵌入" subtitle="Embedding · 给内容一个可比较的数值位置" sources={sources} sections={[
     ["embedding-map", "搜“忘记密码”，为什么能找到“重置登录”？"],
     ["embedding-vector", "一串数字，怎么成为一个位置"],
     ["embedding-comparison", "换个问题，相近的材料跟着换"],

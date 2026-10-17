@@ -1,7 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { eventualConsistencySources } from "@/lib/ai-stack-concept-sources/eventual-consistency";
-import { EventualConsistencyHero } from "../ai-stack-lessons/eventual-consistency-hero";
 import { EventualConsistencyLesson } from "../ai-stack-lessons/eventual-consistency";
 
 const sections: [string, string][] = [
@@ -12,7 +11,7 @@ const sections: [string, string][] = [
 ];
 
 export function EventualConsistencyTermPage() {
-  return <Article slug="eventual-consistency" title="最终一致性" subtitle="Eventual Consistency · 允许副本暂时不同，但在没有新写入后逐步收敛" sources={eventualConsistencySources} sections={sections} hero={<EventualConsistencyHero />} intro={<>点下“保存”时，最先知道这件事的往往只有一个副本。其他副本还在路上，下一次读取可能撞上旧值；如果两个地方同时写入，还要有人说明哪个结果留下来。最终一致性把这段时间差和裁决责任摊到系统、产品与用户面前。</>}>
+  return <Article slug="eventual-consistency" title="最终一致性" subtitle="Eventual Consistency · 允许副本暂时不同，但在没有新写入后逐步收敛" sources={eventualConsistencySources} sections={sections} intro={<>点下“保存”时，最先知道这件事的往往只有一个副本。其他副本还在路上，下一次读取可能撞上旧值；如果两个地方同时写入，还要有人说明哪个结果留下来。最终一致性把这段时间差和裁决责任摊到系统、产品与用户面前。</>}>
     <ArticleSection id="eventual-write" title="先把“写入成功”和“读到最新”分开">
       <p>想象一个跨地区的订单：region A 收到“已付款”，先把它写进自己的副本并返回成功；region B 还没有收到这次复制。此刻“写入已提交”和“每个读取点都返回 paid”是两句话，前者成立并不自动推出后者。</p>
       <p id="eventual-definition" className="vp-citation-target">Google Cloud 对最终一致性的描述抓住了关键条件：如果之后没有新的更新，系统最终会让读取结果看到最后一次写入。它描述的是“会收敛”的保证，不是“现在立刻一样”的保证。<Cite id="eventual-definition" sources={eventualConsistencySources} /></p>

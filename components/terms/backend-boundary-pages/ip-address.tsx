@@ -112,7 +112,7 @@ export function IpAddressTermPage() {
     ["ip-translation", "地址为什么会在出口变掉"],
     ["ip-log", "日志里的一个地址能说明什么"],
     ["ip-version", "IPv4 和 IPv6 仍然在做同一件事"],
-  ]} hero={<IpAddressHero />} intro={<>服务器日志里三个请求的源 IP 完全相同，不一定来自同一台设备。地址先服务于路由；经过 NAT 出口后，远端看到的可能只是“哪一个出口”而不是“哪一个人”。<Cite id="ip-observation" /></>}>
+  ]} intro={<>服务器日志里三个请求的源 IP 完全相同，不一定来自同一台设备。地址先服务于路由；经过 NAT 出口后，远端看到的可能只是“哪一个出口”而不是“哪一个人”。<Cite id="ip-observation" /></>}>
     <ArticleSection id="ip-location" title="它标的是哪一个位置">
       <p id="ip-definition" className="vp-citation-target">IP 地址放在网络层报文里，告诉当前这一跳要把数据送向哪个网络接口。IPv4 的地址是 32 位，IPv6 把地址扩展到 128 位；它们都参与转发，却不负责替应用确认用户是谁。<Cite id="ip-definition" /></p>
       <p id="ip-routing" className="vp-citation-target">路由器拿目的地址和自己的路由表比较，选出下一跳。这个过程只回答“往哪边送”，不会顺便回答“这个请求有没有权限”。一台主机也可能有多个接口，所以地址和设备不是一对一的固定标签。<Cite id="ip-routing" /></p>

@@ -1,7 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { assertionSources } from "@/lib/assertion-sources";
-import { AssertionSignatureHero as AssertionHero } from "../TestSecuritySignatureHeroes";
 import { AssertionLesson } from "./assertion";
 
 const sections: [string, string][] = [
@@ -12,7 +11,7 @@ const sections: [string, string][] = [
 ];
 
 export function AssertionTermPage() {
-  return <Article slug="assertion" title="断言" subtitle="Assertion · 给测试一条能站住的证据" sources={assertionSources} sections={sections} hero={<AssertionHero />} intro={<>测试代码跑完没有报错，只能说明它没有撞上写出来的失败条件。<strong>断言把“什么算完成、允许等多久、失败时要看什么”写成一条可以比较的证据。</strong></>}>
+  return <Article slug="assertion" title="断言" subtitle="Assertion · 给测试一条能站住的证据" sources={assertionSources} sections={sections} intro={<>测试代码跑完没有报错，只能说明它没有撞上写出来的失败条件。<strong>断言把“什么算完成、允许等多久、失败时要看什么”写成一条可以比较的证据。</strong></>}>
     <ArticleSection id="assertion-definition-section" title="断言先回答：什么才算发生了">
       <p id="assertion-definition" className="vp-citation-target">Jest 把 <code>expect(value)</code> 和 matcher 组合成一次判断：前者是代码产生的实际值，后者写出你认可的条件。<code>toBe</code>、<code>toEqual</code>、<code>toHaveProperty</code> 不是装饰词，它们决定比较的是身份、结构还是某个字段。<Cite id="assertion-definition" sources={assertionSources} /></p>
       <p id="assertion-matcher" className="vp-citation-target">因此“保存成功”不能只写成“没有抛异常”。在这个例子里，测试真正要保护的是保存完成后按钮变成可见、响应带回记录编号，或数据库出现那条记录；每个观察点都应该有清楚的实际值和期望值。<Cite id="assertion-matcher" sources={assertionSources} /></p>

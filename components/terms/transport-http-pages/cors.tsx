@@ -57,7 +57,7 @@ function CorsLab() {
 
 export function CorsTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={corsSources} />;
-  return <ConceptArticle slug="cors" title="跨源资源共享" subtitle="CORS · 服务器许可，浏览器决定脚本能否读取" sources={corsSources} sections={[["cors-origin-section", "跨源到底差在哪里"], ["cors-preflight-section", "什么时候要先发 OPTIONS"], ["cors-exposure-section", "响应到了，脚本为什么还看不到"], ["cors-boundary-section", "CORS 管不到什么"]]} hero={<CorsHero />} intro={<>命令行能拿到接口响应，页面脚本却报 CORS 错误，这不是服务器把请求吞了。浏览器先判断 origin，再按请求类型决定是否预检，最后依据响应里的许可头决定要不要把结果交给脚本。</>}>
+  return <ConceptArticle slug="cors" title="跨源资源共享" subtitle="CORS · 服务器许可，浏览器决定脚本能否读取" sources={corsSources} sections={[["cors-origin-section", "跨源到底差在哪里"], ["cors-preflight-section", "什么时候要先发 OPTIONS"], ["cors-exposure-section", "响应到了，脚本为什么还看不到"], ["cors-boundary-section", "CORS 管不到什么"]]} intro={<>命令行能拿到接口响应，页面脚本却报 CORS 错误，这不是服务器把请求吞了。浏览器先判断 origin，再按请求类型决定是否预检，最后依据响应里的许可头决定要不要把结果交给脚本。</>}>
     <ArticleSection id="cors-origin-section" title="跨源到底差在哪里">
       <p id="cors-origin" className="vp-citation-target">origin 由 scheme、host 和 port 共同组成。页面从 app.example 访问 api.example，即使两个地址属于同一家公司，也已经是跨源请求，浏览器会把 Origin 交给 CORS 规则判断。<Cite id="cors-origin" /></p>
       <p id="cors-opt-in" className="vp-citation-target">CORS 是服务器通过响应头向浏览器表达的许可机制。它不会把两个 origin 变成同源，也不会让其他网络客户端自动获得同样的浏览器读取限制。<Cite id="cors-opt-in" /></p>
