@@ -49,7 +49,7 @@ function TlsIdentityLab() {
 
 export function TlsHandshakeTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={tlsHandshakeSources} />;
-  return <ConceptArticle slug="tls-handshake" title="TLS 握手" subtitle="TLS Handshake · 先确认身份和密钥，再让应用数据上路" sources={tlsHandshakeSources} sections={[["tls-flow-section", "握手先把哪些条件凑齐"], ["tls-identity-section", "证书回答的是‘连到了谁’"], ["tls-record-section", "握手完成后才保护应用记录"], ["tls-boundary-section", "失败时应该停在哪里"]]} hero={<TlsHero />} intro={<>浏览器看到 HTTPS 小锁之前，客户端和服务器已经交换了几轮信息。本页展示的是常规完整握手：TLS 1.3 协商参数、验证服务身份并导出本次连接的会话密钥，随后 HTTP 请求进入受保护的记录层。TLS 1.3 另有 0-RTT early data 路径，发送时点和重放边界要单独判断。</>}>
+  return <ConceptArticle slug="tls-handshake" title="TLS 握手" subtitle="TLS Handshake · 先确认身份和密钥，再让应用数据上路" sources={tlsHandshakeSources} sections={[["tls-flow-section", "握手先把哪些条件凑齐"], ["tls-identity-section", "证书回答的是‘连到了谁’"], ["tls-record-section", "握手完成后才保护应用记录"], ["tls-boundary-section", "失败时应该停在哪里"]]} intro={<>浏览器看到 HTTPS 小锁之前，客户端和服务器已经交换了几轮信息。本页展示的是常规完整握手：TLS 1.3 协商参数、验证服务身份并导出本次连接的会话密钥，随后 HTTP 请求进入受保护的记录层。TLS 1.3 另有 0-RTT early data 路径，发送时点和重放边界要单独判断。</>}>
     <ArticleSection id="tls-flow-section" title="握手先把哪些条件凑齐">
       <p id="tls-flow" className="vp-citation-target">TLS 1.3 握手让双方选择版本、密码套件和扩展，并交换导出共享密钥所需的材料。ClientHello 和 ServerHello 解决“用哪套规则说话”，Certificate、CertificateVerify 和 Finished 则把身份和握手完整性接上。<Cite id="tls-flow" /></p>
       <p id="tls-keys" className="vp-citation-target">临时密钥份额用于密钥交换，双方据此导出本次连接的握手密钥和应用流量密钥。私钥不会作为一段 HTTP 内容发送给对方；证书也不是拿来逐字加密整段网页的长期密码。<Cite id="tls-keys" /></p>

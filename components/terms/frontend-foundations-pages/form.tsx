@@ -56,7 +56,7 @@ function FormLab() {
 }
 
 export function FormTermPage(_props: BespokeTermPageProps) {
-  return <Article slug="form" title="表单" subtitle="Form · 把输入、约束和反馈放在一起" sources={formSources} hero={<FormHero />} sections={[
+  return <Article slug="form" title="表单" subtitle="Form · 把输入、约束和反馈放在一起" sources={formSources} sections={[
     ["form-definition-section", "表单收集的不是一堆输入框"],
     ["form-label-section", "先让人知道每一格要填什么"],
     ["form-client-section", "浏览器可以先拦一次"],

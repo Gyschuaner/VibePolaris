@@ -1,7 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { routingSources } from "@/lib/routing-sources";
-import { RoutingHero } from "./routing-hero";
 
 const sections: [string, string][] = [
   ["routing-definition-section", "先把地址拆成可匹配的输入"],
@@ -10,7 +9,7 @@ const sections: [string, string][] = [
 ];
 
 export function RoutingTermPage() {
-  return <Article slug="routing" title="路由" subtitle="Routing · 地址怎样找到页面" sources={routingSources} sections={sections} hero={<RoutingHero />} intro={<>路由器把 URL 交给规则表，决定要打开哪个页面或处理器。<strong>路径参数、查询参数、鉴权和 404 都是路由路径上的不同分支</strong>；导航菜单只是其中一种触发方式。</>}>
+  return <Article slug="routing" title="路由" subtitle="Routing · 地址怎样找到页面" sources={routingSources} sections={sections} intro={<>路由器把 URL 交给规则表，决定要打开哪个页面或处理器。<strong>路径参数、查询参数、鉴权和 404 都是路由路径上的不同分支</strong>；导航菜单只是其中一种触发方式。</>}>
     <ArticleSection id="routing-definition-section" title="先把地址拆成可匹配的输入">
       <p id="route-url" className="vp-citation-target">URL 由协议、主机、路径和查询等部分组成；路由通常重点处理路径段和查询参数。<Cite id="route-url" sources={routingSources} />例如 <code>/products/42?tab=stock</code> 里，42 是动态路径参数，stock 是查询值。</p>
       <p id="route-match" className="vp-citation-target">路由规则把这些输入匹配到页面、布局或处理器。<Cite id="route-match" sources={routingSources} />匹配结果应该留下可读的参数，而不是让页面再从一串字符串里猜一次。</p>

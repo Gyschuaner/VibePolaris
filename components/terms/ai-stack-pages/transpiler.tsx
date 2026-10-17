@@ -1,7 +1,6 @@
-import { ArrowsLeftRight, Code, FileCode } from "@phosphor-icons/react/dist/ssr";
+
 import { ArticleSection, ArticleAside } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
-import { ConceptHero } from "../ConceptHero";
 import { TranspilerLesson } from "../ai-stack-lessons/transpiler";
 import { transpilerSources } from "@/lib/ai-stack-concept-sources/transpiler";
 import styles from "../ToolchainConcepts.module.css";
@@ -10,7 +9,7 @@ const sections: [string, string][] = [["transpiler-definition", "转译器到底
 
 export function TranspilerTermPage() {
   return <Article slug="transpiler" title="转译器" subtitle="Transpiler · 把一种源代码改写成另一种源代码" sources={transpilerSources} sections={sections}
-    hero={<ConceptHero slug="transpiler" label="类型标注被移除，赋值结构和可读源码被保留下来"><div className={styles.toolchainHero}><div className={styles.transpilerHero}><div className={styles.transpilerHeroCard}><FileCode size={24} /><span>TypeScript</span><code>const n: number = 3</code></div><ArrowsLeftRight size={22} aria-hidden="true" /><div className={styles.transpilerHeroCard}><Code size={24} /><span>JavaScript</span><code>const n = 3</code></div></div><p className={styles.heroNote}>转译改变语言层的写法，输出仍是一份人能读的源码。</p></div></ConceptHero>}
+
     intro={<>你写下的 TypeScript 带有类型标注，开发工具可以借它检查错误；浏览器里的 JavaScript 运行时并不认识这段标注。<strong>转译器把类型节点移除或改写成目标语言能继续处理的源码，同时尽量保留原来的结构和行为。</strong></>}> 
     <ArticleSection id="transpiler-definition" title="转译器到底改了什么">
       <p id="transpiler-definition-text" className="vp-citation-target">转译器做的是源代码到源代码的转换：输入和输出都仍然是可阅读的程序文本。TypeScript 是 JavaScript 的带类型超集，类型检查发生在执行前；类型标注在生成普通 JavaScript 时会被擦除。<Cite id="transpiler-definition-text" sources={transpilerSources}/></p>

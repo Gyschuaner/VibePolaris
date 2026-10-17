@@ -1,12 +1,12 @@
 import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptTerm } from "./ConceptArticle";
-import { McpHero, McpLab } from "./McpLab";
+import { McpLab } from "./McpLab";
 import { mcpSources } from "@/lib/extended-concept-sources";
 import styles from "./Mcp.module.css";
 
 const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={mcpSources} />;
 
 export function McpTermPage() {
-  return <ConceptArticle slug="mcp" title="MCP" subtitle="模型上下文协议" hero={<McpHero />} sources={mcpSources}
+  return <ConceptArticle slug="mcp" title="MCP" subtitle="模型上下文协议"  sources={mcpSources}
     sections={[["connect", "先查一次借阅指南"], ["reuse", "换个应用，沿用同一套约定"], ["roles", "设置里的几个名字"], ["primitives", "除了工具，还能提供什么"], ["boundary", "接入以后，哪些事仍要判断"]]}
     intro={<>你在 AI 应用里看到的“添加 MCP 服务器”，通常用来接入一个提供外部资料或功能的程序。<strong>MCP 约定了应用和这个程序怎样互相介绍能力、提出请求、返回结果。</strong>接入另一个应用时，双方可以沿用相同的消息格式。</>}
     relatedIntro={<>想继续看模型怎样提出操作请求，可以读<ConceptTerm slug="tools">工具调用</ConceptTerm>；取回的资料怎样用于回答，可以读<ConceptTerm slug="context">上下文</ConceptTerm>。MCP 讲的是这些能力怎样接入应用。</>}>

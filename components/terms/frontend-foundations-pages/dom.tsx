@@ -1,10 +1,10 @@
 "use client";
 
-import { BracketsCurly, CheckCircle, Code, FileText, MagnifyingGlass, PencilSimple, TreeStructure, WarningCircle } from "@phosphor-icons/react";
+import { CheckCircle, FileText, MagnifyingGlass, PencilSimple, TreeStructure } from "@phosphor-icons/react";
 import { useState } from "react";
 import { domSources } from "@/lib/frontend-foundation-sources";
 import { Article, Cite } from "../AiStackConceptPageShared";
-import { ArticleAside, ArticleSection, ConceptTerm } from "../ConceptArticle";
+import { ArticleAside, ArticleSection } from "../ConceptArticle";
 import { ConceptHero } from "../ConceptHero";
 import type { BespokeTermPageProps } from "../BespokeTermScaffold";
 import styles from "./FrontendFoundations.module.css";
@@ -48,7 +48,7 @@ function DomLab() {
 }
 
 export function DomTermPage(_props: BespokeTermPageProps) {
-  return <Article slug="dom" title="DOM" subtitle="Document Object Model · 浏览器眼里的当前文档" sources={domSources} hero={<DomHero />} sections={[
+  return <Article slug="dom" title="DOM" subtitle="Document Object Model · 浏览器眼里的当前文档" sources={domSources} sections={[
     ["dom-definition-section", "HTML 到 DOM，中间多了一份对象"],
     ["dom-tree-section", "节点树保存的是关系"],
     ["dom-query-section", "先找到正确的节点"],

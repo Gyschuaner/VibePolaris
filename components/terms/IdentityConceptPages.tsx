@@ -1,6 +1,5 @@
-import { Browser, Key, LockKey } from '@phosphor-icons/react/dist/ssr';
+
 import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptTerm } from './ConceptArticle';
-import { ConceptHero } from './ConceptHero';
 import { JwtLesson, OAuthLesson, SessionLesson } from './IdentityConceptLessons';
 import { jwtSources, oauthSources, sessionSources } from '@/lib/identity-concept-sources';
 import s from './IdentityConcepts.module.css';
@@ -10,7 +9,7 @@ export function SessionTermPage() {
   return <ConceptArticle slug="session" title="会话" sources={sessionSources}
     intro={<>阿青登录书架后，刷新页面不用再输一次密码。浏览器在后续请求中带回一段会话秘密（通常是不透明的会话 ID），服务据此认出这次访问仍属于阿青。</>}
     sections={[["continuity", "登录之后如何保持连续"], ["cookie", "浏览器带回会话 ID"], ["lifetime", "退出使旧标识失效"], ["boundary", "会话与身份核验的边界"]]}
-    hero={<ConceptHero slug="session" label="浏览器携带不透明的会话标识，服务查找对应的有效记录"><div className={s.heroSession}><span><Browser size={23}/>浏览器 · sid=7c4…</span><Key size={20}/><span><LockKey size={23}/>服务 · 阿青</span></div></ConceptHero>}>
+    >
     <ArticleSection id="continuity" title="登录之后如何保持连续">
       <p id="session-purpose" className="vp-citation-target"><strong>会话让一次登录成功在后面的很多次请求里都继续有效。</strong>NIST 将会话描述为浏览器等软件与服务之间、由会话秘密维系的一段关系。它从认证后开始，到退出、闲置超时或其他终止条件出现时结束。<Cite id="session-purpose"/></p>
       <p>在常见的服务端会话方案里，登录通过后，服务保存“某个会话 ID 对应阿青”的记录，浏览器只保留这段看不出用户信息的不透明 ID。下一次请求带回 ID，服务先查记录是否仍有效，再决定是否把请求当作阿青发来的。下面只演示这种方案；其他系统也可能用不同的会话绑定方式。</p>
@@ -39,7 +38,7 @@ export function JwtTermPage() {
   return <ConceptArticle slug="jwt" title="JWT" sources={jwtSources}
     intro={<>一份令牌写着“主体是阿青、到某时过期”。接收方需要核对这段声明是否来自可信签发者、是否被改过，以及现在还能不能用。</>}
     sections={[["format", "JWT 承载声明"], ["verify", "载荷改写与验签"], ["claims", "签名之外的验证条件"], ["limits", "签名与加密的不同作用"]]}
-    hero={<ConceptHero slug="jwt" label="有签名的 JWT 由受保护头部、载荷与签名组成"><div className={s.heroJwt}><span>Header</span><span>Payload<br/>阿青 · 有效期</span><span>Signature</span></div></ConceptHero>}>
+    >
     <ArticleSection id="format" title="JWT 承载声明">
       <p id="jwt-format" className="vp-citation-target"><strong>JWT 是传递一组声明的紧凑格式，不等于某一种登录机制。</strong>RFC 7519 允许声明放在 JWS 的载荷里受签名或完整性保护，也允许放进 JWE 里加密。下面重点看常见的“有签名的 JWT”。<Cite id="jwt-format"/></p>
       <p id="jwt-signature" className="vp-citation-target">采用 JWS 紧凑表示时，它常呈现为三段，以点号隔开：受保护头部、载荷、签名。签名覆盖前两段的编码结果；接收方按约定的算法和可信密钥验证它。令牌里写了谁，并不足以证明这句话可信。<Cite id="jwt-signature"/></p>
@@ -67,7 +66,7 @@ export function OAuthTermPage() {
   return <ConceptArticle slug="oauth" title="OAuth 2.0" subtitle="第三方授权" sources={oauthSources}
     intro={<>阿青想让图片整理器读取自己在相册服务里的头像。整理器只需要这项权限，不需要阿青把相册密码交给它。</>}
     sections={[["delegation", "把一部分访问权交给应用"], ["code", "同意后先给授权码"], ["token", "访问令牌的使用范围"], ["identity", "授权与登录不能混用"]]}
-    hero={<ConceptHero slug="oauth" label="用户同意后，第三方应用取得有限访问令牌，再读取资源"><div className={s.heroOAuth}><span>阿青 · 同意读取头像</span><span>授权服务 · 发放令牌</span><span>图片整理器 · 持有令牌</span><span>相册服务 · 返回头像</span></div></ConceptHero>}>
+    >
     <ArticleSection id="delegation" title="把一部分访问权交给应用">
       <p id="oauth-purpose" className="vp-citation-target"><strong>OAuth 2.0 让第三方应用在限定范围内访问资源，不必拿到资源所有者的密码。</strong>RFC 6749 区分资源所有者、客户端、授权服务器和资源服务器。阿青是资源所有者；图片整理器是客户端；相册服务负责授权与提供头像。实际产品中后两个角色也可能由不同服务承担。<Cite id="oauth-purpose"/></p>
       <p id="oauth-scope" className="vp-citation-target">阿青同意的是“读取头像”这一项请求，而不是把整个相册交出去。RFC 9700 建议把访问令牌的权限限制在应用所需的最小范围，以降低越权和令牌泄露后的影响。服务仍需按自己的规则判断阿青是否有权委托这项访问。<Cite id="oauth-scope"/></p>

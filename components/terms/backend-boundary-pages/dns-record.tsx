@@ -132,7 +132,7 @@ function DnsRecordLab() {
 
 export function DnsRecordTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={dnsRecordSources} />;
-  return <ConceptArticle slug="dns-record" title="DNS 记录" subtitle="DNS Record · 把名称、类型和数据放在一起的条目" sources={dnsRecordSources} sections={[["dns-record-shape", "一行记录其实有五个边界"], ["dns-record-set", "同名记录会组成集合"], ["dns-record-types", "类型决定 RDATA 在说什么"], ["dns-record-cache", "权威改动不会瞬间穿透缓存"]]} hero={<DnsRecordHero />} intro={<>DNS 不是一张“域名 → IP”的字典，而是一组带类型、TTL 和数据格式的资源记录。<strong>先读清记录，再判断它能不能回答你的问题。</strong><Cite id="dns-record-shape-detail" /></>}>
+  return <ConceptArticle slug="dns-record" title="DNS 记录" subtitle="DNS Record · 把名称、类型和数据放在一起的条目" sources={dnsRecordSources} sections={[["dns-record-shape", "一行记录其实有五个边界"], ["dns-record-set", "同名记录会组成集合"], ["dns-record-types", "类型决定 RDATA 在说什么"], ["dns-record-cache", "权威改动不会瞬间穿透缓存"]]} intro={<>DNS 不是一张“域名 → IP”的字典，而是一组带类型、TTL 和数据格式的资源记录。<strong>先读清记录，再判断它能不能回答你的问题。</strong><Cite id="dns-record-shape-detail" /></>}>
     <ArticleSection id="dns-record-shape" title="一行记录其实有五个边界">
       <p id="dns-record-shape-detail" className="vp-citation-target">一条 DNS Resource Record 至少要看 owner name、type、class、TTL 和 RDATA。owner 说这条信息挂在哪个名字下，type 决定如何解释数据，TTL 说缓存多久，RDATA 才是具体地址、别名、优先级或文本。<Cite id="dns-record-shape-detail" /></p>
       <p id="dns-record-authority" className="vp-citation-target">同一个名字可能存在于不同 zone；只有负责该 zone 的权威服务器，才是这组数据的正式来源。resolver 返回的回答可能来自缓存，看到“有一条记录”不等于已经确认它来自权威区。<Cite id="dns-record-authority" /></p>

@@ -1,7 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { cdnSources } from "@/lib/cdn-sources";
-import { CdnHero } from "./cdn-hero";
 import { CdnLesson } from "./cdn";
 
 const sections: [string, string][] = [
@@ -12,11 +11,11 @@ const sections: [string, string][] = [
 ];
 
 export function CdnTermPage() {
-  return <Article slug="cdn" title="内容分发网络" subtitle="CDN · 让内容在离用户更近的缓存里等待" sources={cdnSources} sections={sections} hero={<CdnHero />} intro={<>CDN（Content Delivery Network，内容分发网络）由分布在不同位置的缓存节点组成。请求先到更近的边缘，节点再根据缓存键和新鲜度决定直接返回、回源取内容，还是重新验证。<strong>“用了 CDN”只说明多了一层缓存，不说明每次请求都会命中。</strong></>}>
+  return <Article slug="cdn" title="内容分发网络" subtitle="CDN · 让内容在离用户更近的缓存里等待" sources={cdnSources} sections={sections} intro={<>CDN（Content Delivery Network，内容分发网络）由分布在不同位置的缓存节点组成。请求先到更近的边缘，节点再根据缓存键和新鲜度决定直接返回、回源取内容，还是重新验证。<strong>“用了 CDN”只说明多了一层缓存，不说明每次请求都会命中。</strong></>}>
     <ArticleSection id="cdn-definition-section" title="CDN 是一组离用户更近的缓存">
       <p id="cdn-definition" className="vp-citation-target">CDN 把静态或可缓存的响应复制到靠近用户的边缘节点，让请求可以从更近的位置得到结果；节点仍然需要根据 URL、请求头和缓存规则判断副本是否适用。<Cite id="cdn-definition" sources={cdnSources} /></p>
       <p id="cdn-edge" className="vp-citation-target">边缘节点不是源站的永久替身。第一次请求可能回源，动态或带用户身份的内容也可能不适合共享缓存；设计缓存时要先划清哪些响应可以被不同用户复用。<Cite id="cdn-edge" sources={cdnSources} /></p>
-      <p>首图把“请求到边缘”和“内容来自哪里”分成两条轨迹：同一个 URL 可以 HIT，也可以 MISS；区别不在页面标题，而在缓存键和这一次副本是否可用。</p>
+      <p>要分开判断请求抵达哪个边缘节点、内容又来自哪里：同一个 URL 可以 HIT，也可以 MISS；区别不在页面标题，而在缓存键和这一次副本是否可用。</p>
       <CdnLesson />
     </ArticleSection>
 

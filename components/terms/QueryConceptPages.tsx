@@ -1,6 +1,5 @@
-import { ArrowsLeftRight, Database, FileCode, Terminal } from "@phosphor-icons/react/dist/ssr";
+
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from "./ConceptArticle";
-import { ConceptHero } from "./ConceptHero";
 import { SqlLesson, SqlPlanLesson, MigrationLesson, OrmLesson } from "./QueryConceptLessons";
 import { sqlSources, migrationSources, ormSources } from "@/lib/query-sources";
 import base from "./EventConcepts.module.css";
@@ -12,7 +11,7 @@ export function SqlTermPage() {
   return <ConceptArticle slug="sql" title="SQL" sources={sqlSources}
     sections={[["read","从书目中取出可借的书"],["write","读数据与改数据"],["scope","限定受影响的行"],["plan","语句与执行计划"]]}
     intro={<>图书馆既要让人查到哪些书还能借，也要把借出、上架和移除记录下来。数据都在同一张表里，但你要做的事不同，发给数据库的语句就不同。写 SQL，就是先说明你想要什么结果、想改哪些行，数据库再决定怎么执行。AI 在聊天里给出一段 SQL 文字，不等于这段 SQL 已经执行；只有当数据库客户端或工具把语句发给数据库、数据库返回结果，数据才真的被读或写。这一页先分清语句返回了什么、原表被改成了什么，再谈查询快慢由什么决定，最后从执行计划谈起。</>}
-    hero={<ConceptHero slug="sql" label="SELECT 从两条书目中筛选 available 为 true 的42号书，原表保留两行"><div className={s.sqlHero}><Terminal size={27} /><code>SELECT title<br />FROM books<br />WHERE available = true</code><div><span>#42 · true</span><span>#78 · false</span></div><strong>山间来信</strong></div></ConceptHero>}>
+    >
     <ArticleSection id="read" title="从书目中取出可借的书">
       <Legacy slug="sql" names={["question","definition"]} />
       <p><strong>数据库是保存并处理数据的系统，SQL 是你交给它的指令。</strong>SQL 可以定义表和列这样的结构，也可以读写表中的数据；本页只讲读、增、改、删四种（SELECT、INSERT、UPDATE、DELETE），不展开建表。PostgreSQL、MySQL、SQLite 都能执行 SQL，但具体语法和功能有差别；本页用 PostgreSQL 18 的基础语句讲解。</p>
@@ -55,7 +54,7 @@ export function MigrationTermPage() {
   return <ConceptArticle slug="database-migration" title="数据库迁移" sources={migrationSources}
     sections={[["files","把结构变更留在代码里"],["history","文件到了，数据库还没变"],["compatible","新旧程序共用一段结构"],["recovery","迁移失败与恢复"]]}
     intro={<>把书名列从 title 改成 name，不能只在开发库里手动改一下。其他环境需要知道怎样从旧结构走到新结构，正在运行的旧程序也可能还在读 title。一次结构调整，牵动的是迁移文件、数据和应用版本。</>}
-    hero={<ConceptHero slug="database-migration" label="002和003迁移文件依次到达目标数据库，版本从001到003"><div className={s.migrationHero}><div><FileCode size={27} /><span>002 · 增加 name</span></div><div><FileCode size={27} /><span>003 · 回填书名</span></div><div><Database size={30} /><strong>目标库 003</strong><code>name: 山间来信</code></div></div></ConceptHero>}>
+    >
     <ArticleSection id="files" title="把结构变更留在代码里">
       <Legacy slug="database-migration" names={["question","definition"]} />
       <p id="migration-files" className="vp-citation-target"><strong>数据库迁移把结构与必要的数据变化记录为可追踪的步骤，再将这些步骤应用到具体数据库。</strong>Django、Alembic、Prisma 是不同技术栈里的迁移工具或文档例子，不是一条流水线。Django 的 makemigrations 生成迁移文件，migrate 执行它们；文件与代码一起分发。同一份文件放进仓库，不代表每个环境已经执行。<Cite id="migration-files" /></p>
@@ -94,7 +93,7 @@ export function OrmTermPage() {
   return <ConceptArticle slug="orm" title="ORM" sources={ormSources}
     sections={[["mapping","对象属性对应表里的列"],["write","对象修改到数据库写入"],["session","Session 管理的状态"],["loading","访问属性也可能查询"]]}
     intro={<>先把两个词说清：对象是程序里代表一条书记录的值，属性是这个对象上的一个字段；<code>book.title</code>就是这本书对象的书名。把它改成“山间来信 · 修订版”，只说明程序手里的对象变了，还不说明数据库已经收到 UPDATE，更不说明修改已经提交。ORM 让程序可以用对象来读写表里的数据，但真正写进数据库发生在哪一步，还有它自己的规矩。</>}
-    hero={<ConceptHero slug="orm" label="Book类的id与title分别对应books表的book_id与title，值从行映射到对象"><div className={s.ormHero}><div><strong>Book</strong><code>id = 42</code><code>title = 山间来信</code></div><ArrowsLeftRight size={28} /><div><Database size={25} /><strong>books</strong><code>book_id: 42</code><code>title: 山间来信</code></div></div></ConceptHero>}>
+    >
     <ArticleSection id="mapping" title="对象属性对应表里的列">
       <Legacy slug="orm" names={["question","definition"]} />
       <p id="orm-mapping" className="vp-citation-target"><strong>ORM 把程序中的类、对象和数据库里的表、列对应起来，并为相应操作生成和执行 SQL。</strong>类像“每本书长什么样”的结构说明，Book 对象（也叫实例）则代表其中一本具体的书。SQLAlchemy 可以把 Book 类映射到 books 表，也可以把 Author 对象和它的 books 关系映射到作者与书籍之间的关联。ORM 能映射已有结构，使用它不代表必须重建数据库。<Cite id="orm-mapping" /></p>

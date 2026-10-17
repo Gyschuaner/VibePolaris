@@ -1,6 +1,5 @@
-import { BookOpen, Key, LinkSimple, Table as TableIcon } from "@phosphor-icons/react/dist/ssr";
+
 import { ConceptArticle, ArticleAside, ArticleCitation, ArticleSection, ConceptTerm } from "./ConceptArticle";
-import { ConceptHero } from "./ConceptHero";
 import { TableLesson, PrimaryKeyLesson, ForeignKeyLesson } from "./RelationalConceptLessons";
 import { tableSources, primaryKeySources, foreignKeySources } from "@/lib/relational-sources";
 import s from "./RelationalConcepts.module.css";
@@ -15,7 +14,7 @@ export function TableTermPage() {
   return <ConceptArticle slug="table" title="表" sources={tableSources}
     sections={[["shape", "一行书目，几列信息"], ["view", "只取需要的行与列"], ["order", "位置不代表身份"], ["design", "一行对应的业务对象"]]}
     intro={<>图书室要记录每一册可单独借出的书。本例每册占一行，写下编号、书名和可借状态；两册同名书也会占两行。以后既能查“哪些书可借”，也能让页面只列出编号和书名。</>}
-    hero={<ConceptHero slug="table" label="同一套列定义下，三条书目逐行填入表格"><div className={s.tableHero}><TableIcon size={26} /><div><span>编号</span><span>书名</span><span>可借</span>{[[42,"山间来信","是"],[12,"河流手记","否"],[78,"夜空地图","是"]].map((row,i) => <div key={i} style={{ animationDelay: `${i * .6}s` }}>{row.map((value,j) => <span key={j}>{value}</span>)}</div>)}</div></div></ConceptHero>}>
+    >
     <ArticleSection id="shape" title="一行书目，几列信息">
       <Legacy slug="table" names={["question", "definition"]} />
       <p id="table-shape" className="vp-citation-target"><strong>表用命名的列组织数据，每一行按这套列定义保存一条记录。</strong>书目表中，编号是一列，书名是另一列；#42 的编号、书名与状态放在同一行。列规定每条书目有哪些信息，行则填入某一册书的具体值。即使还没录入书目，表也可以先有列定义。<Cite id="table-shape" /></p>
@@ -51,7 +50,7 @@ export function PrimaryKeyTermPage() {
   return <ConceptArticle slug="primary-key" title="主键" sources={primaryKeySources}
     sections={[["identity", "同名的书，不同的记录"], ["write", "编号的唯一性检查"], ["combination", "一个主键，可以包含多列"], ["generation", "约束与生成编号分开看"]]}
     intro={<>图书室有两册《山间来信》，书目表里每册占一行。读者借走其中一册，光记书名分不清是哪册；给两册分别编号 #42、#78，借阅记录就可以记下“借走 #42”。以后书名修订了，仍能靠编号找到那一行。</>}
-    hero={<ConceptHero slug="primary-key" label="两册同名书具有不同主键，42号书改名后编号不变"><div className={s.keyHero}>{[42,78].map(id => <div key={id}><BookOpen size={27} /><strong><Key size={16} />#{id}</strong><div>{id === 42 ? <><span>山间来信</span><span>山间来信 · 修订版</span></> : <span>山间来信</span>}</div></div>)}</div></ConceptHero>}>
+    >
     <ArticleSection id="identity" title="同名的书，不同的记录">
       <Legacy slug="primary-key" names={["question", "definition"]} />
       <p id="primary-key-identity" className="vp-citation-target"><strong>主键是表中用来唯一指认一条记录的一列或一组列。</strong>一册书的编号和书名放在同一行，这一行就是这册书的一条记录。按主键的标准规则，主键值不能重复，参与主键的每一列也都不能是 <code>NULL</code>，也就是缺少值。PostgreSQL 会检查这些条件，下面的写入演示也按它的规则检查。唯一的范围是这张表；另一张表可以有自己的 #42。<Cite id="primary-key-identity" /></p>
@@ -90,7 +89,7 @@ export function ForeignKeyTermPage() {
   return <ConceptArticle slug="foreign-key" title="外键" sources={foreignKeySources}
     sections={[["reference", "借阅记录指向哪本书"], ["change", "写入与删除都要守住关系"], ["scope", "存在不等于可以借"], ["check", "确认约束真的在执行"]]}
     intro={<>图书室把每册书的编号、书名放在书目表里，每次借阅另记一行。借阅表记下“林舟借了 #42”，其中的 #42 用来指向书目。若有人误填 #65，而书目里根本没有这册书，这条借阅就找不到对应对象。外键让数据库检查这种引用。</>}
-    hero={<ConceptHero slug="foreign-key" label="两条借阅引用同一本42号书，存在的书目让关联有效"><div className={s.foreignHero}><div><BookOpen size={28} /><strong>books · #42</strong></div><LinkSimple size={31} /><div><span>借阅 1 → #42</span><span>借阅 2 → #42</span></div></div></ConceptHero>}>
+    >
     <ArticleSection id="reference" title="借阅记录指向哪本书">
       <Legacy slug="foreign-key" names={["question", "definition"]} />
       <p id="foreign-key-reference" className="vp-citation-target"><strong>外键约束是一条由数据库检查的规则：引用列有值时，这个值必须能匹配被引用表中的有效键。</strong>本例中，书目表叫 <code>books</code>，借阅表叫 <code>loans</code>，两表保存书号的列都叫 <code>book_id</code>。<code>loans.book_id</code> 读作“借阅表的书号列”；它引用 <code>books.book_id</code>，也就是书目表的主键。借阅表是引用方，书目表是被引用方。这里每个书号唯一对应一册书，数据库能据此检查借阅指向的书是否存在。在本页使用的 PostgreSQL 中，目标列需要是主键、唯一约束或符合要求的唯一索引所覆盖的列。<Cite id="foreign-key-reference" /></p>

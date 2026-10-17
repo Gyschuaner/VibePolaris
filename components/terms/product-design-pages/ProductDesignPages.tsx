@@ -1,10 +1,7 @@
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { ArticleAside, ArticleSection } from "../ConceptArticle";
 import { conversionRateSources, designTokenSources, feedbackSources, focusManagementSources, funnelSources, iterationSources, mockupSources, sitemapSources, usabilityTestingSources, visualHierarchySources } from "@/lib/product-design-sources";
-import { ConversionRateLesson, DesignTokenLesson, FeedbackLesson, FunnelLesson, IterationLesson, MockupLesson, SitemapLesson, UsabilityTestingLesson, VisualHierarchyLesson } from "./ProductDesignLessons";
-import { ConversionRateHero, FunnelHero, IterationHero, MockupHero, UsabilityTestingHero } from "./mechanism-heroes";
-import { DesignTokenMechanismHero, FeedbackMechanismHero, SitemapMechanismHero, VisualHierarchyMechanismHero } from "../vbp095-mechanism-heroes";
-import { FocusManagementHero } from "./focus-management-hero";
+import { DesignTokenLesson, FeedbackLesson, SitemapLesson, VisualHierarchyLesson } from "./ProductDesignLessons";
 import styles from "./ProductDesignConcepts.module.css";
 
 const focusSections: [string, string][] = [
@@ -14,7 +11,7 @@ const focusSections: [string, string][] = [
 ];
 
 export function FocusManagementTermPage() {
-  return <Article slug="focus-management" title="焦点管理" subtitle="Focus Management · 键盘现在落在哪里" sources={focusManagementSources} sections={focusSections} hero={<FocusManagementHero />} intro={<>键盘用户按下 Tab 时，浏览器必须知道下一个控件是谁。<strong>焦点管理把“当前正在操作的地方”跟界面状态连起来</strong>：打开对话框就进入对话框，关闭后还能回到刚才发起操作的位置。</>}>
+  return <Article slug="focus-management" title="焦点管理" subtitle="Focus Management · 键盘现在落在哪里" sources={focusManagementSources} sections={focusSections} intro={<>键盘用户按下 Tab 时，浏览器必须知道下一个控件是谁。<strong>焦点管理把“当前正在操作的地方”跟界面状态连起来</strong>：打开对话框就进入对话框，关闭后还能回到刚才发起操作的位置。</>}>
     <ArticleSection id="focus-management-definition" title="先分清：谁正在接收键盘输入">
       <p id="focus-sequence" className="vp-citation-target">焦点是键盘输入当前落到的元素。浏览器通常按照 DOM 中的可聚焦顺序移动它，所以按钮、链接和表单控件的排列，决定了用户按 Tab 时会经过什么。<Cite id="focus-sequence" sources={focusManagementSources} />如果视觉顺序和 DOM 顺序相反，读者会看着一处，却操作另一处。</p>
       <p id="focus-order" className="vp-citation-target">一个真实的入口是“打开设置”：点击后任务已经从背景页面切换到对话框，焦点也应同步进入。<Cite id="focus-order" sources={focusManagementSources} />只给容器画一圈 outline，不能让键盘用户知道下一次 Tab 会去哪。</p>
@@ -39,7 +36,7 @@ const iterationSections: [string, string][] = [
 ];
 
 export function IterationTermPage() {
-  return <Article slug="iteration" title="迭代" subtitle="Iteration · 用一轮结果决定下一轮" sources={iterationSources} sections={iterationSections} hero={<IterationHero />} intro={<>“等全部做完再看”会把错误藏到最后。<strong>迭代是在有限范围内交付可运行结果，再用真实使用、验收或数据决定下一步</strong>；它切的是风险和学习路径，不是把任务随意切成几段。</>}>
+  return <Article slug="iteration" title="迭代" subtitle="Iteration · 用一轮结果决定下一轮" sources={iterationSources} sections={iterationSections} intro={<>“等全部做完再看”会把错误藏到最后。<strong>迭代是在有限范围内交付可运行结果，再用真实使用、验收或数据决定下一步</strong>；它切的是风险和学习路径，不是把任务随意切成几段。</>}>
     <ArticleSection id="iteration-definition" title="先把目标切成可验证的一块">
       <p id="iteration-service" className="vp-citation-target">服务不会在第一次发布后就自动完成，早些交付一块能工作的范围，才能尽早看到真实用户卡在哪里。<Cite id="iteration-service" sources={iterationSources} />一轮开始前先写清本轮要解决的任务、包含哪些范围，以及什么结果算完成。</p>
       <p id="iteration-increment" className="vp-citation-target">Scrum 把每轮产生的可用结果叫作 Increment；它必须满足团队约定的完成标准，才能成为下一次检查的对象。<Cite id="iteration-increment" sources={iterationSources} />所以“把代码拆成三个分支”不等于完成三轮迭代，分支里还得有读者能验证的行为。</p>
@@ -63,7 +60,7 @@ const conversionRateSections: [string, string][] = [
 ];
 
 export function ConversionRateTermPage() {
-  return <Article slug="conversion-rate" title="转化率" subtitle="Conversion Rate · 先固定口径，再读百分比" sources={conversionRateSources} sections={conversionRateSections} hero={<ConversionRateHero />} intro={<>“1000 人进来，120 人完成”看起来只需要做一道除法。<strong>真正决定转化率的是分母、完成事件、去重方式和时间窗</strong>；其中任何一项变化，百分比就不再是同一个指标。</>}>
+  return <Article slug="conversion-rate" title="转化率" subtitle="Conversion Rate · 先固定口径，再读百分比" sources={conversionRateSources} sections={conversionRateSections} intro={<>“1000 人进来，120 人完成”看起来只需要做一道除法。<strong>真正决定转化率的是分母、完成事件、去重方式和时间窗</strong>；其中任何一项变化，百分比就不再是同一个指标。</>}>
     <ArticleSection id="conversion-rate-definition" title="先把起点和完成事件说清楚">
       <p id="conversion-event" className="vp-citation-target">分析工具把用户行为记录成事件，并用事件参数补充页面、按钮或结果等上下文。<Cite id="conversion-event" sources={conversionRateSources} />“看到注册页”“提交表单”和“验证邮箱”是三个不同事件，不能只用一个含糊的“注册”替代。</p>
       <p id="conversion-params" className="vp-citation-target">开始计算前，要把起点和完成事件写成可以被记录的条件。<Cite id="conversion-params" sources={conversionRateSources} />本例把首次到达注册页作为起点，把验证邮箱作为完成；只提交表单的人仍然在途中。</p>
@@ -88,7 +85,7 @@ const funnelSections: [string, string][] = [
 ];
 
 export function FunnelTermPage() {
-  return <Article slug="funnel" title="漏斗" subtitle="Funnel · 按顺序看用户在哪一步离开" sources={funnelSources} sections={funnelSections} hero={<FunnelHero />} intro={<>漏斗把一条已经知道的用户路径拆成有顺序的事件，观察同一批人从第一步走到后面还剩多少。<strong>它负责定位流失发生在哪一关，不负责替你解释用户为什么离开</strong>；后一个问题要靠日志、研究或实验继续查。</>}>
+  return <Article slug="funnel" title="漏斗" subtitle="Funnel · 按顺序看用户在哪一步离开" sources={funnelSources} sections={funnelSections} intro={<>漏斗把一条已经知道的用户路径拆成有顺序的事件，观察同一批人从第一步走到后面还剩多少。<strong>它负责定位流失发生在哪一关，不负责替你解释用户为什么离开</strong>；后一个问题要靠日志、研究或实验继续查。</>}>
     <ArticleSection id="funnel-definition" title="先把已经知道的路径写成步骤">
       <p id="funnel-route" className="vp-citation-target">只有当你已经知道要观察哪条路径，漏斗才有用：例如“到达注册页 → 填写表单 → 验证邮箱”。<Cite id="funnel-route" sources={funnelSources} />每一步都要对应一个能被记录的事件，顺序和进入第一步的用户集合也要写清楚。</p>
       <p id="funnel-steps" className="vp-citation-target">分析工具通常把漏斗步骤写成事件或字段过滤条件，并按这些条件生成每一步的用户数。<Cite id="funnel-steps" sources={funnelSources} />本例把 1000 个到达注册页的人作为起点，再看其中多少人填写、验证。</p>
@@ -113,7 +110,7 @@ const usabilityTestingSections: [string, string][] = [
 ];
 
 export function UsabilityTestingTermPage() {
-  return <Article slug="usability-testing" title="可用性测试" subtitle="Usability Testing · 看用户怎样完成真实任务" sources={usabilityTestingSources} sections={usabilityTestingSections} hero={<UsabilityTestingHero />} intro={<>可用性测试不是请用户评价“喜不喜欢”，而是给一个可信的目标，看他能不能靠自己的理解完成。<strong>研究者要记录用户做了什么、在哪里停顿、何时需要帮助</strong>；测试的是服务，不是把参与者判对错。</>}>
+  return <Article slug="usability-testing" title="可用性测试" subtitle="Usability Testing · 看用户怎样完成真实任务" sources={usabilityTestingSources} sections={usabilityTestingSections} intro={<>可用性测试不是请用户评价“喜不喜欢”，而是给一个可信的目标，看他能不能靠自己的理解完成。<strong>研究者要记录用户做了什么、在哪里停顿、何时需要帮助</strong>；测试的是服务，不是把参与者判对错。</>}>
     <ArticleSection id="usability-testing-definition" title="任务给目标，不给操作答案">
       <p id="usability-task" className="vp-citation-target">好的任务像真实生活中的一句请求：说明想达成什么，不透露按钮名称、菜单位置或正确路径。<Cite id="usability-task" sources={usabilityTestingSources} />“退回一件尺码不合适的商品”让参与者自己寻找入口，“点击订单详情里的售后按钮”则提前教了答案。</p>
       <p id="usability-plan" className="vp-citation-target">开始测试前，先写研究问题、目标用户、任务和完成标准，再决定每轮要观察哪一段服务。<Cite id="usability-plan" sources={usabilityTestingSources} />这样主持人记录的是能帮助决策的证据，而不是一堆没有上下文的意见。</p>
@@ -137,7 +134,7 @@ const mockupSections: [string, string][] = [
 ];
 
 export function MockupTermPage() {
-  return <Article slug="mockup" title="视觉稿" subtitle="Mockup · 把外观说清楚，但别冒充交互" sources={mockupSources} sections={mockupSections} hero={<MockupHero />} intro={<>视觉稿把已经确定的结构换成具体的字体、颜色、图像和间距，让团队可以讨论“看起来是否对”。<strong>它是外观的证据，不是点击后的行为证据</strong>；加载、错误、响应式和返回路径还需要状态清单或原型继续补上。</>}>
+  return <Article slug="mockup" title="视觉稿" subtitle="Mockup · 把外观说清楚，但别冒充交互" sources={mockupSources} sections={mockupSections} intro={<>视觉稿把已经确定的结构换成具体的字体、颜色、图像和间距，让团队可以讨论“看起来是否对”。<strong>它是外观的证据，不是点击后的行为证据</strong>；加载、错误、响应式和返回路径还需要状态清单或原型继续补上。</>}>
     <ArticleSection id="mockup-definition" title="先确认结构，再确认外观">
       <p id="mockup-structure" className="vp-citation-target">线框图先把页面当作一张地图：有哪些信息、哪个操作放在哪里、读者按什么顺序理解。<Cite id="mockup-structure" sources={mockupSources} />结构没站稳就急着调颜色，评审很容易被阴影和图片带走。</p>
       <p id="mockup-visual" className="vp-citation-target">视觉稿在这张地图上补入字体、色彩、真实内容和视觉层级，用来对齐外观与品牌表达。<Cite id="mockup-visual" sources={mockupSources} />它可以让团队发现字重不够、对比不清或间距失衡，却不能证明按钮已经能工作。</p>
@@ -165,7 +162,7 @@ function SitemapHero() {
 }
 
 export function SitemapTermPage() {
-  return <Article slug="sitemap" title="站点地图" subtitle="Sitemap · 把页面放回它所属的任务里" sources={sitemapSources} sections={sitemapSections} hero={<SitemapMechanismHero />} intro={<>站点地图把页面、栏目和父子关系放在一张结构图里，让团队看见哪里太深、哪里没有入口、哪些名字不属于同一类。<strong>它描述信息架构，不规定用户必须沿着树一层层点击</strong>；真实任务可以从不同入口横跨多个栏目。</>}>
+  return <Article slug="sitemap" title="站点地图" subtitle="Sitemap · 把页面放回它所属的任务里" sources={sitemapSources} sections={sitemapSections} intro={<>站点地图把页面、栏目和父子关系放在一张结构图里，让团队看见哪里太深、哪里没有入口、哪些名字不属于同一类。<strong>它描述信息架构，不规定用户必须沿着树一层层点击</strong>；真实任务可以从不同入口横跨多个栏目。</>}>
     <ArticleSection id="sitemap-definition" title="先把页面关系画出来">
       <p id="sitemap-page-structure" className="vp-citation-target">清楚的页面结构要让人知道内容在哪个区域、哪一级标题下面、怎样跳到重要部分。<Cite id="sitemap-page-structure" sources={sitemapSources} />把 12 个页面全部平铺在一行，只能证明页面存在，不能说明它们怎样被理解。</p>
       <p id="sitemap-hierarchy" className="vp-citation-target">整理站点地图时，先按用户任务和内容主题划出逻辑类别，再把子页面放到能被猜到的父级下面。<Cite id="sitemap-hierarchy" sources={sitemapSources} />订单、退货和优惠说明可能属于同一组；账户资料、地址和安全设置则是另一组。</p>
@@ -194,7 +191,7 @@ function DesignTokenHero() {
 }
 
 export function DesignTokenTermPage() {
-  return <Article slug="design-token" title="设计令牌" subtitle="Design Token · 把用途和具体值分开" sources={designTokenSources} sections={designTokenSections} hero={<DesignTokenMechanismHero />} intro={<>设计令牌把颜色、间距、字体等设计决策保存为可复用的名字和值，让设计工具和代码有机会共享同一套语言。<strong>关键不在于把色值改成变量名，而在于让组件引用“用途”并能被主题映射替换</strong>。</>}>
+  return <Article slug="design-token" title="设计令牌" subtitle="Design Token · 把用途和具体值分开" sources={designTokenSources} sections={designTokenSections} intro={<>设计令牌把颜色、间距、字体等设计决策保存为可复用的名字和值，让设计工具和代码有机会共享同一套语言。<strong>关键不在于把色值改成变量名，而在于让组件引用“用途”并能被主题映射替换</strong>。</>}>
     <ArticleSection id="design-token-definition" title="先把设计决策命名，再让组件引用">
       <p id="token-definition" className="vp-citation-target">颜色、间距、字体比例都可以成为令牌，它们是设计系统里不可再拆的决策单位。<Cite id="token-definition" sources={designTokenSources} />名字应描述“文本、背景、操作”等用途，而不是某一张卡片或某一个页面的外观。</p>
       <p id="token-reference" className="vp-citation-target">令牌可以通过引用形成基础值、语义值和组件使用之间的关系。<Cite id="token-reference" sources={designTokenSources} />当按钮和链接都引用 <code>color.action</code>，基础颜色改变时，关系图能告诉你哪些地方会一起更新。</p>
@@ -224,7 +221,7 @@ function VisualHierarchyHero() {
 }
 
 export function VisualHierarchyTermPage() {
-  return <Article slug="visual-hierarchy" title="视觉层级" subtitle="Visual Hierarchy · 让页面告诉用户先看什么" sources={visualHierarchySources} sections={visualHierarchySections} hero={<VisualHierarchyMechanismHero />} intro={<>当标题、金额、说明和按钮都在喊“先看我”，用户就得自己做排序。<strong>视觉层级用大小、字重、对比、位置、分组和留白，把主要任务排在辅助信息前面</strong>；它改变的是注意顺序，不是把内容凭空变重要。</>}>
+  return <Article slug="visual-hierarchy" title="视觉层级" subtitle="Visual Hierarchy · 让页面告诉用户先看什么" sources={visualHierarchySources} sections={visualHierarchySections} intro={<>当标题、金额、说明和按钮都在喊“先看我”，用户就得自己做排序。<strong>视觉层级用大小、字重、对比、位置、分组和留白，把主要任务排在辅助信息前面</strong>；它改变的是注意顺序，不是把内容凭空变重要。</>}>
     <ArticleSection id="visual-hierarchy-definition" title="先让页面回答：第一眼该看什么">
       <p id="hierarchy-attention" className="vp-citation-target">视觉层级是把页面元素按预期重要性组织起来，让眼睛有一个可以开始、继续和停下来的路线。<Cite id="hierarchy-attention" sources={visualHierarchySources} />如果所有卡片同样大、同样深、同样挤在一起，用户并不是“看得更完整”，而是在几处焦点之间来回试探。</p>
       <p id="hierarchy-contrast" className="vp-citation-target">颜色本身没有固定的“重要色”，真正起作用的是它和周围背景、邻近元素之间的对比；字号和字重也一样，只有放在同一页面的相对关系里才会产生顺序。<Cite id="hierarchy-contrast" sources={visualHierarchySources} />所以先写清用户要完成的任务，再决定哪一个信息应该更近、更大或更安静。</p>
@@ -254,7 +251,7 @@ function FeedbackHero() {
 }
 
 export function FeedbackTermPage() {
-  return <Article slug="feedback" title="反馈" subtitle="Feedback · 让系统状态被看见" sources={feedbackSources} sections={feedbackSections} hero={<FeedbackMechanismHero />} intro={<>用户按下“保存”之后，真正想知道的不是页面有没有播放一段动画，而是这次操作有没有被接住、现在还要等多久、失败后能不能继续。<strong>反馈把系统状态翻译成用户当下能采取行动的信号</strong>：可以是原位置的文字变化、按钮状态、进度、声音或触觉。</>}>
+  return <Article slug="feedback" title="反馈" subtitle="Feedback · 让系统状态被看见" sources={feedbackSources} sections={feedbackSections} intro={<>用户按下“保存”之后，真正想知道的不是页面有没有播放一段动画，而是这次操作有没有被接住、现在还要等多久、失败后能不能继续。<strong>反馈把系统状态翻译成用户当下能采取行动的信号</strong>：可以是原位置的文字变化、按钮状态、进度、声音或触觉。</>}>
     <ArticleSection id="feedback-definition" title="先让用户知道：系统听见了吗">
       <p id="feedback-visibility" className="vp-citation-target">系统状态可见，用户才不必靠猜测判断一次点击是否生效。<Cite id="feedback-visibility" sources={feedbackSources} />保存按钮进入处理中、暂时避免重复提交，就是“已收到”的证据；它和最终保存成功仍是两个不同阶段。</p>
       <p id="feedback-local" className="vp-citation-target">反馈最好贴着发生变化的对象出现。<Cite id="feedback-local" sources={feedbackSources} />编辑邮箱的表单旁边写“已保存 14:32”，比在页面角落闪过一条 Toast 更容易让用户把结果和刚才的输入对应起来。</p>

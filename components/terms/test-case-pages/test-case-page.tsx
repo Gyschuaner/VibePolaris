@@ -1,7 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { testCaseSources } from "@/lib/test-case-sources";
-import { TestCaseSignatureHero as TestCaseHero } from "../TestSecuritySignatureHeroes";
 import { TestCaseLesson } from "./test-case";
 
 const sections: [string, string][] = [
@@ -12,11 +11,11 @@ const sections: [string, string][] = [
 ];
 
 export function TestCaseTermPage() {
-  return <Article slug="test-case" title="测试用例" subtitle="Test Case · 把“测一下”写成一次能复现的判断" sources={testCaseSources} sections={sections} hero={<TestCaseHero />} intro={<>产品说“密码重置失败时要拦住”，开发写了一个测试标题，测试同学却问：用什么账号、拿什么令牌、发哪一个请求，看到什么才算失败？<strong>测试用例把这段口头约定压成一条可执行、可观察、可重复的短路径。</strong></>}>
+  return <Article slug="test-case" title="测试用例" subtitle="Test Case · 把“测一下”写成一次能复现的判断" sources={testCaseSources} sections={sections} intro={<>产品说“密码重置失败时要拦住”，开发写了一个测试标题，测试同学却问：用什么账号、拿什么令牌、发哪一个请求，看到什么才算失败？<strong>测试用例把这段口头约定压成一条可执行、可观察、可重复的短路径。</strong></>}>
     <ArticleSection id="case-definition-section" title="标题不等于用例，起点要能被复原">
       <p id="case-definition" className="vp-citation-target">Microsoft 把测试用例写成一组供执行和验证的指令：它至少要交代过程或需求、前置条件和数据、复现步骤，以及预期或退出标准。标题只能指出风险，不能告诉下一个人从哪个世界状态开始。<Cite id="case-definition" sources={testCaseSources} /></p>
       <p>比如“密码重置应该失败”只像一张贴在门上的便签。是过期令牌失败，还是不存在的账号失败？是返回 `410`，还是页面显示错误？如果这些都没写，A 测到接口，B 测到页面，C 甚至拿着刚生成的有效令牌，三个人都能说自己做完了。</p>
-      <p id="case-fields" className="vp-citation-target">因此首图先把 `user=u-42` 和 `token=expired` 放回桌面，再把操作写成 `POST /password/reset`。Azure Test Plans 也把测试步骤与预期结果作为可维护的基本单元，并支持把用例连到用户故事、功能或缺陷；用例不是一段散文，而是一张能追到需求的执行单。<Cite id="case-fields" sources={testCaseSources} /></p>
+      <p id="case-fields" className="vp-citation-target">例如先写明 `user=u-42` 和 `token=expired` 这两个前提，再把操作写成 `POST /password/reset`。Azure Test Plans 也把测试步骤与预期结果作为可维护的基本单元，并支持把用例连到用户故事、功能或缺陷；用例不是一段散文，而是一张能追到需求的执行单。<Cite id="case-fields" sources={testCaseSources} /></p>
       <p>这里的“前置”不是背景介绍，而是测试的起跑线：账号是否激活、令牌什么时候过期、数据库里有没有旧会话，都决定了后面的结果。起点没有固定，失败就无法归因——你不知道是代码变了，还是测试现场本来就不一样。</p>
     </ArticleSection>
     <ArticleSection id="case-fields-section" title="把一次动作写成别人能照着做的路径">

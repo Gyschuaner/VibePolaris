@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowCounterClockwise, ArrowRight, CheckCircle, Clock, Globe, Pause, Play, Stack, WarningCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowRight, CheckCircle, Globe, Pause, Play, Stack, WarningCircle } from "@phosphor-icons/react";
 import { useState } from "react";
 
 import { ArticleCitation, ArticleSection, ConceptArticle } from "../ConceptArticle";
@@ -54,7 +54,7 @@ function WebSocketRecoveryLab() {
 
 export function WebSocketTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={websocketSources} />;
-  return <ConceptArticle slug="websocket" title="WebSocket" subtitle="WebSocket · HTTP 升级后，双方共享一条持续帧通道" sources={websocketSources} sections={[["ws-upgrade-section", "先把 HTTP 升级成什么"], ["ws-frame-section", "开放后流动的是一帧帧消息"], ["ws-recovery-section", "断线以后谁来补缺口"], ["ws-boundary-section", "长连接不是业务保证"]]} hero={<WebSocketHero />} intro={<>WebSocket 解决的是“双方都能主动说话”的连接问题。客户端先用 HTTP Upgrade 建立通道，连接进入 OPEN 后，服务器可以主动推送，客户端也能发送；断线、重连、确认和补消息仍要写进应用协议。</>}>
+  return <ConceptArticle slug="websocket" title="WebSocket" subtitle="WebSocket · HTTP 升级后，双方共享一条持续帧通道" sources={websocketSources} sections={[["ws-upgrade-section", "先把 HTTP 升级成什么"], ["ws-frame-section", "开放后流动的是一帧帧消息"], ["ws-recovery-section", "断线以后谁来补缺口"], ["ws-boundary-section", "长连接不是业务保证"]]} intro={<>WebSocket 解决的是“双方都能主动说话”的连接问题。客户端先用 HTTP Upgrade 建立通道，连接进入 OPEN 后，服务器可以主动推送，客户端也能发送；断线、重连、确认和补消息仍要写进应用协议。</>}>
     <ArticleSection id="ws-upgrade-section" title="先把 HTTP 升级成什么">
       <p id="ws-upgrade" className="vp-citation-target">客户端先发送带 Upgrade: websocket 的 HTTP 握手，服务器以 101 Switching Protocols 接受后，连接才离开普通 HTTP 请求响应的节奏。握手失败时，应用不应假装已经有一条实时通道。<Cite id="ws-upgrade" /></p>
       <p id="ws-open" className="vp-citation-target">浏览器 API 会把连接从 CONNECTING 推到 OPEN；只有 OPEN 状态才适合发送业务消息。CLOSING 和 CLOSED 表示通道正在收尾或已经不可用，调用方要据此更新界面和发送策略。<Cite id="ws-open" /><Cite id="ws-state" /></p>

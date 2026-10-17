@@ -1,6 +1,5 @@
-import { BookmarkSimple, Coffee, Lightbulb, Power, Ticket } from "@phosphor-icons/react/dist/ssr";
+
 import { ConceptArticle, ArticleSection, ArticleCitation, ArticleAside, ConceptTerm } from "./ConceptArticle";
-import { ConceptHero } from "./ConceptHero";
 import { EventLesson, BubblingLesson, HookLesson } from "./EventConceptLessons";
 import { eventSources, bubblingSources, hookSources } from "@/lib/event-concept-sources";
 import styles from "./EventConcepts.module.css";
@@ -13,11 +12,7 @@ export function EventTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={eventSources} />;
   return <ConceptArticle slug="event" title="事件" sources={eventSources}
     sections={[["notification", "动作进入处理函数"], ["listener", "接上一个处理函数"], ["object", "事件携带的信息"], ["result", "默认行为与业务结果"]]}
-    hero={<ConceptHero slug="event" label="第一次点击会被记录，同时点亮阅读灯；开灯监听断开后第二次点击仍被记录，灯保持原状"><div className={styles.eventHero}>
-      <Lightbulb size={58} weight="light" /><div className={styles.heroBeam} /><span className={styles.heroSwitch}><Power size={22} /><i className={styles.heroClickPulse} /></span>
-      <div className={styles.heroClick}><code>click</code><span><b>0</b><b>1</b><b>2</b></span></div>
-      <div className={styles.heroListener}><code>开灯监听</code><span>连接</span><span>断开</span></div>
-    </div></ConceptHero>}
+
     intro={<>事件让程序知道“发生了什么”。在网页中，点击、输入、提交和加载完成都能产生事件。<strong>事件发生，不等于事情已经处理好；代码要先为它登记处理函数。</strong></>}
     relatedIntro={<>处理事件的代码通常用 <ConceptTerm slug="javascript">JavaScript</ConceptTerm> 编写；它可以修改 <ConceptTerm slug="state">状态</ConceptTerm>。至于同一次点击怎样到达父元素，由事件传播规则决定。</>}>
     <ArticleSection id="notification" title="动作进入处理函数">
@@ -54,10 +49,7 @@ export function BubblingTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={bubblingSources} />;
   return <ConceptArticle slug="event-bubbling" title="事件冒泡" sources={bubblingSources}
     sections={[["path", "一次点击经过几层"], ["targets", "目标与当前处理位置"], ["stopping", "停止传播的边界"], ["delegation", "把处理放在父容器"]]}
-    hero={<ConceptHero slug="event-bubbling" label="左侧一次点击从按钮依次到达卡片和列表；右侧点击在按钮处停止，外层不响应"><div className={styles.bubbleHero}>
-      <div className={`${styles.bubbleScene} ${styles.bubblePass}`}><span className={styles.bubbleCaption}>继续冒泡</span><div className={styles.bubbleList}><span>列表</span><div className={styles.bubbleCard}><span>卡片</span><div className={styles.bubbleButton}><BookmarkSimple size={22} weight="fill" /></div></div></div><i className={styles.bubbleMarker} /></div>
-      <div className={`${styles.bubbleScene} ${styles.bubbleStop}`}><span className={styles.bubbleCaption}>按钮处停止</span><div className={styles.bubbleList}><span>列表</span><div className={styles.bubbleCard}><span>卡片</span><div className={styles.bubbleButton}><BookmarkSimple size={22} weight="fill" /></div></div></div><i className={styles.bubbleMarker} /></div>
-    </div></ConceptHero>}
+
     intro={<>点击卡片里的按钮时，卡片和列表上预先登记的处理函数也可能执行。网页元素可以一层包着一层；<strong>同一次点击到达按钮后，还能沿着外层元素继续传播</strong>，这个阶段叫冒泡。</>}
     relatedIntro={<>先用 <ConceptTerm slug="dom">DOM</ConceptTerm> 看清嵌套关系，再沿着 <ConceptTerm slug="event">事件</ConceptTerm> 的传播路径检查处理函数。页面上的视觉位置，不一定等于 DOM 中的父子关系。</>}>
     <ArticleSection id="path" title="一次点击经过几层">
@@ -93,13 +85,7 @@ export function HookTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={hookSources} />;
   return <ConceptArticle slug="hook" title="Hook" subtitle="React 中的可复用逻辑" sources={hookSources}
     sections={[["reuse", "把重复的逻辑提取出来"], ["independent", "同一段逻辑，两份状态"], ["rules", "调用位置有规则"], ["effects", "订阅也要负责清理"]]}
-    hero={<ConceptHero slug="hook" label="咖啡和门票分别调用 useCounter；咖啡沿相同计数规则从 2 走到 3，门票停在 0"><div className={styles.hookHero}>
-      <code>useCounter()</code>
-      <div className={styles.hookTracks}>
-        <div className={`${styles.hookTrack} ${styles.hookCoffee}`}><span><Coffee size={18} />咖啡</span><div className={styles.hookTrackBody}><div className={styles.hookTicks}><i /><i /><i /><i /><b className={styles.hookSlider} /></div><strong><b>2</b><b>3</b></strong></div></div>
-        <div className={`${styles.hookTrack} ${styles.hookTicket}`}><span><Ticket size={18} />门票</span><div className={styles.hookTrackBody}><div className={styles.hookTicks}><i /><i /><i /><i /><b className={styles.hookSlider} /></div><strong>0</strong></div></div>
-      </div>
-    </div></ConceptHero>}
+
     intro={<>React 用组件组成界面；函数组件就是用函数写出的界面部分。咖啡数量这类值会变化，界面更新后还要保留下来。这种值叫状态。本文的 Hook 指 React Hook：它是一类供函数组件使用的特殊函数。React 提供 <code>useState</code> 等内置 Hook，我们也可以写自定义 Hook，<strong>让不同组件复用处理状态的逻辑。</strong></>}
     relatedIntro={<>Hook 在 <ConceptTerm slug="component">组件</ConceptTerm> 中使用；<ConceptTerm slug="state">状态</ConceptTerm> 记住会变化的数据，<ConceptTerm slug="effect">Effect</ConceptTerm> 负责与浏览器等外部系统同步。组件还可以通过 <ConceptTerm slug="props">Props</ConceptTerm> 接收外层传来的数据。</>}>
     <ArticleSection id="reuse" title="把重复的逻辑提取出来">

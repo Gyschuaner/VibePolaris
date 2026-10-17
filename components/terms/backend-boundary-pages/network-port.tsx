@@ -78,7 +78,7 @@ function PortMatrixLab() {
 
 export function NetworkPortTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={networkPortSources} />;
-  return <ConceptArticle slug="network-port" title="网络端口" subtitle="Network port · 把传输层流量交给正确端点的数字条件" sources={networkPortSources} sections={[["port-basics", "端口不是物理插口"], ["port-demux-section", "协议和端口要一起看"], ["port-check", "可达、监听、响应是三关"], ["port-service-section", "数字有登记，也不替服务背书"]]} hero={<NetworkPortHero />} intro={<>同一个 IP 上可以同时跑网站、DNS 和别的服务，因为传输层还会看端口。<strong>端口只是分发条件的一部分：</strong>协议、端口、监听进程和网络过滤有一项不对，探测结果就会变。<Cite id="port-definition" /></>}>
+  return <ConceptArticle slug="network-port" title="网络端口" subtitle="Network port · 把传输层流量交给正确端点的数字条件" sources={networkPortSources} sections={[["port-basics", "端口不是物理插口"], ["port-demux-section", "协议和端口要一起看"], ["port-check", "可达、监听、响应是三关"], ["port-service-section", "数字有登记，也不替服务背书"]]} intro={<>同一个 IP 上可以同时跑网站、DNS 和别的服务，因为传输层还会看端口。<strong>端口只是分发条件的一部分：</strong>协议、端口、监听进程和网络过滤有一项不对，探测结果就会变。<Cite id="port-definition" /></>}>
     <ArticleSection id="port-basics" title="端口不是物理插口">
       <p id="port-definition" className="vp-citation-target">端口是传输层用来区分端点的一段数字。TCP 首部有源端口和目的端口；UDP 也有这两个字段，但 UDP 不会因为数字相同就共享 TCP 的连接状态。<Cite id="port-definition" /></p>
       <p id="port-range" className="vp-citation-target">端口号的范围属于协议空间，服务名和登记号只是帮助人和工具约定用途。IANA 把系统端口、用户端口和动态端口分开管理；登记一个数字不等于某个程序一定正在使用它。<Cite id="port-range" /></p>

@@ -1,7 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { ssgSources } from "@/lib/ssg-sources";
-import { SsgHero } from "./ssg-hero";
 
 const sections: [string, string][] = [
   ["ssg-definition-section", "生成发生在访问之前"],
@@ -10,7 +9,7 @@ const sections: [string, string][] = [
 ];
 
 export function SsgTermPage() {
-  return <Article slug="ssg" title="静态生成" subtitle="Static site generation · 构建时先把页面做好" sources={ssgSources} sections={sections} hero={<SsgHero />} intro={<>SSG 把页面生成提前到构建阶段。<strong>访问请求只需拿已经生成的 HTML 和资源</strong>；内容什么时候更新，取决于下一次构建、再生成和发布，而不是这一次刷新。</>}>
+  return <Article slug="ssg" title="静态生成" subtitle="Static site generation · 构建时先把页面做好" sources={ssgSources} sections={sections} intro={<>SSG 把页面生成提前到构建阶段。<strong>访问请求只需拿已经生成的 HTML 和资源</strong>；内容什么时候更新，取决于下一次构建、再生成和发布，而不是这一次刷新。</>}>
     <ArticleSection id="ssg-definition-section" title="生成发生在访问之前">
       <p id="ssg-build" className="vp-citation-target">静态生成会在构建阶段读取内容和路径，产出可以直接部署的 HTML。<Cite id="ssg-build" sources={ssgSources} />用户访问时不需要服务器为每个请求重新执行同一遍页面生成。</p>
       <p id="ssg-static" className="vp-citation-target">部署后的服务器或 CDN 直接返回既有文件，缓存和分发因此更容易复用。<Cite id="ssg-static" sources={ssgSources} />这也是文档、营销页和内容更新节奏稳定的页面常用它的原因。</p>

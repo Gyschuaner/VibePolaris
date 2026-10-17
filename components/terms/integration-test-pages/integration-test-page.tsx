@@ -1,7 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { integrationTestSources } from "@/lib/integration-test-sources";
-import { IntegrationTestSignatureHero } from "../DataTestSignatureHeroes";
 import { IntegrationTestLesson } from "./integration-test";
 
 const sections: [string, string][] = [
@@ -12,12 +11,12 @@ const sections: [string, string][] = [
 ];
 
 export function IntegrationTestTermPage() {
-  return <Article slug="integration-test" title="集成测试" subtitle="Integration Test · 让组件在真实边界上互相见面" sources={integrationTestSources} sections={sections} hero={<IntegrationTestSignatureHero />} intro={<>订单接口的每个函数都通过了，连上数据库却在事务边界上摔倒了。集成测试把组件接回一小段真实现场，让请求、配置、数据格式和副作用一起接受检查，同时把不值得拉进来的外部故障留在可控范围内。</>}>
+  return <Article slug="integration-test" title="集成测试" subtitle="Integration Test · 让组件在真实边界上互相见面" sources={integrationTestSources} sections={sections} intro={<>订单接口的每个函数都通过了，连上数据库却在事务边界上摔倒了。集成测试把组件接回一小段真实现场，让请求、配置、数据格式和副作用一起接受检查，同时把不值得拉进来的外部故障留在可控范围内。</>}>
     <ArticleSection id="integration-boundary" title="让真实边界一起上场">
       <p id="integration-definition" className="vp-citation-target">Martin Fowler 把集成测试的核心说得很直接：检查独立开发的单元连接后能不能按预期工作。它不必天然等于“启动整个宇宙”；可以只挑订单服务和数据库这一小段边界，也可以根据风险把范围扩大。<Cite id="integration-definition" sources={integrationTestSources} /></p>
       <p id="integration-boundary-evidence" className="vp-citation-target">Microsoft 的示例把数据库、文件系统、网络和请求响应管线都视为可能参与的基础设施，并强调集成测试使用生产中真正的组件，因此比单元测试更慢、更需要数据准备。这个差异正是它的价值：让真实配置和真实协议暴露彼此的假设。<Cite id="integration-boundary-evidence" sources={integrationTestSources} /></p>
       <p id="integration-narrow" className="vp-citation-target">Fowler 还区分 narrow 和 broad 两种集成测试。narrow 只运行当前服务与外部服务交互的那一段，可以用忠实的 test double；broad 则需要多个真实服务和网络环境。把这两种范围都叫“集成测试”并没有错，但写方案时必须说清楚自己让哪些边界真的上场。<Cite id="integration-narrow" sources={integrationTestSources} /></p>
-      <p>首图选择的是一条窄而真实的路径：订单服务和 PostgreSQL 不替换，支付故障由测试主动注入。这样读者能同时看到真实 SQL 的结果和外部错误的影响，而不用把完整前端、邮件、支付生产环境都搬进来。</p>
+      <p>下面的实验选择一条窄而真实的路径：订单服务和 PostgreSQL 不替换，支付故障由测试主动注入。这样读者能同时看到真实 SQL 的结果和外部错误的影响，而不用把完整前端、邮件、支付生产环境都搬进来。</p>
     </ArticleSection>
     <ArticleSection id="integration-sequence" title="请求、事务和状态要连成一条证据链">
       <p id="integration-sequence-evidence" className="vp-citation-target">ASP.NET Core 的集成测试示例把流程拆成配置测试宿主、创建客户端、准备请求、发送请求、检查响应五步。这个顺序很重要：如果只直接调用服务类，就跳过了路由、序列化、认证和中间件这些可能出错的接缝。<Cite id="integration-sequence-evidence" sources={integrationTestSources} /></p>

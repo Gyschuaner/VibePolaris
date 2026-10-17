@@ -1,18 +1,16 @@
-import { Clock } from '@phosphor-icons/react/dist/ssr';
+
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
-import { ConceptHero } from './ConceptHero';
 import { DatasetLesson, QualityLesson, LineageLesson } from './ProvenanceConceptLessons';
 import { datasetSources, qualitySources, lineageSources } from '@/lib/provenance-sources';
 import base from './EventConcepts.module.css';
 import s from './ProvenanceConcepts.module.css';
-import { DataLineageSignatureHero } from './DataTestSignatureHeroes';
 function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{names.map(name => <span key={name} id={`${slug}-${name}`} className={base.anchor} aria-hidden="true"/>)}</>; }
 
 export function DatasetTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={datasetSources}/>;
   return <ConceptArticle slug="dataset-data" title="数据集" sources={datasetSources} sections={[["collection", "一组有范围的数据"], ["snapshot", "来源更新，旧版本仍要可查"], ["description", "数据之外，还需要说明"], ["use", "先判断是否适合这次用途"]]}
     intro={<>“九月借阅数据”听起来明确，但还少了几个边界：哪几天、哪些记录、哪个版本。一组数据可以不断更新；某次报表实际用过的那一份，要能被准确找回。</>}
-    hero={<ConceptHero slug="dataset-data" label="来源新增D后，旧快照v1仍保留ABC，新快照v2包含ABCD"><div className={s.datasetHero}><div className={s.heroVersion}><strong>v1 · 3 条</strong><code>A　B　C</code><span>旧范围与来源</span></div><span className={s.heroArrival}>来源新增 D</span><div className={s.heroVersion}><strong>v2 · 4 条</strong><code>A　B　C　D</code><span>扩大范围后保存</span></div></div></ConceptHero>}>
+    >
     <ArticleSection id="collection" title="一组有范围的数据"><Legacy slug="dataset-data" names={["question", "definition"]}/>
       <p id="dataset-definition" className="vp-citation-target"><strong>数据集是被组织在一起、可以作为一组来描述和使用的数据。</strong>它可以是借阅记录、图片、文本或声音，不限于机器学习样本。W3C 的 DCAT 把数据集本身和可获取的具体表示分开：同一份数据可以提供 CSV 和 JSON 两种分发形式；两种下载文件确实不同，它们却不一定是两套不同内容。分发形式回答“怎样拿到”，数据集还要说明“包含什么、范围到哪里”。<Cite id="dataset-definition"/></p>
       <p>“一行代表一次借阅”“只包含九月前两天”“保留稳定事件 ID”，这些约定决定这组记录的含义，也划出了数据集的边界。文件名写成 loans.csv，本身说明不了它收录了什么。一个文件也可能只是数据集的一种分发形式，或其中一部分。</p>
@@ -43,7 +41,7 @@ export function QualityTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={qualitySources}/>;
   return <ConceptArticle slug="data-quality" title="数据质量" sources={qualitySources} sections={[["purpose", "质量要放到用途里判断"], ["measure", "同一批数据，换一种要求"], ["dimensions", "把不同问题分别量出来"], ["evidence", "规则通过，还要看事实"]]}
     intro={<>图书馆现在能查到的借阅数据，是三个小时前保存的。用它回看本月情况，和用它判断一本书此刻能否借出，对数据的要求不同。数据质量描述数据适合某种用途的程度，判断时要说清具体用途、怎么测、接受什么结果。</>}
-    hero={<ConceptHero slug="data-quality" label="同一份三小时前快照在月报24小时门槛下通过，在实时库存30秒门槛下未通过"><div className={s.qualityHero}><div className={s.heroAge}><Clock size={24}/><span>同一快照</span><strong>3 小时</strong></div><div className={s.heroPolicy}><strong>月报参考</strong><span>≤ 24 小时</span><span>时效通过 ✓</span></div><div className={s.heroPolicy}><strong>实时库存</strong><span>≤ 30 秒</span><span>时效未通过</span></div></div></ConceptHero>}>
+    >
     <ArticleSection id="purpose" title="质量要放到用途里判断"><Legacy slug="data-quality" names={["question", "definition"]}/>
       <p id="quality-purpose" className="vp-citation-target"><strong>先明确谁要用这份数据、做什么，以及不能接受哪些问题。</strong>W3C 的 Data Quality Vocabulary（简称 DQV）是一套描述数据质量的词汇，由 Data on the Web Best Practices 工作组整理，不是规定所有组织必须采用的统一标准，也没有规定统一的“高质量”定义。它区分质量维度、指标、测量值与政策：完整性是维度，也就是大家关注的方面；“书目编号非空的记录占多少”是指标；9/10 是测量值，也就是实际测出来的数；“本次用途至少接受 90%”是政策，这里说的政策就是这次用途接受数据的门槛。把它们分开记录，别人才能知道“通过”是怎样得出的。<Cite id="quality-purpose"/></p>
       <p>实时库存关心刚发生的借阅是否已经反映出来；月报参考对分钟级延迟可能不敏感，却需要覆盖正确的月份。两种用途都可能在意缺失与重复，但接受门槛要由使用数据的人根据错误或延迟会造成的后果来约定。<strong>用途变化，合格结论可以变化，原始数据不必跟着改变。</strong>判断时先固定数据版本，也就是本次拿来比较的那一版数据，再固定观察时刻，也就是从哪个时间点算起快照过了多久，最后说明按哪组门槛得出结论。</p>
@@ -73,7 +71,7 @@ export function LineageTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={lineageSources}/>;
   return <ConceptArticle slug="data-lineage" title="数据血缘" sources={lineageSources} sections={[["relations", "从结果找到来源与过程"], ["trace", "同一份输入，两个报表值"], ["impact", "字段变化影响的下游输出"], ["history", "当前关系与历史记录要分开"]]}
     intro={<>报表的合计从 2000 分变成 1800 分，先别急着认定哪一版算错了：可能是输入变了，也可能是计算规则变了。数据血缘把这个结果、使用过的输入和处理过程关联起来，帮我们顺着这些关联查清变化来自哪里。</>}
-    hero={<DataLineageSignatureHero />}>
+    >
     <ArticleSection id="relations" title="从结果找到来源与过程"><Legacy slug="data-lineage" names={["question", "definition"]}/>
       <p id="lineage-relations" className="vp-citation-target"><strong>数据血缘记录数据与处理之间的依赖，帮助追查一个结果怎样产生、哪些后续结果依赖它。</strong>W3C PROV 是通用的来源记录模型：实体是要追查的东西，例如一份输入快照或输出报表；活动是发生过的处理，例如某次汇总；参与者是承担责任的人、组织或程序。模型可以表达活动使用了什么、生成了什么，以及一个结果由哪些输入派生而来。在本例中，费用来源 s1 和 daily.total 都是实体，求和规则是活动，run-42 就是这次活动的记录；这样读者看到的不只是两张表相连，还能知道中间做了什么。<Cite id="lineage-relations"/></p>
       <p>向上看，是“这个合计来自哪些输入”；向下看，是“这份输入改变后，哪些输出可能需要复查”。没有血缘记录，也能逐份打开文件、检查计算规则或询问维护者，但要自己拼出这条路径。血缘把已知关系记下来，方便沿途调查；<strong>它不自动证明数据正确，也不自动执行修复。</strong>处理数据的任务负责计算，血缘记录负责说明这些处理怎样关联输入与结果。</p>

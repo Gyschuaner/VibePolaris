@@ -1,11 +1,11 @@
 import { ArticleSection, ArticleAside } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
-import { BundlerHero, BundlerLesson } from "../ai-stack-lessons/bundler";
+import { BundlerLesson } from "../ai-stack-lessons/bundler";
 import { bundlerSources } from "@/lib/ai-stack-concept-sources/bundler";
 
 export function BundlerTermPage() {
   const sections: [string, string][] = [["bundle-start", "写了四个模块，浏览器要拿几个文件？"], ["bundle-entry", "从入口找齐这次需要的代码"], ["bundle-split", "图表晚点打开，代码也能晚点到"], ["bundle-assets", "样式和没用到的代码怎么处理"], ["bundle-delivery", "能打出来，还得能加载、能运行"]];
-  return <Article slug="bundler" title="打包器" subtitle="Bundler · 把分散的模块整理成可加载的产物" sources={bundlerSources} sections={sections} hero={<BundlerHero />} intro={<>你把导航、工具函数和统计图表分开写，改某个功能时更容易找到代码。发布时，浏览器拿到的文件又可能变成一个主包、一个图表包和一份样式。打包器负责整理这些源码关系，并按配置生成输出。</>}>
+  return <Article slug="bundler" title="打包器" subtitle="Bundler · 把分散的模块整理成可加载的产物" sources={bundlerSources} sections={sections} intro={<>你把导航、工具函数和统计图表分开写，改某个功能时更容易找到代码。发布时，浏览器拿到的文件又可能变成一个主包、一个图表包和一份样式。打包器负责整理这些源码关系，并按配置生成输出。</>}>
     <ArticleSection id="bundle-start" title="写了四个模块，浏览器要拿几个文件？">
       <p>“模块”是一段有自己用途、可以导入其他代码的程序。例如导航模块提供页面导航，图表模块负责绘图。源码分开维护很方便，部署时怎样组织它们，则需要另一套安排。</p>
       <p id="bundler-definition-text" className="vp-citation-target"><strong>打包器（bundler）从入口分析模块依赖，把需要的代码组织成一个或多个输出文件。</strong>webpack 将这个核心工作描述为建立依赖图并生成 bundles。源码文件数和输出文件数没有固定的一对一关系。<Cite id="bundler-definition-text" sources={bundlerSources} /></p>

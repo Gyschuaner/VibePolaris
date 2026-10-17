@@ -1,7 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { agentOrchestrationSources } from "@/lib/ai-stack-concept-sources/agent-orchestration";
-import { AgentOrchestrationHero, AgentOrchestrationLesson } from "../ai-stack-lessons/agent-orchestration";
+import { AgentOrchestrationLesson } from "../ai-stack-lessons/agent-orchestration";
 
 export function AgentOrchestrationTermPage() {
   const sections: [string, string][] = [
@@ -10,7 +10,7 @@ export function AgentOrchestrationTermPage() {
     ["orchestration-state", "每个结果都要有归属"],
     ["orchestration-boundary", "合并需要规则"],
   ];
-  return <Article slug="agent-orchestration" title="智能体编排" subtitle="Agent Orchestration · 安排多个角色如何协作" sources={agentOrchestrationSources} sections={sections} hero={<AgentOrchestrationHero />} intro={<>智能体编排管理多个智能体、程序或工具的关系：谁先运行，谁可以并行，谁必须等待，结果如何合并，出错时如何停止。角色多不等于系统会协作；真正要讲清的是任务依赖、状态归属和交付条件。</>}>
+  return <Article slug="agent-orchestration" title="智能体编排" subtitle="Agent Orchestration · 安排多个角色如何协作" sources={agentOrchestrationSources} sections={sections} intro={<>智能体编排管理多个智能体、程序或工具的关系：谁先运行，谁可以并行，谁必须等待，结果如何合并，出错时如何停止。角色多不等于系统会协作；真正要讲清的是任务依赖、状态归属和交付条件。</>}>
     <ArticleSection id="orchestration-question" title="编排管理的是关系">
       <p>把一份供应商报告交给三个模型并不自动成为“多智能体系统”。只有当任务被拆成有输入、有产出、有依赖的工作，编排器才有东西可管理：检索拿到资料，核对判断资料是否冲突，撰写只读取通过核对的材料。</p>
       <p id="orchestration-definition" className="vp-citation-target">OpenAI Agents SDK 把编排描述为决定哪些智能体以什么顺序运行，以及下一步怎样决定；这个决定可以由代码明确写出，也可以交给模型。<Cite id="orchestration-definition" sources={agentOrchestrationSources} />关键不是把任务切得越细，而是让每个交接点都能回答“我拿到的是什么、我交出的是什么”。</p>

@@ -13,7 +13,7 @@ export function GitHero({ trigger, change, proof, contextLabel, contextTitle }: 
 }
 
 export function GitArticle({ slug, title, subtitle, intro, sections, sources, hero, children }: { slug: string; title: string; subtitle: string; intro: ReactNode; sections: [string, string][]; sources: GitSource[]; hero: ReactNode; children: ReactNode }) {
-  return <ConceptArticle slug={slug} title={title} subtitle={subtitle} intro={intro} sections={sections} sources={sources as unknown as typeof harnessSources} hero={hero}>{children}</ConceptArticle>;
+  return <ConceptArticle slug={slug} title={title} subtitle={subtitle} intro={intro} sections={sections} sources={sources as unknown as typeof harnessSources} >{children}</ConceptArticle>;
 }
 
 export { ArticleSection };

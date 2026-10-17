@@ -28,6 +28,7 @@ import { LlmTermPage, TokenTermPage, AgentTermPage } from "@/components/terms/Fo
 import { SemanticSearchTermPage, RagConceptTermPage } from "@/components/terms/SemanticConceptPages";
 import { HybridSearchTermPage, CitationTermPage } from "@/components/terms/EvidenceConceptPages";
 import { TermExperiencePage } from "@/components/terms/TermExperiencePage";
+import { ConceptMotion } from "@/components/terms/ConceptMotion";
 import { getPublishedTerm, getRelatedTerms, publishedTerms } from "@/lib/content";
 import { getTermExperience } from "@/lib/term-experiences";
 
@@ -528,7 +529,7 @@ export default async function TermPage({ params }: TermPageProps) {
       {DedicatedTermPage ? (
         <DedicatedTermPage term={term} previous={previous} next={next} related={related} />
       ) : (
-        <TermExperiencePage term={term} experience={experience!} previous={previous} next={next} related={related} />
+        <TermExperiencePage term={term} experience={experience!} previous={previous} next={next} related={related} hero={<ConceptMotion slug={term.slug} />} />
       )}
       </ReadingNotes>
       {!(term.slug in articleTermPages) && <aside className="term-graph-entry"><Link className="term-graph-link" href={`/?term=${term.slug}`}><span className="brand-star-only" aria-hidden="true" />在星图中探索「{term.zh}」<span aria-hidden="true">↗</span></Link></aside>}

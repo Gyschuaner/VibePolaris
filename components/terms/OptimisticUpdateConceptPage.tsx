@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowCounterClockwise, CheckCircle, Pause, Play, Star, WarningCircle } from "@phosphor-icons/react";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Article, Cite } from "./AiStackConceptPageShared";
 import { ArticleAside, ArticleSection } from "./ConceptArticle";
@@ -95,7 +95,7 @@ function OptimisticLab() {
 const sections: [string, string][] = [["optimistic-definition-section", "先让界面跟上动作"], ["optimistic-rollback-section", "临时状态怎样回到事实"], ["optimistic-layer-section", "为什么要把两层缓存分开"], ["optimistic-boundary-section", "乐观不是猜什么都能成功"]];
 
 export function OptimisticUpdateTermPage() {
-  return <Article slug="optimistic-update" title="乐观更新" subtitle="Optimistic Update · 先给反馈，再等事实" sources={optimisticUpdateSources} sections={sections} hero={<OptimisticHero />} intro={<>收藏、点赞或改名时，用户不想盯着按钮等网络往返。<strong>乐观更新先把“预计会成功”的结果放进界面，让动作立刻有反馈；服务器确认后，它才成为规范状态，失败则必须撤回或解释冲突。</strong></>}>
+  return <Article slug="optimistic-update" title="乐观更新" subtitle="Optimistic Update · 先给反馈，再等事实" sources={optimisticUpdateSources} sections={sections} intro={<>收藏、点赞或改名时，用户不想盯着按钮等网络往返。<strong>乐观更新先把“预计会成功”的结果放进界面，让动作立刻有反馈；服务器确认后，它才成为规范状态，失败则必须撤回或解释冲突。</strong></>}>
     <ArticleSection id="optimistic-definition-section" title="先让界面跟上动作"><p id="optimistic-definition" className="vp-citation-target"><strong>乐观状态是一个正在进行的动作的临时投影，不是服务器已经确认的事实。</strong>React 的 `useOptimistic` 在 Action 进行时显示临时值，Action 结束后重新使用传入的真实值；因此“星星先亮”与“保存成功”是两个时间点。<Cite id="optimistic-definition" sources={optimisticUpdateSources} />只有把这两个状态分开，界面才不会把猜测说成结果。</p><p id="optimistic-commit" className="vp-citation-target">当服务器返回新的规范值，临时值和真实值在同一次更新里收敛。React 文档把这描述为 Action 完成后的最终提交；Apollo 也会在响应到达后移除临时对象、写入服务器返回的规范对象。<Cite id="optimistic-commit" sources={optimisticUpdateSources} />这不是再播放一次“成功动画”，而是换掉事实来源。</p></ArticleSection>
     <ArticleSection id="optimistic-rollback-section" title="临时状态怎样回到事实"><p id="optimistic-rollback" className="vp-citation-target">失败时，最小的安全动作是回到操作前的快照，或者重新读取服务器状态。TanStack Query 的示例在更新前保存旧数据，失败时用它回滚；Redux Toolkit 的 `patchResult.undo()` 也把这条撤回路径写成显式操作。<Cite id="optimistic-rollback" sources={optimisticUpdateSources} />动画里的贴片因此会撕回原来的星星，而不是停在“看起来已收藏”。</p><OptimisticLab /><p>实验把服务器结果固定成成功或失败，方便只改变一个条件。成功时界面和规范状态一起变成“已收藏”；失败时界面先亮一下，再回到“未收藏”，并留下失败原因。这个反馈不是在模拟真实网络成功率，而是在显示回滚为什么必须可见。</p></ArticleSection>
     <ArticleSection id="optimistic-layer-section" title="为什么要把两层缓存分开"><p id="optimistic-layer" className="vp-citation-target">Apollo Client 会把乐观响应放在独立的临时层里，而不直接覆盖同一个规范缓存对象；服务器响应到达后，临时层被移除，规范对象才更新。<Cite id="optimistic-layer" sources={optimisticUpdateSources} />分层让系统在预测错时还有原值可退，也让同一份数据的多个查询能同时看到临时变化。</p><p id="optimistic-identity" className="vp-citation-target">新增对象还没有服务器 ID 时，Apollo 示例使用临时 ID 让它先进入正确的缓存形状，收到真实 ID 后再换成规范对象。<Cite id="optimistic-identity" sources={optimisticUpdateSources} />临时身份必须能被替换，否则列表会出现重复项或旧贴片残留。</p></ArticleSection>

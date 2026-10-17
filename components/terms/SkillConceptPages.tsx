@@ -1,6 +1,5 @@
-import { BookOpen, FileText, Terminal } from '@phosphor-icons/react/dist/ssr';
+
 import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptTerm } from './ConceptArticle';
-import { ConceptHero } from './ConceptHero';
 import { SkillLesson } from './SkillConceptLessons';
 import { skillSources } from '@/lib/skill-concept-sources';
 import s from './SkillConcepts.module.css';
@@ -10,11 +9,7 @@ export function SkillTermPage() {
   return <ConceptArticle slug="skill" title="技能" subtitle="Agent Skill" sources={skillSources}
     intro={<>Agent Skill 是一个可复用的目录，用来打包工作步骤和可选资源。宿主可以按需向智能体提供这些内容；目录格式相通，具体怎么触发和读取则取决于宿主。</>}
     sections={[['package', '把流程装进目录'], ['disclosure', '需要哪页，就读哪页'], ['trigger', '模型怎样选中它'], ['scripts', '指令与执行环境'], ['boundary', '相邻概念与安全']]}
-    hero={<ConceptHero slug="skill" label="Skill 的内容分层进入模型上下文：宿主先提供元数据，选用后读取正文，再按需读取引用材料"><div className={s.heroLayers}>
-      <div data-layer="metadata"><BookOpen size={20} weight="light"/><span><strong>name + description</strong><small>宿主发现后提供给模型</small></span></div>
-      <div data-layer="instructions"><FileText size={20} weight="light"/><span><strong>SKILL.md 正文</strong><small>模型选用后，通过宿主读取</small></span></div>
-      <div data-layer="resources"><Terminal size={20} weight="light"/><span><strong>references/ 与 scripts/</strong><small>按需读取；脚本由宿主执行</small></span></div>
-    </div></ConceptHero>}>
+    >
     <ArticleSection id="package" title="把流程装进目录">
       <p id="skill-purpose" className="vp-citation-target"><strong>Skill 把重复要交代的流程收进一个文件夹，供智能体在相似任务中复用。</strong>核心是可读的工作说明；目录还可以带参考资料、模板和脚本。它包装的是做事的方法与材料，不是训练出一种新模型能力。<Cite id="skill-purpose"/></p>
       <p id="skill-structure" className="vp-citation-target">开放的 Agent Skills 规范要求目录里有 <code>SKILL.md</code>，文件以 YAML frontmatter 开头，至少包含 <code>name</code> 和 <code>description</code>，后面接 Markdown 指令正文。<code>scripts/</code>、<code>references/</code>、<code>assets/</code> 都是可选目录：放可运行代码、按需查阅的材料、模板或数据。是否能执行脚本，要看宿主是否提供相应环境。<Cite id="skill-structure"/></p>

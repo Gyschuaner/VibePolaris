@@ -1,7 +1,6 @@
-import { Broadcast, CloudSun, MusicNote } from "@phosphor-icons/react/dist/ssr";
+
 import { browserApiSources, effectSources } from "@/lib/browser-concept-sources";
 import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptTerm } from "./ConceptArticle";
-import { ConceptHero } from "./ConceptHero";
 import { BrowserApiLesson, EffectLesson } from "./BrowserConceptLessons";
 import shared from "./EventConcepts.module.css";
 import styles from "./BrowserConcepts.module.css";
@@ -14,12 +13,7 @@ export function EffectTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={effectSources} />;
   return <ConceptArticle slug="effect" title="副作用" subtitle="React Effect" sources={effectSources}
     sections={[["sync", "让订阅跟上当前频道"], ["cleanup", "先撤销，再建立"], ["dependencies", "依赖描述同步的条件"], ["choice", "不需要 Effect 的计算"]]}
-    hero={<ConceptHero slug="effect" label="接收器保持原位；音乐订阅先完全撤销，天气订阅随后接通，最终只连接天气"><div className={styles.effectHero}>
-      <svg className={styles.effectPaths} viewBox="0 0 330 234" preserveAspectRatio="none" aria-hidden="true"><path className={styles.effectOldPath} pathLength="100" d="M75 57 C145 57 175 120 245 120" /><path className={styles.effectNewPath} pathLength="100" d="M75 177 C145 177 175 120 245 120" /></svg>
-      <div className={`${styles.effectSource} ${styles.effectMusic}`}><MusicNote size={27} weight="light" /><span>音乐</span></div>
-      <div className={`${styles.effectSource} ${styles.effectWeather}`}><CloudSun size={27} weight="light" /><span>天气</span></div>
-      <div className={styles.effectReceiver}><Broadcast size={34} weight="light" /><span>接收器</span></div>
-    </div></ConceptHero>}
+
     intro={<>界面选择了新的频道，消息订阅也要随之切换。React 的 Effect 用来<strong>让组件与外部系统保持同步</strong>；建立连接时，也要考虑何时撤销它。</>}
     relatedIntro={<>Effect 是一种 <ConceptTerm slug="hook">Hook</ConceptTerm>。它读取 <ConceptTerm slug="state">状态</ConceptTerm>，按需要调用 <ConceptTerm slug="browser-api">浏览器 API</ConceptTerm> 或其他外部系统，而不是代替所有事件处理。</>}>
     <ArticleSection id="sync" title="让订阅跟上当前频道">
@@ -55,11 +49,7 @@ export function BrowserApiTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={browserApiSources} />;
   return <ConceptArticle slug="browser-api" title="浏览器 API" sources={browserApiSources}
     sections={[["host", "语言之外的浏览器能力"], ["measure", "让浏览器测量一块区域"], ["limits", "存在，不代表一定能用"], ["responsibility", "接口能力与业务责任"]]}
-    hero={<ConceptHero slug="browser-api" label="浏览器窗口中的页面区域变宽，测量括号贴住内容区，随后 JavaScript 收到内容宽度读数"><div className={styles.browserHero}>
-      <div className={styles.browserWindow}><span className={styles.browserWindowLabel}>浏览器</span><div className={styles.browserTarget}>页面区域<i aria-hidden="true" /></div></div>
-      <div className={styles.browserTransfer} aria-hidden="true">↓</div>
-      <div className={styles.browserReadout}><span>JS 收到</span><code>contentRect.width</code><strong>200 px</strong></div>
-    </div></ConceptHero>}
+
     intro={<>计算、判断和循环，JavaScript 自己就能表达。读取页面尺寸、发起网络请求或操作剪贴板，则要调用<strong>浏览器向代码提供的接口</strong>。</>}
     relatedIntro={<>浏览器 API 扩展 <ConceptTerm slug="javascript">JavaScript</ConceptTerm> 在网页中的能力。网页发网络请求看 <ConceptTerm slug="fetch-api">Fetch API</ConceptTerm>，把数据存在本地看 <ConceptTerm slug="local-storage">本地存储</ConceptTerm>，与服务器保持持续连接看 <ConceptTerm slug="websocket">WebSocket</ConceptTerm>。</>}>
     <ArticleSection id="host" title="语言之外的浏览器能力">

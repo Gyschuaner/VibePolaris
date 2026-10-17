@@ -1,7 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { apiTestingSources } from "@/lib/api-testing-sources";
-import { ApiTestingSignatureHero as ApiTestingHero } from "../TestSecuritySignatureHeroes";
 import { ApiTestingLesson } from "./api-testing";
 
 const sections: [string, string][] = [
@@ -12,7 +11,7 @@ const sections: [string, string][] = [
 ];
 
 export function ApiTestingTermPage() {
-  return <Article slug="api-testing" title="API 测试" subtitle="API Testing · 让响应和服务端状态一起过关" sources={apiTestingSources} sections={sections} hero={<ApiTestingHero />} intro={<>创建订单接口返回 201，看起来很顺。可网络断开后重试会不会多写一行？用户 B 拿着订单编号能不能读到用户 A 的数据？<strong>API 测试把请求、协议回执和服务端留下的状态放到同一条证据链里。</strong></>}>
+  return <Article slug="api-testing" title="API 测试" subtitle="API Testing · 让响应和服务端状态一起过关" sources={apiTestingSources} sections={sections} intro={<>创建订单接口返回 201，看起来很顺。可网络断开后重试会不会多写一行？用户 B 拿着订单编号能不能读到用户 A 的数据？<strong>API 测试把请求、协议回执和服务端留下的状态放到同一条证据链里。</strong></>}>
     <ArticleSection id="api-testing-definition-section" title="先看协议，别只看绿色">
       <p id="api-direct-request" className="vp-citation-target">API 测试直接向服务发送 HTTP 请求，不必先打开浏览器、点击表单。Playwright 的 <code>APIRequestContext</code> 就是这样一条独立的请求通道：它可以创建资源，也可以在操作后查询服务端状态。<Cite id="api-direct-request" sources={apiTestingSources} /></p>
       <p id="api-auth-state" className="vp-citation-target">请求上下文还可以承接认证状态。Playwright 允许 API 请求上下文和浏览器上下文共享存储状态，这样测试既能用接口准备登录后的数据，也能在页面操作后用接口核对后置条件；是否共享要按测试隔离边界决定。<Cite id="api-auth-state" sources={apiTestingSources} /></p>
@@ -21,7 +20,7 @@ export function ApiTestingTermPage() {
       <p>因此“返回 200”只回答了一个很窄的问题：服务器给了一个成功类别的回执。它还没有回答字段是否满足约定、这次请求是否改变了正确的资源、没有权限的人是否被挡住。</p>
     </ArticleSection>
     <ArticleSection id="api-testing-ledger-section" title="把一条创建接口拆成两本账">
-      <p id="api-schema" className="vp-citation-target">OpenAPI 的 Schema Object 可以描述输入和输出的数据类型。首图里的 <code>orderId:string</code> 不是装饰，它让测试有机会发现“状态码对了，但字段缺失或类型错了”的接口。<Cite id="api-schema" sources={apiTestingSources} /></p>
+      <p id="api-schema" className="vp-citation-target">OpenAPI 的 Schema Object 可以描述输入和输出的数据类型。例如检查 <code>orderId:string</code>，就有机会发现状态码正确、字段却缺失或类型错误的响应。<Cite id="api-schema" sources={apiTestingSources} /></p>
       <p id="api-postcondition" className="vp-citation-target">Playwright 的 API 测试示例会创建资源，再查询列表验证服务端状态；这就是后置条件。创建订单时，第一本账检查 <code>201 + orderId</code>，第二本账检查 <code>orders</code> 表增加且只增加一行。<Cite id="api-postcondition" sources={apiTestingSources} /></p>
       <ApiTestingLesson />
       <p>两本账不是一定要直接查数据库。可以查公开的 GET、事件记录、库存数量或其他能证明状态的接口；重点是观察点要贴近业务结果。若测试只盯着响应体，它很容易错过“回执说成功，状态却没写进去”这类失败。</p>

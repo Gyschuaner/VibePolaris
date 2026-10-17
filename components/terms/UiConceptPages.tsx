@@ -1,6 +1,5 @@
-import { ArrowElbowDownRight, Code, CursorClick, FileText, PaperPlaneTilt, SlidersHorizontal, Stack, UserCircle } from "@phosphor-icons/react/dist/ssr";
+import { ArrowElbowDownRight, Code, CursorClick, FileText, SlidersHorizontal, Stack } from "@phosphor-icons/react/dist/ssr";
 import { ConceptArticle, ArticleSection, ArticleCitation, ArticleAside, ConceptTerm } from "./ConceptArticle";
-import { ConceptHero } from "./ConceptHero";
 import { ComponentLesson, PropsLesson, StateLesson } from "./UiConceptLessons";
 import { componentSources, propsSources, stateSources } from "@/lib/ui-concept-sources";
 import styles from "./UiConcepts.module.css";
@@ -13,10 +12,7 @@ export function ComponentTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={componentSources} />;
   return <ConceptArticle slug="component" title="组件" sources={componentSources}
     sections={[["definition", "一份定义，多处使用"], ["instances", "每个实例的状态"], ["composition", "组件也能组合"], ["boundary", "按职责划分组件"]]}
-    hero={<ConceptHero slug="component" label="头像、姓名与关注按钮合成一份 MemberCard 结构，成员列表按这份结构显示三张不同成员的卡片"><div className={styles.componentHero}>
-      <div className={styles.componentBlueprint}><code>MemberCard</code><div className={styles.componentFrame}><UserCircle size={27} weight="light" /><span className={styles.componentNameLines}><i /><i /></span><span className={styles.componentFollow}>＋</span></div></div>
-      <div className={styles.componentList}><code>MemberList</code>{["阿青", "林墨", "陈屿"].map(name => <div className={styles.componentInstance} key={name}><UserCircle size={23} weight="light" /><span>{name}</span><b>＋</b></div>)}</div>
-    </div></ConceptHero>}
+
     intro={<>组件把一块界面的结构和行为组织在一起。<strong>定义写一份，使用时传入不同数据，页面就能得到多个遵循相同规则的实例。</strong></>}
     relatedIntro={<>用 <ConceptTerm slug="props">Props</ConceptTerm> 配置每次使用的输入，用 <ConceptTerm slug="state">状态</ConceptTerm> 记录交互中的变化。</>}>
     <ArticleSection id="definition" title="一份定义，多处使用">
@@ -54,11 +50,7 @@ export function PropsTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={propsSources} />;
   return <ConceptArticle slug="props" title="Props" sources={propsSources}
     sections={[["input", "由调用者提供输入"], ["readonly", "只读不等于不变"], ["callback", "把操作交回父组件"], ["contract", "让参数容易理解"]]}
-    hero={<ConceptHero slug="props" label="调用处先修改 label，再修改 tone；同一个 ActionButton 的文字和外观依次变化"><div className={styles.propsHero}>
-      <div className={styles.propsCall}><code>调用处</code><div className={styles.propsInputs}><div><code>label</code><span className={styles.propsInputValue}><span>保存草稿</span><span>确认修改</span></span></div><div><code>tone</code><span className={styles.propsInputValue}><span>primary</span><span>quiet</span></span></div></div></div>
-      <svg className={styles.propsThreads} viewBox="0 0 300 70" preserveAspectRatio="none" aria-hidden="true"><path d="M75 0 C75 43 140 29 140 70" /><path d="M225 0 C225 43 160 29 160 70" /><path className={styles.propsLabelThread} d="M75 0 C75 43 140 29 140 70" /><path className={styles.propsToneThread} d="M225 0 C225 43 160 29 160 70" /></svg>
-      <div className={styles.propsButtonBox}><code>ActionButton</code><div className={styles.propsButton}><span>保存草稿</span><span>确认修改</span><PaperPlaneTilt size={18} /></div></div>
-    </div></ConceptHero>}
+
     intro={<>Props 是使用组件时，从外层传给它的输入。按钮文字、样式、能否点击等设置，连同“点击后该做什么”的函数（回调函数），都可以通过 Props 交给组件，<strong>让同一份实现按不同配置工作。</strong></>}
     relatedIntro={<>一个 <ConceptTerm slug="component">组件</ConceptTerm> 规定按钮怎样呈现和响应操作；Props 是外层传来的输入，<ConceptTerm slug="state">状态</ConceptTerm> 是组件或外层记住、会随操作变化的数据。</>}>
     <ArticleSection id="input" title="由调用者提供输入">
@@ -98,12 +90,7 @@ export function StateTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={stateSources} />;
   return <ConceptArticle slug="state" title="状态" sources={stateSources}
     sections={[["memory", "界面需要记住的数据"], ["saving", "一次保存的变化"], ["snapshot", "更新与本次渲染"], ["structure", "只保存必要的数据"]]}
-    hero={<ConceptHero slug="state" label="笔记先记住输入，界面显示新文字；保存后状态变为等待，按钮显示保存中，不提前出现成功回执"><div className={styles.stateHero}><div className={styles.stateCard}>
-      <div className={styles.stateCardTitle}><FileText size={18} /><span>会议笔记</span></div>
-      <div className={styles.stateNote}><span className={styles.statePlaceholder}>写一条笔记…</span><span className={styles.stateWritten}>首页导航</span></div>
-      <div className={styles.stateSave}><span>保存草稿</span><span>保存中</span></div>
-      <div className={styles.stateMemory}><div><code>text</code><span className={styles.stateTextOld}>&quot;&quot;</span><span className={styles.stateTextNew}>&quot;首页导航&quot;</span></div><div><code>status</code><span className={styles.stateStatusOld}>idle</span><span className={styles.stateStatusNew}>pending</span></div></div>
-    </div></div></ConceptHero>}
+
     intro={<>状态是界面需要记住、会影响下一步显示和操作的数据。笔记里输入了什么、现在是否正在保存、上次保存有没有失败，都可以是状态。<strong>处理输入、点击或响应的代码会更新状态，界面再按新值呈现。</strong></>}
     relatedIntro={<>一个 <ConceptTerm slug="event">事件</ConceptTerm> 可以触发状态更新，<ConceptTerm slug="component">组件</ConceptTerm> 负责呈现结果，而清楚的反馈让用户知道操作到了哪一步。</>}>
     <ArticleSection id="memory" title="界面需要记住的数据">
@@ -113,7 +100,7 @@ export function StateTermPage() {
       <p>这里先记两项：正在编辑的文字 <code>text</code>，以及保存阶段 <code>status</code>。按钮显示“保存中”，是根据 <code>status</code> 算出来的，不需要再记一份按钮文字。若不使用 React 的状态接口，也能自己保存数据并逐处修改页面，但输入框、按钮和回执都得自己保持一致。</p>
     </ArticleSection>
     <ArticleSection id="saving" title="一次保存的变化">
-      <p>首图的 <code>status</code> 停在 <code>pending</code>（等待结果），还没有成功回执。下面是另一个独立演示，从一条已有文字的示例笔记重新开始；它与首图不共享内容或进度。你可以改写后保存，再点击“模拟成功”或“模拟失败”给这次保存一个结果。这里不访问服务器，也不把笔记写入文件。先试一次失败，再重试成功。</p>
+      <p>提交后，<code>status</code> 可以先停在 <code>pending</code>（等待结果），此时还没有成功回执。下面从一条已有文字的示例笔记开始，可以比较提交前后的界面变化。你可以改写后保存，再点击“模拟成功”或“模拟失败”给这次保存一个结果。这里不访问服务器，也不把笔记写入文件。先试一次失败，再重试成功。</p>
       <Anchors ids={["state-scene-heading"]} /><StateLesson />
       <p>等待期间，文字暂时不可编辑，保存按钮也不能再点。失败后，输入仍在；成功后，回执显示这次保存的内容。再次编辑时，按钮不再显示“已保存”，旧回执也会隐藏，因为新文字还没有完成新一轮保存。</p>
       <dl className={styles.stateRules}><dt>idle</dt><dd>可以编辑；内容不为空时可以发起保存。</dd><dt>pending</dt><dd>已经发起，仍在等待结果。</dd><dt>error</dt><dd>这次保存失败，保留输入以便重试。</dd><dt>success</dt><dd>这次内容已得到成功响应。</dd></dl>

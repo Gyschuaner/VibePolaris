@@ -1,6 +1,5 @@
-import { CloudArrowDown, Globe, HardDrives, LockKey } from '@phosphor-icons/react/dist/ssr';
+
 import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptTerm } from './ConceptArticle';
-import { ConceptHero } from './ConceptHero';
 import { GatewayLesson, ProxyLesson, ServerLesson } from './EdgeConceptLessons';
 import { gatewaySources, proxySources, serverSources } from '@/lib/edge-concept-sources';
 import base from './EventConcepts.module.css';
@@ -15,7 +14,7 @@ export function ServerTermPage() {
   return <ConceptArticle slug="server" title="服务器" sources={serverSources}
     intro={<>浏览器输入地址后，另一端要有程序接住请求，并决定返回什么。同一台电脑可以运行不止一个服务；端口是这台电脑上用来区分不同网络入口的编号，能否连上某个地址，还要看相应程序是否在监听。</>}
     sections={[["role", "服务器是连接中的角色"], ["listen", "监听、匹配与回应"], ["host", "程序与主机"], ["diagnose", "区分连接失败与 404"]]}
-    hero={<ConceptHero slug="server" label="浏览器请求到达 8000 端口的 HTTP 程序，并收到 200 响应"><div className={s.serverHero}><div><Globe size={23} /><code>GET /books</code></div><div><HardDrives size={23} /><code>:8000 → 200</code></div><span>请求到达监听程序，程序生成响应</span></div></ConceptHero>}>
+    >
     <ArticleSection id="role" title="服务器是连接中的角色"><Legacy slug="server" names={['question', 'definition']} />
       <p id="server-role" className="vp-citation-target"><strong>在 HTTP 连接中，服务器是接受连接、处理请求并发出响应的程序。</strong>发起请求的一方叫客户端；同一个程序在不同连接中也可能充当客户端，例如它再去请求另一项服务。这个称呼描述的是一次通信中的职责，不专指一台机器。<Cite id="server-role" /></p>
       <p>浏览器要看书目，就发送 <code>GET /books</code>。处理程序收到目标和方法后，查找对应资源或执行代码，再构造 <ConceptTerm slug="response">响应</ConceptTerm>。浏览器收到的是处理结果，不会因为网页上有“书目”按钮就自动得到数据。</p>
@@ -44,7 +43,7 @@ export function ApiGatewayTermPage() {
   return <ConceptArticle slug="api-gateway" title="API 网关" sources={gatewaySources}
     intro={<>一个应用要调用订单和用户两项服务。客户端（发起请求的程序）可以走同一个 API 入口；入口按事先配好的规则检查请求、选择目标，再把通过的请求送往后端。</>}
     sections={[["entry", "统一入口接住多项 API"], ["policy", "认证与限流先于后端"], ["route", "把通过的请求交给服务"], ["scope", "公共策略与业务处理"]]}
-    hero={<ConceptHero slug="api-gateway" label="请求经过认证和限流后进入订单服务"><div className={s.gatewayHero}><div><Globe size={24} /><span>客户端请求</span></div><div><LockKey size={23} /><span>认证 · 限流</span></div><div><HardDrives size={24} /><span>订单服务</span></div></div></ConceptHero>}>
+    >
     <ArticleSection id="entry" title="统一入口接住多项 API"><Legacy slug="api-gateway" names={['question', 'definition']} />
       <p id="gateway-role" className="vp-citation-target"><strong>API 网关给客户端一个集中入口，并按配置把请求送到相应应用服务。</strong>认证、限流这类跨服务的接入规则可以由它统一执行；限流就是在一段时间内请求过多时先拦住一部分。Azure 架构文档把它描述为一种反向代理，但也提醒各产品支持的附加能力并不相同。<Cite id="gateway-role" /></p>
       <p>客户端访问 <code>api.example.com/orders</code>，不必直接知道订单服务的内部地址。网关改变服务部署方式时，可以更新入口后的路由，而不要求所有调用方同时改地址。不过多了一层入口，也意味着入口自身需要监控和故障处理。</p>
@@ -72,7 +71,7 @@ export function ReverseProxyTermPage() {
   return <ConceptArticle slug="reverse-proxy" title="反向代理" sources={proxySources}
     intro={<>访客只看到一个公开域名，图片和应用页面却由不同上游提供。上游就是实际处理请求的后方服务；反向代理在公开入口接收请求，按规则转交，再把上游结果送回访客。</>}
     sections={[["position", "公开入口与背后的上游"], ["forward", "请求转交，响应返回"], ["headers", "转发头不是天然可信"], ["limits", "附加能力与上游故障"]]}
-    hero={<ConceptHero slug="reverse-proxy" label="公开代理把图片请求转交给静态资源服务，再把响应带回客户端"><div className={s.proxyHero}><span>客户端</span><span><CloudArrowDown size={23} /> proxy.example</span><span>静态资源服务</span></div></ConceptHero>}>
+    >
     <ArticleSection id="position" title="公开入口与背后的上游"><Legacy slug="reverse-proxy" names={['question', 'definition']} />
       <p id="proxy-role" className="vp-citation-target"><strong>反向代理作为服务端的公开入口接收请求，再向后方服务发起请求。</strong>HTTP 规范也把这类中间方称作 gateway；它对外看起来就像源站（真正提供内容的上游），对内再和上游通信。正向代理替客户端出门访问，反向代理则替后方服务接住访客请求。<Cite id="proxy-role" /></p>
       <p id="proxy-public" className="vp-citation-target">Cloudflare 的反向代理说明展示了这一位置关系：客户端流量先到代理，再去源站，或者由代理代表源站处理部分请求。客户端使用公开域名，不需要知道每个上游的内部地址。<Cite id="proxy-public" /></p>

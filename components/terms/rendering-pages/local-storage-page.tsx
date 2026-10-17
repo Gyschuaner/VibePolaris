@@ -1,7 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { localStorageSources } from "@/lib/local-storage-sources";
-import { LocalStorageHero } from "./local-storage-hero";
 
 const sections: [string, string][] = [
   ["local-storage-definition-section", "先问清楚数据属于哪个 origin"],
@@ -10,7 +9,7 @@ const sections: [string, string][] = [
 ];
 
 export function LocalStorageTermPage() {
-  return <Article slug="local-storage" title="本地存储" subtitle="localStorage · 浏览器里按 origin 留住小片段偏好" sources={localStorageSources} sections={sections} hero={<LocalStorageHero />} intro={<>localStorage 是浏览器提供的一只同步键值盒。<strong>它按 origin 隔离、把值保存成字符串，并允许同源文档感知变化</strong>；适合记住偏好，不适合承担敏感数据或复杂事务。</>}>
+  return <Article slug="local-storage" title="本地存储" subtitle="localStorage · 浏览器里按 origin 留住小片段偏好" sources={localStorageSources} sections={sections} intro={<>localStorage 是浏览器提供的一只同步键值盒。<strong>它按 origin 隔离、把值保存成字符串，并允许同源文档感知变化</strong>；适合记住偏好，不适合承担敏感数据或复杂事务。</>}>
     <ArticleSection id="local-storage-definition-section" title="先问清楚数据属于哪个 origin">
       <p id="storage-origin" className="vp-citation-target">浏览器按 origin（协议、主机和端口的组合）分开 localStorage。<Cite id="storage-origin" sources={localStorageSources} />同一站点的两个页面可以看到同一个盒子，换到另一个 origin 就是另一份数据。</p>
       <p id="storage-string" className="vp-citation-target">键和值都以字符串保存；写入对象时，JavaScript 会先把它转成字符串，想保留结构就要显式 JSON.stringify 和 JSON.parse。<Cite id="storage-string" sources={localStorageSources} /></p>

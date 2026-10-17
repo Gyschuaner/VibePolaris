@@ -48,7 +48,7 @@ function UdpPolicyLab() {
 
 export function UdpTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={udpSources} />;
-  return <ConceptArticle slug="udp" title="UDP" subtitle="User Datagram Protocol · 把一封封独立数据报交给应用" sources={udpSources} sections={[["udp-datagram-section", "UDP 交付的是一封封数据报"], ["udp-guarantees-section", "少做保证，应用多做决定"], ["udp-path-section", "路径上的风险仍要有人负责"], ["udp-boundary-section", "什么时候不该只用 UDP"]]} hero={<UdpHero />} intro={<>实时语音里，一封迟到的数据报有时比一封丢失的数据报更碍事：它回来时，画面已经走远。UDP 选择保留每封数据报的边界，却不替应用保证到达、顺序或去重；这让应用可以按自己的场景决定哪些数据值得等待。</>}>
+  return <ConceptArticle slug="udp" title="UDP" subtitle="User Datagram Protocol · 把一封封独立数据报交给应用" sources={udpSources} sections={[["udp-datagram-section", "UDP 交付的是一封封数据报"], ["udp-guarantees-section", "少做保证，应用多做决定"], ["udp-path-section", "路径上的风险仍要有人负责"], ["udp-boundary-section", "什么时候不该只用 UDP"]]} intro={<>实时语音里，一封迟到的数据报有时比一封丢失的数据报更碍事：它回来时，画面已经走远。UDP 选择保留每封数据报的边界，却不替应用保证到达、顺序或去重；这让应用可以按自己的场景决定哪些数据值得等待。</>}>
     <ArticleSection id="udp-datagram-section" title="UDP 交付的是一封封数据报">
       <p id="udp-datagram" className="vp-citation-target">UDP 的最小报文包含源端口、目标端口、长度和校验和。端口把数据报交给对应的应用端点，长度让接收方知道这一封在哪里结束；它不会像 TCP 那样把相邻写入拼成一条没有边界的字节流。端口号登记只是服务命名与分配参考，不会替协议补可靠性。<Cite id="udp-datagram" /><Cite id="udp-port" /></p>
       <div className={styles.udpHeaderStrip}><div><span>Source Port</span><code>51000</code></div><div><span>Destination Port</span><code>4000</code></div><div><span>Length</span><code>64 bytes</code></div><div><span>Checksum</span><code>检测部分错误</code></div></div>

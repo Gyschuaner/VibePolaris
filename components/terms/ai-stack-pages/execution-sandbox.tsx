@@ -1,11 +1,11 @@
 import { ArticleAside, ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { executionSandboxSources } from "@/lib/ai-stack-concept-sources/execution-sandbox";
-import { SandboxHero, SandboxWorkbench } from "../ai-stack-lessons/sandbox-workbench";
+import { SandboxWorkbench } from "../ai-stack-lessons/sandbox-workbench";
 
 export function ExecutionSandboxTermPage() {
   const sections: [string, string][] = [["sandbox-start", "把这张表交给脚本，需要交出多少权限？"], ["sandbox-files", "看得见哪些文件，能写到哪里"], ["sandbox-network", "网络和资源，要另外划边界"], ["sandbox-lifetime", "报告还在沙箱里，就不算取回来了"], ["sandbox-limits", "盒子的边界也需要维护"]];
-  return <Article slug="execution-sandbox" title="执行沙箱" subtitle="Execution Sandbox · 给代码一块能做事、又有边界的临时环境" sources={executionSandboxSources} sections={sections} hero={<SandboxHero />} intro={<>你让 AI 帮忙汇总一张费用表，它写好了脚本。脚本需要读表和保存报告；项目密钥、其他人的文件和任意外网，并不在这个任务里。执行沙箱要把“可以做什么”落实到运行环境中。</>}>
+  return <Article slug="execution-sandbox" title="执行沙箱" subtitle="Execution Sandbox · 给代码一块能做事、又有边界的临时环境" sources={executionSandboxSources} sections={sections} intro={<>你让 AI 帮忙汇总一张费用表，它写好了脚本。脚本需要读表和保存报告；项目密钥、其他人的文件和任意外网，并不在这个任务里。执行沙箱要把“可以做什么”落实到运行环境中。</>}>
     <ArticleSection id="sandbox-start" title="把这张表交给脚本，需要交出多少权限？">
       <p>把代码发给模型看，和让代码运行，是两回事。运行中的代码可以请求打开文件、连接网络、占用内存；只在提示词里写“别乱读文件”，不会让这些请求自动失效。</p>
       <p id="sandbox-definition" className="vp-citation-target"><strong>执行沙箱是在受限制的运行环境里执行代码，让它只接触任务允许的资源。</strong>隔离机制由环境来执行。以 Linux 容器为例，namespaces 把部分系统视图分开，cgroups 负责资源计量与限制；它们分别解决“能看见什么”和“能用多少”等不同问题。<Cite id="sandbox-definition" sources={executionSandboxSources} /></p>
