@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>纸面取文 · 动画方向 A</title>
+  <!-- 方向初稿：通用网页与正文的机制示意；同一张正文纸被框架取出，无真实网络调用。 -->
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #F7F3E8;
+      --paper: #FCFAF3;
+      --ink: #171A15;
+      --muted: #686E64;
+      --line: #DAD8CD;
+      --green: #52683F;
+      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 24px 16px;
+      display: grid;
+      place-items: center;
+    }
+    button { font: inherit; }
+    code { font-family: "SFMono-Regular", Consolas, monospace; }
+    .frame { position: relative; width: min(1000px, 100%); aspect-ratio: 1000 / 560; }
+    .stage {
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 1000px;
+      height: 560px;
+      overflow: hidden;
+      transform-origin: top left;
+      background: var(--bg);
+    }
+    .heading {
+      position: absolute;
+      top: 32px;
+      left: 44px;
+      right: 44px;
+      height: 51px;
+      border-bottom: 1px solid var(--line);
+    }
+    h1 {
+      margin: 0;
+      font: 400 30px / 1.2 "Songti SC", "STSong", "SimSun", serif;
+      letter-spacing: .02em;
+    }
+    .demo-note { position: absolute; right: 0; top: 11px; margin: 0; font-size: 12px; color: var(--muted); }
+    .scene { position: absolute; inset: 0; }
+    .query-line {
+      position: absolute;
+      left: 64px;
+      top: 109px;
+      display: flex;
+      align-items: baseline;
+      gap: 18px;
+      font-size: 15px;
+    }
+    .query-line .role { font-size: 14px; color: var(--muted); }
+    .query-line > code { color: var(--green); font-size: 16px; }
+    .query-line .query { border-left: 1px solid #C5C9BC; padding-left: 18px; }
+    .query-line .query code { font-size: 12px; color: var(--muted); margin-right: 8px; }
+    .search-caption { position: absolute; left: 64px; top: 158px; font-size: 14px; color: var(--muted); }
+    .search-caption code { font-size: 14px; color: var(--green); margin-left: 5px; }
+    .search-list { position: absolute; left: 98px; top: 292px; width: 282px; }
+    .result { position: relative; margin-bottom: 35px; }
+    .result-title { margin: 0 0 8px; font-size: 17px; line-height: 1.4; }
+    .result-url { margin: 0; font-size: 12px; color: var(--muted); }
+    .web-shell {
+      position: absolute;
+      left: 64px;
+      top: 185px;
+      width: 334px;
+      height: 270px;
+      border: 1px solid #BCBFB2;
+      background: #F0EEE4;
+      box-shadow: 0 3px 0 #E6E3D8;
+      opacity: 0;
+      z-index: 2;
+    }
+    .web-toolbar { position: relative; height: 33px; border-bottom: 1px solid #CED0C4; background: #E9E9DE; }
+    .menu-mark { position: absolute; left: 13px; top: 12px; width: 13px; height: 2px; background: #7D8575; box-shadow: 0 4px #7D8575; }
+    .web-toolbar code { position: absolute; top: 9px; left: 41px; font-size: 12px; color: #596151; }
+    .web-nav { position: absolute; left: 22px; top: 44px; color: #79806F; font-size: 12px; word-spacing: 21px; }
+    .empty-cutout {
+      position: absolute;
+      left: 21px;
+      top: 63px;
+      width: 270px;
+      height: 190px;
+      border: 1px solid #E1E0D4;
+      background: #E9E8DC;
+      box-shadow: inset 1px 2px 5px #DADACC;
+    }
+    .shell-label { position: absolute; left: 37px; top: 141px; font-size: 14px; color: #858B7E; letter-spacing: .08em; }
+    .workspace { position: absolute; left: 650px; top: 172px; width: 300px; height: 280px; z-index: 1; }
+    .workspace-title { margin: 0 0 0 17px; font: 400 22px / 1.4 "Songti SC", "STSong", "SimSun", serif; }
+    .tray {
+      position: absolute;
+      left: 0;
+      top: 51px;
+      width: 300px;
+      height: 226px;
+      border: 1px solid #C1C7B6;
+      border-top: 3px solid #B1B9A4;
+      background: #F1F0E3;
+    }
+    .tray::before, .tray::after { content: ""; position: absolute; bottom: -4px; width: 14px; height: 8px; background: var(--bg); border-top: 1px solid #C1C7B6; }
+    .tray::before { left: -4px; transform: rotate(45deg); }
+    .tray::after { right: -4px; transform: rotate(-45deg); }
+    .tray-base { position: absolute; left: 17px; right: 17px; bottom: 13px; border-top: 1px solid #DDE0D1; }
+    .paper {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 270px;
+      height: 190px;
+      transform-origin: 50% 50%;
+      z-index: 6;
+    }
+    .paper-surface { position: absolute; inset: 0; border: 1px solid #DAD8CD; background: var(--paper); opacity: 0; }
+    .paper-fold { position: absolute; right: 0; bottom: 0; width: 12px; height: 12px; background: #E2E2D6; clip-path: polygon(100% 0, 100% 100%, 0 100%); opacity: 0; }
+    .paper-tag {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 13px;
+      display: flex;
+      justify-content: space-between;
+      color: var(--green);
+      font-size: 14px;
+      line-height: 18px;
+      opacity: 0;
+    }
+    .paper-tag code { font-size: 14px; }
+    .article-title { position: absolute; left: 18px; top: 38px; margin: 0; font: 600 19px / 1.4 "Songti SC", "STSong", "SimSun", serif; white-space: nowrap; }
+    .selection-line { position: absolute; left: 18px; top: 66px; width: 172px; height: 2px; background: var(--green); transform-origin: left; }
+    .selected-url { position: absolute; left: 18px; top: 72px; color: var(--muted); font-size: 12px; }
+    .paper-body { position: absolute; left: 18px; top: 80px; right: 18px; font-size: 15px; line-height: 28px; clip-path: inset(0 0 100% 0); }
+    .paper-body p { margin: 0; white-space: nowrap; }
+    .paper-body p:last-child { text-decoration: underline; text-decoration-color: #ADBA9F; text-underline-offset: 7px; text-decoration-thickness: 1px; }
+    .fetch-label { position: absolute; left: 464px; top: 165px; width: 142px; text-align: center; z-index: 8; }
+    .fetch-label .role { display: block; font-size: 14px; color: var(--muted); margin-bottom: 4px; }
+    .fetch-label .tool { font-size: 22px; color: var(--green); }
+    .fetch-label .url { display: block; font-size: 12px; color: var(--muted); margin-top: 7px; }
+    .press { position: absolute; left: 493px; top: 241px; width: 82px; height: 211px; z-index: 9; }
+    .press-frame { position: absolute; left: 5px; top: -4px; width: 72px; height: 193px; border: 1px solid #A5AC99; background: transparent; }
+    .press-frame::before, .press-frame::after { content: ""; position: absolute; left: -4px; width: 78px; height: 9px; background: #E5E5D7; border: 1px solid #959F87; }
+    .press-frame::before { top: -5px; }
+    .press-frame::after { bottom: -5px; }
+    .roller {
+      position: absolute;
+      left: 24px;
+      top: 4px;
+      width: 35px;
+      height: 177px;
+      overflow: hidden;
+      border: 1px solid #26331E;
+      border-radius: 9px / 17px;
+      background: linear-gradient(90deg, #2D3A25, #6D7F5A 48%, #2D3A25);
+      box-shadow: 6px 1px 7px #171A1521;
+    }
+    .roller-grooves { position: absolute; left: -20px; top: 9px; width: 80px; height: 157px; background: repeating-linear-gradient(90deg, transparent 0 9px, #F7F3E82B 9px 10px); }
+    .roller::before, .roller::after { content: ""; position: absolute; left: 2px; right: 2px; height: 6px; border: 1px solid #26331E; border-radius: 50%; background: #78866A; z-index: 1; }
+    .roller::before { top: 1px; }
+    .roller::after { bottom: 1px; }
+    .spindle { position: absolute; left: 41px; top: 185px; width: 1px; height: 18px; background: #68745A; }
+    .crank-hub { position: absolute; left: 34px; top: 198px; width: 15px; height: 15px; border: 1px solid #6A785D; border-radius: 50%; background: #ECEDE0; }
+    .crank { position: absolute; left: 41px; top: 205px; width: 29px; height: 2px; transform-origin: 0 50%; background: #52683F; }
+    .crank::after { content: ""; position: absolute; right: -4px; top: -3px; width: 8px; height: 8px; border-radius: 50%; background: #52683F; border: 1px solid #334229; }
+    .binder { position: absolute; top: 233px; width: 16px; height: 15px; background: var(--green); border: 1px solid #3F5131; box-shadow: 0 2px 0 #34422A38; z-index: 10; opacity: 0; }
+    .binder::before { content: ""; position: absolute; top: -4px; left: 3px; right: 3px; height: 5px; border: 1px solid #52683F; border-bottom: 0; }
+    .binder-left { left: 684px; }
+    .binder-right { left: 910px; }
+    .controls { position: absolute; left: 44px; right: 44px; top: 485px; padding-top: 15px; border-top: 1px solid var(--line); display: flex; gap: 10px; }
+    .controls button { position: relative; min-height: 37px; border: 1px solid #BBC2AF; border-radius: 2px; padding: 0 21px; background: transparent; color: var(--green); cursor: pointer; font-size: 14px; }
+    .controls .primary { min-width: 126px; border-color: var(--green); background: var(--green); color: var(--paper); }
+    .controls button:hover:not(:disabled) { background: #E6EBD9; }
+    .controls .primary:hover { background: #405631; }
+    .controls button:focus-visible { outline: 3px solid #82996D; outline-offset: 4px; }
+    .controls button:active:not(:disabled) { transform: translateY(1px); }
+    .controls button:disabled { opacity: .38; cursor: default; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  </style>
+</head>
+<body>
+  <main class="frame" id="frame" aria-labelledby="title">
+    <section class="stage" id="stage">
+      <header class="heading">
+        <h1 id="title">从网页里，取出正文</h1>
+        <p class="demo-note">机制示意</p>
+      </header>
+      <p class="sr-only">模型提出搜索请求，框架执行 Search，返回网页线索。本例进一步读取选中的一页，框架按该页 URL 执行 Fetch，将 Markdown 正文交回模型工作区。</p>
+      <div class="scene" aria-hidden="true">
+        <div class="query-line">
+          <span class="role">模型请求</span><code>Search</code>
+          <span class="query"><code>query:</code>编程助手 网页工具</span>
+        </div>
+        <div class="search-caption" id="search-caption">框架执行 <code>Search</code></div>
+        <div class="search-list" id="search-list">
+          <div class="result"><p class="result-title">工具参数与返回结果</p><p class="result-url"><code>example.org/reference</code></p></div>
+          <div class="result"><p class="result-title">在框架里执行工具</p><p class="result-url"><code>example.org/runtime</code></p></div>
+        </div>
+        <div class="web-shell" id="web-shell">
+          <div class="web-toolbar"><i class="menu-mark"></i><code>example.org/tools</code></div>
+          <div class="web-nav">指南 参考</div>
+          <div class="empty-cutout"></div>
+          <span class="shell-label" id="shell-label">网页外壳</span>
+        </div>
+        <div class="workspace" id="workspace">
+          <p class="workspace-title">模型工作区</p>
+          <div class="tray" id="tray"><div class="tray-base"></div></div>
+        </div>
+        <article class="paper" id="paper">
+          <div class="paper-surface" id="paper-surface"></div>
+          <div class="paper-fold" id="paper-fold"></div>
+          <div class="paper-tag" id="paper-tag"><span>正文</span><code>Markdown</code></div>
+          <h2 class="article-title">网页工具接入指南</h2>
+          <div class="selection-line" id="selection-line"></div>
+          <code class="selected-url" id="selected-url">example.org/tools</code>
+          <div class="paper-body" id="paper-body">
+            <p>工具请求由框架执行。</p>
+            <p>取回的正文返回给模型。</p>
+            <p>模型依据资料继续回答。</p>
+          </div>
+        </article>
+        <div class="fetch-label" id="fetch-label"><span class="role">框架执行</span><code class="tool">Fetch</code><code class="url">example.org/tools</code></div>
+        <div class="press" id="press">
+          <div class="press-frame"></div>
+          <div class="roller"><div class="roller-grooves" id="roller-grooves"></div></div>
+          <div class="spindle"></div><div class="crank-hub"></div><div class="crank" id="crank"></div>
+        </div>
+        <div class="binder binder-left" id="binder-left"></div><div class="binder binder-right" id="binder-right"></div>
+      </div>
+      <div class="controls">
+        <button class="primary" type="button" id="start">开始取文</button>
+        <button type="button" id="pause" disabled>暂停</button>
+        <button type="button" id="moment">看取文瞬间</button>
+      </div>
+      <p class="sr-only" id="status" role="status" aria-live="polite"></p>
+    </section>
+  </main>
+  <script>
+    (() => {
+      const DURATION = 9.4;
+      const frame = document.getElementById('frame');
+      const stage = document.getElementById('stage');
+      const start = document.getElementById('start');
+      const pause = document.getElementById('pause');
+      const moment = document.getElementById('moment');
+      const status = document.getElementById('status');
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const parts = Object.fromEntries([
+        'search-caption', 'search-list', 'web-shell', 'shell-label', 'workspace', 'tray',
+        'paper', 'paper-surface', 'paper-fold', 'paper-tag', 'selection-line', 'selected-url',
+        'paper-body', 'fetch-label', 'press', 'roller-grooves', 'crank', 'binder-left', 'binder-right'
+      ].map(id => [id, document.getElementById(id)]));
+      const clamp = value => Math.max(0, Math.min(1, value));
+      const smooth = (t, begin, end) => {
+        const p = clamp((t - begin) / (end - begin));
+        return p * p * (3 - 2 * p);
+      };
+      const lerp = (from, to, progress) => from + (to - from) * progress;
+
+      function render(time) {
+        const t = Math.max(0, Math.min(DURATION, time));
+        const unfold = smooth(t, 1.3, 2.8);
+        const shell = smooth(t, 1.65, 2.75);
+        const lift = smooth(t, 2.8, 3.5);
+        const travel = smooth(t, 3.6, 7.3);
+        const accept = smooth(t, 7.3, 7.8);
+        const material = smooth(t, 1.7, 2.6);
+        const x = lerp(80, 86, unfold) + 581 * travel;
+        const y = lerp(170, 249, unfold) - 8 * travel - 8 * lift * (1 - accept);
+        const turn = -1.8 * Math.sin(Math.PI * travel) - .8 * Math.sin(Math.PI * lift) * (1 - travel);
+        parts.paper.style.transform = `translate(${x}px, ${y}px) rotate(${turn}deg)`;
+        parts['paper-surface'].style.opacity = material;
+        parts['paper-surface'].style.boxShadow = `0 ${2 + 6 * lift * (1 - accept)}px ${8 + 14 * lift * (1 - accept)}px #171A1526`;
+        parts['paper-fold'].style.opacity = material;
+        parts['paper-tag'].style.opacity = smooth(t, 2.1, 2.7);
+        parts['paper-body'].style.clipPath = `inset(0 0 ${100 * (1 - smooth(t, 2.15, 2.95))}% 0)`;
+        parts['selected-url'].style.opacity = 1 - smooth(t, 1.3, 1.85);
+        parts['selection-line'].style.transform = `scaleX(${smooth(t, .08, 1.1)})`;
+        parts['selection-line'].style.opacity = 1 - smooth(t, 1.4, 2.1);
+        parts['search-list'].style.opacity = 1 - smooth(t, 1.25, 2.05);
+        parts['search-list'].style.transform = `translateY(${12 * unfold}px)`;
+        parts['search-caption'].style.opacity = 1 - .55 * unfold;
+        parts['web-shell'].style.opacity = smooth(t, 1.65, 1.95) * (1 - .25 * accept);
+        parts['web-shell'].style.clipPath = `inset(0 0 ${100 * (1 - shell)}% 0)`;
+        parts['shell-label'].style.opacity = smooth(t, 4.2, 5.1);
+        parts['fetch-label'].style.opacity = .25 + .75 * smooth(t, 2.6, 3.3);
+        parts.press.style.opacity = .42 + .58 * smooth(t, 2.6, 3.3) - .15 * accept;
+        parts['roller-grooves'].style.transform = `translateX(${(travel * 90) % 10}px)`;
+        parts.crank.style.transform = `rotate(${120 + 1080 * travel}deg)`;
+        parts.workspace.style.opacity = .62 + .38 * smooth(t, 5.6, 7.8);
+        parts.tray.style.borderColor = `rgba(82, 104, 63, ${.3 + .5 * accept})`;
+        for (const id of ['binder-left', 'binder-right']) {
+          parts[id].style.opacity = accept;
+          parts[id].style.transform = `translateY(${-7 * (1 - accept)}px)`;
+        }
+      }
+
+      let currentTime = reducedMotion.matches ? DURATION : 0;
+      let playing = false;
+      let frameId = 0;
+      let lastStamp = null;
+
+      function syncControls() {
+        start.textContent = currentTime > 0 ? '重播' : '开始取文';
+        pause.textContent = !playing && currentTime > 0 && currentTime < DURATION ? '继续' : '暂停';
+        pause.disabled = currentTime === 0 || currentTime >= DURATION || reducedMotion.matches;
+        pause.setAttribute('aria-pressed', String(!playing && !pause.disabled));
+      }
+
+      function setPlaying(next) {
+        playing = next;
+        lastStamp = null;
+        cancelAnimationFrame(frameId);
+        syncControls();
+        if (playing) frameId = requestAnimationFrame(tick);
+      }
+
+      function tick(stamp) {
+        if (!playing) return;
+        const elapsed = lastStamp === null ? 0 : Math.max(0, (stamp - lastStamp) / 1000);
+        lastStamp = stamp;
+        currentTime = Math.min(DURATION, currentTime + elapsed);
+        render(currentTime);
+        if (currentTime >= DURATION) {
+          setPlaying(false);
+          status.textContent = '正文已进入模型工作区。';
+        } else {
+          syncControls();
+          frameId = requestAnimationFrame(tick);
+        }
+      }
+
+      start.addEventListener('click', () => {
+        setPlaying(false);
+        currentTime = reducedMotion.matches ? DURATION : 0;
+        status.textContent = reducedMotion.matches ? '正文已进入模型工作区。已按减少动态偏好显示终态。' : '开始取文。';
+        render(currentTime);
+        setPlaying(!reducedMotion.matches);
+      });
+      pause.addEventListener('click', () => {
+        if (currentTime > 0 && currentTime < DURATION && !reducedMotion.matches) {
+          setPlaying(!playing);
+          status.textContent = playing ? '继续取文。' : '已暂停。';
+        }
+      });
+      moment.addEventListener('click', () => {
+        setPlaying(false);
+        currentTime = 5.8;
+        render(currentTime);
+        syncControls();
+        status.textContent = '已定格在取文瞬间。';
+      });
+      reducedMotion.addEventListener('change', event => {
+        if (event.matches) {
+          setPlaying(false);
+          currentTime = DURATION;
+          render(currentTime);
+          status.textContent = '正文已进入模型工作区。已按减少动态偏好显示终态。';
+        }
+        syncControls();
+      });
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden && playing) setPlaying(false);
+      });
+      const fit = () => { stage.style.transform = `scale(${frame.clientWidth / 1000})`; };
+      window.addEventListener('resize', fit);
+      render(currentTime);
+      syncControls();
+      fit();
+    })();
+  </script>
+</body>
+</html>

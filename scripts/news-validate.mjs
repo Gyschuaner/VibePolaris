@@ -1,10 +1,13 @@
 import { loadNewsContent } from "./news-contract.mjs";
+import { loadNewsMotion } from "./news-motion-contract.mjs";
 
 try {
   const { articles, drafts, dailyRuns } = loadNewsContent();
+  const motions = loadNewsMotion(articles);
   const sourceTypes = Object.fromEntries(dailyRuns.flatMap(({ run }) => run.candidates.filter(candidate => candidate.decision === "selected").map(candidate => candidate.sourceType)).reduce((counts, type) => counts.set(type, (counts.get(type) ?? 0) + 1), new Map()));
   process.stdout.write(`${JSON.stringify({
     published: articles.length,
+    authoredMotions2026: Object.keys(motions).length,
     drafts: drafts.length,
     pending: drafts.filter(({ draft }) => ["discovered", "draft", "ready", "needs-review"].includes(draft.status)).length,
     dailyRuns: dailyRuns.length,
