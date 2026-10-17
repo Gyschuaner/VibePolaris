@@ -1,0 +1,272 @@
+{
+  "slug": "deepseek-v41-flash-1017-search-release-20261017",
+  "title": "DeepSeek 更新 V4.1 Flash：编程评测提升，搜索与抓取 API 同步开放",
+  "summary": "10 月 17 日，V4.1-Flash-1017 同步上线网页、App 和 API，模型单价不变，权重以 MIT 许可开放。更新侧重完整项目开发与任务效率；Search、Fetch 两项接口另按成功请求计费，特定服务端工具调用从 11 月 1 日开始收费。",
+  "body": "10 月 17 日，DeepSeek 正式发布 **DeepSeek-V4.1-Flash-1017**，网页端、App 和 API 同步切换。开发者继续使用 `deepseek-flash` 即可调用新版，调用方式和模型价格保持不变。模型权重也已在 Hugging Face 与 ModelScope 开放。\n\n这次更新侧重编程和多步骤任务。DeepSeek 称，新版缩短了任务运行时间与输出长度。同日，DeepSeek 将自研搜索引擎的 Search 与 Fetch 接口向开发者开放。两者分别负责找网页和读取网页，为编程助手等智能体补充实时资料。[官方发布说明](https://api-docs.deepseek.com/zh-cn/news/news261017/)与[更新日志](https://api-docs.deepseek.com/zh-cn/updates)均已确认上述变化。",
+  "publishedAt": "2026-10-17",
+  "eventDate": "2026-10-17",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/deepseek-flash-1017-cost-20261017.png",
+    "alt": "DeepSeek 官方 DeepSWE v1.1 通过率与每任务人民币费用比较图，包含各推理档位及数据来源脚注",
+    "sourceUrl": "https://api-docs.deepseek.com/zh-cn/news/news261017/",
+    "license": "DeepSeek 发布页原图，版权归原发布方；该图片未单独声明开放许可。",
+    "credit": "DeepSeek 官方发布图",
+    "fit": "contain"
+  },
+  "sections": [
+    {
+      "id": "project-development",
+      "title": "从修一段代码，走向搭建完整项目",
+      "body": "DeepSeek 称，本轮采用基于自反馈的强化学习训练，改善从零构建项目的能力。官方展示了故宫 3D 场景、网页版赛车游戏、使用 Godot 引擎的《传送门 2》复刻等案例，均在 DeepSeek Harness 中以较少提示和交互完成。\n\n所谓“许愿式编程”，就是用户先描述想要的成品，再由模型和工具框架完成文件修改、运行与反馈。官方演示展示了这种工作方式的进展，尚不能代表任意需求的交付成功率。发布材料没有披露足够细节，无法据此判断自反馈训练如何构造奖励或替代了多少人工评价。\n\n这也是[IT之家正式报道](https://m.ithome.com/html/1014328.htm)关注的重点。DeepSeek 同时对自家 Harness、腾讯 CodeBuddy 和 WorkBuddy 做了适配优化，并建议将 DeepSeek Harness 升级到 **0.2.1-rc.1 或更高版本**。",
+      "kind": "narrative"
+    },
+    {
+      "id": "benchmark-results",
+      "title": "编程和智能体成绩有提升，优势仍随任务而变",
+      "body": "[官方模型卡](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)列出了与上一版 V4.1 Flash 的比较。以下四项均为 DeepSeek 公布的成绩：\n\n| 评测 | 上一版 | 1017 版 | 提升（百分点） |\n| --- | ---: | ---: | ---: |\n| Terminal-Bench 4.0 | 31.2 | 42.3 | 11.1 |\n| DeepSWE v1.1 | 74.2 | 77.0 | 2.8 |\n| ProgramBench | 20.3 | 29.1 | 8.8 |\n| Automation-Bench v1.0.6 | 54.8 | 60.5 | 5.7 |\n\n这些成绩覆盖终端操作、编程与自动化任务。Terminal-Bench 4.0 使用 Claude Code 框架，DeepSWE v1.1 使用 Mini-SWE-V2；成绩反映模型与相应工具框架共同工作的表现。\n\n[PC Watch 的报道](https://pc.watch.impress.co.jp/docs/news/2149045.html)突出 DeepSWE 的 77.0 高于同表 Claude Opus 5 的 74.0。但同一张官方表中，Opus 5 的 Terminal-Bench 4.0 为 51.8、ProgramBench 为 37.0，仍高于 1017 版的 42.3 和 29.1。不同项目各有取舍，这些厂商发布的分数也不等于独立机构对所有当前旗舰的统一排名。",
+      "kind": "comparison"
+    },
+    {
+      "id": "cost-per-task",
+      "title": "模型没有降价，单次任务为什么可能更省",
+      "body": "模型账单取决于输入、输出的 Token 用量与各自单价。Token 是模型处理文字的计量单位；单价相同时，完成同一任务若使用更少 Token，费用就可能下降。DeepSeek 称，新版同时缩短了任务运行时间与输出长度。\n\n[The Decoder 的报道](https://the-decoder.com/deepseek-v4-1-flash-1017-beats-larger-rivals-in-agentic-tasks-while-once-again-massively-cutting-per-task-costs/)着重讨论了这条效率变化。官方给出的 DeepSWE 性能与费用图，把不同思考档位的通过率和平均任务成本放在一起比较；它说明的是相应评测条件下的结果，没有承诺每个真实项目都会按固定比例省钱。\n\n配图横轴以人民币计价，采用对数刻度。脚注明确：公开对手的部分数据来自 **9 月 22 日**榜单，OpenAI 模型点另取其官方图表，美元费用按 **10 月 16 日**汇率折算。费用图与上方成绩表的对手集合、数据来源也不同，不能合并理解成一次覆盖所有模型的同日重测。",
+      "kind": "technical"
+    },
+    {
+      "id": "search-and-fetch",
+      "title": "Search 负责找网页，Fetch 负责读网页",
+      "body": "同日开放的两个接口由 DeepSeek 自研搜索引擎提供支持：[Search](https://api-docs.deepseek.com/zh-cn/guides/search)接收搜索词并返回结构化结果，Fetch 接收网页地址并返回单个页面的 Markdown 正文。开发者可用现有 DeepSeek API Key 接入，再将结果交给模型使用。\n\n按[中文官方价目与规则](https://api-docs.deepseek.com/zh-cn/quick_start/pricing)，**Search 和 Fetch 各为每 1,000 次成功请求 5 元**。只有返回 HTTP 200 且 Search 结果非空、或 Fetch 取得正文时才计费；失败、空结果和超时不收费，返回结果条数不影响单次 Search 价格。\n\n例如按公布单价，成功搜索一次、再成功抓取五个网页，共产生六次工具请求，费用为 **0.03 元**；模型阅读和生成内容消耗的 Token 另行计费。这个例子也说明，找资料与生成答案对应两类费用。",
+      "kind": "technical"
+    },
+    {
+      "id": "billing-boundary",
+      "title": "11 月 1 日收费，具体指哪部分调用",
+      "body": "[官方公告](https://api-docs.deepseek.com/zh-cn/news/news261017/)特别说明：在 **DeepSeek Harness、Claude Code 或 Codex 中使用 DeepSeek API** 时，经服务端工具调用访问的 Search／Fetch 目前尚未收费，这部分调用将从 **北京时间 2026 年 11 月 1 日 00:00** 起按次计费。\n\n这个时间点针对上述服务端工具调用，并不表示所有直接请求 Search／Fetch 的调用都能免费到月底，也不意味着使用这些编程工具的任何模型都会自动获得 DeepSeek 搜索。接入方需要分清自己调用的是哪家模型、哪个搜索接口，以及由谁执行工具。",
+      "kind": "boundary"
+    },
+    {
+      "id": "open-weights-and-access",
+      "title": "权重已开放，现有调用入口继续可用",
+      "body": "[Hugging Face 官方仓库](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)明确写明，仓库和模型权重采用 **MIT 许可**。对需要自行部署的团队，这是可下载的模型权重；训练数据和完整训练流程并未因此一并开放。\n\n对直接使用 DeepSeek 网页或 App 的用户，模型已随服务切换。对 API 开发者，官方直连模型名仍为 `deepseek-flash`；[Vercel](https://vercel.com/changelog/deepseek-v4-1-flash-1017-now-available-on-ai-gateway)也确认新版已在 AI Gateway 上架，其平台标识为 `deepseek/deepseek-v4.1-flash-1017`。框架适配、工具接入和实际项目表现，仍需在各自使用环境中确认。",
+      "kind": "narrative"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "编程助手怎样用上新开放的网页工具？",
+    "question": "让模型找一份最新文档，搜索、读网页和生成答案分别发生在哪里？",
+    "steps": [
+      {
+        "label": "提出资料需求",
+        "detail": "模型请求 Search，运行框架交给搜索服务执行。"
+      },
+      {
+        "label": "搜索并读取网页",
+        "detail": "Search 返回结果；需要正文时，再由 Fetch 读取选中的页面。"
+      },
+      {
+        "label": "带回正文继续工作",
+        "detail": "结果进入模型上下文；模型继续写代码或回答，框架执行后续工具请求。"
+      },
+      {
+        "label": "分别计算用量",
+        "detail": "工具按成功请求次数计量；模型按输入和输出 Token 计量。"
+      }
+    ]
+  },
+  "source": {
+    "name": "DeepSeek（综合多家媒体报道）",
+    "url": "https://api-docs.deepseek.com/zh-cn/news/news261017/"
+  },
+  "relatedSlugs": [
+    "agent-harness",
+    "tools",
+    "token",
+    "api"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://api-docs.deepseek.com/zh-cn/news/news261017/",
+      "claim": "10月17日三端同步更新1017；自反馈强化学习项目示例；针对Harness/CodeBuddy/WorkBuddy优化并建议Harness至少0.2.1-rc.1。",
+      "excerpt": "核对要点（意译）：新版展示故宫3D、赛车游戏和Godot项目；少轮交互演示属于官方展示。"
+    },
+    {
+      "url": "https://api-docs.deepseek.com/zh-cn/updates",
+      "claim": "deepseek-flash映射1017，模型调用方式与价格不变；公布评测成绩及各项使用框架。",
+      "excerpt": "核对要点（意译）：模型名沿用；Terminal-Bench 4.0使用Claude Code，DeepSWE使用Mini-SWE-V2。"
+    },
+    {
+      "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017",
+      "claim": "1017模型卡给出新旧成绩与评测框架，仓库及权重为MIT许可。",
+      "excerpt": "核对要点（意译）：新旧Terminal 42.3/31.2，DeepSWE 77.0/74.2，ProgramBench 29.1/20.3，Automation 60.5/54.8；Opus5部分项目更高。"
+    },
+    {
+      "url": "https://api-docs.deepseek.com/zh-cn/img/v4.1_261017_perf_cost_cn.png",
+      "claim": "官方DeepSWE v1.1费用图横轴为人民币对数刻度，各模型点的来源与日期在图脚注明。",
+      "excerpt": "核对要点（意译）：使用mini_swe_v2；公开对手数据日期9月22日，OpenAI点取其官方图表，美元按10月16日汇率折算。"
+    },
+    {
+      "url": "https://api-docs.deepseek.com/zh-cn/guides/search",
+      "claim": "Search返回搜索结果，Fetch获取单页Markdown；按成功且有结果请求计费，11/1仅针对所述Server端工具调用开始收费。",
+      "excerpt": "核对要点（意译）：两接口各5元/千次；HTTP200且非空/有正文才计费；在Harness/Claude Code/Codex使用DeepSeek API的Server端调用目前未计费。"
+    },
+    {
+      "url": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing",
+      "claim": "模型按输入输出Token收费；Search/Fetch独立按成功次数收费。",
+      "excerpt": "核对要点（意译）：deepseek-flash已映射1017；模型Token费用与搜索工具请求费用分别计算。"
+    },
+    {
+      "url": "https://m.ithome.com/html/1014328.htm",
+      "claim": "IT之家16:17正式报道确认三端更新，并介绍完整项目示例、框架适配与权重开放。",
+      "excerpt": "核对要点（意译）：区别于14:36仍为疑似快照的早间报道；正式发布状态以公告和后续报道为准。"
+    },
+    {
+      "url": "https://the-decoder.com/deepseek-v4-1-flash-1017-beats-larger-rivals-in-agentic-tasks-while-once-again-massively-cutting-per-task-costs/",
+      "claim": "The Decoder将任务成本与编程智能体作为报道重点，成绩与费用图归因DeepSeek。",
+      "excerpt": "核对要点（意译）：本轮综合其效率观察；具体成本和跨模型结论仍需回到官方图脚的条件。"
+    },
+    {
+      "url": "https://pc.watch.impress.co.jp/docs/news/2149045.html",
+      "claim": "PC Watch在DeepSWE单项比较中突出77.0与Opus5的74.0。",
+      "excerpt": "核对要点（意译）：这个比较对应指定评测，不能扩展为所有编程或通用任务全面领先。"
+    },
+    {
+      "url": "https://vercel.com/changelog/deepseek-v4-1-flash-1017-now-available-on-ai-gateway",
+      "claim": "Vercel确认1017已在AI Gateway上架并给出平台模型标识。",
+      "excerpt": "核对要点（意译）：这是第三方平台的上架确认，平台调用标识与DeepSeek直连API标识不同。"
+    }
+  ],
+  "canonicalUrl": "https://api-docs.deepseek.com/zh-cn/news/news261017",
+  "sourceHash": "sha256:6c5f8278eca103b2dd4d8cf6edaab3d42647389eecab70ba330bf198abf4cd83",
+  "status": "published",
+  "discoveredAt": "2026-10-17T14:12:04.253116Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent-harness",
+      "score": 1,
+      "evidence": [
+        "区分模型提出工具请求、Harness执行和带回结果，并说明评测框架与适配版本。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 1,
+      "evidence": [
+        "解释Search和Fetch的工具请求、实际执行与结果返回。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "token",
+      "score": 1,
+      "evidence": [
+        "解释模型单价不变时Token用量如何影响费用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "api",
+      "score": 1,
+      "evidence": [
+        "说明模型接口与搜索抓取接口的输入、返回与独立计费。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://api-docs.deepseek.com/zh-cn/news/news261017/",
+      "claim": "10月17日三端同步更新1017；自反馈强化学习项目示例；针对Harness/CodeBuddy/WorkBuddy优化并建议Harness至少0.2.1-rc.1。",
+      "excerpt": "核对要点（意译）：新版展示故宫3D、赛车游戏和Godot项目；少轮交互演示属于官方展示。"
+    },
+    {
+      "url": "https://api-docs.deepseek.com/zh-cn/updates",
+      "claim": "deepseek-flash映射1017，模型调用方式与价格不变；公布评测成绩及各项使用框架。",
+      "excerpt": "核对要点（意译）：模型名沿用；Terminal-Bench 4.0使用Claude Code，DeepSWE使用Mini-SWE-V2。"
+    },
+    {
+      "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017",
+      "claim": "1017模型卡给出新旧成绩与评测框架，仓库及权重为MIT许可。",
+      "excerpt": "核对要点（意译）：新旧Terminal 42.3/31.2，DeepSWE 77.0/74.2，ProgramBench 29.1/20.3，Automation 60.5/54.8；Opus5部分项目更高。"
+    },
+    {
+      "url": "https://api-docs.deepseek.com/zh-cn/img/v4.1_261017_perf_cost_cn.png",
+      "claim": "官方DeepSWE v1.1费用图横轴为人民币对数刻度，各模型点的来源与日期在图脚注明。",
+      "excerpt": "核对要点（意译）：使用mini_swe_v2；公开对手数据日期9月22日，OpenAI点取其官方图表，美元按10月16日汇率折算。"
+    },
+    {
+      "url": "https://api-docs.deepseek.com/zh-cn/guides/search",
+      "claim": "Search返回搜索结果，Fetch获取单页Markdown；按成功且有结果请求计费，11/1仅针对所述Server端工具调用开始收费。",
+      "excerpt": "核对要点（意译）：两接口各5元/千次；HTTP200且非空/有正文才计费；在Harness/Claude Code/Codex使用DeepSeek API的Server端调用目前未计费。"
+    },
+    {
+      "url": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing",
+      "claim": "模型按输入输出Token收费；Search/Fetch独立按成功次数收费。",
+      "excerpt": "核对要点（意译）：deepseek-flash已映射1017；模型Token费用与搜索工具请求费用分别计算。"
+    },
+    {
+      "url": "https://m.ithome.com/html/1014328.htm",
+      "claim": "IT之家16:17正式报道确认三端更新，并介绍完整项目示例、框架适配与权重开放。",
+      "excerpt": "核对要点（意译）：区别于14:36仍为疑似快照的早间报道；正式发布状态以公告和后续报道为准。"
+    },
+    {
+      "url": "https://the-decoder.com/deepseek-v4-1-flash-1017-beats-larger-rivals-in-agentic-tasks-while-once-again-massively-cutting-per-task-costs/",
+      "claim": "The Decoder将任务成本与编程智能体作为报道重点，成绩与费用图归因DeepSeek。",
+      "excerpt": "核对要点（意译）：本轮综合其效率观察；具体成本和跨模型结论仍需回到官方图脚的条件。"
+    },
+    {
+      "url": "https://pc.watch.impress.co.jp/docs/news/2149045.html",
+      "claim": "PC Watch在DeepSWE单项比较中突出77.0与Opus5的74.0。",
+      "excerpt": "核对要点（意译）：这个比较对应指定评测，不能扩展为所有编程或通用任务全面领先。"
+    },
+    {
+      "url": "https://vercel.com/changelog/deepseek-v4-1-flash-1017-now-available-on-ai-gateway",
+      "claim": "Vercel确认1017已在AI Gateway上架并给出平台模型标识。",
+      "excerpt": "核对要点（意译）：这是第三方平台的上架确认，平台调用标识与DeepSeek直连API标识不同。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-17T14:12:04.253116Z",
+    "method": "source",
+    "notes": "主助手核对官方材料及多家媒体；独立子智能体实读实际草稿与一手来源，首轮意见修订后窄复审通过。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-17T14:16:22.776310Z",
+    "notes": "主助手实读一手材料并按humanizer-zh自审；独立子智能体的真实问题已修改，窄复审passed，允许现有工具提升本篇。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-17T14:16:22.776310Z",
+    "questions": [
+      "原有调用名需要修改吗，模型单价变了吗？",
+      "DeepSWE的77.0能否代表所有编程任务都领先？",
+      "单价没降，任务费用为什么可能减少？",
+      "0.03元例子包含模型生成费用吗？哪些调用目前仍免工具费？",
+      "搜索是模型亲自执行，还是运行框架调用服务？",
+      "权重采用MIT，是否意味着训练数据和完整训练流程也公开了？"
+    ],
+    "notes": "唯一独立子智能体首轮实读全文、六节、表格、讲解、关联定义和台账，提出1处低严重度措辞问题；主助手修改后，子智能体实读该段窄复审passed，issues和followUp均为空。其余沿用首轮实际核查通过结论。未执行模型实测或页面视觉验收。",
+    "changes": [
+      "将导语中“少输出冗余内容”改为归因DeepSeek所称任务运行时间与输出长度缩短。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-deepseek-2026-10-17",
+  "promotedAt": "2026-10-17T14:16:23.319Z"
+}
