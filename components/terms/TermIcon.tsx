@@ -12,7 +12,7 @@ function Glyph({ kind }: { kind: string }) {
   const stroke = { fill: "none", stroke: "currentColor", strokeWidth: 2.1, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
   switch (kind) {
     case "harness": return <><path {...stroke} d="M18 31h28M24 18v26M40 18v26"/><circle cx="24" cy="18" r="4"/><circle cx="40" cy="18" r="4"/><path {...stroke} d="M19 46h26"/></>;
-    case "tool": return <><path {...stroke} d="m19 20 10 10M29 30l15-15a7 7 0 0 1 0 10L29 40l-7-7 7-7Z"/><path {...stroke} d="m18 42 8-8M15 47l5-5"/></>;
+    case "tool": return <><path {...stroke} d="M42 14a12 12 0 0 0-15 15L14 42a5 5 0 0 0 7 7l13-13a12 12 0 0 0 15-15l-8 8-6-6 7-9Z"/><path {...stroke} d="M13 18h11m-5-5 5 5-5 5"/></>;
     case "context": return <><rect {...stroke} x="15" y="15" width="23" height="17" rx="2"/><rect {...stroke} x="26" y="27" width="23" height="17" rx="2"/><path {...stroke} d="M20 21h12M31 33h12"/></>;
     case "agent-loop": return <><path {...stroke} d="M21 25a14 14 0 0 1 23-4l3 3"/><path {...stroke} d="m47 17 1 7-7-1M43 39a14 14 0 0 1-23-4l-3-3"/><path {...stroke} d="m17 47-1-7 7 1"/></>;
     case "memory": return <><path {...stroke} d="M18 22h28v10H18zM18 32h28v10H18zM22 42v5h20v-5"/><path {...stroke} d="M24 27h2M31 27h10M24 37h2M31 37h10"/></>;
@@ -21,7 +21,7 @@ function Glyph({ kind }: { kind: string }) {
     case "protocol": return <><circle cx="19" cy="32" r="5"/><circle cx="45" cy="20" r="5"/><circle cx="45" cy="44" r="5"/><path {...stroke} d="m23 30 17-8M23 34l17 8"/></>;
     case "sandbox": return <><path {...stroke} d="M17 17h30v30H17z" strokeDasharray="3 4"/><rect {...stroke} x="24" y="27" width="16" height="13" rx="2"/><path {...stroke} d="M28 27v-3a4 4 0 0 1 8 0v3"/></>;
     case "llm": return <><path {...stroke} d="M24 20c-5 0-8 4-7 8-5 2-4 10 1 11 0 5 5 7 9 4 3 3 8 2 10-2 5 1 8-5 5-9 2-5-3-9-8-8-2-4-8-5-10-1Z"/><circle cx="26" cy="30" r="1.5" fill="currentColor"/><circle cx="37" cy="30" r="1.5" fill="currentColor"/><path {...stroke} d="M27 37c3 2 6 2 9 0"/></>;
-    case "token": return <><path {...stroke} d="M21 17h22l6 15-6 15H21l-6-15 6-15Z"/><path {...stroke} d="M24 27h16M24 33h11M24 39h14"/></>;
+    case "token": return <><path {...stroke} d="M20 16h-6v32h6M44 16h6v32h-6"/><path {...stroke} d="M24 24h16M32 24v17"/></>;
     case "agent": return <><circle {...stroke} cx="32" cy="24" r="9"/><path {...stroke} d="M18 48c1-9 7-14 14-14s13 5 14 14M32 15v-4M25 24h.01M39 24h.01"/></>;
     case "schema": return <><path {...stroke} d="M23 15h-6v34h6M41 15h6v34h-6"/><path {...stroke} d="m27 33 4 4 8-10"/><path {...stroke} d="M27 21h11"/></>;
     case "embedding": return <><circle cx="18" cy="22" r="3"/><circle cx="31" cy="17" r="3"/><circle cx="44" cy="25" r="3"/><circle cx="23" cy="40" r="3"/><circle cx="39" cy="45" r="3"/><path {...stroke} d="M14 49 49 14M42 14h7v7"/></>;
