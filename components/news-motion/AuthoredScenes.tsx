@@ -5,12 +5,12 @@ const phase = (p: number, a = 0, b = 1) => { const t = clamp((p - a) / (b - a));
 const mix = (a: number, b: number, t: number) => a + (b - a) * t;
 const ink = "var(--motion-ink)", muted = "var(--motion-muted)", line = "var(--motion-line)", accent = "var(--motion-accent)", paper = "var(--motion-paper)", soft = "var(--motion-soft)";
 
-function Label({ x, y, children, color = ink, anchor = "start", width }: { x: number; y: number; children: React.ReactNode; color?: string; anchor?: "start" | "middle" | "end"; width?: number }) {
-  if(typeof children !== "string" || !width) return <text x={x} y={y} fill={color} fontSize={16} textAnchor={anchor}>{children}</text>;
+function Label({ x, y, children, color = ink, anchor = "start", width, centered = false }: { x: number; y: number; children: React.ReactNode; color?: string; anchor?: "start" | "middle" | "end"; width?: number; centered?: boolean }) {
+  if(typeof children !== "string" || !width) return <text x={x} y={centered ? y + 6 : y} fill={color} fontSize={16} textAnchor={anchor}>{children}</text>;
   const rows:string[]=[];let row="",used=0;
   for(const char of children){const advance=/[\u0000-\u00ff]/.test(char)?8:16;if(used+advance>width&&row){rows.push(row);row="";used=0;}row+=char;used+=advance;}
   if(row)rows.push(row);
-  return <text x={x} y={y} fill={color} fontSize={16} textAnchor={anchor}>{rows.map((text,i)=><tspan key={i} x={x} dy={i?19:0}>{text}</tspan>)}</text>;
+  return <text x={x} y={centered ? y + 6 - (rows.length - 1) * 19 / 2 : y} fill={color} fontSize={16} textAnchor={anchor}>{rows.map((text,i)=><tspan key={i} x={x} dy={i?19:0}>{text}</tspan>)}</text>;
 }
 
 /** C: the same sentence lifts off the source and settles into the working context. */
@@ -90,10 +90,10 @@ function Docking({ design: d, progress: p, width: w, height: h }: NewsMotionScen
   return <>
     <Label x={24} y={34}>{d.subject}</Label><Label x={24} y={66} color={muted}>{d.source}</Label>
     <path d={`M${cx - radius} ${cy - 36}h${radius * .8}l20 36-20 36h-${radius * .8}z`} fill={paper} stroke={accent} strokeWidth={2} />
-    <Label x={cx - radius * .5} y={cy - 3} anchor="middle" width={radius * .85}>{d.target}</Label>
+    <Label x={cx - radius * .5} y={cy} anchor="middle" width={Math.max(60, radius * .85)} centered>{d.target}</Label>
     <g transform={`translate(${mix(small ? w - 30 : w - 90, cx + 25, t)},${mix(small ? 135 : cy - 80, cy, t)}) rotate(${mix(-25,0,t)})`}>
       <path d="M0-32h65v64H0l-18-32z" fill={soft} stroke={accent} strokeWidth={2} />
-      <Label x={32} y={-3} anchor="middle" width={60}>{d.items[0]}</Label>
+      <Label x={32} y={0} anchor="middle" width={60} centered>{d.items[0]}</Label>
     </g>
     <path d={`M${cx} ${cy - 52}v104`} stroke={line} strokeDasharray="4 6" />
     <Label x={cx} y={cy + 125} anchor="middle" color={accent}>{d.action}</Label>
