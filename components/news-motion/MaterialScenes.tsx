@@ -125,7 +125,7 @@ function Stencil({ design: d, progress: p, width: w, height: h, id }: NewsMotion
   </g>;
 }
 
-function Gate({ design: d, progress: p, width: w, height: h }: NewsMotionSceneProps) {
+function Gate({ design: d, progress: p, width: w, height: h, id }: NewsMotionSceneProps) {
   const narrow = w < 640, open = ease(p, .12, .4), pass = ease(p, .4, .88);
   const middle = narrow ? h * .52 : w * .52;
   const paperW = Math.min(280, w * .32), titleH = wrap(d.subject, paperW - 30, 18).length * 24;
@@ -142,7 +142,8 @@ function Gate({ design: d, progress: p, width: w, height: h }: NewsMotionScenePr
       {d.items.map((item, i) => <Chip key={i} x={26 + i % 2 * (w - 40) / 2} y={mix(105 + Math.floor(i / 2) * 67, middle + 67 + Math.floor(i / 2) * 67, ease(p, .4 + i * .035, .8 + i * .035))} width={(w - 64) / 2} label={item} />)}
     </g> : <g>
       <path d={`M${middle - 17} 80V${h - 45}m34 -${h - 125}V${h - 45}`} stroke={c.line} strokeWidth={2} />
-      <g transform={`translate(0 ${-open * (h - 115)})`}><rect x={middle - 12} y={80} width={24} height={h - 125} fill={c.accent} />{Array.from({ length: 5 }, (_, i) => <path key={i} d={`M${middle - 9} ${99 + i * (h - 160) / 4}h18`} stroke={c.paper} opacity={.5} />)}</g>
+      <defs><clipPath id={`${id}-gate-track`}><rect x={middle - 12} y={80} width={24} height={h - 125} /></clipPath></defs>
+      <g clipPath={`url(#${id}-gate-track)`}><g transform={`translate(0 ${-open * (h - 115)})`}><rect x={middle - 12} y={80} width={24} height={h - 125} fill={c.accent} />{Array.from({ length: 5 }, (_, i) => <path key={i} d={`M${middle - 9} ${99 + i * (h - 160) / 4}h18`} stroke={c.paper} opacity={.5} />)}</g></g>
       <Text x={middle} y={59} anchor="middle" label={d.actor} width={170} fill={c.accent} />
       <Text x={middle} y={h - 14} anchor="middle" label={d.action} width={200} />
       <g transform={`translate(${mix(28, w - paperW - 28, pass)} ${(h - paperH) / 2})`}>
