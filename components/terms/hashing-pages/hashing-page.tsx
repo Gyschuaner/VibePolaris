@@ -1,7 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { hashingSources } from "@/lib/hashing-sources";
-import { HashingSignatureHero as HashingHero } from "../TestSecuritySignatureHeroes";
 import { HashingLesson } from "./hashing";
 
 const sections: [string, string][] = [
@@ -12,7 +11,7 @@ const sections: [string, string][] = [
 ];
 
 export function HashingTermPage() {
-  return <Article slug="hashing" title="哈希" subtitle="Hashing · 把输入压成一张可比对的指纹" sources={hashingSources} sections={sections} hero={<HashingHero />} intro={<>下载一个发布包时，你想确认“它有没有被改过”；保存一个密码时，你又不想把原文放进数据库。<strong>哈希把输入变成可重复计算的摘要，但不同用途需要不同的安全边界：文件要能对比，密码还要加盐并把猜测成本调高。</strong></>}>
+  return <Article slug="hashing" title="哈希" subtitle="Hashing · 把输入压成一张可比对的指纹" sources={hashingSources} sections={sections} intro={<>下载一个发布包时，你想确认“它有没有被改过”；保存一个密码时，你又不想把原文放进数据库。<strong>哈希把输入变成可重复计算的摘要，但不同用途需要不同的安全边界：文件要能对比，密码还要加盐并把猜测成本调高。</strong></>}>
     <ArticleSection id="hash-definition-section" title="先把输入压成指纹">
       <p id="hash-definition" className="vp-citation-target">哈希函数把任意长度的比特串映射成固定长度的比特串。NIST 把摘要比作文件或消息的指纹：它依赖输入的全部内容，却比原文短得多，适合拿来做“这次算出来的值”和“之前记录的值”的比较。<Cite id="hash-definition" sources={hashingSources} /></p>
       <p id="hash-properties" className="vp-citation-target">密码学哈希通常要求单向性和抗碰撞性：给定摘要，反推出一个对应输入应该很难；想找两份不同输入撞到同一个摘要，也应该在计算上不可行。这里的“难”是安全目标，不是数学上绝对不会发生碰撞。<Cite id="hash-properties" sources={hashingSources} /></p>
@@ -20,7 +19,7 @@ export function HashingTermPage() {
     </ArticleSection>
     <ArticleSection id="hash-change-section" title="改一个字，摘要就换一张脸">
       <p id="hash-integrity" className="vp-citation-target">发布方可以先对 <code>release.tar</code> 计算摘要，把它放进清单；下载方再对本地文件计算一次。两串摘要相同，只能说明在这次比较里没有观察到内容变化；不相同则应停止继续使用，并回到来源检查。NIST 将消息摘要用于检测消息在生成摘要后是否被改变。<Cite id="hash-integrity" sources={hashingSources} /></p>
-      <p id="hash-digest" className="vp-citation-target">摘要长度由算法决定，不会因为输入从一行文字变成一整个安装包就跟着变长。它是对输入的浓缩表示，不是输入的备份；首图把 `release.tar` 改一个字符后换成另一串演示摘要，就是这个边界的可视化。<Cite id="hash-digest" sources={hashingSources} /></p>
+      <p id="hash-digest" className="vp-citation-target">摘要长度由算法决定，不会因为输入从一行文字变成一整个安装包就跟着变长。它是对输入的浓缩表示，不是输入的备份；即使 `release.tar` 只改变少量内容，摘要也会随之改变。<Cite id="hash-digest" sources={hashingSources} /></p>
       <p>这也解释了为什么摘要对不上时不能“猜回原文”。你可以重新拿可信文件来计算、比较和定位差异，却不能从一串 `3a1c…9f` 把整个压缩包倒推出来。</p>
     </ArticleSection>
     <ArticleSection id="hash-password-section" title="密码要加盐，还要慢一点">

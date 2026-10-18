@@ -1,0 +1,146 @@
+{
+  "slug": "nadella-model-insider-risk-controls-20261010",
+  "title": "纳德拉谈智能体“紧急制动”：把权限和停止机制放到模型之外",
+  "summary": "10 月 10 日的个人文章提出独立控制、审计和任务中途停止等原则。这是一项系统设计主张，没有宣布新的微软产品或立即暂停 AI 研发。",
+  "body": "10 月 10 日，微软首席执行官萨提亚·纳德拉在个人博客发表文章，建议把强大的 AI 模型视为具有内部访问权限、也可能犯错或被攻破的行动者，并在系统层设置独立控制。\n\n文中“紧急制动”指获得授权的人能在任务执行中暂停或停止模型。它针对运行中的控制能力，文章并未借这个说法宣布停止 AI 研发。",
+  "publishedAt": "2026-10-10",
+  "eventDate": "2026-10-10",
+  "isExample": false,
+  "hero": {
+    "url": "https://snscratchpad.com/images/social.jpg?v=3",
+    "alt": "纳德拉个人博客 sn scratchpad 的分享配图",
+    "sourceUrl": "https://snscratchpad.com/posts/models-as-insider-risks/",
+    "license": "原文配图，版权归原发布方；未声明开放许可。",
+    "credit": "Satya Nadella / sn scratchpad"
+  },
+  "sections": [
+    {
+      "id": "part-1",
+      "title": "为什么权限不能只写在提示词里",
+      "body": "模型可以判断怎样完成任务，外部系统则决定哪些动作有权执行。若模型同时能改动自身权限或删除审查证据，控制就失去了独立性。文章主张把模型、负责调用工具、推进任务的运行框架（harness） 和可行动范围分别管理。",
+      "kind": "technical"
+    },
+    {
+      "id": "part-2",
+      "title": "停止任务需要真实机制",
+      "body": "设想一个正在处理文件的代理：外部程序限定它能写入的目录，记录工具动作，并在人员撤销授权后阻止后续调用。停止机制要落实在执行系统里，才不会只是一句模型可能忽略的提示。",
+      "kind": "example"
+    },
+    {
+      "id": "part-3",
+      "title": "主张与落地状态",
+      "body": "文章列出模型多样性、可观察性、独立审计、隔离和事件披露等原则，并主张在现有标准不足时建立行业标准。这是个人发表的设计讨论，没有同时发布具体产品、强制规范或实施日程。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "模型之外的停止按钮怎样才有效？",
+    "question": "为什么一个模型不能同时掌握行动权限与审查证据？",
+    "steps": [
+      {
+        "label": "模型提出动作",
+        "detail": "模型依据任务选择下一步。"
+      },
+      {
+        "label": "外部系统核权",
+        "detail": "权限和日志由独立机制管理。"
+      },
+      {
+        "label": "人员可以停止",
+        "detail": "撤销授权后阻断后续执行。"
+      }
+    ]
+  },
+  "source": {
+    "name": "Satya Nadella / sn scratchpad",
+    "url": "https://snscratchpad.com/posts/models-as-insider-risks/"
+  },
+  "relatedSlugs": [
+    "agent-harness",
+    "permission-boundary",
+    "observability"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://snscratchpad.com/posts/models-as-insider-risks/",
+      "claim": "纳德拉于 2026-10-10 发表个人文章，主张在模型之外实施权限控制、独立审计和任务中途停止。",
+      "excerpt": "An authorized person should always be able to pause or shut down a model mid-task."
+    }
+  ],
+  "canonicalUrl": "https://snscratchpad.com/posts/models-as-insider-risks",
+  "sourceHash": "sha256:7a2e74e9bd434056c2e5fb0d8f6c77fdde9a630dba580c38625eabdc7345ded3",
+  "status": "published",
+  "discoveredAt": "2026-10-15T15:21:45Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent-harness",
+      "score": 1,
+      "evidence": [
+        "将个人设计主张与产品发布、研发暂停分开；具体例子明确为解释。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "permission-boundary",
+      "score": 1,
+      "evidence": [
+        "将个人设计主张与产品发布、研发暂停分开；具体例子明确为解释。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "observability",
+      "score": 1,
+      "evidence": [
+        "将个人设计主张与产品发布、研发暂停分开；具体例子明确为解释。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://snscratchpad.com/posts/models-as-insider-risks/",
+      "claim": "纳德拉于 2026-10-10 发表个人文章，主张在模型之外实施权限控制、独立审计和任务中途停止。",
+      "excerpt": "An authorized person should always be able to pause or shut down a model mid-task."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-15T17:03:42Z",
+    "method": "source",
+    "notes": "按本日来源逐条核对后，由独立子智能体再次联网审读；具体意见见 readerReview 与逐日证据。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-15T17:03:42Z",
+    "notes": "主助手按当日一手来源核实并依 humanizer-zh 自审；本轮独立子智能体结论单独记录在 readerReview。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-october-2026-10-10",
+  "promotedAt": "2026-10-15T15:22:31.662Z",
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-15T17:03:42Z",
+    "questions": [
+      "紧急制动是停止当前任务还是暂停 AI 研发？",
+      "为什么权限和审查证据需要独立管理？",
+      "这些原则已经成为微软产品或强制标准了吗？"
+    ],
+    "notes": "子智能体实际复读最终稿和原文，确认可见日期及 HTML 日期为 10 日，设计主张与落地状态分开，OG 与三个公开关联已核实，复审通过。",
+    "changes": [
+      "首次 harness 补中文解释。",
+      "改写假设示例及落地状态，移除编辑备注，使用功能性 alt。"
+    ]
+  }
+}

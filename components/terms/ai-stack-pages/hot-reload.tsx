@@ -1,7 +1,6 @@
-import { ArrowCounterClockwise, ArrowRight, FileCode, Globe, HardDrive } from "@phosphor-icons/react/dist/ssr";
-import { ArticleSection, ArticleAside, ConceptTerm } from "../ConceptArticle";
+
+import { ArticleSection, ArticleAside } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
-import { ConceptHero } from "../ConceptHero";
 import { HotReloadLesson } from "../ai-stack-lessons/hot-reload";
 import { hotReloadSources } from "@/lib/ai-stack-concept-sources/hot-reload";
 import styles from "../ToolchainConcepts.module.css";
@@ -10,7 +9,7 @@ const sections: [string, string][] = [["hot-reload-definition", "热重载先重
 
 export function HotReloadTermPage() {
   return <Article slug="hot-reload" title="热重载" subtitle="Hot Reload · 保存后让开发页面整页重新加载" sources={hotReloadSources} sections={sections}
-    hero={<ConceptHero slug="hot-reload" label="保存 button.css，开发服务发出 reload，浏览器整页重建，页面内存回到初始值"><div className={styles.toolchainHero}><div className={styles.hotReloadHero}><div><FileCode size={23} /><span>button.css</span><code>保存</code></div><ArrowRight size={18} aria-hidden="true" /><div><HardDrive size={23} /><span>开发服务</span><code>reload()</code></div><ArrowRight size={18} aria-hidden="true" /><div><Globe size={23} /><span>浏览器</span><code>计数 7 → 0</code></div></div><p className={styles.heroNote}>新文件生效的同时，页面运行时也被重新创建。</p></div></ConceptHero>}
+
     intro={<>你在本地页面里点了几次按钮，计数停在 7；保存一份 CSS 后，页面突然重新出现，计数回到了 0。<strong>这条开发反馈路径做的是整页 reload：新文件被送到浏览器，旧页面运行时随之结束。</strong>热重载解决的是“保存后看到新代码”，不承诺保留页面内存。</>}> 
     <ArticleSection id="hot-reload-definition" title="热重载先重载了什么">
       <p id="hot-reload-definition-text" className="vp-citation-target">热重载是开发阶段的一种更新方式：开发服务器或监听器发现源码变化，处理完文件后让浏览器重新加载页面。它依赖开发工具提供监听与通知，浏览器本身不会因为磁盘文件变化就自动重建当前页面。<Cite id="hot-reload-definition-text" sources={hotReloadSources}/></p>

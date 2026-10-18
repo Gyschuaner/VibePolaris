@@ -1,17 +1,15 @@
-import { Books, ChartBar, EnvelopeSimple } from '@phosphor-icons/react/dist/ssr';
-import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
-import { ConceptHero } from './ConceptHero';
+
+import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation } from './ConceptArticle';
 import { BatchLesson, StreamLesson, EventDrivenLesson } from './ProcessingConceptLessons';
 import { batchSources, streamSources, eventDrivenSources } from '@/lib/processing-sources';
 import base from './EventConcepts.module.css';
 import s from './ProcessingConcepts.module.css';
-import { StreamProcessingSignatureHero } from './DataTestSignatureHeroes';
 function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{names.map(name => <span key={name} id={`${slug}-${name}`} className={base.anchor} aria-hidden="true"/>)}</>; }
 export function BatchTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={batchSources}/>;
   return <ConceptArticle slug="batch-processing" title="批处理" sources={batchSources} sections={[["bounded", "确定本批输入范围"], ["chunks", "分块执行，完成后再汇总"], ["compute", "描述计算与触发执行"], ["schedule", "安排作业，也核对结果"]]}
     intro={<>图书馆想在每天收工后统计一批已经截取的借阅记录。这里的“作业”是一次从读入这批记录到写出结果的处理任务：它读入一个固定集合，按规则计算，最后写出汇总结果。批处理关心的是本次输入有没有边界；新借阅还在不断进来，只要没被算进这一批固定输入，就不会改变这一次的计算。</>}
-    hero={<ConceptHero slug="batch-processing" label="四条借阅记录汇总为书目42三次、书目78一次"><div className={s.batchHero}><div className={s.heroRows}>{[42,42,78,42].map((id,i)=><code key={i}>#{id}</code>)}</div><div className={s.heroBars}><div><span/><code>#42 · 3</code></div><div><span/><code>#78 · 1</code></div></div></div></ConceptHero>}>
+    >
     <ArticleSection id="bounded" title="确定本批输入范围"><Legacy slug="batch-processing" names={["question", "definition"]}/>
       <p id="batch-bounded" className="vp-citation-target"><strong>批处理把一个有界的数据集合交给作业，按规则计算结果。</strong>Apache Beam 是用来定义数据处理流水线的框架；它把有界集合描述为大小固定、不会继续增长的输入，把无界集合描述为持续接收新记录的输入。这里的“有界”说的是这次计算读哪些数据，不是机器数量，也不是必须在凌晨运行。<Cite id="batch-bounded"/></p>
       <p>例如“昨天的借阅”要先约定按借阅发生时间还是入库时间、截止到哪个时刻，以及读取哪个数据版本。这里的数据版本，可以理解为某个时点保存下来的那份数据状态。昨天发生但今天才补录的记录，是否进入下一次重算，也属于输入约定。<strong>先把这一批的范围划清，才知道结果缺了什么，重跑时应该读什么。</strong></p>
@@ -25,7 +23,7 @@ export function BatchTermPage() {
     <ArticleSection id="compute" title="描述计算与触发执行"><Legacy slug="batch-processing" names={["quiz-heading"]}/>
       <p id="batch-execute" className="vp-citation-target">在 Spark RDD 中，map 和 reduceByKey 都是变换：它们先描述怎样得到新的集合，通常不会在写下这一行时立刻计算。collect 是 action，会触发前面的计算，并把结果取回负责提交作业的驱动程序。RDD 会把数据拆成几份，每一份叫一个分区，可以分开处理。<strong>写出计算规则是一个阶段，作业真正执行并产出结果是另一个阶段。</strong>这样 Spark 可以等到真正需要结果时再运行这条计算链。<Cite id="batch-execute"/></p>
       <pre className={base.code}>{'book_ids = sc.parallelize([42, 42, 78, 42])\npairs = book_ids.map(lambda book: (book, 1))\ncounts = pairs.reduceByKey(lambda a, b: a + b)\nresult = sorted(counts.collect())\n# [(42, 3), (78, 1)]'}</pre>
-      <p><code>sc.parallelize</code> 把四个编号交给 Spark，形成一个可以分区处理的 RDD；`map` 把每条记录变成一对值：书目编号，和数字 1；`reduceByKey` 再把相同编号的 1 加起来。下面的四个编号就是首图里的四条记录。示例假定 SparkContext `sc` 已准备好；`collect` 把两个计数取回到驱动程序，`sorted` 只负责让显示顺序稳定。这里收集的结果很小，不代表可以把大规模数据都拉到一台机器的内存里。</p>
+      <p><code>sc.parallelize</code> 把四个编号交给 Spark，形成一个可以分区处理的 RDD；`map` 把每条记录变成一对值：书目编号，和数字 1；`reduceByKey` 再把相同编号的 1 加起来。下面用四条带编号的记录说明。示例假定 SparkContext `sc` 已准备好；`collect` 把两个计数取回到驱动程序，`sorted` 只负责让显示顺序稳定。这里收集的结果很小，不代表可以把大规模数据都拉到一台机器的内存里。</p>
     </ArticleSection>
     <ArticleSection id="schedule" title="安排作业，也核对结果" className={base.offset}><Legacy slug="batch-processing" names={["prompt-heading"]}/>
       <p id="batch-schedule" className="vp-citation-target">批作业可以按时间、条件或前置任务完成情况启动；有依赖的工作需要安排执行次序。AWS 的批处理介绍还把成功/失败告警、日志和历史记录列为运行后的检查。<strong>定时器按时触发，只说明作业被触发、尝试运行了一次。</strong>例如截止点从凌晨改到早上，读到的数据范围可能已经不同；还要像前面那样核对实际读到的范围、完成的块、输出数量和失败原因。<Cite id="batch-schedule"/></p>
@@ -38,7 +36,7 @@ export function StreamTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={streamSources}/>;
   return <ConceptArticle slug="stream-processing" title="流处理" sources={streamSources} sections={[["flow", "持续到来的借阅记录"], ["time", "发生时间、到达与处理时间"], ["windows", "窗口何时可以给出结果"], ["late", "晚到记录的处理"]]}
     intro={<>借阅记录不断到来，看板可以随着窗口陆续完成而更新。麻烦的是，较早发生的记录也可能较晚才收到。流处理除了计算，还要决定记录属于哪个时间窗口、何时输出结果，以及输出以后收到旧记录该怎么办。</>}
-    hero={<StreamProcessingSignatureHero />}>
+    >
     <ArticleSection id="flow" title="持续到来的借阅记录"><Legacy slug="stream-processing" names={["question", "definition"]}/>
       <p id="stream-flow" className="vp-citation-target"><strong>流处理在记录持续到来的过程中进行计算，而不用等数据全部收齐。</strong>Kafka Streams、Flink 和 Beam 是三种不同的流处理工具；下面的讲解参照它们的文档，说的是同一套机制，但各家的默认值和配置名称并不完全一样。Kafka Streams 将流描述为不断更新的记录序列，处理流程把数据来源、处理节点与输出连接起来。过滤可以逐条做，借阅次数汇总则需要跨记录保留信息；这份要跨记录保留的信息，各引擎通常叫作状态。<Cite id="stream-flow"/></p>
       <p>持续计算不意味着每条记录立刻得到最终结果。当计算要覆盖一段时间内的计数、要关联不同来源的数据，或要应对乱序到达时，就需要先确定等待与输出规则。数据到达得快，也不等于结果已经足够完整。</p>
@@ -66,7 +64,7 @@ export function EventDrivenTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={eventDrivenSources}/>;
   return <ConceptArticle slug="event-driven-architecture" title="事件驱动架构" sources={eventDrivenSources} sections={[["fact", "把已发生的借阅发布出来"], ["subscribers", "不同订阅者各自响应"], ["envelope", "事件需要的字段"], ["failures", "重试与重复投递"]]}
     intro={<>一次借阅登记成功后，书架（维护图书可借状态的订阅方）需要更新状态，统计需要累加次数。借阅服务可以发布“借阅已发生”的事件，让不同订阅者响应。书架更新没更新、统计加没加上，要分别核实。</>}
-    hero={<ConceptHero slug="event-driven-architecture" label="画面中，“借阅已发生”事件（id：loan-001）被复制成两份，分别送往“更新书架”和“更新统计”两个订阅者"><div className={s.edaHero}><div className={s.heroFact}><EnvelopeSimple size={23}/><strong>借阅已发生</strong></div><div className={s.heroCopies}><div><code>loan-001</code><Books size={26}/><span>更新书架</span></div><div><code>loan-001</code><ChartBar size={26}/><span>更新统计</span></div></div></div></ConceptHero>}>
+    >
     <ArticleSection id="fact" title="把已发生的借阅发布出来"><Legacy slug="event-driven-architecture" names={["question", "definition"]}/>
       <p id="eda-fact" className="vp-citation-target"><strong>事件驱动架构让组件通过发布和响应事件来协作。</strong>按 AWS 的说明，事件用来表达状态变化或更新：生产者把事件发布出去，消息代理（负责接收和转发事件的中间服务）把它交给相关消费者。事件可以携带数据，也可以只带标识，让消费者另外读取需要的内容。这里的生产者就是借阅服务；接收事件的一方通常叫消费者，本文里就是书架和统计两个订阅者。订阅者就是登记接收某类事件的消费者，本例中的两个订阅者相当于已经登记好了。<Cite id="eda-fact"/></p>
       <p>如果借阅服务直接依次调用书架和统计，任何一个服务挂了，整笔借阅都会被拖住甚至失败；以后每加一个订阅方，还要改借阅服务。事件驱动换一种做法：借阅服务只管把已发生的事宣布出去。</p>

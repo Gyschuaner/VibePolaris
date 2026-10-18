@@ -17,6 +17,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { Term } from "@/lib/content";
+import { TermIcon } from "@/components/terms/TermIcon";
 import {
   getFoundationTerm,
   type FoundationDemoStep,
@@ -537,7 +538,7 @@ function FoundationExperience({
 
         <header className="term-story-header">
           <span className="brand-star-only term-route-star term-story-star" data-route-star-target aria-hidden="true" />
-          <h1>{term.zh}</h1>
+          <h1>{term.zh}<TermIcon slug={term.slug} size={44} /></h1>
           {term.en && <span className="term-story-en">{term.en}</span>}
           <button className="term-speak" type="button" onClick={pronounce} aria-label={`朗读 ${term.en || term.zh}`} title="朗读术语">
             <SpeakerHigh size={22} />
@@ -718,7 +719,7 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
 
         <header className="term-story-header">
           <span className="brand-star-only term-route-star term-story-star" data-route-star-target aria-hidden="true" />
-          <h1>{term.zh}</h1>
+          <h1>{term.zh}<TermIcon slug={term.slug} size={44} /></h1>
           {term.en && <span className="term-story-en">{term.en}</span>}
           <button className="term-speak" type="button" onClick={pronounce} aria-label={`朗读 ${term.en || term.zh}`} title="朗读术语">
             <SpeakerHigh size={22} />

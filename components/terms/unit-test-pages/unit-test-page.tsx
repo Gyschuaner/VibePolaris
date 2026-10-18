@@ -1,7 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { unitTestSources } from "@/lib/unit-test-sources";
-import { UnitTestSignatureHero } from "../DataTestSignatureHeroes";
 import { UnitTestLesson } from "./unit-test";
 
 const sections: [string, string][] = [
@@ -12,12 +11,12 @@ const sections: [string, string][] = [
 ];
 
 export function UnitTestTermPage() {
-  return <Article slug="unit-test" title="单元测试" subtitle="Unit Test · 把一小段代码放进可重复的实验室" sources={unitTestSources} sections={sections} hero={<UnitTestSignatureHero />} intro={<>折扣函数只有十几行，为什么还要专门测试 -1、0、100 和 101？因为单元测试不是给代码贴一张“已检查”标签，而是把一个小单元的输入、依赖和可观察结果摆在同一张桌子上，让失败尽快指向真正的边界。</>}>
+  return <Article slug="unit-test" title="单元测试" subtitle="Unit Test · 把一小段代码放进可重复的实验室" sources={unitTestSources} sections={sections} intro={<>折扣函数只有十几行，为什么还要专门测试 -1、0、100 和 101？因为单元测试不是给代码贴一张“已检查”标签，而是把一个小单元的输入、依赖和可观察结果摆在同一张桌子上，让失败尽快指向真正的边界。</>}>
     <ArticleSection id="unit-scope" title="先把大系统缩成一张小桌子">
       <p id="unit-definition" className="vp-citation-target">Martin Fowler 说，unit test 这个词本身没有唯一尺寸：面向对象的团队可能把一个类当作单元，函数式代码可能把一个函数当作单元。共同点是范围小、由程序员用熟悉的工具编写，而且应该比更大范围的测试快得多。<Cite id="unit-definition" sources={unitTestSources} /></p>
       <p id="unit-isolation" className="vp-citation-target">所以“单元”不是把产品硬切成一个文件，而是选一块能单独说明行为的边界。我们把折扣规则、四组输入和一个时钟接口放在桌上；数据库、网络和整条结算流程先留在桌外。若这条规则失败，报告应该直接说出哪组输入出了问题。<Cite id="unit-isolation" sources={unitTestSources} /></p>
       <p id="unit-jest-example" className="vp-citation-target">Jest 的入门例子也是同样的动作：导入一个很小的 `sum` 函数，调用它，再用 `expect(...).toBe(...)` 比较结果。测试框架负责把这次调用变成可重复、可报告的检查，不会替你补上没有写出的边界。<Cite id="unit-jest-example" sources={unitTestSources} /></p>
-      <p>首图里，四个输入像四张小票：-1 不该悄悄变成折扣金额，0 要保持 0，100 正好踩到门槛，101 则验证门槛之外的计算。它们都指向同一个被测单元，失败时不会把读者带进数据库、浏览器和支付服务的迷宫。</p>
+      <p>下面分别核对四个输入：-1 不该悄悄变成折扣金额，0 要保持 0，100 正好踩到门槛，101 则验证门槛之外的计算。它们都指向同一个被测单元，失败时不会把读者带进数据库、浏览器和支付服务的迷宫。</p>
     </ArticleSection>
     <ArticleSection id="unit-control" title="把会漂移的依赖按住">
       <p id="unit-quality" className="vp-citation-target">Microsoft 的单元测试建议把“快、隔离、可重复、自检查”当作质量特征，并提醒文件系统、数据库等基础设施会让测试变慢、变脆。隔离不是为了制造一个假的世界，而是为了让这次检查只回答一个问题。<Cite id="unit-quality" sources={unitTestSources} /></p>

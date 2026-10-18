@@ -1,0 +1,145 @@
+{
+  "eventDate": "2026-10-07",
+  "reviewer": "codex-subagent-reader",
+  "agent": "/root/october_news_review",
+  "status": "passed",
+  "searchedAt": "2026-10-15T16:40:22Z",
+  "queries": [
+    "AI launch \"October 7, 2026\" official",
+    "site:liquid.ai \"October 7, 2026\"",
+    "site:perplexity.ai \"pplx-embed-v2-late\"",
+    "site:liquid.ai/blog \"OCT 7, 2026\"",
+    "\"October 7, 2026\" AI model release official Microsoft Alibaba",
+    "site:microsoft.com/en-us/research/blog \"Agent Lightning v1.0\""
+  ],
+  "sourceUrls": [
+    "https://www.anthropic.com/claude-haiku-5-5",
+    "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/synth-id-ai-content/",
+    "https://openai.com/index/gpt-6-for-everyone/",
+    "https://community.perplexity.ai/t/were-releasing-pplx-embed-v2-late-two-late-interaction-embedding-models-that-retrieve-text-images-and-pages-with-a-shared-embedding-space-for-cross-model-querying/6296",
+    "https://www.liquid.ai/blog/d1-open",
+    "https://blogs.windows.com/windowsexperience/2026/10/07/building-windows-for-hybrid-intelligence/",
+    "https://huggingface.co/perplexity-ai/pplx-embed-v2-late-0.6b",
+    "https://huggingface.co/LiquidAI/d1-3B/raw/main/LICENSE",
+    "https://help.openai.com/en/articles/20001598-intelligent-ui-in-chatgpt"
+  ],
+  "excludedCandidates": [
+    {
+      "title": "Liquid 云端 d1",
+      "url": "https://www.liquid.ai/blog/d1-decision-model",
+      "reason": "公告实际为 10/5，不移到 7 日；7 日另有 Open d1 权重发布。"
+    },
+    {
+      "title": "Agent Lightning v1.0 英文博客",
+      "url": "https://www.microsoft.com/en-us/research/blog/agent-lightning-v1-0-a-3500-line-lightweight-agentic-rl-framework-for-training-agents-with-real-harnesses/",
+      "reason": "10/7 英文解读，但中文首次介绍和论文已在 8 月，未确证当天另有新版本，不作首次发布收录。"
+    }
+  ],
+  "rounds": [
+    {
+      "checkedAt": "2026-10-15T16:40:22Z",
+      "decision": "needs-revision",
+      "findings": [
+        "三篇图片 alt 改为功能性说明；SynthID 写明视频、全球英文开放及伙伴计划，删除 citation 弱关联；Intelligent UI 补具体模型和 Pro 推理例外。",
+        "新增 Perplexity、Open d1 与 Windows 混合 AI 三稿待独立复审。"
+      ]
+    },
+    {
+      "checkedAt": "2026-10-15T16:40:58Z",
+      "decision": "needs-revision",
+      "findings": [
+        "子智能体要求 Haiku 75% 依据改为请求长度分布、阶梯价格与 token 用量估算，补平台开放范围。",
+        "Intelligent UI 列明首日计划，删 structured-output 弱关联；SynthID 视频、英文全球开放、Apple 后续已落实。",
+        "Liquid AI 实际权重许可带商业营收限制，补入条款来源，避免将博文 without restrictions 等同无限制商用。",
+        "SynthID 删除 data-lineage 弱关联，使用正文直接支持的 generative-ai 与 multimodal。"
+      ]
+    },
+    {
+      "checkedAt": "2026-10-15T16:44:53Z",
+      "decision": "passed",
+      "reports": {
+        "anthropic-claude-haiku-5-5-20261007": {
+          "questions": [
+            "现在在哪里能用？",
+            "75% 怎样估算？",
+            "提高 effort 一定划算吗？"
+          ],
+          "notes": "当前磁盘稿独立复审通过，成本估算、平台范围及图片说明已修正，原始 OG 已核对。",
+          "changes": [
+            "纠正成本估算口径并补当前可用平台。",
+            "使用功能性 alt。"
+          ]
+        },
+        "openai-chatgpt-gpt6-intelligent-ui-20261007": {
+          "questions": [
+            "我的计划何时开始？",
+            "Pro 计划和 Pro 推理选项有何区别？",
+            "Work、Codex 是否同步改变？"
+          ],
+          "notes": "独立核实具体计划、次日扩展、Pro 例外和产品边界通过；已补官方帮助页来源。本轮公告 HTML 403，未声称重新取得 OG。",
+          "changes": [
+            "明确首日计划与推理选项例外。",
+            "删除 structured-output 弱关联，补帮助页证据。",
+            "使用功能性 alt。"
+          ]
+        },
+        "google-synthid-detector-public-20261007": {
+          "questions": [
+            "普通人现在能用吗？",
+            "支持哪些媒体？",
+            "未检出能否证明真实？"
+          ],
+          "notes": "独立复审通过：全球英文入口、三种媒体、伙伴计划及结果边界清楚；图片实际 OG 与稿件一致。",
+          "changes": [
+            "明确全球开放和媒体范围。",
+            "删除 citation、data-lineage 弱关联，使用 multimodal。",
+            "使用功能性 alt。"
+          ]
+        },
+        "perplexity-multivector-embeddings-20261007": {
+          "questions": [
+            "它负责检索还是回答？",
+            "小模型为何能查大模型索引？",
+            "多向量有什么代价？"
+          ],
+          "notes": "独立首帖与两份模型卡核查通过，日期、逐词元向量、共享空间和编码限制准确；未扩大为 API 全开放，实际图片 OG 一致。",
+          "changes": [
+            "补入当日多向量嵌入模型公告。"
+          ]
+        },
+        "liquid-open-d1-edge-models-20261007": {
+          "questions": [
+            "它会写聊天回答吗？",
+            "图像与音频能任意混合吗？",
+            "开放权重是否无限制商用？"
+          ],
+          "notes": "独立核实与 5 日事件的区别、输入组合、实验状态、延迟条件及实际许可后通过；正文架构图来源已核对。",
+          "changes": [
+            "补入当日开放权重公告。",
+            "根据实际许可证补商业使用门槛。"
+          ]
+        },
+        "windows-hybrid-ai-mxc-ga-20261007": {
+          "questions": [
+            "当天究竟开放什么？",
+            "本地路由和 Copilot 功能何时推出？",
+            "本地运行为何仍需访问边界？"
+          ],
+          "notes": "独立对照原文通过：MXC GA、稍后实验预览、未来功能与硬件预订分别陈述。主图正文链接已确认，跳转站点被网页工具拒绝，显示留应用浏览器验收。",
+          "changes": [
+            "补入 Windows 混合 AI 与 MXC 公告。"
+          ]
+        }
+      }
+    }
+  ],
+  "selectedSlugs": [
+    "anthropic-claude-haiku-5-5-20261007",
+    "openai-chatgpt-gpt6-intelligent-ui-20261007",
+    "google-synthid-detector-public-20261007",
+    "perplexity-multivector-embeddings-20261007",
+    "liquid-open-d1-edge-models-20261007",
+    "windows-hybrid-ai-mxc-ga-20261007"
+  ],
+  "completedAt": "2026-10-15T16:44:53Z"
+}

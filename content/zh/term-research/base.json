@@ -533,17 +533,17 @@
   },
   {
     "slug": "typescript",
-    "mechanism": "TypeScript 在 JavaScript 上增加静态类型系统；类型检查器在代码运行前分析变量、函数和对象关系，编译或构建工具再输出 JavaScript。",
-    "misconception": "类型信息通常会在输出 JavaScript 中被擦除，类型断言也不会验证外部数据；接口响应、用户输入等数据仍需运行时校验。",
-    "demoSignature": "summary=3 steps; scene=pipeline: 5 frames; actors=TypeScript 源码/函数声明/类型检查器/诊断/JavaScript 输出/运行时输入; phases=声明约束→提前诊断→修正并输出→验证外部数据; action=运行检查",
+    "mechanism": "TypeScript 在 JavaScript 上增加静态类型检查；参数标注帮助检查器在运行前发现 string/number 错配，类型标注和类型断言不保留为自动运行时校验。",
+    "misconception": "as number 不转换或校验真实值；静态错误是否阻止文件输出取决于 noEmitOnError 等构建设置；number 也不保证数量满足正整数业务条件。",
+    "demoSignature": "专属编辑器：直接切换数字/文字参数及 TS/JS 视图，错误下划线和类型标注随之变化；同一 JSON 标本对比类型断言与 typeof 检查，分别留下计算结果或拒绝结果，无流水线卡片。",
     "sourceUrls": [
-      "https://www.typescriptlang.org/docs/handbook/intro",
+      "https://www.typescriptlang.org/docs/handbook/typescript-from-scratch.html",
       "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html",
       "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
-      "https://www.typescriptlang.org/docs/handbook/type-compatibility",
-      "https://www.typescriptlang.org/tsconfig/strict.html"
+      "https://www.typescriptlang.org/tsconfig/noEmitOnError.html",
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Addition"
     ],
-    "rewriteRisk": "正式页面需区分编译前的静态检查与运行时验证，说明类型通常不会进入输出 JavaScript，也不要把类型断言写成外部数据校验。",
+    "rewriteRisk": "必须区分检查、类型擦除、实际 JavaScript 运算和外部数据校验；不能把类型断言显示为校验通过。",
     "nearDuplicates": [
       "javascript",
       "compiler",

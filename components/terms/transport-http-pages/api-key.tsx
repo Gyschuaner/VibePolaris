@@ -57,7 +57,7 @@ function ApiKeyLab() {
 
 export function ApiKeyTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={apiKeySources} />;
-  return <ConceptArticle slug="api-key" title="API 密钥" subtitle="API Key · 识别调用方、计量用量，但不是最终用户授权" sources={apiKeySources} sections={[["key-role-section", "一串 key 先证明了什么"], ["key-storage-section", "为什么要把它藏在服务端"], ["key-restriction-section", "限制范围和计量能解决什么"], ["key-lifecycle-section", "轮换以后旧值去哪了"]]} hero={<ApiKeyHero />} intro={<>API 密钥是一串会随请求提交的凭证。服务可以用它识别项目、计量调用或套用配额，但拿到 key 的人通常就能以这个调用方继续请求；它和“当前到底是哪位用户”是两件事。</>}>
+  return <ConceptArticle slug="api-key" title="API 密钥" subtitle="API Key · 识别调用方、计量用量，但不是最终用户授权" sources={apiKeySources} sections={[["key-role-section", "一串 key 先证明了什么"], ["key-storage-section", "为什么要把它藏在服务端"], ["key-restriction-section", "限制范围和计量能解决什么"], ["key-lifecycle-section", "轮换以后旧值去哪了"]]} intro={<>API 密钥是一串会随请求提交的凭证。服务可以用它识别项目、计量调用或套用配额，但拿到 key 的人通常就能以这个调用方继续请求；它和“当前到底是哪位用户”是两件事。</>}>
     <ArticleSection id="key-role-section" title="一串 key 先证明了什么">
       <p id="key-role" className="vp-citation-target">API key 常用于识别项目、应用或调用方，让服务做计量、配额和基础访问判断。它通常是 bearer 凭证，能拿到值的人可能直接复用；服务不能只凭 key 推断最终用户的对象权限。<Cite id="key-role" /></p>
       <p id="key-bearer" className="vp-citation-target">把 key 放进受控请求头，比把它拼进 URL 更容易控制日志和转发范围。无论位置如何，key 都要按秘密或敏感凭证管理，避免在错误、调试输出和示例代码里原样出现。<Cite id="key-bearer" /></p>

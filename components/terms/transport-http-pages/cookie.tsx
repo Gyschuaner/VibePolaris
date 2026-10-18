@@ -69,7 +69,7 @@ function CookieLab() {
 
 export function CookieTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={cookieSources} />;
-  return <ConceptArticle slug="cookie" title="Cookie" subtitle="HTTP Cookie · 浏览器替请求筛选并携带的小片状态" sources={cookieSources} sections={[["cookie-store-section", "Cookie 怎样住进浏览器"], ["cookie-scope-section", "哪一条请求能带上它"], ["cookie-script-section", "网络会带，脚本未必看得见"], ["cookie-defense-section", "会话状态的边界"]]} hero={<CookieHero />} intro={<>Cookie 像浏览器里一只带标签的小罐子。服务器用 Set-Cookie 放进去，浏览器每次遇到请求都拿域名、路径、HTTPS 和跨站上下文逐项筛选；符合条件的值才会进入 Cookie 请求头。它不是页面私藏，也不是自动安全。</>}>
+  return <ConceptArticle slug="cookie" title="Cookie" subtitle="HTTP Cookie · 浏览器替请求筛选并携带的小片状态" sources={cookieSources} sections={[["cookie-store-section", "Cookie 怎样住进浏览器"], ["cookie-scope-section", "哪一条请求能带上它"], ["cookie-script-section", "网络会带，脚本未必看得见"], ["cookie-defense-section", "会话状态的边界"]]} intro={<>Cookie 像浏览器里一只带标签的小罐子。服务器用 Set-Cookie 放进去，浏览器每次遇到请求都拿域名、路径、HTTPS 和跨站上下文逐项筛选；符合条件的值才会进入 Cookie 请求头。它不是页面私藏，也不是自动安全。</>}>
     <ArticleSection id="cookie-store-section" title="Cookie 怎样住进浏览器">
       <p id="cookie-store" className="vp-citation-target">服务器在响应里发送 Set-Cookie，浏览器按名称、值和属性保存一条 Cookie。后续请求里的 Cookie 头只带名称和值，属性留在浏览器的筛选规则里；它们不是服务器每次重新发明的一段页面数据。<Cite id="cookie-store" /><Cite id="cookie-header" /></p>
       <p id="cookie-session" className="vp-citation-target">会话系统通常把不可预测的标识放进 Cookie，真正的登录状态留在服务器或受控的会话存储里。Cookie 变大就会随匹配请求反复传输，既占带宽，也扩大泄露面。<Cite id="cookie-session" /></p>

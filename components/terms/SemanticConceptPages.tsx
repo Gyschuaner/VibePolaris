@@ -1,5 +1,4 @@
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
-import { ConceptHero } from './ConceptHero';
 import { EmbeddingLesson, SemanticLesson, RagLesson } from './SemanticConceptLessons';
 import { embeddingSources, semanticSources, ragSources } from '@/lib/semantic-sources';
 import base from './EventConcepts.module.css';
@@ -10,7 +9,7 @@ export function EmbeddingTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={embeddingSources}/>;
   return <ConceptArticle slug="embedding" title="嵌入" sources={embeddingSources} sections={[["representation", "把内容表示成一组数"], ["comparison", "比较表示，保留原文"], ["configuration", "表示空间与输入配置"], ["length", "长文本与信息损失"]]}
     intro={<>“想晚几天还书”与“延长借书期限”用词不同，却在说相近的事。嵌入把内容映射到数值空间，为比较、检索和分类提供表示；在常见的余弦比较里，方向越接近通常越相似，但这些数能表达什么，仍取决于表示方法与训练任务。</>}
-    hero={<ConceptHero slug="embedding" label="两种续借表达变为三维数值条，分量相近但并不相同"><div className={s.embeddingHero}><div><span>晚几天还书</span><code>0.8　0.6　0.0</code><div>{[80, 60, 0].map((n, i) => <i key={i} style={{ width: `${n}%` }}/>)}</div></div><div><span>延长借书期限</span><code>0.6　0.8　0.0</code><div>{[60, 80, 0].map((n, i) => <i key={i} style={{ width: `${n}%` }}/>)}</div></div></div></ConceptHero>}>
+    >
     <ArticleSection id="representation" title="把内容表示成一组数"><Legacy slug="embedding" names={["question", "definition"]}/>
       <p><strong>嵌入是把对象映射到数值空间的表示。</strong>对象可以是词、句子，也可以是图像等内容。检索里常使用学习得到的向量，让适合当前任务的对象关系能通过数值比较体现出来；不只是把文字换成编号。</p>
       <p id="embedding-learning" className="vp-citation-target">Mikolov 等人的词向量研究从大量文本学习连续表示，并用词语关系检验结果。<strong>词向量就是给词配上的一组数，向量中的关系来自表示方法与训练数据。</strong>它不能直接当成整篇文档的表示，也不能期待任意模型都保留同一种关系。<Cite id="embedding-learning"/></p>
@@ -39,7 +38,7 @@ export function SemanticSearchTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={semanticSources}/>;
   return <ConceptArticle slug="semantic-search" title="语义搜索" sources={semanticSources} sections={[["meaning", "不同措辞，寻找相关内容"], ["candidates", "分数、范围与返回数量"], ["reranking", "候选之后的重新排序"], ["evaluation", "用相关标注检查结果"]]}
     intro={<>你想晚几天还书，需要找到续借规则，但规则文档的标题里并没有这几个词。语义搜索尝试按表达的含义寻找相关内容；检索结果仍然是一组候选，版本和适用范围还需核对。</>}
-    hero={<ConceptHero slug="semantic-search" label="按相似分数排列旧版说明与现行规则，最相近的旧版并不自动可用"><div className={s.searchHero}><span>想晚几天还书</span><div><strong>B · 延长借阅期限</strong><code>0.9998</code><em>旧版</em></div><div><strong>A · 续借规则</strong><code>0.9939</code><em>现行</em></div><p>最相近的候选，仍要看版本。</p></div></ConceptHero>}>
+    >
     <ArticleSection id="meaning" title="不同措辞，寻找相关内容"><Legacy slug="semantic-search" names={["question", "definition"]}/>
       <p><strong>语义搜索尝试按含义关系找到与查询相关的内容。</strong>一种常见方法是把查询与文档编码成兼容的向量，再比较相似性。文字不必完全相同，也可能进入候选；具体能跨越哪些措辞差异，要由模型和数据验证。</p>
       <p id="semantic-encoding" className="vp-citation-target">常见做法是把查询和文档各变成一组数字（向量），并且放在同一个空间里，这样两组数字才能直接比较相似性。DPR 的研究用配对训练的查询编码器与段落编码器：一个把问题变成向量，一个把段落变成向量，查询时把两组数按位相乘并加总（点积）来选出候选段落。<strong>编码、候选检索与读取答案是不同环节。</strong>本词条只讲如何找候选，后续机制才会读取答案。这是稠密检索的一种具体实现，不能把 DPR 的训练方式或点积度量当成所有语义搜索的统一规范。<Cite id="semantic-encoding"/></p>
@@ -68,7 +67,7 @@ export function RagConceptTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={ragSources}/>;
   return <ConceptArticle slug="rag" title="RAG" subtitle="检索增强生成" sources={ragSources} sections={[["retrieval", "回答前，先取回资料"], ["evidence", "检索资料进入本轮回答"], ["context", "选择与更新可用内容"], ["checking", "核对回答，也核对资料"]]}
     intro={<>“这本书能续借吗？”需要本馆规则和当前预约状态。RAG 在生成回答时加入检索得到的资料，让模型能利用训练参数之外、会随业务变化的规则和状态；这些资料是否充分、有效，仍然要检查。</>}
-    hero={<ConceptHero slug="rag" label="续借规则A与预约状态B一起支持不能续借的回答"><div className={s.ragHero}><div><code>A · 规则</code><strong>未被预约才可续借</strong></div><div><code>B · 状态</code><strong>已有预约</strong></div><p>当前不能续借。<span>[A] [B]</span></p></div></ConceptHero>}>
+    >
     <ArticleSection id="retrieval" title="回答前，先取回资料"><Legacy slug="rag" names={["question"]}/>
       <p id="rag-definition" className="vp-citation-target"><strong>生成回答时，模型会把检索到的外部资料一起放进本轮输入来参考。</strong>Lewis 等人的原始研究把生成模型的参数记忆与文档索引中的外部记忆组合，用问题检索段落，再让生成依赖问题和取回内容。外部资料可以更新和查看，不必把每次知识变化都写进模型参数。<Cite id="rag-definition"/></p>
       <p>常见应用把过程分成准备资料、检索候选、组织本轮输入、生成回答：先把规则整理成可检索的资料，找到相关片段，再把问题、规则 A 和状态 B 一起交给模型，最后依据这三样组织文字。<strong>上传文件、找到片段与正确回答，是三个不同的结果。</strong>例如文件上传了却还没进入索引，或者找到了“14 天”却答成“7 天”，都可能发生。</p>

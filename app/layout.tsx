@@ -9,6 +9,7 @@ import { deriveCustomPaletteTokens, fieldLightness } from "@/lib/custom-palette"
 
 import "./globals.css";
 import "./harness-v4.css";
+import "./news-motion.css";
 import "./xiaobei.css";
 
 // deriveCustomPaletteTokens / fieldLightness 必须自包含：这里取其运行时源码内联，保证与组件内实现一致。

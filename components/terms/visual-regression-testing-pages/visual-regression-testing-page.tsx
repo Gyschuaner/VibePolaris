@@ -1,7 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { visualRegressionTestingSources } from "@/lib/visual-regression-testing-sources";
-import { VisualRegressionTestingHero } from "./visual-regression-testing-hero";
 import { VisualRegressionTestingLesson } from "./visual-regression-testing";
 
 const sections: [string, string][] = [
@@ -12,11 +11,11 @@ const sections: [string, string][] = [
 ];
 
 export function VisualRegressionTestingTermPage() {
-  return <Article slug="visual-regression-testing" title="视觉回归测试" subtitle="Visual Regression Testing · 用截图差异守住界面变化" sources={visualRegressionTestingSources} sections={sections} hero={<VisualRegressionTestingHero />} intro={<>视觉回归测试把同一条页面路径在受控环境中渲染成截图，再与已确认的 baseline 比较。<strong>它擅长发现“画面变了”，但不会自动判断变化是 bug 还是有意设计；最后的决定仍需要把差异放回任务、无障碍和响应式边界里。</strong></>}>
+  return <Article slug="visual-regression-testing" title="视觉回归测试" subtitle="Visual Regression Testing · 用截图差异守住界面变化" sources={visualRegressionTestingSources} sections={sections} intro={<>视觉回归测试把同一条页面路径在受控环境中渲染成截图，再与已确认的 baseline 比较。<strong>它擅长发现“画面变了”，但不会自动判断变化是 bug 还是有意设计；最后的决定仍需要把差异放回任务、无障碍和响应式边界里。</strong></>}>
     <ArticleSection id="vrt-definition-section" title="先把画面变成可重复的输入">
       <p id="vrt-definition" className="vp-citation-target">视觉比较通常需要一张参照截图和一次候选截图，再按像素或区域计算差异。Playwright、Storybook 和 WebdriverIO 都把截图比较作为测试流程的一部分，但具体 API、阈值和基线管理方式由工具决定。<Cite id="vrt-definition" sources={visualRegressionTestingSources} /></p>
       <p id="vrt-workflow" className="vp-citation-target">一条可用的流程应固定页面数据、视口、字体、动画和等待条件，生成候选后把差异交给 review；确认有意变化后才更新参照。<Cite id="vrt-workflow" sources={visualRegressionTestingSources} /></p>
-      <p>首图把 baseline、candidate 和 diff 摆在同一条线上：测试不是“截图越多越好”，而是让每张图对应一条能稳定复现的用户路径。</p>
+      <p>比较 baseline、candidate 和 diff 时，要记得：测试不是“截图越多越好”，而是让每张图对应一条能稳定复现的用户路径。</p>
       <VisualRegressionTestingLesson />
     </ArticleSection>
 

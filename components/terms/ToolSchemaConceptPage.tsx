@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowCounterClockwise, CheckCircle, Code, LockKey, Pause, Play, ShieldCheck, WarningCircle, Wrench, XCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, CheckCircle, Code, LockKey, Pause, Play, ShieldCheck, Wrench, XCircle } from "@phosphor-icons/react";
 import { useEffect, useRef, useState } from "react";
 
 import { Article, Cite } from "./AiStackConceptPageShared";
@@ -116,7 +116,7 @@ function ToolSchemaLab() {
 const sections: [string, string][] = [["tool-schema-definition-section", "Schema 先回答工具接受什么"], ["tool-schema-input-section", "类型、必填和值域要写成规则"], ["tool-schema-rejection-section", "坏参数应该停在副作用之前"], ["tool-schema-output-section", "返回值也要有归属和形状"], ["tool-schema-boundary-section", "形状合格仍然不能替你做决定"]];
 
 export function ToolSchemaTermPage() {
-  return <Article slug="tool-schema" title="工具 Schema" subtitle="Tool Schema · 先锁住输入，再允许动作" sources={toolSchemaSources} sections={sections} hero={<ToolSchemaHero />} intro={<>模型说“我来调用天气工具”时，真正要执行的程序还不能只看这句话。<strong>工具 Schema 把名称、输入字段和约束写成可检查的形状，让执行层先挡住坏参数，再把合格请求交给授权和外部工具。</strong></>}>
+  return <Article slug="tool-schema" title="工具 Schema" subtitle="Tool Schema · 先锁住输入，再允许动作" sources={toolSchemaSources} sections={sections} intro={<>模型说“我来调用天气工具”时，真正要执行的程序还不能只看这句话。<strong>工具 Schema 把名称、输入字段和约束写成可检查的形状，让执行层先挡住坏参数，再把合格请求交给授权和外部工具。</strong></>}>
     <ArticleSection id="tool-schema-definition-section" title="Schema 先回答工具接受什么"><p id="tool-schema-definition" className="vp-citation-target"><strong>工具 Schema 是一份机器能检查的调用契约：工具叫什么、输入是什么形状、哪些字段必须出现、结果可能长什么样。</strong>OpenAI 的 function calling 用 JSON Schema 描述函数参数；MCP 的工具定义也包含名称、描述、输入 Schema 和可选的输出 Schema。<Cite id="tool-schema-definition" sources={toolSchemaSources} />模型负责提出一次 `get_weather` 调用，应用或客户端仍要决定是否真的执行。</p><p>不同平台把交互叫法写得不一样，但边界相同：Anthropic 的流程是模型返回 `tool_use`，应用执行工具，再把带有对应 id 的 `tool_result` 送回去。<Cite id="tool-schema-definition" sources={toolSchemaSources} />所以 Schema 不是“模型已经调用成功”的证明，它只把准备交接的那一份数据变得可读、可验。</p></ArticleSection>
     <ArticleSection id="tool-schema-input-section" title="类型、必填和值域要写成规则"><p id="tool-schema-input" className="vp-citation-target"><strong>`city` 是字符串和 `city` 必须存在，是两条不同的检查。</strong>JSON Schema 的 `type` 约束实例的基本类型，`required` 约束对象里必须出现哪些属性，`enum` 则把可接受的值列成集合。<Cite id="tool-schema-input" sources={toolSchemaSources} />这就是为什么 &#123; city: 24 &#125; 和 &#123;&#125; 都不能因为“看起来像一份参数”而直接进入天气服务。</p><p>规则还要写到执行器真正能执行的程度。OpenAI 的 strict 模式要求 Schema 使用受支持的约束，例如对象关闭额外属性、必填字段齐全；需要“可选”时，可以明确允许 `null`，而不是让缺失和空值悄悄混在一起。<Cite id="tool-schema-input" sources={toolSchemaSources} />这些限制是某种实现的使用条件，不是 JSON Schema 所有方言的统一默认值。</p></ArticleSection>
     <ArticleSection id="tool-schema-rejection-section" title="坏参数应该停在副作用之前"><p id="tool-schema-rejection" className="vp-citation-target"><strong>校验失败的调用应该留下错误回执，并在工具产生外部副作用前停止。</strong>MCP 把“未知工具、无效参数、服务器错误”区分为不同失败；它还要求服务器验证输入、做访问控制、限制速率并清理输出。<Cite id="tool-schema-rejection" sources={toolSchemaSources} />这比先调用天气服务、等服务自己报错更容易定位，也避免把猜测送进写入、付款或删除动作。</p><ToolSchemaLab /><p>实验里缺 `city` 或把它写成数字，锁会直接给出 `BLOCK`；即使 `city` 写对，未勾选授权也仍会被第二道门拦下。两次拦截看起来都像“没执行”，但前者是结构错误，后者是权限决策，错误回执应该把原因说清楚。</p></ArticleSection>

@@ -66,7 +66,7 @@ function ResponseBodyLab() {
 
 export function ResponseBodyTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={responseBodySources} />;
-  return <ConceptArticle slug="response-body" title="响应体" subtitle="Response Body · headers 说明规则，body 承载表示" sources={responseBodySources} sections={[["body-message-section", "body 到底承载了什么"], ["body-decode-section", "先还原字节，再选择解析器"], ["body-no-content-section", "没有 body 也是协议结果"], ["body-boundary-section", "解析成功不等于业务成功"]]} hero={<ResponseBodyHero />} intro={<>HTTP 响应里的 status 和 headers 先交代上下文，响应体才承载这次返回的表示。它可能是一段压缩字节、一份 JSON、一个 HTML 文档，也可能因为 HEAD、204 或 304 而根本没有可读取的 body；读取前要先看协议给出的边界。</>}>
+  return <ConceptArticle slug="response-body" title="响应体" subtitle="Response Body · headers 说明规则，body 承载表示" sources={responseBodySources} sections={[["body-message-section", "body 到底承载了什么"], ["body-decode-section", "先还原字节，再选择解析器"], ["body-no-content-section", "没有 body 也是协议结果"], ["body-boundary-section", "解析成功不等于业务成功"]]} intro={<>HTTP 响应里的 status 和 headers 先交代上下文，响应体才承载这次返回的表示。它可能是一段压缩字节、一份 JSON、一个 HTML 文档，也可能因为 HEAD、204 或 304 而根本没有可读取的 body；读取前要先看协议给出的边界。</>}>
     <ArticleSection id="body-message-section" title="body 到底承载了什么">
       <p id="body-message" className="vp-citation-target">HTTP message 把状态行、字段和可选的 message body 分开。body 是服务器交付的表示字节，不是“200 的另一种写法”；状态和字段可以已经告诉客户端如何解释、缓存或处理它。<Cite id="body-message" /></p>
       <p id="body-representation" className="vp-citation-target">同一个资源可以用 JSON、HTML、图片或其他媒体类型表示。响应体的字节只是载荷，Content-Type、Content-Encoding 和状态码共同决定接收端应怎样读取它。<Cite id="body-representation" /></p>

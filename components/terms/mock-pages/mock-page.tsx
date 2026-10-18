@@ -1,7 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { mockSources } from "@/lib/mock-sources";
-import { MockSignatureHero as MockHero } from "../TestSecuritySignatureHeroes";
 import { MockLesson } from "./mock";
 
 const sections: [string, string][] = [
@@ -12,7 +11,7 @@ const sections: [string, string][] = [
 ];
 
 export function MockTermPage() {
-  return <Article slug="mock" title="模拟对象" subtitle="Mock · 借一副可控的替身，照出代码怎样依赖别人" sources={mockSources} sections={sections} hero={<MockHero />} intro={<>测试结账逻辑时，真的要每次请求支付平台吗？不必。但把依赖换成一个会说“成功”的空壳，也不代表支付世界真的如此。<strong>Mock 的价值是隔离和记录；它的边界是返回值与调用期待都由测试写下，可能和真实依赖渐渐分叉。</strong></>}>
+  return <Article slug="mock" title="模拟对象" subtitle="Mock · 借一副可控的替身，照出代码怎样依赖别人" sources={mockSources} sections={sections} intro={<>测试结账逻辑时，真的要每次请求支付平台吗？不必。但把依赖换成一个会说“成功”的空壳，也不代表支付世界真的如此。<strong>Mock 的价值是隔离和记录；它的边界是返回值与调用期待都由测试写下，可能和真实依赖渐渐分叉。</strong></>}>
     <ArticleSection id="mock-definition-section" title="先认清：Mock 替代的是什么">
       <p id="mock-definition" className="vp-citation-target">Fowler 把 Test Double 当作一个总称：测试时用替代物换掉生产对象。Mock 是其中一种会预先写好期待、记录收到的调用，并在验证阶段检查这些调用的替身；它不是“任何假数据”的统称。<Cite id="mock-definition" sources={mockSources} /></p>
       <p id="mock-kinds" className="vp-citation-target">同一篇词典还区分了几种角色：Stub 给出预设答案，Spy 记录怎样被调用，Fake 用一个更轻量但能工作的实现跑一段行为，Mock 则更关心“被测对象对协作者做了什么”。在支付例子里，Mock 可以回答 `charge` 被调用几次，Fake 更像一台小型支付机，回答授权和扣款后的状态。<Cite id="mock-kinds" sources={mockSources} /></p>
@@ -28,7 +27,7 @@ export function MockTermPage() {
     </ArticleSection>
     <ArticleSection id="mock-boundary-section" title="调用记录不是业务契约">
       <p id="mock-choice" className="vp-citation-target">Fowler 认为，协作简单时可以使用真实对象并检查状态；协作昂贵、缓慢或难以操作时，替身更合适。选择不是“所有依赖都 Mock”或“永远不用 Mock”的站队，而是看这一次测试要保护的事实在哪里。<Cite id="mock-choice" sources={mockSources} /></p>
-      <p id="mock-refactor" className="vp-citation-target">首图的旧断言要求 `charge()` 恰好一次。实现改成 `authorize()` 加 `capture()` 后，订单仍是 `paid`，Mock 却报告 `charge ×0`。这条红灯可能在提醒调用契约被破坏，也可能只是在保护已经被替换的内部形状；先把业务结果和调用期待分开看，才知道该修代码还是改测试。<Cite id="mock-refactor" sources={mockSources} /></p>
+      <p id="mock-refactor" className="vp-citation-target">例如旧断言要求 `charge()` 恰好一次。实现改成 `authorize()` 加 `capture()` 后，订单仍是 `paid`，Mock 却报告 `charge ×0`。这条红灯可能在提醒调用契约被破坏，也可能只是在保护已经被替换的内部形状；先把业务结果和调用期待分开看，才知道该修代码还是改测试。<Cite id="mock-refactor" sources={mockSources} /></p>
       <p id="mock-module" className="vp-citation-target">Vitest 同时提供 `vi.fn`、`vi.spyOn` 和 `vi.mock`：可以只观察一个函数、替换一个模块，或让整个模块变成受控版本。替换范围越大，越要问测试是否还在验证自己的行为，还是只在验证一组替身彼此配合。<Cite id="mock-module" sources={mockSources} /></p>
       <p>一个实用的判断是：如果为了让 Mock 工作，需要写出比被测逻辑还长的调用剧本，测试很可能已经开始复制实现。把断言退回公开行为，或者把依赖换成一个更小的 Fake，通常比继续加期待更诚实。</p>
     </ArticleSection>

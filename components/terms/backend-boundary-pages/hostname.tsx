@@ -136,7 +136,7 @@ function HostnameLab() {
 
 export function HostnameTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={hostnameSources} />;
-  return <ConceptArticle slug="hostname" title="主机名" subtitle="Hostname · 给网络服务使用的可读名字" sources={hostnameSources} sections={[["hostname-shape", "名字不是地址"], ["hostname-resolution", "解析会给你一组可能的地址"], ["hostname-identity", "TLS 和 HTTP 还会继续使用名字"], ["hostname-debug", "排查时把三层证据放在一起"]]} hero={<HostnameHero />} intro={<>你记住的是 <code>api.example.com</code>，网络先把它换成地址，再用原来的名字核对证书和服务。<strong>主机名是一条跨层传递的线索，不是某台机器的永久身份证。</strong><Cite id="hostname-definition" /></>}>
+  return <ConceptArticle slug="hostname" title="主机名" subtitle="Hostname · 给网络服务使用的可读名字" sources={hostnameSources} sections={[["hostname-shape", "名字不是地址"], ["hostname-resolution", "解析会给你一组可能的地址"], ["hostname-identity", "TLS 和 HTTP 还会继续使用名字"], ["hostname-debug", "排查时把三层证据放在一起"]]} intro={<>你记住的是 <code>api.example.com</code>，网络先把它换成地址，再用原来的名字核对证书和服务。<strong>主机名是一条跨层传递的线索，不是某台机器的永久身份证。</strong><Cite id="hostname-definition" /></>}>
     <ArticleSection id="hostname-shape" title="名字不是地址">
       <p id="hostname-definition" className="vp-citation-target">主机名通常是由点分开的标签，例如 <code>api.example.com</code>。DNS 把这些名字放进树状命名空间；名字可以指向一个节点、一个别名或一组资源记录，所以它描述的是“怎样称呼目标”，不是一张固定网卡。<Cite id="hostname-definition" /></p>
       <p id="hostname-syntax" className="vp-citation-target">“hostname”这个词在不同系统里用得并不总是一样：有人指完整的 FQDN，有人只指第一段 <code>api</code>。常见主机名标签允许字母、数字和连字符，大小写比较通常不区分；写下完整名称和末尾点的语境，才能避免把相对名当成完整地址。<Cite id="hostname-syntax" /></p>

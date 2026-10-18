@@ -1,6 +1,5 @@
-import { Check, Clock, FileText, X } from '@phosphor-icons/react/dist/ssr';
+
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
-import { ConceptHero } from './ConceptHero';
 import { GroundingLesson, HallucinationLesson, EvaluationLesson } from './QualityConceptLessons';
 import { groundingSources, hallucinationSources, evaluationSources } from '@/lib/quality-sources';
 import base from './EventConcepts.module.css';
@@ -11,7 +10,7 @@ export function GroundingTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={groundingSources}/>;
   return <ConceptArticle slug="grounding" title="基于证据回答" sources={groundingSources} sections={[["basis", "回答对应的依据"], ["scope", "条件不能在改写中丢掉"], ["data", "资料进入本轮输入"], ["missing", "资料没说的部分"]]}
     intro={<>问退款多久能到账，回答要依据适用的退款规则。Grounding 是在本轮生成前把任务相关资料和问题一起放进输入：你直接粘贴资料、系统先去资料库检索，或工具返回订单状态，都可以成为依据。它不会自动保证模型只用这些资料，也不会自动保证资料正确。</>}
-    hero={<ConceptHero slug="grounding" label="‘审核通过后’‘通常’这两个条件，随退款时效一起保留在回答中"><div className={s.groundHero}><FileText size={25}/><div><span>审核通过后</span><span>通常</span><strong>三个工作日</strong></div><p>条件与结论一起保留</p></div></ConceptHero>}>
+    >
     <ArticleSection id="basis" title="回答对应的依据"><Legacy slug="grounding" names={["question", "definition"]}/>
       <p id="ground-definition" className="vp-citation-target"><strong>Grounding 让生成过程连接到具体资料，为回答提供依据。</strong>Microsoft 对 Copilot 的说明区分了两类信息：模型训练时学到的知识，和本次提问时可用的工作资料、网页和附件；这些额外信息影响回答，但仍需检查生成内容。你直接粘贴资料是手动引入，RAG 是系统先去资料库找，工具结果则是系统把刚查到的记录带回输入；具体系统怎样取资料、是否搜索网页，要看实际设置。<Cite id="ground-definition"/></p>
       <p>“知道退款一般要几天”与“读到这家公司的退款规则”承担不同作用。前者可能来自模型已有知识，后者可以指出出处与适用条件。回答这家公司的现行政策时，需要能解释<strong>这句话由哪份材料支持</strong>。</p>
@@ -40,7 +39,7 @@ export function HallucinationTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={hallucinationSources}/>;
   return <ConceptArticle slug="hallucination" title="幻觉" sources={hallucinationSources} sections={[["meaning", "句子通顺，事实仍可能不对"], ["checks", "与来源一致，与事实相符"], ["causes", "错误进入回答的路径"], ["uncertainty", "不确定性只是核查信号"]]}
     intro={<>回答写得具体、语气笃定，仍可能改错数字、扩大条件，或补上没有依据的细节。检查这类问题，要分清回答是否忠于材料，以及材料和回答是否符合实际情况。</>}
-    hero={<ConceptHero slug="hallucination" label="旧规则三个工作日与当前规则七个工作日分别显示，忠于旧资料仍可能过时"><div className={s.hallHero}><div><FileText size={22}/><span>提供原文 · v1</span><strong>3<small>工作日</small></strong></div><div><Clock size={22}/><span>当前规则 · v2</span><strong>7<small>工作日</small></strong></div></div></ConceptHero>}>
+    >
     <ArticleSection id="meaning" title="句子通顺，事实仍可能不对"><Legacy slug="hallucination" names={["question", "definition"]}/>
       <p id="hall-definition" className="vp-citation-target">在自然语言生成中，<strong>“幻觉”常指生成内容与提供来源不符，或缺少事实依据等问题</strong>。Ji 等的综述指出，不同任务对这个词的使用范围不同，并区分忠于来源与符合现实事实。NIST 用 confabulation（虚构）描述模型自信地生成错误、偏离输入或前后矛盾的内容。阅读研究或产品报告时，要看它究竟检查哪一种错误，不能只看一个“幻觉率”。<Cite id="hall-definition"/></p>
       <p id="hall-fluency" className="vp-citation-target">Maynez 等研究摘要生成时发现，流畅、主题相关的摘要仍可能含有来源无法支持的内容，常用的摘要相似度指标也不能充分反映这一问题。<strong>语言质量与依据质量需要分别检查。</strong>这项研究针对摘要任务，不能把其中某个实验结果当成所有模型、所有场景的错误比例。<Cite id="hall-fluency"/></p>
@@ -71,7 +70,7 @@ export function EvaluationTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={evaluationSources}/>;
   return <ConceptArticle slug="eval" title="评测" sources={evaluationSources} sections={[["task", "先确定完成判据"], ["compare", "同一组案例比较改动"], ["coverage", "总分没有包含的变化"], ["trust", "评分结果也需要核对"]]}
     intro={<>改了提示词、模型或工具流程，单看一条漂亮回答很难知道效果。评测把目标变成可执行的案例，记录实际结果，再让评分器按明确规则判卷。比较版本时，既要看整体变化，也要找出哪些案例变差。</>}
-    hero={<ConceptHero slug="eval" label="B与C都通过六例中的五例，但B在关键案例失败，C在普通案例失败"><div className={s.evalHero}>{['B', 'C'].map(version => <div key={version}><strong>{version} · 5/6</strong><div>{Array.from({ length: 6 }, (_, i) => <span key={i} data-critical={i === 5} data-failed={i === (version === 'B' ? 5 : 2)}>{i === (version === 'B' ? 5 : 2) ? <X size={16}/> : <Check size={16}/>}</span>)}</div></div>)}<p>相同总分，失败位置不同</p></div></ConceptHero>}>
+    >
     <ArticleSection id="task" title="先确定完成判据"><Legacy slug="eval" names={["question", "definition"]}/>
       <p id="eval-task" className="vp-citation-target"><strong>评测用明确输入、成功标准和评分方式，检查系统在一组任务上的表现。</strong>评分器就是按判据给一次回答或一次执行结果判卷的程序、模型或人。Anthropic 建议把这些环节分开记录：模型回答说“已完成”，还要去环境里核对实际结果，两者可能不一致。当对象是智能体时，模型与 <ConceptTerm slug="agent-harness">Harness</ConceptTerm> 一起影响表现。<Cite id="eval-task"/></p>
       <p>例如“处理退款问题”太宽。可以改成：给出一段写明“审核通过后通常三个工作日”的线上退款规则，询问时效，回答应保留“审核通过后”和“通常”这两个限定。另一条案例检查资料缺费用时是否承认缺口；再一条检查是否拒绝提供他人的订单。每条输入和预期行为都应具体。</p>

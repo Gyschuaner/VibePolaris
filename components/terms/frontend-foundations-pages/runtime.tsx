@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Browser, CheckCircle, Code, Cube, File, Gear, Terminal, WarningCircle } from "@phosphor-icons/react";
+import { Browser, CheckCircle, Code, Gear, Terminal, WarningCircle } from "@phosphor-icons/react";
 import { runtimeSources } from "@/lib/frontend-foundation-sources";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { ArticleAside, ArticleSection } from "../ConceptArticle";
@@ -37,7 +37,7 @@ function RuntimeLab() {
 }
 
 export function RuntimeTermPage(_props: BespokeTermPageProps) {
-  return <Article slug="runtime" title="运行时" subtitle="Runtime · 代码真正落地执行的环境" sources={runtimeSources} hero={<RuntimeHero />} sections={[
+  return <Article slug="runtime" title="运行时" subtitle="Runtime · 代码真正落地执行的环境" sources={runtimeSources} sections={[
     ["runtime-definition-section", "运行时不是一门新的语言"],
     ["runtime-language-section", "先分出语言内置能力"],
     ["runtime-host-section", "宿主把插槽接到代码旁边"],

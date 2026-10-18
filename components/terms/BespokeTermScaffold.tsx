@@ -2,6 +2,7 @@ import { ArrowUpRight } from "@phosphor-icons/react";
 import Link from "next/link";
 
 import type { Term } from "@/lib/content";
+import { TermIcon } from "./TermIcon";
 
 export type BespokeTermPageProps = {
   term: Term;
@@ -17,7 +18,7 @@ export function TermLabHeader({ term, eyebrow, summary }: Pick<BespokeTermPagePr
         <Link href="/">星图</Link><span>/</span><Link href={`/?cat=${encodeURIComponent(term.cat)}`}>{term.cat}</Link><span>/</span><b>{term.zh}</b>
       </nav>
       <p>{eyebrow}</p>
-      <h1>{term.zh}<span>{term.en}</span></h1>
+      <h1><span className="bespoke-term-title">{term.zh}<TermIcon slug={term.slug} size={44} /></span><span>{term.en}</span></h1>
       <div className="bespoke-term-summary"><i className="brand-star-only" aria-hidden="true" /><strong>{summary}</strong></div>
     </header>
   );

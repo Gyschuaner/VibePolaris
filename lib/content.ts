@@ -6,6 +6,7 @@ import backendDataTermsSource from "@/content/zh/term-batches/backend-data.json"
 import frontendProductTermsSource from "@/content/zh/term-batches/frontend-product.json";
 import publishedTermSlugsSource from "@/content/zh/published-terms.json";
 import termsSource from "@/content/zh/terms.json";
+import termIconsSource from "@/content/zh/term-icons.json";
 import toolsSource from "@/content/zh/tools.json";
 import newsSource from "@/content/zh/news.json";
 import { newsArticleSchema, newsRelationErrors } from "@/lib/news-schema";
@@ -57,6 +58,12 @@ export const terms = z.array(termSchema).parse([
   ...backendDataTermsSource,
   ...aiStackTermsSource,
 ]);
+const termIcons = z.record(z.string(), z.string().min(1)).parse(termIconsSource);
+const missingTermIcons = terms.filter(term => !termIcons[term.slug]);
+const extraTermIcons = Object.keys(termIcons).filter(slug => !terms.some(term => term.slug === slug));
+if (missingTermIcons.length || extraTermIcons.length) {
+  throw new Error(`词条图标映射不完整：缺少 ${missingTermIcons.map(term => term.slug).join(", ")}；多余 ${extraTermIcons.join(", ")}`);
+}
 export const publishedTermSlugs = z.array(z.string().regex(/^[a-z0-9-]+$/)).min(1).parse(publishedTermSlugsSource);
 export const tools = z.array(toolSchema).parse(toolsSource);
 const parsedNewsArticles = z.array(newsArticleSchema).min(1).parse(newsSource);

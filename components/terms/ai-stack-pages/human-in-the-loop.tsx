@@ -2,7 +2,6 @@ import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { humanInTheLoopSources } from "@/lib/ai-stack-concept-sources/human-in-the-loop";
 import { HumanInTheLoopLesson } from "../ai-stack-lessons/human-in-the-loop";
-import { ApprovalSealHero } from "../ai-stack-lessons/ai-interaction-heroes";
 
 export function HumanInTheLoopTermPage() {
   const sections: [string, string][] = [
@@ -11,7 +10,7 @@ export function HumanInTheLoopTermPage() {
     ["hitl-execution", "批准、修改和拒绝怎样落地"],
     ["hitl-boundary", "批准也有范围"],
   ];
-  return <Article slug="human-in-the-loop" title="人在回路" subtitle="Human in the Loop · 在高风险动作前让人决定" sources={humanInTheLoopSources} sections={sections} hero={<ApprovalSealHero />} intro={<>人在回路把人放在动作真正发生之前，让审阅者查看输入、建议动作和影响，再批准、修改或拒绝。它不是给结果加一个“已看过”标签，而是让人的决定真的能改变下一步；事后通知或抽样复查不能把已经发生的动作变成“人在回路”。</>}>
+  return <Article slug="human-in-the-loop" title="人在回路" subtitle="Human in the Loop · 在高风险动作前让人决定" sources={humanInTheLoopSources} sections={sections} intro={<>人在回路把人放在动作真正发生之前，让审阅者查看输入、建议动作和影响，再批准、修改或拒绝。它不是给结果加一个“已看过”标签，而是让人的决定真的能改变下一步；事后通知或抽样复查不能把已经发生的动作变成“人在回路”。</>}>
     <ArticleSection id="hitl-question" title="人在执行前改变结果">
       <p>自动退款上限是 500 元，用户申请 1200 元。系统先生成退款预览并暂停，而不是先退款再发一条通知。人工决定可以批准 1200、改成 500，或拒绝；三个结果会改变后端是否执行，审阅人也要知道自己正在决定哪一笔退款。</p>
       <p id="hitl-pause" className="vp-citation-target">OpenAI Agents SDK 的 HITL 流程会在需要审批的工具调用处暂停，把待处理项放入 interruption，再由人决定后恢复运行。暂停点必须发生在工具产生外部副作用之前。<Cite id="hitl-pause" sources={humanInTheLoopSources} /></p>

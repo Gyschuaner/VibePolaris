@@ -1,6 +1,5 @@
-import { ArrowRight, CalendarBlank, Check, Clock, Copy } from "@phosphor-icons/react/dist/ssr";
+
 import { ConceptArticle, ArticleAside, ArticleCitation, ArticleSection, ConceptTerm } from "./ConceptArticle";
-import { ConceptHero } from "./ConceptHero";
 import { TimeoutLesson, RetryLesson, IdempotencyLesson } from "./ReliabilityConceptLessons";
 import { timeoutSources, retrySources, idempotencySources } from "@/lib/reliability-sources";
 import s from "./ReliabilityConcepts.module.css";
@@ -15,7 +14,7 @@ export function TimeoutTermPage() {
   return <ConceptArticle slug="timeout" title="超时" sources={timeoutSources}
     sections={[["waiting", "等待有一个上限"], ["clocks", "客户端与服务端的时间"], ["deadline", "给等待分配时间"]]}
     intro={<>在预约页面提交请求，两秒后却显示“超时”。你只知道这次等待没有拿到确认；预约可能已经建立，不能直接再创建一条。</>}
-    hero={<ConceptHero slug="timeout" label="同一笔预约：客户端第2秒超时，服务端第3秒建立42号预约，第4秒准备好回信"><div className={s.timeoutHero}><div className={s.timeoutHeroAxis}><span>0</span><span>2 s</span><span>3 s</span><span>4 s</span></div><div className={s.timeoutHeroLane}><span><Clock size={18} />等待</span><div className={s.timeoutHeroTrack}><i className={s.timeoutHeroClient} /><b className={s.timeoutHeroClientEvent}>超时</b></div></div><div className={s.timeoutHeroLane}><span><CalendarBlank size={18} />预约</span><div className={s.timeoutHeroTrack}><i className={s.timeoutHeroServer} /><b className={s.timeoutHeroServerEvent}>#42</b><b className={s.timeoutHeroResponse}>回信</b></div></div></div></ConceptHero>}>
+    >
     <ArticleSection id="waiting" title="等待有一个上限">
       <Legacy slug="timeout" names={["question", "definition"]} />
       <p id="timeout-wait" className="vp-citation-target"><strong>超时是给一次等待设上限。</strong>到期还没有拿到所需结果，等待的一方就结束这次等待，按超时处理。在这个例子里，预约页面是等待的一方；若没有上限，它可能一直占着连接等回信。超时让页面及时停下，却不能替服务端撤销已做的事。<Cite id="timeout-wait" /></p>
@@ -49,7 +48,7 @@ export function RetryTermPage() {
   return <ConceptArticle slug="retry" title="重试" sources={retrySources}
     sections={[["decision", "先看失败的是哪件事"], ["attempts", "同一查询再试一次"], ["spacing", "等一等，也要错开"], ["stop", "什么时候停"]]}
     intro={<>你已经有 #42 号预约，点开详情却看到“服务暂时不可用”。服务回信里的数字编号是 503，页面不一定把这个编号直接显示出来。再点一次查看也许有用，但一直点不会让服务更快恢复。重试要先看做的是什么、失败能否恢复，再决定等多久、试几次。</>}
-    hero={<ConceptHero slug="retry" label="查询42号预约：第一次在0秒收到503；等1秒第二次仍是503；再等2秒，第三次在3秒收到200并停止"><div className={s.retryHero}><div className={s.retryHeroQuery}>查询同一笔预约 <strong>#42</strong></div><div className={s.retryHeroRun}><span><small>第1次</small><strong>503</strong><small>0 s</small></span><i><small>等 1 s</small></i><span><small>第2次</small><strong>503</strong><small>1 s</small></span><i><small>等 2 s</small></i><span><small>第3次</small><strong><Check size={17} />200</strong><small>3 s</small></span></div><div className={s.retryHeroEnd}>收到结果，停止</div></div></ConceptHero>}>
+    >
     <ArticleSection id="decision" title="先看失败的是哪件事">
       <Legacy slug="retry" names={["question", "definition"]} />
       <p><strong>重试是一次尝试没有得到所需结果后，按条件再做同一操作。</strong>它只增加获得结果的机会，不能修好故障。再次发送前，先看故障会不会过一会儿消失，还要看重复执行会不会多做一件事。</p>
@@ -83,7 +82,7 @@ export function IdempotencyTermPage() {
   return <ConceptArticle slug="idempotency" title="幂等性" sources={idempotencySources}
     sections={[["effect", "重复后，业务结果会变吗"], ["ledger", "给同一次申请留个编号"], ["scope", "键在哪儿、能用多久"], ["concurrency", "两份请求同时到达时"]]}
     intro={<>预约页面提交了创建申请，却没有收到确认。预约可能已经建立，也可能根本没送到。要不要再提交一次？如果服务能认出这是同一份申请，重发才不会多建一条。</>}
-    hero={<ConceptHero slug="idempotency" label="第一次以A键申请14点预约，服务端账本记下A对应42号预约；首次回信丢失，再用同键同内容提交，仍得到42号，账本只有一条预约"><div className={s.idemHero}><div className={s.idemRequests}><span className={s.idemFirst}><Copy size={16} />A · 14:00<ArrowRight size={15} /></span><small className={s.idemLost}>第一次回信丢失</small><span className={s.idemSecond}><Copy size={16} />A · 14:00<ArrowRight size={15} /></span><small className={s.idemReturned}>收到 #42</small></div><div className={s.idemLedger}><span>服务端账本</span><div className={s.idemEntry}><CalendarBlank size={21} weight="light" /><code>A · 14:00</code><strong>#42</strong></div><small>预约 1 条</small></div></div></ConceptHero>}>
+    >
     <ArticleSection id="effect" title="重复后，业务结果会变吗">
       <Legacy slug="idempotency" names={["question", "definition"]} />
       <p id="idempotency-effect" className="vp-citation-target"><strong>幂等性看的是预期的业务效果：同一操作做两次或更多次，效果仍和做一次一样。</strong>它不表示请求只发出一次。提供预约功能的服务可以分别记录每次到来的请求；只要服务按这项预约接口的规则只建一条，额外日志不改变这里讨论的业务结果。HTTP 规范也用“预期效果”界定幂等，而不要求每次回信完全一样。<Cite id="idempotency-effect" /></p>

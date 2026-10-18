@@ -93,11 +93,11 @@ const sections: [string, string][] = [
 ];
 
 export function EncryptionTransitTermPage() {
-  return <Article slug="encryption-in-transit" title="传输中加密" subtitle="Encryption in Transit · 每一跳都要重新验锁" sources={encryptionTransitSources} sections={sections} hero={<EncryptionTransitHero />} intro={<>一笔订单从浏览器出发，可能先到 CDN，再到负载均衡器，最后才进入应用。<strong>地址栏的小锁只证明当前端点之间的 TLS 通道通过了检查；真正决定保护范围的，是每个代理在哪里拆包、下一跳有没有重新握手，以及证书究竟指向谁。</strong></>}>
+  return <Article slug="encryption-in-transit" title="传输中加密" subtitle="Encryption in Transit · 每一跳都要重新验锁" sources={encryptionTransitSources} sections={sections} intro={<>一笔订单从浏览器出发，可能先到 CDN，再到负载均衡器，最后才进入应用。<strong>地址栏的小锁只证明当前端点之间的 TLS 通道通过了检查；真正决定保护范围的，是每个代理在哪里拆包、下一跳有没有重新握手，以及证书究竟指向谁。</strong></>}>
     <ArticleSection id="encryption-transit-definition-section" title="一把锁只护住一段通道">
       <p id="transit-channel" className="vp-citation-target"><strong>传输中加密保护的是一对端点之间的通道。</strong>TLS 通过握手协商参数和密钥，再用记录层保护应用数据的机密性与完整性，并把服务身份带进验证过程。它不会让连接的时间、方向或大致流量大小消失；它回答的是“旁观者能不能直接读写这段内容”。<Cite id="transit-channel" sources={encryptionTransitSources} /></p>
       <p id="transit-endpoint" className="vp-citation-target">锁的边界在 TLS 终止的端点。服务器或反向代理解密后，请求会以应用能处理的形式出现，可能进入日志、缓存，或者被重新交给下游。保存中的数据库副本属于静态加密，服务之间的下一段属于另一条传输通道；把三者都叫“有 HTTPS”会遮住实际检查点。<Cite id="transit-endpoint" sources={encryptionTransitSources} /></p>
-      <p>因此首图里那份包裹没有被一条长箭头直接送进应用：它在每一个跳点留下一个独立的封条。看见三枚封条都盖好，才有理由说这条链路的抓包结果仍是密文。</p>
+      <p>因此需要分别检查包裹经过的每一跳：某一段加密，并不意味着后面所有链路都已加密。看见三枚封条都盖好，才有理由说这条链路的抓包结果仍是密文。</p>
     </ArticleSection>
 
     <ArticleSection id="encryption-transit-handshake-section" title="先认对端，再让应用数据上路">

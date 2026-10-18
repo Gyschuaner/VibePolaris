@@ -11,6 +11,6 @@ export function Hero({ trigger, change, proof, variant = "sequence", gateLabel, 
   return <MechanismHero trigger={trigger} change={change} proof={proof} variant={variant} gateLabel={gateLabel} gateTitle={gateTitle} />;
 }
 
-export function Article({ slug, title, subtitle, intro, sections, sources, hero, children }: { slug: string; title: string; subtitle: string; intro: ReactNode; sections: [string, string][]; sources: AiStackSource[]; hero: ReactNode; children: ReactNode }) {
-  return <ConceptArticle slug={slug} title={title} subtitle={subtitle} intro={intro} sections={sections} sources={sources as typeof containerImageSources} hero={hero}>{children}</ConceptArticle>;
+export function Article({ slug, title, subtitle, intro, sections, sources, children }: { slug: string; title: string; subtitle: string; intro: ReactNode; sections: [string, string][]; sources: AiStackSource[]; children: ReactNode }) {
+  return <ConceptArticle slug={slug} title={title} subtitle={subtitle} intro={intro} sections={sections} sources={sources as typeof containerImageSources}>{children}</ConceptArticle>;
 }

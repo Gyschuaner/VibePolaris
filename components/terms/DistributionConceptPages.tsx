@@ -1,6 +1,5 @@
-import { Archive, Database, EnvelopeSimple, Gear } from '@phosphor-icons/react/dist/ssr';
+
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
-import { ConceptHero } from './ConceptHero';
 import { BackupLesson, ShardingLesson, QueueLesson } from './DistributionConceptLessons';
 import { backupSources, shardingSources, queueSources } from '@/lib/distribution-sources';
 import base from './EventConcepts.module.css';
@@ -9,8 +8,8 @@ function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{
 export function BackupTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={backupSources}/>;
   return <ConceptArticle slug="backup" title="备份" sources={backupSources} sections={[["history", "保留一个可以回去的状态"], ["restore", "选一份备份，恢复到独立检查库"], ["format", "备份内容与导入"], ["verify", "把恢复过程也验证一遍"]]}
-    intro={<>书店把书目存在数据库里，一本书占一行。误删两本书以后，数据库还能照常查询：程序没坏，只是这两本书对应的行没了。备份把某个历史状态保留下来，让恢复有数据可用。这里的 v0、v1、v2 是书目的教学状态编号；备份按保存那一刻的编号命名，演示开始时还没有任何备份。首图上的两张备份卡片只是预告，这两份备份接下来会在演示里一份份保存出来。演示里要核对保存是否成功、保存的是哪个版本、恢复后能否得到需要的结果；真实系统还要另外核对备份文件是否生成。</>}
-    hero={<ConceptHero slug="backup" label="原书名和修订版分别留在两个历史备份中"><div className={s.backupHero}><div><Archive size={23}/><span>备份 v0</span><strong>山间来信 · 2 行</strong></div><div><Archive size={23}/><span>备份 v1</span><strong>山间来信·修订版 · 2 行</strong></div></div></ConceptHero>}>
+   intro={<>书店把书目存在数据库里，一本书占一行。误删两本书以后，数据库还能照常查询：程序没坏，只是这两本书对应的行没了。备份把某个历史状态保留下来，让恢复有数据可用。这里的 v0、v1、v2 是书目的教学状态编号；备份按保存那一刻的编号命名，演示开始时还没有任何备份。下面的演示会分别保存这两份备份。演示里要核对保存是否成功、保存的是哪个版本、恢复后能否得到需要的结果；真实系统还要另外核对备份文件是否生成。</>}
+    >
     <ArticleSection id="history" title="保留一个可以回去的状态"><Legacy slug="backup" names={["question", "definition"]}/>
       <p id="backup-snapshot" className="vp-citation-target"><strong>备份存在的意义，就是恢复那天有数据可用。</strong>快照就是把某一刻的数据定格下来：运行 pg_dump 导出命令的同时，其他人可以照常查询和修改数据库；导出拿到的内容仍停在开始那一刻。SQL dump 是把这个状态写成一条条可以重新执行的命令。写下来之后这份文件就不再变，数据库后来改名、删除，都动不到它。<Cite id="backup-snapshot"/></p>
       <p>备份和“<ConceptTerm slug="replication">复制</ConceptTerm>副本”是两回事：正在接收写入的主库改动时，复制副本也会跟着改；主库误删时副本上也可能跟着没了。备份停在保存的那一刻，删除追不上它，所以还能用它找回。每份备份留多久、旧备份什么时候允许被新备份顶掉，要在误删发生之前就定好。</p>
@@ -38,7 +37,7 @@ export function ShardingTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={shardingSources}/>;
   return <ConceptArticle slug="sharding" title="分片" sources={shardingSources} sections={[["subset", "不同片负责不同数据"], ["route", "按范围查询与迁移"], ["key", "分片键与数据分布"], ["boundary", "分片与分区的边界"]]}
     intro={<>两台数据库都保存完整书目，是复制。把一部分书目放在 A、另一部分放在 B，则要知道一条记录归哪个片，以及查询该发往哪里。分片把数据分开存到不同片上；采用分片通常还想分散容量和请求，但它不会自动保证每个片一样忙，路由、迁移和跨片查询的处理也要一并跟上。</>}
-    hero={<ConceptHero slug="sharding" label="编号42和78落入不同的键范围，分别存放在A和B"><div className={s.shardHero}><div className={s.heroRanges}><span>[0, 50)</span><span>[50, 100)</span></div><div className={s.heroBins}><div><code>#42</code><Database size={27}/><span>片 A</span></div><div><code>#78</code><Database size={27}/><span>片 B</span></div></div></div></ConceptHero>}>
+    >
     <ArticleSection id="subset" title="不同片负责不同数据"><Legacy slug="sharding" names={["question", "definition"]}/>
       <p id="shard-distribution" className="vp-citation-target"><strong>分片把数据分布到多个节点，让不同片负责不同的数据子集。</strong>MongoDB 的分片集群使用 mongos 路由请求；它是接收查询、读取配置服务器提供的范围地图并转发请求的路由程序，不是某个片本身。配置服务器保存“哪个范围归哪个片”这类元数据，演示上方的范围地图就是这份元数据的简化画面。每个片本身又可以是副本集，也就是片内几台成员各自保留同一份该片数据。这里说的复制，是把同一片的数据保留多份；副本集是 MongoDB 组织这些片内成员的机制。分片与复制可以同时存在：前者决定每条数据归哪个片，后者在片内部保留副本。<Cite id="shard-distribution"/></p>
       <p id="shard-routing" className="vp-citation-target">分片键是决定记录归哪个片的字段，本演示使用书目编号作为分片键。MongoDB 能用分片键条件定位一个片或一组片；在初始范围下，查编号 10–60 会同时命中 A、B 两段，但仍是按范围定向到这两个片；迁移后则按当时的归属地图判断。缺少这类条件的查询通常需要广播到各片，再合并结果。<strong>数据已经分散，不表示每次查询只访问一台机器。</strong>跨片请求的数量、返回数据量与合并工作仍会影响成本。<Cite id="shard-routing"/></p>
@@ -65,7 +64,7 @@ export function QueueTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={queueSources}/>;
   return <ConceptArticle slug="queue" title="队列" sources={queueSources} sections={[["jobs", "把任务留给工作进程"], ["delivery", "领取、处理与确认"], ["duplicate", "重投时保护已经发生的工作"], ["limits", "顺序与可靠性的条件"]]}
     intro={<>用户上传了书封面，缩略图可以交给后台工作进程生成。消息队列先保留任务，工作进程再领取。任务被取走之后算不算完成？连接断开时要不要再发一次？怎么回答这两个问题，决定了出错时是丢任务，还是同一个任务被做两遍。</>}
-    hero={<ConceptHero slug="queue" label="一条待处理消息交给工作进程，处理后再发送确认"><div className={s.queueHero}><div><EnvelopeSimple size={23}/><EnvelopeSimple size={23}/><span>待领取</span></div><div><Gear size={30}/><span>工作进程</span></div><code>m42</code><span>ack ✓</span></div></ConceptHero>}>
+    >
     <ArticleSection id="jobs" title="把任务留给工作进程"><Legacy slug="queue" names={["question", "definition"]}/>
       <p id="queue-work" className="vp-citation-target"><strong>消息队列在发布者与消费者之间保留待交付消息，让提交任务和处理任务不必同时发生。</strong>RabbitMQ 的工作队列教程用后台任务说明这一用途：发布者发送任务，多个工作进程可以分担处理。这里的“消息代理”是管理队列、接收发布者消息并把消息交给消费者的 RabbitMQ 服务；在这个例子里，接收上传并把任务送进队列的前台程序是发布者，领取并处理任务的后台程序是消费者。多个消费者默认按轮转领取消息，但谁先完成还要看各自的处理时间。提交任务的请求不必一直等待后台工作，但“已提交”还不是“缩略图已经生成”。<Cite id="queue-work"/></p>
       <p>队列可以缓冲短时间内的任务突增，却不能凭空增加处理能力。长期入队速度大于处理速度，积压仍会增长。本文只讲一个具体场景：RabbitMQ 使用 AMQP 0-9-1 消息协议，消费者采用手动确认。不能把它套到其他产品上，或只在某个程序内存里暂存、当队列用的列表上。</p>

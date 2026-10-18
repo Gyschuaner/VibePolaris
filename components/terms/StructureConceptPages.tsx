@@ -1,6 +1,5 @@
-import { Blueprint, EnvelopeSimple, Intersect, Table as TableIcon, XCircle } from "@phosphor-icons/react/dist/ssr";
+import { Blueprint, Table as TableIcon } from "@phosphor-icons/react/dist/ssr";
 import { ConceptArticle, ArticleAside, ArticleCitation, ArticleSection, ConceptTerm } from "./ConceptArticle";
-import { ConceptHero } from "./ConceptHero";
 import { SchemaLesson, JoinLesson, UniqueLesson } from "./StructureConceptLessons";
 import { schemaSources, joinSources, uniqueSources } from "@/lib/structure-sources";
 import s from "./StructureConcepts.module.css";
@@ -15,7 +14,7 @@ export function DatabaseSchemaTermPage() {
   return <ConceptArticle slug="database-schema" title="数据库模式" sources={schemaSources}
     sections={[["structure", "结构与书目分开看"], ["change", "给已有记录增加一列"], ["contract", "结构里也有数据规则"], ["namespace", "schema 的另一种用法"]]}
     intro={<>图书室已经存下两册书的编号和书名，现在想让程序显示每册书能否借出。AI 建议“给数据库 schema 加一个可借状态字段”。这句话涉及两件事：给所有书目增加一种共同的记录项，再把每册书的实际状态填进去。数据库模式就是这些记录项及其规则的定义。</>}
-    hero={<ConceptHero slug="database-schema" label="书目结构增加布尔列，原有两条记录的新值仍是NULL"><div className={s.schemaHero}><Blueprint size={28} /><div><code>books</code><span>book_id · integer</span><span>title · text</span><span>available · boolean</span></div><div><span>#42 → NULL</span><span>#78 → NULL</span></div></div></ConceptHero>}>
+    >
     <ArticleSection id="structure" title="结构与书目分开看">
       <Legacy slug="database-schema" names={["question", "definition"]} />
       <p id="schema-definition" className="vp-citation-target"><strong>数据库模式描述数据的结构：保存哪些记录项，各项能放什么值，以及数据库要检查哪些规则。</strong>这里的“模式”是 schema 的译名，指结构定义。我们用一张名叫 <code>books</code> 的表存书目，每一行代表一册书，每一列是这些书共同拥有的记录项。编号列叫 <code>book_id</code>，书名列叫 <code>title</code>；“给表加一个字段”在这个例子中就是增加一列。<Cite id="schema-definition" /></p>
@@ -56,7 +55,7 @@ export function JoinTermPage() {
   return <ConceptArticle slug="join" title="连接查询" sources={joinSources}
     sections={[["match", "把书名和借阅放在一起"], ["pairs", "一条书目可能配出多行"], ["missing", "没有配上的记录怎么办"], ["filter", "连接之后还可以筛选"]]}
     intro={<>借阅记录存了书号和读者，界面还想显示当前书名。AI 建议“用 JOIN 查出来”：拿借阅中的书号去找对应书目，再把书名和这次借阅放在同一行结果里。同一册书被借过两次时，会配出两行，分别属于两次借阅。</>}
-    hero={<ConceptHero slug="join" label="42号书目与两次借阅配对，得到两条查询结果"><div className={s.joinHero}><div><span>书目 #42</span><span>借阅 1 · #42</span><span>借阅 2 · #42</span></div><Intersect size={30} /><div><span>山间来信 · 林舟</span><span>山间来信 · 陈禾</span></div></div></ConceptHero>}>
+    >
     <ArticleSection id="match" title="把书名和借阅放在一起">
       <Legacy slug="join" names={["question"]} />
       <p id="join-definition" className="vp-citation-target"><strong>JOIN 把表中的行按规则配在一起，生成本次查询的结果。</strong>这里的“连接”指记录配对。书目表叫 <code>books</code>，每一行是一册书，保存书号 <code>book_id</code> 和书名 <code>title</code>。借阅表叫 <code>loans</code>，每一行是一次借阅，保存这次借阅的编号 <code>loan_id</code>、所借书号 <code>book_id</code> 和读者 <code>reader</code>。借阅编号识别哪一次借阅，书号识别借的是哪册书。<Cite id="join-definition" /></p>
@@ -102,7 +101,7 @@ export function UniqueConstraintTermPage() {
   return <ConceptArticle slug="unique-constraint" title="唯一约束" sources={uniqueSources}
     sections={[["rule", "邮箱只能属于一条注册记录"], ["race", "预查通过，写入仍可能冲突"], ["scope", "明确唯一性的范围"], ["null", "空值的唯一性规则"]]}
     intro={<>两个注册请求用了同一个邮箱，编号却各不相同。两边各自先查了一遍，看到邮箱还没被占用，于是都往表里写。若数据库允许两次写入，页面再严谨的检查也挡不住这次冲突。</>}
-    hero={<ConceptHero slug="unique-constraint" label="两个相同邮箱的请求进入注册表，第二次写入被唯一约束挡住"><div className={s.uniqueHero}><div><EnvelopeSimple size={24} /><span>lin@example.com</span></div><div><XCircle size={24} /><span>lin@example.com · 冲突</span></div><div><strong>UNIQUE</strong><span>101 · lin@example.com</span></div></div></ConceptHero>}>
+    >
     <ArticleSection id="rule" title="邮箱只能属于一条注册记录">
       <Legacy slug="unique-constraint" names={["question", "definition"]} />
       <p id="unique-definition" className="vp-citation-target"><strong>唯一约束要求一列或一组列的值不能在表中重复。</strong>这里用不同的 <code>user_id</code> 标识记录，再对 <code>email</code> 单独声明 UNIQUE。主键是用来唯一识别一行的列或列组合；本例的 <code>user_id</code> 是主键，所以 #101 和 #102 代表两条不同记录。两条记录即使主键不同，同一邮箱仍会冲突。一张表可以有多个唯一约束；它们不必都成为主键。<Cite id="unique-definition" /></p>

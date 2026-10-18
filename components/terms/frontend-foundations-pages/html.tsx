@@ -45,7 +45,7 @@ function HtmlLab() {
 }
 
 export function HtmlTermPage(_props: BespokeTermPageProps) {
-  return <Article slug="html" title="HTML" subtitle="HyperText Markup Language · 给内容安排关系" sources={htmlSources} hero={<HtmlHero />} sections={[
+  return <Article slug="html" title="HTML" subtitle="HyperText Markup Language · 给内容安排关系" sources={htmlSources} sections={[
     ["html-definition-section", "HTML 不负责把页面画漂亮"],
     ["html-structure-section", "先把文档的关系写出来"],
     ["html-semantics-section", "语义会改变机器读到的东西"],

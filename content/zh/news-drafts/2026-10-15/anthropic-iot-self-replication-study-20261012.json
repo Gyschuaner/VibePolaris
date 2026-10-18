@@ -1,0 +1,146 @@
+{
+  "slug": "anthropic-iot-self-replication-study-20261012",
+  "title": "Anthropic 测试小模型在家用设备运行与复制的能力，强调完整链条仍有限制",
+  "summary": "研究展示把模型分布到廉价电视盒子的推理实验，以及受控复制评估。它讨论潜在风险，没有证明现实中已出现自主扩散的 AI 蠕虫。",
+  "body": "10 月 12 日，Anthropic 的 Frontier Red Team 公布一项研究，考察小型模型能否在陌生硬件上建立推理环境，并连续完成复制所需的步骤。团队还把一个模型拆分到十五台廉价电视盒子上运行，展示低算力设备组合也可能承载模型。\n\n实验聚焦“模型怎样在新设备上跑起来”这一环。它让一种潜在风险更具体，但完整复制能力、扩散速度与真实攻击环境之间，仍然存在距离。",
+  "publishedAt": "2026-10-12",
+  "eventDate": "2026-10-12",
+  "isExample": false,
+  "hero": {
+    "url": "https://www-cdn.anthropic.com/images/4zrzovbb/website/6d4a0d28992ade92d6fa63646fd9c9d318245c6c-2400x1260.jpg",
+    "alt": "Anthropic 自复制 AI 研究的官方实验配图",
+    "sourceUrl": "https://www.anthropic.com/research/self-replicating-ai",
+    "license": "原文配图，版权归原发布方；未声明开放许可。",
+    "credit": "Anthropic"
+  },
+  "sections": [
+    {
+      "id": "part-1",
+      "title": "运行成功与自主扩散有什么区别",
+      "body": "模型能在一组设备上产生输出，只说明推理部署可行。自主扩散还需要发现目标、取得执行权限、复制模型或调用能力，再从新节点继续行动。链条中任何一步失败，都可能使整个过程停下。",
+      "kind": "technical"
+    },
+    {
+      "id": "part-2",
+      "title": "研究真正展示了哪些证据",
+      "body": "一款九十亿参数模型在九类硬件中的八类建立了推理服务。另一个端到端实验使用隔离的八节点模拟网络，故意简化取得执行权限这一步；GLM-5.2 能让目标节点运行 Llama3.1-8B，再继续传播。控制模型本身在另一台推理服务器上运行，尚未证明同一个小模型能完全独立地完成整条链。",
+      "kind": "narrative"
+    },
+    {
+      "id": "part-3",
+      "title": "不要把受控实验读成已发生事故",
+      "body": "十五台电视盒子由研究团队购买并联网，运行的是分布式推理；八节点实验则使用模拟设备。它们都不是现实用户设备遭到自主感染的报告。关于未来小模型能力和传播速度的估计依赖特定硬件、简化条件及历史趋势。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "“能在设备上运行”离“自主扩散”还有多远？",
+    "question": "完整链条为什么比单项能力更难判断？",
+    "steps": [
+      {
+        "label": "部署推理环境",
+        "detail": "在受控设备上让模型能够运行。"
+      },
+      {
+        "label": "串联复制步骤",
+        "detail": "检查连续动作能否完整完成。"
+      },
+      {
+        "label": "核对实验边界",
+        "detail": "区分简化条件、预测与现实事件。"
+      }
+    ]
+  },
+  "source": {
+    "name": "Anthropic",
+    "url": "https://www.anthropic.com/research/self-replicating-ai"
+  },
+  "relatedSlugs": [
+    "inference",
+    "execution-sandbox",
+    "safety-evaluation"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.anthropic.com/research/self-replicating-ai",
+      "claim": "Anthropic 于 2026-10-12 公布受控 IoT 推理和复制评估，区分单步部署能力与端到端复制。",
+      "excerpt": "though they make mistakes when composing them end to end"
+    }
+  ],
+  "canonicalUrl": "https://www.anthropic.com/research/self-replicating-ai",
+  "sourceHash": "sha256:4fa7f8184b158957a9c81a23bbb2d887b500804127c809d91a3f744f4103498c",
+  "status": "published",
+  "discoveredAt": "2026-10-15T15:21:45Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "inference",
+      "score": 1,
+      "evidence": [
+        "未提供可操作攻击步骤；区分自有设备实验、简化评估、趋势预测和现实事故。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 1,
+      "evidence": [
+        "未提供可操作攻击步骤；区分自有设备实验、简化评估、趋势预测和现实事故。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "safety-evaluation",
+      "score": 1,
+      "evidence": [
+        "未提供可操作攻击步骤；区分自有设备实验、简化评估、趋势预测和现实事故。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.anthropic.com/research/self-replicating-ai",
+      "claim": "Anthropic 于 2026-10-12 公布受控 IoT 推理和复制评估，区分单步部署能力与端到端复制。",
+      "excerpt": "though they make mistakes when composing them end to end"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-15T17:19:52Z",
+    "method": "source",
+    "notes": "按本日来源逐条核对后，由独立子智能体再次联网审读；具体意见见 readerReview 与逐日证据。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-15T17:19:52Z",
+    "notes": "主助手按当日一手来源核实并依 humanizer-zh 自审；本轮独立子智能体结论单独记录在 readerReview。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-october-2026-10-12",
+  "promotedAt": "2026-10-15T15:22:32.578Z",
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-15T17:19:52Z",
+    "questions": [
+      "是否同一个小模型完成复制？",
+      "是否感染真实用户设备？"
+    ],
+    "notes": "电视盒子分布式推理、9B模型部署能力和GLM-5.2控制模拟网络评估已区分；独立复审passed。",
+    "changes": [
+      "明确隔离八节点模拟网络与简化取得执行权限条件",
+      "说明控制模型运行于独立推理服务",
+      "保留未来能力估计的条件"
+    ]
+  }
+}

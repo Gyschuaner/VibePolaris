@@ -1,5 +1,29 @@
 # VBP-049 新闻栏目交付记录
 
+### 2026-10-18：2026 新闻机制动画重设计
+
+DeepSeek 本篇采用用户最终选定的 C「文字入稿」；现有 2026 年 465 篇新闻的差异化演示、逐日独立审读、构建和浏览器证据见 [BUG-7D1E86C9 技术与验收记录](BUG-7D1E86C9-news-motion.md)。任务及 dev 集成的当前状态以关联 DP 对象为准。
+
+### 2026-10-17：DeepSeek 1017 综合新闻
+
+按用户当日指定主题，综合官方公告、模型卡、搜索指南、价目页，以及 IT之家、The Decoder、PC Watch 等报道，新增一篇 DeepSeek V4.1-Flash-1017 与 Search/Fetch 发布新闻；正式新闻总数由 797 增至 798。复用唯一 review 子智能体实读全文，修正“输出更短”不等于“减少冗余”的归因后，窄复审通过。保留新旧成绩表、原站费用图、具体计费范围、机制讲解及 4 个已发布词条关联；不扩展为 10 月 16—17 日全日补报。
+
+新闻校验与生产构建通过，生成 1,184 页；真实浏览器完成本篇原图、表格、费用边界、步骤切换和词条跳转验收。构建入口的环境处理、实际命令、完整来源及真实审读记录见 [本轮证据](news-evidence/2026-10-17-deepseek-update.md)。交付分支 `feat/VBP-049-deepseek-1017-news`，以 dev PR 集成；无应用代码或依赖改动，无远端 dev 或生产部署。本轮 DP 任务 `767e2cf1-da86-4b9d-bea4-1bd2da4318a1`，验收计划 `1a80c22f-9200-4164-801d-0fea05e0d791`。
+
+### 2026-10-16：十月新闻逐日补查与独立复审
+
+按用户补充要求，主助手与唯一 review 子智能体按 10 月 1—15 日逐天查询、修订、复审，当天通过后才进入下一天，并分别提交。首轮 32 篇全部重审，另补 40 篇，本期共 72 篇，正式新闻总量为 797。15 天的来源、排除原因、真实审稿问题及通过结论均保留；修正了新增内容遗漏、日期与未来计划、数值口径及弱词条关联。
+
+最终 `npm run build` 通过，生成 1,183 个静态页面；真实浏览器确认 72 篇日期筛选、文章与词条跳转、解释步骤及 13 张重点配图加载。浏览器发现的 TextGrain 宽图裁切已通过可选 `hero.fit` 修复，仅该图启用完整显示，独立代码复核及修复后构建、视觉复查通过。完整结果、逐日提交、DP 验收和交付边界见 [本轮逐日独立复审证据](news-evidence/2026-10-15-daily-review.md)。本轮以 dev PR 交付，没有远端 dev 或生产部署。
+
+### 2026-10-15：更新十月以来的新闻
+
+本轮按原有新闻优先流程补充 2026-10-01 至 2026-10-15 的 32 篇新闻，新闻总量由 725 增至 757。15 天均有台账并分别提交；10 月 3 日、11 日保留核实缺口，避免把周末转载当作新事件。32 篇均保留原文配图、详细正文、交互讲解、来源和已公开词条关联，主助手逐篇完成中文与零基础可读性自审，未创建子代理审核记录。
+
+`npm run build`（含内容校验）通过，生成 1,143 个页面；本地生产构建的真实浏览器验收覆盖十月日期筛选、详情与文章入口、讲解步骤和原文图片。分支 `feat/VBP-049-news-october-2026` 的集成目标为 `dev`，生产发布不在本轮授权范围。逐日提交、日期特殊情况、指纹方法、验证及回滚范围见 [十月更新证据](news-evidence/2026-10-15-october-update.md)。
+
+以下为此前各轮历史记录；其中“当前”状态和计数以各条记录日期为准。
+
 状态：阶段一已在 `feat/VBP-049-news-column` 完成 2021-01-01 至 2021-01-07 七天试跑；阶段二正在 `feat/VBP-049-news-backfill-news` 按新闻事件逐日回溯；此前已完成 2026-09-30 至 2026-07-11 的 80 个有事件日和 2 个空档日，共 82 条按天记录。根据最新任务指示，当前只继续整理 2025-07-31 至 2025-04-01；2025-07-31 已完成 1 篇、2025-07-30 已完成 2 篇、2025-07-29 已完成 3 篇、2025-07-28 已完成 1 篇、2025-07-27 已完成 2 篇、2025-07-26 已完成 3 篇、2025-07-25 已完成 2 篇、2025-07-24 已完成 3 篇、2025-07-23 已完成 1 篇、2025-07-22 已完成 4 篇、2025-07-21 已完成 3 篇、2025-07-20 已完成 2 篇、2025-07-19 已完成 2 篇、2025-07-18 已完成 4 篇、2025-07-17 已完成 4 篇、2025-07-16 已完成 5 篇、2025-07-15 已完成 7 篇、2025-07-14 已完成 6 篇、2025-07-13 已完成 1 篇、2025-07-12 已完成 3 篇、2025-07-11 已完成 5 篇、2025-07-10 已完成 4 篇、2025-07-09 已完成 8 篇 AI 新闻、2025-07-08 已完成 7 篇 AI 新闻并提交；2025-07-07 已完成 3 篇 AI 新闻并提交；2025-07-06 已完成 2 篇 AI 新闻并提交；2025-07-05 记录为空档日，4 个候选均按真实事件日延期、去重或拒绝；2025-07-04 已完成 1 篇 AI 新闻并提交，欧盟委员会确认 AI Act 不暂停；2025-07-03 已完成 5 篇 AI 新闻并提交，覆盖 SSI 领导层、Character.AI 实时视频研究、Google Veo 3、Meta 主动式 AI 以及 Cluely 企业收入主张；2025-07-02 已完成 4 篇 AI 新闻并提交，覆盖 OpenAI 对代币化金融关系的否认、Perplexity Max、高价 AI 订阅、ChatGPT 新闻推荐流量与 Lovable 拟融资报道；2025-07-01 已完成 4 篇 AI 新闻并提交，覆盖 Cloudflare Pay Per Crawl、Genesis AI 机器人基础模型、法国 Osez l’IA 企业推广计划和 Wisq HRLM；2025-06-30 已完成 8 篇 AI 新闻并提交，覆盖 Meta Superintelligence Labs、百度文心 4.5、Cursor Web Agent、Gemini Classroom、Clio/vLex、Apple Siri 外部模型报道、Chai-2 和 Microsoft MAI-DxO；2025-06-29 已完成 1 篇 AI 新闻并提交，覆盖 OpenAI 因 Meta 挖角重新校准研究员薪酬的内部备忘录报道；2025-06-28 已完成 1 篇 AI 新闻并提交，覆盖 Meta 再从 OpenAI 招走四名研究员的人员流动报道；2025-06-27 已完成 6 篇 AI 新闻并提交，覆盖 Anthropic Project Vend、Economic Futures、OpenAI/Crossing Minds、Google TPU、Meta/Play AI 谈判和柏林监管机构报告 DeepSeek；丹麦 deepfake 政治协议与 Meta 可再生能源采购按真实发生日延期，Meta 薪酬报道与相邻人才新闻去重。7 月 18 日检索到的 Mistral 候选已按事件日去重归入 7 月 17 日。本次整合已把新闻优先分支合入最新 `origin/dev`；论文不作为阶段二的主事件来源，论文主导的完整回溯分支不随本次新闻合并进入 `dev`。2026-10-02 曾按用户授权准备腾讯云部署，但用户随后取消，已恢复原生产镜像并保持线上服务健康。 2025-06-26 已完成 8 篇 AI 新闻并提交，覆盖 Qwen VLo、YouTube AI 搜索轮播、Google Photos Ask Photos、Anthropic 情感对话分析、Meta 招入 Trapit Bansal、Suno/WavTool、Redwood–Crusoe AI 能源部署和丹麦 deepfake 政治协议；Doppl、Offerwall 与 Meta–Invenergy 作为同日候选保留未发布。2025-06-25 已完成 8 篇 AI 新闻并提交，覆盖 Google Gemini CLI、Creative Commons CC Signals、Meta 训练版权 fair use 裁决、Meta 招入 OpenAI 苏黎世三名研究员、WhatsApp 私人消息摘要、Rubrik–Predibase 收购协议、Getty–Stability AI 英国诉讼进展和 Google Workspace Veo 3/Gemini 连接；Microsoft Copilot Vision 按每日上限延期，6 月 18 日 Midjourney V1 Video 已改为跨日去重，Hard Fork 观点和 xAI 空气质量跟进排除。2025-06-24 已完成 7 篇 AI 新闻并提交，覆盖 Gemini Robotics On-Device、ElevenLabs 移动 App、Wispr Flow A 轮、HPE GreenLake Intelligence、AI-first Google Colab、Apollo GraphOS MCP/API 和 Samsara 物理运营 AI；Anthropic 裁决、Abridge 按真实事件日改归 6/23；LAION 与 Synthflow 按真实事件日延期，Context 因无一手公告保留为候选，同理心分析、Eventual 数据工程和 Street View 更新排除。2025-06-23 已完成 8 篇 AI 新闻并提交，覆盖 Anthropic Bartz fair use 部分裁决、Abridge Series E、Linux Foundation A2A、Chromebook Plus AI、Moondream grounded reasoning、Siemens EDA AI、Snowcap Compute 和 OpenAI/io 法庭文件；18 个候选中 8 个选中、3 个延期、6 个排除、1 个同链去重。2025-06-18 已完成 5 篇 AI 新闻并提交，覆盖 OpenAI 失配泛化研究、Midjourney V1 Video、ChatGPT Record 企业版开放、亚马逊 CEO 对企业岗位的 AI 预测和 WhatsApp Meta AI 错报号码事件；7 个候选中 5 个选中、2 个企业产品营销公告排除。五篇均保留官方或可信新闻原始链接、eventDate/publishedAt、引用卡片、自制 SVG、独立机制讲解、词条/文章联动；主助手逐篇完成零基础可读性与中文表达复核，未调用子智能体。2025-06-19 已完成 5 篇 AI 新闻并提交，覆盖 OpenAI 付费 ChatGPT 高错误率、Profound 融资与 AI 搜索可见性、Athelas 医疗 AI 平台融资、Surglasses AI 解剖台和百度数字人直播报道；10 个候选中 5 个选中、1 个真实事件日延期、1 个跨日去重、3 个一般数据/低信号候选排除，OpenAI 失配研究已迁移到 6 月 18 日。五篇均保留一手或可信新闻原始链接、eventDate/publishedAt、引用卡片、自制 SVG、独立机制讲解、词条/文章联动和此前的 reader-review 结果。2025-06-20 已完成 8 篇 AI 新闻并提交，覆盖 Meta/Oakley 运动型 AI 眼镜、Deezer AI 音乐标签、Anthropic 智能体失配压力测试、Character.AI CEO 任命、Cluely 融资、Meta/SSI 招聘报道、Apple/Perplexity 早期讨论和 Thinking Machines Lab 融资；18 个候选中 8 个选中、5 个同日媒体复述去重、3 个按真实事件日延期、2 个评论/周报排除。2025-06-21 已完成 1 篇 AI 新闻并提交，覆盖 OpenAI 官方状态页记录的 Compliance API 数据延迟；事件起点为 6 月 21 日，首次公开更新为 6 月 23 日，6 月 29 日标记恢复。8 个候选中 1 个选中、4 个跨日重复、1 个按真实事件日延期、2 个评论/访谈候选排除。2025-06-22 已完成 2 篇 AI 新闻并提交，覆盖 Tesla 在奥斯汀启动邀请制 Robotaxi 载客，以及 OpenAI 因 iyO 临时限制令撤下 io 宣传材料；9 个候选中 2 个选中、1 个跨日重复、4 个按真实事件日延期、2 个低信号或评论候选排除。当前新闻目录为 725 篇，另有 144 个未发布草稿；其中 143 篇是论文型稿件，1 篇是个人社交媒体截图，按新闻优先口径暂不发布。
 
 ### 2026-10-05 新闻优先分支整合

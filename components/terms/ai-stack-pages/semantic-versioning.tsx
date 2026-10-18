@@ -1,7 +1,6 @@
-import { ArrowRight, Code, GitBranch, Tag } from "@phosphor-icons/react/dist/ssr";
+
 import { ArticleSection, ArticleAside } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
-import { ConceptHero } from "../ConceptHero";
 import { SemanticVersioningLesson } from "../ai-stack-lessons/semantic-versioning";
 import { semanticVersioningSources } from "@/lib/ai-stack-concept-sources/semantic-versioning";
 import styles from "../ToolchainConcepts.module.css";
@@ -10,7 +9,7 @@ const sections: [string, string][] = [["semver-definition", "三段数字先说�
 
 export function SemanticVersioningTermPage() {
   return <Article slug="semantic-versioning" title="语义化版本" subtitle="Semantic Versioning · 用版本号传达兼容性变化" sources={semanticVersioningSources} sections={sections}
-    hero={<ConceptHero slug="semantic-versioning" label="从 1.4.2 出发，先判断旧调用是否还能工作，再决定升 PATCH、MINOR 还是 MAJOR"><div className={styles.toolchainHero}><div className={styles.semverHero}><div><Tag size={23} /><span>当前版本</span><strong>1.4.2</strong></div><ArrowRight size={18} aria-hidden="true" /><div><Code size={23} /><span>公开 API</span><strong>看兼容性</strong></div><ArrowRight size={18} aria-hidden="true" /><div><GitBranch size={23} /><span>下一版本</span><strong>1.4.3 / 1.5.0 / 2.0.0</strong></div></div><p className={styles.heroNote}>数字变化是对使用方的提示：这次发布会不会让旧调用失效。</p></div></ConceptHero>}
+
     intro={<>你维护一个已经发布的包，当前版本是 `1.4.2`。这次可能只是修 Bug，也可能加了新能力，甚至删掉一个公开 API。<strong>语义化版本把这三种兼容性变化写进 MAJOR.MINOR.PATCH 三段数字。</strong>读者先判断旧调用，再决定下一版。</>}> 
     <ArticleSection id="semver-definition" title="三段数字先说清什么">
       <p id="semver-definition-text" className="vp-citation-target">语义化版本（SemVer）把版本写成 `MAJOR.MINOR.PATCH`：向后兼容的缺陷修复增加 PATCH，向后兼容的功能新增增加 MINOR，不兼容的公开 API 变化增加 MAJOR。它要求发布者先说清自己的公开 API，版本号才有可解释的含义。<Cite id="semver-definition-text" sources={semanticVersioningSources}/></p>

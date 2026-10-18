@@ -1,7 +1,6 @@
-import { Terminal } from "@phosphor-icons/react/dist/ssr";
+
 import { ArticleSection, ArticleAside, ConceptTerm } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
-import { ConceptHero } from "../ConceptHero";
 import { InterpreterLesson } from "../ai-stack-lessons/interpreter";
 import { interpreterSources } from "@/lib/ai-stack-concept-sources/interpreter";
 import styles from "../ToolchainConcepts.module.css";
@@ -10,7 +9,7 @@ const sections: [string, string][] = [["interpreter-definition", "解释器什�
 
 export function InterpreterTermPage() {
   return <Article slug="interpreter" title="解释器" subtitle="Interpreter · 在运行时逐步执行程序指令" sources={interpreterSources} sections={sections}
-    hero={<ConceptHero slug="interpreter" label="指令指针逐步前进，变量表从未赋值变为 1 再变为 3"><div className={styles.toolchainHero}><div className={styles.interpreterHero}><div className={styles.interpreterCode}><span className={styles.panelLabel}>程序</span><div className={styles.interpreterCodeLine}><span>1</span><span className={styles.interpreterPointer}>›</span><code>x = 1</code></div><div className={styles.interpreterCodeLine}><span>2</span><span> </span><code>x = x + 2</code></div><div className={styles.interpreterCodeLine}><span>3</span><span> </span><code>print(x)</code></div></div><div className={styles.interpreterState}><span className={styles.panelLabel}>运行时状态</span><div className={styles.interpreterVariable}><code>x</code><strong>未赋值</strong></div><div className={styles.interpreterOutput}><Terminal size={17}/><span>等待输出</span></div></div></div><p className={styles.heroNote}>程序先有可用的运行时，指针才会从第一条指令开始移动。</p></div></ConceptHero>}
+
     intro={<>你把脚本交给一个运行时，它没有先交付一份完整的目标程序才开始工作，而是拿到可执行的程序表示，<strong>按步骤推进并在每一步更新变量、调用和输出。</strong>这个负责“现在执行哪条、状态变成什么”的组件，就是解释器或更大的运行时系统中的解释执行部分。</>}>
     <ArticleSection id="interpreter-definition" title="解释器什么时候开始执行">
       <p id="interpreter-definition-text" className="vp-citation-target">解释器在运行时拿到源代码或字节码这样的程序，逐步执行其中的指令并更新执行状态。区分解释与编译时，先问两个问题：程序什么时候开始执行？是否先交付一份完整的目标程序，再由另一个运行时执行？<ConceptTerm slug="compiler">编译器</ConceptTerm>和解释器可以出现在同一条链路里，名称不能替代这两个判断。<Cite id="interpreter-definition-text" sources={interpreterSources}/></p>

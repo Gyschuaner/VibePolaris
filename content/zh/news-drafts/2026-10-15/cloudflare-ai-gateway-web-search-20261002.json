@@ -1,0 +1,145 @@
+{
+  "slug": "cloudflare-ai-gateway-web-search-20261002",
+  "title": "Cloudflare 为 AI Gateway 接入网页搜索，让智能体取得实时资料",
+  "summary": "首批合作搜索商为 Ceramic.ai、Exa 和 Linkup。REST 与 Workers 专用调用入口 已可接入，内置 Server Tools 仍在开发。",
+  "body": "10 月 2 日，Cloudflare 宣布通过 AI Gateway 接入网页搜索，与 Ceramic.ai、Exa 和 Linkup 合作。应用可把搜索取得的网页片段加入模型上下文，补充变化中的资料。\n\n这改变的是模型获取信息的方式。搜索结果进入一次任务的上下文，并不等于模型的训练知识已经永久更新。",
+  "publishedAt": "2026-10-02",
+  "eventDate": "2026-10-02",
+  "isExample": false,
+  "hero": {
+    "url": "https://blog.cloudflare.com/_emdash/api/media/file/01M3XMD1R3RKTSPGW4TNF59S9D.01M3XMD2FKJAHHSQP0E10VYFXD.png",
+    "alt": "Cloudflare AI Gateway 网页搜索发布配图",
+    "sourceUrl": "https://blog.cloudflare.com/introducing-web-search-api/",
+    "license": "原文配图，版权归原发布方；未声明开放许可。",
+    "credit": "Cloudflare"
+  },
+  "sections": [
+    {
+      "id": "part-1",
+      "title": "开发者现在怎样接入",
+      "body": "现有后端或服务可经 REST 调用，Workers 应用也有 Binding（专用调用）入口。原生 Server Tools 被列为即将推出；当前仍可由开发者自行编排搜索工具。",
+      "kind": "narrative"
+    },
+    {
+      "id": "part-2",
+      "title": "搜索结果带着来源返回",
+      "body": "Cloudflare 要求合作爬虫遵守其公开机器人要求，并在搜索结果里提供被抓取内容的链接。开发者因而可以回到来源核对片段，而不是只看到无出处的回答。",
+      "kind": "technical"
+    },
+    {
+      "id": "part-3",
+      "title": "网关控制不等于内容保证",
+      "body": "搜索请求会进入网关日志和计费，访问控制也由网关管理。网页搜索能提供近期材料，但材料是否准确、是否适用当前问题，仍需判断；公告没有承诺所有搜索结果都正确。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "最新资料怎样进入一次回答？",
+    "question": "模型训练后，还能通过什么途径知道近期变化？",
+    "steps": [
+      {
+        "label": "发起搜索",
+        "detail": "应用把问题交给选择的搜索商。"
+      },
+      {
+        "label": "取回片段与来源",
+        "detail": "搜索结果包含资料片段和网页链接。"
+      },
+      {
+        "label": "结合资料回答",
+        "detail": "应用把结果送回模型，再组织回答并检查依据。"
+      }
+    ]
+  },
+  "source": {
+    "name": "Cloudflare",
+    "url": "https://blog.cloudflare.com/introducing-web-search-api/"
+  },
+  "relatedSlugs": [
+    "tools",
+    "context",
+    "retrieval"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://blog.cloudflare.com/introducing-web-search-api/",
+      "claim": "Cloudflare 于 2026-10-02 为 AI Gateway 引入合作网页搜索；REST 和 Workers Binding 可用，原生 Server Tools 为后续安排。",
+      "excerpt": "核对要点（意译）：首批 Ceramic.ai、Exa、Linkup；搜索片段进入上下文，原生 Server Tools 尚在开发。"
+    }
+  ],
+  "canonicalUrl": "https://blog.cloudflare.com/introducing-web-search-api",
+  "sourceHash": "sha256:7e5cffe7c31eafc46e5cb0421222add792a317b5f2b7c3ddc5de4fcac1d189d4",
+  "status": "published",
+  "discoveredAt": "2026-10-15T16:01:32Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 1,
+      "evidence": [
+        "Cloudflare 于 2026-10-02 为 AI Gateway 引入合作网页搜索；REST 和 Workers Binding 可用，原生 Server Tools 为后续安排。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 1,
+      "evidence": [
+        "Cloudflare 于 2026-10-02 为 AI Gateway 引入合作网页搜索；REST 和 Workers Binding 可用，原生 Server Tools 为后续安排。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "retrieval",
+      "score": 1,
+      "evidence": [
+        "Cloudflare 于 2026-10-02 为 AI Gateway 引入合作网页搜索；REST 和 Workers Binding 可用，原生 Server Tools 为后续安排。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://blog.cloudflare.com/introducing-web-search-api/",
+      "claim": "Cloudflare 于 2026-10-02 为 AI Gateway 引入合作网页搜索；REST 和 Workers Binding 可用，原生 Server Tools 为后续安排。",
+      "excerpt": "核对要点（意译）：首批 Ceramic.ai、Exa、Linkup；搜索片段进入上下文，原生 Server Tools 尚在开发。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-15T16:03:42Z",
+    "method": "source",
+    "notes": "按本日来源逐条核对后，由独立子智能体再次联网审读；具体意见见 readerReview 与逐日证据。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-15T16:03:42Z",
+    "notes": "主助手按当日一手来源核实并依 humanizer-zh 自审；本轮独立子智能体结论单独记录在 readerReview。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-15T16:03:42Z",
+    "questions": [
+      "哪些接口已可用，Server Tools 是否已推出？",
+      "搜索会永久更新模型训练知识吗？"
+    ],
+    "notes": "独立复审通过：合作搜索商、已开放接口及 Server Tools 后续安排清楚；正确解释搜索资料进入上下文，不等同永久更新模型知识。",
+    "changes": [
+      "补入本日遗漏的搜索 API 公告。",
+      "按子智能体建议解释 Workers Binding 为专用调用入口。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-october-review-2026-10-02",
+  "promotedAt": "2026-10-15T16:03:43.177Z"
+}

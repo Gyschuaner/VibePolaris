@@ -1,0 +1,157 @@
+{
+  "slug": "liquid-lfm25-24b-a2b-local-agents-20261013",
+  "title": "Liquid AI 发布 LFM2.5-24B-A2B，面向设备端推理与工具调用",
+  "summary": "基础版与后训练版权重已提供。模型采用稀疏专家架构，并在最终回答前生成推理过程；设备速度和任务成绩来自公司特定测试。",
+  "body": "10 月 13 日，Liquid AI 发布 LFM2.5-24B-A2B，并提供基础版与后训练版权重及本地运行格式。模型共有 240 亿参数；官方模型卡列出的每个词元活跃参数为 24.5 亿。它只接收和生成文字，可用作本地智能体的模型。",
+  "publishedAt": "2026-10-13",
+  "eventDate": "2026-10-13",
+  "isExample": false,
+  "hero": {
+    "url": "https://aypchzzf9pftwuto.public.blob.vercel-storage.com/image%20(3)-oOdUn61bDRSykk4H951SoDOHzqoOe1.png",
+    "alt": "Liquid AI LFM2.5-24B-A2B 官方发布配图",
+    "sourceUrl": "https://www.liquid.ai/blog/lfm2-5-24b-a2b",
+    "license": "原文配图，版权归原发布方；未声明开放许可。",
+    "credit": "Liquid AI"
+  },
+  "sections": [
+    {
+      "id": "part-1",
+      "title": "少量专家参与，不代表只需存少量权重",
+      "body": "路由器为每个词元选择部分专家，减少当步计算，但部署仍需容纳整套权重及缓存。该版本会先生成推理过程再给最终回答；它可提出工具调用，具体执行仍由外部应用完成。",
+      "kind": "technical"
+    },
+    {
+      "id": "part-2",
+      "title": "本地运行有硬件与使用条件",
+      "body": "公司报告 M5 Max 上每秒生成 184 个词元，B300 上高并发总输出超过每秒 2.1 万词元；两者测量条件不同，不能当作单个请求的相同速度。权重采用 LFM Open License v1.0，商业使用仍受收入门槛等条款约束；知识密集任务也可能需要检索。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "本地模型怎样配合工具？",
+    "question": "模型生成工具调用后，谁来实际操作？",
+    "steps": [
+      {
+        "label": "读取任务和工具定义",
+        "detail": "模型先得到本次输入与可用工具。"
+      },
+      {
+        "label": "生成调用请求",
+        "detail": "选择工具并提出参数。"
+      },
+      {
+        "label": "应用执行并回传",
+        "detail": "模型依据执行结果继续回答或处理任务。"
+      }
+    ]
+  },
+  "source": {
+    "name": "Liquid AI",
+    "url": "https://www.liquid.ai/blog/lfm2-5-24b-a2b"
+  },
+  "relatedSlugs": [
+    "mixture-of-experts",
+    "inference",
+    "tools"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.liquid.ai/blog/lfm2-5-24b-a2b",
+      "claim": "Liquid AI 于 13 日发布 LFM2.5-24B-A2B；基础及后训练版开放权重，稀疏专家与显式推理适用于设备端工具工作流；速度需按测试条件理解。",
+      "excerpt": "要点意译：24B总参数；基础与后训练权重当日提供；文字推理模型；本地及高并发测试不可混同。"
+    },
+    {
+      "url": "https://huggingface.co/LiquidAI/LFM2.5-24B-A2B/blob/main/README.md",
+      "claim": "官方模型卡具体列出24.0B总参数、2.45B活跃参数及工具由应用执行的步骤。",
+      "excerpt": "规格核对：24.0B、2.45B；函数请求、外部执行、工具结果回传。"
+    },
+    {
+      "url": "https://huggingface.co/LiquidAI/LFM2.5-24B-A2B/blob/main/LICENSE",
+      "claim": "LFM Open License v1.0 包含商业使用收入门槛，并非无条件开放许可。",
+      "excerpt": "许可核对：Commercial Use Limitation；Threshold。"
+    }
+  ],
+  "canonicalUrl": "https://www.liquid.ai/blog/lfm2-5-24b-a2b",
+  "sourceHash": "sha256:d5c9d3cd5e535c4601907c01e4cb2e177e3731669a49d3d0bd9ea2e27fd24600",
+  "status": "published",
+  "discoveredAt": "2026-10-15T17:21:48Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "mixture-of-experts",
+      "score": 1,
+      "evidence": [
+        "Liquid AI 于 13 日发布 LFM2.5-24B-A2B；基础及后训练版开放权重，稀疏专家与显式推理适用于设备端工具工作流；速度需按测试条件理解。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "inference",
+      "score": 1,
+      "evidence": [
+        "Liquid AI 于 13 日发布 LFM2.5-24B-A2B；基础及后训练版开放权重，稀疏专家与显式推理适用于设备端工具工作流；速度需按测试条件理解。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 1,
+      "evidence": [
+        "Liquid AI 于 13 日发布 LFM2.5-24B-A2B；基础及后训练版开放权重，稀疏专家与显式推理适用于设备端工具工作流；速度需按测试条件理解。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.liquid.ai/blog/lfm2-5-24b-a2b",
+      "claim": "Liquid AI 于 13 日发布 LFM2.5-24B-A2B；基础及后训练版开放权重，稀疏专家与显式推理适用于设备端工具工作流；速度需按测试条件理解。",
+      "excerpt": "要点意译：24B总参数；基础与后训练权重当日提供；文字推理模型；本地及高并发测试不可混同。"
+    },
+    {
+      "url": "https://huggingface.co/LiquidAI/LFM2.5-24B-A2B/blob/main/README.md",
+      "claim": "官方模型卡具体列出24.0B总参数、2.45B活跃参数及工具由应用执行的步骤。",
+      "excerpt": "规格核对：24.0B、2.45B；函数请求、外部执行、工具结果回传。"
+    },
+    {
+      "url": "https://huggingface.co/LiquidAI/LFM2.5-24B-A2B/blob/main/LICENSE",
+      "claim": "LFM Open License v1.0 包含商业使用收入门槛，并非无条件开放许可。",
+      "excerpt": "许可核对：Commercial Use Limitation；Threshold。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-15T17:23:37Z",
+    "method": "source",
+    "notes": "按本日来源逐条核对后，由独立子智能体再次联网审读；具体意见见 readerReview 与逐日证据。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-15T17:23:37Z",
+    "notes": "主助手按当日一手来源核实并依 humanizer-zh 自审；本轮独立子智能体结论单独记录在 readerReview。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-15T17:23:37Z",
+    "questions": [
+      "活跃参数少是否意味着只需存这些权重？",
+      "2.1万词元/秒是否为单次请求速度？",
+      "工具调用由谁执行？"
+    ],
+    "notes": "独立读取官方博客、实时HTML、HF原始README与LICENSE；240亿总参数、24.5亿活跃参数、文字模态、速度条件和许可限制准确。关联词条公开且适用；实际OG核对。passed。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-october-review-2026-10-13",
+  "promotedAt": "2026-10-15T17:23:37.482Z"
+}

@@ -5,11 +5,13 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 import { NewsExplainer } from "@/components/NewsExplainer";
+import { NewsMotionExplainer } from "@/components/NewsMotionExplainer";
 import { ReadingNotes } from "@/components/notes/ReadingNotes";
 import { HarnessV4Toc } from "@/components/terms/HarnessV4Toc";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { getNewsArticle, getPublishedTerm, newsArticles } from "@/lib/content";
+import { getNewsMotionDesign } from "@/lib/news-motion";
 
 type NewsPageProps = { params: Promise<{ slug: string }> };
 
@@ -31,6 +33,7 @@ function formatDate(value: string) {
 export default async function NewsDetailPage({ params }: NewsPageProps) {
   const article = getNewsArticle((await params).slug);
   if (!article) notFound();
+  const motionDesign = getNewsMotionDesign(article.slug, article.eventDate);
   const relatedTerms = article.relatedSlugs.map((slug) => getPublishedTerm(slug)).filter(Boolean);
   const relatedArticles = article.relatedArticleSlugs.map((slug) => getNewsArticle(slug)).filter(Boolean);
   const tocItems: [string, string][] = [
@@ -57,7 +60,7 @@ export default async function NewsDetailPage({ params }: NewsPageProps) {
                   <div className="news-detail-meta"><time dateTime={article.eventDate}>事件：{formatDate(article.eventDate)}</time><span>来源发布：{formatDate(article.publishedAt)}</span><span>来源：{article.source.name}</span></div>
                   {article.hero && !article.hero.license.startsWith("VibePolaris 自制") && <figure className="news-hero">
                     {/* eslint-disable-next-line @next/next/no-img-element -- News hero URLs are validated by the content contract and may be local or official assets. */}
-                    <img src={article.hero.url} alt={article.hero.alt} loading="eager" />
+                    <img src={article.hero.url} alt={article.hero.alt} style={{ objectFit: article.hero.fit }} loading="eager" />
                     <figcaption>
                       <span>头图</span>
                       <a href={article.hero.sourceUrl} target="_blank" rel="noreferrer">{article.hero.credit ?? "图片来源"}</a>
@@ -66,7 +69,7 @@ export default async function NewsDetailPage({ params }: NewsPageProps) {
                   </figure>}
                 </header>
                 <section className="vp-chapter news-lede" id="overview"><div className="vp-chapter-content"><div className="news-prose"><Markdown remarkPlugins={[remarkGfm]} skipHtml>{article.body}</Markdown></div></div></section>
-                <section className="vp-chapter news-explainer-section" id="explainer"><div className="vp-chapter-content"><NewsExplainer data={article.explainer!} /></div></section>
+                <section className="vp-chapter news-explainer-section" id="explainer"><div className="vp-chapter-content">{motionDesign ? <NewsMotionExplainer key={article.slug} design={motionDesign} /> : <NewsExplainer data={article.explainer!} />}</div></section>
                 {article.sections!.map((section) => (
                   <section className={`vp-chapter news-section news-section-${section.kind}`} id={section.id} key={section.id}>
                     <div className="vp-chapter-content"><h2>{section.title}</h2><div className="news-prose"><Markdown remarkPlugins={[remarkGfm]} skipHtml>{section.body}</Markdown></div></div>

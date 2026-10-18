@@ -28,6 +28,7 @@ import { LlmTermPage, TokenTermPage, AgentTermPage } from "@/components/terms/Fo
 import { SemanticSearchTermPage, RagConceptTermPage } from "@/components/terms/SemanticConceptPages";
 import { HybridSearchTermPage, CitationTermPage } from "@/components/terms/EvidenceConceptPages";
 import { TermExperiencePage } from "@/components/terms/TermExperiencePage";
+import { ConceptMotion } from "@/components/terms/ConceptMotion";
 import { getPublishedTerm, getRelatedTerms, publishedTerms } from "@/lib/content";
 import { getTermExperience } from "@/lib/term-experiences";
 
@@ -150,6 +151,7 @@ import { FrameworkTermPage } from "@/components/terms/frontend-foundations-pages
 import { SsgSsrTermPage } from "@/components/terms/frontend-foundations-pages/ssg-ssr";
 import { LibraryTermPage } from "@/components/terms/frontend-foundations-pages/library";
 import { RuntimeTermPage } from "@/components/terms/frontend-foundations-pages/runtime";
+import { TypeScriptTermPage } from "@/components/terms/typescript-pages/typescript-page";
 import { ResponsiveTermPage } from "@/components/terms/frontend-foundations-pages/responsive";
 
 const articleTermPages = {
@@ -163,6 +165,7 @@ const articleTermPages = {
   "ssg-ssr": SsgSsrTermPage,
   library: LibraryTermPage,
   runtime: RuntimeTermPage,
+  typescript: TypeScriptTermPage,
   'offline-first': OfflineFirstTermPage,
   'adaptive-layout': AdaptiveLayoutTermPage,
   'safe-area': SafeAreaTermPage,
@@ -526,7 +529,7 @@ export default async function TermPage({ params }: TermPageProps) {
       {DedicatedTermPage ? (
         <DedicatedTermPage term={term} previous={previous} next={next} related={related} />
       ) : (
-        <TermExperiencePage term={term} experience={experience!} previous={previous} next={next} related={related} />
+        <TermExperiencePage term={term} experience={experience!} previous={previous} next={next} related={related} hero={<ConceptMotion slug={term.slug} />} />
       )}
       </ReadingNotes>
       {!(term.slug in articleTermPages) && <aside className="term-graph-entry"><Link className="term-graph-link" href={`/?term=${term.slug}`}><span className="brand-star-only" aria-hidden="true" />在星图中探索「{term.zh}」<span aria-hidden="true">↗</span></Link></aside>}

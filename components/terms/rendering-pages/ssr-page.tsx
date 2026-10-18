@@ -1,7 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { ssrSources } from "@/lib/ssr-sources";
-import { SsrHero } from "./ssr-hero";
 
 const sections: [string, string][] = [
   ["ssr-definition-section", "请求到了服务器，页面才开始生成"],
@@ -10,7 +9,7 @@ const sections: [string, string][] = [
 ];
 
 export function SsrTermPage() {
-  return <Article slug="ssr" title="服务端渲染" subtitle="Server-side rendering · 服务器先生成页面" sources={ssrSources} sections={sections} hero={<SsrHero />} intro={<>SSR 把页面生成放回每次请求的服务器上下文里。<strong>服务器先取数据并产出 HTML，浏览器先呈现内容，再由客户端代码完成水合</strong>；慢数据和脚本仍然会留下各自的等待。</>}>
+  return <Article slug="ssr" title="服务端渲染" subtitle="Server-side rendering · 服务器先生成页面" sources={ssrSources} sections={sections} intro={<>SSR 把页面生成放回每次请求的服务器上下文里。<strong>服务器先取数据并产出 HTML，浏览器先呈现内容，再由客户端代码完成水合</strong>；慢数据和脚本仍然会留下各自的等待。</>}>
     <ArticleSection id="ssr-definition-section" title="请求到了服务器，页面才开始生成">
       <p id="ssr-request" className="vp-citation-target">服务端渲染的页面通常在收到请求后，根据路径、会话和其他上下文读取数据，再生成 HTML。<Cite id="ssr-request" sources={ssrSources} />同一个 URL 对不同用户可能得到不同的首屏内容。</p>
       <p id="ssr-data" className="vp-citation-target">数据依赖是 SSR 的一部分：如果页面必须等账户或订单信息，服务器就要把这段等待算进响应路径。<Cite id="ssr-data" sources={ssrSources} />SSR 不会自动把数据库延迟变短，只是把生成动作放到了请求端。</p>

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>文字入稿 · 动画方向 C</title>
+<!-- Assumption: explore the article's Search/Fetch mechanism, not a product UI. Static sample text, no network request. -->
+<style>
+:root{color-scheme:light;--bg:#F7F3E8;--paper:#FCFAF3;--ink:#171A15;--muted:#686E64;--line:#DAD8CD;--green:#52683F}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",sans-serif}
+main{width:min(1100px,100%);margin:auto;padding:30px 36px 22px}header{display:flex;align-items:baseline;gap:20px;border-bottom:1px solid var(--line);padding-bottom:20px}h1{margin:0;font-family:"Songti SC","Noto Serif CJK SC",serif;font-size:32px;letter-spacing:-1px;font-weight:600}header p{margin:0;color:var(--muted);font-size:14px}.stage{position:relative;aspect-ratio:1000/560;margin-top:10px}svg{display:block;width:100%;height:100%;overflow:visible}svg text{fill:var(--ink);font-family:inherit}.small{font-size:14px;fill:var(--muted)}.label{font-size:15px;fill:var(--green);font-weight:600}.mono{font-family:"SFMono-Regular",Consolas,monospace}.body{font-size:18px}.serif{font-family:"Songti SC","Noto Serif CJK SC",serif}.role{font-size:14px;fill:var(--muted);letter-spacing:1px}.line{stroke:var(--line);stroke-width:1;fill:none}.muted{fill:var(--muted)}
+footer{display:flex;gap:10px;align-items:center;border-top:1px solid var(--line);padding-top:16px}button{font:inherit;font-size:14px;cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--ink);padding:10px 18px;border-radius:30px;min-height:42px}button.primary{background:var(--green);border-color:var(--green);color:#fff;min-width:105px}button:hover{border-color:var(--green)}button:focus-visible,input:focus-visible{outline:2px solid var(--green);outline-offset:4px}label{margin-left:auto;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:10px}input{accent-color:var(--green);width:130px}.sample{font-size:12px;color:var(--muted);margin:14px 0 0}
+@media(max-width:650px){main{padding:22px 16px}header{display:block}header p{margin-top:8px}h1{font-size:27px}footer{flex-wrap:wrap}label{margin-left:auto}.stage{min-height:240px}svg{min-height:240px}.sample{line-height:1.7}}
+</style>
+</head>
+<body><main>
+<header><h1>文字入稿</h1><p>把网页正文，接进正在写的回答。</p></header>
+<div class="stage">
+<svg viewBox="0 0 1000 560" role="img" aria-labelledby="scene-title scene-description">
+<title id="scene-title">网页正文被框架提取，沿文字带进入模型上下文</title>
+<desc id="scene-description">机制示意：模型请求查找文档，框架执行 Search，随后用 Fetch 读取选定的接口指南，正文进入上下文，模型继续工作。</desc>
+<defs><clipPath id="answer-reveal"><rect id="answer-clip" x="461" y="423" width="0" height="40"/></clipPath></defs>
+<text x="64" y="41" class="role">模型请求</text>
+<text x="64" y="79" font-size="24" class="serif">找最新的抓取接口文档</text>
+<path d="M64 98H436" class="line"/>
+<g id="index">
+  <text x="64" y="134" class="label">框架执行 Search</text>
+  <g id="source-one"><text x="64" y="177" class="body muted">更新记录</text><text x="355" y="177" class="small mono">/updates</text></g>
+  <g id="source-two"><text x="64" y="216" class="body">抓取接口指南</text><text x="355" y="216" class="small mono">/fetch</text></g>
+  <g id="source-three"><text x="64" y="255" class="body muted">使用示例</text><text x="355" y="255" class="small mono">/examples</text></g>
+  <path id="selected-line" d="M64 228H282" stroke="#52683F" stroke-width="2" fill="none"/>
+</g>
+<g id="page" transform="translate(65 290)">
+  <path d="M0 0H278V182H0Z" fill="#FCFAF3" stroke="#DAD8CD"/>
+  <path d="M0 35H278" class="line"/>
+  <text x="18" y="23" class="small mono">/fetch</text>
+  <text x="18" y="68" font-size="21" class="serif">抓取接口指南</text>
+  <path d="M18 90H255M18 108H228M18 126H250M18 144H199" class="line"/>
+  <text id="page-body" x="18" y="110" font-size="14" fill="#52683F">输入 URL，返回 Markdown 正文。</text>
+</g>
+<g id="workspace">
+  <text x="460" y="254" class="role">模型工作区</text>
+  <path d="M443 275V465H944M943 275H899" class="line"/>
+  <text x="461" y="310" font-size="21" class="serif">拿到正文后，继续工作。</text>
+  <text x="461" y="347" class="small">带回的上下文</text>
+  <path id="waiting-line" d="M461 394H913" stroke="#DAD8CD" stroke-width="1" stroke-dasharray="3 6"/>
+  <g clip-path="url(#answer-reveal)"><text x="461" y="450" font-size="22" class="serif">接下来，按文档接入抓取接口。</text></g>
+  <rect id="caret" x="461" y="428" width="2" height="25" fill="#52683F"/>
+</g>
+<g id="fetch-label"><text x="63" y="511" class="label">框架执行 Fetch</text><text x="211" y="511" class="small">读取选中页面</text></g>
+<g id="ribbon">
+  <path id="ribbon-shadow" d="M83 400H327" fill="none" stroke="#DAD8CD" stroke-width="39"/>
+  <path id="ribbon-paper" d="M83 398H327" fill="none" stroke="#FCFAF3" stroke-width="38"/>
+  <path id="ribbon-rule" d="M83 398H327" fill="none" stroke="#52683F" stroke-width="1"/>
+  <path id="text-route" d="M83 398H327" fill="none"/>
+  <text font-size="16" dy="-8"><textPath href="#text-route" startOffset="12" fill="#52683F">输入 URL，返回 Markdown 正文。</textPath></text>
+</g>
+<text id="return-label" x="650" y="218" class="label">正文交回模型</text>
+</svg>
+</div>
+<footer><button class="primary" id="play" type="button">播放</button><button id="replay" type="button">从头看</button><label>动画位置<input id="position" aria-label="动画位置" type="range" min="0" max="840" value="480"></label></footer>
+<p class="sample">机制示意 · 样例文档，仅演示需要进一步读取网页正文的情况。</p>
+</main>
+<script>
+(() => {
+  const el = Object.fromEntries([...document.querySelectorAll('[id]')].map(n => [n.id,n]));
+  const duration=8.4, reduced=matchMedia('(prefers-reduced-motion: reduce)');
+  let time=reduced.matches?duration:4.8, playing=false, frame=0, last=0, hasStarted=false;
+  const clamp=x=>Math.max(0,Math.min(1,x));
+  const ease=x=>{x=clamp(x);return x*x*(3-2*x)};
+  const mix=(a,b,p)=>a+(b-a)*p;
+  const opacity=(id,value)=>el[id].style.opacity=value;
+  function render(t){
+    time=Math.max(0,Math.min(duration,t));
+    const page=ease((t-1.8)/.8), lift=ease((t-2.8)/1.4), flow=ease((t-4.1)/2.3), answer=ease((t-6.5)/1);
+    ['source-one','source-two','source-three'].forEach((id,i)=>opacity(id,ease((t-.5-i*.24)/.7)));
+    opacity('selected-line',ease((t-1.4)/.4)); opacity('page',page); opacity('page-body',1-lift);
+    opacity('ribbon',lift); opacity('fetch-label',page*(1-flow*.7)); opacity('return-label',ease((t-4.1)/.5)*(1-ease((t-6.1)/.5)));
+    opacity('index',1-flow*.45); opacity('waiting-line',1-flow); opacity('caret',1-answer);
+    const sx=mix(83,461,flow), sy=mix(400,390,flow), ex=mix(341,925,lift*.42+flow*.58);
+    const ey=mix(320,390,flow), bend=Math.sin(flow*Math.PI)*83;
+    const path=`M${sx} ${sy} C${mix(184,575,flow)} ${mix(138,390,flow)-bend} ${mix(487,790,flow)} ${mix(542,390,flow)+bend*.45} ${ex} ${ey}`;
+    ['ribbon-shadow','ribbon-paper','ribbon-rule','text-route'].forEach(id=>el[id].setAttribute('d',path));
+    el['ribbon-shadow'].setAttribute('transform','translate(0 3)');
+    el['ribbon-rule'].setAttribute('transform','translate(0 13)');
+    el['answer-clip'].setAttribute('width',String(453*answer));
+    el.caret.setAttribute('x',String(461+453*answer));
+    el.position.value=String(Math.round(time*100));
+    el.play.disabled=reduced.matches; el.replay.disabled=reduced.matches;
+    el.play.textContent=reduced.matches?'静态预览':playing?'暂停':time>=duration?'再看一次':'播放';
+  }
+  function stop(){playing=false;cancelAnimationFrame(frame);render(time)}
+  function tick(now){if(!playing)return;const delta=last?Math.min((now-last)/1000,.08):0;last=now;render(time+delta);if(time>=duration){stop();return}frame=requestAnimationFrame(tick)}
+  function start(fromBeginning=false){if(reduced.matches){stop();render(duration);return}cancelAnimationFrame(frame);if(fromBeginning||!hasStarted||time>=duration)time=0;hasStarted=true;playing=true;last=0;render(time);frame=requestAnimationFrame(tick)}
+  el.play.addEventListener('click',()=>playing?stop():start());
+  el.replay.addEventListener('click',()=>reduced.matches?(stop(),render(duration)):start(true));
+  el.position.addEventListener('input',()=>{const requested=Number(el.position.value)/100;hasStarted=true;stop();render(requested)});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)stop()});
+  reduced.addEventListener('change',()=>{if(reduced.matches){stop();render(duration)}});
+  render(time);
+})();
+</script></body></html>

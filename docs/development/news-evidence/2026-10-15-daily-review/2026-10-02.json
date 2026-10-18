@@ -1,0 +1,132 @@
+{
+  "eventDate": "2026-10-02",
+  "reviewer": "codex-subagent-reader",
+  "agent": "/root/october_news_review",
+  "status": "passed",
+  "searchedAt": "2026-10-15T15:59:26Z",
+  "queries": [
+    "\"October 2, 2026\" AI news model release",
+    "\"2026年10月2日\" AI 发布 新闻",
+    "Apple / Ai2 / Cloudflare / NVIDIA / GitHub 原始公告定向核对"
+  ],
+  "sourceUrls": [
+    "https://www.anthropic.com/news/claude-frontier-academy",
+    "https://developer.apple.com/news/?id=p6zjojqw",
+    "https://allenai.org/blog/astabrief",
+    "https://blog.cloudflare.com/introducing-web-search-api/",
+    "https://blogs.nvidia.com/blog/local-ai-dgx-spark-64gb-sync/",
+    "https://github.blog/changelog/2026-10-02-copilot-code-review-api-support-and-new-default-effort-level/"
+  ],
+  "excludedCandidates": [
+    {
+      "url": "https://www.govinfo.gov/content/pkg/FR-2026-10-02/html/2026-20321.htm",
+      "reason": "10 月 2 日为刊登日，行政令实际 9 月 29 日签署。"
+    },
+    {
+      "url": "https://huggingface.co/IndexTeam/Index-Translate-35B-A3B",
+      "reason": "模型卡有权重未上传提示，与 preview 卡、技术报告和条目创建日需继续区分，本日不依据第三方列表时间推定正式发布。"
+    },
+    {
+      "url": "https://github.blog/changelog/2026-10-02-selected-models-in-github-copilot-deprecated/",
+      "reason": "当日退役此前已预告；相较新增 API 与安全措施，本轮保留低优先级线索，不写成当日首次宣布。"
+    }
+  ],
+  "rounds": [
+    {
+      "checkedAt": "2026-10-15T15:59:26Z",
+      "decision": "needs-revision",
+      "findings": [
+        {
+          "slug": "anthropic-claude-frontier-academy-20261002",
+          "severity": "P2",
+          "issue": "十二周驻场措辞未说明先面授、再回本组织开展项目；遗漏首批已开班。",
+          "change": "分开说明培训阶段与地点、已运行批次、预计颁证日和目标人数。"
+        },
+        {
+          "slug": "anthropic-claude-frontier-academy-20261002",
+          "severity": "P3",
+          "issue": "图片描述重复标题。",
+          "change": "改为手搭建几何建筑的插画。"
+        }
+      ]
+    },
+    {
+      "checkedAt": "2026-10-15T16:03:42Z",
+      "decision": "passed",
+      "reports": {
+        "anthropic-claude-frontier-academy-20261002": {
+          "questions": [
+            "十二周项目实践在哪里完成？",
+            "哪些批次已经运行，目标人数何时实现？"
+          ],
+          "notes": "独立复审通过：已明确面授考核后回本组织开展十二周项目实践；首批已运行、最终徽章预计时间及万人培养目标区分清楚，原轮问题已修正。",
+          "changes": [
+            "明确面授与回本单位十二周实践两个阶段，补充已开班和预计颁证时间。",
+            "图片描述改为手搭建几何建筑的插画。"
+          ]
+        },
+        "apple-full-disk-access-agent-controls-20261002": {
+          "questions": [
+            "这项控制是否已生效？",
+            "授权对象是应用还是模型？"
+          ],
+          "notes": "独立复审通过：明确属于未来控制措施，没有编造生效日；应用授权、智能体能力与通信双方隐私的关系表达准确。",
+          "changes": [
+            "补入本日遗漏的官方安全措施公告。"
+          ]
+        },
+        "ai2-astabrief-open-model-20261002": {
+          "questions": [
+            "下载模型是否等于拥有完整检索系统？",
+            "评测与引用支持哪种范围的结论？"
+          ],
+          "notes": "独立复审通过：开放权重、训练数据及 Fast 模式范围有来源支持；区分模型与完整检索系统，保留 2025 年评测和引用核验边界。",
+          "changes": [
+            "补入本日遗漏的模型开放事件。",
+            "按子智能体建议为 8B 补充约 80 亿参数的解释。"
+          ]
+        },
+        "cloudflare-ai-gateway-web-search-20261002": {
+          "questions": [
+            "哪些接口已可用，Server Tools 是否已推出？",
+            "搜索会永久更新模型训练知识吗？"
+          ],
+          "notes": "独立复审通过：合作搜索商、已开放接口及 Server Tools 后续安排清楚；正确解释搜索资料进入上下文，不等同永久更新模型知识。",
+          "changes": [
+            "补入本日遗漏的搜索 API 公告。",
+            "按子智能体建议解释 Workers Binding 为专用调用入口。"
+          ]
+        },
+        "nvidia-dgx-spark-64gb-announcement-20261002": {
+          "questions": [
+            "公告当天能否买到新配置？",
+            "1.7 倍是否适用所有工作负载？"
+          ],
+          "notes": "独立复审通过：公告日、计划供货日、起价及 Model Launcher 时间与原文一致；1.7 倍限于 NVIDIA 特定测试，没有推广成通用性能保证。",
+          "changes": [
+            "补入本日遗漏的本地 AI 硬件配置公告。"
+          ]
+        },
+        "github-copilot-code-review-api-20261002": {
+          "questions": [
+            "API 审查和默认深度是否同一天生效？",
+            "请求 AI 审查是否等于批准合并？"
+          ],
+          "notes": "独立复审通过：API 开放范围与计划条件准确；明确 Balanced 于 9 月 28 日生效，并区分自动请求审查与合并审批。",
+          "changes": [
+            "补入本日遗漏的代码审查 API 发布。"
+          ]
+        }
+      }
+    }
+  ],
+  "selectedSlugs": [
+    "anthropic-claude-frontier-academy-20261002",
+    "apple-full-disk-access-agent-controls-20261002",
+    "ai2-astabrief-open-model-20261002",
+    "cloudflare-ai-gateway-web-search-20261002",
+    "nvidia-dgx-spark-64gb-announcement-20261002",
+    "github-copilot-code-review-api-20261002"
+  ],
+  "completedAt": "2026-10-15T16:03:42Z"
+}

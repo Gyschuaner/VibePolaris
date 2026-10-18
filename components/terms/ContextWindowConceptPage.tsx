@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Archive, ArrowCounterClockwise, ArrowRight, ChatCircleText, CheckCircle, Clock, FileText, MapPin, Stack, WarningCircle, Wrench, XCircle } from "@phosphor-icons/react";
+import { Archive, ArrowCounterClockwise, ChatCircleText, CheckCircle, Clock, MapPin, Stack, WarningCircle, Wrench, XCircle } from "@phosphor-icons/react";
 
 import { Article, Cite } from "./AiStackConceptPageShared";
 import { ArticleAside, ArticleSection } from "./ConceptArticle";
@@ -92,7 +92,7 @@ function ContextWindowLab() {
 const sections: [string, string][] = [["context-definition", "窗口到底装的是什么"], ["context-packing", "超出之后怎样整理"], ["context-retrieval", "装进去就一定找得到吗"], ["context-boundary", "窗口边界不是记忆边界"]];
 
 export function ContextWindowConceptTermPage() {
-  return <Article slug="context-window" title="上下文窗口" subtitle="Context Window · 一次请求能带进多少工作记忆" sources={contextWindowConceptSources} sections={sections} hero={<ContextWindowHero />} intro={<>你把整段聊天贴给模型，窗口里确实多了内容，但它仍可能漏掉那句“周日五点前到家”。<strong>上下文窗口限制的是一次请求能带进多少 token；装得下、找得到、记得久，是三件不同的事。</strong></>}>
+  return <Article slug="context-window" title="上下文窗口" subtitle="Context Window · 一次请求能带进多少工作记忆" sources={contextWindowConceptSources} sections={sections} intro={<>你把整段聊天贴给模型，窗口里确实多了内容，但它仍可能漏掉那句“周日五点前到家”。<strong>上下文窗口限制的是一次请求能带进多少 token；装得下、找得到、记得久，是三件不同的事。</strong></>}>
     <ArticleSection id="context-definition" title="窗口到底装的是什么">
       <p id="context-window-limit" className="vp-citation-target">上下文窗口是一次请求可使用的 token 总量上限，输入、输出，以及某些模型的推理 token 都算在里面。OpenAI 也提醒，内容太大可能让输出被截断；它不是模型训练语料的大小，更不是跨会话的永久记忆。<Cite id="context-window-limit" sources={contextWindowConceptSources} /></p>
       <p id="context-window-token-count" className="vp-citation-target">模型不是按“字数”直接计费或分配空间。Google 的 Gemini 文档把文字、图片、音频等输入都纳入 token 计数，并提供发送前的计数方法；不同模型的输入、输出上限要看具体模型资料。<Cite id="context-window-token-count" sources={contextWindowConceptSources} /></p>

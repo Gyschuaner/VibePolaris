@@ -1,7 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { codeCoverageSources } from "@/lib/code-coverage-sources";
-import { CodeCoverageSignatureHero as CodeCoverageHero } from "../TestSecuritySignatureHeroes";
 import { CodeCoverageLesson } from "./code-coverage";
 
 const sections: [string, string][] = [
@@ -12,7 +11,7 @@ const sections: [string, string][] = [
 ];
 
 export function CodeCoverageTermPage() {
-  return <Article slug="code-coverage" title="测试覆盖率" subtitle="Code Coverage · 看测试走过哪里，再决定还要证明什么" sources={codeCoverageSources} sections={sections} hero={<CodeCoverageHero />} intro={<>测试报告上的 100% 很容易让人松一口气。可如果那一行 <code>if</code> 里藏着两个开关，一次成功输入就足以点亮整行，没走过的路仍然在黑暗里。<strong>代码覆盖率记录测试执行触达了哪些结构；行为是否正确，仍要靠断言和风险判断。</strong></>}>
+  return <Article slug="code-coverage" title="测试覆盖率" subtitle="Code Coverage · 看测试走过哪里，再决定还要证明什么" sources={codeCoverageSources} sections={sections} intro={<>测试报告上的 100% 很容易让人松一口气。可如果那一行 <code>if</code> 里藏着两个开关，一次成功输入就足以点亮整行，没走过的路仍然在黑暗里。<strong>代码覆盖率记录测试执行触达了哪些结构；行为是否正确，仍要靠断言和风险判断。</strong></>}>
     <ArticleSection id="code-coverage-definition-section" title="100% 到底点亮了什么">
       <p id="coverage-definition" className="vp-citation-target">代码覆盖率可以先看成测试运行留下的一张地图。Istanbul 会给 JavaScript 加上行计数器，测试执行到哪一行，计数器就留下记录；报告再把这些记录整理成开发者能读的覆盖结果。<Cite id="coverage-definition" sources={codeCoverageSources} /></p>
       <p id="coverage-counters" className="vp-citation-target">这张地图回答的是“测试走到过哪里”，不是“走到那里后做得对不对”。一个函数可能被调用过，里面的断言却只检查了一个无关字段；所以覆盖率是找测试空白的工具，不能替行为契约签字。<Cite id="coverage-counters" sources={codeCoverageSources} /></p>
@@ -20,9 +19,9 @@ export function CodeCoverageTermPage() {
       <p id="coverage-scope" className="vp-citation-target">不同工具的统计边界也不完全相同。Vitest 可以选择 V8 或 Istanbul 等覆盖提供者，并用 include、exclude 规定哪些文件进入报告；读数字之前，先确认这份报告到底统计了哪一批代码。<Cite id="coverage-scope" sources={codeCoverageSources} /></p>
     </ArticleSection>
     <ArticleSection id="code-coverage-dimensions-section" title="把一行条件拆成四格">
-      <p id="coverage-dimensions" className="vp-citation-target">在首图里，<code>age &gt;= 18 &amp;&amp; verified</code> 是一行代码，却有两个条件和四种组合。JaCoCo 把指令、行、分支和复杂度分开统计：每个指标都在问不同的问题，不能把一个百分比当成所有答案。<Cite id="coverage-dimensions" sources={codeCoverageSources} /></p>
+      <p id="coverage-dimensions" className="vp-citation-target">例如 <code>age &gt;= 18 &amp;&amp; verified</code> 是一行代码，却有两个条件和四种组合。JaCoCo 把指令、行、分支和复杂度分开统计：每个指标都在问不同的问题，不能把一个百分比当成所有答案。<Cite id="coverage-dimensions" sources={codeCoverageSources} /></p>
       <p id="coverage-lines" className="vp-citation-target">先跑“20 岁、已验证”，执行计数会把这一行点亮，于是行覆盖可以到 100%。这不奇怪，因为行覆盖只关心这行是否执行过；它不会记录 <code>verified=false</code> 的组合，也不会替你确认拒绝结果。JaCoCo 还提醒，某一行包含多个指令时，部分执行可能只得到部分覆盖。<Cite id="coverage-lines" sources={codeCoverageSources} /></p>
-      <p id="coverage-branches" className="vp-citation-target">分支覆盖继续问：判断的两侧是否都走过？更细的条件组合或 MC/DC 追踪，则继续问每个布尔条件怎样影响整体决定；不同工具是否提供这类指标，要看它自己的收集实现。首图补到 TF 时，隐藏的“未验证成人被放行”才露出来；覆盖率把路径带到灯下，真正把它判错的仍然是 <code>expect(canEnter(20, false)).toBe(false)</code> 这样的行为断言。<Cite id="coverage-branches" sources={codeCoverageSources} /></p>
+      <p id="coverage-branches" className="vp-citation-target">分支覆盖继续问：判断的两侧是否都走过？更细的条件组合或 MC/DC 追踪，则继续问每个布尔条件怎样影响整体决定；不同工具是否提供这类指标，要看它自己的收集实现。补测 TF 组合时，才会发现“未验证成人被放行”的问题；覆盖率把路径带到灯下，真正把它判错的仍然是 <code>expect(canEnter(20, false)).toBe(false)</code> 这样的行为断言。<Cite id="coverage-branches" sources={codeCoverageSources} /></p>
       <p id="coverage-mcdc" className="vp-citation-target">在安全性更高的场景，LLVM 的 source-based coverage 还支持 MC/DC：测试向量要能说明某个条件单独改变时，整体决定也随之改变。它比“这一行执行过”要求更多证据，但仍然不能替代对输出和副作用的检查。<Cite id="coverage-mcdc" sources={codeCoverageSources} /></p>
     </ArticleSection>
     <ArticleSection id="code-coverage-report-section" title="报告的空白是下一道题">

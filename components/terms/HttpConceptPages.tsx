@@ -1,6 +1,5 @@
-import { BookOpen, FileText } from "@phosphor-icons/react/dist/ssr";
+
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from "./ConceptArticle";
-import { ConceptHero } from "./ConceptHero";
 import { RequestLesson, ResponseLesson, MethodLesson, StatusLesson, HeaderLesson } from "./HttpConceptLessons";
 import { requestSources, responseSources, methodSources, statusSources, headerSources } from "@/lib/http-concept-sources";
 import base from "./EventConcepts.module.css";
@@ -15,13 +14,7 @@ export function RequestTermPage() {
   return <ConceptArticle slug="request" title="请求" sources={requestSources}
     intro={<>你在网上书店点了“搜索”，页面却没有显示想找的书。AI 让你“检查发出去的请求”。它要看的，是浏览器向书店服务发送的那条消息：想做什么、去哪个地址、带了什么内容。</>}
     sections={[["message", "从按钮到一条消息"], ["compose", "组装一次请求"], ["positions", "参数放在哪里"], ["boundary", "构造、发送与完成"]]}
-    hero={<ConceptHero slug="request" label="一条 HTTP/1.1 请求的结构示意：首行写 POST 和 /books，请求头写 Content-Type，空行后是书名 JSON 正文；尚未显示发送或处理结果"><div className={s.requestHero}><div className={s.requestPaper}>
-      <span>HTTP/1.1 · 结构示意</span>
-      <div className={s.requestStart}><code><strong>POST</strong> /books HTTP/1.1</code></div>
-      <div className={s.requestHeader}><code>Content-Type: application/json</code></div>
-      <div className={s.requestGap} />
-      <div className={s.requestBody}><code>{'{"title":"海边的书店"}'}</code></div>
-    </div></div></ConceptHero>}>
+    >
     <ArticleSection id="message" title="从按钮到一条消息">
       <Legacy slug="request" names={["question", "definition"]} />
       <p id="request-message" className="vp-citation-target"><strong>HTTP 请求是客户端发给服务器的消息。</strong>在这个例子里，浏览器是发消息的客户端；接收消息、查询或保存书目的程序是服务器。HTTP 是双方收发这类消息时遵守的一套规则。网站开发者提前写好程序，把你在页面上的操作转换成请求，你不用自己填写每一行。<Cite id="request-message" /></p>
@@ -47,7 +40,7 @@ export function RequestTermPage() {
       <p>对象构造成功，只说明浏览器能按这些选项创建请求对象。服务是否收到了消息、是否接受书名、是否真的保存了书目，还没有答案。收到 <ConceptTerm slug="response">响应</ConceptTerm> 后，要看表示处理结果的状态码，以及返回的书目或错误说明，再决定页面显示什么。</p>
       <p>换成查天气也是一样。服务要求 <code>GET /weather?city=上海</code>，就应按约定把城市放在地址里；构造出这条请求，并不会让你得到上海今天的气温。气温要从服务返回的结果里读取，不能拿自己刚填的请求当答案。</p>
       <p>也不是每次点“搜索”都需要新请求。如果完整书目已经在页面里，程序可以直接在本地筛选；需要从书店服务取得新的信息时，才需要向它发消息。判断有没有请求，要看程序实际做了什么。</p>
-      <ArticleAside title="开发者工具里看到的请求"><p id="request-wire" className="vp-citation-target">浏览器开发者工具中的 Network（网络）面板会把请求整理成易读字段。首图用 HTTP/1.1 的文本行解释结构；HTTP/2 等版本传输消息的格式不同，方法、目标地址、请求头和内容这些含义仍然保留。这里省略了其他字段，没有展示完整的网络传输数据。<Cite id="request-wire" /></p></ArticleAside>
+      <ArticleAside title="开发者工具里看到的请求"><p id="request-wire" className="vp-citation-target">浏览器开发者工具中的 Network（网络）面板会把请求整理成易读字段。下面用 HTTP/1.1 的文本行解释结构；HTTP/2 等版本传输消息的格式不同，方法、目标地址、请求头和内容这些含义仍然保留。这里省略了其他字段，没有展示完整的网络传输数据。<Cite id="request-wire" /></p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }
@@ -57,11 +50,7 @@ export function ResponseTermPage() {
   return <ConceptArticle slug="response" title="响应" sources={responseSources}
     intro={<>你在网上书店把一本书加入账号里的书签，方便以后再找。点完“保存”，怎样知道书店服务有没有存好？它会通过响应告诉浏览器处理结果，页面再据此显示新书签或错误提示。</>}
     sections={[["receipt", "读懂一份返回结果"], ["project", "把响应用到页面"], ["empty", "没有内容也有结果"], ["handling", "错误留在哪一层"]]}
-    hero={<ConceptHero slug="response" label="左侧响应保留状态 201 和正文里的书名；客户端处理后，右侧页面新增写着同一书名的书签，响应本身没有变成界面"><div className={s.responseHero}>
-      <div className={s.responseMessage}><span>响应</span><div className={s.responseStatus}><strong>201</strong><small>Created</small></div><div className={s.responsePayload}><small>body</small><code>id: 42</code><code>title: <b>海边的书店</b></code></div></div>
-      <div className={s.responseBridge}><span>客户端</span><i /><small>处理</small></div>
-      <div className={s.responseApp}><span>页面</span><div className={s.responseBookmark}><BookOpen size={23} /><strong>海边的书店</strong></div></div>
-    </div></ConceptHero>}>
+    >
     <ArticleSection id="receipt" title="读懂一份返回结果">
       <Legacy slug="response" names={["question", "definition"]} />
       <p id="response-parts" className="vp-citation-target"><strong>响应是服务器针对请求返回的消息，响应体只是其中的内容。</strong>在本例里，浏览器发送保存书签的请求，书店服务接收并处理，再返回响应。浏览器是客户端；其中运行的页面程序负责读取响应、更新屏幕上的书签。服务返回了消息，不等于页面已经显示好了。<Cite id="response-parts" /></p>
@@ -98,12 +87,7 @@ export function HttpMethodTermPage() {
   return <ConceptArticle slug="http-method" title="HTTP 方法" sources={methodSources}
     intro={<>让 AI 给便笺网页加一个“保存”按钮，它却开始讨论用 PUT 还是 POST。按钮都叫保存，为什么还要选？因为网页要告诉服务器：这次是设置指定便笺的内容，还是另建一条便笺。</>}
     sections={[["resource", "方法与目标一起读"], ["repeat", "让同一条请求再执行一次"], ["properties", "安全与幂等"], ["others", "其他方法与实现边界"]]}
-    hero={<ConceptHero slug="http-method" label="本例中，同一条 PUT /notes/42 执行两次仍只修改 42 号便笺；同一条 POST /notes 执行两次，在同一个资源集合新增 43 和 44 号便笺"><div className={s.methodHero}>
-      <code className={s.methodPut}>PUT /notes/42 <b>× 2</b></code>
-      <div className={s.methodLens}><code>/42</code><span className={s.methodDraft}>草稿</span><strong className={s.methodEdited}>已校对</strong></div>
-      <code className={s.methodPost}>POST /notes <b>× 2</b></code>
-      <div className={s.methodHeroShelf}><div><FileText size={21} /><code>42</code></div><div><FileText size={21} /><code>43</code></div><div><FileText size={21} /><code>44</code></div></div>
-    </div></ConceptHero>}>
+    >
     <ArticleSection id="resource" title="方法与目标一起读">
       <Legacy slug="http-method" names={["question", "definition"]} />
       <p>假设便笺保存在网站的服务器上。你在网页里点击保存，网页程序负责发出请求，服务器处理后发回响应。这里发请求的一方叫客户端；HTTP 是双方交换请求和响应时遵守的协议。</p>
@@ -139,10 +123,7 @@ export function StatusCodeTermPage() {
   return <ConceptArticle slug="status-code" title="状态码" sources={statusSources}
     intro={<>你让 AI 给书目网页做一个导出按钮。提交后，服务器返回 202，页面就显示“下载完成”，却没有文件可下载。要找出哪里判断错了，得先看这个数字究竟说明了哪一步。</>}
     sections={[["classes", "先读类别，再读具体含义"], ["export", "提交之后，还要查询结果"], ["errors", "错误之后的动作"], ["business", "HTTP 状态与业务状态"]]}
-    hero={<ConceptHero slug="status-code" label="提交导出请求得到 202 已受理；另一层导出任务的结果仍未确定，202 不表示文件已生成"><div className={s.statusHero}>
-      <div className={s.statusTask}><span>导出任务</span><div className={s.statusOutcome}><strong>?</strong><span>结果待确认</span></div></div>
-      <div className={s.statusReceipt}><code>POST /exports</code><div><strong>202</strong><span>已受理</span></div></div>
-    </div></ConceptHero>}>
+    >
     <ArticleSection id="classes" title="先读类别，再读具体含义">
       <Legacy slug="status-code" names={["question", "definition"]} />
       <p>网页要从服务器导出书目，会先发出一条请求。服务器发回的回复叫响应，状态码就是响应的一部分。发请求的网页程序在这里叫客户端；HTTP 是双方交换这些消息所遵守的协议。在这个例子中，数字由服务器给出，页面程序再根据它和响应正文里的数据决定显示什么。</p>
@@ -182,11 +163,7 @@ export function HttpHeaderTermPage() {
   return <ConceptArticle slug="http-header" title="请求头" sources={headerSources}
     intro={<>AI 让你在请求头里加上 Accept: application/json。它是在指定要查哪本书，还是让服务器把书名写成另一种格式？请求头传达的是这次请求的补充信息；服务器如何使用，还要看双方的约定。</>}
     sections={[["fields", "内容之外的信息"], ["negotiate", "同一本书，两种表示"], ["directions", "Accept 与 Content-Type"], ["limits", "字段的控制者"]]}
-    hero={<ConceptHero slug="http-header" label="同一资源 /books/42 有 JSON 和纯文本两种可提供的表示；请求头 Accept: application/json 表达偏好后，本例选择 JSON 表示，书名和资源地址不变"><div className={s.headerHero}>
-      <div className={s.headerSource}><BookOpen size={22} /><code>/books/42</code><strong>海边的书店</strong></div>
-      <div className={s.headerPreference}><span>请求头</span><code>Accept: application/json</code></div>
-      <div className={s.headerVariants}><span>本例可提供</span><div><span>JSON</span><code>{'{"title":"海边的书店"}'}</code></div><div><span>TXT</span><strong>海边的书店</strong></div></div>
-    </div></ConceptHero>}>
+    >
     <ArticleSection id="fields" title="内容之外的信息">
       <Legacy slug="http-header" names={["question", "definition"]} />
       <p>网页向服务器要一条书目信息时，发出去的消息叫请求，服务器发回的消息叫响应。发起请求的一方是客户端，处理请求的一方是服务器。HTTP 约定了这类消息的结构和含义；请求头就是其中一部分。</p>

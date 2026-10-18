@@ -1,6 +1,5 @@
-import { Database, FileText } from '@phosphor-icons/react/dist/ssr';
+
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
-import { ConceptHero } from './ConceptHero';
 import { HybridLesson, VectorStoreLesson, CitationLesson } from './EvidenceConceptLessons';
 import { hybridSources, storeSources, citationSources } from '@/lib/evidence-sources';
 import base from './EventConcepts.module.css';
@@ -11,7 +10,7 @@ export function HybridSearchTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={hybridSources}/>;
   return <ConceptArticle slug="hybrid-search" title="混合搜索" sources={hybridSources} sections={[["routes", "一次查询，两种检索信号"], ["fusion", "把两路排名合成一份"], ["scores", "两路分数不能直接相加"], ["limits", "候选范围决定融合结果"]]}
     intro={<>查“MX-42 经常断开连接”，型号适合按字面匹配，“断开连接”又可能在文档里写成“掉线”，或者从另一面写成“频繁重连”。混合搜索组合不同的检索信号，再把候选汇成一份结果。</>}
-    hero={<ConceptHero slug="hybrid-search" label="关键词与语义两路排名，共同出现的B只保留一条并合计排名贡献"><div className={s.fusionHero}><div><span>关键词 A → B → C</span></div><div><span>语义 B → D → A</span></div><strong>B · 两路贡献相加</strong></div></ConceptHero>}>
+    >
     <ArticleSection id="routes" title="一次查询，两种检索信号"><Legacy slug="hybrid-search" names={["question", "definition"]}/>
       <p id="hybrid-definition" className="vp-citation-target"><strong>混合搜索把不同检索方法的结果组合起来。</strong>Azure AI Search 的实现并行执行全文（关键词路线）与向量（语义路线）查询，再用 RRF（Reciprocal Rank Fusion，一种只看名次的融合方法）合并排名。词项匹配可以利用型号、代码等具体表达；向量查询先把文字编码成一组数字，意思相近的文字在这个数字空间里离得更近，再按远近寻找候选。<strong>两种信号互补，也都可能找到无关资料。</strong>这只是混合搜索的一种实现，后续还可以重排。<Cite id="hybrid-definition"/></p>
       <p>产品型号与故障描述承担不同作用。“MX-42”确定了对象，“经常断开连接”表达了问题；如果资料只写“掉线重连”，单纯词项匹配可能漏掉它。反过来，另一型号的重连指南即使意思接近，也未必适用。</p>
@@ -40,7 +39,7 @@ export function VectorStoreTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={storeSources}/>;
   return <ConceptArticle slug="vector-store" title="向量存储" sources={storeSources} sections={[["records", "向量要和它代表的内容一起找到"], ["versions", "原文更新，记录仍可能是旧的"], ["sync", "用同一ID更新一条记录"], ["lifetime", "保存多久，由实现决定"]]}
     intro={<>退款规则从三个工作日改成七个工作日，查询却仍返回旧说明。问题可能出在资料已经改了，存储中的记录还没有同步。使用向量存储的应用要同时管理两样东西：向量本身，和向量对应的原文内容或原文入口。</>}
-    hero={<ConceptHero slug="vector-store" label="记录ID A不变，向量、版本和对应原文一起更新"><div className={s.storeHero}><Database size={26}/><div><strong>ID A</strong><code>vector + text + version</code><p>v2 · 七个工作日</p></div></div></ConceptHero>}>
+    >
     <ArticleSection id="records" title="向量要和它代表的内容一起找到"><Legacy slug="vector-store" names={["question", "definition"]}/>
       <p id="store-definition" className="vp-citation-target"><strong>向量存储是一类保存向量化资料、支持相似查询的存储能力或接口。</strong>LangChain 的通用接口包含添加文档、按 ID 删除与相似搜索，并提供内存实现。它可以由数据库、独立服务或进程内对象实现；不一定是单独运行的数据库，也不一定建立近似索引。<Cite id="store-definition"/></p>
       <p id="store-record" className="vp-citation-target">Qdrant 把一条记录叫作 point，里面存 ID、向量和可选的 payload。向量参与比较，ID 标识记录，附加数据保存文档信息并可支持过滤。<strong>找到了向量，还要能找回它代表的内容，因为向量只负责找“像的”，最终仍要读人能核对的文字。</strong>payload 可以存全文，也可以只存原文入口；应用还要维护来源、版本和位置，这些字段不会自动证明内容当前或正确。<Cite id="store-record"/></p>
@@ -68,7 +67,7 @@ export function CitationTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={citationSources}/>;
   return <ConceptArticle slug="citation" title="引用" sources={citationSources} sections={[["location", "让读者找得到具体出处"], ["support", "出处是否支持这句话"], ["selector", "从文章入口到具体段落"], ["identifiers", "链接、版本与检查时间"]]}
     intro={<>“退款三个工作日到账”后面放了一个链接，读者仍不知道它是否适用于线上退款、是否要求审核通过、是不是保证时效。引用要把结论和对应材料连起来，让这些条件能够被核对。</>}
-    hero={<ConceptHero slug="citation" label="草稿句子后的引用1，定位到原文中包含审核条件和通常时效的一段"><div className={s.citationHero}><p>审核通过后，通常三个工作日。<sup>[1]</sup></p><div><span>[1] 退款规则 · 第 2 段</span>线上退款审核通过后，通常三个工作日内原路退回。</div></div></ConceptHero>}>
+    >
     <ArticleSection id="location" title="让读者找得到具体出处"><Legacy slug="citation" names={["question", "definition"]}/>
       <p><strong>引用标明一句话或一项论断的来源，让读者能回到材料核对。</strong>它可以是脚注、角标或作者与年份标记；形式应配合阅读场景。普通链接只告诉你“去哪个页面”，引用还要说明“这句话用了哪份材料的哪一处”。参考资料列表列出材料，正文中的标记则说明哪一处使用了哪份材料。</p>
       <p id="citation-location" className="vp-citation-target">《芝加哥格式手册》（Chicago）的注释—书目体系区分具体引用位置和整份材料的信息：注释可以指定页码，电子资料没有固定页码时也可使用章节等定位方式。<strong>材料入口与具体位置承担不同作用。</strong>只列文章标题，读者还要自行找出哪一段支持结论。本页用角标对应参考资料，两处之间可以互相跳转。<Cite id="citation-location"/></p>

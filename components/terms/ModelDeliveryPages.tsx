@@ -1,9 +1,7 @@
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
-import { ConceptHero } from './ConceptHero';
 import { ModelRoutingLesson } from './ai-stack-lessons/model-routing';
-import { ModelFallbackHero, ModelFallbackLesson } from './ai-stack-lessons/model-fallback';
-import { PromptCachingHero, PromptCachingLesson } from './ai-stack-lessons/prompt-caching';
-import { ModelRoutingSignatureHero } from './ModelRoutingSignatureHero';
+import { ModelFallbackLesson } from './ai-stack-lessons/model-fallback';
+import { PromptCachingLesson } from './ai-stack-lessons/prompt-caching';
 import { routingSources, fallbackSources, promptCachingSources } from '@/lib/model-delivery-sources';
 import base from './EventConcepts.module.css';
 import s from './ModelDeliveryConcepts.module.css';
@@ -13,7 +11,7 @@ export function ModelRoutingTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={routingSources}/>;
   return <ConceptArticle slug="model-routing" title="模型路由" sources={routingSources} sections={[["selection","根据任务选择模型"],["gate","能力、门槛与费用"],["timing","请求前选择与结果级联"],["operation","把选择放进实际服务"]]}
     intro={<>模型路由把请求分配给合适的模型，或同一个模型正在运行的某个实例（部署）。通常是服务背后的策略替用户做这个选择，依据可能是输入类型、任务难度、评测表现或费用；按负载把请求摊到同一模型的多个实例，更接近负载均衡。它要解决的是“这次交给谁”，选择之后仍需要检查回答与任务结果。</>}
-    hero={<ModelRoutingSignatureHero/>}>
+    >
     <ArticleSection id="selection" title="根据任务选择模型"><Legacy slug="model-routing" names={["question","definition"]}/>
       <p id="routing-definition" className="vp-citation-target"><strong>模型路由依据请求与策略，选择由哪个模型处理。</strong>RouteLLM 用偏好数据学习请求与强弱模型（能力较高和能力较低的两档模型）的适配关系；偏好数据可以是同类问题上哪个模型回答更好的历史记录。它在质量和调用成本之间取舍，路由器在得到候选模型回答之前进行选择，是一种实现方式，不是所有路由都必须使用学习得到的分类器。<Cite id="routing-definition"/></p>
       <p>例如订单助手既会提取金额，也会分析多项条款，还可能读取截图。某个模型处理简单文本更便宜，却不支持图片；另一个支持图片，但价格更高，不该让它处理每一次简单提取。先识别输入与必须满足的要求，再比较候选，选择才有依据。</p>
@@ -42,7 +40,7 @@ export function ModelFallbackTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={fallbackSources}/>;
   return <ConceptArticle slug="model-fallback" title="备用模型" sources={fallbackSources} sections={[["replacement","主调用之后的备用路径"],["attempts","错误、兼容性与调用次数"],["policy","切换条件与停止条件"],["limits","接替后的结果仍要检查"]]}
     intro={<>备用模型是在主调用不可用或触发指定条件时，用来接替处理的候选。重试是再问同一个目标，备用是换一个目标；只在配置里写上另一个模型的名字还不够，系统还要决定哪些情况允许切换、备用能否接收相同任务，以及最多继续尝试多少次。</>}
-    hero={<ModelFallbackHero/>}>
+    >
     <ArticleSection id="replacement" title="主调用之后的备用路径"><Legacy slug="model-fallback" names={["question","definition"]}/>
       <p id="fallback-definition" className="vp-citation-target"><strong>备用路径在指定条件下，把任务交给另一个可用目标。</strong>LiteLLM 把可以互换的一组部署称为模型组，并区分同一模型组里的部署接替与跨模型组的 fallback：可以先尝试同模型的健康部署，再进入另一组。备用不必一定是能力较弱的模型，也可能是另一地区部署或另一提供方。<Cite id="fallback-definition"/></p>
       <p>同一目标重新尝试通常叫 <ConceptTerm slug="retry">重试</ConceptTerm>；换目标则是接替。二者可以配合，但每用一次就多一次调用。主服务已经过载时，无限制地重试再切换，可能把问题带到备用服务。</p>
@@ -71,7 +69,7 @@ export function PromptCachingTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={promptCachingSources}/>;
   return <ConceptArticle slug="prompt-caching" title="提示缓存" sources={promptCachingSources} sections={[["computation","复用处理输入的计算"],["prefix","从输入开头连续匹配"],["conditions","相同文字不保证命中"],["lifetime","缓存可用期与实际收益"]]}
     intro={<>提示缓存复用模型已经处理过的相同输入前缀，减少重复计算。前缀就是从输入开头连续完全相同的那一段。长指令、工具说明和背景资料保持稳定时，下一次请求可以从已有计算继续处理。它保存的不是可以拿来就用的旧答案。</>}
-    hero={<PromptCachingHero/>}>
+    >
     <ArticleSection id="computation" title="复用处理输入的计算"><Legacy slug="prompt-caching" names={["question","definition"]}/>
       <p id="pcache-definition" className="vp-citation-target"><strong>提示缓存复用相同前缀的中间计算状态。</strong>可以把它想成模型读长提示时留下的“阅读笔记”，不是把旧答案存起来。OpenAI 文档也用中间计算状态解释这种复用：新请求不必重新处理已经匹配的输入部分，继续处理剩余输入，再生成回复。缓存命中不表示直接返回上次的回答。<Cite id="pcache-definition"/></p>
       <p>模型处理这段输入后会留下中间状态，下次遇到相同内容可以直接接着用，通常称作 KV cache。模型生成一次回答的过程中，本来就会复用已读输入的计算；提示缓存关注的是不同请求之间可复用的相同开头，常见于程序调用 AI 的情况。</p>

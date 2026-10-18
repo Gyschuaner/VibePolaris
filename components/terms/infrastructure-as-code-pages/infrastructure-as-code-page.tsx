@@ -1,7 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { infrastructureAsCodeSources } from "@/lib/infrastructure-as-code-sources";
-import { InfrastructureAsCodeHero } from "./infrastructure-as-code-hero";
 import { InfrastructureAsCodeLesson } from "./infrastructure-as-code";
 
 const sections: [string, string][] = [
@@ -12,11 +11,11 @@ const sections: [string, string][] = [
 ];
 
 export function InfrastructureAsCodeTermPage() {
-  return <Article slug="infrastructure-as-code" title="基础设施即代码" subtitle="Infrastructure as Code · 把基础设施改动写成可审查的配置" sources={infrastructureAsCodeSources} sections={sections} hero={<InfrastructureAsCodeHero />} intro={<>Infrastructure as Code（IaC）把网络、实例、权限和服务等基础设施写成配置，再由工具比较配置与当前现实。<strong>它的价值不在于“用文件代替点击”，而在于每次改变前都有可读的计划、可追溯的输入和明确的执行边界。</strong></>}>
+  return <Article slug="infrastructure-as-code" title="基础设施即代码" subtitle="Infrastructure as Code · 把基础设施改动写成可审查的配置" sources={infrastructureAsCodeSources} sections={sections} intro={<>Infrastructure as Code（IaC）把网络、实例、权限和服务等基础设施写成配置，再由工具比较配置与当前现实。<strong>它的价值不在于“用文件代替点击”，而在于每次改变前都有可读的计划、可追溯的输入和明确的执行边界。</strong></>}>
     <ArticleSection id="iac-definition-section" title="声明目标，而不是手写每一步">
       <p id="iac-definition" className="vp-citation-target">IaC 用声明式配置描述想要的基础设施结果，工具再决定需要调用哪些 API、按什么依赖顺序完成它。配置表达的是目标状态，具体执行步骤由工具和提供商共同展开。<Cite id="iac-definition" sources={infrastructureAsCodeSources} /></p>
       <p id="iac-declaration" className="vp-citation-target">资源、变量、模块和引用让一份配置可以被复用、审查和版本控制；但“写进 Git”不等于“自动安全”，凭据、权限和模块来源仍要单独管理。<Cite id="iac-declaration" sources={infrastructureAsCodeSources} /></p>
-      <p>首图先把配置、计划和云端分开：保存配置时云端不动，只有批准的 apply 才跨过执行边界。这比把一串命令贴在脚本里更容易复盘每次改变。</p>
+      <p>要分开看配置、计划和云端实际资源：保存配置时云端不动，只有批准的 apply 才跨过执行边界。这比把一串命令贴在脚本里更容易复盘每次改变。</p>
       <InfrastructureAsCodeLesson />
     </ArticleSection>
 

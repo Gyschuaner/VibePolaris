@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowCounterClockwise, CheckCircle, Pause, Play, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, Pause, Play, ShieldCheck } from "@phosphor-icons/react";
 import { useEffect, useRef, useState } from "react";
 
 import { Article, Cite } from "./AiStackConceptPageShared";
@@ -97,7 +97,7 @@ function DataContractLab() {
 const sections: [string, string][] = [["data-contract-definition-section", "契约不只是字段清单"], ["data-contract-consumer-section", "先写消费者真正依赖的字段"], ["data-contract-additive-section", "新增可选字段和改名不是一回事"], ["data-contract-breaking-section", "兼容性检查要对着基线"], ["data-contract-boundary-section", "契约也有边界"]];
 
 export function DataContractTermPage() {
-  return <Article slug="data-contract" title="数据契约" subtitle="Data Contract · 让字段变化先被看见" sources={dataContractSources} sections={sections} hero={<DataContractHero />} intro={<>上游改字段时，真正先受影响的往往不是生产者，而是那些没人再想得起来的下游读取。<strong>数据契约把形状、语义和兼容规则写成双方都能检查的约定，让一次改名在发布前就露出破坏性。</strong></>}>
+  return <Article slug="data-contract" title="数据契约" subtitle="Data Contract · 让字段变化先被看见" sources={dataContractSources} sections={sections} intro={<>上游改字段时，真正先受影响的往往不是生产者，而是那些没人再想得起来的下游读取。<strong>数据契约把形状、语义和兼容规则写成双方都能检查的约定，让一次改名在发布前就露出破坏性。</strong></>}>
     <ArticleSection id="data-contract-definition-section" title="契约不只是字段清单"><p id="data-contract-definition" className="vp-citation-target"><strong>数据契约回答的是“谁提供什么、谁依赖什么、变化怎么判断”，不只是列出几个字段名。</strong>OpenAPI 把接口描述定义成语言无关的能力说明，让人和工具在没有读源码的情况下理解请求与响应；JSON Schema 则用 `properties`、类型和 `required` 等规则检查对象是否符合形状。<Cite id="data-contract-definition" sources={dataContractSources} />把这两层放在一起，消费者才知道字段长什么样，也知道哪些字段不能随便消失。</p><p>现实里的契约还要写清语义、所有者、版本、质量和迁移窗口。`email` 是联系地址还是登录标识？允许为空吗？数据多久更新一次？这些问题不写出来，字段类型即使没变，双方仍可能读出完全不同的意思。</p></ArticleSection>
     <ArticleSection id="data-contract-consumer-section" title="先写消费者真正依赖的字段"><p id="data-contract-consumer" className="vp-citation-target"><strong>契约的边界应该从消费者的真实使用开始。</strong>Pact 把消费者对请求和响应的期待写成可执行的交互，再交给提供者验证；它强调只测试消费者实际用到的部分，而不是替提供者列出所有可能的行为。<Cite id="data-contract-consumer" sources={dataContractSources} />这和一份“看上去很完整”的全量 schema 不同：前者能告诉你这次改动会不会伤到已存在的依赖。</p><DataContractLab /><p id="data-contract-migration" className="vp-citation-target">实验里保留 `email` 再增加 `user_id`，不是永远保留两个名字，而是给消费者一个可观察的过渡期。Pact Broker 记录契约版本、验证结果和哪些消费者/提供者版本能安全组合；迁移完成后，团队才有证据删除旧字段。<Cite id="data-contract-migration" sources={dataContractSources} /></p></ArticleSection>
     <ArticleSection id="data-contract-additive-section" title="新增可选字段和改名不是一回事"><p id="data-contract-additive" className="vp-citation-target">在 JSON Schema 的默认示例里，`properties` 描述已知字段，但遗漏字段默认仍然有效，额外字段默认也不会因此失败；把一个新字段标成可选，通常不会影响只读取旧字段的消费者。<Cite id="data-contract-additive" sources={dataContractSources} />这只是 schema 规则下的兼容性判断，业务是否要求“必须有 locale”仍要另写约束。</p><p>直接把 `email` 改名成 `user_id` 就不同了：旧消费者还在找 `email`，生产者却不再提供它。即使两个字段都是字符串，名字背后的语义和已有读取代码也没有自动迁移；先保留旧字段、双写一段时间，或者提升版本让消费者一起切换，才是可追踪的变化。</p></ArticleSection>
