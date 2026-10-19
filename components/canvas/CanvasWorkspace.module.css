@@ -62,7 +62,8 @@
 .documentActions { display: flex; gap: 22px; align-items: center; margin-left: auto; }
 .saveStatus { font-size: 12px; color: var(--faint); white-space: nowrap; }
 .mode { font-size: 14px !important; color: var(--accent-text) !important; padding: 8px 0; white-space: nowrap; }
-.readingPage, .editorPage { flex: 1; min-height: 0; overflow: auto; }
+.readingPage, .editorPage { flex: 1; min-height: 0; }
+.readingPage { overflow: auto; }
 .markdown { max-width: 804px; margin: 0 auto; padding: 65px 32px 120px; font-size: 17px; line-height: 1.95; overflow-wrap: anywhere; user-select: text; }
 .markdown h1 { font-size: 38px; font-weight: 650; line-height: 1.4; letter-spacing: -.035em; margin: 0 0 30px; }
 .markdown h2 { font-size: 25px; font-weight: 600; line-height: 1.5; margin: 42px 0 16px; letter-spacing: -.02em; }
@@ -85,8 +86,22 @@
 .table { overflow-x: auto; margin-bottom: 22px; }
 .table table { width: 100%; border-collapse: collapse; font-size: 15px; }
 .table th, .table td { padding: 10px 14px; border: 1px solid var(--hairline); text-align: left; }
-.editorPage { display: flex; justify-content: center; }
-.editor { display: block; width: min(804px, 100%); height: 100%; min-height: 0; padding: 57px 32px 100px; border: 0; outline: 0; resize: none; background: transparent; color: var(--ink); font-family: ui-monospace, SFMono-Regular, "PingFang SC", monospace !important; font-size: 16px !important; line-height: 1.9 !important; tab-size: 2; overflow-wrap: anywhere; caret-color: var(--accent); }
+.editorPage { display: flex; overflow: hidden; }
+.sourcePane, .previewPane { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.sourcePane { flex: var(--editor-split) 1 0; }
+.previewPane { flex: var(--preview-split) 1 0; }
+.paneLabel { flex: none; padding: 18px 32px 12px; color: var(--faint); font-size: 12px; }
+.previewScroll { flex: 1; min-height: 0; overflow: auto; }
+.previewPane .markdown { padding-top: 22px; font-size: 16px; }
+.previewPane .markdown h1 { font-size: 30px; }
+.previewPane .markdown h2 { font-size: 23px; }
+.splitter { flex: 0 0 13px; display: grid; place-items: center; position: relative; cursor: col-resize; touch-action: none; user-select: none; outline: none; }
+.splitter::before { content: ""; position: absolute; top: 0; bottom: 0; width: 1px; background: var(--hairline); }
+.splitter > span { position: relative; width: 3px; height: 28px; border-radius: 3px; background: var(--hairline); }
+.splitter:hover, .splitter:focus-visible, .splitter:active { background: var(--tint); }
+.splitter:hover > span, .splitter:focus-visible > span, .splitter:active > span { background: var(--accent); }
+.splitter:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.editor { display: block; flex: 1; width: 100%; min-height: 0; padding: 22px 32px 100px; border: 0; outline: 0; resize: none; background: transparent; color: var(--ink); font-family: ui-monospace, SFMono-Regular, "PingFang SC", monospace !important; font-size: 15px !important; line-height: 1.9 !important; tab-size: 2; overflow-wrap: anywhere; caret-color: var(--accent); }
 .editor::placeholder { color: var(--faint); }
 .loading { margin: 60px auto; color: var(--muted); }
 .missing { margin: 100px auto; padding: 0 24px; text-align: center; }
@@ -113,7 +128,13 @@
   .documentBar { padding: 0 17px; height: 59px; gap: 14px; }.back { font-size: 12px !important; gap: 5px; }.back svg { width: 15px; }
   .documentActions { gap: 14px; }.fileName { max-width: 33vw; font-size: 11px; }.saveStatus { display: none; }
   .markdown { padding: 38px 23px 90px; font-size: 16px; }.markdown h1 { font-size: 30px; }.markdown h2 { font-size: 22px; margin-top: 32px; }
-  .editor { padding: 32px 23px 80px; font-size: 15px !important; }
+  .editorPage { flex-direction: column; }
+  .paneLabel { padding: 12px 23px 6px; }
+  .editor { padding: 12px 23px 50px; }
+  .previewPane .markdown { padding-top: 12px; }
+  .splitter { cursor: row-resize; }
+  .splitter::before { top: auto; bottom: auto; width: 100%; height: 1px; }
+  .splitter > span { width: 28px; height: 3px; }
   .zoom { left: 18px; bottom: 20px; }.preview { padding: 17px; }.preview h2 { font-size: 19px; }
   .preview > p { font-size: 14px; }.preview time { font-size: 10px; }.toast { bottom: 75px; font-size: 12px; }
 }

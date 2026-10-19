@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { availablePosition, connectNodes, emptyCanvas, markdownFileName, moveView, nodePreview, parseCanvas } from "../lib/canvas.ts";
+import { connectionPath } from "../lib/canvas-routing.ts";
 
 const note = (id, markdown) => ({ id, markdown, fileName: "", x: 20, y: -40, createdAt: "2026-10-19T02:00:00.000Z", updatedAt: "2026-10-19T02:00:00.000Z" });
 
@@ -40,4 +41,40 @@ test("缩放保持指针下的画布坐标，并限制可用缩放范围", () =>
   assert.equal((200 - next.y) / next.scale, (200 - view.y) / view.scale);
   assert.equal(moveView(view, 10, 0, 0).scale, 2);
   assert.equal(moveView(view, .01, 0, 0).scale, .3);
+});
+
+function samplePath(path) {
+  const samples = [];
+  let from;
+  for (const command of path.matchAll(/([MLCQ])\s+([^MLCQ]+)/g)) {
+    const values = command[2].match(/-?\d+(?:\.\d+)?(?:e[+-]?\d+)?/gi).map(Number);
+    const points = Array.from({ length: values.length / 2 }, (_, index) => ({ x: values[index * 2], y: values[index * 2 + 1] }));
+    if (command[1] === "M") { from = points[0]; samples.push(from); continue; }
+    for (let step = 1; step <= 100; step++) {
+      const t = step / 100, s = 1 - t;
+      const weights = command[1] === "C" ? [s ** 3, 3 * s * s * t, 3 * s * t * t, t ** 3] : command[1] === "Q" ? [s * s, 2 * s * t, t * t] : [s, t];
+      const controls = [from, ...points];
+      samples.push({ x: controls.reduce((sum, point, index) => sum + point.x * weights[index], 0), y: controls.reduce((sum, point, index) => sum + point.y * weights[index], 0) });
+    }
+    from = points.at(-1);
+  }
+  return samples;
+}
+
+test("连线保留端点，绕开自身及途经节点文字，反向、竖向和负坐标也连续", () => {
+  const cases = [
+    [{ x: 12, y: 17 }, { x: 330, y: 410 }, [{ x: 24, y: 0, width: 230, height: 75 }, { x: 24, y: 280, width: 275, height: 85 }, { x: 342, y: 393, width: 250, height: 40 }]],
+    [{ x: 420, y: -150 }, { x: -300, y: 120 }, [{ x: -100, y: -150, width: 300, height: 200 }, { x: 30, y: 10, width: 260, height: 140 }]],
+    [{ x: 0, y: 0 }, { x: 0, y: 400 }, [{ x: -80, y: 100, width: 160, height: 100 }, { x: -20, y: 190, width: 130, height: 90 }]],
+  ];
+  for (const [from, to, labels] of cases) {
+    for (const [start, end] of [[from, to], [to, from]]) {
+      const path = connectionPath(start, end, labels), points = samplePath(path);
+      assert.deepEqual(points[0], start); assert.deepEqual(points.at(-1), end);
+      assert.ok(!/NaN|Infinity/.test(path));
+      for (const point of points) for (const label of labels) assert.ok(!(point.x > label.x - 4 && point.x < label.x + label.width + 4 && point.y > label.y - 4 && point.y < label.y + label.height + 4), `连线进入文字留白区：${JSON.stringify(point)}`);
+    }
+  }
+  assert.match(connectionPath({ x: 0, y: 0 }, { x: 300, y: 100 }, []), / C /);
+  assert.ok(!/NaN|Infinity/.test(connectionPath({ x: 0, y: 0 }, { x: 0, y: 0 }, [{ x: 0, y: 0, width: 100, height: 100 }])));
 });

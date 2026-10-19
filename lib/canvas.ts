@@ -67,8 +67,3 @@ export function moveView(view: CanvasView, scale: number, x: number, y: number):
   const next = Math.min(2, Math.max(.3, scale));
   return { x: x - (x - view.x) * next / view.scale, y: y - (y - view.y) * next / view.scale, scale: next };
 }
-
-export function curve(from: { x: number; y: number }, to: { x: number; y: number }) {
-  const bend = Math.max(50, Math.abs(to.x - from.x) * .45) * (to.x >= from.x ? 1 : -1);
-  return `M ${from.x} ${from.y} C ${from.x + bend} ${from.y}, ${to.x - bend} ${to.y}, ${to.x} ${to.y}`;
-}
