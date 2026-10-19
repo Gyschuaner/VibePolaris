@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import { ArrowLeft, ArrowUpRight, Circle, Copy, DotsThree, DownloadSimple, Info, LinkSimple, Minus, Plus, Trash, UploadSimple, X } from "@phosphor-icons/react";
 import { SiteHeader } from "@/components/SiteHeader";
-import { availablePosition, connectNodes, curve, markdownFileName, moveView, nodePreview, type CanvasEdge, type CanvasNode, type CanvasView } from "@/lib/canvas";
+import { availablePosition, connectNodes, markdownFileName, moveView, nodePreview, type CanvasEdge, type CanvasNode, type CanvasView } from "@/lib/canvas";
+import { connectionPath } from "@/lib/canvas-routing";
+import { MarkdownDocument } from "./MarkdownDocument";
+import { MarkdownEditor } from "./MarkdownEditor";
 import { useCanvas } from "./useCanvas";
 import styles from "./CanvasWorkspace.module.css";
 
@@ -26,6 +27,7 @@ export function CanvasWorkspace() {
   const [selected, setSelected] = useState<string | null>(null), [selectedEdge, setSelectedEdge] = useState<string | null>(null);
   const [connecting, setConnecting] = useState<{ from: string; point: Point } | null>(null);
   const [size, setSize] = useState({ width: 0, height: 0 }), [importing, setImporting] = useState(false);
+  const [labelSizes, setLabelSizes] = useState<Record<string, { width: number; height: number }>>({});
   const [toast, setToast] = useState<{ message: string; undo?: Removed } | null>(null);
   const surface = useRef<HTMLElement>(null), input = useRef<HTMLInputElement>(null), info = useRef<HTMLDialogElement>(null);
   const gesture = useRef<Gesture | null>(null), skipClick = useRef(false);
@@ -33,6 +35,28 @@ export function CanvasWorkspace() {
   const current = documentId ? active : picked;
   const pickedPreview = picked ? nodePreview(picked) : null;
   const edge = data.edges.find(item => item.id === selectedEdge);
+  const nodeIds = data.nodes.map(node => node.id).join("\0");
+  const labels = useMemo(() => data.nodes.map(node => ({ x: node.x + 24, y: node.y, ...(labelSizes[node.id] ?? { width: 275, height: 82 }) })), [data.nodes, labelSizes]);
+  const paths = useMemo(() => new Map(data.edges.map(item => {
+    const from = data.nodes.find(node => node.id === item.from), to = data.nodes.find(node => node.id === item.to);
+    return [item.id, from && to ? connectionPath(anchor(from), anchor(to), labels) : ""];
+  })), [data.edges, data.nodes, labels]);
+
+  useLayoutEffect(() => {
+    if (!surface.current || documentId) return;
+    const observer = new ResizeObserver(entries => setLabelSizes(previous => {
+      const next = { ...previous };
+      let changed = false;
+      for (const entry of entries) {
+        const element = entry.target as HTMLElement, id = element.dataset.canvasLabel!;
+        const width = element.offsetWidth, height = element.offsetHeight;
+        if (previous[id]?.width !== width || previous[id]?.height !== height) { next[id] = { width, height }; changed = true; }
+      }
+      return changed ? next : previous;
+    }));
+    surface.current.querySelectorAll("[data-canvas-label]").forEach(element => observer.observe(element, { box: "border-box" }));
+    return () => observer.disconnect();
+  }, [documentId, ready, nodeIds]);
 
   useEffect(() => {
     if (!surface.current || documentId) return;
@@ -231,13 +255,10 @@ export function CanvasWorkspace() {
         <div className={styles.documentActions}>{active && <>{editing && <span className={styles.saveStatus} role="status">{status === "saved" ? "已保存" : status === "saving" ? "保存中…" : "未保存"}</span>}<button className={styles.mode} onClick={toggleEditing}>{editing ? "阅读" : "编辑"}</button>{actions(active)}</>}</div>
       </header>
       {!ready ? <p className={styles.loading}>正在读取本地笔记…</p> : !active ? <div className={styles.missing}><h1>这份笔记不在当前浏览器</h1><p>返回画布查看已有内容，或导入一份 Markdown。</p><button onClick={returnToCanvas}>返回画布</button></div> : editing ?
-        <main className={styles.editorPage}><textarea key={active.id} className={styles.editor} autoFocus aria-label="Markdown 正文" placeholder="直接写下想法，支持 Markdown…" spellCheck={false} value={active.markdown}
-          onChange={event => { const markdown = event.target.value; update(value => ({ ...value, nodes: value.nodes.map(node => node.id === active.id ? { ...node, markdown, updatedAt: new Date().toISOString() } : node) })); }}
-          onBlur={() => void flush()} onKeyDown={event => { if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "s") { event.preventDefault(); void flush(); } }} /></main>
-        : <main className={styles.readingPage}><article className={styles.markdown}>{active.markdown.trim() ? <Markdown remarkPlugins={[remarkGfm]} skipHtml components={{
-          a: ({ href, children }) => <a href={href} target={href?.startsWith("#") ? undefined : "_blank"} rel="noopener noreferrer">{children}</a>,
-          table: ({ children }) => <div className={styles.table}><table>{children}</table></div>,
-        }}>{active.markdown}</Markdown> : <p className={styles.blankNote}>还没有正文。<button onClick={toggleEditing}>开始编辑</button></p>}</article></main>}
+        <MarkdownEditor key={active.id} markdown={active.markdown}
+          onChange={markdown => update(value => ({ ...value, nodes: value.nodes.map(node => node.id === active.id ? { ...node, markdown, updatedAt: new Date().toISOString() } : node) }))}
+          onSave={() => void flush()} />
+        : <main className={styles.readingPage}><article className={styles.markdown}>{active.markdown.trim() ? <MarkdownDocument markdown={active.markdown} /> : <p className={styles.blankNote}>还没有正文。<button onClick={toggleEditing}>开始编辑</button></p>}</article></main>}
     </> : <>
       <header className={styles.toolbar}><h1>我的画布</h1><div><button className={styles.import} disabled={!ready || importing} onClick={() => input.current?.click()}><UploadSimple size={16} />{importing ? "导入中…" : "导入 .md"}</button><button className={styles.primary} disabled={!ready} onClick={() => createNode()}><Plus size={17} />新建节点</button></div></header>
       <main ref={surface} className={`${styles.surface} ${connecting ? styles.connecting : ""}`} tabIndex={0} aria-label="自由画布" aria-description="拖动节点或空白处移动。点按节点圆点后选择另一节点，或拖动圆点创建连线。" onPointerDown={beginPan} onPointerMove={movePointer} onPointerUp={finishPointer}
@@ -259,16 +280,16 @@ export function CanvasWorkspace() {
             {data.edges.map(item => {
               const from = data.nodes.find(node => node.id === item.from), to = data.nodes.find(node => node.id === item.to);
               if (!from || !to) return null;
-              const path = curve(anchor(from), anchor(to));
+              const path = paths.get(item.id);
               return <g key={item.id} data-canvas-edge={item.id} className={item.id === selectedEdge ? styles.selectedEdge : ""} role="button" tabIndex={0} aria-label={`${nodePreview(from).title}与${nodePreview(to).title}的连线`} onClick={event => { event.stopPropagation(); setSelected(null); setSelectedEdge(item.id); }} onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setSelectedEdge(item.id); setSelected(null); } if (event.key === "Delete" || event.key === "Backspace") { event.preventDefault(); removeEdge(item); } }}><path d={path} className={styles.edgeLine} /><path d={path} className={styles.edgeHit} /></g>;
             })}
-            {source && connecting && <path d={curve(anchor(source), connecting.point)} className={styles.draftLine} />}
+            {source && connecting && <path d={connectionPath(anchor(source), connecting.point, labels)} className={styles.draftLine} />}
           </g></svg>
           {data.nodes.map(node => {
             const preview = nodePreview(node);
             return <div key={node.id} className={styles.node} style={{ left: node.x, top: node.y }} data-canvas-node={node.id}>
               <button className={styles.port} aria-label={`从${preview.title}开始连线`} title="拖动连线，或点按后选择另一节点" onPointerDown={event => beginLink(event, node)} onClick={event => { if (event.detail === 0) { setSelected(null); setConnecting({ from: node.id, point: anchor(node) }); } }}><Circle size={8} weight="fill" /></button>
-              <button className={`${styles.note} ${selected === node.id ? styles.selected : ""} ${!node.fileName && node.markdown.trim() === preview.title ? styles.fragment : ""}`} onPointerDown={event => beginNode(event, node)} onClick={() => selectNode(node)} aria-pressed={selected === node.id} onKeyDown={event => {
+              <button data-canvas-label={node.id} className={`${styles.note} ${selected === node.id ? styles.selected : ""} ${!node.fileName && node.markdown.trim() === preview.title ? styles.fragment : ""}`} onPointerDown={event => beginNode(event, node)} onClick={() => selectNode(node)} aria-pressed={selected === node.id} onKeyDown={event => {
                 const moves: Record<string, Point> = { ArrowLeft: { x: -1, y: 0 }, ArrowRight: { x: 1, y: 0 }, ArrowUp: { x: 0, y: -1 }, ArrowDown: { x: 0, y: 1 } };
                 if (moves[event.key]) { event.preventDefault(); const offset = moves[event.key], step = event.shiftKey ? 50 : 10; update(value => ({ ...value, nodes: value.nodes.map(item => item.id === node.id ? { ...item, x: item.x + offset.x * step, y: item.y + offset.y * step } : item) })); }
               }}><strong>{preview.title}</strong>{preview.summary && <span>{preview.summary}</span>}</button>
