@@ -32,7 +32,9 @@ export function CanvasWorkspace() {
   const [labelSizes, setLabelSizes] = useState<Record<string, { width: number; height: number }>>({});
   const [toast, setToast] = useState<{ message: string; undo?: Removed } | null>(null);
   const [contextMenu, setContextMenu] = useState<ContextMenu | null>(null);
+  const [previewHeight, setPreviewHeight] = useState(265);
   const surface = useRef<HTMLElement>(null), input = useRef<HTMLInputElement>(null), info = useRef<HTMLDialogElement>(null);
+  const previewRef = useRef<HTMLElement>(null);
   const menuRef = useRef<HTMLDivElement>(null), menuAnchor = useRef<HTMLElement | null>(null);
   const gesture = useRef<Gesture | null>(null), skipClick = useRef(false);
   const active = data.nodes.find(node => node.id === documentId), picked = data.nodes.find(node => node.id === selected);
@@ -96,6 +98,14 @@ export function CanvasWorkspace() {
     menu.style.top = `${Math.max(8, Math.min(contextMenu.y, window.innerHeight - bounds.height - 8))}px`;
     menu.querySelector<HTMLButtonElement>("button")?.focus({ preventScroll: true });
   }, [contextMenu]);
+  useLayoutEffect(() => {
+    const element = previewRef.current;
+    if (!element) return;
+    const measure = () => setPreviewHeight(element.offsetHeight);
+    const observer = new ResizeObserver(measure);
+    measure(); observer.observe(element);
+    return () => observer.disconnect();
+  }, [picked?.id, documentId]);
 
   function localPoint(clientX: number, clientY: number) {
     const bounds = surface.current?.getBoundingClientRect();
@@ -267,7 +277,7 @@ export function CanvasWorkspace() {
 
   const previewPosition = picked && {
     left: Math.max(12, Math.min(size.width - Math.min(320, size.width - 24) - 12, data.view.x + picked.x * data.view.scale + 22)),
-    top: Math.max(12, Math.min(size.height - 365, data.view.y + picked.y * data.view.scale + 48)),
+    top: Math.max(12, Math.min(size.height - previewHeight - 12, data.view.y + picked.y * data.view.scale + 48)),
   };
   const source = connecting && data.nodes.find(node => node.id === connecting.from);
   const edgeFrom = edge && data.nodes.find(node => node.id === edge.from), edgeTo = edge && data.nodes.find(node => node.id === edge.to);
@@ -333,7 +343,7 @@ export function CanvasWorkspace() {
         </div>
         {!ready && !error && <p className={styles.empty}>正在读取本地画布…</p>}
         {ready && !data.nodes.length && <p className={styles.empty}>右键新建节点，或双击写下一点什么。</p>}
-        {picked && !connecting && <section className={styles.preview} style={previewPosition || undefined} data-canvas-ui aria-label="节点简述">
+        {picked && !connecting && <section ref={previewRef} className={styles.preview} style={previewPosition || undefined} data-canvas-ui aria-label="节点简述">
           <NodeCard key={picked.id} node={picked} actions={actions(picked)} onChange={patch => changeNode(picked, patch)} onSave={() => void flush()} onOpen={() => openNote(picked)} onClose={() => { void flush(); setSelected(null); }} onMessage={message => setToast({ message })} />
         </section>}
         {connecting && <div className={styles.linkHint} data-canvas-ui>选择另一个节点<button onClick={() => setConnecting(null)} aria-label="取消连线"><X size={16} /></button></div>}
