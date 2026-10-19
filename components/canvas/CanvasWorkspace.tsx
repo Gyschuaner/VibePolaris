@@ -293,7 +293,7 @@ export function CanvasWorkspace() {
     event.currentTarget.querySelectorAll("details[open]").forEach(item => { if (!item.contains(event.target as Node)) item.removeAttribute("open"); });
     if (contextMenu && !menuRef.current?.contains(event.target as Node)) setContextMenu(null);
   }}>
-    {!documentId && <SiteHeader wide active="canvas" />}
+    {!documentId && <SiteHeader wide />}
     {error && <div className={styles.error} role="alert"><span>{error}</span>{isConflict() || !ready ? <button onClick={() => { if (!hasPending() || window.confirm("重新载入会放弃当前未保存的修改。请确认需要的 Markdown 已经导出。")) void reload(true); }}>重新载入</button> : <button onClick={() => void flush()}>重试保存</button>}</div>}
     {documentId ? <div ref={documentRef} className={styles.documentPage} data-canvas-paper>
       <header className={styles.documentBar} data-canvas-bar>

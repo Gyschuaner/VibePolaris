@@ -13,7 +13,7 @@ type NotesContextValue = {
   add: (source: NoteSource | null, anchor?: NoteAnchor | null) => ReadingNote | null;
   update: (note: ReadingNote, body: string) => void; flush: (id: string) => void;
   remove: (note: ReadingNote) => Promise<void>; retry: (id: string) => void; reload: () => Promise<void>;
-  open: (id?: string) => void; notify: (message: string) => void;
+  open: (id?: string) => void; isOpen: boolean; notify: (message: string) => void;
 };
 const NotesContext = createContext<NotesContextValue | null>(null);
 export function useNotes() {
@@ -39,12 +39,13 @@ export function NoteEditor({ note, autoFocus = false }: { note: ReadingNote; aut
   return <><textarea ref={editor} className={styles.editor} data-note-body aria-label="笔记内容" placeholder="写下你的理解…" value={note.body} maxLength={20000} rows={2} onChange={event => update(note, event.target.value)} onBlur={() => flush(note.id)} />{statuses[note.id] === "error" && <p className={styles.error} role="alert">未保存<button onClick={() => retry(note.id)}>重试</button></p>}</>;
 }
 export function NotesButton({ compact = false }: { compact?: boolean }) {
-  const { open } = useNotes();
-  return <button className={compact ? styles.mobileNav : styles.navButton} onClick={() => open()} aria-label="我的笔记">{compact ? <NotePencil size={22} /> : "我的笔记"}</button>;
+  const { open, isOpen } = useNotes();
+  return <button className={compact ? styles.mobileNav : styles.navButton} onClick={() => open()} aria-label="我的笔记" aria-haspopup="dialog" aria-expanded={isOpen} aria-controls="notes-library" data-nav-active={isOpen}>{compact ? <NotePencil size={22} /> : "我的笔记"}</button>;
 }
 
 export function NotesProvider({ children }: { children: ReactNode }) {
   const [notes, setNotes] = useState<ReadingNote[]>([]), [ready, setReady] = useState(false), [storageError, setStorageError] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [statuses, setStatuses] = useState<Record<string, SaveStatus>>({}), [editing, setEditing] = useState<string | null>(null), [query, setQuery] = useState("");
   const [message, setMessage] = useState(""), [deleted, setDeleted] = useState<ReadingNote | null>(null), [backupStatus, setBackupStatus] = useState(""), [importing, setImporting] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null), input = useRef<HTMLInputElement>(null);
@@ -90,7 +91,7 @@ export function NotesProvider({ children }: { children: ReactNode }) {
   }, [ready, notify, save]);
   const flush = useCallback((id: string) => { const note = pending.current.get(id); if (note) void save(note); }, [save]);
   const retry = useCallback((id: string) => { const note = latest.current.get(id); if (note) void save(note); }, [save]);
-  const open = useCallback((id?: string) => { setEditing(id ?? null); setQuery(""); setBackupStatus(""); if (!dialog.current?.open) dialog.current?.showModal(); }, []);
+  const open = useCallback((id?: string) => { setEditing(id ?? null); setQuery(""); setBackupStatus(""); if (!dialog.current?.open) dialog.current?.showModal(); setIsOpen(true); }, []);
   const remove = useCallback(async (note: ReadingNote) => {
     clearTimeout(timers.current.get(note.id));
     try {
@@ -123,10 +124,10 @@ export function NotesProvider({ children }: { children: ReactNode }) {
   const active = notes.find(note => note.id === editing);
   const filtered = notes.filter(note => `${note.body} ${note.anchor?.exact ?? ""} ${note.source?.title ?? ""}`.toLocaleLowerCase().includes(query.toLocaleLowerCase())).sort((a,b) => b.updatedAt.localeCompare(a.updatedAt));
   const feedback = <>{deleted && <div className={styles.undo} role="status">笔记已删除<button onClick={undo}>撤销</button><button aria-label="关闭删除提示" onClick={() => setDeleted(null)}><X size={16}/></button></div>}{message && <p role="status">{message}</p>}</>;
-  return <NotesContext.Provider value={{ notes, ready, storageError, statuses, add, update, flush, remove, retry, reload, open, notify }}>
+  return <NotesContext.Provider value={{ notes, ready, storageError, statuses, add, update, flush, remove, retry, reload, open, isOpen, notify }}>
     {children}
     {(deleted || message) && <div className={styles.toast} data-note-ui>{feedback}</div>}
-    <dialog ref={dialog} className={styles.library} data-note-ui aria-labelledby="notes-library-title">
+    <dialog ref={dialog} id="notes-library" className={styles.library} data-note-ui aria-labelledby="notes-library-title" onClose={() => setIsOpen(false)}>
       <header><h2 id="notes-library-title">我的笔记</h2><button aria-label="关闭我的笔记" onClick={() => dialog.current?.close()}><X size={24}/></button></header>
       <p className={styles.privacy}>仅保存在此浏览器，不上传服务器。</p>
       {storageError && <p className={styles.error} role="alert">浏览器本地存储暂不可用。<button onClick={reload}>重试</button></p>}
