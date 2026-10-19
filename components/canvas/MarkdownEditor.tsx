@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import { MarkdownDocument } from "./MarkdownDocument";
+import { CompletingTextarea } from "./CompletingTextarea";
 import styles from "./CanvasWorkspace.module.css";
 
-export function MarkdownEditor({ markdown, onChange, onSave }: { markdown: string; onChange: (value: string) => void; onSave: () => void }) {
+export function MarkdownEditor({ markdown, title, onChange, onSave }: { markdown: string; title: string; onChange: (value: string) => void; onSave: () => void }) {
   const container = useRef<HTMLElement>(null), dragging = useRef<number | null>(null);
   const [split, setSplit] = useState(50), [stacked, setStacked] = useState(false);
   useEffect(() => {
@@ -21,9 +22,7 @@ export function MarkdownEditor({ markdown, onChange, onSave }: { markdown: strin
   return <main ref={container} className={styles.editorPage} data-canvas-content style={{ "--editor-split": split, "--preview-split": 100 - split } as CSSProperties}>
     <section id="markdown-source" className={styles.sourcePane} aria-label="Markdown 编辑">
       <div className={styles.paneLabel}>Markdown</div>
-      <textarea className={styles.editor} autoFocus aria-label="Markdown 正文" placeholder="直接写下想法，支持 Markdown…" spellCheck={false} value={markdown}
-        onChange={event => onChange(event.target.value)} onBlur={onSave}
-        onKeyDown={event => { if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "s") { event.preventDefault(); onSave(); } }} />
+      <CompletingTextarea markdown={markdown} title={title} onChange={onChange} onSave={onSave} />
     </section>
     <div className={styles.splitter} role="separator" tabIndex={0} aria-label="调整编辑与预览比例" aria-orientation={stacked ? "horizontal" : "vertical"} aria-controls="markdown-source markdown-preview" aria-valuemin={25} aria-valuemax={75} aria-valuenow={Math.round(split)} aria-valuetext={`Markdown ${Math.round(split)}%，预览 ${Math.round(100 - split)}%`}
       onPointerDown={event => { if (event.button !== 0) return; event.preventDefault(); event.currentTarget.focus(); event.currentTarget.setPointerCapture(event.pointerId); dragging.current = event.pointerId; }}
