@@ -2,7 +2,7 @@
   "slug": "gemini-2-5-flash-lite-ga-20250722",
   "title": "Gemini 2.5 Flash-Lite 转为稳定版：Google 把低成本、高吞吐模型推向生产",
   "summary": "Google 在 2025 年 7 月 22 日宣布 Gemini 2.5 Flash-Lite 稳定版和一般可用版本，输入价格为每百万 token 0.10 美元、输出为 0.40 美元，并提供 1M token 上下文、可选推理预算和搜索/代码执行/URL Context 工具。速度、价格与部署案例是 Google 的产品口径，真实质量仍需按业务负载评测。",
-  "body": "2025 年 7 月 22 日，Google Developers Blog 宣布 Gemini 2.5 Flash-Lite 从预览转为稳定版并可用于一般生产场景。Google 把它定位为 Gemini 2.5 家族里速度最快、成本最低的模型，标出的价格是每百万输入 token 0.10 美元、每百万输出 token 0.40 美元。稳定版可以在 Google AI Studio 和 Vertex AI 中调用，模型名称从预览别名切换到 `gemini-2.5-flash-lite`。\n\nFlash-Lite 的取舍很明确：它优先服务延迟敏感、请求量大的任务，比如分类、翻译、路由和批量提取。模型保留可选的原生推理能力，开发者可以按任务打开或关闭 thinking；同时提供 1M token 上下文，以及 Grounding with Google Search、Code Execution 和 URL Context 等工具。工具存在不等于每次调用都自动联网，应用仍要配置权限、来源和费用边界。\n\n“稳定版”主要改变的是产品承诺和接入预期，不是所有任务的质量突然相同。Google 说 Flash-Lite 在多个 benchmark 上比 2.0 Flash-Lite 质量更高、延迟更低，并列出 Satlyt、HeyGen、DocsHound 和 Evertune 的使用案例。这些是厂商提供的评测或客户案例，适合说明产品定位，不能直接替代独立测试，也不能把一个客户的延迟数字套到所有系统上。\n\n1M token 上下文也需要用得有节制。长文档可以减少切分，但输入 token 仍然会计费，过多无关内容可能让模型抓错重点；翻译和分类任务通常更关心单次延迟、格式稳定性和错误率。实际选型时，应该把价格表换算成每个业务请求的总成本，再和输出质量、重试率、缓存命中率一起看。\n\nGoogle 还说明预览版本和稳定版本使用相同的底层模型，并计划在 8 月 25 日移除 Flash-Lite 的预览别名。对正在试用的团队来说，这意味着要检查模型 ID、版本锁定、配额和回滚配置；对已经上线的系统来说，稳定版不等于可以不做回归测试。\n\n这条新闻的意义不在“又多了一个更大的模型”，而在于模型供应商开始把速度、单价、上下文和工具接口打包成可购买的生产选项。小模型是否更合适，要由真实请求的复杂度和失败代价决定；便宜的 token 只有在任务质量达标、调用链可控时才会转化成更低的总成本。",
+  "body": "2025 年 7 月 22 日，Google Developers Blog 宣布 Gemini 2.5 Flash-Lite 从预览转为稳定版并可用于一般生产场景。Google 把它定位为 Gemini 2.5 家族里速度最快、成本最低的模型，标出的价格是每百万输入 token 0.10 美元、每百万输出 token 0.40 美元。稳定版可以在 Google AI Studio 和 Vertex AI 中调用，模型名称从预览别名切换到 `gemini-2.5-flash-lite`。\n\nFlash-Lite 的取舍很明确：它优先服务延迟敏感、请求量大的任务，比如分类、翻译、路由和批量提取。模型保留可选的原生推理能力，开发者可以按任务打开或关闭 thinking；同时提供 1M token 上下文，以及 Grounding with Google Search、Code Execution 和 URL Context 等工具。应用仍要配置权限、来源和费用边界。\n\n“稳定版”主要改变的是产品承诺和接入预期。Google 说 Flash-Lite 在多个 benchmark 上比 2.0 Flash-Lite 质量更高、延迟更低，并列出 Satlyt、HeyGen、DocsHound 和 Evertune 的使用案例。这些评测和客户案例来自厂商披露，实际效果可独立测试。\n\n1M token 上下文也需要用得有节制。长文档可以减少切分，但输入 token 仍然会计费，过多无关内容可能让模型抓错重点；翻译和分类任务通常更关心单次延迟、格式稳定性和错误率。实际选型时，应该把价格表换算成每个业务请求的总成本，再和输出质量、重试率、缓存命中率一起看。\n\nGoogle 还说明预览版本和稳定版本使用相同的底层模型，并计划在 8 月 25 日移除 Flash-Lite 的预览别名。这意味着要检查模型 ID、版本锁定、配额和回滚配置，对已经上线的系统来说。\n\n这条新闻的意义不在“又多了一个更大的模型”，而在于模型供应商开始把速度、单价、上下文和工具接口打包成可购买的生产选项。小模型是否更合适，要由真实请求的复杂度和失败代价决定；便宜的 token 只有在任务质量达标、调用链可控时才会转化成更低的总成本。",
   "publishedAt": "2025-07-22",
   "eventDate": "2025-07-22",
   "isExample": false,
@@ -23,7 +23,7 @@
     {
       "id": "tradeoff",
       "title": "它为哪类任务做取舍",
-      "body": "Flash-Lite 优先优化延迟和单价，适合分类、翻译、智能路由和批量处理。它不是所有复杂推理任务的默认最优解。",
+      "body": "Flash-Lite 优先优化延迟和单价，适合分类、翻译、智能路由和批量处理。",
       "kind": "comparison"
     },
     {
@@ -34,7 +34,7 @@
     },
     {
       "id": "evidence",
-      "title": "价格与 benchmark 不能替代业务评测",
+      "title": "结合价格与 benchmark 验证业务任务",
       "body": "$0.10/$0.40 是官方价目口径，客户案例和 benchmark 也来自 Google 或其合作方。选型要测真实输入、输出质量、重试率和总延迟。",
       "kind": "boundary"
     },

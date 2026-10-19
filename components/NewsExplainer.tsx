@@ -140,7 +140,7 @@ function PolicyGovernanceVisual({ activeStep }: { activeStep: number }) {
         <span className="policy-governance-card-label">后续核对</span>
         <span className="policy-governance-shape"><i /><i /><i /></span>
       </div>
-      <div className="policy-governance-result">改名不等于能力改变</div>
+      <div className="policy-governance-result">名称调整与能力变化</div>
     </div>
   );
 }
@@ -184,7 +184,7 @@ function EcgScreeningVisual({ activeStep }: { activeStep: number }) {
         <span className="ecg-screening-card-label">复核与后续检查</span>
         <span className="ecg-screening-followup-shape"><i /><i /></span>
       </div>
-      <div className="ecg-screening-result">AI 输出风险提示，不能替代诊断</div>
+      <div className="ecg-screening-result">AI 发出风险提示，医生完成评估与诊断</div>
     </div>
   );
 }

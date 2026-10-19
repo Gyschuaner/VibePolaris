@@ -53,7 +53,7 @@ export function TransformerLesson() {
       <button type="button" className={styles.transformerLabButton} aria-pressed={missingSubject} onClick={() => setMissingSubject(value => !value)}>拿掉主语</button>
     </div>
     <p className={styles.transformerLabNote} data-danger={missingSubject && scene.step >= 1} role="status">
-      {missingSubject && scene.step >= 1 ? <><WarningCircle size={17} aria-hidden="true" /><span>关系没有凭空出现：句子缺少可供连接的主语，演示把“主语缺失”保留下来。</span></> : scene.step < 1 ? <><Eye size={17} aria-hidden="true" /><span>先看输入的形状；此时还不能把 token 卡片当成已经理解了整句话。</span></> : scene.step === 1 ? <><Brain size={17} aria-hidden="true" /><span>注意力只说明信息交换发生在哪里；高亮关系不是可直接阅读的解释，也不是事实校验。</span></> : <><CheckCircle size={17} aria-hidden="true" /><span>多一层只表示又一次变换；最终得到的是各位置的表示，能否回答任务还要看训练目标和后续头部。</span></>}
+      {missingSubject && scene.step >= 1 ? <><WarningCircle size={17} aria-hidden="true" /><span>关系没有凭空出现：句子缺少可供连接的主语，演示把“主语缺失”保留下来。</span></> : scene.step < 1 ? <><Eye size={17} aria-hidden="true" /><span>先看输入的形状。</span></> : scene.step === 1 ? <><Brain size={17} aria-hidden="true" /><span>注意力说明信息交换发生在哪里。</span></> : <><CheckCircle size={17} aria-hidden="true" /><span>多一层只表示又一次变换；最终得到的是各位置的表示，能否回答任务还要看训练目标和后续头部。</span></>}
     </p>
   </div>;
 }

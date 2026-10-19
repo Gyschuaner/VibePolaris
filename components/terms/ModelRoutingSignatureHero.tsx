@@ -17,7 +17,7 @@ export function ModelRoutingSignatureHero() {
       <div className={styles.routingDesk}>
         <div className={styles.frontier}><span className={styles.frontierY}>质量 ↑</span><span className={styles.frontierX}>费用 →</span><div className={styles.frontierRule} data-visible={scene.step >= 1}>质量门槛 {scene.step === 5 ? "98" : "90"}</div><div className={styles.modelPoint} data-model="A" data-visible={scene.step >= 1} data-selected={selected === "A"}><Brain size={16} /><b>A</b><small>{scene.step === 4 ? "不支持图片" : "96 / 100 · 1 单位"}</small></div><div className={styles.modelPoint} data-model="B" data-visible={scene.step >= 1} data-selected={selected === "B"}><Brain size={16} /><b>B</b><small>{scene.step === 3 ? "92 / 100 · 3 单位" : scene.step === 4 ? "读图 · 94 / 100" : "97 / 100 · 3 单位"}</small></div></div>
         <div className={styles.routeBrief}><FileText size={20} /><span>请求特征</span><strong>{scene.step >= 4 ? "文字 + 截图" : "提取订单金额"}</strong><small>{brief}</small></div>
-        <div className={styles.routeReceipt} data-visible={scene.step >= 2}><CheckCircle size={21} /><span>{noCandidate ? "调用前停止" : "选择理由"}</span><strong>{noCandidate ? "没有可接候选" : `${selected || "待选"} 被留下`}</strong><small>{noCandidate ? "98 门槛高于可用分数" : "预测不等于真实质量，仍需评测"}</small></div>
+        <div className={styles.routeReceipt} data-visible={scene.step >= 2}><CheckCircle size={21} /><span>{noCandidate ? "调用前停止" : "选择理由"}</span><strong>{noCandidate ? "没有可接候选" : `${selected || "待选"} 被留下`}</strong><small>{noCandidate ? "98 门槛高于可用分数" : "仍需评测"}</small></div>
       </div>
     </div>
   </SignatureFrame>;

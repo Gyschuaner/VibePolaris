@@ -60,19 +60,19 @@ export function CssTermPage(_props: BespokeTermPageProps) {
     ["css-layout-section", "计算值交给盒模型和布局"],
     ["css-boundary-section", "CSS 的手伸不到哪里"],
     ["css-check-section", "让 AI 改样式以后，怎么验收"],
-  ]} intro={<>你只改了一条样式，列表就从一列变成了卡片。<strong>CSS 不是给 HTML 涂颜色的贴纸，而是一组会被浏览器匹配、比较、计算的呈现规则。</strong></>}>
+  ]} intro={<>你只改了一条样式，列表就从一列变成了卡片。<strong>CSS 是一组会被浏览器匹配、比较、计算的呈现规则。</strong></>}>
     <ArticleSection id="css-definition-section" title="CSS 先找到谁，再决定怎么画">
       <p>把网页想成一张活动海报：HTML 写下“市集、放映、旧书交换”这些内容，CSS 决定海报上的字多大、卡片排在哪、空隙留多少。同一份文字，规则换了，画面会换样子。</p>
       <p id="css-definition" className="vp-citation-target"><strong>一条 CSS 声明由属性和值组成，例如 <code>display: grid</code>。</strong>选择器告诉浏览器要找哪些元素；浏览器只把匹配到的规则拿来比较，然后把最终得到的值交给盒模型与布局系统。颜色、字体、边框、间距和排列都属于呈现层。<Cite id="css-definition" sources={cssSources} /></p>
-      <p>“匹配”是第一道门。写了 <code>.event-cards</code>，页面里却没有这个 class，后面的 <code>display: grid</code> 就没有对象。选中了对象，也不代表这一条声明就会生效，因为同一个属性可能还有另一条规则在竞争。</p>
+      <p>“匹配”是第一道门。写了 <code>.event-cards</code>，页面里却没有这个 class，后面的 <code>display: grid</code> 就没有对象。因为同一个属性可能还有另一条规则在竞争。</p>
       <p>这解释了一个常见误会：CSS 改坏时，不要先盯着某个数字。先问“这条规则找到了谁”，再问“找到的几条规则怎样决定胜者”。</p>
     </ArticleSection>
     <ArticleSection id="css-cascade-section" title="同一属性有几条声明，谁赢">
       <p>下面的实验把两部分分开：左边是规则纸条，右边是海报。先选择目标，再选择声明。只有选中容器并要求它变成网格，三张卡片才会一起改变；选中标题换色，容器布局不会跟着变。</p>
       <CssLab />
-      <p id="css-cascade" className="vp-citation-target">当多条规则都匹配同一个属性时，浏览器会按级联规则处理来源、重要性、层叠层、选择器优先级和源码顺序。选择器“更具体”只是其中一环，不能把它当作永远压过其他因素的万能钥匙。<Cite id="css-cascade" sources={cssSources} /></p>
+      <p id="css-cascade" className="vp-citation-target">当多条规则都匹配同一个属性时，浏览器会按级联规则处理来源、重要性、层叠层、选择器优先级和源码顺序。选择器“更具体”只是其中一环。<Cite id="css-cascade" sources={cssSources} /></p>
       <p id="css-specificity" className="vp-citation-target">如果开发者工具显示一条声明被划掉，那通常表示它参与了竞争却没有成为当前胜者。把鼠标移到元素上，查看匹配规则和计算后的值，比盲目加 <code>!important</code> 更能找到原因。层叠层还可以让团队明确哪一层规则有权覆盖哪一层。<Cite id="css-specificity" sources={cssSources} /></p>
-      <ArticleAside title="为什么 !important 不是修复按钮"><p>它会改变优先级，可能暂时压住问题，却把下次修改推向更难预测的竞争。先找出错误选择器、错误层级或错误加载顺序；只有清楚知道自己在跨过哪一道约束时，才讨论是否需要它。</p></ArticleAside>
+      <ArticleAside title="根据层叠规则定位样式来源"><p>它会改变优先级，可能暂时压住问题，却把下次修改推向更难预测的竞争。先找出错误选择器、错误层级或错误加载顺序；只有清楚知道自己在跨过哪一道约束时，才讨论是否需要它。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="css-layout-section" title="计算值交给盒模型和布局">
       <p>浏览器选出声明以后，还不会马上把最终像素画出来。值可能需要继承、换算或与环境结合，得到计算值；布局系统再根据这个结果安排盒子。比如 <code>display: grid</code> 让容器进入 Grid 布局，<code>gap: 18px</code> 才有明确的网格间距含义。</p>
@@ -92,12 +92,12 @@ export function CssTermPage(_props: BespokeTermPageProps) {
     <ArticleSection id="css-boundary-section" title="CSS 的手伸不到哪里">
       <p id="css-responsibility" className="vp-citation-target">CSS 可以控制可见呈现与布局。<Cite id="css-responsibility" sources={cssSources} /></p>
       <p id="css-boundary" className="vp-citation-target">它不能替 HTML 赋予正确的内容语义，也不能替 JavaScript 保存购物车数量或响应点击，更不能替服务端验证“这个人有没有权限”。把按钮画得像按钮，不会自动得到按钮的键盘行为。<Cite id="css-boundary" sources={cssSources} /></p>
-      <p id="css-box" className="vp-citation-target">盒模型描述内容、内边距、边框和外边距怎样组成一个元素的尺寸。一个卡片“看起来超出容器”，可能是宽度、padding、border 或 box-sizing 的组合结果，不是单纯把字体调小就能修。<Cite id="css-box" sources={cssSources} /></p>
+      <p id="css-box" className="vp-citation-target">盒模型描述内容、内边距、边框和外边距怎样组成一个元素的尺寸。可能是宽度、padding、border 或 box-sizing 的组合结果。<Cite id="css-box" sources={cssSources} /></p>
       <p>如果你的问题是“点击后数字要加一”，去看 JavaScript 和 DOM；如果问题是“标题在窄屏要换行”，再回到 CSS 与响应式。把职责放对地方，改动会小很多。</p>
     </ArticleSection>
     <ArticleSection id="css-check-section" title="让 AI 改样式以后，怎么验收">
       <p>给 AI 的任务要同时说清当前画面、允许改的范围、不能动的东西和验收方法。例如：“只把活动列表改成三列卡片；不改 HTML 文字和链接；640px 以下单列；检查计算后的列数、盒子宽度、长标题和横向滚动。”</p>
-      <p>改完先在开发者工具看匹配规则和计算值，再在桌面、窄屏和键盘操作中看真实结果。若它用一条更强的规则盖掉旧问题，你还应该知道为什么这条规则有权生效。CSS 的正确，不是截图一刻刚好对齐，而是规则在下一个内容和尺寸到来时仍说得通。</p>
+      <p>改完先在开发者工具看匹配规则和计算值，再在桌面、窄屏和键盘操作中看真实结果。若它用一条更强的规则盖掉旧问题，你还应该知道为什么这条规则有权生效。CSS 的正确，是规则在下一个内容和尺寸到来时仍说得通。</p>
       <div className={styles.cssBoundary}><WarningCircle size={20} /><span>看到声明被划掉时，先查“谁赢了”；看到盒子溢出时，再查“它实际占了多大”。</span></div>
     </ArticleSection>
   </Article>;

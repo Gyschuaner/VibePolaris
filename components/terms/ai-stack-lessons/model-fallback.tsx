@@ -47,7 +47,7 @@ function RelayDesk({ state, compact = false }: { state: ReturnType<typeof getFal
 
 const heroNotes = [
   "主调用先扣上腕带；备用还没有拿到请求。",
-  "429 是回执，不是自动换模型的命令；先把真实错误留下。",
+  "429 是回执，先把真实错误留下。",
   "策略扣检查错误类型、能力和总尝试上限，决定是否能交接。",
   "条件允许时，备用腕带接住同一任务；这仍算第二次调用。",
   "备用回了 JSON 还不够，amount 字段要单独核对。",

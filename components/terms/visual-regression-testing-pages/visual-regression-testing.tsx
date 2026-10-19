@@ -20,7 +20,7 @@ export function VisualRegressionTestingLesson() {
   const isMatrix = scene.step === 4;
   const matrixReady = isMatrix && reviewApproved;
   const StatusIcon = isReview || (isMatrix && !reviewApproved) ? WarningCircle : isDiff ? ArrowsClockwise : matrixReady || isBaseline ? CheckCircle : Gear;
-  const status = isSetup ? "先锁定视口、字体、数据和动画状态，减少“同一页面每次都不一样”。" : isBaseline ? "baseline 是被确认的参照；它要和提交、浏览器及渲染环境一起保存。" : isDiff ? "候选截图与参照对齐后才计算差异；阈值不能替代对差异原因的理解。" : isReview ? "未知差异先阻断，确认是有意变化且功能、可访问性一起通过后再更新参照。" : matrixReady ? "把窄屏、DPR 和 reduced motion 纳入矩阵，确认通过后才放行。" : "矩阵尚未运行：先回到审查变化，确认有意变化并留下理由。";
+  const status = isSetup ? "先锁定视口、字体、数据和动画状态，减少“同一页面每次都不一样”。" : isBaseline ? "baseline 是被确认的参照；它要和提交、浏览器及渲染环境一起保存。" : isDiff ? "候选截图与参照对齐后计算差异，结合原因分析决定阈值和处理方式。" : isReview ? "未知差异先阻断，确认是有意变化且功能、可访问性一起通过后再更新参照。" : matrixReady ? "把窄屏、DPR 和 reduced motion 纳入矩阵，确认通过后才放行。" : "矩阵尚未运行：先回到审查变化，确认有意变化并留下理由。";
   return <div ref={scene.ref} className={styles.visualRegressionTestingLab} role="region" aria-label="视觉回归测试 baseline、diff、审查和矩阵工作台">
     <div className={styles.visualRegressionTestingLabHeader}><span>一张截图怎样变成一次可审查的测试</span><strong>{scene.step + 1} / {labels.length}</strong></div>
     <SceneControls scene={scene} labels={labels} />
@@ -44,7 +44,7 @@ export function VisualRegressionTestingLesson() {
         <div className={styles.visualRegressionTestingLabel}><Camera size={16} aria-hidden="true" /><span>差异与决定</span></div>
         <h3>{isDiff ? "18 pixels changed" : isReview ? "先修复，再更新" : isMatrix ? matrixReady ? "mobile + motion off" : "等待审查通过" : "等待比较"}</h3>
         <div className={styles.visualRegressionTestingLabRows}><div className={styles.visualRegressionTestingLabRow} data-active={isDiff}><code>pixel diff</code><strong>{isDiff ? "18" : "—"}</strong></div><div className={styles.visualRegressionTestingLabRow} data-active={isReview}><code>decision</code><strong>{isReview ? "block" : "—"}</strong></div><div className={styles.visualRegressionTestingLabRow} data-active={isMatrix}><code>matrix</code><strong>{matrixReady ? "pass" : isMatrix ? "blocked" : "desktop"}</strong></div></div>
-        <small>diff 是线索，不是结论；确认变化意图后才更新 baseline，未知差异要留在 review 阶段。</small>
+        <small>diff 是线索，确认变化意图后才更新 baseline，未知差异要留在 review 阶段。</small>
       </div>
     </div>
     <div className={styles.visualRegressionTestingLabMetrics}><div><span>基线</span><strong>{isBaseline || isDiff ? "存在" : "准备"}</strong></div><div><span>差异</span><strong>{isDiff || isReview ? "18 px" : "未算"}</strong></div><div><span>门禁</span><strong>{isReview || (isMatrix && !reviewApproved) ? "阻断" : matrixReady ? "通过" : "观察"}</strong></div></div>

@@ -6,7 +6,7 @@ import { SceneControls, useScene } from "../HarnessStoryScenes";
 import styles from "./TestCaseConcept.module.css";
 
 const steps = [
-  { label: "看见模糊句", title: "“应该失败”还不是判定", detail: "没有状态码、令牌状态和副作用，任何人都能用自己的方式解释它。", Icon: ClipboardText },
+  { label: "看见模糊句", title: "为失败写出具体判定结果", detail: "没有状态码、令牌状态和副作用，任何人都能用自己的方式解释它。", Icon: ClipboardText },
   { label: "固定起点", title: "让每次执行从同一扇门开始", detail: "账号是 active，令牌已经过期 10 分钟；前置状态不再靠记忆。", Icon: UserCircle },
   { label: "写出动作", title: "把描述落到一次真实请求", detail: "POST /password/reset，带上过期 token，只发送一次。", Icon: PaperPlaneTilt },
   { label: "拆出证据", title: "把“失败”拆成三个可观察事实", detail: "HTTP 410、令牌未消费、邮件没有发出。", Icon: Eye },
@@ -62,6 +62,6 @@ export function TestCaseHero() {
     </div>
     <div className={styles.caseHeroMetrics}><div><span>前置条件</span><strong>{scene.step >= 1 && complete ? "2 项已固定" : "未完整"}</strong></div><div><span>可观察断言</span><strong>{scene.step >= 3 && complete ? "3 项" : "—"}</strong></div><div><span>结论</span><strong>{failed ? "无法判定" : final ? "PASS ×2" : "编写中"}</strong></div></div>
     <div className={styles.caseHeroStatus} data-danger={failed} role="status"><current.Icon size={19} aria-hidden="true" /><span><strong>{current.title}</strong> · {failed ? "没有预期结果，测试还不能运行。" : current.detail}</span></div>
-    <figcaption>测试用例不是一句“测一下”，而是一条从已知起点出发、执行明确动作、最后能用观察事实判定的短路径。</figcaption>
+    <figcaption>测试用例是一条从已知起点出发、执行明确动作、最后能用观察事实判定的短路径。</figcaption>
   </figure>;
 }

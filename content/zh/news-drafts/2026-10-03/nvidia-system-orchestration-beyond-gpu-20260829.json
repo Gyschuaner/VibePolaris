@@ -2,7 +2,7 @@
   "slug": "nvidia-system-orchestration-beyond-gpu-20260829",
   "title": "NVIDIA 的 AI 优势开始离开 GPU：代理式工作负载把竞争推向整套系统",
   "summary": "TechCrunch 于 2026 年 8 月 29 日报道，NVIDIA 正把竞争重点从 GPU 扩展到 Vera CPU、网络、存储与机架级 AI 工厂；Vera 的性能数字保留 NVIDIA 与媒体口径。",
-  "body": "TechCrunch 在 2026 年 8 月 29 日报道，NVIDIA 的 AI 竞争优势正在从“GPU 最快”扩展到整套 AI 工厂的调度和数据流。报道援引 NVIDIA 对 Vera CPU 和 Vera Rubin 系统的介绍，指出当训练和推理规模进入千兆瓦级，真正难的部分不只是算力，还包括把内存、存储、网络和工具调用及时送到 GPU 或代理工作流。\n\nVera CPU 被 NVIDIA 定义为面向代理式 AI 的处理器，负责模型调用之间的编排、工具使用、代码执行、数据处理和沙箱管理；Vera Rubin 则把 Rubin GPU、Vera CPU、网络与 DPU 放进一套机架级系统。TechCrunch 采访中提到，Vera CPU 在部分数据编排操作上出现约 3 倍提升，这属于 NVIDIA 受访者给出的测量口径，并非独立基准。\n\n这条新闻的关键不是宣布一个全新 GPU，而是说明 AI 基础设施的瓶颈正在外移：模型本身只是工作流的一部分。读者在看“更快”时，应继续追问它测的是哪一层、在哪种负载下，以及系统整合是否真的降低每个 token（模型处理的文本片段）的成本。",
+  "body": "TechCrunch 在 2026 年 8 月 29 日报道，NVIDIA 的 AI 竞争优势正在从“GPU 最快”扩展到整套 AI 工厂的调度和数据流。报道援引 NVIDIA 对 Vera CPU 和 Vera Rubin 的介绍：千兆瓦级训练与推理需要算力、内存、存储、网络和工具调用协同供给。\n\nVera CPU 被 NVIDIA 定义为面向代理式 AI 的处理器，负责模型调用之间的编排、工具使用、代码执行、数据处理和沙箱管理；Vera Rubin 则把 Rubin GPU、Vera CPU、网络与 DPU 放进一套机架级系统。Vera CPU 在部分数据编排操作上出现约 3 倍提升，这属于 NVIDIA 受访者给出的测量口径。\n\n这条新闻的关键是说明 AI 基础设施的瓶颈正在外移：模型本身只是工作流的一部分。读者在看“更快”时，应继续追问它测的是哪一层、在哪种负载下，以及系统整合是否真的降低每个 token（模型处理的文本片段）的成本。",
   "publishedAt": "2026-08-29",
   "eventDate": "2026-08-29",
   "isExample": false,
@@ -23,19 +23,19 @@
     {
       "id": "vera",
       "title": "Vera CPU 负责模型周围的工作",
-      "body": "NVIDIA 官方把 Vera 描述成代理式 AI 的 CPU，工作范围包括编排、工具调用、代码执行、强化学习、数据分析、沙箱和长上下文状态管理。它不是替代 Rubin GPU 的通用宣传，而是要把模型调用之间的控制和数据移动做得更快，让加速器持续有活可做。实际收益仍取决于工作流、内存布局和软件栈。",
+      "body": "NVIDIA 官方把 Vera 描述成代理式 AI 的 CPU，工作范围包括编排、工具调用、代码执行、强化学习、数据分析、沙箱和长上下文状态管理。它是要把模型调用之间的控制和数据移动做得更快，让加速器持续有活可做。实际收益仍取决于工作流、内存布局和软件栈。",
       "kind": "technical"
     },
     {
       "id": "system",
-      "title": "Vera Rubin 是整套机架而非一块卡",
-      "body": "Vera Rubin NVL72 把 Rubin GPU、Vera CPU、ConnectX 网络、BlueField DPU 和 NVLink 等部件组合在一起。这样卖的是从芯片到网络和软件的一体化架构：客户购买的不只是某颗 GPU，而是可以部署、扩展和管理一整套 AI 工厂的系统。对采购者来说，一体化可能减少集成工作，也会增加对同一供应商软件和互连的依赖。",
+      "title": "Vera Rubin 是整套机架",
+      "body": "Vera Rubin NVL72 把 Rubin GPU、Vera CPU、ConnectX 网络、BlueField DPU 和 NVLink 等部件组合在一起。客户购买的是从芯片、网络到软件的一体化架构，用于部署、扩展和管理 AI 工厂。对采购者来说，一体化可能减少集成工作，也会增加对同一供应商软件和互连的依赖。",
       "kind": "comparison"
     },
     {
       "id": "boundary",
-      "title": "采访数字不等于普遍性能保证",
-      "body": "TechCrunch 报道提到 NVIDIA 受访者给出的约 3 倍数据编排提升；NVIDIA 官方博客还引用 DeepInfra 的特定生产基准。它们都有明确的负载、硬件和比较对象，不能直接改写成“所有 AI 应用快 3 倍”。本文记录的是报道和官方产品口径，后续应优先查第三方测试与完整方法。",
+      "title": "采访中的性能数字与测量条件",
+      "body": "TechCrunch 报道提到 NVIDIA 受访者给出的约 3 倍数据编排提升；NVIDIA 官方博客还引用 DeepInfra 的特定生产基准。“快 3 倍”对应公告给出的负载、硬件与比较对象。本文记录的是报道和官方产品口径，后续应优先查第三方测试与完整方法。",
       "kind": "boundary"
     }
   ],

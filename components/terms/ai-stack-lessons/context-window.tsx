@@ -60,6 +60,6 @@ export function ContextWindowLesson() {
       <button type="button" aria-pressed={!long} onClick={goShort}>保留短历史 · 6k</button>
       <button type="button" aria-pressed={long} onClick={goLong}>带入长历史 · 10k</button>
     </div>
-    <p className={styles.windowVerdict} role="status"><Archive size={17} aria-hidden="true" /> {trimmed ? "把最早一段移出窗口后，旧记录仍可留在外部存储；窗口里的实际输入已经改变。" : "窗口是这一轮输入和输出共同争用的容量；把历史存起来，不代表它自动进入下一轮。"}</p>
+    <p className={styles.windowVerdict} role="status"><Archive size={17} aria-hidden="true" /> {trimmed ? "把最早一段移出窗口后，旧记录仍可留在外部存储；窗口里的实际输入已经改变。" : "窗口是这一轮输入和输出共同争用的容量。"}</p>
   </div>;
 }

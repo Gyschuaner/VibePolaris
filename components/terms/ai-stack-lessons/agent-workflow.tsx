@@ -45,7 +45,7 @@ export function AgentWorkflowLesson() {
         <div className={styles.agentWorkflowLabLabel}><LockSimple size={16} aria-hidden="true" /><span>输出闸门</span></div>
         <h3>{blocked ? "拒绝写入" : final ? "可以交付" : "等待验收"}</h3>
         <div className={styles.agentWorkflowLabReviewBox} data-danger={blocked && final}><span>退款结论</span><strong>{blocked ? "缺少人工凭证" : final ? "已核验" : "未检查"}</strong></div>
-        <small>{blocked ? "校验失败时停在边界，不能把模型草稿当成最终结果。" : "只有通过检查，状态才会进入 done。"}</small>
+        <small>{blocked ? "校验失败时停止交付，保留模型草稿与错误供修正。" : "只有通过检查，状态才会进入 done。"}</small>
       </div>
     </div>
     <div className={styles.agentWorkflowLabMetrics}>
@@ -54,7 +54,7 @@ export function AgentWorkflowLesson() {
       <div><span>副作用</span><strong>{blocked && final ? "未执行" : final ? "允许" : "等待"}</strong></div>
     </div>
     <p className={styles.agentWorkflowLabNote} data-danger={blocked} role="status">
-      {blocked ? <><WarningCircle size={17} aria-hidden="true" /><span>工作流允许模型提出草稿，却不允许未通过校验的结论写入系统。停在 blocked 是一个可追踪结果，不是“模型失败后悄悄重试”。</span></> : final ? <><CheckCircle size={17} aria-hidden="true" /><span>{routeMode === "code" ? "代码路由让转移可预期；" : "模型路由提供灵活性；"} 两种方式都要把验收条件和终态记录下来。</span></> : <><Brain size={17} aria-hidden="true" /><span>工作流规定节点和出口，节点里的智能体才有空间做局部判断；外层状态不会因为换了路由方式就消失。</span></>}
+      {blocked ? <><WarningCircle size={17} aria-hidden="true" /><span>工作流允许模型提出草稿，却不允许未通过校验的结论写入系统。停在 blocked 是一个可追踪结果。</span></> : final ? <><CheckCircle size={17} aria-hidden="true" /><span>{routeMode === "code" ? "代码路由让转移可预期；" : "模型路由提供灵活性；"} 两种方式都要把验收条件和终态记录下来。</span></> : <><Brain size={17} aria-hidden="true" /><span>工作流规定节点和出口，节点里的智能体才有空间做局部判断；外层状态不会因为换了路由方式就消失。</span></>}
     </p>
   </div>;
 }

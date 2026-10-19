@@ -8,7 +8,7 @@ const frames = [
   { label: "HTML 先可见", tone: "html", rows: [["服务器 HTML", "按钮已经画出"], ["DOM 节点", "等待匹配"], ["事件处理", "未连接"]], result: "可见", note: "页面先有形状，点击还没有进入客户端代码。" },
   { label: "客户端匹配", tone: "match", rows: [["服务器 HTML", "首屏快照"], ["DOM 节点", "结构一致"], ["事件处理", "等待连接"]], result: "对上", note: "框架把组件输出和现有 DOM 对上，通常复用这些节点。" },
   { label: "事件接通", tone: "ready", rows: [["服务器 HTML", "已复用"], ["DOM 节点", "已关联"], ["事件处理", "connected"]], result: "可交互", note: "客户端代码接上事件后，按钮才真正能响应。" },
-  { label: "首屏不一致", tone: "mismatch", rows: [["服务器 HTML", "时间 09:00"], ["DOM 节点", "客户端 09:01"], ["事件处理", "暂停检查"]], result: "mismatch", note: "首轮输出不同，水合会报告不一致；可见不等于安全接管。" },
+  { label: "首屏不一致", tone: "mismatch", rows: [["服务器 HTML", "时间 09:00"], ["DOM 节点", "客户端 09:01"], ["事件处理", "暂停检查"]], result: "mismatch", note: "水合会报告不一致。" },
   { label: "输入稳定", tone: "stable", rows: [["服务器 HTML", "稳定数据"], ["DOM 节点", "结构一致"], ["事件处理", "connected"]], result: "可交互", note: "把首轮数据变成可重复的输入，再连接事件，水合路径才稳定。" },
 ];
 
@@ -25,6 +25,6 @@ export function HydrationHero() {
       <div className={styles.heroResult}><StatusIcon size={17} aria-hidden="true" /><span>当前状态</span><strong>{current.result}</strong><small>{current.note}</small></div>
     </div>
     <div className={styles.heroNote} role="status"><Lightning size={14} aria-hidden="true" /><span><strong>{current.label}</strong> · {current.note}</span></div>
-    <figcaption>水合是把现有 HTML 和客户端组件接上关系；它不是“页面出现了”这一刻，也不是无条件重画一遍。</figcaption>
+    <figcaption>水合是把现有 HTML 和客户端组件接上关系。</figcaption>
   </figure>;
 }

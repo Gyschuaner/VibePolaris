@@ -10,10 +10,10 @@ import styles from "./transport-http-pages.module.css";
 
 const frames = [
   { label: "HTTP Upgrade", state: "CONNECTING", left: "GET /chat", wire: "Upgrade: websocket", right: "101 Switching Protocols", messages: "还不能发业务消息", note: "WebSocket 先借 HTTP 完成握手；服务器确认升级后，连接才进入可以交换帧的状态。" },
-  { label: "通道开放", state: "OPEN", left: "client", wire: "双向连接", right: "server", messages: "等待第一帧", note: "OPEN 不是‘请求已完成’的瞬间，而是一条双方都能主动发帧的持续通道。" },
+  { label: "通道开放", state: "OPEN", left: "client", wire: "双向连接", right: "server", messages: "等待第一帧", note: "OPEN 是一条双方都能主动发帧的持续通道。" },
   { label: "帧双向流动", state: "OPEN", left: "send: hi", wire: "frame #18", right: "send: ack", messages: "#18 已重组", note: "帧是传输单位，消息可能跨多个分片帧；浏览器重组后交付 message，业务确认和顺序语义仍要由应用定义。" },
   { label: "连接关闭", state: "CLOSED", left: "网络断开", wire: "Close / error", right: "#19 #20 未到", messages: "列表停在 #18", note: "连接关闭后，通道本身不会替应用补回遗漏消息，也不会自动重新连接。" },
-  { label: "应用退避", state: "CONNECTING", left: "lastEventId=18", wire: "1s → 2s → 4s", right: "等待重连", messages: "补偿策略启动", note: "退避计时、重连次数和恢复游标都属于客户端协议，不是 WebSocket 帧自动附带的保证。" },
+  { label: "应用退避", state: "CONNECTING", left: "lastEventId=18", wire: "1s → 2s → 4s", right: "等待重连", messages: "补偿策略启动", note: "退避计时、重连次数和恢复游标都属于客户端协议。" },
   { label: "恢复缺口", state: "OPEN", left: "resume after 18", wire: "frame #19 · #20", right: "server replay", messages: "#18 · #19 · #20", note: "服务器愿意保存并补发消息时，应用才能把断线期间的缺口接回来；这是业务协议的约定。" },
 ];
 
@@ -54,21 +54,21 @@ function WebSocketRecoveryLab() {
 
 export function WebSocketTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={websocketSources} />;
-  return <ConceptArticle slug="websocket" title="WebSocket" subtitle="WebSocket · HTTP 升级后，双方共享一条持续帧通道" sources={websocketSources} sections={[["ws-upgrade-section", "先把 HTTP 升级成什么"], ["ws-frame-section", "开放后流动的是一帧帧消息"], ["ws-recovery-section", "断线以后谁来补缺口"], ["ws-boundary-section", "长连接不是业务保证"]]} intro={<>WebSocket 解决的是“双方都能主动说话”的连接问题。客户端先用 HTTP Upgrade 建立通道，连接进入 OPEN 后，服务器可以主动推送，客户端也能发送；断线、重连、确认和补消息仍要写进应用协议。</>}>
+  return <ConceptArticle slug="websocket" title="WebSocket" subtitle="WebSocket · HTTP 升级后，双方共享一条持续帧通道" sources={websocketSources} sections={[["ws-upgrade-section", "先把 HTTP 升级成什么"], ["ws-frame-section", "开放后流动的是一帧帧消息"], ["ws-recovery-section", "断线以后谁来补缺口"], ["ws-boundary-section", "连接状态与业务确认分别管理"]]} intro={<>WebSocket 解决的是“双方都能主动说话”的连接问题。客户端先用 HTTP Upgrade 建立通道，连接进入 OPEN 后，服务器可以主动推送，客户端也能发送；断线、重连、确认和补消息仍要写进应用协议。</>}>
     <ArticleSection id="ws-upgrade-section" title="先把 HTTP 升级成什么">
       <p id="ws-upgrade" className="vp-citation-target">客户端先发送带 Upgrade: websocket 的 HTTP 握手，服务器以 101 Switching Protocols 接受后，连接才离开普通 HTTP 请求响应的节奏。握手失败时，应用不应假装已经有一条实时通道。<Cite id="ws-upgrade" /></p>
       <p id="ws-open" className="vp-citation-target">浏览器 API 会把连接从 CONNECTING 推到 OPEN；只有 OPEN 状态才适合发送业务消息。CLOSING 和 CLOSED 表示通道正在收尾或已经不可用，调用方要据此更新界面和发送策略。<Cite id="ws-open" /><Cite id="ws-state" /></p>
     </ArticleSection>
     <ArticleSection id="ws-frame-section" title="开放后流动的是一帧帧消息">
-      <p id="ws-frames" className="vp-citation-target">WebSocket 帧是连接上的传输单位，一条消息可以由一个或多个分片帧组成，浏览器 API 会在重组后交付 message。客户端和服务器仍能在同一连接上交错发送文本或二进制数据；通道持续不代表业务消息已经被确认。<Cite id="ws-frames" /></p>
+      <p id="ws-frames" className="vp-citation-target">WebSocket 帧是连接上的传输单位，一条消息可以由一个或多个分片帧组成，浏览器 API 会在重组后交付 message。客户端和服务器仍能在同一连接上交错发送文本或二进制数据。<Cite id="ws-frames" /></p>
       <p id="ws-message" className="vp-citation-target">ping/pong 可以帮助检测连接是否仍在响应，close 帧则协商关闭原因。消息去重、顺序、权限和业务确认不由这些控制帧自动完成。<Cite id="ws-ping" /><Cite id="ws-message" /></p>
     </ArticleSection>
     <ArticleSection id="ws-recovery-section" title="断线以后谁来补缺口">
       <p id="ws-close" className="vp-citation-target">网络断开或任一端关闭后，WebSocket 不会自动重连，也不会知道断线期间服务器产生了哪些事件。客户端需要自己管理重连、退避、关闭时机和失败提示。<Cite id="ws-close" /><Cite id="ws-error" /></p>
       <WebSocketRecoveryLab />
-      <p id="ws-buffer" className="vp-citation-target">要恢复遗漏消息，应用通常保存事件序号或游标，并让服务器按游标重放；这需要服务端保留窗口、客户端去重以及明确的确认语义。浏览器的 bufferedAmount 只能说明尚未发出的字节量，不是服务器已经处理的证明。<Cite id="ws-buffer" /></p>
+      <p id="ws-buffer" className="vp-citation-target">要恢复遗漏消息，应用通常保存事件序号或游标，并让服务器按游标重放；这需要服务端保留窗口、客户端去重以及明确的确认语义。浏览器的 bufferedAmount 记录当前尚未发出的字节量。<Cite id="ws-buffer" /></p>
     </ArticleSection>
-    <ArticleSection id="ws-boundary-section" title="长连接不是业务保证">
+    <ArticleSection id="ws-boundary-section" title="连接状态与业务确认分别管理">
       <p id="ws-http2" className="vp-citation-target">在 HTTP/2 场景，RFC 8441 定义了用 extended CONNECT 建立 WebSocket 的方式；这改变的是建连承载方式，不会自动增加重连、补偿或业务授权。<Cite id="ws-http2" /></p>
       <p>排查实时消息问题时，分开记录连接状态、握手响应、帧方向、关闭原因、发送缓冲、重连次数和业务游标。这样才能知道问题是“没连上”“帧没发出”“服务器没确认”还是“客户端没有补回缺口”。</p>
     </ArticleSection>

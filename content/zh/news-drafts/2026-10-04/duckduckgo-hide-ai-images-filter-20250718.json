@@ -2,7 +2,7 @@
   "slug": "duckduckgo-hide-ai-images-filter-20250718",
   "title": "DuckDuckGo 增加“隐藏 AI 图片”开关：靠公开黑名单过滤，无法保证全拦住",
   "summary": "DuckDuckGo 图片搜索的 AI 过滤开关：公开黑名单、用户选择和漏网边界",
-  "body": "7 月 18 日，TechCrunch 报道 DuckDuckGo 正在推出一个可选设置，让用户在图片搜索里隐藏 AI 生成内容。用户可以在 Images 页面把“AI images”切换为 Hide，也可以在搜索设置中打开“Hide AI-Generated Images”。这条新闻的重点是把选择权放回搜索设置，而不是声称已经有一个能识别所有 AI 图片的检测器。\n\nDuckDuckGo 对 TechCrunch 解释，过滤器依赖公开可用的人工维护列表，包括 uBlock Origin 和 uBlacklist Huge AI Blocklist。DuckDuckGo 的帮助页也写明，这些列表并不完整，目标是尽可能减少结果中的 AI 生成内容。换句话说，系统先把已知或被列表标记的内容挡掉，遇到没有进入列表的图片仍可能显示。\n\n这个实现方式决定了它能解决什么、不能解决什么。它可以给不想看到 AI 图片的用户一个明确的开关，也让用户保留“显示”选项；但它不等于对每张图片重新运行模型鉴别，更不等于判断图片质量、真假或作者是否使用了生成工具。过滤成功率会随公开列表的覆盖和更新变化。\n\nDuckDuckGo 还把这一功能放在“私密、实用、可选”的 AI 产品取向里。用户可以继续使用搜索，也可以使用 noai.duckduckgo.com 进一步关闭 Search Assist 和 Duck.ai 入口；不同开关作用不同，不能把隐藏图片理解成关闭所有 AI 功能。\n\n对普通用户来说，最简单的判断是：这是一个基于列表的内容筛选器，不是完整的来源鉴定服务。如果你要做新闻、研究或事实核查，仍需打开原始页面、检查图片来源和上下文；过滤器减少的是某类结果的出现，不会替你完成真实性判断。",
+  "body": "7 月 18 日，TechCrunch 报道 DuckDuckGo 正在推出一个可选设置，让用户在图片搜索里隐藏 AI 生成内容。用户可以在 Images 页面把“AI images”切换为 Hide，也可以在搜索设置中打开“Hide AI-Generated Images”。这条新闻的重点是把选择权放回搜索设置。\n\nDuckDuckGo 对 TechCrunch 解释，过滤器依赖公开可用的人工维护列表，包括 uBlock Origin 和 uBlacklist Huge AI Blocklist。目标是尽可能减少结果中的 AI 生成内容。换句话说，系统先把已知或被列表标记的内容挡掉，遇到没有进入列表的图片仍可能显示。\n\n这个实现方式决定了它能解决什么、不能解决什么。它可以给不想看到 AI 图片的用户一个明确的开关，也让用户保留“显示”选项。过滤成功率会随公开列表的覆盖和更新变化。\n\nDuckDuckGo 还把这一功能放在“私密、实用、可选”的 AI 产品取向里。用户可以继续使用搜索，也可以使用 noai.duckduckgo.com 进一步关闭 Search Assist 和 Duck.ai 入口。\n\n最简单的判断是：这是一个基于列表的内容筛选器。如果你要做新闻、研究或事实核查，仍需打开原始页面、检查图片来源和上下文；过滤器减少的是某类结果的出现，不会替你完成真实性判断。",
   "publishedAt": "2025-07-18",
   "eventDate": "2025-07-18",
   "isExample": false,
@@ -23,19 +23,19 @@
     {
       "id": "blocklist",
       "title": "它依赖什么来过滤",
-      "body": "DuckDuckGo 说过滤器使用公开可用的人工维护列表，包括 uBlock Origin 和 uBlacklist Huge AI Blocklist。帮助页也明确写出这些列表并不完整。",
+      "body": "DuckDuckGo 说过滤器使用公开可用的人工维护列表，包括 uBlock Origin 和 uBlacklist Huge AI Blocklist。",
       "kind": "technical"
     },
     {
       "id": "limit",
-      "title": "隐藏不等于识别全部",
-      "body": "没有进入列表的 AI 图片仍可能出现在结果中；过滤器也不判断图片是否真实、是否误导或由谁创作。它是结果筛选，不是来源鉴定或事实核查。",
+      "title": "隐藏功能的识别范围",
+      "body": "没有进入列表的 AI 图片仍可能出现在结果中；过滤器也不判断图片是否真实、是否误导或由谁创作。它是结果筛选。",
       "kind": "boundary"
     },
     {
       "id": "choice",
       "title": "“隐藏图片”和“关闭 AI”是两件事",
-      "body": "DuckDuckGo 的 noai 入口还可以关闭 Search Assist 和 Duck.ai 入口。图片过滤只改变图片结果，不能替代对其他 AI 功能的设置。",
+      "body": "DuckDuckGo 的 noai 入口还可以关闭 Search Assist 和 Duck.ai 入口。图片过滤针对图片结果，其他 AI 功能在对应入口分别设置。",
       "kind": "comparison"
     },
     {
@@ -62,7 +62,7 @@
       },
       {
         "label": "漏网",
-        "detail": "列表不完整，未被收录的 AI 图片仍可能出现，不能把“少看到”当成“全部识别”。",
+        "detail": "未被收录的 AI 图片仍可能出现。",
         "evidence": "DuckDuckGo Help"
       },
       {

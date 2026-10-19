@@ -25,7 +25,7 @@ const frames = [
     active: ["scheme", "authority", "path", "query", "fragment"],
     parsed: ["scheme = https", "host = example.com", "port = 8443", "path = /a/../b", "query = q=x%2Fy", "fragment = part"],
     target: "还没形成请求目标",
-    note: "URL 先被读成一组有边界的字段；userinfo、主机和端口都在 authority 里，不能把整条地址当一串模糊文字。",
+    note: "URL 先被读成一组有边界的字段。",
   },
   {
     label: "路径把 .. 折回去",
@@ -41,7 +41,7 @@ const frames = [
     active: ["query", "fragment"],
     parsed: ["scheme = https", "host = example.com", "port = 8443", "path = /b", "query = q=x%2Fy", "fragment = client only"],
     target: "GET /b?q=x%2Fy",
-    note: "fragment 给浏览器做页内定位，不进入 HTTP 请求目标；服务器收到的是 Host 和路径、查询，不是 #part。",
+    note: "服务器收到的是 Host 和路径、查询。",
   },
 ];
 
@@ -60,7 +60,7 @@ const scenarios = [
     middle: ["base path  /a/../b", "点段      a/..", "保留      b"],
     output: "/b",
     good: true,
-    note: "相对路径合并和点段移除是解析动作，不是把字符串里的字符随便删掉。",
+    note: "相对路径合并和点段移除是解析动作。",
   },
   {
     label: "发出请求",
@@ -126,19 +126,19 @@ function UrlLab() {
 
 export function UrlTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={urlSources} />;
-  return <ConceptArticle slug="url" title="URL" subtitle="Uniform Resource Locator · 一条会被解析的资源引用" sources={urlSources} sections={[["url-shape", "一条地址先拆开"], ["url-normalize", "路径不是字符串拼接"], ["url-request", "发给服务器的目标更短"], ["url-base", "相对引用要有基准"]]} intro={<>你在地址栏里看到的是一条文字，浏览器眼里却是一张有边界的地图。<strong>URL 先拆组件、再归一路径，最后才决定要发给服务器什么。</strong><Cite id="url-components" /></>}>
+  return <ConceptArticle slug="url" title="URL" subtitle="Uniform Resource Locator · 一条会被解析的资源引用" sources={urlSources} sections={[["url-shape", "一条地址先拆开"], ["url-normalize", "按 URL 规则解析相对路径"], ["url-request", "发给服务器的目标更短"], ["url-base", "相对引用要有基准"]]} intro={<>你在地址栏里看到的是一条文字，浏览器眼里却是一张有边界的地图。<strong>URL 先拆组件、再归一路径，最后才决定要发给服务器什么。</strong><Cite id="url-components" /></>}>
     <ArticleSection id="url-shape" title="一条地址先拆开">
       <p id="url-components" className="vp-citation-target">URL 的语法把引用拆成 scheme、authority、path、query 和 fragment。authority 还可以继续分出 userinfo、host 与 port；这些字段各自有边界，不能靠“看起来像域名”来猜。<Cite id="url-components" /></p>
-      <p id="url-identity" className="vp-citation-target">URL 解决的是“怎样定位或访问这个资源”的表达问题，不是资源本身，也不是一次已经成功的请求。地址写得合法，只说明解析器能理解它；主机是否存在、服务是否响应，还要到后面的网络步骤才知道。<Cite id="url-identity" /></p>
+      <p id="url-identity" className="vp-citation-target">URL 解决的是“怎样定位或访问这个资源”的表达问题。地址写得合法，说明解析器能理解它；主机是否存在、服务是否响应，还要到后面的网络步骤才知道。<Cite id="url-identity" /></p>
       <UrlLab />
     </ArticleSection>
-    <ArticleSection id="url-normalize" title="路径不是字符串拼接">
+    <ArticleSection id="url-normalize" title="按 URL 规则解析相对路径">
       <p id="url-percent" className="vp-citation-target">百分号编码让保留字符可以作为数据出现。示例里的 <code>%2F</code> 是 query 的值，不会突然变成 path 的斜杠；解析时要保留组件边界，再按该组件的规则解释内容。<Cite id="url-percent" /></p>
-      <p id="url-relative" className="vp-citation-target">路径中的点段有明确的移除规则：<code>/a/../b</code> 先回退到 <code>/a/</code>，最后得到 <code>/b</code>。这一步是在做路径解析，不是对字符串做一次盲目替换；相对引用也会沿用同一套基准合并规则。<Cite id="url-relative" /></p>
+      <p id="url-relative" className="vp-citation-target">路径中的点段有明确的移除规则：<code>/a/../b</code> 先回退到 <code>/a/</code>，最后得到 <code>/b</code>这一步是在做路径解析，相对引用也会沿用同一套基准合并规则。<Cite id="url-relative" /></p>
     </ArticleSection>
     <ArticleSection id="url-request" title="发给服务器的目标更短">
-      <p id="url-request-target" className="vp-citation-target">HTTP/1.1 的 origin-form 请求目标由绝对路径和可选 query 组成，Host 则单独携带 authority。对示例 URL 来说，服务器看到的是 <code>Host: example.com:8443</code> 与 <code>GET /b?q=x%2Fy</code>，不是整条浏览器地址。<Cite id="url-request-target" /></p>
-      <p id="url-fragment" className="vp-citation-target">fragment 在解析和取得资源之后交给客户端处理，常用于页面内定位；HTTP 方案本身不把它定义成请求目标的一部分。因此日志里找不到 <code>#part</code>，并不表示浏览器丢了它，而是它根本没有沿 HTTP 请求线发出去。<Cite id="url-fragment" /></p>
+      <p id="url-request-target" className="vp-citation-target">HTTP/1.1 的 origin-form 请求目标由绝对路径和可选 query 组成，Host 则单独携带 authority。对示例 URL 来说，服务器看到的是 <code>Host: example.com:8443</code> 与 <code>GET /b?q=x%2Fy</code>，用于定位本次请求的目标。<Cite id="url-request-target" /></p>
+      <p id="url-fragment" className="vp-citation-target">fragment 在解析和取得资源之后交给客户端处理，常用于页面内定位；HTTP 方案本身不把它定义成请求目标的一部分。因此日志里找不到 <code>#part</code>而是它根本没有沿 HTTP 请求线发出去。<Cite id="url-fragment" /></p>
     </ArticleSection>
     <ArticleSection id="url-base" title="相对引用要有基准">
       <p id="url-base-reference" className="vp-citation-target">像 <code>../c</code> 这样的相对引用没有自己的主机和 scheme，解析器必须拿当前文档或调用方给出的 base URL 来合并。base 是 <code>https://example.com/a/b/</code> 时，结果是 <code>https://example.com/a/c</code>；换一个 base，结果也会换。<Cite id="url-base" /></p>

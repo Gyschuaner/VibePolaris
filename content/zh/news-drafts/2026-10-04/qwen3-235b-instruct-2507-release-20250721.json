@@ -2,7 +2,7 @@
   "slug": "qwen3-235b-instruct-2507-release-20250721",
   "title": "Qwen3-235B-A22B-Instruct-2507 发布：把“非思考模式”单独做成长上下文模型",
   "summary": "2025 年 7 月 21 日，Qwen 发布 Qwen3-235B-A22B-Instruct-2507，把此前 Qwen3 的 non-thinking 路线更新为独立的 Instruct 模型：235B 总参数、22B 激活，原生 256K 上下文，并可按额外配置扩展到约 101 万 token。它同时保留工具调用和 Apache 2.0 开放权重入口，但 1M 上下文需要约 1000GB 总 GPU 内存，模型卡中的 benchmark 也仍是发布方自测。",
-  "body": "2025 年 7 月 21 日，Qwen 团队发布 Qwen3-235B-A22B-Instruct-2507。Qwen 官方把它描述为上一代 Qwen3 235B-A22B 的 non-thinking 更新版，重点是更好的指令遵循、长尾知识、多语言表现、主观任务对齐，以及 256K token 的长上下文理解。这个日期来自 Qwen3 官方 README 的新闻时间线，模型卡则补充了具体规格和部署方式。\n\n这次变化首先是产品线的拆分。模型有 2350 亿总参数，但每个 token 激活 220 亿参数；官方模型卡还写明它有 128 个专家，每个 token 激活 8 个专家。它只支持 non-thinking mode，不再输出 <think></think> 块，也不需要通过 enable_thinking=False 关闭思考。对接入方来说，这种行为更容易预期：需要快速、直接回答的请求可以交给 Instruct 版本，复杂推理则由另一条 Thinking 版本承担，而不是在同一个检查点里切换模式。\n\n长上下文是这次发布最容易被标题放大的部分。模型原生上下文长度是 262,144 token，模型卡同时给出约 1,010,000 token 的扩展路径。后者需要替换配置、启用 Dual Chunk Attention 和 MInference 等实现；官方还估算，处理 1M token 需要大约 1000GB 总 GPU 内存。也就是说，“支持 1M”描述的是一条有额外工程成本的部署路线，不是下载模型后所有用户都能直接获得的默认容量。\n\nQwen 在模型卡中列出了 MMLU-Pro、GPQA、AIME25、LiveCodeBench、BFCL-v3 等测试。比如 Instruct-2507 在该表的 GPQA 是 77.5、AIME25 是 70.3、BFCL-v3 是 70.9。数字有助于读者定位它覆盖了知识、推理、代码和工具调用等不同维度，但这些结果来自 Qwen 的评测设置和对比表，不能自动等同于每个团队自己的准确率、延迟或成本。真实选型仍需要固定提示、数据集和硬件后复测。\n\n模型卡还保留了工具调用和 Qwen-Agent 的入口，可以通过 MCP 配置或自定义工具接入。这里的“能调用工具”只说明接口和训练支持，并不表示模型天然拥有文件、网络、数据库或生产环境权限。部署者仍要把工具白名单、密钥隔离、超时、日志和人工审批放在模型外层，尤其是长上下文会让一次请求携带更多潜在敏感内容。\n\n这条新闻的实际意义，是 Qwen 开始把“快答的指令模型”和“愿意花更多计算做推理的模型”作为两种可独立部署的产品。开放权重和 Apache 2.0 许可降低了试用门槛，但 235B 级别的权重、显存、并行推理和长上下文服务仍然是基础设施项目。读者判断它是否适合自己时，应该同时看模型行为、部署账单和权限边界，而不是只看参数总量或一张排行榜。",
+  "body": "2025 年 7 月 21 日，Qwen 团队发布 Qwen3-235B-A22B-Instruct-2507。Qwen 官方把它描述为上一代 Qwen3 235B-A22B 的 non-thinking 更新版，重点是更好的指令遵循、长尾知识、多语言表现、主观任务对齐，以及 256K token 的长上下文理解。这个日期来自 Qwen3 官方 README 的新闻时间线，模型卡则补充了具体规格和部署方式。\n\n这次变化首先是产品线的拆分。模型有 2350 亿总参数，但每个 token 激活 220 亿参数；官方模型卡还写明它有 128 个专家，每个 token 激活 8 个专家。它只支持 non-thinking mode，不再输出 <think></think> 块，也不需要通过 enable_thinking=False 关闭思考。对接入方来说，这种行为更容易预期：需要快速、直接回答的请求可以交给 Instruct 版本，复杂推理则由另一条 Thinking 版本承担。\n\n长上下文是这次发布最容易被标题放大的部分。模型原生上下文长度是 262,144 token，模型卡同时给出约 1,010,000 token 的扩展路径。后者需要替换配置、启用 Dual Chunk Attention 和 MInference 等实现；官方还估算，处理 1M token 需要大约 1000GB 总 GPU 内存。就是说，“支持 1M”描述的是一条有额外工程成本的部署路线。\n\nQwen 在模型卡中列出了 MMLU-Pro、GPQA、AIME25、LiveCodeBench、BFCL-v3 等测试。比如 Instruct-2507 在该表的 GPQA 是 77.5、AIME25 是 70.3、BFCL-v3 是 70.9。数字有助于读者定位它覆盖了知识、推理、代码和工具调用等不同维度，但这些结果来自 Qwen 的评测设置和对比表，不能自动等同于每个团队自己的准确率、延迟或成本。真实选型仍需要固定提示、数据集和硬件后复测。\n\n模型卡还保留了工具调用和 Qwen-Agent 的入口，可以通过 MCP 配置或自定义工具接入。这里的“能调用工具”说明接口和训练支持。部署者仍要把工具白名单、密钥隔离、超时、日志和人工审批放在模型外层，尤其是长上下文会让一次请求携带更多潜在敏感内容。\n\n这条新闻的实际意义，是 Qwen 开始把“快答的指令模型”和“愿意花更多计算做推理的模型”作为两种可独立部署的产品。开放权重和 Apache 2.0 许可降低了试用门槛，但 235B 级别的权重、显存、并行推理和长上下文服务仍然是基础设施项目。读者判断它是否适合自己时，应该同时看模型行为、部署账单和权限边界。",
   "publishedAt": "2025-07-21",
   "eventDate": "2025-07-21",
   "isExample": false,
@@ -16,8 +16,8 @@
   "sections": [
     {
       "id": "release",
-      "title": "这不是一次简单的权重改名",
-      "body": "Qwen 把 Qwen3-235B-A22B-Instruct-2507 定义为原先 non-thinking 模式的更新版，重点是指令遵循、知识覆盖、主观任务和长上下文，而不是继续用一个检查点承载两种输出习惯。",
+      "title": "新旧权重的具体变化",
+      "body": "Qwen 把 Qwen3-235B-A22B-Instruct-2507 定义为原先 non-thinking 模式的更新版，重点是指令遵循、知识覆盖、主观任务和长上下文。",
       "kind": "narrative"
     },
     {
@@ -34,14 +34,14 @@
     },
     {
       "id": "benchmarks",
-      "title": "评测表能定位能力维度，不能替代你的复测",
+      "title": "按评测表定位维度并设计复测",
       "body": "模型卡列出知识、推理、代码、对齐和工具调用测试。GPQA、AIME25、LiveCodeBench 等分数属于发布方评测口径，选择模型时还要在自己的提示、语言、数据和硬件上重跑。",
       "kind": "comparison"
     },
     {
       "id": "tools",
       "title": "工具调用仍需要外层授权",
-      "body": "Qwen-Agent 和 MCP 入口让模型更容易接工具，但文件、网络、数据库和生产权限都应由沙箱和审批层控制。模型能生成调用参数，不等于它有权执行调用。",
+      "body": "Qwen-Agent 和 MCP 入口让模型更容易接工具，但文件、网络、数据库和生产权限都应由沙箱和审批层控制。模型能生成调用参数。",
       "kind": "aside"
     },
     {
@@ -111,7 +111,7 @@
     },
     {
       "url": "https://huggingface.co/Qwen/Qwen3-235B-A22B-Instruct-2507",
-      "claim": "模型卡把 1,010,000 token 作为可扩展长度，并说明需要改配置、启用 Dual Chunk Attention/MInference，约需 1000GB 总 GPU memory；这不是默认的免费能力。",
+      "claim": "模型卡把 1,010,000 token 作为可扩展长度，并说明需要改配置、启用 Dual Chunk Attention/MInference，约需 1000GB 总 GPU memory。",
       "excerpt": "Qwen model card, Processing Ultra-Long Texts and How to Enable 1M Token Context."
     },
     {

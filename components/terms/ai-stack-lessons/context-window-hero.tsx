@@ -52,7 +52,7 @@ export function ContextWindowHero() {
       <div className={styles.contextHeroWarning}><Warning size={18} aria-hidden="true" /><span>旧闲聊还在，但它把关键约束挤出了本轮输入。</span></div>
       <div className={styles.contextHeroSaved} onAnimationEnd={() => setPlaying(false)}><Check size={18} aria-hidden="true" /><span>整理后保留：周日 17:00 前到家 · 14k / 16k</span></div>
     </div>
-    <figcaption>窗口不是抽屉：放不下时，拿掉哪一张卡，会直接改变模型能据此作答的条件。</figcaption>
+    <figcaption>会直接改变模型能据此作答的条件。</figcaption>
     <div className={styles.contextHeroControls} role="group" aria-label="首图动画控制">
       <button type="button" className={styles.contextHeroPause} onClick={() => { started.current = true; setPlaying(value => !value); }} aria-label={playing ? "暂停上下文窗口首图" : "继续上下文窗口首图"}>{playing ? <Pause size={15} /> : <Play size={15} />} {playing ? "暂停" : "继续"}</button>
       <button type="button" className={styles.contextHeroReplay} onClick={() => { started.current = true; setReplay(value => value + 1); setPlaying(true); }} aria-label="重播上下文窗口首图"><ArrowCounterClockwise size={16} /> 重播</button>

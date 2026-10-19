@@ -9,7 +9,7 @@ import { tlsHandshakeSources } from "@/lib/transport-http-sources";
 import styles from "./transport-http-pages.module.css";
 
 const frames = [
-  { label: "ClientHello", packet: "TLS 1.3 · key_share C", note: "客户端先报出支持的版本、算法和临时密钥材料；这一步还没有证明服务器身份。" },
+  { label: "ClientHello", packet: "TLS 1.3 · key_share C", note: "客户端先报出支持的版本、算法和临时密钥材料。" },
   { label: "ServerHello", packet: "TLS_AES_128_GCM_SHA256", note: "双方选定本次连接的参数，开始导出握手所需的密钥材料。" },
   { label: "Certificate", packet: "SAN = api.example", note: "证书把公钥与服务身份关联起来，客户端还要检查信任链、有效期和主机名。" },
   { label: "Finished", packet: "handshake verified", note: "常规完整握手路径在这里确认记录没有被改动；TLS 1.3 的 0-RTT 是另一条带重放边界的路径。" },
@@ -42,7 +42,7 @@ function TlsIdentityLab() {
       <div className={styles.tlsLabNode}><Key size={21} aria-hidden="true" /><span>证书身份</span><strong>{valid ? "SAN=api.example" : "SAN=other.example"}</strong><code>chain=trusted</code></div><ArrowRight size={19} aria-hidden="true" />
       <div className={styles.tlsLabNode}>{valid ? <CheckCircle size={21} aria-hidden="true" /> : <WarningCircle size={21} aria-hidden="true" />}<span>应用数据</span><strong>{valid ? "加密 GET /orders" : "未发送"}</strong></div>
     </div>
-    <div className={styles.tlsLabResult} data-failed={!valid}>{valid ? <CheckCircle size={20} aria-hidden="true" /> : <WarningCircle size={20} aria-hidden="true" />}<p><strong>{valid ? "身份验证通过" : "握手终止"}</strong>{valid ? "信任链和主机名都匹配，Finished 通过后才把 HTTP 放进加密记录。" : "证书链即使有效，SAN 不是 api.example 也不能证明连接到了目标服务；客户端不应带着未知身份继续。"}</p></div>
+    <div className={styles.tlsLabResult} data-failed={!valid}>{valid ? <CheckCircle size={20} aria-hidden="true" /> : <WarningCircle size={20} aria-hidden="true" />}<p><strong>{valid ? "身份验证通过" : "握手终止"}</strong>{valid ? "信任链和主机名都匹配，Finished 通过后才把 HTTP 放进加密记录。" : "证书链即使有效。"}</p></div>
     <div className={styles.tlsLabControls} role="group" aria-label="切换 TLS 证书主机名"><button type="button" aria-pressed={valid} onClick={() => setCertificate("match")}>SAN = api.example</button><button type="button" aria-pressed={!valid} onClick={() => setCertificate("mismatch")}>SAN = other.example</button></div>
   </div>;
 }
@@ -52,12 +52,12 @@ export function TlsHandshakeTermPage() {
   return <ConceptArticle slug="tls-handshake" title="TLS 握手" subtitle="TLS Handshake · 先确认身份和密钥，再让应用数据上路" sources={tlsHandshakeSources} sections={[["tls-flow-section", "握手先把哪些条件凑齐"], ["tls-identity-section", "证书回答的是‘连到了谁’"], ["tls-record-section", "握手完成后才保护应用记录"], ["tls-boundary-section", "失败时应该停在哪里"]]} intro={<>浏览器看到 HTTPS 小锁之前，客户端和服务器已经交换了几轮信息。本页展示的是常规完整握手：TLS 1.3 协商参数、验证服务身份并导出本次连接的会话密钥，随后 HTTP 请求进入受保护的记录层。TLS 1.3 另有 0-RTT early data 路径，发送时点和重放边界要单独判断。</>}>
     <ArticleSection id="tls-flow-section" title="握手先把哪些条件凑齐">
       <p id="tls-flow" className="vp-citation-target">TLS 1.3 握手让双方选择版本、密码套件和扩展，并交换导出共享密钥所需的材料。ClientHello 和 ServerHello 解决“用哪套规则说话”，Certificate、CertificateVerify 和 Finished 则把身份和握手完整性接上。<Cite id="tls-flow" /></p>
-      <p id="tls-keys" className="vp-citation-target">临时密钥份额用于密钥交换，双方据此导出本次连接的握手密钥和应用流量密钥。私钥不会作为一段 HTTP 内容发送给对方；证书也不是拿来逐字加密整段网页的长期密码。<Cite id="tls-keys" /></p>
+      <p id="tls-keys" className="vp-citation-target">临时密钥份额用于密钥交换，双方据此导出本次连接的握手密钥和应用流量密钥。私钥不会作为一段 HTTP 内容发送给对方。<Cite id="tls-keys" /></p>
     </ArticleSection>
     <ArticleSection id="tls-identity-section" title="证书回答的是‘连到了谁’">
       <p id="tls-identity" className="vp-citation-target">证书把公钥与一个或多个服务身份绑定。客户端需要检查签发链是否可信、证书是否仍在有效期内，以及当前访问的主机名是否出现在证书的身份字段中；“签名能验过”只是其中一关。<Cite id="tls-identity" /></p>
-      <p id="tls-hostname" className="vp-citation-target">如果用户访问的是 api.example，而证书只写 other.example，客户端就不能把这把公钥当作 api.example 的身份。继续加密只能保护“某个对端”，没有解决“是不是我想找的对端”。<Cite id="tls-hostname" /></p>
-      <p id="tls-sni" className="vp-citation-target">在共享地址上，客户端还可以用 SNI 等扩展告诉服务器希望访问哪个服务名，让服务器选择对应证书。SNI 帮助服务器选证书，并不代替客户端最终的主机名验证。<Cite id="tls-sni" /></p>
+      <p id="tls-hostname" className="vp-citation-target">如果用户访问的是 api.example。继续加密只能保护“某个对端”。<Cite id="tls-hostname" /></p>
+      <p id="tls-sni" className="vp-citation-target">在共享地址上，客户端还可以用 SNI 等扩展告诉服务器希望访问哪个服务名，让服务器选择对应证书。<Cite id="tls-sni" /></p>
       <TlsIdentityLab />
     </ArticleSection>
     <ArticleSection id="tls-record-section" title="握手完成后才保护应用记录">

@@ -39,7 +39,7 @@ export function PriorityLesson() {
         {rankReady ? <CheckCircle size={23} aria-hidden="true" /> : <FileText size={23} aria-hidden="true" />}
         <strong>{rankReady ? "当前顺序" : "重新排序"}</strong>
         <code>{rankReady ? "故障 → 合规 → 微调" : "证据变化后再判断"}</code>
-        <span>{rankReady ? "依据可以复核" : "不是永久标签"}</span>
+        <span>{rankReady ? "依据可以复核" : "按新证据调整"}</span>
       </div>
       <div className={styles.priorityProof} data-ready={rankReady}>
         <CheckCircle size={21} aria-hidden="true" />

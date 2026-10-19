@@ -2,7 +2,7 @@
   "slug": "anthropic-search-result-content-blocks-ga-20250808",
   "title": "Anthropic 宣布 Claude API 与 Vertex AI 的搜索结果内容块已移出 Beta",
   "summary": "Anthropic 8 月 8 日宣布，Claude API 和 Vertex AI 的搜索结果内容块移出 Beta，RAG 工具返回的搜索结果可以带着来源信息进入 Claude，并生成自然引用；`search-results-2025-06-09` beta header 也不再必需。这个变化稳定了检索接口，却没有替团队核验来源、覆盖权限或保证每个回答都正确。",
-  "body": "8 月 8 日，Anthropic 在 Claude Platform release notes 中宣布，搜索结果内容块在 Claude API 和 Vertex AI 上移出 Beta。它不是新模型，也不是一个新的搜索引擎，而是工具把检索结果交给 Claude 时的一种正式接口：结果可以带着来源信息进入上下文，Claude 再在回答里生成自然引用。\n\n这项能力最初在 7 月 3 日以 Beta 形式发布。过去，做 RAG 的团队常常要把搜索结果重新包装成普通文本，再在提示词里要求模型记住标题、链接和出处。搜索结果内容块把这些信息作为结构化内容传进去，模型可以同时看到可读的片段和来源归属，引用链少了一层手工拼接。\n\n移出 Beta 的直接变化是接入方式：`search-results-2025-06-09` 这个 beta header 不再必需。对已经接入的团队来说，这减少了一个版本开关；对新项目来说，搜索结果内容块可以按正式 API 能力来设计。不过官方这条记录只点名 Claude API 和 Vertex AI，不能顺手推成所有 Claude 产品或所有托管平台都在同一天具备相同能力。\n\n“能引用”仍然不等于“答案已核验”。检索器可能漏掉关键文档，搜索片段可能过期，权限过滤也可能没有覆盖到每个来源。模型把链接放进回答，只说明它拿到了来源信息；团队还要检查来源是否支持对应结论、用户是否有权看到内容，以及没有结果或来源冲突时系统会怎么回答。\n\n对 RAG 应用来说，这次更新把重点从“怎样拼出引用”移向“怎样管理证据”。日志应保留查询、返回的来源、最终引用和权限判断；评估集要覆盖无结果、重复结果、过期页面和相互矛盾的材料。接口进入稳定阶段后，证据链的质量仍由检索、授权和复核共同决定。",
+  "body": "8 月 8 日，Anthropic 在 Claude Platform release notes 中宣布，搜索结果内容块在 Claude API 和 Vertex AI 上移出 Beta。它是工具把检索结果交给 Claude 时的一种正式接口：结果可以带着来源信息进入上下文，Claude 再在回答里生成自然引用。\n\n这项能力最初在 7 月 3 日以 Beta 形式发布。过去，做 RAG 的团队常常要把搜索结果重新包装成普通文本，再在提示词里要求模型记住标题、链接和出处。搜索结果内容块把这些信息作为结构化内容传进去，模型可以同时看到可读的片段和来源归属，引用链少了一层手工拼接。\n\n移出 Beta 的直接变化是接入方式：`search-results-2025-06-09` 这个 beta header 不再必需。对已经接入的团队来说，这减少了一个版本开关；对新项目来说，搜索结果内容块可以按正式 API 能力来设计。不过官方这条记录只点名 Claude API 和 Vertex AI，不能顺手推成所有 Claude 产品或所有托管平台都在同一天具备相同能力。\n\n检索器可能漏掉关键文档，搜索片段可能过期，权限过滤也可能没有覆盖到每个来源。模型把链接放进回答，说明它拿到了来源信息；团队还要检查来源是否支持对应结论、用户是否有权看到内容，以及没有结果或来源冲突时系统会怎么回答。\n\n对 RAG 应用来说，这次更新把重点从“怎样拼出引用”移向“怎样管理证据”。日志应保留查询、返回的来源、最终引用和权限判断；评估集要覆盖无结果、重复结果、过期页面和相互矛盾的材料。接口进入稳定阶段后，证据链的质量仍由检索、授权和复核共同决定。",
   "publishedAt": "2025-08-08",
   "eventDate": "2025-08-08",
   "isExample": false,
@@ -17,7 +17,7 @@
     {
       "id": "api-stability",
       "title": "这是 API 接口进入稳定阶段",
-      "body": "Anthropic 8 月 8 日宣布搜索结果内容块在 Claude API 和 Vertex AI 上移出 Beta。它更新的是工具结果进入模型上下文的方式，不是新模型发布或新的搜索服务。",
+      "body": "Anthropic 8 月 8 日宣布搜索结果内容块在 Claude API 和 Vertex AI 上移出 Beta。它更新的是工具结果进入模型上下文的方式。",
       "kind": "narrative"
     },
     {
@@ -35,7 +35,7 @@
     {
       "id": "header-scope",
       "title": "Beta header 不再必需，但覆盖范围仍按平台看",
-      "body": "`search-results-2025-06-09` 不再需要发送。官方条目只列出 Claude API 和 Vertex AI，不能把这条记录扩写成所有 Claude 产品或所有托管平台同日获得相同能力。",
+      "body": "`search-results-2025-06-09` 不再需要发送。",
       "kind": "boundary"
     },
     {
@@ -57,12 +57,12 @@
       },
       {
         "label": "返回内容块",
-        "detail": "搜索工具把相关片段和来源信息放进 search result content block，而不是只给模型一段无出处的文字。",
+        "detail": "搜索工具把相关片段和来源信息放进 search result content block。",
         "evidence": "Anthropic search result content blocks"
       },
       {
         "label": "生成带引用回答",
-        "detail": "Claude 根据片段回答，并在适合的位置保留来源引用；引用指向的是检索到的证据，不是模型凭空生成的链接。",
+        "detail": "并在适合的位置保留来源引用，引用指向的是检索到的证据。",
         "evidence": "Anthropic says Claude can automatically cite search result sources"
       },
       {

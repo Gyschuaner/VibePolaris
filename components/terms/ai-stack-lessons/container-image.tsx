@@ -25,6 +25,6 @@ export function ContainerImageLesson() {
       <ArrowRight size={20} aria-hidden="true" />
       <div className={styles.contract}><div><Cube size={25} /><h3>容器 A</h3><p>写层 +0 MB</p></div>{destroyed ? <div data-active="true"><Cube size={25} /><h3>容器 B2</h3><p>新写层 +0 MB</p></div> : <div data-active={written}><Cube size={25} /><h3>容器 B</h3><p>{written ? "写层 +2 MB" : "写层 +0 MB"}</p></div>}<div><Cube size={25} /><h3>容器 C</h3><p>写层 +0 MB</p></div></div>
     </div>
-    <p className={styles.inputExample}><strong>可观察证据</strong>{destroyed ? "B 的临时写层消失，B2 以同一 image@sha256:demo…（演示用缩写） 创建；这不是 docker restart，后者会保留原实例层。" : "只读层可复用；每个实例的写入互不共享。"}</p>
+    <p className={styles.inputExample}><strong>可观察证据</strong>{destroyed ? "B2 以同一 image@sha256:demo…（演示用缩写） 创建，后者会保留原实例层。" : "只读层可复用；每个实例的写入互不共享。"}</p>
   </div>;
 }

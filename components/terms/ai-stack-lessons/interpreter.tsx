@@ -44,6 +44,6 @@ export function InterpreterLesson() {
       {error ? <><Warning size={19} aria-hidden="true" /><p><strong>错误发生在第二条指令。</strong> 第一条已经写入的 x = 1 留在变量表里，解释器不会自动撤销它。</p></> : step >= 3 ? <><CheckCircle size={19} aria-hidden="true" /><p><strong>当前值已经打印。</strong> 解释器读到 x 的值 3，再把它交给控制台。</p></> : <><CaretRight size={19} aria-hidden="true" /><p>{step === 0 ? "指针还没执行任何指令，x 也还没有值。" : `指针移到第 ${pointer + 1} 条，变量表现在是 x = ${variable}。`}</p></>}
     </div>
     <div className={styles.interpreterSceneControls}><SceneControls scene={scene} labels={labels[scenario]} /></div>
-    <p className={styles.interpreterBoundary}><strong>这里的“逐步”发生在运行时。</strong>它按指令推进，不是把源文件文字逐行翻译；运行时仍可能先准备字节码或使用即时编译。</p>
+    <p className={styles.interpreterBoundary}><strong>这里的“逐步”发生在运行时。</strong>它按指令推进，运行时仍可能先准备字节码或使用即时编译。</p>
   </div>;
 }

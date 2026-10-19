@@ -41,6 +41,6 @@ export function LatencyEvaluationLesson() {
       </div>
       <div className={styles.tailReadout} data-hot={state === "tail"}><span>p95</span><strong>{current.tail}</strong><small>{state === "timeout" ? "超时样本另记" : state === "tail" ? "长尾托盘" : "典型请求"}</small></div>
     </div>
-    <div className={styles.result} role="status"><strong>{current.note}</strong><span>{state === "timeout" ? "工具没有返回，就不能把未完成请求塞进完成分布。" : "p50 看典型体验，p95 把一部分用户的慢请求留下来。"}</span></div>
+    <div className={styles.result} role="status"><strong>{current.note}</strong><span>{state === "timeout" ? "工具没有返回。" : "p50 看典型体验，p95 把一部分用户的慢请求留下来。"}</span></div>
   </section>;
 }

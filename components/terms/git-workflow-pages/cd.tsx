@@ -20,8 +20,8 @@ export function CdTermPage() {
     intro={<>持续交付（CD）把构建、测试、制品保存和环境提升连成可重复的路径，让团队在需要时可以发布。它通常保留生产环境的审批或显式触发；持续部署则把这一步也自动化，二者的差别在于生产发布是否仍有控制闸门。</>}
   >
     <ArticleSection id="cd-artifact" title="先把可发布版本固定下来">
-      <p id="cd-artifact-output" className="vp-citation-target">工作流产出的 artifact 是一次运行生成的文件或文件集合，可以在 job 完成后保存，并被同一工作流的其他 job 下载使用。把构建输出作为制品交给后续环境，测试和发布就能指向同一份文件，而不是每到一个环境再临时打包。<Cite id="cd-artifact-output" sources={cdSources} /></p>
-      <p id="cd-share" className="vp-citation-target">制品适合保存构建结果、测试输出和可部署文件；依赖缓存解决的是复用不变的中间文件，两者不能互相替代。教学中的 <code>artifact #42</code> 和摘要只是这一次构建的身份标签，真正系统应保留能追溯到提交、工作流运行和制品的记录。<Cite id="cd-share" sources={cdSources} /></p>
+      <p id="cd-artifact-output" className="vp-citation-target">工作流产出的 artifact 是一次运行生成的文件或文件集合，可以在 job 完成后保存，并被同一工作流的其他 job 下载使用。把构建输出作为制品交给后续环境，测试和发布就能指向同一份文件。<Cite id="cd-artifact-output" sources={cdSources} /></p>
+      <p id="cd-share" className="vp-citation-target">制品适合保存构建结果、测试输出和可部署文件；依赖缓存解决的是复用不变的中间文件，两者分别承担对应职责。教学中的 <code>artifact #42</code> 和摘要只是这一次构建的身份标签，真正系统应保留能追溯到提交、工作流运行和制品的记录。<Cite id="cd-share" sources={cdSources} /></p>
       <GitWorkflowLesson slug="cd" />
     </ArticleSection>
 
@@ -32,8 +32,8 @@ export function CdTermPage() {
     </ArticleSection>
 
     <ArticleSection id="cd-approval" title="生产闸门控制什么风险">
-      <p id="cd-approval-gate" className="vp-citation-target">配置 required reviewers 的 production job 会停在 Waiting，直到允许的评审者批准或拒绝。批准只让已绑定的部署 job 继续，并不替代 CI、冒烟检查、数据迁移评估或回滚准备。<Cite id="cd-approval-gate" sources={cdSources} /></p>
-      <p>所以持续交付的结果是“版本随时可发布、发布步骤可重复、生产动作有记录和控制”，而不是“任何绿灯都自动上线”。是否把最后闸门也自动打开，要根据环境风险、组织规则和故障处置能力单独决定。</p>
+      <p id="cd-approval-gate" className="vp-citation-target">配置 required reviewers 的 production job 会停在 Waiting，直到允许的评审者批准或拒绝。批准只让已绑定的部署 job 继续。<Cite id="cd-approval-gate" sources={cdSources} /></p>
+      <p>所以持续交付的结果是“版本随时可发布、发布步骤可重复、生产动作有记录和控制”。是否把最后闸门也自动打开，要根据环境风险、组织规则和故障处置能力单独决定。</p>
       <p><strong>读者判断：</strong>检查发布流程时，先追问制品在哪里生成、每个环境是否使用同一份、生产前谁或什么规则能阻止它继续，以及失败后怎样找到对应版本。</p>
     </ArticleSection>
   </GitArticle>;

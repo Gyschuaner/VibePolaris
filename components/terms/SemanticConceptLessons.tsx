@@ -20,7 +20,7 @@ export function EmbeddingLesson() {
     <label className={s.control}>表示空间<select value={space} onChange={e => { setSpace(Number(e.target.value)); clear(); }}><option value={0}>编码器 A</option><option value={1}>编码器 B · 未与 A 对齐</option></select></label>
     <div className={s.actions}><button disabled={encoded} onClick={() => { setSnapshot({ text, space }); setEncoded(true); }}>生成预设表示<ArrowRight size={17}/></button><button disabled={!encoded} onClick={() => setCompared(true)}>与参照句比较</button></div>
     <div className={s.embeddingDesk}><div><h3>参照 · 编码器 A</h3><p>{embeddingTexts[0]}</p><Components vector={embeddingVector(0, 0)}/></div><div className={s.vectorSheet}><Reveal open={encoded}><div><h3>当前表示 · 编码器 {snapshot.space === 0 ? 'A' : 'B'}</h3><p>{embeddingTexts[snapshot.text]}</p><Components vector={embeddingVector(snapshot.text, snapshot.space)}/><code>[{embeddingVector(snapshot.text, snapshot.space).join(', ')}]</code></div></Reveal></div></div>
-    <Reveal open={compared}><div className={s.comparison} role="status"><strong>{score === null ? '不同表示空间，停止比较' : `余弦相似度 ${score.toFixed(2)}`}</strong><p>{score === null ? '维度都是 3，也不能据此把 B 的分量与 A 直接配对。' : '点积 ÷ 两个向量长度的乘积；这个数不是事实正确率。'}</p></div></Reveal>
+    <Reveal open={compared}><div className={s.comparison} role="status"><strong>{score === null ? '不同表示空间，停止比较' : `余弦相似度 ${score.toFixed(2)}`}</strong><p>{score === null ? '维度都是 3。' : '余弦相似度等于点积除以两个向量长度的乘积，用于比较表示的方向。'}</p></div></Reveal>
     <button className={base.reset} onClick={() => { setText(1); setSpace(0); clear(); }}><ArrowCounterClockwise size={17}/>重置文本与表示</button>
   </div>;
 }

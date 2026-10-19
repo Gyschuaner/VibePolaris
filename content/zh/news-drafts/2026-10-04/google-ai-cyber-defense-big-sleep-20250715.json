@@ -2,7 +2,7 @@
   "slug": "google-ai-cyber-defense-big-sleep-20250715",
   "title": "Google 把 AI 代理放进漏洞发现流程：Big Sleep、Timesketch 和安全协作一起推进",
   "summary": "Google 公布 Big Sleep 发现 SQLite 漏洞、Timesketch 接入 agentic 日志分析以及 CoSAI/AIxCC 合作；公告把 AI 视为防守者的放大器，漏洞阻断效果仍主要是公司口径。",
-  "body": "7 月 15 日，Google 发布一组面向网络防守的 AI 更新。最具体的一条是：Google DeepMind 与 Project Zero 的 Big Sleep 代理结合 Google Threat Intelligence，发现了 SQLite 的 CVE-2025-6965；Google 说，系统判断漏洞可能很快被利用，并在野外利用发生前切断了这条路径。与此同时，Google 预告把 Sec-Gemini 的 agentic 能力接入开源取证平台 Timesketch，还展示 FACADE 内部威胁检测和与 CoSAI、DARPA AIxCC 的合作。\n\nBig Sleep 解决的是安全团队“看得太慢”的问题。传统漏洞研究需要研究员读代码、构造输入、验证触发条件，再给维护者提交报告；代理可以连续搜索、运行测试并把线索串起来。Google 的公告把这件事描述为 AI 代理第一次直接阻断野外漏洞利用，但这是公司对自己系统的总结。公开资料可以核对漏洞编号和披露记录，却不能仅凭一篇公司公告证明“阻断”在所有环境都可重复。\n\nTimesketch 是另一种使用方式。它本来就是用于协作数字取证的时间线工具，Google 计划让 AI 先对大量日志做初步调查，再把可疑线索交给分析员。这里的关键词是“初步”：AI 适合把事件按时间、主机和行为聚类，是否构成入侵、哪些证据可采信、何时隔离系统，仍需要熟悉环境的人做判断。Google 同时强调 agent 的隐私、越界动作和人类监督问题，说明它没有把自动化调查等同于自动处置。\n\nFACADE 和 AIxCC 把范围扩到模型外部。FACADE 是 Google 内部用于处理大量安全事件的异常检测系统，AIxCC 则让团队用 AI 找到并修复开源软件漏洞。CoSAI 获得 Google 的 Secure AI Framework 数据，用于 agentic AI、网络防御和软件供应链工作流。它们更像基础设施和合作网络的推进，而不是一个今天就能直接下载的单一产品。\n\n这组新闻的价值在于把“AI 做安全”拆成了三个动作：找漏洞、读日志、协调生态。每一步都需要可追踪的证据和人工接管，尤其是高风险处置不能只依据模型生成的摘要。Google 把 Big Sleep 的成果当作信号，但真正能否降低漏洞暴露时间，还要看公开复现、维护者反馈和长期误报率。",
+  "body": "7 月 15 日，Google 发布一组面向网络防守的 AI 更新。最具体的一条是：Google DeepMind 与 Project Zero 的 Big Sleep 代理结合 Google Threat Intelligence，发现了 SQLite 的 CVE-2025-6965；Google 说，系统判断漏洞可能很快被利用，并在野外利用发生前切断了这条路径。与此同时，Google 预告把 Sec-Gemini 的 agentic 能力接入开源取证平台 Timesketch，还展示 FACADE 内部威胁检测和与 CoSAI、DARPA AIxCC 的合作。\n\nBig Sleep 解决的是安全团队“看得太慢”的问题。传统漏洞研究需要研究员读代码、构造输入、验证触发条件，再给维护者提交报告；代理可以连续搜索、运行测试并把线索串起来。Google 的公告把这件事描述为 AI 代理第一次直接阻断野外漏洞利用，但这是公司对自己系统的总结。公开资料可以核对漏洞编号和披露记录，却不能仅凭一篇公司公告证明“阻断”在所有环境都可重复。\n\nTimesketch 是另一种使用方式。它本来就是用于协作数字取证的时间线工具，Google 计划让 AI 先对大量日志做初步调查，再把可疑线索交给分析员。这里的关键词是“初步”：AI 适合把事件按时间、主机和行为聚类，是否构成入侵、哪些证据可采信、何时隔离系统，仍需要熟悉环境的人做判断。Google 同时强调 agent 的隐私、越界动作和人类监督问题，说明它没有把自动化调查等同于自动处置。\n\nFACADE 和 AIxCC 把范围扩到模型外部。FACADE 是 Google 内部用于处理大量安全事件的异常检测系统，AIxCC 则让团队用 AI 找到并修复开源软件漏洞。CoSAI 获得 Google 的 Secure AI Framework 数据，用于 agentic AI、网络防御和软件供应链工作流。它们更像基础设施和合作网络的推进。\n\n这组新闻的价值在于把“AI 做安全”拆成了三个动作：找漏洞、读日志、协调生态。每一步都需要可追踪的证据和人工接管，尤其是高风险处置不能只依据模型生成的摘要。Google 把 Big Sleep 的成果当作信号，但真正能否降低漏洞暴露时间，还要看公开复现、维护者反馈和长期误报率。",
   "publishedAt": "2025-07-15",
   "eventDate": "2025-07-15",
   "isExample": false,
@@ -29,7 +29,7 @@
     {
       "id": "fascade-and-aixcc",
       "title": "FACADE 和 AIxCC 把防守推到生态层",
-      "body": "FACADE 关注内部威胁检测，AIxCC 让 AI 帮助找和修开源漏洞；它们是演示和合作计划，不是单一产品的普遍可用承诺。",
+      "body": "FACADE 关注内部威胁检测，AIxCC 让 AI 帮助找和修开源漏洞，它们是演示和合作计划。",
       "kind": "comparison"
     },
     {
@@ -41,7 +41,7 @@
     {
       "id": "human-oversight",
       "title": "高风险处置仍需要人接管",
-      "body": "漏洞是否真实、日志是否完整、何时隔离系统都涉及环境和责任判断；AI 摘要不能替代安全团队的权限和审计。",
+      "body": "安全团队按权限核查漏洞、日志与隔离时机，AI 摘要辅助整理审计材料。",
       "kind": "aside"
     }
   ],

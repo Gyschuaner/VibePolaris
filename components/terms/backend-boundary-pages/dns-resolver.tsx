@@ -61,7 +61,7 @@ const frames = [
     ttl: "60s",
     active: [0, 1],
     done: [0, 1],
-    note: "NXDOMAIN 不是‘没查到所以再问一次’；权威回答里的 SOA 给出负缓存时长，TTL 内再次查询可以直接得到不存在。",
+    note: "TTL 内再次查询可以直接得到不存在。",
   },
 ];
 
@@ -86,7 +86,7 @@ const scenarios = [
     evidence: "Answer: A .10 · upstream queries 0",
     result: "短路返回",
     status: "ok",
-    note: "相同 QNAME、QTYPE 和 class 命中仍有效的 RR，递归器可以直接回答；缓存不是永久数据库，TTL 仍在走。",
+    note: "相同 QNAME、QTYPE 和 class 命中仍有效的 RR，递归器可以直接回答。",
   },
   {
     label: "NXDOMAIN · 负缓存",
@@ -97,7 +97,7 @@ const scenarios = [
     evidence: "RCODE NXDOMAIN · authority: SOA",
     result: "有依据的否定",
     status: "negative",
-    note: "名称不存在和类型没有数据不是一回事，但两者都可能由 SOA 携带负 TTL；看到空答案要继续看 RCODE 和 authority 区。",
+    note: "两者都可能由 SOA 携带负 TTL，看到空答案要继续看 RCODE 和 authority 区。",
   },
   {
     label: "上游无回应 · SERVFAIL",
@@ -108,7 +108,7 @@ const scenarios = [
     evidence: "RCODE SERVFAIL · no useful answer",
     result: "解析失败",
     status: "failure",
-    note: "SERVFAIL 说明这次解析没有拿到可用数据；它和 NXDOMAIN 不同，不能据此断言名字不存在。",
+    note: "SERVFAIL 说明这次解析没有拿到可用数据。",
   },
 ];
 
@@ -149,7 +149,7 @@ function DnsResolverLab() {
   const current = scenarios[selected];
   const Icon = current.status === "ok" ? CheckCircle : XCircle;
   return <div className={styles.dnsResolverLab} role="region" aria-label="DNS resolver 命中、负缓存和失败实验">
-    <div className={styles.dnsResolverLabHeader}><div><span>别把所有“没拿到地址”都叫 DNS 挂了</span><strong>先看 resolver 留下的证据</strong></div><span>{selected + 1} / {scenarios.length}</span></div>
+    <div className={styles.dnsResolverLabHeader}><div><span>按返回结果定位 DNS 问题</span><strong>先看 resolver 留下的证据</strong></div><span>{selected + 1} / {scenarios.length}</span></div>
     <div className={styles.dnsResolverLabPath}>
       <div className={styles.dnsResolverLabNode}><MagnifyingGlass size={19} aria-hidden="true" /><span>查询</span><code>{current.query}</code><code>{current.cache}</code></div><ArrowRight className={styles.dnsResolverArrow} size={18} aria-hidden="true" />
       <div className={styles.dnsResolverLabNode}><HardDrives size={19} aria-hidden="true" /><span>resolver 决定</span><strong>{current.resolver}</strong><code>{current.trace}</code></div><ArrowRight className={styles.dnsResolverArrow} size={18} aria-hidden="true" />
@@ -162,21 +162,21 @@ function DnsResolverLab() {
 
 export function DnsResolverTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={dnsResolverSources} />;
-  return <ConceptArticle slug="dns-resolver" title="DNS 解析器" subtitle="DNS Resolver · 替客户端把名字问到有答案的地方" sources={dnsResolverSources} sections={[["resolver-roles-section", "先分清谁在问、谁在回答"], ["resolver-cache-section", "缓存命中会把路剪短"], ["resolver-walk-section", "没命中时沿着委派继续问"], ["resolver-result-section", "有答案、没数据和没回信不是一回事"]]} intro={<>你在地址栏里输入一个名字，通常不是电脑直接跑到 DNS 根服务器门口。<strong>本机的 stub 把问题交给 resolver，resolver 再决定查缓存、追委派，还是把失败暂时记住。</strong><Cite id="resolver-roles" /></>}>
+  return <ConceptArticle slug="dns-resolver" title="DNS 解析器" subtitle="DNS Resolver · 替客户端把名字问到有答案的地方" sources={dnsResolverSources} sections={[["resolver-roles-section", "先分清谁在问、谁在回答"], ["resolver-cache-section", "缓存命中会把路剪短"], ["resolver-walk-section", "没命中时沿着委派继续问"], ["resolver-result-section", "区分有答案、无数据与未收到回信"]]} intro={<>输入名字后，电脑通常先向配置的解析器查询。<strong>本机的 stub 把问题交给 resolver，resolver 再决定查缓存、追委派，还是把失败暂时记住。</strong><Cite id="resolver-roles" /></>}>
     <ArticleSection id="resolver-roles-section" title="先分清谁在问、谁在回答">
-      <p id="resolver-roles" className="vp-citation-target">DNS 里常被叫作“服务器”的东西，职责并不相同。stub resolver 只负责把本机应用的问题交出去；recursive resolver 代表它继续查；authoritative server 保存某个 zone 的正式数据。把三者都叫 DNS 服务器，排查时就会不知道是哪一层在说话。<Cite id="resolver-roles" /></p>
-      <p id="resolver-query" className="vp-citation-target">一次查询至少带着 QNAME、QTYPE 和 class。客户端把请求里的 RD（Recursion Desired）置上，表示希望对方替自己追下去；返回里的 RA 只能说明这个服务器提供递归能力，不能证明答案一定来自权威区。<Cite id="resolver-query" /></p>
+      <p id="resolver-roles" className="vp-citation-target">DNS 里常被叫作“服务器”的东西，职责各有差异。stub resolver 只负责把本机应用的问题交出去；recursive resolver 代表它继续查；authoritative server 保存某个 zone 的正式数据。把三者都叫 DNS 服务器，排查时就会不知道是哪一层在说话。<Cite id="resolver-roles" /></p>
+      <p id="resolver-query" className="vp-citation-target">一次查询至少带着 QNAME、QTYPE 和 class。表示希望对方继续递归查询，返回的 RA 标明服务器提供递归能力。<Cite id="resolver-query" /></p>
       <DnsResolverLab />
     </ArticleSection>
     <ArticleSection id="resolver-cache-section" title="缓存命中会把路剪短">
-      <p id="resolver-cache" className="vp-citation-target">resolver 会把收到的 RR 和剩余 TTL 放进缓存。下一次相同名字、类型和 class 的问题到来时，仍未过期的答案可以直接返回；过期记录会被丢掉或重新查询。缓存的价值是减少延迟和权威服务器的压力，不是把全网 DNS 复制到本地。<Cite id="resolver-cache" /></p>
-      <p>同一个 resolver 还可能同时处理许多人的问题。缓存里有 <code>api.example.com A</code>，不代表 <code>api.example.com MX</code> 也已经有答案；查询的名字和类型要一起看。实验里把 QTYPE 换掉，所谓“命中”就可能重新变成一次上游查询。</p>
+      <p id="resolver-cache" className="vp-citation-target">resolver 会把收到的 RR 和剩余 TTL 放进缓存。下一次相同名字、类型和 class 的问题到来时，仍未过期的答案可以直接返回；过期记录会被丢掉或重新查询。缓存的价值是减少延迟和权威服务器的压力。<Cite id="resolver-cache" /></p>
+      <p>同一个 resolver 可以同时处理许多人的问题，缓存按查询名、类型与 class 区分。<code>api.example.com A</code> 和 <code>api.example.com MX</code> 分别查找对应记录。实验里换掉 QTYPE 后，解析器按新类型检查缓存，必要时重新向上游查询。</p>
     </ArticleSection>
     <ArticleSection id="resolver-walk-section" title="没命中时沿着委派继续问">
       <p id="resolver-walk" className="vp-citation-target">缓存没有答案时，递归 resolver 会利用已知的 NS 和地址线索，从根、顶级域到目标 zone 逐步缩小范围。上游返回 referral 时，递归器换一个更接近目标的服务器继续问；这和 stub 只发出一次递归查询，是两种不同的视角。<Cite id="resolver-walk" /></p>
-      <p id="resolver-response" className="vp-citation-target">递归模式下，客户端通常拿到最终答案或错误，而不是一串让它自己继续追的 referral；迭代模式则由发起者收到 referral 后自己选择下一跳。看到响应里的 answer、authority 和 additional 区，才能知道这次是结果、指路，还是附带了下一跳地址。<Cite id="resolver-response" /></p>
+      <p id="resolver-response" className="vp-citation-target">递归模式下，客户端通常拿到最终答案或错误；迭代模式则由发起者收到 referral 后自己选择下一跳。看到响应里的 answer、authority 和 additional 区，才能知道这次是结果、指路，还是附带了下一跳地址。<Cite id="resolver-response" /></p>
     </ArticleSection>
-    <ArticleSection id="resolver-result-section" title="有答案、没数据和没回信不是一回事">
+    <ArticleSection id="resolver-result-section" title="区分有答案、无数据与未收到回信">
       <p id="resolver-negative" className="vp-citation-target"><code>NXDOMAIN</code> 表示名字不存在；<code>NOERROR</code> 加上空的相关 answer 则可能是 NODATA，表示名字存在但没有被问的类型。权威响应可以在 authority 区带 SOA，resolver 按负 TTL 暂存这个结论。<Cite id="resolver-negative" /></p>
       <p id="resolver-failure" className="vp-citation-target"><code>SERVFAIL</code>、超时或上游不可达说明这次没有拿到可用数据，不能当成“名字不存在”。解析失败会进入短时 failure cache；实现可以按失败类型设置期限，RFC 9520 要求至少缓存 1 秒、最长不超过 5 分钟。这样能限制重复重试，缓解上游故障带来的查询风暴，却不会把错误变成正确答案。<Cite id="resolver-failure" /></p>
       <p id="resolver-diagnosis" className="vp-citation-target">排查 DNS 时，把 QNAME、QTYPE、RD/RA、RCODE、AA、answer/authority/additional、每条 RR 的 TTL、实际问过的上游和重试结果放在一起。只看到应用报“找不到主机”，无法区分缓存命中、NXDOMAIN、NODATA、SERVFAIL 和等待超时。<Cite id="resolver-diagnosis" /></p>

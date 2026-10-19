@@ -1,8 +1,8 @@
 {
   "slug": "codex-remote-access-chatgpt-mobile",
   "title": "Codex 在 ChatGPT 移动端开放预览，可远程连接 Mac 主机工作",
-  "summary": "5 月 14 日，OpenAI Developer Community 公告介绍 Codex 在 ChatGPT 移动端的预览：用户可以从手机开始或继续线程、查看输出和审批动作，实际命令仍在连接的 Mac 主机上运行。公告没有证明所有账户、地区或网络环境都已支持。",
-  "body": "5 月 14 日，OpenAI Developer Community 介绍 Codex 在 ChatGPT 移动端的预览。用户可以从手机开始或继续线程、查看终端输出和 diff、审批动作；代码和命令仍在连接的 Mac 主机上执行。\n\n因此需要把控制面和执行面分开看。手机负责查看状态和发起控制，Mac 继续提供文件、终端、网络和本地凭据。移动端能看到一个任务，不代表它拥有主机之外的权限，也不会自动把本地环境搬到手机。\n\n作为一种安全测试，可以这样观察一次代码修复：手机显示待审的 diff，用户确认后，Mac 在受限环境运行测试；需要联网、写敏感目录或提交代码时，再单独确认。agent-harness 管理线程和工具循环，execution-sandbox 隔离执行，auth 处理登录和凭据，tools 承载终端与文件操作，context 传递历史状态。\n\n社区公告属于预览说明，不能证明所有账户、地区或主机都已开放，也没有证明断线、权限继承和远程审批在所有网络条件下稳定。后续应测试连接建立、断线恢复、主机端日志和高风险动作的确认。",
+  "summary": "5 月 14 日，OpenAI Developer Community 公告介绍 Codex 在 ChatGPT 移动端的预览：用户可以从手机开始或继续线程、查看输出和审批动作，实际命令仍在连接的 Mac 主机上运行。",
+  "body": "5 月 14 日，OpenAI Developer Community 介绍 Codex 在 ChatGPT 移动端的预览。用户可以从手机开始或继续线程、查看终端输出和 diff、审批动作；代码和命令仍在连接的 Mac 主机上执行。\n\n因此需要把控制面和执行面分开看。手机负责查看状态和发起控制，Mac 继续提供文件、终端、网络和本地凭据。移动端能看到一个任务，也不会自动把本地环境搬到手机。\n\n作为一种安全测试，可以这样观察一次代码修复：手机显示待审的 diff，用户确认后，Mac 在受限环境运行测试；需要联网、写敏感目录或提交代码时，再单独确认。agent-harness 管理线程和工具循环，execution-sandbox 隔离执行，auth 处理登录和凭据，tools 承载终端与文件操作，context 传递历史状态。\n\n社区公告属于预览说明。后续应测试连接建立、断线恢复、主机端日志和高风险动作的确认。",
   "publishedAt": "2026-05-14",
   "eventDate": "2026-05-14",
   "isExample": false,
@@ -17,13 +17,13 @@
     {
       "id": "preview",
       "title": "手机端新增的是控制入口",
-      "body": "公告介绍了从 ChatGPT 移动端开始或继续 Codex 线程、查看输出和审批动作的预览。Codex 仍在连接的 Mac 主机上运行，手机并不承担本地命令执行。",
+      "body": "公告介绍了从 ChatGPT 移动端开始或继续 Codex 线程、查看输出和审批动作的预览。",
       "kind": "narrative"
     },
     {
       "id": "control-execution",
       "title": "控制面和执行面要分开",
-      "body": "手机可以看到线程、终端输出和 diff，Mac 继续提供文件、网络和凭据。agent-harness 管理任务，execution-sandbox 限制主机操作，auth 处理身份；移动端可见性不能被理解为额外权限。",
+      "body": "手机可以看到线程、终端输出和 diff，Mac 继续提供文件、网络和凭据。agent-harness 管理任务，execution-sandbox 限制主机操作，auth 处理身份；移动端沿用原有会话的权限范围。",
       "kind": "technical"
     },
     {
@@ -35,7 +35,7 @@
     {
       "id": "preview-limits",
       "title": "预览公告没有覆盖所有运行条件",
-      "body": "社区说明不能证明所有账户、地区或主机都已支持，也没有给出断线恢复、权限继承和不同网络条件下的稳定性数据。",
+      "body": "没有给出断线恢复、权限继承和不同网络条件下的稳定性数据。",
       "kind": "boundary"
     },
     {

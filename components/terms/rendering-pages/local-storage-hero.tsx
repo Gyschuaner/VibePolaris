@@ -11,7 +11,7 @@ const captions = [
   "A 写入 theme=dark；B 是另一份同源文档，可以听到 storage 变化。",
   "把 B 换到 admin.example，钥匙罐随 origin 换了；它不会收到 shop.example 的铃声。",
   "localStorage 只收字符串；对象要先序列化，读回来再解析。",
-  "它是同步的小盒子，不是密码保险箱、消息队列或数据库。",
+  "它是同步的小盒子。",
 ];
 
 export function LocalStorageHero() {

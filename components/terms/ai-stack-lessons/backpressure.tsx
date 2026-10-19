@@ -42,13 +42,13 @@ export function BackpressureLesson() {
         <h3>{bufferText}</h3>
         <div className={styles.backpressureLabCapacity}><i data-filled="true" /><i data-filled="true" /><i data-filled={slow} /></div>
         <div className={styles.backpressureLabSignal}><ArrowsClockwise size={15} aria-hidden="true" /><span>{shedding ? "没有回传，改为丢弃" : pressured ? "capacity → producer" : "capacity 可用"}</span></div>
-        <small>{shedding ? "这是 load shedding，数据不会自动回来。" : "背压改变的是生产节奏，不是结果内容。"}</small>
+        <small>{shedding ? "这是 load shedding，数据不会自动回来。" : "背压改变的是生产节奏。"}</small>
       </div>
       <div className={styles.backpressureLabPanel} data-active={scene.step === 3}>
         <div className={styles.backpressureLabLabel}><Gauge size={16} aria-hidden="true" /><span>消费者</span></div>
         <h3>{slow ? (final ? "开始排空" : "处理较慢") : "恢复处理"}</h3>
         <div className={styles.backpressureLabConsumer}><strong>{slow ? "1 / 秒" : "4 / 秒"}</strong><span>{final ? "下游已接住" : "处理能力"}</span></div>
-        <small>{slow ? "慢不是错误，关键是让上游知道容量。" : "容量恢复后，暂停的工作可以继续。"}</small>
+        <small>{slow ? "关键是让上游知道容量。" : "容量恢复后，暂停的工作可以继续。"}</small>
       </div>
     </div>
     <div className={styles.backpressureLabMetrics}>

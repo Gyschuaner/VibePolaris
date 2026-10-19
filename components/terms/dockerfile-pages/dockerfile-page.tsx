@@ -21,19 +21,19 @@ export function DockerfileTermPage() {
 
     <ArticleSection id="dockerfile-cache-section" title="顺序决定哪些层能复用">
       <p id="docker-cache" className="vp-citation-target">构建缓存会比较当前步骤和它依赖的输入；命中后可以复用已有结果，失效后通常还会影响后面的步骤。把变化慢的 manifest 先复制，再安装依赖，通常比先复制整个源码更容易保住缓存。<Cite id="docker-cache" sources={dockerfileSources} /></p>
-      <p id="docker-invalidation" className="vp-citation-target">缓存失效不是错误，它是输入变化的证据。排查慢构建时，先找哪条指令失效、为什么失效，再决定是否要改顺序；不要用一个巨大的 cache-bust 把所有层一起打掉。<Cite id="docker-invalidation" sources={dockerfileSources} /></p>
+      <p id="docker-invalidation" className="vp-citation-target">它是输入变化的证据。排查慢构建时，先找哪条指令失效、为什么失效，再决定是否要改顺序；不要用一个巨大的 cache-bust 把所有层一起打掉。<Cite id="docker-invalidation" sources={dockerfileSources} /></p>
       <p id="docker-order" className="vp-citation-target">依赖清单、安装命令和源码复制的排列有不同的变化频率。让高频变化靠后，能减少重复安装；让真正需要一起变化的输入保持在同一边界，缓存才不会为了数字而变得脆弱。<Cite id="docker-order" sources={dockerfileSources} /></p>
     </ArticleSection>
 
     <ArticleSection id="dockerfile-stage-section" title="构建工具不必住进运行时">
       <p id="docker-stage" className="vp-citation-target">多阶段构建用多个 <code>FROM</code> 给构建和运行划出不同舞台。build 阶段可以安装编译器和开发依赖，runtime 阶段只从前一阶段复制产物。<Cite id="docker-stage" sources={dockerfileSources} /></p>
-      <p id="docker-runtime" className="vp-citation-target">运行镜像更小、攻击面更窄只是结果，不是多阶段的唯一理由。真正要说明的是：哪些工具只为构建服务，哪些文件是运行时必需，以及复制边界是否把配置和权限一起带对。<Cite id="docker-runtime" sources={dockerfileSources} /></p>
-      <p><strong>可以这样检查层：</strong>改变一个源文件，确认依赖层命中；改变 lockfile，确认安装层确实重跑；构建 runtime 镜像并查看它不含编译工具；再把失败步骤定位到具体指令，而不是只看最后一行“build failed”。</p>
+      <p id="docker-runtime" className="vp-citation-target">运行镜像更小、攻击面更窄只是结果。真正要说明的是：哪些工具只为构建服务，哪些文件是运行时必需，以及复制边界是否把配置和权限一起带对。<Cite id="docker-runtime" sources={dockerfileSources} /></p>
+      <p><strong>可以这样检查层：</strong>改变一个源文件，确认依赖层命中；改变 lockfile，确认安装层确实重跑；构建 runtime 镜像并查看它不含编译工具；再把失败步骤定位到具体指令。</p>
     </ArticleSection>
 
     <ArticleSection id="dockerfile-context-section" title="发送给构建器的东西也有边界">
       <p id="docker-context" className="vp-citation-target">Docker build context 是构建器可以读取的输入集合。发送整个仓库会增加上传、扫描和误带入的成本；在 context 外的文件即使写进 Dockerfile，也不能被 <code>COPY</code> 取到。<Cite id="docker-context" sources={dockerfileSources} /></p>
-      <p id="docker-ignore" className="vp-citation-target"><code>.dockerignore</code> 可以从 context 里排除 node_modules、日志、构建产物和本地秘密。它不是安全边界的替代品，但能减少无用输入、缩短发送时间，也让构建意图更容易复查。<Cite id="docker-ignore" sources={dockerfileSources} /></p>
+      <p id="docker-ignore" className="vp-citation-target"><code>.dockerignore</code> 可以从 context 里排除 node_modules、日志、构建产物和本地秘密。能减少无用输入、缩短发送时间，也让构建意图更容易复查。<Cite id="docker-ignore" sources={dockerfileSources} /></p>
       <p><strong>最后问一句：</strong>这行 Dockerfile 是在描述运行时需要，还是在掩盖构建上下文太大的问题？把问题留在它所属的边界里，镜像才会既可复现又能解释。</p>
     </ArticleSection>
   </Article>;

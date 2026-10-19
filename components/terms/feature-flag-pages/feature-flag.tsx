@@ -62,7 +62,7 @@ export function FeatureFlagLesson() {
       <div><span>操作结果</span><strong>{kill ? "已回退" : regression && final ? "需止损" : scene.step >= 3 ? "继续观察" : "等待"}</strong></div>
     </div>
     <p className={styles.featureFlagLabNote} data-danger={kill || (regression && final)} role="status">
-      {kill ? <><ShieldCheck size={17} aria-hidden="true" /><span>开关关闭后，所有请求回到旧路径；这是暴露控制，不是把新代码从构建里抹掉。</span></> : regression && final ? <><WarningCircle size={17} aria-hidden="true" /><span>观察到回归时，先把暴露降回 0%，再调查原因。把 flag 当成权限校验或数据回滚，会让边界变得危险。</span></> : scene.step >= 3 ? <><CheckCircle size={17} aria-hidden="true" /><span>分批发布要和错误率、延迟、转化等指标一起读；比例变大本身不是成功证据。</span></> : <><User size={17} aria-hidden="true" /><span>同一版本里同时存在两条路径，评估器用请求上下文选择其中一条，并返回可追踪的变体。</span></>}
+      {kill ? <><ShieldCheck size={17} aria-hidden="true" /><span>所有请求回到旧路径，这是暴露控制。</span></> : regression && final ? <><WarningCircle size={17} aria-hidden="true" /><span>观察到回归时，先把暴露降回 0%，再调查原因。把 flag 当成权限校验或数据回滚，会让边界变得危险。</span></> : scene.step >= 3 ? <><CheckCircle size={17} aria-hidden="true" /><span>分批发布要和错误率、延迟、转化等指标一起读。</span></> : <><User size={17} aria-hidden="true" /><span>同一版本里同时存在两条路径，评估器用请求上下文选择其中一条，并返回可追踪的变体。</span></>}
     </p>
   </div>;
 }

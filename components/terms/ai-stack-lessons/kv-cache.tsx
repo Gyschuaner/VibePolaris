@@ -61,7 +61,7 @@ export function KvCacheLesson() {
       <div><span>权重变化</span><strong>0 次</strong></div>
     </div>
     <p className={styles.kvCacheLabNote} data-danger={miss} role="status">
-      {changed ? <><WarningCircle size={17} aria-hidden="true" /><span>只改了“客服”这一格，前缀就不再相同；KV cache 不能把另一份上下文的中间状态当作这次请求的证据。</span></> : full ? <><WarningCircle size={17} aria-hidden="true" /><span>缓存是有限的工作内存。空间满时要淘汰或搬到更慢的层级，命中率和延迟会随容量策略变化。</span></> : final ? <><CheckCircle size={17} aria-hidden="true" /><span>命中表示少做了一段重复计算，不表示答案更正确；缓存里没有模型权重，也没有事实核验。</span></> : <><LockSimple size={17} aria-hidden="true" /><span>先把 K / V 放进按 token 分块的抽屉，再判断后续请求能不能复用相同前缀。</span></>}
+      {changed ? <><WarningCircle size={17} aria-hidden="true" /><span>前缀就不再相同。</span></> : full ? <><WarningCircle size={17} aria-hidden="true" /><span>缓存是有限的工作内存。空间满时要淘汰或搬到更慢的层级，命中率和延迟会随容量策略变化。</span></> : final ? <><CheckCircle size={17} aria-hidden="true" /><span>命中表示少做了一段重复计算，不表示答案更正确；缓存里没有模型权重，也没有事实核验。</span></> : <><LockSimple size={17} aria-hidden="true" /><span>先把 K / V 放进按 token 分块的抽屉，再判断后续请求能不能复用相同前缀。</span></>}
     </p>
   </div>;
 }

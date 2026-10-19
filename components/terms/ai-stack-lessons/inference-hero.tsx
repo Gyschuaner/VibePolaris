@@ -39,7 +39,7 @@ export function InferenceHero() {
       <div className={`${styles.inferenceHeroPanel} ${styles.inferenceHeroOutput}`} data-active={scene.step >= 2}>
         <div className={styles.inferenceHeroLabel}><Timer size={17} aria-hidden="true" /><span>输出 · stream</span></div>
         <h3>边生成，边交付</h3>
-        <p>首个 token 出现后，后续 token 可以陆续到达；速度快不代表内容已被核验。</p>
+        <p>首个 token 出现后，后续 token 可以陆续到达。</p>
         <div className={styles.inferenceHeroTokens}>{outputTokens.map((token, index) => <span key={token} className={`${styles.inferenceHeroToken} ${styles.inferenceHeroTokenOutput}`} data-visible={scene.step >= 2 && index < (scene.step === 3 ? outputTokens.length : Math.max(1, scene.step - 1))} data-output="true">{token}</span>)}</div>
         <div className={styles.inferenceHeroNote}><strong>{scene.step === 3 ? "stop" : "streaming"}</strong><br />停止条件尚未满足时，半句答案不能冒充完成。</div>
       </div>
@@ -88,7 +88,7 @@ export function InferenceLesson() {
       </div>
       <div className={styles.inferenceLabPanel}>
         <h3>同一套权重，两段节奏</h3>
-        <p>先把前缀整体读入，再按输出的先后逐步追加；这不是两次训练。</p>
+        <p>先把前缀整体读入，再按输出的先后逐步追加。</p>
         <div className={styles.inferenceLabRail}>
           <div className={styles.inferenceLabStage} data-active={scene.step === 1}><Circuitry size={16} aria-hidden="true" /><strong>Prefill</strong><small>{scene.step >= 1 ? `${input.length} 个输入 token` : "等待请求"}</small></div>
           <div className={styles.inferenceLabStage} data-active={scene.step >= 2}><Brain size={16} aria-hidden="true" /><strong>Decode</strong><small>{scene.step >= 2 ? `${scene.step === 3 ? output.length : scene.step - 1} 个输出 token` : "等待 prefill"}</small></div>
@@ -97,10 +97,10 @@ export function InferenceLesson() {
       </div>
       <div className={styles.inferenceLabPanel + " " + styles.inferenceLabOutput}>
         <h3>逐 token 交付</h3>
-        <p>输出到达得快，只能说明计算或调度快；是否可靠要看输入和核验。</p>
+        <p>输出速度反映计算与调度情况，可靠性结合输入和核验结果判断。</p>
         <div className={styles.inferenceLabOutputBox}>
           <div className={styles.inferenceLabOutputTokens}>{output.map((token, index) => <span key={`${token}-${index}`} className={styles.inferenceLabOutputToken} data-visible={scene.step >= 2 && index < (scene.step === 3 ? output.length : Math.max(1, scene.step - 1))}>{token}</span>)}</div>
-          <span className={styles.inferenceLabOutputStatus} data-danger={danger}>{final ? (variant === "complete" ? "停止：已得到可继续核对的回答。" : "停止：缺少凭证，不能把猜测写成退款结论。") : scene.step >= 2 ? "输出仍在流动……" : "尚无输出"}</span>
+          <span className={styles.inferenceLabOutputStatus} data-danger={danger}>{final ? (variant === "complete" ? "停止：已得到可继续核对的回答。" : "停止：退款判断需要补充凭证。") : scene.step >= 2 ? "输出仍在流动……" : "尚无输出"}</span>
         </div>
       </div>
     </div>
@@ -110,7 +110,7 @@ export function InferenceLesson() {
       <div className={styles.inferenceLabMetric}><span>运行状态</span><strong>{evalReady ? "评估模式" : "有风险"}</strong></div>
     </div>
     <p className={styles.inferenceLabNote} data-danger={danger} role="status">
-      {variant === "missing" ? <><WarningCircle size={17} aria-hidden="true" /><span>订单号被拿掉了。模型仍然能继续生成文字，但它没有凭证确认“这笔订单”到底是哪一笔。</span></> : !evalReady ? <><WarningCircle size={17} aria-hidden="true" /><span>PyTorch 的 inference_mode 不会自动调用 eval()；dropout 或运行统计的行为仍可能不符合评估预期。</span></> : final ? <><CheckCircle size={17} aria-hidden="true" /><span>推理阶段结束了，但“能输出”与“事实正确”仍要分开检查。</span></> : <><Timer size={17} aria-hidden="true" /><span>先看整段输入，再看输出节奏；不要把半句流式文本当作最终结果。</span></>}
+      {variant === "missing" ? <><WarningCircle size={17} aria-hidden="true" /><span>订单号被拿掉了。模型仍然能继续生成文字，但它没有凭证确认“这笔订单”到底是哪一笔。</span></> : !evalReady ? <><WarningCircle size={17} aria-hidden="true" /><span>PyTorch 的 inference_mode 不会自动调用 eval()；dropout 或运行统计的行为仍可能不符合评估预期。</span></> : final ? <><CheckCircle size={17} aria-hidden="true" /><span>推理阶段结束了，但“能输出”与“事实正确”仍要分开检查。</span></> : <><Timer size={17} aria-hidden="true" /><span>先看整段输入，再看输出节奏。</span></>}
     </p>
   </div>;
 }

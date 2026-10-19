@@ -13,7 +13,7 @@ function Layers({ current, children }: { current: number; children: ReactNode[] 
 
 const toolResults = {
   success: { label: "读取成功", result: "app.py:1\nSyntaxError: expected ':'", answer: "日志指向 app.py 第一行：函数定义缺少冒号。接下来应查看这行代码。" },
-  missing: { label: "文件不存在", result: "FileNotFound: server.log", answer: "没有读到日志。需要先确认文件路径，不能据此判断服务为什么失败。" },
+  missing: { label: "文件不存在", result: "FileNotFound: server.log", answer: "没有读到日志。需要先确认文件路径。" },
   denied: { label: "未获授权", result: "PermissionDenied: read_file", answer: "读取没有获得授权，文件未被打开。请提供允许读取的日志内容。" },
 };
 
@@ -71,7 +71,7 @@ export function ContextLesson() {
   function respond() {
     const has = (id: string) => selected.includes(id);
     setAnswer(has("log")
-      ? `这次日志显示 app.py 第一行缺少冒号，先查看并修正这一行。${has("rule") ? "修改后启动服务，再检查 /health 是否返回 200。" : "修正后还需要检查服务能否正常启动。"}${has("history") ? "上周的端口问题不能代替这次日志里的错误。" : ""}`
+      ? `这次日志显示 app.py 第一行缺少冒号，先查看并修正这一行。${has("rule") ? "修改后启动服务，再检查 /health 是否返回 200。" : "修正后还需要检查服务能否正常启动。"}${has("history") ? "优先分析这次日志中的错误，再与上周的端口问题比较。" : ""}`
       : `${has("history") ? "上周曾有端口占用，但还没有本次启动日志，不能确定这次也是同一个原因。" : "目前只有启动失败的描述，还不能确定原因。请提供本次启动日志。"}${has("rule") ? "我会保留修改后检查 /health 的要求。" : ""}`);
     setAnswered(true);
   }

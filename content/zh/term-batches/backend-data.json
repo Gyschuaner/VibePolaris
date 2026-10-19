@@ -5,7 +5,7 @@
     "aliases": ["服务端", "后端服务器", "主机"],
     "question": "为什么我本地能打开，发给别人却访问不了？",
     "definition": "服务器是在网络中接收客户端请求并提供数据或功能的计算机或程序。",
-    "boundary": "服务器不等于数据库；服务器可以调用数据库，但也能处理计算、文件和接口请求。",
+    "boundary": "服务器可以调用数据库，但也能处理计算、文件和接口请求。",
     "demoType": "request", "demoTitle": "监听端口与路径怎样改变结果",
     "demoSteps": [
       {
@@ -21,7 +21,7 @@
       {
         "label": "确认同一台主机",
         "value": "127.0.0.1 · 8001",
-        "note": "主机在线不等于每个端口都有服务。"
+        "note": "访问服务需要主机在线、端口监听且网络路径可达。"
       },
       {
         "label": "请求停在连接层",
@@ -30,7 +30,7 @@
       }
     ],
     "quizQuestion": "下面哪项是服务器的主要职责？", "quizOptions": ["接收请求并返回数据或功能", "只负责显示页面颜色", "只保存用户密码"],
-    "correctText": "服务器处理来自客户端的请求，并返回对应结果。", "wrongText": "页面显示和数据保存只是部分场景，不是服务器的完整职责。",
+    "correctText": "服务器处理来自客户端的请求，并返回对应结果。", "wrongText": "页面显示和数据保存只是部分场景。",
     "promptTitle": "检查服务器请求处理", "prompt": "请按请求到达、业务处理、结果返回三个环节检查这段服务端代码，指出失败点和可观察的日志。",
     "relatedSlugs": ["request", "response", "endpoint", "reverse-proxy", "api-gateway"]
   },
@@ -59,13 +59,13 @@
         "note": "请求头说明处理条件，body 承载书名表示。"
       },
       {
-        "label": "构造不等于发送",
+        "label": "组装请求消息",
         "value": "new Request → fetch",
-        "note": "Request 对象构造成功，只说明消息已在浏览器内存中组好。"
+        "note": "Request 对象构造成功，说明消息已在浏览器内存中组好。"
       }
     ],
     "quizQuestion": "一条 HTTP 请求通常包含什么？", "quizOptions": ["方法、地址、请求头和可选请求体", "只有页面截图", "只有服务器状态码"],
-    "correctText": "这些信息共同说明请求目标和处理方式。", "wrongText": "状态码属于响应，截图也不是 HTTP 请求的固定组成。",
+    "correctText": "这些信息共同说明请求目标和处理方式。", "wrongText": "状态码属于响应。",
     "promptTitle": "拆解接口请求", "prompt": "请拆解这条 HTTP 请求的 method、URL、headers、query 和 body，并说明每部分由谁读取。",
     "relatedSlugs": ["response", "http-method", "http-header", "request-body"]
   },
@@ -75,7 +75,7 @@
     "aliases": ["HTTP 响应", "接口返回", "返回结果"],
     "question": "接口明明有返回，为什么页面仍然显示失败？",
     "definition": "响应是服务器针对请求返回的信息，通常包含状态码、响应头和响应体。",
-    "boundary": "响应表示一次请求的处理结果，不等于页面最终呈现的界面状态。",
+    "boundary": "响应表示一次请求的处理结果。",
     "demoType": "comparison", "demoTitle": "同一份回执怎样改变页面",
     "demoSteps": [
       {
@@ -110,7 +110,7 @@
     "aliases": ["请求方法", "HTTP 动词", "Method"],
     "question": "读取、修改和删除数据应该都用 POST 吗？",
     "definition": "HTTP 方法表达请求意图，例如 GET 读取资源、POST 创建或触发处理、DELETE 删除资源。",
-    "boundary": "方法只表达语义，不能代替权限校验和参数校验。",
+    "boundary": "方法表达请求语义，权限和参数由服务端校验。",
     "demoType": "branch", "demoTitle": "同一资源对应不同方法",
     "demoSteps": [
       {
@@ -146,7 +146,7 @@
       {
         "label": "提交任务",
         "value": "202 Accepted",
-        "note": "请求已受理，先拿 task 地址，不代表文件完成。"
+        "note": "请求已受理，先拿 task 地址。"
       },
       {
         "label": "查询处理中",
@@ -231,7 +231,7 @@
       {
         "label": "分清缺失和空值",
         "value": "tag= / 没有 tag",
-        "note": "空字符串和不存在的键在程序里不是同一种结果。"
+        "note": "空字符串表示键存在且值为空；缺少键表示参数未提供。"
       },
       {
         "label": "最后处理编码",
@@ -271,7 +271,7 @@
       {
         "label": "检查权限与存在性",
         "value": "42 → 403 / 200",
-        "note": "找到对象不等于允许访问，资料不存在还可能回 404。"
+        "note": "资料不存在还可能回 404。"
       }
     ],
     "quizQuestion": "哪个地址使用了路径参数定位资源？", "quizOptions": ["/orders/908", "/orders?page=2", "/orders#top"],
@@ -310,7 +310,7 @@
       }
     ],
     "quizQuestion": "JSON 请求体应搭配哪种 Content-Type？", "quizOptions": ["application/json", "image/png", "text/css"],
-    "correctText": "application/json 表明请求体需要按 JSON 解析。", "wrongText": "图片和 CSS 类型不能说明 JSON 数据格式。",
+    "correctText": "application/json 表明请求体需要按 JSON 解析。", "wrongText": "application/json 表明请求体需要按 JSON 解析。",
     "promptTitle": "检查请求体结构", "prompt": "请根据接口目标检查请求体字段、类型、必填项和长度限制，并给出验证失败时的响应。",
     "relatedSlugs": ["request", "json", "http-header"]
   },
@@ -320,7 +320,7 @@
     "aliases": ["JSON 数据", "接口数据", "对象文本"],
     "question": "为什么接口返回的内容看起来像 JavaScript 对象？",
     "definition": "JSON 是用字符串、数字、布尔值、null、数组和对象表示结构化数据的文本格式。",
-    "boundary": "JSON 不是 JavaScript 代码，不支持注释、函数和 undefined。",
+    "boundary": "不支持注释、函数和 undefined。",
     "demoType": "state", "demoTitle": "文本怎样变成值并通过契约",
     "demoSteps": [
       {
@@ -336,7 +336,7 @@
       {
         "label": "停在语法边界",
         "value": "尾逗号 → SyntaxError",
-        "note": "看起来像对象不代表文本符合 JSON 语法。"
+        "note": "文本需通过 JSON 语法解析。"
       },
       {
         "label": "检查数字边界",
@@ -360,7 +360,7 @@
     "aliases": ["接口端点", "API 地址", "路由"],
     "question": "同一个 /users 地址用 GET 和 POST，算一个接口还是两个？",
     "definition": "端点是 API 可访问的接口位置；对接 HTTP 操作时，还需共同核对服务基址、方法和路径，不同文档对端点的命名粒度可能不同。",
-    "boundary": "端点不是整个 API；一个 API 往往包含多个端点。",
+    "boundary": "一个 API 往往包含多个端点。",
     "demoType": "hierarchy", "demoTitle": "用户 API 里的三个端点",
     "demoSteps": [
       {"label": "列表", "value": "GET /users", "note": "读取用户集合。"},
@@ -432,7 +432,7 @@
     "aliases": ["登录会话", "Session ID", "会话状态"],
     "question": "登录成功后，刷新页面为什么还能保持登录？",
     "definition": "会话是在多次请求之间保存用户状态的一种机制，客户端通常只持有会话标识。",
-    "boundary": "会话标识不是用户密码；它需要安全传输、过期和撤销机制。",
+    "boundary": "它需要安全传输、过期和撤销机制。",
     "demoType": "lifecycle", "demoTitle": "登录会话的生命周期",
     "demoSteps": [
       {"label": "创建", "value": "session = a7f…", "note": "登录通过后服务端建立会话。"},
@@ -476,7 +476,7 @@
       {"label": "换取令牌", "value": "access_token", "note": "应用用令牌访问获准资源。"}
     ],
     "quizQuestion": "OAuth 2.0 的主要用途是什么？", "quizOptions": ["委托有限权限", "加密所有数据库字段", "编写页面样式"],
-    "correctText": "OAuth 让应用在授权范围内访问资源。", "wrongText": "它不是数据库加密或页面样式方案。",
+    "correctText": "OAuth 让应用在授权范围内访问资源。", "wrongText": "OAuth 让应用在授权范围内访问资源。",
     "promptTitle": "梳理 OAuth 流程", "prompt": "请按客户端类型梳理 OAuth 授权流程，列出 redirect URI、scope、state、令牌保存和撤销要求。",
     "relatedSlugs": ["authorization", "auth", "api-key"]
   },
@@ -486,7 +486,7 @@
     "aliases": ["权限校验", "访问控制", "鉴权"],
     "question": "用户已经登录，为什么还是不能进入管理员页面？",
     "definition": "授权是在身份确认之后，根据规则决定主体是否可以执行某项操作。",
-    "boundary": "认证回答“是谁”，授权回答“能做什么”；两者不能互相替代。",
+    "boundary": "认证确认身份，授权判断允许的操作。",
     "demoType": "branch", "demoTitle": "同一请求怎样经过权限判断",
     "demoSteps": [
       {"label": "识别用户", "value": "user = 42", "note": "认证层确认调用者身份。"},
@@ -494,7 +494,7 @@
       {"label": "执行分支", "value": "允许或 403", "note": "通过则继续，拒绝则返回明确状态。"}
     ],
     "quizQuestion": "用户已登录但无删除权限，服务应做什么？", "quizOptions": ["拒绝删除并返回 403", "自动提升为管理员", "忽略权限继续删除"],
-    "correctText": "身份有效不代表拥有所有操作权限。", "wrongText": "系统不能因为用户已登录就绕过权限规则。",
+    "correctText": "服务端按身份、角色与资源规则判断具体操作权限。", "wrongText": "系统不能因为用户已登录就绕过权限规则。",
     "promptTitle": "检查授权规则", "prompt": "请列出这个操作的主体、资源、动作和条件，检查服务端是否在执行前完成授权判断。",
     "relatedSlugs": ["auth", "rbac", "least-privilege", "session"]
   },
@@ -538,7 +538,7 @@
       "只要前端隐藏按钮就可以"
     ],
     "correctText": "角色给出动作权限，具体对象仍要经过服务端范围检查。",
-    "wrongText": "角色权限不会自动把一类资源的所有实例都交给用户，前端也不是授权边界。",
+    "wrongText": "角色权限不会自动把一类资源的所有实例都交给用户。",
     "promptTitle": "画出用户到对象的授权链",
     "prompt": "请列出主体、角色、权限、对象范围和默认拒绝规则，标出每项权限来自哪个角色，并准备一个角色通过但对象不匹配的反例。",
     "relatedSlugs": [
@@ -560,7 +560,7 @@
     ],
     "question": "第三方 API 需要密钥时，前端代码能不能直接放一把长期 key？",
     "definition": "API 密钥是调用方随请求提交的凭证；服务可以据此识别项目、计量用量、套用配额或做基础限制，但它不自动代表最终用户身份。",
-    "boundary": "公开前端和 URL 都无法替长期 key 保密；API key 也不能替代对象级授权。限制、配额、有效期和轮换只能缩小泄露后的影响。",
+    "boundary": "长期 key 应保存在受控服务端，API 请求还要进行对象级授权。限制、配额、有效期和轮换只能缩小泄露后的影响。",
     "demoType": "lifecycle",
     "demoTitle": "一把 API key 怎样从受控调用走到撤销",
     "demoSteps": [
@@ -603,7 +603,7 @@
     "aliases": ["频率限制", "请求限速", "Rate Limit"],
     "question": "一个用户每秒请求几千次，服务应该全部处理吗？",
     "definition": "限流按用户、密钥、IP 或接口统计请求，并在超过阈值时暂时拒绝或延迟处理。",
-    "boundary": "限流能控制流量，不等于完整的安全防护，也不能替代容量规划。",
+    "boundary": "限流控制进入系统的流量，容量规划决定系统可承受的负载。",
     "demoType": "queue", "demoTitle": "请求超过配额时怎样变化",
     "demoSteps": [
       {"label": "配额可用", "value": "8 / 10", "note": "请求在当前时间窗内正常通过。"},
@@ -671,7 +671,7 @@
   },
   {
     "zh": "超时", "en": "Timeout", "slug": "timeout", "cat": "后端",
-    "say": "给一次等待设定上限；停止等待，不代表远端操作没有完成。",
+    "say": "给一次等待设定上限；等待达到上限后，客户端结束等待；远端操作状态需要查询确认。",
     "aliases": ["请求超时", "等待上限", "Timeout"],
     "question": "下游服务一直不返回，上游需要永远等下去吗？",
     "definition": "超时为连接、读取或整个调用的等待设置上限，超过后停止相应等待并处理失败；远端是否完成还需确认。",
@@ -683,7 +683,7 @@
       {"label": "触发超时", "value": "3000 ms", "note": "上游中止等待并执行失败处理。"}
     ],
     "quizQuestion": "设置超时最直接的作用是什么？", "quizOptions": ["限制一次等待占用资源的时间", "保证所有请求成功", "自动修复下游代码"],
-    "correctText": "超时为等待设置明确上限。", "wrongText": "超时只能中止等待，不能保证成功或修复代码。",
+    "correctText": "超时为等待设置明确上限。", "wrongText": "超时只能中止等待。",
     "promptTitle": "检查超时设置", "prompt": "请列出这条调用链每一层的连接、读取和整体超时，检查上游超时是否覆盖下游最坏耗时。",
     "relatedSlugs": ["retry", "idempotency", "request", "connection-pool"]
   },
@@ -692,15 +692,15 @@
   "en": "Relational Database",
   "slug": "relational-database",
   "cat": "后端",
-  "say": "两张表不复制客户姓名，也能拼出订单报表；关键在键、约束和查询操作怎样组合，而不是表格长得像电子表格。",
+  "say": "两张表不复制客户姓名，也能拼出订单报表；关键在键、约束和查询操作怎样组合。",
   "aliases": [
     "关系数据库",
     "SQL 数据库",
     "RDBMS"
   ],
   "question": "关系模型怎样把客户、订单和查询结果分开保存，又能在需要时组合出可核对的报表？",
-  "definition": "关系数据库用关系（表）、属性（列）、元组（行）、键和约束来表达数据。客户和订单可以各自保存事实，主键标识客户，外键表达订单属于哪个客户，查询再通过投影、连接和选择产生新的结果关系。输入表仍保持原状，结果是否匹配取决于连接条件、过滤条件和约束，而不是数据库自动“理解”业务关系。",
-  "boundary": "关系模型不等于 SQL 语法、电子表格界面或某一款数据库；事务、索引、锁和物理存储是实现层的其他问题。主键/外键能约束身份和引用，却不能自动保证金额、权限或业务流程正确；连接条件漏写时，行数可能悄悄膨胀。",
+  "definition": "关系数据库用关系（表）、属性（列）、元组（行）、键和约束来表达数据。客户和订单可以各自保存事实，主键标识客户，外键表达订单属于哪个客户，查询再通过投影、连接和选择产生新的结果关系。输入表仍保持原状，结果是否匹配取决于连接条件、过滤条件和约束。",
+  "boundary": "事务、索引、锁和物理存储是实现层的其他问题。主键/外键能约束身份和引用，行数可能悄悄膨胀。",
   "demoType": "comparison",
   "demoTitle": "从两张关系表到一份可核对的订单报表",
   "demoSteps": [
@@ -715,7 +715,7 @@
       "note": "查询只保留报表要看的字段，减少把无关列带进组合；这一步不会删除原表中的列。"
     },
     {
-      "label": "按键连接而不是按位置拼",
+      "label": "按键连接",
       "value": "5 matched · 0 unexplained · name attached",
       "note": "customer.id = order.customer_id 命中后，订单拿到对应姓名；没有匹配的外键单独留下，提醒我们选择 INNER 还是 OUTER JOIN。"
     },
@@ -750,7 +750,7 @@
   {
     "zh": "SQL", "en": "Structured Query Language", "slug": "sql", "cat": "后端",
     "say": "用统一语句读取、增加、修改和删除关系型数据库中的数据。", "aliases": ["结构化查询语言", "数据库查询", "SQL 语句"],
-    "question": "怎样找出本月金额最高的十笔订单？", "definition": "SQL 是操作关系型数据库的声明式语言，可定义结构、查询数据和控制事务。", "boundary": "SQL 是语言，不是某一个具体数据库；不同数据库的扩展语法可能不同。",
+    "question": "怎样找出本月金额最高的十笔订单？", "definition": "SQL 是操作关系型数据库的声明式语言，可定义结构、查询数据和控制事务。", "boundary": "SQL 是语言，不同数据库的扩展语法可能不同。",
     "demoType": "flow", "demoTitle": "一条查询怎样得到结果",
     "demoSteps": [{"label":"选择数据","value":"SELECT id, total","note":"指定需要返回的列。"},{"label":"限定范围","value":"WHERE month = 8","note":"只保留本月订单。"},{"label":"排序限制","value":"ORDER BY total DESC LIMIT 10","note":"返回金额最高的十条。"}],
     "quizQuestion": "SQL 中 WHERE 的常见作用是什么？", "quizOptions": ["筛选符合条件的行", "改变页面字体", "创建网络连接"], "correctText": "WHERE 用条件限制参与查询或修改的行。", "wrongText": "字体和网络连接不属于 SQL WHERE 的职责。",
@@ -761,7 +761,7 @@
   "en": "Not Only SQL",
   "slug": "nosql",
   "cat": "后端",
-  "say": "NoSQL 不是一张更松的表：先看“最近订单”还是“改共享价格”，不同模型会让读写成本和一致性落在不同地方。",
+  "say": "不同模型会让读写成本和一致性落在不同地方。",
   "aliases": [
     "非关系型数据库",
     "非关系数据库",
@@ -769,7 +769,7 @@
   ],
   "question": "同一份订单业务在关系、文档和键值模型中为什么会得到不同的读取路径与更新范围？",
   "definition": "NoSQL 是文档、键值、列族和图等非关系模型的统称。它们通常围绕主要访问模式设计数据布局：文档可以把一次读取需要的字段聚在一起，键值模型把 key→value 读写做得直接，列族模型按分区与列组织大规模访问。代价是复制、分区、索引、事务和一致性要按具体产品与业务语义单独设计。",
-  "boundary": "NoSQL 不表示没有结构，也不保证比关系数据库更快；文档字段可以有验证规则，键值存储也有分区和容量边界。把商品当前价嵌进历史订单后，改价是少一次 join 还是要回写 120 份副本，取决于字段代表历史事实还是当前状态。",
+  "boundary": "NoSQL 不表示没有结构，文档字段可以有验证规则，键值存储也有分区和容量边界。把商品当前价嵌进历史订单后，改价是少一次 join 还是要回写 120 份副本，取决于字段代表历史事实还是当前状态。",
   "demoType": "comparison",
   "demoTitle": "先写访问任务，再比较三种数据模型的代价",
   "demoSteps": [
@@ -781,7 +781,7 @@
     {
       "label": "最近订单看读路径",
       "value": "index + join · 1 document query · 1 + 10 gets · 读取路径可比较",
-      "note": "文档模型可一次取回嵌套订单；关系模型依赖索引和连接；键值模型先拿订单 id 再批量 get。1 次请求不等于永远更快，还要看分区和数据量。"
+      "note": "文档模型可一次取回嵌套订单；关系模型依赖索引和连接；键值模型先拿订单 id 再批量 get。本例的 1 次请求仍需结合分区和数据量评估耗时。"
     },
     {
       "label": "共享改价看写触及",
@@ -794,9 +794,9 @@
       "note": "订单里的成交价应保留当时的值时，120 份快照不该被新价覆盖；若页面要显示当前价，就必须承担同步或重新读取的成本。"
     },
     {
-      "label": "最后比较约束而非口号",
+      "label": "最后比较约束",
       "value": "读 · 写 · 一致性 · 扩展",
-      "note": "把读写频率、分区键、事务范围、复制延迟和失败恢复写出来，才能判断模型是否适合；“NoSQL 更快”不是验收结论。"
+      "note": "才能判断模型是否适合。"
     }
   ],
   "quizQuestion": "订单中保存成交时价格时，文档模型里的价格快照意味着什么？",
@@ -818,10 +818,10 @@
   {
     "zh": "表", "en": "Table", "slug": "table", "cat": "后端",
     "say": "关系型数据库中保存同类记录的结构，由列定义和多行数据组成。", "aliases": ["数据表", "数据库表", "Table"],
-    "question": "用户、订单和商品应该全部塞进一张表吗？", "definition": "表是关系型数据库中的数据集合，每一行代表一条记录，每一列代表一个字段。", "boundary": "表不是电子表格页面；它还受数据类型、键和约束控制。",
+    "question": "用户、订单和商品应该全部塞进一张表吗？", "definition": "表是关系型数据库中的数据集合，每一行代表一条记录，每一列代表一个字段。", "boundary": "它还受数据类型、键和约束控制。",
     "demoType": "hierarchy", "demoTitle": "一张用户表的结构",
     "demoSteps": [{"label":"定义列","value":"id · name · email","note":"列说明记录包含哪些字段。"},{"label":"写入行","value":"42 · 林舟 · l@example.com","note":"一行保存一个用户。"},{"label":"应用约束","value":"id 主键","note":"约束防止标识重复。"}],
-    "quizQuestion": "数据库表中的一行通常表示什么？", "quizOptions": ["一条记录", "一种字体", "一个网络端口"], "correctText": "一行保存一个实体或事件的记录。", "wrongText": "字体和端口不是表中行的固定含义。",
+    "quizQuestion": "数据库表中的一行通常表示什么？", "quizOptions": ["一条记录", "一种字体", "一个网络端口"], "correctText": "一行保存一个实体或事件的记录。", "wrongText": "一行保存一个实体或事件的记录。",
     "promptTitle": "检查数据表", "prompt": "请检查这张表的列、类型、空值、主键和唯一约束，指出重复或混合职责的字段。", "relatedSlugs": ["row", "column", "database-schema", "primary-key"]
   },
   {
@@ -829,7 +829,7 @@
   "en": "Row",
   "slug": "row",
   "cat": "后端",
-  "say": "表里的一行不是会被原地覆盖的电子表格格子：并发事务可能各自看到同一逻辑行的不同版本。",
+  "say": "并发事务可能各自看到表中同一逻辑行的不同版本。",
   "aliases": [
     "记录",
     "数据行",
@@ -837,7 +837,7 @@
   ],
   "question": "主键相同的行为什么能在不同事务里同时显示 100 和 80？",
   "definition": "行是按表的列结构保存的一组字段值，通常由主键识别一个逻辑对象。数据库采用多版本并发控制时，更新会产生可供事务判断的版本；一个已经开始的事务按自己的快照读到旧版本，提交后新开的事务才读到新版本。行的概念因此同时涉及字段结构、逻辑身份和读取时的可见性。",
-  "boundary": "行号或物理位置不是稳定身份，结果没有 ORDER BY 时也不能把第几行当作对象顺序。主键相同的版本不代表出现了两个客户；不同数据库的隔离级别、锁和版本清理策略不同，读到旧值也不等于所有写入都永远不可见。",
+  "boundary": "主键用于稳定标识对象；结果顺序通过 ORDER BY 明确指定。相同主键的多个版本对应同一个逻辑对象；可见版本取决于数据库的隔离级别、锁和版本清理策略。",
   "demoType": "lifecycle",
   "demoTitle": "同一逻辑行怎样在三个事务里显示不同版本",
   "demoSteps": [
@@ -854,7 +854,7 @@
     {
       "label": "B 的旧快照继续读 v1",
       "value": "reads 100 · v1 visible",
-      "note": "B 在 A 提交前建立快照，所以读取仍是 100；这不是行拒绝更新，而是 B 的可见性规则没有跨到 v2。"
+      "note": "B 在 A 提交前建立快照，所以读取仍是 100；这是 B 的可见性规则没有跨到 v2。"
     },
     {
       "label": "A 提交 v2",
@@ -905,7 +905,7 @@
   {
     "zh": "主键", "en": "Primary Key", "slug": "primary-key", "cat": "后端",
     "say": "为表中的每一行提供唯一且非空的标识。", "aliases": ["Primary Key", "主键 ID", "唯一标识"],
-    "question": "两个用户同名时，数据库怎样准确区分他们？", "definition": "主键是唯一标识表中每条记录的一列或一组列。", "boundary": "主键保证表内标识唯一，不代表这个值对外必须可见或有业务含义。",
+    "question": "两个用户同名时，数据库怎样准确区分他们？", "definition": "主键是唯一标识表中每条记录的一列或一组列。", "boundary": "主键保证表内标识唯一；对外是否展示、是否承载业务含义，由设计决定。",
     "demoType": "state", "demoTitle": "主键怎样阻止重复记录",
     "demoSteps": [{"label":"已有记录","value":"id = 42","note":"表中已经存在该主键。"},{"label":"再次写入","value":"id = 42","note":"新记录使用了相同主键。"},{"label":"约束拒绝","value":"duplicate key","note":"数据库阻止重复标识。"}],
     "quizQuestion": "主键必须满足什么条件？", "quizOptions": ["唯一且非空", "可以任意重复", "只能使用姓名"], "correctText": "主键必须稳定地区分每条记录。", "wrongText": "重复值不能唯一定位记录，主键也不限定为姓名。",
@@ -923,7 +923,7 @@
   {
     "zh": "索引", "en": "Index", "slug": "index", "cat": "后端",
     "say": "为常用查询建立额外的查找结构，减少扫描的数据量。", "aliases": ["数据库索引", "查询索引", "Index"],
-    "question": "按邮箱查用户为什么越来越慢？", "definition": "索引是数据库为一个或多个列维护的辅助数据结构，用于加速特定查询。", "boundary": "索引会占用空间并增加写入维护成本，不是建得越多越好。",
+    "question": "按邮箱查用户为什么越来越慢？", "definition": "索引是数据库为一个或多个列维护的辅助数据结构，用于加速特定查询。", "boundary": "索引会占用空间并增加写入维护成本。",
     "demoType": "comparison", "demoTitle": "同一查询有无索引的差别",
     "demoSteps": [{"label":"无索引","value":"扫描 100 万行","note":"数据库逐行比较邮箱。"},{"label":"建立索引","value":"INDEX(email)","note":"数据库维护有序查找结构。"},{"label":"命中索引","value":"读取少量页","note":"查询快速定位目标记录。"}],
     "quizQuestion": "索引的主要代价是什么？", "quizOptions": ["占用空间并增加写入维护", "让所有查询失效", "删除原始数据"], "correctText": "索引需要存储，也会在写入时同步更新。", "wrongText": "索引不会必然让查询失效或删除原始数据。",
@@ -959,7 +959,7 @@
   {
     "zh": "ACID", "en": "Atomicity Consistency Isolation Durability", "slug": "acid", "cat": "后端",
     "say": "ACID 用四项原则约束事务，避免失败、并发或故障留下难以判断的数据状态。", "aliases": ["事务四特性", "ACID 特性", "事务属性"],
-    "question": "怎样判断一个数据库事务是否可靠？", "definition": "它分别检查一组操作能否原子提交、数据约束能否保持、并发事务如何隔离，以及提交结果在故障后能否保留。", "boundary": "ACID 不代表应用不会出错；业务约束、隔离级别和恢复方案仍需正确设计。",
+    "question": "怎样判断一个数据库事务是否可靠？", "definition": "它分别检查一组操作能否原子提交、数据约束能否保持、并发事务如何隔离，以及提交结果在故障后能否保留。", "boundary": "业务约束、隔离级别和恢复方案仍需正确设计。",
     "demoType": "hierarchy", "demoTitle": "一笔事务的四项检查",
     "demoSteps": [{"label":"原子性","value":"扣款 → 断电 → 回滚","note":"入账未完成时，扣款也被撤回。"},{"label":"隔离性","value":"事务 A ↔ 并发读取 B","note":"读取者按隔离规则看见已提交版本。"},{"label":"持久性","value":"COMMIT → WAL → 重启恢复","note":"提交记录可在故障后重放。"}],
     "quizQuestion": "“事务要么全部成功，要么全部失败”对应哪一项？", "quizOptions": ["原子性", "持久性", "隔离性"], "correctText": "原子性要求事务作为不可分割的整体。", "wrongText": "持久性关注提交后的保存，隔离性关注并发可见性。",
@@ -968,7 +968,7 @@
   {
     "zh": "数据库迁移", "en": "Database Migration", "slug": "database-migration", "cat": "后端",
     "say": "用可追踪脚本把数据库结构从一个版本变到下一个版本。", "aliases": ["Schema Migration", "迁移脚本", "库表升级"],
-    "question": "新增一列后，开发、测试和生产数据库怎样保持一致？", "definition": "数据库迁移以有序变更记录创建、修改或移除数据库结构和必要数据。", "boundary": "迁移不是普通备份；生产迁移还要评估锁表、兼容和回滚风险。",
+    "question": "新增一列后，开发、测试和生产数据库怎样保持一致？", "definition": "数据库迁移以有序变更记录创建、修改或移除数据库结构和必要数据。", "boundary": "生产迁移还要评估锁表、兼容和回滚风险。",
     "demoType": "lifecycle", "demoTitle": "新增字段怎样安全上线",
     "demoSteps": [{"label":"添加兼容列","value":"nickname NULL","note":"旧代码仍可继续读写。"},{"label":"部署新代码","value":"读写 nickname","note":"应用开始使用新结构。"},{"label":"收紧约束","value":"补齐后设规则","note":"确认数据完整后完成迁移。"}],
     "quizQuestion": "为什么迁移脚本需要版本顺序？", "quizOptions": ["确保各环境按相同步骤演进", "让页面颜色一致", "减少 DNS 查询"], "correctText": "有序迁移让结构变更可追踪和复现。", "wrongText": "页面样式和 DNS 不属于数据库迁移职责。",
@@ -995,7 +995,7 @@
   {
     "zh": "复制", "en": "Replication", "slug": "replication", "cat": "后端",
     "say": "把一份数据库数据同步到其他节点，用于读取扩展或故障恢复。", "aliases": ["数据库复制", "主从复制", "副本同步"],
-    "question": "一台数据库故障时，怎样减少服务中断？", "definition": "复制把源节点的数据变更传到一个或多个副本节点。", "boundary": "副本不等于备份；错误删除也可能同步到所有副本。",
+    "question": "一台数据库故障时，怎样减少服务中断？", "definition": "复制把源节点的数据变更传到一个或多个副本节点。", "boundary": "错误删除也可能同步到所有副本。",
     "demoType": "flow", "demoTitle": "写入怎样同步到副本",
     "demoSteps": [{"label":"主节点写入","value":"order 908 created","note":"源节点提交新数据。"},{"label":"发送变更","value":"log position +1","note":"复制流传递本次变更。"},{"label":"副本应用","value":"order 908 visible","note":"副本追上新的数据位置。"}],
     "quizQuestion": "数据库副本能代替离线备份吗？", "quizOptions": ["不能，误删可能同步到副本", "能，副本永远不会出错", "能，因为副本不保存数据"], "correctText": "复制和备份应解决不同故障场景。", "wrongText": "副本会保存并同步数据，也可能同步错误操作。",
@@ -1007,13 +1007,13 @@
     "question": "一张表大到单机放不下时，数据怎样分布？", "definition": "分片按照分片键和路由规则，把数据水平分散到多个独立存储节点。", "boundary": "分片会增加跨片查询、事务、扩容和热点处理的复杂度，不应过早使用。",
     "demoType": "branch", "demoTitle": "用户数据怎样按编号分片",
     "demoSteps": [{"label":"计算分片","value":"user_id % 2","note":"路由规则决定目标节点。"},{"label":"偶数用户","value":"→ shard A","note":"A 保存一部分用户。"},{"label":"奇数用户","value":"→ shard B","note":"B 保存另一部分用户。"}],
-    "quizQuestion": "选择分片键时需要重点避免什么？", "quizOptions": ["大量请求集中到少数分片", "每条记录都有主键", "查询返回状态码"], "correctText": "热点分片会抵消水平扩展效果。", "wrongText": "主键和状态码并不是分片键选择的主要风险。",
+    "quizQuestion": "选择分片键时需要重点避免什么？", "quizOptions": ["大量请求集中到少数分片", "每条记录都有主键", "查询返回状态码"], "correctText": "热点分片会抵消水平扩展效果。", "wrongText": "热点分片会抵消水平扩展效果。",
     "promptTitle": "评估分片设计", "prompt": "请根据数据规模和查询模式评估是否需要分片，并分析分片键、热点、跨片查询和扩容方式。", "relatedSlugs": ["replication", "database", "index"]
   },
   {
     "zh": "备份", "en": "Backup", "slug": "backup", "cat": "后端",
     "say": "在独立位置保存可恢复的数据副本，用来应对误删、损坏或灾难。", "aliases": ["数据备份", "备份副本", "Backup"],
-    "question": "误删数据以后，数据库副本也跟着删了怎么办？", "definition": "备份是在特定时间保存数据和必要元信息，以便后续恢复。", "boundary": "备份只有经过恢复演练才有可用证据；创建成功的文件不等于一定可恢复。",
+    "question": "误删数据以后，数据库副本也跟着删了怎么办？", "definition": "备份是在特定时间保存数据和必要元信息，以便后续恢复。", "boundary": "备份只有经过恢复演练才有可用证据。",
     "demoType": "lifecycle", "demoTitle": "备份怎样变成可验证恢复点",
     "demoSteps": [{"label":"生成备份","value":"2026-08-31 02:00","note":"保存数据和版本信息。"},{"label":"独立保存","value":"跨账号存储","note":"降低与生产同时受损的风险。"},{"label":"恢复演练","value":"校验订单数量","note":"用实际恢复验证备份完整性。"}],
     "quizQuestion": "怎样确认备份可以恢复数据？", "quizOptions": ["定期恢复并校验数据", "只看文件名存在", "只依赖数据库副本"], "correctText": "恢复演练能验证文件、权限和流程。", "wrongText": "文件存在或有副本都不能单独证明可恢复。",
@@ -1025,7 +1025,7 @@
     "question": "知识库怎样找出和用户问题意思接近的文档？", "definition": "向量数据库针对高维向量的写入、索引、过滤和近似相似搜索进行优化。", "boundary": "向量数据库擅长相似检索，不会自动保证结果真实，也不一定替代关系数据库。",
     "demoType": "flow", "demoTitle": "问题怎样匹配相似文档",
     "demoSteps": [{"label":"生成向量","value":"问题 → [0.12, …]","note":"嵌入模型把文本映射为向量。"},{"label":"相似搜索","value":"top 3","note":"索引寻找距离最近的文档向量。"},{"label":"返回片段","value":"文档 A · C · F","note":"应用继续过滤或交给模型使用。"}],
-    "quizQuestion": "向量数据库最适合哪类查询？", "quizOptions": ["查找语义相近的内容", "保证银行转账原子性", "编译 TypeScript"], "correctText": "向量距离可近似表达内容相似度。", "wrongText": "事务原子性和代码编译不是向量数据库的主要用途。",
+    "quizQuestion": "向量数据库最适合哪类查询？", "quizOptions": ["查找语义相近的内容", "保证银行转账原子性", "编译 TypeScript"], "correctText": "向量距离可近似表达内容相似度。", "wrongText": "向量距离可近似表达内容相似度。",
     "promptTitle": "设计向量检索", "prompt": "请检查文本切分、向量模型、索引、top-k、元数据过滤和结果评估，给出可复现的检索方案。", "relatedSlugs": ["rag", "full-text-search", "index", "chunking"]
   },
   {
@@ -1040,7 +1040,7 @@
   {
     "zh": "TCP", "en": "Transmission Control Protocol", "slug": "tcp", "cat": "技术栈",
     "say": "把连续字节按序、可靠地送到对端，缺口会被确认和重传补回来。", "aliases": ["传输控制协议", "TCP 协议", "可靠连接"],
-    "question": "网络偶尔丢包时，下载的文件为什么通常不会缺一块？", "definition": "TCP 在两个端点之间提供有序、可靠的字节流，通过序号、确认、重传、流量控制和拥塞控制协调传输。", "boundary": "TCP 不保留应用消息边界，也不保证连接后的业务处理成功；加密需要由 TLS 等更高层机制提供。",
+    "question": "网络偶尔丢包时，下载的文件为什么通常不会缺一块？", "definition": "TCP 在两个端点之间提供有序、可靠的字节流，通过序号、确认、重传、流量控制和拥塞控制协调传输。", "boundary": "TCP 不保留应用消息边界，加密需要由 TLS 等更高层机制提供。",
     "demoType": "flow", "demoTitle": "一个字节缺口怎样被找回",
     "demoSteps": [{"label":"三段出发","value":"ABCDEF · GHIJ · KL","note":"三个 segment 刚发出，确认号还没有反映后续缺口。"},{"label":"缺口与确认","value":"ABCDEF · KL 到达 · ACK 7","note":"重复 ACK 7 表示下一个期望序号仍是 GHIJ 的起点。"},{"label":"重传后交付","value":"GHIJ retransmit · ACK 13","note":"缺口补回后，TCP 才把 1 到 12 的连续字节交给应用。"}],
     "quizQuestion": "TCP 一次 send 100 字节，接收端一定一次 read 100 字节吗？", "quizOptions": ["不一定，TCP 只保证有序字节流", "一定，TCP 保留每次 send 边界", "一定，除非使用端口 443"], "correctText": "发送和读取的分段可以不同，TCP 只保证有序字节流。", "wrongText": "端口不会恢复消息边界，应用需要长度、分隔符或帧格式。",
@@ -1058,8 +1058,8 @@
       "数据报"
     ],
     "question": "实时语音为什么有时宁可少一小段，也不愿等重传？",
-    "definition": "UDP 以数据报为单位发送数据，提供端口和校验和，但协议本身不保证到达、顺序或去重。",
-    "boundary": "UDP 不等于一定更快；可靠性、拥塞控制、数据大小和加密可由上层协议补充。",
+    "definition": "提供端口和校验和。",
+    "boundary": "可靠性、拥塞控制、数据大小和加密可由上层协议补充。",
     "demoType": "comparison",
     "demoTitle": "四封数据报遇到丢包后的选择",
     "demoSteps": [
@@ -1079,13 +1079,13 @@
         "note": "实时应用可以丢旧帧，可靠场景要自己实现编号、超时和重传。"
       }
     ],
-    "quizQuestion": "UDP 协议本身不保证哪项能力？",
+    "quizQuestion": "UDP 的哪些可靠传输要求需要由上层协议处理？",
     "quizOptions": [
       "数据一定按序到达",
       "按数据报发送",
       "使用端口区分应用"
     ],
-    "correctText": "UDP 不保证到达顺序、成功交付或唯一到达。",
+    "correctText": "需要可靠传输时，由上层协议处理到达顺序、交付确认和去重。",
     "wrongText": "UDP 使用数据报和端口，但把可靠性策略交给应用。",
     "promptTitle": "设计 UDP 应用层可靠性",
     "prompt": "请定义消息序号、丢失检测、乱序处理、去重、超时、重传、拥塞控制和最大数据报大小，并用丢包样本验证。",
@@ -1147,7 +1147,7 @@
   {
     "zh": "防火墙", "en": "Firewall", "slug": "firewall", "cat": "技术栈",
     "say": "根据地址、端口、协议或应用规则允许和阻止网络流量。", "aliases": ["网络防火墙", "访问规则", "Firewall"],
-    "question": "数据库只给后端访问，怎样阻止公网直接连接？", "definition": "防火墙在网络边界或主机上检查流量，并按规则决定放行、拒绝或记录。", "boundary": "防火墙只是分层防护的一部分，不能替代身份认证、补丁和应用安全检查。",
+    "question": "数据库只给后端访问，怎样阻止公网直接连接？", "definition": "防火墙在网络边界或主机上检查流量，并按规则决定放行、拒绝或记录。", "boundary": "防火墙与身份认证、补丁和应用安全检查共同组成分层防护。",
     "demoType": "branch", "demoTitle": "同一连接怎样遇到规则顺序和状态表",
     "demoSteps": [{"label":"首个 SYN","value":"client → web:443","note":"规则 10 放行，送到 Web 服务。"},{"label":"返回包","value":"无状态拒绝 → 有状态放行","note":"同一返回流量取决于是否识别 ESTABLISHED。"},{"label":"deny 置前","value":"rule 1 deny · allow 未到达","note":"第一条匹配提前结束，443 规则没有机会执行。"}],
     "quizQuestion": "allow 443 写在 deny any 后面，流量会怎样？", "quizOptions": ["先命中 deny any，allow 443 不会执行", "两条规则自动取更宽松结果", "端口 443 永远绕过规则顺序"], "correctText": "多数规则表按顺序使用首个匹配结果。", "wrongText": "查看包到达的第一条匹配规则。",
@@ -1175,7 +1175,7 @@
   ],
   "question": "TCP 53 能连接，为什么 UDP 53 仍可能超时？",
   "definition": "传输层端口把到达同一 IP 的 TCP 或 UDP 流量分发给对应端点；协议与端口号共同标识服务，监听与网络可达还要分别判断。",
-  "boundary": "端口不是物理插口，也不等于服务一定正常。相同数字的 TCP 与 UDP 端口属于不同传输协议空间。",
+  "boundary": "相同数字的 TCP 与 UDP 端口属于不同传输协议空间。",
   "demoType": "branch",
   "demoTitle": "同一数字为什么跑出不同结果",
   "demoSteps": [
@@ -1225,7 +1225,7 @@
   ],
   "question": "4000 字节数据经过 MTU 1500 的链路，为什么会被拆分或要求发送端重新分段？",
   "definition": "数据包是网络层一次传输的单位，由首部和负载组成；路由器按目的地址逐跳转发，路径 MTU 和 IP 版本决定大包怎样被处理。",
-  "boundary": "一个应用消息可能拆成多个传输段和 IP 包，单个包也不代表完整业务请求；IPv4 与 IPv6 对分片的责任不同。",
+  "boundary": "一个应用消息可能拆成多个传输段和 IP 包，IPv4 与 IPv6 对分片的责任不同。",
   "demoType": "flow",
   "demoTitle": "一条窄链路怎样改写大包命运",
   "demoSteps": [
@@ -1268,13 +1268,13 @@
     "question": "为什么地址栏里完整的一串 URL，到了服务器却只剩 Host 和一段请求目标？", "definition": "URL 是可解析的资源引用，通常包含 scheme、authority、path、query 和 fragment；解析和归一后，客户端才形成实际请求。", "boundary": "URL 是 URI 的一种；fragment 通常只留在客户端，不随 HTTP 请求发送，百分号编码和相对引用也不能靠字符串拼接理解。",
     "demoType": "flow", "demoTitle": "从一条复杂 URL 到实际请求目标",
     "demoSteps": [{"label":"拆组件","value":"https://user:secret@example.com:8443/a/../b?q=x%2Fy#part","note":"先分出 scheme、authority、path、query 和 fragment。"},{"label":"归一路径","value":"/a/../b → /b","note":"点段按路径规则抵消，查询值仍留在 query。"},{"label":"形成请求","value":"Host: example.com:8443 · GET /b?q=x%2Fy","note":"#part 留给浏览器做客户端定位，不进入 request-target。"}],
-    "quizQuestion": "URL 中 #part 最终会不会出现在 HTTP 请求目标里？", "quizOptions": ["通常不会，留在客户端处理", "会自动变成请求头", "会作为服务器端口"], "correctText": "fragment 在客户端处理，不属于 HTTP 请求目标。", "wrongText": "请求头和端口都有自己的位置，不能把 fragment 塞进去。",
+    "quizQuestion": "URL 中 #part 最终会不会出现在 HTTP 请求目标里？", "quizOptions": ["通常不会，留在客户端处理", "会自动变成请求头", "会作为服务器端口"], "correctText": "fragment 在客户端处理，不属于 HTTP 请求目标。", "wrongText": "请求头和端口都有自己的位置。",
     "promptTitle": "还原 URL 的真实边界", "prompt": "请拆解这条 URL 的 scheme、userinfo、host、port、path、query 和 fragment，写出归一后的路径、HTTP Host、request-target，以及以 https://example.com/a/b/ 为 base 合并 ../c 的结果。", "relatedSlugs": ["hostname", "path-parameter", "query-parameter", "request"]
   },
   {
     "zh": "主机名", "en": "Hostname", "slug": "hostname", "cat": "技术栈",
     "say": "把一串可读的名称一路带过 DNS、TLS 和 HTTP，直到服务知道你要找哪一个名字。", "aliases": ["Hostname", "主机名称", "域名主机"],
-    "question": "为什么已经连到正确 IP，改一下 Host 还是会得到另一个网站？", "definition": "主机名是 DNS 命名空间中的可读名称；解析器可能返回多个 IP，客户端随后用原名称核对证书并让 HTTP Host 选择虚拟主机。", "boundary": "主机名不等于固定 IP，也不等于某个服务的最终身份；同一 IP 可承载多个名称，同一名称也可能指向多条地址。",
+    "question": "为什么已经连到正确 IP，改一下 Host 还是会得到另一个网站？", "definition": "主机名是 DNS 命名空间中的可读名称；解析器可能返回多个 IP，客户端随后用原名称核对证书并让 HTTP Host 选择虚拟主机。", "boundary": "同一 IP 可承载多个名称，同一名称也可能指向多条地址。",
     "demoType": "flow", "demoTitle": "主机名怎样穿过 DNS、TLS 和 HTTP",
     "demoSteps": [{"label":"交给 DNS","value":"api.example.com → .10 / .11","note":"解析器返回一组可能的地址，缓存和地址顺序也要记录。"},{"label":"建立并核名","value":"203.0.113.10:443 · DNS-ID api.example.com","note":"连接使用选中的 IP，TLS 仍用名称检查证书。"},{"label":"选择虚拟主机","value":"Host: api.example.com → 200 API JSON","note":"HTTP 用 Host 在同一 IP 的多个服务中选出目标。"}],
     "quizQuestion": "只把 Host 改成 admin.example.com，最可能改变哪一层？", "quizOptions": ["HTTP 虚拟主机路由", "已经建立的 TCP 目标 IP", "DNS 记录的 TTL"], "correctText": "Host 是应用层路由条件，可能把请求送到另一个虚拟主机。", "wrongText": "改 Host 不会回头改写已完成的 DNS 查询或 TCP 连接。",
@@ -1283,7 +1283,7 @@
   {
     "zh": "DNS 记录", "en": "DNS Record", "slug": "dns-record", "cat": "技术栈",
     "say": "把名称、类型、TTL 和数据格式放在一起，告诉解析器这条信息是什么以及能缓存多久。", "aliases": ["域名记录", "解析记录", "资源记录"],
-    "question": "为什么权威 DNS 已经改成新地址，部分用户还拿到旧地址？", "definition": "DNS 记录由 owner、type、class、TTL 和 RDATA 构成；A、CNAME、MX、TXT 等类型表达不同资源信息。", "boundary": "CNAME 不是 HTTP 重定向；同名同类型的多条记录组成 RRSet；权威修改和缓存过期是两个时间点。",
+    "question": "为什么权威 DNS 已经改成新地址，部分用户还拿到旧地址？", "definition": "DNS 记录由 owner、type、class、TTL 和 RDATA 构成；A、CNAME、MX、TXT 等类型表达不同资源信息。", "boundary": "同名同类型的多条记录组成 RRSet，权威修改和缓存过期是两个时间点。",
     "demoType": "flow", "demoTitle": "从一行记录到缓存中的回答",
     "demoSteps": [{"label":"读字段","value":"owner · type · class · TTL · RDATA","note":"先确认这条记录挂在哪个名字下、怎样解释数据、能缓存多久。"},{"label":"组成 RRSet","value":"api.example.com A → .10 + .11","note":"同名同类型的不同地址作为一组回答，TTL 一起倒计时。"},{"label":"看权威与缓存","value":"权威 .20 · resolver 仍答 .10","note":"TTL 归零前，旧副本可以继续被返回；排查要记录回答来源。"}],
     "quizQuestion": "CNAME 记录通常表达什么关系？", "quizOptions": ["一个别名对应另一个规范名", "浏览器执行 HTTP 302 跳转", "把邮件正文写进 DNS"], "correctText": "CNAME 的 RDATA 是规范名，后续还要解析这个名字的地址记录。", "wrongText": "DNS 记录类型改变的是数据语义，不会自动执行 HTTP 动作。",
@@ -1292,14 +1292,14 @@
   {
     "zh": "DNS 解析器", "en": "DNS Resolver", "slug": "dns-resolver", "cat": "技术栈",
     "say": "替客户端把一个名字问到有答案的地方，先查缓存，必要时继续追上游。", "aliases": ["递归解析器", "DNS 服务器", "Resolver"],
-    "question": "为什么第一次查域名要走好几层，第二次却不用再访问上游？", "definition": "DNS resolver 接收 QNAME、QTYPE 和 class，从缓存或递归查询获得回答，再把记录、否定结论或失败状态返回给客户端。", "boundary": "stub、recursive resolver 和 authoritative server 的职责不同；NXDOMAIN/NODATA 不是 SERVFAIL，解析失败会进入短时 failure cache，缓存命中也不等于目标应用健康。",
+    "question": "为什么第一次查域名要走好几层，第二次却不用再访问上游？", "definition": "DNS resolver 接收 QNAME、QTYPE 和 class，从缓存或递归查询获得回答，再把记录、否定结论或失败状态返回给客户端。", "boundary": "解析失败会进入短时 failure cache。",
     "demoType": "flow", "demoTitle": "resolver 怎样决定继续问还是停下",
     "demoSteps": [{"label":"先看缓存","value":"api.example.com A · MISS","note":"本机把 RD=1 的问题交给递归 resolver。"},{"label":"沿委派查询","value":"root → .com → authoritative","note":"递归器逐步找到负责目标 zone 的服务器。"},{"label":"得到答案或停止","value":"A .10 · NXDOMAIN · SERVFAIL","note":"正答案、负答案和解析失败都要结合 RCODE、authority 区与 TTL 判断。"}],
-    "quizQuestion": "看到 SERVFAIL，能否直接断定域名不存在？", "quizOptions": ["不能，它表示本次解析没有拿到可用数据", "能，所有失败都等于 NXDOMAIN", "能，只要递归器返回了空结果"], "correctText": "SERVFAIL 与 NXDOMAIN 是不同的 RCODE，前者不能证明名字不存在。", "wrongText": "继续看 RCODE、authority 区、上游响应和重试记录，不要把所有失败归为不存在。",
+    "quizQuestion": "看到 SERVFAIL，能否直接断定域名不存在？", "quizOptions": ["不能，它表示本次解析没有拿到可用数据", "能，所有失败都等于 NXDOMAIN", "能，只要递归器返回了空结果"], "correctText": "SERVFAIL 与 NXDOMAIN 是不同的 RCODE。", "wrongText": "继续看 RCODE、authority 区、上游响应和重试记录。",
     "promptTitle": "排查一次 DNS resolver 查询", "prompt": "请记录 QNAME、QTYPE、RD/RA、RCODE、AA、answer/authority/additional、缓存命中与剩余 TTL、实际访问的上游和重试结果，判断是 HIT、NXDOMAIN、NODATA 还是 SERVFAIL。", "relatedSlugs": ["dns-record", "hostname", "cache", "ip-address"]
   },
-  {"zh":"缓存控制","en":"Cache-Control","slug":"cache-control","cat":"技术栈","say":"把能不能存、能新鲜多久、要不要回源写给缓存看的指令。","aliases":["Cache-Control","HTTP 缓存策略","缓存响应头"],"question":"为什么同一份响应有时直接命中，有时只回 304，还有时根本不能进共享缓存？","definition":"Cache-Control 是 HTTP 缓存指令集合，控制响应能否存储、何时仍可直接复用、何时必须验证，以及 private cache 和 shared cache 怎样分别处理。","boundary":"no-cache 允许存储但复用前要验证；no-store 阻止存储；stale-while-revalidate 和 stale-if-error 只是额外的、有限的过期授权。","demoType":"state","demoTitle":"一份响应怎样穿过缓存闸门","demoSteps":[{"label":"响应先过闸门","value":"max-age=60 / private,no-store","note":"公开脚本可以留下副本，用户资料被 shared cache 挡在门外。"},{"label":"fresh HIT","value":"Age 25 < 60","note":"还在新鲜窗口时直接复用，不必访问源站。"},{"label":"stale → 304 或过期窗口","value":"If-None-Match / stale-*","note":"过期后可以带验证器换回 304；只有明确授权时，才允许短暂交付旧响应。"}],"quizQuestion":"响应写 no-cache，缓存是否一定不能保存副本？","quizOptions":["不一定，保存后每次复用前都要验证","一定完全禁止存储","只影响数据库缓存"],"correctText":"no-cache 管的是复用前验证，不等于 no-store。","wrongText":"禁止缓存要看 no-store；no-cache 仍允许保存副本。","promptTitle":"核对一条响应的缓存行为","prompt":"请列出这条响应的 Cache-Control、Age、ETag、Vary 和缓存层，推演它会存储、直接命中、验证还是拒绝共享。","relatedSlugs":["cache","response","response-header","dns-resolver"]},
-  {"zh":"MIME 类型","en":"Media Type","slug":"mime-type","cat":"技术栈","say":"用 type/subtype 和参数告诉接收端，这串字节按什么规则解释。","aliases":["媒体类型","Content-Type","Media Type"],"question":"为什么同一段 <h1>Hi</h1> 有时是标题，有时只是文字，JSON 声明错了还会报错？","definition":"MIME 类型由 type、subtype 和可选参数组成；HTTP 用 Content-Type 传递这份表示声明，接收端据此选择解析器，但不替内容保证格式合法。","boundary":"文件扩展名只是文件名线索；charset、Content-Encoding 和 multipart 的 boundary 分别回答字节怎么解码、外层怎么解压、消息怎样分段。","demoType":"branch","demoTitle":"同一串字节怎样走不同解释器","demoSteps":[{"label":"先看 Content-Type","value":"text/html; charset=utf-8","note":"标签决定接收端从 HTML 规则开始解释。"},{"label":"换标签不换字节","value":"text/plain; charset=utf-8","note":"同样的尖括号变成原样文字，不会构造标题节点。"},{"label":"解析仍会失败","value":"application/json · {\"count\": }","note":"选择 JSON 解析器不等于把缺少值的内容修好。"}],"quizQuestion":"响应声明 application/json，但 body 是 {\"count\": }，接收端首先应该怎样处理？","quizOptions":["按 JSON 规则解析并报告语法错误","把它当成合法对象继续使用","只看文件扩展名决定结果"],"correctText":"媒体类型选择解析规则，实际字节仍要通过解析。","wrongText":"Content-Type 不是校验结果，也不能靠扩展名绕过解析错误。","promptTitle":"核对内容类型和字节","prompt":"请记录响应的 Content-Type、charset、Content-Encoding、multipart boundary 和实际字节，判断接收端会选什么解析器以及失败停在哪里。","relatedSlugs":["http-header","response-header","response-body","json"]},
+  {"zh":"缓存控制","en":"Cache-Control","slug":"cache-control","cat":"技术栈","say":"把能不能存、能新鲜多久、要不要回源写给缓存看的指令。","aliases":["Cache-Control","HTTP 缓存策略","缓存响应头"],"question":"为什么同一份响应有时直接命中，有时只回 304，还有时根本不能进共享缓存？","definition":"Cache-Control 是 HTTP 缓存指令集合，控制响应能否存储、何时仍可直接复用、何时必须验证，以及 private cache 和 shared cache 怎样分别处理。","boundary":"no-cache 允许存储但复用前要验证；no-store 阻止存储；stale-while-revalidate 和 stale-if-error 只是额外的、有限的过期授权。","demoType":"state","demoTitle":"一份响应怎样穿过缓存闸门","demoSteps":[{"label":"响应先过闸门","value":"max-age=60 / private,no-store","note":"公开脚本可以留下副本，用户资料被 shared cache 挡在门外。"},{"label":"fresh HIT","value":"Age 25 < 60","note":"还在新鲜窗口时直接复用，不必访问源站。"},{"label":"stale → 304 或过期窗口","value":"If-None-Match / stale-*","note":"过期后可以带验证器换回 304；只有明确授权时，才允许短暂交付旧响应。"}],"quizQuestion":"响应写 no-cache，缓存是否一定不能保存副本？","quizOptions":["不一定，保存后每次复用前都要验证","一定完全禁止存储","只影响数据库缓存"],"correctText":"no-cache 管的是复用前验证。","wrongText":"禁止缓存要看 no-store；no-cache 仍允许保存副本。","promptTitle":"核对一条响应的缓存行为","prompt":"请列出这条响应的 Cache-Control、Age、ETag、Vary 和缓存层，推演它会存储、直接命中、验证还是拒绝共享。","relatedSlugs":["cache","response","response-header","dns-resolver"]},
+  {"zh":"MIME 类型","en":"Media Type","slug":"mime-type","cat":"技术栈","say":"用 type/subtype 和参数告诉接收端，这串字节按什么规则解释。","aliases":["媒体类型","Content-Type","Media Type"],"question":"为什么同一段 <h1>Hi</h1> 有时是标题，有时只是文字，JSON 声明错了还会报错？","definition":"MIME 类型由 type、subtype 和可选参数组成；HTTP 用 Content-Type 传递这份表示声明，接收端据此选择解析器，但不替内容保证格式合法。","boundary":"文件扩展名只是文件名线索；charset、Content-Encoding 和 multipart 的 boundary 分别回答字节怎么解码、外层怎么解压、消息怎样分段。","demoType":"branch","demoTitle":"同一串字节怎样走不同解释器","demoSteps":[{"label":"先看 Content-Type","value":"text/html; charset=utf-8","note":"标签决定接收端从 HTML 规则开始解释。"},{"label":"换标签不换字节","value":"text/plain; charset=utf-8","note":"同样的尖括号变成原样文字，不会构造标题节点。"},{"label":"解析仍会失败","value":"application/json · {\"count\": }","note":"JSON 解析器按语法检查内容，缺少值时返回解析错误。"}],"quizQuestion":"响应声明 application/json，但 body 是 {\"count\": }，接收端首先应该怎样处理？","quizOptions":["按 JSON 规则解析并报告语法错误","把它当成合法对象继续使用","只看文件扩展名决定结果"],"correctText":"媒体类型选择解析规则，实际字节仍要通过解析。","wrongText":"不能靠扩展名绕过解析错误。","promptTitle":"核对内容类型和字节","prompt":"请记录响应的 Content-Type、charset、Content-Encoding、multipart boundary 和实际字节，判断接收端会选什么解析器以及失败停在哪里。","relatedSlugs":["http-header","response-header","response-body","json"]},
   {
     "zh": "响应体",
     "en": "Response Body",
@@ -1313,7 +1313,7 @@
     ],
     "question": "状态码和响应头都到了，客户端怎样判断 body 有没有、该怎样读？",
     "definition": "响应体是 HTTP 响应中承载表示字节的部分；客户端先按方法和状态判断是否有内容，再按 Content-Encoding 还原字节，最后由 Content-Type 选择解析器。",
-    "boundary": "HEAD、204 和 304 等响应可以正常没有 body；Content-Type 选对解析方向也不能修复坏字节，解析成功更不等于业务数据可信。",
+    "boundary": "HEAD、204 和 304 等响应可以正常没有 body，Content-Type 选对解析方向也不能修复坏字节。",
     "demoType": "flow",
     "demoTitle": "一串响应字节怎样变成可用结果",
     "demoSteps": [
@@ -1340,7 +1340,7 @@
       "只看 URL 后缀决定解析器"
     ],
     "correctText": "204 的成功语义就是没有响应体；先判断状态，再决定是否读取。",
-    "wrongText": "空体不是坏 JSON，URL 后缀也不能替代响应方法、状态和字段。",
+    "wrongText": "检查响应时，结合请求方法、状态、字段与 URL 判断。",
     "promptTitle": "检查一条响应体读取路径",
     "prompt": "请记录 method、status、Content-Length、Content-Encoding、Content-Type、实际 body 长度和解析错误，区分无内容、未解码与内容损坏。",
     "relatedSlugs": [
@@ -1363,7 +1363,7 @@
     ],
     "question": "body 一样，为什么换一张响应头字段牌，客户端就改了下一步？",
     "definition": "响应头是跟随 HTTP 状态返回的元信息；Location、Retry-After、Vary 和 Cache-Control 等字段把导航、等待、缓存键与新鲜度规则交给接收方。",
-    "boundary": "字段说明协议动作，不替业务 body 提供内容，也不保证客户端一定自动执行；具体动作还受状态码、客户端策略和缓存规则约束。",
+    "boundary": "不替业务 body 提供内容。",
     "demoType": "flow",
     "demoTitle": "同一份 body 怎样被不同字段牌带走",
     "demoSteps": [
@@ -1390,7 +1390,7 @@
       "把字段当成响应体内容显示"
     ],
     "correctText": "Retry-After 提供等待提示，是否重试还要结合请求语义和退避策略。",
-    "wrongText": "响应头字段会参与协议动作，不能只当作页面文字，也不能拿来保证业务成功。",
+    "wrongText": "响应头参与协议动作，业务结果还需核对服务端状态。",
     "promptTitle": "列出响应头改变的下一步",
     "prompt": "请记录 status、字段名和值、接收方、触发的动作和缓存影响，分别判断是跳转、等待、拆分缓存键、进入新鲜窗口还是停止复用。",
     "relatedSlugs": [
@@ -1403,16 +1403,16 @@
   {
     "zh": "数据帧", "en": "DataFrame", "slug": "dataframe", "cat": "技术栈",
     "say": "分析代码中常用的二维表结构，按行列读取、筛选和计算数据。", "aliases": ["DataFrame", "二维数据表", "分析表"],
-    "question": "CSV 读进分析程序后，怎样按列计算平均值？", "definition": "数据帧是带行索引和列定义的二维数据结构，常用于清洗、转换和分析。", "boundary": "数据帧通常存在内存或分布式计算环境中，不等于持久化数据库表。",
+    "question": "CSV 读进分析程序后，怎样按列计算平均值？", "definition": "数据帧是带行索引和列定义的二维数据结构，常用于清洗、转换和分析。", "boundary": "数据帧通常在内存或分布式计算环境中处理；持久化需要另行写入存储。",
     "demoType": "state", "demoTitle": "原始订单怎样变成汇总数据",
     "demoSteps": [{"label":"读入数据","value":"1000 行订单","note":"每列得到名称和数据类型。"},{"label":"筛选清洗","value":"去掉 12 行无效金额","note":"有效行数变为 988。"},{"label":"分组计算","value":"按城市求平均值","note":"结果收敛为每城一行。"}],
-    "quizQuestion": "数据帧最常见的形态是什么？", "quizOptions": ["带列定义的二维数据", "网络数据包", "加密证书"], "correctText": "数据帧按行列组织分析数据。", "wrongText": "网络包和证书不是数据帧。",
+    "quizQuestion": "数据帧最常见的形态是什么？", "quizOptions": ["带列定义的二维数据", "网络数据包", "加密证书"], "correctText": "数据帧按行列组织分析数据。", "wrongText": "数据帧按行列组织分析数据。",
     "promptTitle": "检查数据帧处理", "prompt": "请检查这段数据帧代码的类型转换、缺失值、过滤、分组和输出行数，并给出每步校验。", "relatedSlugs": ["dataset-data", "data-validation", "data-transformation"]
   },
   {
     "zh": "数据集", "en": "Dataset", "slug": "dataset-data", "cat": "技术栈",
     "say": "为分析、训练或业务处理收集的一组相关数据。", "aliases": ["Dataset", "数据集合", "样本集"],
-    "question": "同一份模型训练数据怎样确定范围和版本？", "definition": "数据集是围绕特定用途组织的数据集合，应说明来源、结构、时间范围和版本。", "boundary": "数据集不等于任意文件堆积；用途、质量、权限和更新规则需要明确。",
+    "question": "同一份模型训练数据怎样确定范围和版本？", "definition": "数据集是围绕特定用途组织的数据集合，应说明来源、结构、时间范围和版本。", "boundary": "用途、质量、权限和更新规则需要明确。",
     "demoType": "lifecycle", "demoTitle": "原始记录怎样成为可用数据集",
     "demoSteps": [{"label":"确定范围","value":"2026 年订单","note":"时间和业务边界被固定。"},{"label":"清洗验证","value":"删除重复 218 条","note":"保留符合字段规则的记录。"},{"label":"发布版本","value":"orders-v3","note":"使用者可追踪本次内容和变更。"}],
     "quizQuestion": "可复现的数据集至少需要什么？", "quizOptions": ["明确范围、来源和版本", "只写一个随意文件名", "隐藏所有字段说明"], "correctText": "这些信息让使用者知道数据从哪里来、包含什么。", "wrongText": "模糊文件名和缺失说明会妨碍复现。",
@@ -1448,7 +1448,7 @@
   {
     "zh": "数据质量", "en": "Data Quality", "slug": "data-quality", "cat": "技术栈",
     "say": "判断数据是否完整、准确、一致、及时并符合使用要求。", "aliases": ["数据品质", "质量规则", "Data Quality"],
-    "question": "报表能正常打开，为什么数字仍可能不可信？", "definition": "数据质量用可测规则评估数据对特定用途的适用程度。", "boundary": "质量不是单一分数，也不是数据永远无错；标准必须结合业务用途和风险。",
+    "question": "报表能正常打开，为什么数字仍可能不可信？", "definition": "数据质量用可测规则评估数据对特定用途的适用程度。", "boundary": "数据质量按准确性、完整性、时效等维度分别评估；标准必须结合业务用途和风险。",
     "demoType": "state", "demoTitle": "一批订单怎样通过质量门槛",
     "demoSteps": [{"label":"原始数据","value":"10,000 行","note":"发现 32 个空订单号。"},{"label":"执行规则","value":"完整率 99.68%","note":"低于约定的 99.9%。"},{"label":"阻止发布","value":"质量门槛失败","note":"旧报表继续服务并发出告警。"}],
     "quizQuestion": "数据质量规则应该由什么决定？", "quizOptions": ["具体使用场景和可接受风险", "随机选择一个百分比", "只看文件大小"], "correctText": "不同用途对错误和延迟的容忍度不同。", "wrongText": "随机阈值和文件大小不能代表数据是否可用。",
@@ -1466,7 +1466,7 @@
   {
     "zh": "数据验证", "en": "Data Validation", "slug": "data-validation", "cat": "技术栈",
     "say": "按类型、范围、格式和关系规则检查数据是否可以继续处理。", "aliases": ["数据校验", "Validation", "字段验证"],
-    "question": "导入文件里有负数年龄和不存在的城市代码，应该什么时候发现？", "definition": "数据验证对输入或处理中间结果执行可判定规则，并处理不符合规则的记录。", "boundary": "验证只能检查已定义规则，不能证明没有任何未知问题。",
+    "question": "导入文件里有负数年龄和不存在的城市代码，应该什么时候发现？", "definition": "数据验证对输入或处理中间结果执行可判定规则，并处理不符合规则的记录。", "boundary": "验证只能检查已定义规则。",
     "demoType": "branch", "demoTitle": "导入记录怎样被接受或隔离",
     "demoSteps": [{"label":"读取记录","value":"age = -2","note":"字段成功解析为数字。"},{"label":"执行范围规则","value":"0 ≤ age ≤ 120","note":"当前值不符合业务范围。"},{"label":"隔离错误","value":"rejects/row-18","note":"有效记录继续，错误原因被保存。"}],
     "quizQuestion": "发现一条无效记录时合理的做法是什么？", "quizOptions": ["按规则拒绝或隔离并记录原因", "静默改成任意值", "删除整批数据"], "correctText": "处理方式应明确，并保留可排查证据。", "wrongText": "随意修改或删除整批数据都会造成新的问题。",
@@ -1475,10 +1475,10 @@
   {
     "zh": "流处理", "en": "Stream Processing", "slug": "stream-processing", "cat": "技术栈",
     "say": "数据持续到达时逐条或按短时间窗口处理，快速产出结果。", "aliases": ["流式处理", "实时处理", "Streaming"],
-    "question": "风控规则需要在付款发生后几秒内响应，怎样处理事件？", "definition": "流处理对持续到达的事件执行转换、聚合和状态计算，输出延迟通常较低。", "boundary": "流处理不等于严格实时；乱序、重复、窗口和状态恢复仍需设计。",
+    "question": "风控规则需要在付款发生后几秒内响应，怎样处理事件？", "definition": "流处理对持续到达的事件执行转换、聚合和状态计算，输出延迟通常较低。", "boundary": "乱序、重复、窗口和状态恢复仍需设计。",
     "demoType": "flow", "demoTitle": "付款事件怎样触发风险提醒",
     "demoSteps": [{"label":"事件到达","value":"payment 980 元","note":"事件带用户、金额和发生时间。"},{"label":"更新窗口","value":"10 分钟累计 4,800 元","note":"处理器合并该用户近期付款。"},{"label":"输出判断","value":"超过阈值 → review","note":"审核队列立即收到一条记录。"}],
-    "quizQuestion": "流处理需要特别处理什么？", "quizOptions": ["乱序和重复事件", "页面字体名称", "Git 提交标题"], "correctText": "到达顺序和投递次数会影响流式结果。", "wrongText": "字体和提交标题不是流处理的核心问题。",
+    "quizQuestion": "流处理需要特别处理什么？", "quizOptions": ["乱序和重复事件", "页面字体名称", "Git 提交标题"], "correctText": "到达顺序和投递次数会影响流式结果。", "wrongText": "到达顺序和投递次数会影响流式结果。",
     "promptTitle": "设计流处理", "prompt": "请定义事件键、时间语义、窗口、乱序容忍、去重、状态和失败恢复，并给出可观察指标。", "relatedSlugs": ["data-pipeline", "batch-processing", "idempotency", "queue"]
   },
   {
@@ -1503,7 +1503,7 @@
     ],
     "question": "金额计算函数改了以后，怎样在几百毫秒内知道边界有没有坏？",
     "definition": "单元测试隔离一个较小的代码单元，控制输入和外部依赖，并对返回值、错误或可观察行为作自动断言。",
-    "boundary": "它回答一个小单元是否符合自己的行为契约，不能证明数据库、网络和完整业务流程已经协作正常。",
+    "boundary": "它回答一个小单元是否符合自己的行为契约。",
     "demoType": "branch",
     "demoTitle": "折扣规则怎样经过准备、调用和断言",
     "demoSteps": [
@@ -1530,7 +1530,7 @@
       "所有浏览器真实登录流程"
     ],
     "correctText": "单元测试聚焦小范围、可重复的行为契约。",
-    "wrongText": "真实网络和完整流程需要集成或端到端测试，不能由单元测试代替。",
+    "wrongText": "单元测试检查局部行为，真实网络与完整流程通过集成或端到端测试验证。",
     "promptTitle": "把一段规则放进测试实验室",
     "prompt": "请先写出被测单元的行为契约，再列正常、边界、异常和依赖失败用例；说明时间、随机数或网络怎样被控制，并避免断言私有实现。",
     "relatedSlugs": [
@@ -1553,7 +1553,7 @@
     ],
     "question": "代码单测都通过，为什么一连上数据库，订单还是会在事务边界上摔倒？",
     "definition": "集成测试让多个组件或系统边界共同参与，验证协议、数据格式、配置、事务和副作用是否彼此兼容。",
-    "boundary": "它可以只覆盖一小段真实协作，也可以扩大到多个服务；但它不等于完整用户旅程，也不能替代端到端测试。",
+    "boundary": "它可以覆盖一小段真实协作，也可以扩展到多个服务；端到端测试另行验证完整用户旅程。",
     "demoType": "flow",
     "demoTitle": "订单请求怎样穿过服务、数据库和支付边界",
     "demoSteps": [
@@ -1565,7 +1565,7 @@
       {
         "label": "发出请求",
         "value": "POST /orders",
-        "note": "请求经过路由、校验、事务和持久化，而不是直呼一个函数。"
+        "note": "请求经过路由、校验、事务和持久化。"
       },
       {
         "label": "核对证据",
@@ -1603,7 +1603,7 @@
     ],
     "question": "页面显示“支付成功”，为什么还要查数据库和邮件？",
     "definition": "端到端测试从接近真实的用户或外部调用方入口出发，穿过部署后的关键组件，验证完整业务路径和系统级结果。",
-    "boundary": "E2E 覆盖面大、运行和定位成本高，适合守住少量关键旅程；它不能替代更快的单元和集成测试。",
+    "boundary": "E2E 的运行和定位成本较高，适合守住少量关键旅程；单元和集成测试提供更快的局部反馈。",
     "demoType": "flow",
     "demoTitle": "一笔订单怎样从点击走到跨层验收",
     "demoSteps": [
@@ -1652,7 +1652,7 @@
     ],
     "question": "刚部署的版本，为什么不先跑完整回归？",
     "definition": "冒烟测试用少量高价值检查快速判断一个构建或环境是否具备继续测试的基本条件。",
-    "boundary": "冒烟通过只说明关键入口没有立即失效，不代表系统质量完整；失败则应先关闸修复，再投入更大的测试套件。",
+    "boundary": "冒烟通过说明关键入口没有立即失效，失败则应先关闸修复，再投入更大的测试套件。",
     "demoType": "flow",
     "demoTitle": "四盏关键灯怎样决定是否放行",
     "demoSteps": [
@@ -1679,7 +1679,7 @@
       "只看前三项通过就放行"
     ],
     "correctText": "冒烟测试回答的是“是否值得继续测”，失败应尽早阻止更大成本。",
-    "wrongText": "冒烟通过不是全面合格章，失败也不能被绿色片段或可选开关掩盖。",
+    "wrongText": "失败也不能被绿色片段或可选开关掩盖。",
     "promptTitle": "设计发布闸门",
     "prompt": "请为这个部署挑选 3–6 条最能代表环境可用性的检查，写明最大耗时、失败阻塞动作、版本和环境证据，以及通过后解锁的下一阶段。",
     "relatedSlugs": [
@@ -1691,16 +1691,16 @@
   {
     "zh": "回归测试", "en": "Regression Test", "slug": "regression-test", "cat": "技术栈",
     "say": "代码、配置或依赖改动后，重新验证原本应该成立的行为。", "aliases": ["Regression Test", "回归验证", "防回归测试"],
-    "question": "只改了认证中间件，为什么订单和后台权限也要重测？", "definition": "回归测试从本次变更出发，沿影响关系和风险历史选择旧行为，用实际结果检查它们有没有倒退。", "boundary": "回归不是只测修复点，也不是每次机械跑完全量；范围过窄会漏风险，过宽会拖慢反馈。",
+    "question": "只改了认证中间件，为什么订单和后台权限也要重测？", "definition": "回归测试从本次变更出发，沿影响关系和风险历史选择旧行为，用实际结果检查它们有没有倒退。", "boundary": "范围过窄会漏风险，过宽会拖慢反馈。",
     "demoType": "request", "demoTitle": "一处鉴权改动怎样展开回归范围",
     "demoSteps": [{"label":"摆出差异","value":"auth middleware · commit 8c42","note":"先确认这次真正改变了哪条规则。"},{"label":"追共享依赖","value":"登录 · 会话 · 订单 · 后台","note":"调用关系把直接和跨模块测试带进候选。"},{"label":"补历史风险","value":"14 / 32 · 403→200","note":"越权旧缺陷不在调用图里，也要留下验证。"}],
-    "quizQuestion": "认证中间件改动为何要补入历史越权用例？", "quizOptions": ["鉴权是高风险区域，旧缺陷能防止行为倒退", "所有测试标题都包含 auth", "因为单元测试一定不能运行"], "correctText": "影响关系告诉你可能波及哪里，风险历史告诉你哪里曾经出过事。", "wrongText": "行数、标题和盲跑全量都不能替代有依据的范围判断。",
+    "quizQuestion": "认证中间件改动为何要补入历史越权用例？", "quizOptions": ["鉴权是高风险区域，旧缺陷能防止行为倒退", "所有测试标题都包含 auth", "因为单元测试一定不能运行"], "correctText": "影响关系告诉你可能波及哪里，风险历史告诉你哪里曾经出过事。", "wrongText": "根据依赖关系、改动内容与风险确定范围。",
     "promptTitle": "为一次变更选择回归范围", "prompt": "请从改动文件、调用关系、业务风险、数据契约和历史缺陷五处列出候选测试，说明纳入或排除理由。", "relatedSlugs": ["smoke-test", "test-case", "code-coverage"]
   },
   {
     "zh": "测试用例", "en": "Test Case", "slug": "test-case", "cat": "技术栈",
     "say": "把一个具体起点、一次明确动作和几项可观察结果写成能重跑的判断。", "aliases": ["Test Case", "测试场景", "用例"],
-    "question": "“密码重置应该失败”为什么还不能交给别人执行？", "definition": "测试用例把前置状态、输入、操作和可判定预期连成一条可重复检查的路径。", "boundary": "标题和“功能正常”都不是完整用例；没有固定起点或可观察结果，就无法归因和判定。",
+    "question": "“密码重置应该失败”为什么还不能交给别人执行？", "definition": "测试用例把前置状态、输入、操作和可判定预期连成一条可重复检查的路径。", "boundary": "没有固定起点或可观察结果。",
     "demoType": "request", "demoTitle": "把一句“应该失败”拆成三张回执",
     "demoSteps": [{"label":"固定起点","value":"user=u-42 · token=expired","note":"账号状态和令牌年龄先写死，第二次才能从同一扇门开始。"},{"label":"发送动作","value":"POST /password/reset · 1 次","note":"操作、路径、输入和次数都能照着执行。"},{"label":"观察并重跑","value":"410 · consumed=false · mail=0","note":"三类证据对上，清理后再次执行仍是 3/3 PASS。"}],
     "quizQuestion": "“过期令牌应失败”还缺哪类信息？", "quizOptions": ["具体操作、状态码和服务端副作用预期", "更多形容词描述失败严重程度", "把标题改成英文"], "correctText": "协议结果和状态副作用让失败可判定。", "wrongText": "把“失败”拆成可以观察、可以复现的事实。",
@@ -1709,7 +1709,7 @@
   {
     "zh": "模拟对象", "en": "Mock", "slug": "mock", "cat": "技术栈",
     "say": "用一块可编程的替身隔离昂贵依赖，同时记录被测代码怎样与它协作。", "aliases": ["Mock", "测试模拟", "模拟依赖"],
-    "question": "支付从 charge 重构成 authorize + capture，订单没变，为什么旧测试却先红了？", "definition": "模拟对象替代真实依赖，按测试设定返回结果并记录交互；它能隔离和控场，却不等于真实服务。", "boundary": "Mock 不是所有假数据的统称；调用期待可能绑住实现细节，关键协议仍需 Fake、契约或集成测试补回真实度。",
+    "question": "支付从 charge 重构成 authorize + capture，订单没变，为什么旧测试却先红了？", "definition": "模拟对象替代真实依赖，按测试设定返回结果并记录交互，它能隔离和控场。", "boundary": "调用期待可能绑住实现细节，关键协议仍需 Fake、契约或集成测试补回真实度。",
     "demoType": "comparison", "demoTitle": "业务结果与调用细节面对同一次支付重构",
     "demoSteps": [{"label":"隔离支付","value":"PaymentGateway → Mock / Fake","note":"把真实网络和扣款留在系统边界外，先让结账逻辑可控。"},{"label":"重构调用","value":"charge → authorize + capture","note":"内部从一次调用拆成两步，订单对外仍应是 paid。"},{"label":"审查信号","value":"order=paid · charge×0","note":"业务结果可能通过，旧 Mock 的调用期待却可能只是在保护旧实现。"}],
     "quizQuestion": "Mock 变红时，第一步应该先看什么？", "quizOptions": ["它断言的是业务契约还是实现细节", "立刻删除所有测试", "把真实支付平台接进每次单测"], "correctText": "先把最终行为和调用期待分开，才能判断红灯是否真的代表缺陷。", "wrongText": "Mock 的红灯提供线索，但不自动等于业务行为坏了。",
@@ -1755,7 +1755,7 @@
       "它让接口永远在 200ms 返回"
     ],
     "correctText": "断言应该绑定可观察条件，并把等待上限写清楚。",
-    "wrongText": "固定时间点或无条件绿色都不能代替一次有证据的比较。",
+    "wrongText": "比较结果要有实际执行证据，并与明确的参照对应。",
     "promptTitle": "把猜时间改成可观察断言",
     "prompt": "请列出这个动作真正改变的状态、可观察的实际值、允许等待上限和失败差异；移除固定 sleep 与没有业务意义的内部变量检查。",
     "relatedSlugs": [
@@ -1776,8 +1776,8 @@
       "测试覆盖"
     ],
     "question": "一条成功测试把行覆盖率点到 100%，为什么未验证的成人仍可能被放行？",
-    "definition": "测试覆盖率记录测试执行触达了哪些代码结构；它适合发现空白，不直接证明已经触达的行为正确。",
-    "boundary": "高覆盖率不等于断言有效，也不能替代需求、并发、集成和真实依赖验证；行、分支和组合追踪回答的问题也不同。",
+    "definition": "测试覆盖率记录测试执行触达了哪些代码结构。",
+    "boundary": "还需验证需求、并发、集成与真实依赖。",
     "demoType": "branch",
     "demoTitle": "把复合条件拆成四格，找出行覆盖漏掉的路径",
     "demoSteps": [
@@ -1816,7 +1816,7 @@
   {
     "zh": "API 测试", "en": "API Testing", "slug": "api-testing", "cat": "技术栈",
     "say": "让一次接口请求同时接受协议、状态和权限的检查。", "aliases": ["接口测试", "API Test", "HTTP 测试"],
-    "question": "订单接口回了 201，怎样知道它真的创建了一笔、重试不会多写、用户 B 也读不到？", "definition": "API 测试直接构造协议请求，检查响应状态、字段形状、服务端副作用、重复请求和访问权限。", "boundary": "API 测试可以绕过浏览器检查服务边界，但不能替代页面交互验证、生产监控或所有集成环境差异。",
+    "question": "订单接口回了 201，怎样知道它真的创建了一笔、重试不会多写、用户 B 也读不到？", "definition": "API 测试直接构造协议请求，检查响应状态、字段形状、服务端副作用、重复请求和访问权限。", "boundary": "API 测试绕过浏览器检查服务边界；页面交互、生产运行和环境差异分别验证。",
     "demoType": "request", "demoTitle": "接口回执和服务端状态怎样互相作证",
     "demoSteps": [{"label":"创建并核对","value":"201 + orderId · 1 row","note":"响应有订单号，服务端只新增一行。"},{"label":"同键重试","value":"200 · same orderId","note":"网络失败后重发，不应再造一笔订单。"},{"label":"换身份","value":"403 · 1 row","note":"用户 B 被挡在数据前，状态没有被改写。"}],
     "quizQuestion": "创建订单接口第二次返回 200，但订单表多了一行，测试应该怎样判？", "quizOptions": ["失败，响应和副作用没有说同一件事", "通过，只要没有返回 500", "忽略订单表，只看响应体"], "correctText": "API 测试要把协议回执和服务端状态放在同一条断言里。", "wrongText": "状态码、字段、重复语义和权限都可能是接口契约的一部分。",
@@ -1835,7 +1835,7 @@
   ],
   "question": "发布机器人只写一个 release，为什么还要拿组织管理员？",
   "definition": "最小权限把授权收窄到当前任务必需的主体、动作、资源范围与时限，并在任务结束后审查和收回。",
-  "boundary": "它降低误用和泄露的影响范围，却不能代替身份认证、请求级授权检查、审计和漏洞修复。",
+  "boundary": "它降低误用和泄露的影响范围，并与身份认证、请求级授权、审计和漏洞修复配合使用。",
   "demoType": "hierarchy",
   "demoTitle": "一把组织钥匙为什么会多开九扇门",
   "demoSteps": [
@@ -1852,7 +1852,7 @@
     {
       "label": "封住越界",
       "value": "delete production · DENY",
-      "note": "能发布不等于能删生产，30 分钟后租约自动失效。"
+      "note": "30 分钟后租约自动失效。"
     }
   ],
   "quizQuestion": "发布机器人缺少 release:write 时，最合适的补权方式是什么？",
@@ -1885,7 +1885,7 @@
   ],
   "question": "下载的发布包只改了一个字符，为什么摘要会完全换一张脸？保存密码时又为什么不能直接用最快的 SHA-256？",
   "definition": "哈希函数把任意长度输入映射为固定长度摘要，常用于完整性比较；密码验证需要在此基础上使用带盐、成本可调的专用密码哈希方案。",
-  "boundary": "哈希不是可逆加密，摘要对不上时只能重新获取可信输入；快速通用哈希、缺盐或成本过低，也不能当密码存储方案。",
+  "boundary": "摘要对不上时只能重新获取可信输入，也不能当密码存储方案。",
   "demoType": "comparison",
   "demoTitle": "同一枚指纹怎样从文件校验走到密码验证",
   "demoSteps": [
@@ -1934,7 +1934,7 @@
     ],
     "question": "账单页面已经把日期标绿，为什么服务端还要把格式、日期顺序、查询字段和账号归属分开检查？",
     "definition": "输入校验在信任边界先解析外部数据，再按结构、类型、格式和业务语义规则拒绝不合格值；它让后续逻辑只接收约定范围内的数据。",
-    "boundary": "它不能替代参数化查询、上下文输出编码或对象级授权；合法 UUID 只说明值可解释，不说明当前主体能访问对应对象。",
+    "boundary": "合法 UUID 表示值可解析；参数化查询、上下文输出编码与对象级授权分别保护后续处理。",
     "demoType": "branch",
     "demoTitle": "同一份账单请求怎样在四道门前停下或继续",
     "demoSteps": [
@@ -2011,7 +2011,7 @@
     "能，KMS 会自动识别所有被盗身份"
   ],
   "correctText": "静态加密挡住的是存储介质直接泄露；授权应用读出的明文需要另一层控制。",
-  "wrongText": "密文、wrapped DEK 和 KMS grant 是不同边界，不能把磁盘安全等同于应用安全。",
+  "wrongText": "密文、wrapped DEK 和 KMS grant 是不同边界。",
   "promptTitle": "画出数据和钥匙的保存边界",
   "prompt": "请列出数据库、备份、快照、日志、DEK、KEK、KMS grant、撤权和轮换的关系，并写出两种攻击各自能看到什么。",
   "relatedSlugs": [
@@ -2041,7 +2041,7 @@
     {
       "label": "先画出跳点",
       "value": "Browser → CDN → LB → App",
-      "note": "每个代理都可能终止一次 TLS，不能把它们折叠成一条线。"
+      "note": "每个代理都可能终止一次 TLS。"
     },
     {
       "label": "观察抓包",
@@ -2061,7 +2061,7 @@
     "只要地址栏有锁，证书主机名就不必再检查"
   ],
   "correctText": "TLS 保护一对端点；终止后到下一跳的连接要单独建立并验证。",
-  "wrongText": "外部链路加密不能替内部链路背书，地址栏也不能代替每一段证书和协议检查。",
+  "wrongText": "逐段检查内部和外部链路的证书与协议，确认各段都采用预期的加密方式。",
   "promptTitle": "做一次逐跳 TLS 审查",
   "prompt": "请列出浏览器、CDN、网关、负载均衡和应用之间的每一段协议、证书身份、TLS 终止点、抓包可见内容、失败动作和是否允许 0-RTT。",
   "relatedSlugs": [
@@ -2085,7 +2085,7 @@
     ],
     "question": "代码已经部署了，为什么用户还看不到新功能？",
     "definition": "功能开关在运行时读取一个 flag 和请求上下文，选择旧路径、新路径或某个变体。它把代码部署与功能暴露分开，让团队可以先给内部用户或小比例 cohort 使用，再根据指标扩大、暂停或关闭。",
-    "boundary": "开关控制的是功能暴露，不是身份授权、数据回滚或自动质量证明。评估失败要有明确默认路径；长期不清理的 flag 会增加每条代码路径的维护和验证成本，分组还要使用稳定的上下文键。",
+    "boundary": "开关控制的是功能暴露。评估失败要有明确默认路径；长期不清理的 flag 会增加每条代码路径的维护和验证成本，分组还要使用稳定的上下文键。",
     "demoType": "comparison",
     "demoTitle": "同一个版本怎样只让一部分请求走新路径",
     "demoSteps": [
@@ -2137,7 +2137,7 @@
     ],
     "question": "依赖服务已经挂了，为什么还要继续发请求？",
     "definition": "熔断器记录依赖调用的失败情况，在达到条件后从闭合切到打开，后续请求快速失败；冷却后进入半开，只放少量探针验证依赖是否恢复。",
-    "boundary": "它不会修复下游，也不等于重试、超时或限流。阈值、冷却时间、探针数量和失败分类要按依赖特征设置，恢复后仍需防止请求洪峰。",
+    "boundary": "它不会修复下游。阈值、冷却时间、探针数量和失败分类要按依赖特征设置，恢复后仍需防止请求洪峰。",
     "demoType": "state",
     "demoTitle": "从连续失败到探针恢复",
     "demoSteps": [
@@ -2154,7 +2154,7 @@
       {
         "label": "半开",
         "value": "只放一个探针，成功后闭合",
-        "note": "恢复不是猜出来的，要有可观察试探。"
+        "note": "要有可观察试探。"
       }
     ],
     "quizQuestion": "熔断器打开后最直接的行为是什么？",
@@ -2186,7 +2186,7 @@
     ],
     "question": "上游改了字段，为什么下游会在发布后才崩？",
     "definition": "数据契约把数据生产者提供的字段、类型、语义、质量和兼容规则写成可检查的约定，让消费者在运行前或读取时知道自己依赖什么。",
-    "boundary": "它不是一份静态字段表，也不能替代数据质量监控和业务沟通。契约范围、版本、默认值、兼容策略和所有者都要明确。",
+    "boundary": "还需持续监控数据质量，并与业务方沟通。契约范围、版本、默认值、兼容策略和所有者都要明确。",
     "demoType": "state",
     "demoTitle": "字段变化先经过兼容性闸门",
     "demoSteps": [
@@ -2213,7 +2213,7 @@
       "让下游不需要任何版本迁移"
     ],
     "correctText": "契约把依赖和变化规则提前写成可检查约定。",
-    "wrongText": "契约不能替代质量检查、迁移和业务语义。",
+    "wrongText": "契约记录约定，质量检查、迁移与业务语义在实施中逐项落实。",
     "promptTitle": "写一份可演进的数据契约",
     "prompt": "请列出字段类型、语义、质量约束、所有者、版本、兼容策略、默认值和破坏性变化的迁移方案。",
     "relatedSlugs": [

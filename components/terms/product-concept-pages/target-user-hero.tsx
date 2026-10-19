@@ -28,7 +28,7 @@ export function TargetUserHero() {
         <div className={styles.targetScopeHead}><UsersThree size={16} /><span>优先托盘</span></div>
         <div className={styles.targetTray}><div className={styles.targetTrayTitle}><Target size={15} /><strong>{clustered ? "财务人员" : "待命名"}</strong></div><p>{clustered ? "每月批量导出 · 需核对字段" : "共同任务还没出现"}</p><small>{scoped ? "本期先服务" : "还要补频率和权限"}</small></div>
         <div className={styles.targetBoundary}><Funnel size={14} /><span>{scoped ? "范围：导出账单" : "范围尚未收窄"}</span>{scoped && <CheckCircle size={15} />}</div>
-        <div className={styles.targetProof} role="status">{scoped ? "未覆盖组：进入下一轮研究" : "人口标签不能替代任务证据"}</div>
+        <div className={styles.targetProof} role="status">{scoped ? "未覆盖组：进入下一轮研究" : "从实际任务收集用户证据"}</div>
       </div>
       <div className={styles.targetFooter}><FileText size={15} /><span>{scoped ? "目标用户是可修正的研究结论" : "把行为和限制先摆上桌"}</span></div>
     </div>

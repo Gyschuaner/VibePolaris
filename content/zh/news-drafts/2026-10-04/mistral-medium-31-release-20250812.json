@@ -2,7 +2,7 @@
   "slug": "mistral-medium-31-release-20250812",
   "title": "Mistral 更新 Medium 3.1：把多模态理解接进 128K 上下文和工具调用",
   "summary": "8 月 12 日，Mistral 在模型页和 changelog 记录 Mistral Medium 3.1（mistral-medium-2508）发布。官方把它定位为 frontier-class 多模态模型，提供 128K 上下文，并列出 structured outputs、function calling、Document QnA、batching、Agents & Conversations 等能力。公开资料主要说明模型入口和功能面，没有把这次更新写成全新模型家族、开源权重或一组已独立复现的 benchmark。",
-  "body": "8 月 12 日，Mistral 发布 Mistral Medium 3.1，模型标识是 mistral-medium-2508。官方页面把它描述为 frontier-class multimodal model，并写着“improving tone and performance”；changelog 也把这条记录归类为模型发布。它更像 Medium 3 系列的一次版本更新：给开发者一个新的日期标签和模型入口，公开可用能力则集中在多模态输入、长上下文以及与工具和结构化输出的衔接上。\n\n模型页标注的上下文长度是 128K，并列出 structured outputs、function calling、predicted outputs、Document QnA、prefix、batching、Agents & Conversations 和 built-in tools。需要把“页面列出支持”与“8 月 12 日新发明了这些 API”分开：资料确认的是 3.1 的可用功能面，没有提供每一项相对 Medium 3 的独立改进幅度，也没有在这两页给出一张可以复核的综合 benchmark 表。\n\n多模态能力的实际价值在于把文字、图片和文档放进同一个任务。Document QnA 可以让模型围绕文件提问，structured outputs 让结果按预先定义的 JSON 形状返回，function calling 则把模型的意图交给外部程序执行。三者串起来时，模型负责理解和生成候选参数，业务系统仍要验证字段、检查用户权限和决定是否真的调用工具，不能把“支持 function calling”当成模型已经获得操作数据库或发送请求的授权。\n\n128K 上下文也不是自动的长期记忆。它可以容纳更长的合同、代码库或多页图像说明，但输入越长，检索重点、费用、延迟和冲突版本越难管理。Prefix、batching 等能力可能改变重复前缀和批处理任务的成本结构，却不能替系统筛掉过期文档或隐藏在附件里的恶意指令。长上下文被装进请求之前，仍需做来源、版本、敏感字段和可共享范围的检查。\n\n从产品工程看，3.1 的功能组合更适合拿来搭一条可检查的流水线：先用文档问答提取证据，再用 structured outputs 固定字段，最后只把通过校验的参数交给 function calling。每一步都要保留原始文件、模型版本、提示、解析错误和工具返回值。对于 Agents & Conversations，还要另外记录会话状态怎样保存、哪些工具能够被调用，以及用户撤回授权后旧上下文是否仍能触发动作。\n\n这次更新的公开信息有一个明显边界：官方页面说明了 128K、功能列表和模型 ID，却没有给出训练数据、参数规模或不同模态任务的独立对比结果。模型方写的 tone 和 performance 改善，需要在自己的文档、图片、结构化输出和工具调用测试里验证；不能仅凭“frontier-class”这个定位就推断它在所有任务上领先。\n\nMistral Medium 3.1 的新闻点不在一个孤立的数字，而在模型版本与应用接口被放在同一张能力表里。下一步应固定模型 ID 和 API 版本，分别测多模态理解、长上下文引用、JSON 合法率、工具参数错误、越权调用和失败重试。这样才能知道它究竟为现有工作流减少了哪一段手工拼接，又把哪些风险交给了系统治理。",
+  "body": "8 月 12 日，Mistral 发布 Mistral Medium 3.1，模型标识是 mistral-medium-2508。官方页面把它描述为 frontier-class multimodal model，并写着“improving tone and performance”；changelog 也把这条记录归类为模型发布。它更像 Medium 3 系列的一次版本更新：给开发者一个新的日期标签和模型入口，公开可用能力则集中在多模态输入、长上下文以及与工具和结构化输出的衔接上。\n\n模型页标注的上下文长度是 128K，并列出 structured outputs、function calling、predicted outputs、Document QnA、prefix、batching、Agents & Conversations 和 built-in tools。需要把“页面列出支持”与“8 月 12 日新发明了这些 API”分开：资料确认的是 3.1 的可用功能面，没有提供每一项相对 Medium 3 的独立改进幅度，也没有在这两页给出一张可以复核的综合 benchmark 表。\n\n多模态能力的实际价值在于把文字、图片和文档放进同一个任务。Document QnA 可以让模型围绕文件提问，structured outputs 让结果按预先定义的 JSON 形状返回，function calling 则把模型的意图交给外部程序执行。模型负责理解和生成候选参数，业务系统仍要验证字段、检查用户权限和决定是否真的调用工具。\n\n128K 描述单次上下文容量，长期记忆通过独立的存储与检索实现。它可以容纳更长的合同、代码库或多页图像说明，但输入越长，检索重点、费用、延迟和冲突版本越难管理。Prefix、batching 等能力可能改变重复前缀和批处理任务的成本结构，却不能替系统筛掉过期文档或隐藏在附件里的恶意指令。长上下文被装进请求之前，仍需做来源、版本、敏感字段和可共享范围的检查。\n\n从产品工程看，3.1 的功能组合更适合拿来搭一条可检查的流水线：先用文档问答提取证据，再用 structured outputs 固定字段，最后只把通过校验的参数交给 function calling。每一步都要保留原始文件、模型版本、提示、解析错误和工具返回值。对于 Agents & Conversations，还要另外记录会话状态怎样保存、哪些工具能够被调用，以及用户撤回授权后旧上下文是否仍能触发动作。\n\n这次更新的公开信息有一个明显边界：官方页面说明了 128K、功能列表和模型 ID，却没有给出训练数据、参数规模或不同模态任务的独立对比结果。模型方写的 tone 和 performance 改善，需要在自己的文档、图片、结构化输出和工具调用测试里验证；不能仅凭“frontier-class”这个定位就推断它在所有任务上领先。\n\nMistral Medium 3.1 的新闻点不在一个孤立的数字，而在模型版本与应用接口被放在同一张能力表里。下一步应固定模型 ID 和 API 版本，分别测多模态理解、长上下文引用、JSON 合法率、工具参数错误、越权调用和失败重试。这样才能知道它究竟为现有工作流减少了哪一段手工拼接，又把哪些风险交给了系统治理。",
   "publishedAt": "2025-08-12",
   "eventDate": "2025-08-12",
   "isExample": false,
@@ -23,7 +23,7 @@
     {
       "id": "capabilities",
       "title": "128K 上下文旁边列着一整套应用接口",
-      "body": "模型页列出 structured outputs、function calling、predicted outputs、Document QnA、prefix、batching、Agents & Conversations 和 built-in tools。功能列表说明支持面，不等于每项都在这一天首次推出或已经给出独立提升幅度。",
+      "body": "模型页列出 structured outputs、function calling、predicted outputs、Document QnA、prefix、batching、Agents & Conversations 和 built-in tools。功能列表说明支持面。",
       "kind": "technical"
     },
     {
@@ -34,14 +34,14 @@
     },
     {
       "id": "context",
-      "title": "128K 是输入容量，不是长期记忆",
+      "title": "128K 输入容量与记忆设计",
       "body": "更长的合同、代码库和图片说明可以放进一次请求，但费用、延迟、重复信息、过期版本和提示注入也会随输入增长。Prefix 与 batching 能改变部分成本结构，不能替系统筛选可信内容。",
       "kind": "boundary"
     },
     {
       "id": "agent-governance",
       "title": "Agents & Conversations 需要自己的授权和状态账本",
-      "body": "接入代理与会话接口时，要记录会话状态、可调用工具、用户授权和撤回后的行为；模型有 function calling 能力，不代表它自动获得访问数据库、发送消息或执行交易的权限。",
+      "body": "接入代理与会话接口时，要记录会话状态、可调用工具、用户授权和撤回后的行为，模型有 function calling 能力。",
       "kind": "technical"
     },
     {
@@ -69,7 +69,7 @@
       },
       {
         "label": "保持上下文",
-        "detail": "128K 允许一次请求容纳更多材料，但长输入仍需去重、分层和标注版本，不能当作跨会话记忆。",
+        "detail": "128K 扩大单次请求容量，长输入仍需去重、分层与版本标注，跨会话信息通过记忆机制管理。",
         "evidence": "128K context"
       },
       {

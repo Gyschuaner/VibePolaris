@@ -2,7 +2,7 @@
   "slug": "google-gemini-38-flash-cyber-release-20260902",
   "title": "Google 发布 Gemini 3.8 Flash 与 Cyber：通用代理降价，漏洞修补能力进入受限入口",
   "summary": "Google 于 2026 年 9 月 2 日发布 Gemini 3.8 Flash 和面向网络防守的 Flash Cyber。Flash 以每百万输入 token 0.75 美元、输出 3.75 美元的介绍价提供；Cyber 的漏洞发现与自动修补能力优先通过 Fairwind Program 向受信任防守方开放。",
-  "body": "Google 在 9 月 2 日把 Gemini 3.8 做成两个面向不同场景的入口：通用的 Gemini 3.8 Flash，和专门给网络防守方的 Gemini 3.8 Flash Cyber。前者主打长时编码、代理工作流和多步推理，后者把能力集中在发现漏洞、编写补丁和验证修复。两者共享基础模型，但可用渠道和权限并不相同。\n\nFlash 的官方介绍价与 3.7 Flash 相同：每百万输入 token（模型计费时使用的文本片段单位）0.75 美元、输出 token 3.75 美元。Google 还说它在 DeepSWE v1.1、金融与法律代理评测以及 HLE-Verified 上取得提升，并提醒开发者可以调低 effort，减少复杂任务的 token 消耗。模型卡给出的工程边界是 1M token 上下文、64K 输出；知识截止到 2026 年 3 月，仍可能产生幻觉、超时，安全评测也不等同于真实部署表现。\n\nCyber 版本的新闻重点不在“一个更强的聊天模型”，而在防守闭环。Google 称它在 CyberGym 漏洞发现上达到前沿水平，在跨 20 种语言的内部测试中成功率超过 70%；CWE-Bench 的公开数字是 pass@1 47.2%，接近某领先模型的 47.8%，但成本更低。Chrome Security、Wiz 和 Google Cloud Vulnerability Research 还给出各自的内部案例。这些结果都是 Google 及合作方的评测或报告，读者不应把它们直接理解为任意代码库都能自动安全修复。\n\n能力边界由 Fairwind Program 决定。Cyber 不对所有 API 用户开放，而是优先给政府、关键基础设施运营商和软件维护者等受信任防守方。参与者需要把访问限制在内部安全、事件响应或渗透测试团队，并使用多因素认证等控制。普通开发者仍可以使用通用 Flash 和其他公开的 CodeMender 路径，但不能因为看到基准分数就绕过代码审查、回滚和变更审批。\n\n这次发布把“价格低、速度快的通用代理”和“受限的网络防御代理”放在同一个产品家族里。后续真正值得观察的不是榜单名次，而是补丁是否经过独立复核、模型在未知漏洞上的误报如何处理，以及受信任访问的审计记录能否让组织追责。",
+  "body": "Google 在 9 月 2 日把 Gemini 3.8 做成两个面向不同场景的入口：通用的 Gemini 3.8 Flash，和专门给网络防守方的 Gemini 3.8 Flash Cyber。前者主打长时编码、代理工作流和多步推理，后者把能力集中在发现漏洞、编写补丁和验证修复。两者共享基础模型，但可用渠道和权限各有差异。\n\nFlash 的官方介绍价与 3.7 Flash 相同：每百万输入 token（模型计费时使用的文本片段单位）0.75 美元、输出 token 3.75 美元。Google 还说它在 DeepSWE v1.1、金融与法律代理评测以及 HLE-Verified 上取得提升，并提醒开发者可以调低 effort，减少复杂任务的 token 消耗。模型卡给出的工程边界是 1M token 上下文、64K 输出；知识截止到 2026 年 3 月，仍可能产生幻觉、超时，安全评测也不等同于真实部署表现。\n\nCyber 版本的新闻重点不在“一个更强的聊天模型”，而在防守闭环。Google 称它在 CyberGym 漏洞发现上达到前沿水平，在跨 20 种语言的内部测试中成功率超过 70%；CWE-Bench 的公开数字是 pass@1 47.2%，接近某领先模型的 47.8%，但成本更低。Chrome Security、Wiz 和 Google Cloud Vulnerability Research 还给出各自的内部案例。这些结果来自 Google 及合作方的评测或报告，采用时需按自己的代码库核验修复表现。\n\n能力边界由 Fairwind Program 决定。Cyber 不对所有 API 用户开放，而是优先给政府、关键基础设施运营商和软件维护者等受信任防守方。参与者需要把访问限制在内部安全、事件响应或渗透测试团队，并使用多因素认证等控制。普通开发者仍可以使用通用 Flash 和其他公开的 CodeMender 路径，但不能因为看到基准分数就绕过代码审查、回滚和变更审批。\n\n这次发布把“价格低、速度快的通用代理”和“受限的网络防御代理”放在同一个产品家族里。后续真正值得观察的是补丁是否经过独立复核、模型在未知漏洞上的误报如何处理，以及受信任访问的审计记录能否让组织追责。",
   "publishedAt": "2026-09-02",
   "eventDate": "2026-09-02",
   "isExample": false,
@@ -23,19 +23,19 @@
     {
       "id": "price-context",
       "title": "低价来自 effort 和规模选择",
-      "body": "Google 公布的介绍价是输入每百万 token 0.75 美元、输出 3.75 美元。复杂任务会调用更多推理步骤；模型卡的 1M 上下文和 64K 输出也不意味着每次请求都会达到上限。",
+      "body": "Google 公布的介绍价是输入每百万 token 0.75 美元、输出 3.75 美元。复杂任务会调用更多推理步骤；模型卡给出的 1M 上下文和 64K 输出为容量上限，实际用量随请求变化。",
       "kind": "technical"
     },
     {
       "id": "cyber-evals",
       "title": "漏洞分数要连着测试条件看",
-      "body": "Google 报告 CyberGym、CWE-Bench 和内部 20 语言代码库结果，也列出 Chrome、Wiz 与云安全团队案例。这些数据说明研发方向，不能代替组织对自己的代码、权限和补丁流程做验证。",
+      "body": "Google 报告 CyberGym、CWE-Bench 和内部 20 语言代码库结果，也列出 Chrome、Wiz 与云安全团队案例。结合这些研发数据，在自己的代码、权限和补丁流程中验证效果。",
       "kind": "comparison"
     },
     {
       "id": "access",
       "title": "Cyber 能力被放在受控入口",
-      "body": "Fairwind 优先面向政府、关键基础设施和软件维护者，要求限制内部安全团队使用、启用 MFA 等控制。通用 Flash 的可用性不等于 Cyber 的可用性。",
+      "body": "Fairwind 优先面向政府、关键基础设施和软件维护者，要求限制内部安全团队使用、启用 MFA 等控制。",
       "kind": "boundary"
     },
     {

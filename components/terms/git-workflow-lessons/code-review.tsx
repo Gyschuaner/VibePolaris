@@ -14,7 +14,7 @@ export function CodeReviewLesson() {
     <Caption
       scene={scene}
       labels={["确认目标与场景", "读 diff 与上下文", "提交可行动结论"]}
-      titles={["先知道要保护什么行为", "同一处改动要连着输入和影响看", "意见指向复现和测试，而不是偏好"]}
+      titles={["先知道要保护什么行为", "同一处改动要连着输入和影响看", "意见指向复现和测试"]}
       copy={[
         "验收目标是空数组返回空结果；当前改动涉及结果解析，先不要从格式偏好开始。",
         "Files changed 显示读取 items[0] 的变化；“这里不好”没有触发条件，“空数组触发 500”可以复现。",
@@ -46,7 +46,7 @@ export function CodeReviewLesson() {
         {actionable ? <CheckCircle size={23} aria-hidden="true" /> : <WarningCircle size={23} aria-hidden="true" />}
         <strong>{actionable ? "Request changes" : "评审结论"}</strong>
         <code>{actionable ? "空数组 → 500 · 加回归测试" : "等待可复现证据"}</code>
-        <span>{actionable ? "输入、影响、预期和验证方式齐全" : "不能把个人偏好写成缺陷"}</span>
+        <span>{actionable ? "输入、影响、预期和验证方式齐全" : "按约定、行为与证据描述问题"}</span>
       </div>
     </div>
     <div className={styles.choices} role="group" aria-label="推进代码评审流程">

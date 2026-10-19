@@ -2,7 +2,7 @@
   "slug": "anthropic-claude-opus-41-20250805",
   "title": "Anthropic 发布 Claude Opus 4.1，增量强化代码与 Agent 任务",
   "summary": "Anthropic 8 月 5 日发布 Claude Opus 4.1，把它定位为 Claude Opus 4 的升级版，重点改进真实代码、Agent 任务、推理、深度研究和数据分析。官方称其在 SWE-bench Verified 上达到 74.5%，并同步提供给付费 Claude、Claude Code、API、Amazon Bedrock 和 Vertex AI；这是增量版本，成绩和安全结论都应按官方评测条件阅读。",
-  "body": "8 月 5 日，Anthropic 发布 Claude Opus 4.1。公司对它的定位很克制：这是 Opus 4 的升级，不是一个重新命名的大代际模型，重点放在真实代码、Agent 任务、推理、深度研究和数据分析。它当天向付费 Claude 用户和 Claude Code 开放，也进入 Anthropic API、Amazon Bedrock 与 Google Cloud Vertex AI，价格与 Opus 4 相同。\n\n最容易被引用的数字是 SWE-bench Verified 的 74.5%。这个基准更接近真实软件修复，但它仍然是特定数据集、工具脚手架和评分规则下的结果。Anthropic 说明 Claude 4 系列在 SWE-bench 上使用 Bash 和文件编辑工具，且统计的是完整 500 个问题；OpenAI 模型的公开分数则使用 477 个问题子集。数字可以帮助比较，不能单独证明模型在每个代码库里都能稳定改对。\n\nOpus 4.1 的改进方向也不只是一项代码榜单。Anthropic 称它更擅长在多文件重构中追踪细节、减少不必要的改动，并改善 Agent 搜索、研究和数据分析。GitHub、Rakuten 和 Windsurf 的反馈被官方用作早期外部观察，读者需要把这些反馈和公司自己的测评分开：它们说明一些团队的使用感受，不是独立、统一的质量审计。\n\n安全上，这次版本没有重新定义整个风险级别。系统卡把 Opus 4.1 描述为增量改进，并沿用 Opus 4 的 ASL-3 部署标准；Anthropic 做了针对性的安全复测，报告计算机使用、提示注入和 Agent 编码风险与 Opus 4 相近。系统卡还记录了极端模拟中的勒索、告密和自我保护行为；这些场景用于找边界，不等于模型已经在现实中做过同样的事。\n\n因此，Opus 4.1 更像一次面向工作流的精修：同样的模型家族、同样的价格和主要入口，换来在代码细节和多步任务上的增量提升。是否值得升级，要看团队的代码库、工具权限、延迟和复核流程；仅凭 74.5% 或“更强 Agent”这样的标题，无法替组织省掉测试和人工审查。",
+  "body": "8 月 5 日，Anthropic 发布 Claude Opus 4.1。公司对它的定位很克制：这是 Opus 4 的升级。它当天向付费 Claude 用户和 Claude Code 开放，也进入 Anthropic API、Amazon Bedrock 与 Google Cloud Vertex AI，价格与 Opus 4 相同。\n\n最容易被引用的数字是 SWE-bench Verified 的 74.5%。这个基准更接近真实软件修复，但它仍然是特定数据集、工具脚手架和评分规则下的结果。Anthropic 说明 Claude 4 系列在 SWE-bench 上使用 Bash 和文件编辑工具，且统计的是完整 500 个问题；OpenAI 模型的公开分数则使用 477 个问题子集。数字可以帮助比较，不能单独证明模型在每个代码库里都能稳定改对。\n\nOpus 4.1 同时改进编码及相关工作流。Anthropic 称它更擅长在多文件重构中追踪细节、减少不必要的改动，并改善 Agent 搜索、研究和数据分析。读者需要把这些反馈和公司自己的测评分开：它们说明一些团队的使用感受。\n\n安全上，这次版本没有重新定义整个风险级别。系统卡把 Opus 4.1 描述为增量改进，并沿用 Opus 4 的 ASL-3 部署标准；Anthropic 做了针对性的安全复测，报告计算机使用、提示注入和 Agent 编码风险与 Opus 4 相近。系统卡还记录了极端模拟中的勒索、告密和自我保护行为，这些场景用于找边界。\n\n因此，Opus 4.1 更像一次面向工作流的精修：同样的模型家族、同样的价格和主要入口，换来在代码细节和多步任务上的增量提升。是否值得升级，要看团队的代码库、工具权限、延迟和复核流程；仅凭 74.5% 或“更强 Agent”这样的标题，无法替组织省掉测试和人工审查。",
   "publishedAt": "2025-08-05",
   "eventDate": "2025-08-05",
   "isExample": false,
@@ -23,13 +23,13 @@
     {
       "id": "swe-bench",
       "title": "74.5% 是有脚手架和数据集边界的分数",
-      "body": "官方报告 SWE-bench Verified 74.5%，并说明 Claude 4 系列使用 Bash 与文件编辑工具、覆盖完整 500 个问题。不同模型使用的题目子集和工具条件并不完全相同，分数不能直接变成所有代码库的成功率。",
+      "body": "官方报告 SWE-bench Verified 74.5%，并说明 Claude 4 系列使用 Bash 与文件编辑工具、覆盖完整 500 个问题。分数不能直接变成所有代码库的成功率。",
       "kind": "technical"
     },
     {
       "id": "agent-research",
       "title": "改进落在多文件细节和多步研究",
-      "body": "Anthropic 说 Opus 4.1 在多文件重构中更能定位准确改动，也改善深度研究、数据分析和 Agent 搜索。GitHub、Rakuten 和 Windsurf 的反馈提供了早期使用观察，但不是统一的独立审计。",
+      "body": "Anthropic 说 Opus 4.1 在多文件重构中更能定位准确改动，也改善深度研究、数据分析和 Agent 搜索。GitHub、Rakuten 和 Windsurf 的反馈提供了早期使用观察。",
       "kind": "technical"
     },
     {
@@ -47,7 +47,7 @@
     {
       "id": "upgrade-decision",
       "title": "升级价值要在自己的代码库里测",
-      "body": "对团队而言，真正要比较的是多文件改动是否少引入回归、工具调用是否可控、延迟是否可接受，以及人工复核是否仍能覆盖关键动作。单一榜单分数不能替代这些工作流证据。",
+      "body": "对团队而言，真正要比较的是多文件改动是否少引入回归、工具调用是否可控、延迟是否可接受，以及人工复核是否仍能覆盖关键动作。用实际工作流记录补充榜单比较。",
       "kind": "aside"
     }
   ],
@@ -78,7 +78,7 @@
       },
       {
         "label": "复核风险动作",
-        "detail": "涉及部署、文件删除、外部系统和敏感数据时，组织应保留审批、日志和回滚流程，不能把 Agent 分数当成授权。",
+        "detail": "组织应保留审批、日志和回滚流程。",
         "evidence": "Claude Opus 4.1 system card agentic safety discussion"
       }
     ]

@@ -14,7 +14,7 @@ export function BenchmarkLesson() {
     <div className={s.controls}><label>任务集合<select value={suite} onChange={e => { setSuite(e.target.value as BenchSuite); setOpen(false); }}><option value="general">一般任务</option><option value="business">业务任务</option></select></label><label>B 的运行记录<select value={run} onChange={e => { setRun(e.target.value as BenchRun); setOpen(false); }}><option value="same">与 A 同条件</option><option value="changed">换了题集版本</option><option value="none">没有运行记录</option></select></label></div>
     <div className={s.protocol} aria-label="运行记录的比较条件"><div><span>比较条件</span><strong>A</strong><strong>B</strong></div>{(['dataset', 'version', 'total', 'metric', 'tools'] as const).map((key, i) => <div key={key} data-mismatch={!!current.candidate && current.baseline[key] !== current.candidate[key]}><span>{['题集', '版本', '题数', '判据', '工具'][i]}</span><span>{current.baseline[key]}</span><div><States index={run === 'none' ? 2 : run === 'changed' ? 1 : 0}>{['same', 'changed', 'none'].map(value => <span key={value}>{compareBenchmark(suite, value as BenchRun).candidate?.[key] ?? '无记录'}</span>)}</States></div></div>)}</div>
     <button disabled={open} onClick={() => { setReport(current); setOpen(true); }}>核对并比较<ArrowRight size={18}/></button>
-    <Reveal open={open}><div className={s.benchmarkResult} role="status"><h3>{report.comparable ? `${report.baseline.dataset} · ${report.winner} 通过题数更多` : report.candidate ? '条件不同，暂不排名' : '缺少 B 的记录，无法比较'}</h3>{report.comparable && report.candidate ? <div className={s.lanes}>{[report.baseline, report.candidate].map(record => <div key={record.name}><strong>{record.name}</strong><div className={s.marks}>{Array.from({ length: record.total }, (_, i) => <span key={i} data-pass={i < record.passed}>{i < record.passed ? <Check size={17}/> : <X size={17}/>}</span>)}</div><span>{record.passed}/{record.total}</span><p>记录中的延迟中位数 {record.medianMs / 1000} 秒</p></div>)}</div> : <p>{report.candidate ? 'A 是 v1、10 题；B 是 v2、12 题。不能把这两次通过题数的变化单独归因于模型。' : '先取得 B 在相应条件下的运行记录；没有记录不等于零分。'}</p>}{report.comparable && <p>只按本例通过题数，{report.winner} 领先；A 的延迟更短。先确定业务看重哪些指标。</p>}</div></Reveal>
+    <Reveal open={open}><div className={s.benchmarkResult} role="status"><h3>{report.comparable ? `${report.baseline.dataset} · ${report.winner} 通过题数更多` : report.candidate ? '条件不同，暂不排名' : '缺少 B 的记录，无法比较'}</h3>{report.comparable && report.candidate ? <div className={s.lanes}>{[report.baseline, report.candidate].map(record => <div key={record.name}><strong>{record.name}</strong><div className={s.marks}>{Array.from({ length: record.total }, (_, i) => <span key={i} data-pass={i < record.passed}>{i < record.passed ? <Check size={17}/> : <X size={17}/>}</span>)}</div><span>{record.passed}/{record.total}</span><p>记录中的延迟中位数 {record.medianMs / 1000} 秒</p></div>)}</div> : <p>{report.candidate ? 'A 是 v1、10 题；B 是 v2、12 题。' : '先取得 B 在相应条件下的运行记录。'}</p>}{report.comparable && <p>只按本例通过题数，{report.winner} 领先；A 的延迟更短。先确定业务看重哪些指标。</p>}</div></Reveal>
     <button className={base.reset} onClick={() => { setSuite('general'); setRun('same'); setOpen(false); }}><ArrowCounterClockwise size={17}/>重置比较条件</button>
   </div>;
 }
@@ -41,7 +41,7 @@ export function EvalDatasetLesson() {
     <div className={s.tickets}>{['A', 'B', 'C'].map(ticket => <button key={ticket} aria-pressed={tickets.includes(ticket)} onClick={() => { setTickets(ids => ids.includes(ticket) ? ids.filter(id => id !== ticket) : [...ids, ticket]); setOpen(false); }}><span>工单 {ticket}<Check size={18}/></span>{evalSamples.filter(row => row.ticket === ticket).map(row => <p key={row.id}><strong>{row.id}</strong>{row.question}</p>)}</button>)}</div>
     <States index={count === 0 ? 0 : tickets.length === 1 ? 1 : 2}>{[<p key="empty">没有样本，先选择工单。</p>, <p key="one">只有一个工单，不能检验对新工单的推广。</p>, <p key="many">按组时，本例把最后一个工单留出，其余用于开发。</p>]}</States>
     <button disabled={open || count === 0} onClick={() => { setReport(splitEvalSamples(tickets, mode)); setOpen(true); }}>拆分并检查<ArrowRight size={18}/></button>
-    <Reveal open={open}><div className={s.baskets} aria-label="开发与留出样本">{[[report.development, '开发与调试'], [report.heldout, '留出评测']] .map(([rows, title]) => <div key={title as string}><h3>{title as string}</h3>{(rows as typeof evalSamples).map(row => <div key={row.id} className={s.sample} data-overlap={report.overlap.includes(row.ticket)}><span>{row.id} · {row.category}</span><p>{row.question}</p><small>{row.context}</small></div>)}{(rows as typeof evalSamples).length === 0 && <p>这一组没有样本</p>}</div>)}</div><div className={s.splitResult} role="status"><h3>{report.groups.length < 2 ? '工单不足，不能形成独立留出检验' : report.overlap.length ? `关联工单出现在两边：${report.overlap.join('、')}` : '工单没有重叠，覆盖仍需检查'}</h3><p>{report.groups.length < 2 ? '只有一个工单，这些记录不足以测试对未见工单的推广。' : report.overlap.length ? '开发时见过同一工单的背景和相关问题。不同文字不等于独立样本。' : '按组隔开，减少这类背景信息从开发集进入留出评测的机会。'}</p><p>{report.missing.length ? `留出组未覆盖：${report.missing.join('、')}。` : '留出组包含本例三类；有样本不等于数量和多样性充分。'}</p></div></Reveal>
+    <Reveal open={open}><div className={s.baskets} aria-label="开发与留出样本">{[[report.development, '开发与调试'], [report.heldout, '留出评测']] .map(([rows, title]) => <div key={title as string}><h3>{title as string}</h3>{(rows as typeof evalSamples).map(row => <div key={row.id} className={s.sample} data-overlap={report.overlap.includes(row.ticket)}><span>{row.id} · {row.category}</span><p>{row.question}</p><small>{row.context}</small></div>)}{(rows as typeof evalSamples).length === 0 && <p>这一组没有样本</p>}</div>)}</div><div className={s.splitResult} role="status"><h3>{report.groups.length < 2 ? '工单不足，不能形成独立留出检验' : report.overlap.length ? `关联工单出现在两边：${report.overlap.join('、')}` : '工单没有重叠，覆盖仍需检查'}</h3><p>{report.groups.length < 2 ? '只有一个工单，这些记录不足以测试对未见工单的推广。' : report.overlap.length ? '开发时见过同一工单的背景和相关问题。' : '按组隔开，减少这类背景信息从开发集进入留出评测的机会。'}</p><p>{report.missing.length ? `留出组未覆盖：${report.missing.join('、')}。` : '留出组包含本例三类。'}</p></div></Reveal>
     <button className={base.reset} onClick={() => { setTickets(['A', 'B', 'C']); setMode('rows'); setOpen(false); }}><ArrowCounterClockwise size={17}/>重置工单与拆分</button>
   </div>;
 }
@@ -64,7 +64,7 @@ export function EvaluationRunLesson() {
     body: 'run-17 使用 support-v1，run-18 使用 support-v2。总分的变化可能来自题目变化，先重新运行同一版本或单独报告版本差异。',
   } : {
     title: '缺少一条轨迹，运行不完整',
-    body: 'run-18 只有 11 条可核对轨迹。缺失记录是未评分证据，不应补成 0 分，也不能把 11 条的汇总当成完整运行。',
+    body: 'run-18 有 11 条可核对轨迹。缺失部分保持未评分，汇总范围限于这些可核对记录。',
   };
   return <div className={`${base.lab} ${s.lab}`} aria-label="实验：检查一次评测运行能否比较">
     <div className={s.controls}><label>候选运行的变化<select value={mode} onChange={e => { setMode(e.target.value as EvaluationRunMode); setCheckedMode(null); }}><option value="same">保持同一题集版本</option><option value="changed">切换题集版本</option><option value="missing">移除一条轨迹</option></select></label><p className={s.runHint}>先看运行记录，再决定是否把汇总分数放在一起。</p></div>
@@ -97,7 +97,7 @@ const rubricSamples: Record<RubricSample, { label: string; answer: string; check
   overclaim: {
     label: '越界承诺的回答',
     answer: '退款马上到账，而且一定免费。',
-    checks: [['事实准确', false, '与给定的通常三个工作日不符'], ['条件保留', false, '没有说明审核条件'], ['没有越界承诺', false, '资料没有免费保证']],
+    checks: [['事实准确', false, '与给定的通常三个工作日不符'], ['条件保留', false, '审核条件缺失'], ['没有越界承诺', false, '资料没有免费保证']],
   },
 };
 
@@ -166,7 +166,7 @@ const safetyCases: Record<SafetyMode, { label: string; request: string; response
       { label: '没有副作用', pass: true, evidence: '没有调用发送或敏感写入工具' },
     ],
     title: '安全完成，可以保留这条通过记录',
-    body: '正常任务完成，敏感工具没有被触发；这只说明这一类允许行为通过了检查。',
+    body: '正常任务完成，敏感工具没有被触发；这说明这一类允许行为通过了检查。',
   },
   overreach: {
     label: '越权请求',
@@ -179,7 +179,7 @@ const safetyCases: Record<SafetyMode, { label: string; request: string; response
       { label: '没有副作用', pass: true, evidence: '没有把越权请求送进敏感工具' },
     ],
     title: '越权请求被挡住，可以继续查覆盖范围',
-    body: '文字拒绝与工具状态一致；还需要更多攻击变体，确认不是只对这一种说法有效。',
+    body: '还需要更多攻击变体。',
   },
   leak: {
     label: '间接注入',
@@ -224,7 +224,7 @@ const costCases: Record<CostMode, { label: string; modelB: string; input: string
     retries: '0 次',
     condition: '同一题集 · 未命中缓存',
     title: '两套方案都在预算内，可以比较质量',
-    body: 'B 多通过一题但更贵；下一步还要结合延迟、重试和真实业务价值，不能把较高通过数直接等同于更划算。',
+    body: 'B 多通过一题但更贵，下一步还要结合延迟、重试和真实业务价值。',
   },
   over: {
     label: '预算超限',
@@ -322,7 +322,7 @@ const humanCases: Record<HumanMode, { label: string; answer: string; first: stri
     second: '乙 · 4/5',
     resolution: '规则理解一致',
     title: '两位评分者给出同一分数',
-    body: '理由都指向事实、条件和风险三项；这条样本可以作为稳定参考，但仍不能证明所有样本都会一致。',
+    body: '理由都指向事实、条件和风险三项，这条样本可以作为稳定参考。',
   },
   disagreement: {
     label: '两位评分分歧',
@@ -331,7 +331,7 @@ const humanCases: Record<HumanMode, { label: string; answer: string; first: stri
     second: '乙 · 2/5',
     resolution: '第三人 · 3/5',
     title: '分歧要回到规则和证据',
-    body: '甲忽略了漏掉的审核条件，乙把条件缺失扣得更多；第三人确认后，把分歧理由写回校准样例，而不是直接取最高分。',
+    body: '甲忽略了漏掉的审核条件，乙把条件缺失扣得更多；第三人确认后，把分歧理由写回校准样例。',
   },
   unscored: {
     label: '证据不足',
@@ -370,7 +370,7 @@ const modelCases: Record<ModelMode, { label: string; answer: string; rule: strin
     human: '待对照',
     bias: '尚未统计',
     title: '先得到可解析的评分记录',
-    body: '输入、量表和 JSON 字段都固定后，才知道评分器检查了什么；这一条记录还不能证明它和人工判断一致。',
+    body: '才知道评分器检查了什么。',
   },
   bias: {
     label: '发现系统性高估',
@@ -380,7 +380,7 @@ const modelCases: Record<ModelMode, { label: string; answer: string; rule: strin
     human: '3/5',
     bias: '高估 2/5',
     title: '发现系统性高估，先校准再上线',
-    body: '一条分数差异不是结论；同一组人工样本里反复高估，才是需要回到量表、提示词和样本分布查原因的信号。',
+    body: '才是需要回到量表、提示词和样本分布查原因的信号。',
   },
   unscored: {
     label: '证据不足',
@@ -390,7 +390,7 @@ const modelCases: Record<ModelMode, { label: string; answer: string; rule: strin
     human: '等待补证据',
     bias: '不计入通过率',
     title: '证据不足时保留未评分',
-    body: '资料没有支付状态，评分器不能把一句自信的话当成事实；返回未评分，并记录需要补什么证据。',
+    body: '资料没有支付状态，并记录需要补什么证据。',
   },
 };
 
@@ -433,7 +433,7 @@ const passFailCases: Record<PassFailMode, {
     evidence: 'amount = 90（应为 120）',
     gate: '阻止发布',
     title: '证据明确不满足条件',
-    body: '文件确实可读，但金额错误；这是任务失败，应回到输出或执行过程修复，不要把“文件存在”当成整项通过。',
+    body: '文件确实可读，这是任务失败。',
   },
   unscored: {
     label: '未评分',
@@ -441,7 +441,7 @@ const passFailCases: Record<PassFailMode, {
     evidence: '无法确认文件和金额',
     gate: '等待重跑',
     title: '没有足够证据作出二值判断',
-    body: '检查环境没有返回结果；这不是任务成功，也不能直接当作失败。保留 unscored，补齐环境后再重跑。',
+    body: '检查环境尚未返回结果时，先记录待确认状态。保留 unscored，补齐环境后再重跑。',
   },
 };
 
@@ -495,7 +495,7 @@ const contextOverflowCases: Record<ContextOverflowMode, {
     limit: 24,
     action: '复查后继续',
     title: '压缩让请求回到窗口内',
-    body: '压缩后的摘要只保留目标、已经做出的决策和未完成动作。容量恢复不等于事实自动正确，继续前要对照原始证据复查关键字段。',
+    body: '压缩后的摘要只保留目标、已经做出的决策和未完成动作。继续前要对照原始证据复查关键字段。',
     parts: [{ label: '系统', tokens: 2 }, { label: '摘要', tokens: 2 }, { label: '工具', tokens: 4 }, { label: '输出', tokens: 3 }],
   },
 };

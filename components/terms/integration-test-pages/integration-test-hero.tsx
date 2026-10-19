@@ -28,7 +28,7 @@ export function IntegrationTestHero() {
         <h3>POST /orders</h3>
         <code>{request ? "order-42 · ¥128" : "等待测试客户端"}</code>
         <div className={styles.integrationHeroRequestState}>{request ? "HTTP request" : "not sent"}</div>
-        <small>不是直接调用某个函数，而是走一条接口边界。</small>
+        <small>是走一条接口边界。</small>
       </div>
       <div className={styles.integrationHeroArrow} aria-hidden="true"><span /><ArrowRight size={21} /></div>
       <div className={styles.integrationHeroRuntime} data-active={scene.step === 0 || scene.step === 1 || scene.step === 2 || failed} data-danger={failed}>

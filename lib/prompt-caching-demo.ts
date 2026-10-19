@@ -64,15 +64,15 @@ export function getPromptCachingDemoState(
   const statusDetail = status === "idle"
     ? "先处理稳定底片，才能留下下一次可复用的中间计算。"
     : status === "saved"
-      ? "缓存保存的是读过前缀的计算，不是上一轮的最终答案。"
+      ? "缓存保存的是读过前缀的计算。"
       : status === "hit"
         ? "只换问题便签，前三段仍从开头连续相同；回答仍按本次问题重新生成。"
         : status === "partial"
           ? "第二段变了，第三段即使文字没变，也不能越过新的前文继续复用。"
           : !sameModel
-            ? "模型变了，不能把另一个模型的中间状态当成当前模型的缓存。"
+            ? "切换模型后，使用当前模型对应的缓存状态。"
             : !cacheFresh
-              ? "缓存章已经褪色；以前处理过不代表现在仍保留状态。"
+              ? "缓存章已经褪色。"
               : "第一段发生变化，连续前缀从开头就不再匹配。";
   const segmentStates = segments.map((segment, index): PromptCachingSegment => ({
     ...segment,

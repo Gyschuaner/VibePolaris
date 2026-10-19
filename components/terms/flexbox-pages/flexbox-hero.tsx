@@ -47,12 +47,12 @@ export function FlexboxHero() {
         <div className={styles.flexItems} data-column={current.axis === "column"} data-wrap={wrap}>
           {current.sizes.map((size, index) => <div key={index} className={styles.flexItem} data-item={index === 0 ? "a" : index === 1 ? "b" : "c"} data-wrap={wrap} style={{ flex: itemFlex(scene.step, current.axis, wrap, index, size) }}><strong>{String.fromCharCode(65 + index)}</strong><code>{size}px</code></div>)}
         </div>
-        <small>{wrap ? "A、B 在第一行，C 落到下一条 flex line。" : current.axis === "column" ? "同一套规则沿垂直主轴结算。" : "项目的宽度随着空间结算移动，而不是靠手写每个 left。"}</small>
+        <small>{wrap ? "A、B 在第一行，C 落到下一条 flex line。" : current.axis === "column" ? "同一套规则沿垂直主轴结算。" : "项目的宽度随着空间结算移动。"}</small>
       </div>
     </div>
     <div className={styles.flexNote} role="status">{negative ? <WarningCircle size={17} aria-hidden="true" /> : scene.step === frames.length - 1 ? <CheckCircle size={17} aria-hidden="true" /> : <Ruler size={17} aria-hidden="true" />}<span>{current.note}</span></div>
     <div className={styles.flexMetrics}><div><span>空间账本</span><strong>{current.free}</strong></div><div><span>分配规则</span><strong>{current.ratio}</strong></div><div><span>项目关系</span><strong>{wrap ? "两条 flex line" : current.axis === "column" ? "一列" : "一行"}</strong></div></div>
     <div className={styles.flexResult}><ResultIcon size={19} aria-hidden="true" /><span><strong>{current.label}</strong> · {current.note}</span></div>
-    <figcaption>Flexbox 不是“把东西排成一行”的魔法。浏览器先确定主轴、基准尺寸和自由空间，再按 grow、shrink、对齐和换行规则把结果交给项目。</figcaption>
+    <figcaption>浏览器先确定主轴、基准尺寸和自由空间，再按 grow、shrink、对齐和换行规则把结果交给项目。</figcaption>
   </figure>;
 }

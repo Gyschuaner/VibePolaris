@@ -10,7 +10,7 @@ const useCaseCaptions = [
   "先确认订单已支付 36 小时，仍在 48 小时退款窗口里；这是用例的起点。",
   "购买者提交申请，服务请求支付方；订单从 paid 变成 refund_pending。",
   "如果窗口已经过去，流程在资格检查处结束，订单仍留在 paid。",
-  "支付方超时也不是一句失败：订单不乱改，结果进入可重试的分支。",
+  "结果进入可重试的分支。",
 ];
 
 export function UseCaseHero() {
@@ -54,14 +54,14 @@ export function AcceptanceCriteriaHero() {
         <div className={styles.acceptanceRow} data-on={step >= 2}><span>WHEN</span><strong>{step >= 2 ? "提交正确凭据" : "做什么？"}</strong></div>
         <div className={styles.acceptanceRow} data-on={step >= 2}><span>THEN</span><strong>{step >= 2 ? "回到原目标并看到设置" : "看见什么？"}</strong></div>
       </div>
-      <div className={styles.acceptanceBoundary}><div className={styles.acceptanceHead}><Scales size={16} /><span>BOUNDARY</span></div><div className={styles.acceptanceResult} data-fail={step === 3}><WarningCircle size={15} /><span>{step === 3 ? "密码错误：留在登录页，可重试" : "错误、权限、回归也要有结果"}</span></div><div className={styles.acceptanceResult} data-on={step >= 3}><LockSimple size={15} /><span>{step >= 3 ? "无权限：拒绝且不泄露内容" : "内部字段不是用户结果"}</span></div><small>{step >= 3 ? "状态可恢复，下一次尝试从干净起点开始" : "把实现证据翻译成可见行为"}</small></div>
+      <div className={styles.acceptanceBoundary}><div className={styles.acceptanceHead}><Scales size={16} /><span>BOUNDARY</span></div><div className={styles.acceptanceResult} data-fail={step === 3}><WarningCircle size={15} /><span>{step === 3 ? "密码错误：留在登录页，可重试" : "错误、权限、回归也要有结果"}</span></div><div className={styles.acceptanceResult} data-on={step >= 3}><LockSimple size={15} /><span>{step >= 3 ? "无权限：拒绝且不泄露内容" : "按用户可观察的结果验收"}</span></div><small>{step >= 3 ? "状态可恢复，下一次尝试从干净起点开始" : "把实现证据翻译成可见行为"}</small></div>
     </div>
   </MechanismFrame>;
 }
 
 const scopeLabels = ["写出目标", "圈住本期", "放下相邻项", "评估变更"];
 const scopeCaptions = [
-  "目标先落在一个任务：导出当前筛选结果为 CSV，而不是做完整报表平台。",
+  "目标先落在一个任务：导出当前筛选结果为 CSV。",
   "把生成 CSV、沿用筛选和手动下载圈进本期，边界开始可复述。",
   "自定义图表与定时报表放到圈外；它们有价值，但服务的是另一项任务。",
   "新想法进来先看让谁让位、增加什么依赖和验收，再决定改不改承诺。",
@@ -85,9 +85,9 @@ export function ScopeHero() {
 
 const roadmapLabels = ["共同方向", "近期阶段", "依赖显影", "证据复盘"];
 const roadmapCaptions = [
-  "路线图先回答要为用户改变什么：降低首次配置失败率，而不是列一串季度功能。",
+  "路线图先回答要为用户改变什么：降低首次配置失败率。",
   "近期做诊断，下一阶段再优化引导；每一段都有自己的结果和观察方式。",
-  "权限接口和研究证据成为阶段旁的依赖，远期方案保留为假设而非日期承诺。",
+  "权限接口和研究证据成为阶段旁的依赖，远期方案保留为假设。",
   "复盘结果决定保留、重排或停止下一阶段；路线图跟着证据走。",
 ];
 
@@ -98,7 +98,7 @@ export function RoadmapHero() {
     <div className={styles.roadmapScene}>
       <div className={styles.roadmapNorth}><div className={styles.roadmapNorthHead}><Target size={16} /><span>NORTH STAR</span></div><strong>降低首次配置失败率</strong><small>用户结果 · 可观察方向</small></div>
       <div className={styles.roadmapTrack}><div className={styles.roadmapLine} /><div className={styles.roadmapStage} data-active={step >= 1}><span>NOW</span><strong>诊断卡点</strong><small>{step >= 1 ? "完成率 · 失败位置" : "近期结果"}</small></div><div className={styles.roadmapStage} data-active={step >= 2}><span>NEXT</span><strong>优化引导</strong><small>{step >= 2 ? "等待证据" : "阶段假设"}</small></div><div className={styles.roadmapStage} data-active={step >= 3}><span>LATER</span><strong>自动修复</strong><small>{step >= 3 ? "重排或停止" : "远期未知"}</small></div></div>
-      <div className={styles.roadmapProof} role="status"><GitBranch size={15} /><span>{step === 2 ? "依赖：权限接口 + 研究样本" : step === 3 ? "复盘：阶段是否带来价值？" : "路线图不是任务清单"}</span></div>
+      <div className={styles.roadmapProof} role="status"><GitBranch size={15} /><span>{step === 2 ? "依赖：权限接口 + 研究样本" : step === 3 ? "复盘：阶段是否带来价值？" : "路线图安排目标与阶段"}</span></div>
     </div>
   </MechanismFrame>;
 }
@@ -108,7 +108,7 @@ const priorityCaptions = [
   "先固定目标：降低首次配置失败率；没有共同目标，‘最重要’无法比较。",
   "把影响、时限、风险、依赖和成本一起摆上桌，单一分数不再遮住取舍。",
   "诊断阻塞排在微调前面，因为它更直接影响用户完成配置。顺序要能解释。",
-  "新故障或容量变化出现后重新排序；P0/P1 是当前判断，不是永久身份。",
+  "新故障或容量变化出现后重新排序，P0/P1 是当前判断。",
 ];
 
 export function PriorityHero() {
@@ -118,7 +118,7 @@ export function PriorityHero() {
     <div className={styles.priorityScene}>
       <div className={styles.priorityGoal}><div className={styles.priorityHead}><Target size={16} /><span>SHARED GOAL</span></div><strong>降低首次配置失败率</strong><small>所有候选都回到这个结果</small></div>
       <div className={styles.priorityCards}><div className={styles.priorityCard} data-rank={step >= 2 ? "1" : "3"}><div><strong>诊断卡点</strong><small>影响高 · 依赖中</small></div><b>{step >= 2 ? "先做" : "候选"}</b></div><div className={styles.priorityCard} data-rank={step >= 2 ? "2" : "1"}><div><strong>修复登录阻塞</strong><small>风险高 · 需接口</small></div><b>{step >= 2 ? "随后" : "候选"}</b></div><div className={styles.priorityCard} data-rank={step >= 3 ? "3" : "2"}><div><strong>界面微调</strong><small>收益小 · 成本低</small></div><b>{step >= 3 ? "暂缓" : "候选"}</b></div></div>
-      <div className={styles.priorityEvidence} role="status"><Scales size={15} /><span>{step === 3 ? "新证据：诊断已完成，顺序重新计算" : step >= 1 ? "影响 · 时限 · 风险 · 依赖 · 成本" : "先别把声音大小当排序依据"}</span></div>
+      <div className={styles.priorityEvidence} role="status"><Scales size={15} /><span>{step === 3 ? "新证据：诊断已完成，顺序重新计算" : step >= 1 ? "影响 · 时限 · 风险 · 依赖 · 成本" : "根据价值、影响与成本排序"}</span></div>
     </div>
   </MechanismFrame>;
 }

@@ -56,6 +56,6 @@ export function LeastPrivilegeLesson() {
       </section>
     </div>
     <div className={styles.leastLabRail}><div data-on={scene.step >= 0}><UserCircle size={15} aria-hidden="true" /><span>定主体</span></div><div data-on={scene.step >= 1}><FileCode size={15} aria-hidden="true" /><span>列动作</span></div><div data-on={scene.step >= 2}><GitBranch size={15} aria-hidden="true" /><span>锁资源</span></div><div data-on={scene.step >= 3}><Clock size={15} aria-hidden="true" /><span>设时限</span></div><div data-on={scene.step >= 4}><ShieldWarning size={15} aria-hidden="true" /><span>测越界</span></div><div data-on={scene.step >= 5} data-danger={weak}><CheckCircle size={15} aria-hidden="true" /><span>收授权</span></div></div>
-    <p className={`${styles.leastLabNote} ${weak ? styles.leastDanger : ""}`} role="status">{!final ? <><ArrowCounterClockwise size={17} aria-hidden="true" /><span>权限的大小由资源、动作、条件和时间共同决定，角色名只是一个方便的入口。</span></> : weak ? <><WarningCircle size={17} aria-hidden="true" /><span>任务做完了不等于授权合理：角色太宽，下一次误用仍能触达生产。</span></> : <><CheckCircle size={17} aria-hidden="true" /><span>让任务通过，让无关动作拒绝，再在窗口结束时收回钥匙。</span></>}</p>
+    <p className={`${styles.leastLabNote} ${weak ? styles.leastDanger : ""}`} role="status">{!final ? <><ArrowCounterClockwise size={17} aria-hidden="true" /><span>权限的大小由资源、动作、条件和时间共同决定，角色名只是一个方便的入口。</span></> : weak ? <><WarningCircle size={17} aria-hidden="true" /><span>下一次误用仍能触达生产。</span></> : <><CheckCircle size={17} aria-hidden="true" /><span>让任务通过，让无关动作拒绝，再在窗口结束时收回钥匙。</span></>}</p>
   </div>;
 }

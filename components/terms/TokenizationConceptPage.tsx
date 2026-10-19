@@ -131,19 +131,19 @@ function TokenizationLab() {
   </div>;
 }
 
-const sections: [string, string][] = [["tokenization-definition", "模型先看到的不是字和词"], ["tokenization-boundary", "边界由哪一把编码器尺决定"], ["tokenization-count", "token 数为什么会影响预算"], ["tokenization-practice", "把示意换成实际检查"]];
+const sections: [string, string][] = [["tokenization-definition", "文本先转为词表编号"], ["tokenization-boundary", "边界由哪一把编码器尺决定"], ["tokenization-count", "token 数为什么会影响预算"], ["tokenization-practice", "把示意换成实际检查"]];
 
 export function TokenizationConceptTermPage() {
-  return <Article slug="tokenization" title="分词" subtitle="Tokenization · 把字符串压成模型能读的片段" sources={tokenizationConceptSources} sections={sections} intro={<>你只删掉一句话里的空格，模型收到的编号就可能整组换掉。<strong>分词是把原始字符串按某个 tokenizer 的词表和规则切成 token 片段，再为每个片段贴上编号；它不是“一个字换一个编号”。</strong>下面先看这把尺怎样把同一句话压成不同形状。</>}>
-    <ArticleSection id="tokenization-definition" title="模型先看到的不是字和词">
+  return <Article slug="tokenization" title="分词" subtitle="Tokenization · 把字符串压成模型能读的片段" sources={tokenizationConceptSources} sections={sections} intro={<>你只删掉一句话里的空格，模型收到的编号就可能整组换掉。<strong>分词是把原始字符串按某个 tokenizer 的词表和规则切成 token 片段，再为每个片段贴上编号。</strong>下面先看这把尺怎样把同一句话压成不同形状。</>}>
+    <ArticleSection id="tokenization-definition" title="文本先转为词表编号">
       <p id="tokenization-definition-claim" className="vp-citation-target">人眼看到的是“CSS 很好用”，模型接口通常接收的是一串数字。OpenAI 的 tiktoken 把 BPE tokenizer 描述为把文本变成 token 序列，并提供按模型选择编码器、编码和解码的接口。网页里的 token 可以是一整词，也可以是子词、空格或符号片段。<Cite id="tokenization-definition-claim" sources={tokenizationConceptSources} /></p>
       <p id="tokenization-subword" className="vp-citation-target">所以“token 等于词”会在第一步就把人带偏。Hugging Face 将 BPE、Unigram 和 WordPiece 都归为子词算法：常见词可能保留成一块，少见词会拆成已知的片段；Sennrich 等人的研究正是用子词单元处理罕见词。<Cite id="tokenization-subword" sources={tokenizationConceptSources} /></p>
-      <p>把字符串按规则切成 token 后，编码器再为它们分配对应编号。压板上的数字只是为了让眼睛能跟住变化；它们不是某个线上模型的词表快照。</p>
+      <p>把字符串按规则切成 token 后，编码器再为它们分配对应编号。压板上的数字只是为了让眼睛能跟住变化。</p>
     </ArticleSection>
     <ArticleSection id="tokenization-boundary" title="边界由哪一把编码器尺决定">
       <p id="tokenization-bpe-steps" className="vp-citation-target">以 BPE 为例，预分词器会先按空格等规则切出候选，算法从基础字符或字节开始，反复合并更常见的相邻片段，直到得到目标词表。合并规则写进词表，所以同一串字符换一套编码器，边界就可能换位置。<Cite id="tokenization-bpe-steps" sources={tokenizationConceptSources} /></p>
       <TokenizationLab />
-      <p id="tokenization-boundary-claim" className="vp-citation-target">试着先选“CSS 很好用”，再删掉空格，或换成“雨天 CSS”。工作台只改了输入字符串或示意编码器，片段的数量和边界便跟着变。Hugging Face 的文档也提醒，子词算法处在“词”和“字符”之间；它们不是一把跨模型通用的尺。<Cite id="tokenization-boundary-claim" sources={tokenizationConceptSources} /></p>
+      <p id="tokenization-boundary-claim" className="vp-citation-target">试着先选“CSS 很好用”，再删掉空格，或换成“雨天 CSS”。工作台只改了输入字符串或示意编码器，片段的数量和边界便跟着变。<Cite id="tokenization-boundary-claim" sources={tokenizationConceptSources} /></p>
       <p id="tokenization-language" className="vp-citation-target">SentencePiece 这类方法把空格也纳入可学习的边界，并以语言无关的方式处理子词。对中文、英文、代码和 emoji 来说，不能凭字数猜出另一种语言或另一套词表会怎样切。<Cite id="tokenization-language" sources={tokenizationConceptSources} /></p>
     </ArticleSection>
     <ArticleSection id="tokenization-count" title="token 数为什么会影响预算">
@@ -152,9 +152,9 @@ export function TokenizationConceptTermPage() {
       <ArticleAside title="为什么不同语言的数量看起来不公平"><p>一段英文可能包含反复出现的常见子词，一段中文则可能按另一种字节或字符边界编码；代码还会把缩进、标点、括号和换行带进来。数量差异先说明编码器看到了不同的片段组合，不能直接推出哪种语言“更贵”或哪种表达“更聪明”。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="tokenization-practice" title="把示意换成实际检查">
-      <p>先确认目标模型、接口和版本，再用它对应的 tokenizer 统计系统提示、用户消息、工具结果和预留输出。文本改了一个空格、换了一段 JSON 或加入一张图片，都应重新计数；不要把教学示例中的 token 数当成产品指标。</p>
+      <p>先确认目标模型、接口和版本，再用它对应的 tokenizer 统计系统提示、用户消息、工具结果和预留输出。</p>
       <p>如果你要缩短提示，先标出真正改变答案的条件，再比较压缩前后的 token 数和回答质量。删掉格式空白也许省下一点空间，却可能让代码或结构化数据更难读；保留一份可还原的原文，再用目标编码器验证，才知道省下了什么。</p>
-      <p>读完这页，你应该能回答：token 是谁的单位？<strong>是具体 tokenizer 的单位。</strong>最可靠的下一步不是猜换算比例，而是对目标模型实际编码，并把模型、编码器和版本一起记下来。<ConceptTerm slug="context-window">上下文窗口</ConceptTerm>只负责装这些 token，不能替你决定它们怎样切。</p>
+      <p>读完这页，你应该能回答：token 是谁的单位？<strong>是具体 tokenizer 的单位。</strong>最可靠的下一步是对目标模型实际编码，并把模型、编码器和版本一起记下来。<ConceptTerm slug="context-window">上下文窗口</ConceptTerm>只负责装这些 token，不能替你决定它们怎样切。</p>
     </ArticleSection>
   </Article>;
 }

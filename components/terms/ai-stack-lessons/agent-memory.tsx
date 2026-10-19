@@ -46,7 +46,7 @@ function MemoryDrawerDesk({ state, compact = false }: { state: ReturnType<typeof
 const heroNotes = [
   "偏好卡先留在抽屉外；当前回答能参考，长期保存还要问清楚。",
   "同意后只写下一张带来源和范围的卡，食谱卡继续留在抽屉里。",
-  "新任务只抽出代码范围那一张；取回不等于模型已经看见。",
+  "取回代码范围记录后，将它装入新任务的输入。",
   "卡片被压进本轮输入，模型才会按 TypeScript 生成这一次的回答。",
   "把卡片翻面改成 Python；旧的 TypeScript 输出仍保留在历史里。",
   "按删除键后抽屉只剩食谱卡，下一次要重新说明语言偏好。",

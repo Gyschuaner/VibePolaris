@@ -6,7 +6,7 @@ import styles from "./KvCacheConcept.module.css";
 
 const steps = [
   { label: "读过前缀", title: "先把已经说过的话读一遍", detail: "注意力为每个旧 token 算出可复用的 K / V。", Icon: FileText },
-  { label: "放进抽屉", title: "把中间状态贴上位置书签", detail: "抽屉里放的是 K / V，不是答案，也不是模型权重。", Icon: Circuitry },
+  { label: "放进抽屉", title: "把中间状态贴上位置书签", detail: "抽屉里放的是 K / V。", Icon: Circuitry },
   { label: "只带新 Q", title: "下一个 token 只带来新的查询", detail: "旧的 K / V 直接取回，避免重复做同一段前缀计算。", Icon: Brain },
   { label: "检查命中", title: "相同前缀才能拿回同一格积木", detail: "改一个字、换模型或缓存被挤出，命中就会消失。", Icon: CheckCircle },
 ];
@@ -35,7 +35,7 @@ export function KvCacheHero() {
         <div className={styles.kvCacheHeroBlockList}>
           {cacheBlocks.map((block, index) => <div key={block} className={styles.kvCacheHeroBlock} data-visible={scene.step >= 1} data-hit={scene.step === 2 && index === 0}><span>{block}</span><b>K</b><b>V</b></div>)}
         </div>
-        <div className={styles.kvCacheHeroDrawerNote}><strong>{scene.step >= 1 ? "2 个 block" : "0 个 block"}</strong><small>按位置保存 K / V；不是把完整回答存进去。</small></div>
+        <div className={styles.kvCacheHeroDrawerNote}><strong>{scene.step >= 1 ? "2 个 block" : "0 个 block"}</strong><small>按位置保存已计算的 K / V。</small></div>
       </div>
       <ArrowRight className={styles.kvCacheHeroArrow} size={24} aria-hidden="true" />
       <div className={styles.kvCacheHeroQuery} data-active={scene.step === 2 || scene.step === 3}>

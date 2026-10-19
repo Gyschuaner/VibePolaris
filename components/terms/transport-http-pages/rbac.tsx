@@ -9,11 +9,11 @@ import { rbacSources } from "@/lib/transport-http-sources";
 import styles from "./transport-http-pages.module.css";
 
 const frames = [
-  { label: "没有角色", subject: "阿青", roles: ["∅"], permission: "invoice.read", object: "invoice:7", decision: "403 · no role", note: "登录只说明调用者是谁；没有角色关系，读取权限集合仍为空。" },
+  { label: "没有角色", subject: "阿青", roles: ["∅"], permission: "invoice.read", object: "invoice:7", decision: "403 · no role", note: "登录说明调用者是谁；没有角色关系，读取权限集合仍为空。" },
   { label: "分配 viewer", subject: "阿青", roles: ["viewer"], permission: "invoice.read", object: "invoice:7", decision: "role match", note: "viewer 把 invoice.read 带给阿青，角色关系改变了有效权限集合。" },
   { label: "角色门通过", subject: "阿青", roles: ["viewer"], permission: "invoice.read", object: "invoice:7", decision: "继续查对象", note: "角色只回答“能不能读发票这类资源”，还没有回答“能不能读这一张”。" },
   { label: "对象不属于我", subject: "阿青", roles: ["viewer"], permission: "invoice.read", object: "owner=小林", decision: "403 · object scope", note: "角色权限匹配，发票归属不匹配；把角色检查当成最终结论会留下越权口子。" },
-  { label: "加入 finance", subject: "阿青", roles: ["viewer", "finance"], permission: "invoice.approve", object: "dept=财务", decision: "200 · allowed", note: "finance 叠加审批权限；有效权限是当前角色关系带来的集合，不是代码里写死的 admin 开关。" },
+  { label: "加入 finance", subject: "阿青", roles: ["viewer", "finance"], permission: "invoice.approve", object: "dept=财务", decision: "200 · allowed", note: "有效权限是当前角色关系带来的集合。" },
   { label: "撤掉 viewer", subject: "阿青", roles: ["finance"], permission: "invoice.read", object: "invoice:7", decision: "403 · permission gone", note: "角色移除会让对应权限消失；授权关系有来源，撤销也应能追溯。" },
 ];
 
@@ -45,7 +45,7 @@ function RbacLab() {
   const cases = {
     viewer: { label: "viewer + 自己的发票", subject: "阿青", role: "viewer", action: "invoice.read", object: "owner=阿青", result: "200 · allow", note: "角色给出读取权限，对象归属也通过。" },
     finance: { label: "finance + 部门审批", subject: "阿青", role: "viewer + finance", action: "invoice.approve", object: "dept=财务", result: "200 · allow", note: "finance 增加审批权限，授权来源仍能从角色关系追溯。" },
-    object: { label: "viewer + 别人的发票", subject: "阿青", role: "viewer", action: "invoice.read", object: "owner=小林", result: "403 · object scope", note: "角色检查通过不等于对象检查通过；同一权限不能自动覆盖所有记录。" },
+    object: { label: "viewer + 别人的发票", subject: "阿青", role: "viewer", action: "invoice.read", object: "owner=小林", result: "403 · object scope", note: "同一权限不能自动覆盖所有记录。" },
     revoked: { label: "viewer 已撤销", subject: "阿青", role: "finance", action: "invoice.read", object: "invoice:7", result: "403 · no permission", note: "移除 viewer 后，finance 没有读取权限，旧的允许结果不能继续沿用。" },
   } satisfies Record<RbacMode, { label: string; subject: string; role: string; action: string; object: string; result: string; note: string }>;
   const current = cases[mode];
@@ -76,8 +76,8 @@ export function RbacRoleTermPage() {
     </ArticleSection>
     <ArticleSection id="rbac-decision-section" title="角色通过以后还要查什么">
       <p id="rbac-hierarchy" className="vp-citation-target">角色层级适合表达稳定的继承关系：上层角色可以得到下层角色包含的权限。层级越深，越需要能查清楚权限从哪一层继承而来，否则一次 403 或越权很难排查。<Cite id="rbac-hierarchy" /></p>
-      <p id="rbac-scope" className="vp-citation-target">角色权限还要落到资源范围。云平台常把访问范围分成订阅、资源组或单个资源；同一个动作放在不同范围，能触及的对象并不一样。<Cite id="rbac-scope" /></p>
-      <p id="rbac-object" className="vp-citation-target">“阿青能读取自己的发票”比“阿青有 invoice.read”多了一层对象判断。服务端应在敏感操作执行前检查主体、动作、对象和租户范围，不能把隐藏按钮或不可猜的 ID 当成授权。<Cite id="rbac-object" /></p>
+      <p id="rbac-scope" className="vp-citation-target">角色权限还要落到资源范围。云平台常把访问范围分成订阅、资源组或单个资源；同一个动作放在不同范围，能触及的对象各有差异。<Cite id="rbac-scope" /></p>
+      <p id="rbac-object" className="vp-citation-target">“阿青能读取自己的发票”比“阿青有 invoice.read”多了一层对象判断。服务端应在敏感操作执行前检查主体、动作、对象和租户范围。<Cite id="rbac-object" /></p>
     </ArticleSection>
     <ArticleSection id="rbac-boundary-section" title="哪些条件不该硬塞进角色">
       <p id="rbac-boundary" className="vp-citation-target">如果规则依赖部门、时间、设备风险或资源属性，角色本身通常表达不完整。可以把角色当作一层基础授权，再用属性策略补充上下文；这类条件正是 ABAC 等模型要处理的部分。<Cite id="rbac-boundary" /></p>

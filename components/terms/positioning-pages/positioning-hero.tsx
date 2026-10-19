@@ -24,6 +24,6 @@ export function PositioningHero() {
       <div className={styles.heroResult}><CheckCircle size={17} aria-hidden="true" /><span>当前位置</span><strong>{current.title}</strong><small>{current.note}</small></div>
     </div>
     <div className={styles.heroNote} role="status"><Crosshair size={14} aria-hidden="true" /><span><strong>{current.label}</strong> · {current.ref}</span></div>
-    <figcaption>定位先回答“相对谁”，再回答“偏多少”；position 改变的是参照系和是否占位，不只是把盒子挪几像素。</figcaption>
+    <figcaption>定位先确定参照对象和偏移量，position 同时影响参照系与文档占位。</figcaption>
   </figure>;
 }

@@ -48,7 +48,7 @@ export function RegressionTestHero() {
         <h3>auth middleware</h3>
         <code>commit 8c42 · changed</code>
         <div className={styles.regDiff}><span>- role = user</span><strong>+ policy.check()</strong></div>
-        <small>从差异开始，而不是从“所有测试”开始。</small>
+        <small>从差异开始。</small>
       </div>
       <div className={styles.regHeroArrow} aria-hidden="true"><span /><ArrowRight size={20} /></div>
       <div className={styles.regHeroImpact} data-active={scene.step >= 1 && scene.step <= 2} data-done={scene.step > 2}>
@@ -69,6 +69,6 @@ export function RegressionTestHero() {
     </div>
     <div className={styles.regHeroMetrics}><div><span>候选总数</span><strong>{selectedVisible ? selected.count : "32 tests"}</strong></div><div><span>历史缺陷</span><strong>{riskVisible ? "已纳入" : "待补"}</strong></div><div><span>结论</span><strong>{scene.step === 4 ? selected.conclusion : "分析中"}</strong></div></div>
     <div className={styles.regHeroStatus} data-danger={failed} role="status"><current.Icon size={19} aria-hidden="true" /><span><strong>{current.title}</strong> · {currentDetail}</span></div>
-    <figcaption>回归测试不是把旧测试全倒进流水线，而是从变更出发，沿影响关系和风险历史挑出一组能回答“原来好的行为还好吗”的检查。</figcaption>
+    <figcaption>回归测试是从变更出发，沿影响关系和风险历史挑出一组能回答“原来好的行为还好吗”的检查。</figcaption>
   </figure>;
 }

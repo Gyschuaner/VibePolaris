@@ -93,7 +93,7 @@ export function getRoutingDialState(
   const statusDetail = safeStep === 0
     ? "模型还没有被调用；路由只准备做选择。"
     : safeStep === 1
-      ? "离线分数只是本例的筛选依据，不是这次回答的正确性保证。"
+      ? "离线分数只是本例的筛选依据。"
       : visibleSelection
         ? `${routingTaskLabels[task]}在满足门槛的候选中选择费用较低者；这一步还没有生成回答。`
         : "没有候选时保留限制，不降低门槛，也不把未执行当成完成。";

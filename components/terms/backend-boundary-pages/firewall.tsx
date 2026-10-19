@@ -114,15 +114,15 @@ export function FirewallTermPage() {
     ["firewall-rule", "门口先看规则，不看网页按钮"],
     ["firewall-scope", "规则解决边界，不解决身份"],
     ["firewall-operation", "默认拒绝、记录和验证"],
-  ]} intro={<>你在仓库里开了一扇给报表服务用的门，却发现公网一直有人敲 <code>admin:22</code>。防火墙像门口的值班员：它先看流量从哪里来、要去哪里、走哪个端口，再决定这只“包裹”能不能继续。它管的是网络边界，不是登录页面。</>}>
+  ]} intro={<>你在仓库里开了一扇给报表服务用的门，却发现公网一直有人敲 <code>admin:22</code>防火墙像门口的值班员：它先看流量从哪里来、要去哪里、走哪个端口，再决定这只“包裹”能不能继续。它管的是网络边界。</>}>
     <ArticleSection id="firewall-rule" title="门口先看规则，不看网页按钮">
       <p id="firewall-definition" className="vp-citation-target">防火墙可以是主机上的程序，也可以是夹在网络之间的设备或云规则。它根据来源、目标、协议、端口和方向等条件控制流量，动作通常是允许、拒绝或记录。NIST 把它描述成控制不同安全姿态的网络或主机之间流量的机制。<Cite id="firewall-definition" /></p>
-      <p id="firewall-policy" className="vp-citation-target">一条规则不是“这个网页能不能打开”，而是“这类流量能不能经过这一道边界”。例如只允许办公网访问报表服务的 443 端口，意味着报表服务仍需自己检查请求、登录和数据权限；防火墙只负责把明显不该到达的流量挡在更外面。<Cite id="firewall-policy" /></p>
+      <p id="firewall-policy" className="vp-citation-target">一条规则是“这类流量能不能经过这一道边界”。例如只允许办公网访问报表服务的 443 端口，意味着报表服务仍需自己检查请求、登录和数据权限；防火墙只负责把明显不该到达的流量挡在更外面。<Cite id="firewall-policy" /></p>
       <FirewallLesson />
     </ArticleSection>
     <ArticleSection id="firewall-scope" title="规则解决边界，不解决身份">
-      <p id="firewall-boundary" className="vp-citation-target">把请求放行到服务器，和允许某个用户读取一份报表，是两次判断。安全组、主机防火墙和网络 ACL 可能分别位于云网络、实例和子网层；规则应用在哪一层，会改变它能看见的地址和状态。不要把一条“端口开放”读成“业务已经授权”。<Cite id="firewall-boundary" /></p>
-      <p id="firewall-state" className="vp-citation-target">有状态的规则可以把已建立连接的返回流量和新连接区分开，但“有状态”不等于“永远信任这台机器”。规则仍应限制来源和目的；应用层还要处理身份、会话、对象归属和输入校验。<Cite id="firewall-state" /></p>
+      <p id="firewall-boundary" className="vp-citation-target">把请求放行到服务器，和允许某个用户读取一份报表，是两次判断。安全组、主机防火墙和网络 ACL 可能分别位于云网络、实例和子网层；规则应用在哪一层，会改变它能看见的地址和状态。<Cite id="firewall-boundary" /></p>
+      <p id="firewall-state" className="vp-citation-target">有状态的规则可以把已建立连接的返回流量和新连接区分开。规则仍应限制来源和目的；应用层还要处理身份、会话、对象归属和输入校验。<Cite id="firewall-state" /></p>
     </ArticleSection>
     <ArticleSection id="firewall-operation" title="默认拒绝、记录和验证">
       <p id="firewall-rules" className="vp-citation-target">规则顺序、默认动作和例外决定了维护成本。只为确实需要的路径开门，给每条例外写清用途，先在测试环境验证，再观察拒绝日志；否则一条临时“允许所有”很容易变成长期暴露。云安全组通常是有状态的，但具体默认行为和规则上限仍以产品文档为准。<Cite id="firewall-rules" /></p>

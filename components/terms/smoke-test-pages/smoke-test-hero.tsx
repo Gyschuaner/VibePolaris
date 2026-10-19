@@ -9,7 +9,7 @@ const steps = [
   { label: "部署候选", title: "先把刚部署的构建放到闸门前", detail: "commit 9f31 已部署，完整回归先保持等待。", Icon: GitCommit },
   { label: "健康检查", title: "确认服务至少能呼吸", detail: "GET /healthz = 200，进程和基础依赖有响应。", Icon: Globe },
   { label: "关键入口", title: "只走三条最值钱的路", detail: "登录、创建订单和最小支付路径依次通过。", Icon: UserCircle },
-  { label: "注入故障", title: "支付 502 时马上停闸", detail: "冒烟失败不是继续跑大套件的信号，而是修复候选构建的信号。", Icon: WarningCircle },
+  { label: "注入故障", title: "支付 502 时马上停闸", detail: "冒烟失败是修复候选构建的信号。", Icon: WarningCircle },
   { label: "决定去向", title: "通过才放行完整回归", detail: "四盏灯都亮，才把 120 个后续检查从队列里解锁。", Icon: ShieldCheck },
 ];
 

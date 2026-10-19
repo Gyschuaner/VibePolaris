@@ -29,14 +29,14 @@ export function DockerfileLesson() {
         <div className={styles.dockerfileLabel}><FileCode size={16} aria-hidden="true" /><span>输入变化</span></div>
         <h3>{isSource ? "src/App.tsx 改了" : isContext ? ".dockerignore 生效" : "package-lock.json 未变"}</h3>
         <div className={styles.dockerfileLabRows}><div className={styles.dockerfileLabRow} data-active={isStart || isCache}><code>deps layer</code><strong>{isSource || isRuntime || isContext ? "cache hit" : "write"}</strong></div><div className={styles.dockerfileLabRow} data-active={isSource}><code>source layer</code><strong>{isSource ? "rebuild" : "wait"}</strong></div><div className={styles.dockerfileLabRow} data-active={isContext}><code>build context</code><strong>{isContext ? "filtered" : "全部"}</strong></div></div>
-        <small>缓存看的是指令及其输入；不是“上次成功过”就永远有效。</small>
+        <small>缓存看的是指令及其输入。</small>
       </div>
       <div className={styles.dockerfileLabArrow} aria-hidden="true"><Package size={22} /></div>
       <div className={styles.dockerfileLabPanel} data-active={isRuntime || isContext}>
         <div className={styles.dockerfileLabel}><Cube size={16} aria-hidden="true" /><span>运行结果</span></div>
         <h3>{isRuntime ? "runtime · 只带产物" : isContext ? "更小的输入" : "等待构建"}</h3>
         <div className={styles.dockerfileLabRows}><div className={styles.dockerfileLabRow} data-active={isRuntime}><code>runtime image</code><strong>{isRuntime ? "dist only" : "—"}</strong></div><div className={styles.dockerfileLabRow} data-active={isContext}><code>context size</code><strong>{isContext ? "smaller" : "full"}</strong></div><div className={styles.dockerfileLabRow} data-active={isRuntime}><code>toolchain</code><strong>{isRuntime ? "discarded" : "included"}</strong></div></div>
-        <small>多阶段和 context 过滤改变的是最终要带走的东西；镜像越小不代表构建步骤可以省略。</small>
+        <small>多阶段和 context 过滤改变的是最终要带走的东西。</small>
       </div>
     </div>
     <div className={styles.dockerfileLabMetrics}><div><span>依赖层</span><strong>{isSource || isRuntime || isContext ? "命中" : "写入"}</strong></div><div><span>源码层</span><strong>{isSource ? "重建" : "等待"}</strong></div><div><span>运行镜像</span><strong>{isRuntime ? "精简" : "未完成"}</strong></div></div>

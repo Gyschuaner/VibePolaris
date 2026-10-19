@@ -9,7 +9,7 @@ export function CompilerSignatureHero() {
   const scene = useScene(4);
   const labels = ["解析源码", "生成中间表示", "产出目标代码", "运行验证"];
   const runtimeReady = scene.step === 3;
-  return <SignatureFrame scene={scene} labels={labels} ariaLabel="编译器用源代码、语法树、中间表示和运行回执展示每一层的边界" caption={runtimeReady ? "运行时拿到目标代码并得到 5；这说明本例成功走完一条路径，仍不替代真实环境和业务验收。" : scene.step === 2 ? "中间表示保留了程序结构，但它仍不是已经运行的结果。" : "把不同层的对象叠起来，能看见编译改变表示，运行时才消费产物。"}>
+  return <SignatureFrame scene={scene} labels={labels} ariaLabel="编译器用源代码、语法树、中间表示和运行回执展示每一层的边界" caption={runtimeReady ? "运行时拿到目标代码并得到 5；这说明本例成功走完一条路径，仍不替代真实环境和业务验收。" : scene.step === 2 ? "中间表示保留了程序结构。" : "把不同层的对象叠起来，能看见编译改变表示，运行时才消费产物。"}>
     <div className={styles.compilerBoard} data-stage={scene.step}>
       <BoardHeader eyebrow="FRONTEND DESK / REPRESENTATIONS" title="把 add(2, 3) 交给编译链" status={runtimeReady ? "RUNTIME 5" : scene.step === 2 ? "TARGET READY" : "INSPECTING"} />
       <div className={styles.compilerDesk}>

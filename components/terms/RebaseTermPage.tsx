@@ -25,7 +25,7 @@ const phaseCopy = [
     plain: "F1、F2 里的代码不会丢，只是先从旧位置拿开，等待重新应用。",
     watch: "两个空心节点代表“待重放的改动”，它们暂时不接在任何提交后面。",
     result: "代码还在",
-    detail: "离开历史的是旧提交节点，不是你写的内容。",
+    detail: "离开历史的是旧提交节点。",
   },
   {
     eyebrow: "步骤 2 / 3",
@@ -95,7 +95,7 @@ export function RebaseTermPage({ term, related }: BespokeTermPageProps) {
           </section>
           <section className="term-story-intro" aria-labelledby="rebase-definition-heading">
             <h2 id="rebase-definition-heading">Rebase 会换一个新的起点，把你已有的改动按原顺序重新生成。</h2>
-            <p>它整理的是提交历史，不是简单把圆点拖到另一条线上。因为每个新提交的父提交不同，提交哈希也会随之改变。</p>
+            <p>它整理的是提交历史。因为每个新提交的父提交不同，提交哈希也会随之改变。</p>
             <div className="term-prerequisites">
               <span>先理解：分支与提交 ↗</span>
               <div><em>常见名称</em><span>变基</span><span>重放提交</span><span>线性历史</span></div>
@@ -158,7 +158,7 @@ export function RebaseTermPage({ term, related }: BespokeTermPageProps) {
             <div className="rebase-reading-copy">
               <div>
                 <p>一个 Git 提交不只记录“改了哪些代码”，还记录它接在哪个父提交后面。Rebase 把 F1 从 D1 后面拿开，再把同一份改动应用到 D3 后面；代码内容可能一样，但父提交已经不同。</p>
-                <p>Git 会把提交内容、父提交、作者信息和提交说明等一起计算成提交对象。对象变化后，哈希自然也会变化，所以 F1′ 不是旧 F1 被搬家，而是根据同一份改动生成的新提交。</p>
+                <p>Git 会把提交内容、父提交、作者信息和提交说明等一起计算成提交对象。哈希自然也会变化，F1′ 根据同一份改动和新的父提交生成，因此具有新的提交哈希。</p>
               </div>
               <aside className="rebase-reading-note">
                 <span>记住这一句</span>

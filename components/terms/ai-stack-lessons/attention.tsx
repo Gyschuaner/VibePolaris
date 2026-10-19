@@ -37,10 +37,10 @@ export function AttentionLesson() {
       </div>
       <div className={styles.attentionLabHeads}>
         <h3>两组头，两个角度</h3>
-        <p>多头不是把同一个答案复制两遍，而是让不同的投影子空间并行计算，再把结果拼接。</p>
+        <p>多头是让不同的投影子空间并行计算，再把结果拼接。</p>
         <div className={styles.attentionLabHeadList}>
           <div className={styles.attentionLabHead} data-active={scene.step >= 3}><strong><span>口味头</span><span>{query === "无糖" ? "命中" : "弱"}</span></strong><small>寻找“无糖 / 含糖”这类条件。</small></div>
-          <div className={styles.attentionLabHead} data-active={scene.step >= 3}><strong><span>价格头</span><span>{query === "价格" ? "命中" : "弱"}</span></strong><small>寻找价格线索；它的权重不是口味头的解释。</small></div>
+          <div className={styles.attentionLabHead} data-active={scene.step >= 3}><strong><span>价格头</span><span>{query === "价格" ? "命中" : "弱"}</span></strong><small>价格头关注当前价格线索，口味头按自己的查询计算权重。</small></div>
         </div>
         <div className={styles.attentionLabMix}><span><b>拼接后表示</b><b>{scene.step >= 3 ? "2 个头" : "等待"}</b></span><i /></div>
       </div>
@@ -51,7 +51,7 @@ export function AttentionLesson() {
       <button type="button" className={styles.attentionLabButton} aria-pressed={maskedKey} onClick={() => setMaskedKey(value => !value)}>遮掉“无糖”键</button>
     </div>
     <p className={styles.attentionLabNote} data-danger={maskedKey && !hasEvidence} role="status">
-      {maskedKey && !hasEvidence ? <><WarningCircle size={17} aria-hidden="true" /><span>关键 key 被遮掉后，权重表没有可取回的“无糖”证据；注意力不会自动补一张真实卡。</span></> : scene.step < 1 ? <><Eye size={17} aria-hidden="true" /><span>先把 Query 说清楚；此时还没有计算权重，也不能把“最像的词”当成结果。</span></> : scene.step < 3 ? <><Funnel size={17} aria-hidden="true" /><span>权重只决定怎样混合 Value。它告诉你一次计算如何取数，不是对模型意图的完整解释。</span></> : <><CheckCircle size={17} aria-hidden="true" /><span>多头把不同子空间的结果拼起来；读图时要保留输入、mask 和任务头这些条件。</span></>}
+      {maskedKey && !hasEvidence ? <><WarningCircle size={17} aria-hidden="true" /><span>关键 key 被遮掉后，权重表没有可取回的“无糖”证据；注意力不会自动补一张真实卡。</span></> : scene.step < 1 ? <><Eye size={17} aria-hidden="true" /><span>先把 Query 说清楚，此时还没有计算权重。</span></> : scene.step < 3 ? <><Funnel size={17} aria-hidden="true" /><span>权重只决定怎样混合 Value。</span></> : <><CheckCircle size={17} aria-hidden="true" /><span>多头把不同子空间的结果拼起来；读图时要保留输入、mask 和任务头这些条件。</span></>}
     </p>
   </div>;
 }

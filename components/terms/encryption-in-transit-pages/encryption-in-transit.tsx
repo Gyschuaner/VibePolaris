@@ -52,6 +52,6 @@ export function EncryptionInTransitLesson() {
       </section>
     </div>
     <div className={styles.eitLessonRail}>{stages.map((label, index) => <div key={label} data-on={scene.step >= index} data-danger={final && index === stages.length - 1 && !passed}><span>{index + 1}</span>{label}</div>)}</div>
-    <p className={styles.eitLessonNote} data-danger={final && !passed} role="status">{final && !passed ? <><WarningCircle size={17} aria-hidden="true" /><span>找到故障所在的跳点后再修：明文链路要改回 TLS，证书身份不匹配要先停下。</span></> : final ? <><CheckCircle size={17} aria-hidden="true" /><span>传输加密的完成条件不是“浏览器有锁”，而是每段链路都有正确的端点、证书和记录保护。</span></> : <><ShieldCheck size={17} aria-hidden="true" /><span>把握手、身份、记录和终止点分开看，才知道这一跳到底保护了什么。</span></>}</p>
+    <p className={styles.eitLessonNote} data-danger={final && !passed} role="status">{final && !passed ? <><WarningCircle size={17} aria-hidden="true" /><span>找到故障所在的跳点后再修：明文链路要改回 TLS，证书身份不匹配要先停下。</span></> : final ? <><CheckCircle size={17} aria-hidden="true" /><span>传输加密的完成条件是每段链路都有正确的端点、证书和记录保护。</span></> : <><ShieldCheck size={17} aria-hidden="true" /><span>把握手、身份、记录和终止点分开看，才知道这一跳到底保护了什么。</span></>}</p>
   </div>;
 }

@@ -30,7 +30,7 @@ export function SafeAreaSignatureHero() {
       </div>
       <div className={styles.safeProof} role="status">
         {scene.step < 2 ? <WarningCircle size={18} aria-hidden="true" /> : <ShieldCheck size={18} aria-hidden="true" />}
-        <div><strong>{scene.step < 2 ? "危险边界仍可能碰到内容" : "关键内容跟着 inset 移动"}</strong><span>{scene.step === 3 ? "横屏后，左右边距重新取值" : scene.step === 0 ? "只铺背景，不代表控件安全" : `演示 inset：${inset}px`}</span></div>
+        <div><strong>{scene.step < 2 ? "危险边界仍可能碰到内容" : "关键内容跟着 inset 移动"}</strong><span>{scene.step === 3 ? "横屏后，左右边距重新取值" : scene.step === 0 ? "可操作控件按安全区布局" : `演示 inset：${inset}px`}</span></div>
       </div>
       <ArrowsOutCardinal className={styles.safeRotate} size={18} aria-hidden="true" />
     </div>
@@ -57,7 +57,7 @@ export function AppLifecycleSignatureHero() {
       </div>
       <div className={styles.lifecycleProof} role="status">
         {scene.step === 2 ? <WarningCircle size={18} aria-hidden="true" /> : scene.step === 3 ? <ArrowCounterClockwise size={18} aria-hidden="true" /> : <ShieldCheck size={18} aria-hidden="true" />}
-        <div><strong>{scene.step === 2 ? "后台事件不是保险箱" : scene.step === 3 ? "恢复的是快照，不是原来的进程" : "把必须保留的内容写进持久化存储"}</strong><span>{scene.step === 0 ? "用户仍在编辑，先保存草稿" : scene.step === 1 ? "应用可以暂停工作，但不能假设永不被杀" : scene.step === 2 ? "内存里的光标和临时状态已经消失" : "重新创建后，用已保存数据重建页面"}</span></div>
+        <div><strong>{scene.step === 2 ? "提前持久化重要状态" : scene.step === 3 ? "恢复的是快照" : "把必须保留的内容写进持久化存储"}</strong><span>{scene.step === 0 ? "用户仍在编辑，先保存草稿" : scene.step === 1 ? "应用可以暂停工作，但不能假设永不被杀" : scene.step === 2 ? "内存里的光标和临时状态已经消失" : "重新创建后，用已保存数据重建页面"}</span></div>
       </div>
     </div>
   </HeroShell>;
@@ -74,13 +74,13 @@ export function AppPermissionSignatureHero() {
   return <HeroShell scene={scene} title="权限请求怎样从具体任务走到允许或替代路径" labels={permissionLabels} className={styles.platformHero}>
     <div className={styles.permissionBoard} data-step={scene.step} data-decision={decision}>
       <div className={styles.permissionChoice} role="group" aria-label="选择系统决定"><span>演示系统结果</span><button type="button" aria-pressed={decision === "allow"} onClick={() => resetDecision("allow")}>允许</button><button type="button" aria-pressed={decision === "deny"} onClick={() => resetDecision("deny")}>拒绝</button></div>
-      <div className={styles.permissionTask}><Camera size={21} /><span>用户的任务</span><strong>拍照上传订单</strong><small>{scene.step === 0 ? "先有具体动作" : "不是一打开应用就询问"}</small></div>
+      <div className={styles.permissionTask}><Camera size={21} /><span>用户的任务</span><strong>拍照上传订单</strong><small>{scene.step === 0 ? "先有具体动作" : "在功能需要权限时发起请求"}</small></div>
       <div className={styles.permissionGate}><Gear size={20} /><span>权限闸门</span><strong>{scene.step < 2 ? "尚未决定" : decisionLabel}</strong><small>{scene.step === 1 ? "说明：只用于拍照，不上传相册" : "系统状态决定能否调用相机"}</small></div>
       <div className={styles.permissionResult}>
         <div className={styles.permissionSystem}><ShieldCheck size={18} /><span>系统对话框</span><b>{scene.step < 2 ? "等待请求" : scene.step === 2 ? "用户选择" : decisionLabel}</b></div>
         <div className={styles.permissionOutcome} data-visible={scene.step === 3} data-decision={decision}><span>{decision === "allow" ? "相机" : "文件选择"}</span>{decision === "allow" ? <Camera size={22} /> : <FileArrowUp size={22} />}<strong>{scene.step === 3 ? (decision === "allow" ? "打开相机" : "改用文件上传") : "等待结果"}</strong>{scene.step === 3 ? (decision === "allow" ? <CheckCircle size={17} /> : <WarningCircle size={17} />) : null}</div>
       </div>
-      <div className={styles.permissionProof} role="status"><span>结果证据</span><strong>{scene.step < 3 ? "尚未代表用户访问设备" : decision === "allow" ? "相机已获得本次所需访问" : "拒绝相机，任务仍有可用后路"}</strong><small>{scene.step === 0 ? "先解释当前动作需要什么" : scene.step === 1 ? "解释不是替系统做决定" : scene.step === 2 ? "允许与拒绝都会进入应用分支" : "拒绝不能被画成成功"}</small></div>
+      <div className={styles.permissionProof} role="status"><span>结果证据</span><strong>{scene.step < 3 ? "尚未代表用户访问设备" : decision === "allow" ? "相机已获得本次所需访问" : "拒绝相机，任务仍有可用后路"}</strong><small>{scene.step === 0 ? "先解释当前动作需要什么" : scene.step === 1 ? "说明用途后交由系统授权" : scene.step === 2 ? "允许与拒绝都会进入应用分支" : "拒绝不能被画成成功"}</small></div>
     </div>
   </HeroShell>;
 }
@@ -97,7 +97,7 @@ export function PushNotificationSignatureHero() {
     <div className={styles.pushBoard} data-step={scene.step} data-token={tokenState}>
       <div className={styles.pushChoice} role="group" aria-label="选择令牌状态"><span>令牌状态</span><button type="button" aria-pressed={!stale} onClick={() => resetToken("valid")}>有效</button><button type="button" aria-pressed={stale} onClick={() => resetToken("stale")}>已过期</button></div>
       <div className={styles.pushDevice}><DeviceMobile size={22} /><span>用户设备</span><strong>订单 42</strong><small>{scene.step < 3 ? "等待变化" : stale ? "没有可展示的通知" : "通知已到达"}</small><div className={styles.pushToken}><Key size={14} /><code>{stale ? "token_old…" : "token_42…"}</code></div></div>
-      <div className={styles.pushCloud}><Cloud size={22} /><span>推送服务</span><strong>{scene.step < 2 ? "等待事件" : stale ? "返回失效" : "转发中"}</strong><small>{scene.step === 2 ? "FCM / APNs" : "只负责投递，不保证展示"}</small><ArrowRight className={styles.pushArrow} size={18} aria-hidden="true" /></div>
+      <div className={styles.pushCloud}><Cloud size={22} /><span>推送服务</span><strong>{scene.step < 2 ? "等待事件" : stale ? "返回失效" : "转发中"}</strong><small>{scene.step === 2 ? "FCM / APNs" : "只负责投递"}</small><ArrowRight className={styles.pushArrow} size={18} aria-hidden="true" /></div>
       <div className={styles.pushEvent}><Bell size={21} /><span>服务器事件</span><strong>{scene.step < 2 ? "订单状态变化" : "已发送：已发货"}</strong><small>{scene.step === 0 ? "还没有注册去处" : scene.step === 1 ? "服务器保存令牌" : "服务按令牌尝试投递"}</small></div>
       <div className={styles.pushProof} role="status"><span>最后一跳</span><strong>{scene.step < 3 ? "尚无展示证据" : stale ? "失效令牌应被清理并重新注册" : "系统权限允许后，通知才出现在设备上"}</strong><small>{scene.step === 3 && stale ? "服务器收到失败回执，不应继续重试旧令牌" : scene.step === 3 ? "点击通知后仍应回服务器核对最新订单" : "投递成功与用户看见是两件事"}</small></div>
       {scene.step === 3 ? <div className={styles.pushBadge} aria-hidden="true">{stale ? <WarningCircle size={17} /> : <CheckCircle size={17} />}</div> : null}
@@ -120,7 +120,7 @@ export function CrossPlatformSignatureHero() {
       <div className={styles.crossSplit}><GitBranch size={18} /><span>{scene.step < 1 ? "等待分工" : "适配器分开"}</span><i /><i /></div>
       <div className={styles.crossPlatform}><DeviceMobile size={21} /><span>iOS 适配器</span><strong>{leaky ? "权限写死" : "相机 · 通知"}</strong><small>{scene.step < 2 ? "等待规则" : "调用系统能力"}</small></div>
       <div className={styles.crossPlatform}><DeviceMobile size={21} /><span>Android 适配器</span><strong>{leaky ? "权限写死" : "相机 · 通知"}</strong><small>{scene.step < 2 ? "等待规则" : "调用系统能力"}</small></div>
-      <div className={styles.crossProof} role="status"><span>观察共享结果</span><strong>{scene.step < 3 ? "两端还没有完成一次动作" : leaky ? "改一个平台权限，可能牵动共享核心" : "业务规则保持一致，平台能力各自负责"}</strong><small>{scene.step === 0 ? "先把能共用的部分留在中心" : scene.step === 1 ? "差异在边界处分流" : scene.step === 2 ? "两端可以有不同系统 API" : "共享代码量不是唯一目标，边界更重要"}</small></div>
+      <div className={styles.crossProof} role="status"><span>观察共享结果</span><strong>{scene.step < 3 ? "两端还没有完成一次动作" : leaky ? "改一个平台权限，可能牵动共享核心" : "业务规则保持一致，平台能力各自负责"}</strong><small>{scene.step === 0 ? "先把能共用的部分留在中心" : scene.step === 1 ? "差异在边界处分流" : scene.step === 2 ? "两端可以有不同系统 API" : "边界更重要"}</small></div>
     </div>
   </HeroShell>;
 }
@@ -162,7 +162,7 @@ export function CssSelectorSignatureHero() {
       <div className={styles.selectorRule}><Code size={20} /><span>当前选择器</span><code>{selectorSamples[scene.step]}</code><small>{scene.step < 3 ? "只负责找元素" : "命中的元素还要继续参加层叠"}</small></div>
       <div className={styles.selectorLens}><Target size={20} /><span>匹配条件</span><strong>{matches.length} 个节点</strong><i /></div>
       <div className={styles.selectorNodes} role="img" aria-label={`当前选择器命中 ${matches.length} 个节点`}><div className={styles.selectorNodeTitle}><TreeStructure size={18} /><span>DOM 节点墙</span></div>{selectorNodes.map(node => <div key={node.id} className={styles.selectorNode} data-match={matches.includes(node.id)}><span>{node.label}</span><small>{node.kind}</small>{matches.includes(node.id) ? <CheckCircle size={16} /> : null}</div>)}</div>
-      <div className={styles.selectorProof} role="status"><span>观察匹配结果</span><strong>{scene.step === 3 ? "只找到实时错误这一项" : `从五个节点收窄到 ${matches.length} 个`}</strong><small>{scene.step === 3 ? "颜色最终由层叠决定，不是选择器直接上色" : "改变一个条件，匹配集合就会改变"}</small></div>
+      <div className={styles.selectorProof} role="status"><span>观察匹配结果</span><strong>{scene.step === 3 ? "只找到实时错误这一项" : `从五个节点收窄到 ${matches.length} 个`}</strong><small>{scene.step === 3 ? "颜色最终由层叠决定" : "改变一个条件，匹配集合就会改变"}</small></div>
     </div>
   </HeroShell>;
 }

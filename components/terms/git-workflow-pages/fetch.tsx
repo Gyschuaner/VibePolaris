@@ -6,7 +6,7 @@ import { GitWorkflowLesson } from "../git-workflow-lessons/GitWorkflowLessonShar
 const sections: [string, string][] = [
   ["fetch-meaning", "fetch 先更新哪一个指针"],
   ["fetch-compare", "获取之后怎样看差异"],
-  ["fetch-boundary", "已获取不等于已采用"],
+  ["fetch-boundary", "取得远端提交后选择如何整合"],
 ];
 
 export function FetchTermPage() {
@@ -32,10 +32,10 @@ export function FetchTermPage() {
       <p>演示第三步把 <code>main..origin/main</code> 的 B1、B2 标成“远程独有”。这一步仍然没有改工作区；它只是把决策需要的证据摆出来，下一步才可能由 pull、merge 或 rebase 继续。</p>
     </ArticleSection>
 
-    <ArticleSection id="fetch-boundary" title="已获取不等于已采用">
+    <ArticleSection id="fetch-boundary" title="取得远端提交后选择如何整合">
       <p id="fetch-remotes" className="vp-citation-target">Pro Git 将 fetch 与后续整合分开：先把远程数据保存为本地可检查的引用，再选择怎样把它合并到自己的工作。这样可以在改变当前分支前检查提交说明、差异和团队约定。<Cite id="fetch-remotes" sources={fetchSources} /></p>
-      <p>fetch 也不是备份的万能替代品。它会把远程可达对象带回当前仓库，但本地仓库的清理、权限、网络失败和远程删除策略仍然影响你能保留多久；关键成果仍应按团队规则提交和推送。</p>
-      <p><strong>读者判断：</strong>看到“fetch 成功”，只说明本地的远程跟踪状态更新了。继续问当前分支是否落后、哪些提交独有、工作区是否有本地修改，再决定是否集成；不要把“已经获取”写成“已经上线”。</p>
+      <p>它会把远程可达对象带回当前仓库，但本地仓库的清理、权限、网络失败和远程删除策略仍然影响你能保留多久；关键成果仍应按团队规则提交和推送。</p>
+      <p><strong>读者判断：</strong>看到“fetch 成功”，说明本地的远程跟踪状态更新了。继续问当前分支是否落后、哪些提交独有、工作区是否有本地修改，再决定是否集成。</p>
     </ArticleSection>
   </GitArticle>;
 }

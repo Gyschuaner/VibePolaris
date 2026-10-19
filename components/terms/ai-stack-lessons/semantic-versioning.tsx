@@ -50,6 +50,6 @@ export function SemanticVersioningLesson() {
       <p><strong>{step === 0 ? "先把 1.4.2 当成已发布的约定。" : step === 1 ? "先问旧调用还能不能继续工作。" : step === 2 ? `${change.segment} 段被选中，下一版是 ${change.next}。` : change.release + "。"}</strong>{step === 0 ? "版本号还没有替你判断这次改动。" : step === 1 ? change.detail : step === 2 ? change.detail : change.migration}</p>
     </div>
     <div className={styles.semverControls}><SceneControls scene={scene} labels={labels} /></div>
-    <p className={styles.semverBoundary}><strong>版本号是兼容承诺，不是自动审查。</strong>规范不会替发布者发现每一处破坏性改动；你仍要对照公开 API、旧调用和迁移说明。</p>
+    <p className={styles.semverBoundary}><strong>版本号是兼容承诺。</strong>规范不会替发布者发现每一处破坏性改动；你仍要对照公开 API、旧调用和迁移说明。</p>
   </div>;
 }

@@ -51,6 +51,6 @@ export function TestCaseLesson() {
       </div>
     </div>
     <div className={styles.caseLabMetrics}><div><span>前置</span><strong>{fixture === "fixed" ? "可复现" : "漂移"}</strong></div><div><span>证据</span><strong>{evidence === "all" ? "3 个观察点" : "1 个观察点"}</strong></div><div><span>结论</span><strong>{outcome}</strong></div></div>
-    <p className={styles.caseLabNote} data-danger={final && !complete} role="status">{!final ? <><Key size={17} aria-hidden="true" /><span>每推进一步，下一步都会接住上一格留下的事实：先固定状态，再执行一次动作，最后把结果拆成可观察证据。</span></> : complete ? <><CheckCircle size={17} aria-hidden="true" /><span>用例现在能被另一个人重跑：相同起点、相同动作、相同三项预期。通过的是行为，不是某个实现细节。</span></> : evidence === "http" ? <><WarningCircle size={17} aria-hidden="true" /><span>只写 HTTP 410 会留下两个盲区：令牌是否被消费、邮件是否误发。把副作用也写进预期。</span></> : <><Timer size={17} aria-hidden="true" /><span>测试失败的原因不能归到代码，因为输入起点没有固定。先建立干净、可重复的前置状态。</span></>}</p>
+    <p className={styles.caseLabNote} data-danger={final && !complete} role="status">{!final ? <><Key size={17} aria-hidden="true" /><span>每推进一步，下一步都会接住上一格留下的事实：先固定状态，再执行一次动作，最后把结果拆成可观察证据。</span></> : complete ? <><CheckCircle size={17} aria-hidden="true" /><span>用例现在能被另一个人重跑：相同起点、相同动作、相同三项预期。通过的是行为。</span></> : evidence === "http" ? <><WarningCircle size={17} aria-hidden="true" /><span>只写 HTTP 410 会留下两个盲区：令牌是否被消费、邮件是否误发。把副作用也写进预期。</span></> : <><Timer size={17} aria-hidden="true" /><span>测试失败的原因不能归到代码，因为输入起点没有固定。先建立干净、可重复的前置状态。</span></>}</p>
   </div>;
 }

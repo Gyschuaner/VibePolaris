@@ -38,7 +38,7 @@ const foundationTermConfig = {
   html: {
     question: "页面看起来一样时，为什么浏览器和辅助技术仍能分辨标题、导航和正文？",
     definition: "HTML 用元素（例如 <h1>标题</h1>）和属性（例如开始标签里的 type=\"button\"）写出内容的层级与关系。元素的语义就是它表达的用途：标题、导航、正文或按钮；浏览器和辅助技术（例如读屏软件）可据此识别各部分的用途。",
-    boundary: "HTML 负责内容和结构；颜色、间距和布局属于 CSS。需要根据点击改变数据或页面状态时，通常由 JavaScript 处理；原生元素会提供基础语义和键盘行为，但不等于完成业务逻辑。",
+    boundary: "HTML 负责内容和结构；颜色、间距和布局属于 CSS。需要根据点击改变数据或页面状态时，通常由 JavaScript 处理，原生元素会提供基础语义和键盘行为。",
     prerequisite: "前置概念：网页文档 ↗",
     explainerTitle: "元素语义与浏览器识别结果",
     steps: [
@@ -91,7 +91,7 @@ const foundationTermConfig = {
     ],
     correct: "javascript",
     correctText: "先确认事件是否触发，再观察状态是否更新；这样可以定位问题停在事件还是数据阶段。",
-    wrongText: "改颜色或刷新页面不能说明事件和状态是否更新，应该先检查交互经过了哪一步。",
+    wrongText: "应该先检查交互经过了哪一步。",
     promptEyebrow: "可直接复制 · 交互排查",
     promptTitle: "检查交互的执行过程",
     prompt: "请复现当前页面的交互问题，并按事件触发、输入数据、状态更新、界面渲染四个阶段检查。标出最先出现异常的阶段，只对该阶段做最小修正，避免用延时或重写组件掩盖问题。完成后说明根因，并验证正常、空值、重复点击和请求失败四种情况。",
@@ -474,7 +474,7 @@ function PlainHits({ hits }: { hits: PlainHit[] }) {
 
   return (
     <section className="term-plain-card" aria-labelledby="term-plain-heading">
-      <span className="term-plain-kicker">你是不是想说的是</span>
+      <span className="term-plain-kicker">你是否想说的是</span>
       <div className="term-plain-hits">
         {hits.map((hit) => (
           <button type="button" key={hit.text} onClick={() => jump(hit.target)}>

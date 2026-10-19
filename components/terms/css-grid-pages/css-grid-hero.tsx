@@ -50,6 +50,6 @@ export function CssGridHero() {
     <div className={styles.gridNote} role="status"><ResultIcon size={17} aria-hidden="true" /><span>{current.note}</span></div>
     <div className={styles.gridMetrics}><div><span>当前轨道</span><strong>{current.columns} 列 · {current.stage === "IMPLICIT" ? "3 行含隐式" : `${current.rows} 行`}</strong></div><div><span>放置算法</span><strong>{current.dense ? "row dense" : "row sparse"}</strong></div><div><span>卡片关系</span><strong>{current.span ? "跨 2 列" : current.stage === "MINMAX" ? "minmax" : "逐格占位"}</strong></div></div>
     <div className={styles.gridResult}><Stack size={19} aria-hidden="true" /><span><strong>{current.label}</strong> · {current.note}</span></div>
-    <figcaption>Grid 的关键不是“把页面切成十二列”，而是把行、列、轨道和放置顺序同时交给浏览器结算；你改变一个条件，空格、跨度和隐式轨道都会留下可观察的证据。</figcaption>
+    <figcaption>Grid 的关键是把行、列、轨道和放置顺序同时交给浏览器结算；你改变一个条件，空格、跨度和隐式轨道都会留下可观察的证据。</figcaption>
   </figure>;
 }

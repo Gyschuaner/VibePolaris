@@ -10,11 +10,11 @@ import styles from "./transport-http-pages.module.css";
 
 const frames = [
   { label: "同源直读", request: "GET /orders", gate: "same-origin", response: "200 · script readable", note: "页面和接口处在同一个 origin，浏览器不需要 CORS 许可头来开放脚本读取。" },
-  { label: "跨源发起", request: "GET https://api.example/orders", gate: "Origin: app.example", response: "等待检查", note: "跨源的关键不是域名长得像不像，而是 scheme、host、port 的 origin 是否不同。" },
+  { label: "跨源发起", request: "GET https://api.example/orders", gate: "Origin: app.example", response: "等待检查", note: "跨源的关键是 scheme、host、port 的 origin 是否不同。" },
   { label: "OPTIONS 预检", request: "OPTIONS · PATCH · X-Trace", gate: "Access-Control-Request-*", response: "等待许可", note: "非简单请求先询问服务器允许的方法和请求头，正式 PATCH 还没有出发。" },
   { label: "许可通过", request: "PATCH /orders/7", gate: "ACAO + ACAM + ACAH", response: "200 · script readable", note: "预检和正式响应都满足规则，浏览器才把响应交给页面脚本。" },
   { label: "响应到达但不可读", request: "GET /orders", gate: "缺 Access-Control-Allow-Origin", response: "200 · script blocked", note: "服务器可能已经返回 200，浏览器仍会把脚本读取挡住；网络到达和脚本可见是两件事。" },
-  { label: "凭据配置冲突", request: "credentials: include", gate: "ACAO: *", response: "CORS error", note: "带凭据时不能用通配来源代替明确授权；浏览器会在读取闸门处拒绝这份响应。" },
+  { label: "凭据配置冲突", request: "credentials: include", gate: "ACAO: *", response: "CORS error", note: "带凭据时返回明确授权来源，使用通配来源的响应会被浏览器阻止读取。" },
 ];
 
 function CorsHero() {
@@ -44,7 +44,7 @@ function CorsLab() {
     simple: { label: "简单 GET", request: "GET · no custom header", steps: "正式请求 → 响应", result: "脚本可读", note: "跨源仍要看响应许可头，但这类请求不先发 CORS 预检。" },
     preflight: { label: "PATCH + X-Trace", request: "OPTIONS → PATCH", steps: "预检通过 → 正式请求", result: "脚本可读", note: "服务器要同时允许来源、方法和请求头，浏览器才放行正式请求。" },
     missing: { label: "缺 ACAO", request: "GET · server returns 200", steps: "响应到达浏览器", result: "脚本不可读", note: "CORS 主要限制浏览器脚本读取；命令行客户端没有这道浏览器闸门。" },
-    credentials: { label: "凭据 + *", request: "credentials: include", steps: "ACAO: *", result: "配置错误", note: "带凭据时要给明确来源，通配符不能替代这项许可。" },
+    credentials: { label: "凭据 + *", request: "credentials: include", steps: "ACAO: *", result: "配置错误", note: "带凭据时需返回明确来源，按该来源决定读取许可。" },
   } satisfies Record<CorsMode, { label: string; request: string; steps: string; result: string; note: string }>;
   const current = cases[mode];
   return <div className={styles.corsLab} role="region" aria-label="CORS 请求与响应读取演示">
@@ -57,7 +57,7 @@ function CorsLab() {
 
 export function CorsTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={corsSources} />;
-  return <ConceptArticle slug="cors" title="跨源资源共享" subtitle="CORS · 服务器许可，浏览器决定脚本能否读取" sources={corsSources} sections={[["cors-origin-section", "跨源到底差在哪里"], ["cors-preflight-section", "什么时候要先发 OPTIONS"], ["cors-exposure-section", "响应到了，脚本为什么还看不到"], ["cors-boundary-section", "CORS 管不到什么"]]} intro={<>命令行能拿到接口响应，页面脚本却报 CORS 错误，这不是服务器把请求吞了。浏览器先判断 origin，再按请求类型决定是否预检，最后依据响应里的许可头决定要不要把结果交给脚本。</>}>
+  return <ConceptArticle slug="cors" title="跨源资源共享" subtitle="CORS · 服务器许可，浏览器决定脚本能否读取" sources={corsSources} sections={[["cors-origin-section", "跨源到底差在哪里"], ["cors-preflight-section", "什么时候要先发 OPTIONS"], ["cors-exposure-section", "响应到了，脚本为什么还看不到"], ["cors-boundary-section", "CORS 管不到什么"]]} intro={<>命令行能拿到接口响应。浏览器先判断 origin，再按请求类型决定是否预检。</>}>
     <ArticleSection id="cors-origin-section" title="跨源到底差在哪里">
       <p id="cors-origin" className="vp-citation-target">origin 由 scheme、host 和 port 共同组成。页面从 app.example 访问 api.example，即使两个地址属于同一家公司，也已经是跨源请求，浏览器会把 Origin 交给 CORS 规则判断。<Cite id="cors-origin" /></p>
       <p id="cors-opt-in" className="vp-citation-target">CORS 是服务器通过响应头向浏览器表达的许可机制。它不会把两个 origin 变成同源，也不会让其他网络客户端自动获得同样的浏览器读取限制。<Cite id="cors-opt-in" /></p>
@@ -69,7 +69,7 @@ export function CorsTermPage() {
     </ArticleSection>
     <ArticleSection id="cors-exposure-section" title="响应到了，脚本为什么还看不到">
       <p id="cors-response" className="vp-citation-target">正式请求的响应到达后，浏览器主要依据 Access-Control-Allow-Origin，以及需要时的 Access-Control-Expose-Headers，决定响应能否交给页面脚本。允许方法和请求头属于前一阶段的预检检查，已经在正式请求出发前完成；这里失败时服务器可能已经处理请求，脚本仍只能看到 CORS 错误。<Cite id="cors-response" /></p>
-      <p id="cors-exposure" className="vp-citation-target">“网络面板里有 200”与“fetch 能读到 body”是两件事。CORS 解决的是浏览器脚本读取边界，不是身份认证、业务授权或服务器防火墙。<Cite id="cors-exposure" /></p>
+      <p id="cors-exposure" className="vp-citation-target">“网络面板里有 200”与“fetch 能读到 body”是两件事。CORS 解决的是浏览器脚本读取边界。<Cite id="cors-exposure" /></p>
     </ArticleSection>
     <ArticleSection id="cors-boundary-section" title="CORS 管不到什么">
       <p id="cors-failure" className="vp-citation-target">缺少匹配的 Access-Control-Allow-Origin 时，浏览器会把响应挡在脚本外；命令行、服务器到服务器的请求没有同一套脚本读取闸门。修复应从服务器许可头、请求模式和凭据设置入手，不要用关闭浏览器安全策略绕过。<Cite id="cors-failure" /></p>

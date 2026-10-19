@@ -51,7 +51,7 @@ export function SelfConsistencySignatureHero() {
         </div>
       </div>
     </div>
-    <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 2 ? "先让路径各自走，不要把第一条写得更长就当成共识。" : noisy ? "票数只能说明路径一致；共同的错误前提仍要用外部检查拆开。" : "归并最后答案可以减少单一路径的偶然性，但要记录采样条件。"}</p></figcaption>
+    <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 2 ? "先让路径各自走。" : noisy ? "票数记录路径的一致性，共同前提再通过外部依据检查。" : "归并最后答案可以减少单一路径的偶然性，但要记录采样条件。"}</p></figcaption>
   </figure>;
 }
 
@@ -75,11 +75,11 @@ export function ConstitutionalAiSignatureHero() {
           <small>{scene.step < 2 ? "等待按原则检查" : revised ? "修订后 · 保留可帮助部分" : "违反隐私原则"}</small>
         </div>
         <div className={styles.critiqueNote} data-visible={scene.step >= 2} data-good={revised}>
-          {revised ? <CheckCircle size={18} /> : <WarningCircle size={18} />}<strong>{scene.step < 2 ? "还没有批评" : revised ? "批评已落实" : "指出：泄露他人信息"}</strong><small>{scene.step < 2 ? "先让原则成为判断依据" : revised ? "仍需独立评测和人工治理" : "不是把整段回答都删掉"}</small>
+          {revised ? <CheckCircle size={18} /> : <WarningCircle size={18} />}<strong>{scene.step < 2 ? "还没有批评" : revised ? "批评已落实" : "指出：泄露他人信息"}</strong><small>{scene.step < 2 ? "先让原则成为判断依据" : revised ? "仍需独立评测和人工治理" : "保留可回答的部分"}</small>
         </div>
       </div>
     </div>
-    <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 2 ? "原则卡先把“什么算合适”写得具体，避免只剩一句口号。" : revised ? "批评、改写和剩余风险都被留下；原则不是权限系统或自动正确的法律。" : "先指出哪条原则被触犯，再谈怎样改写，不能把模型自评当成证明。"}</p></figcaption>
+    <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 2 ? "原则卡先把“什么算合适”写得具体，避免只剩一句口号。" : revised ? "批评、改写与剩余风险均保留，执行权限由系统单独检查。" : "先指出哪条原则被触犯，再谈怎样改写。"}</p></figcaption>
   </figure>;
 }
 
@@ -100,11 +100,11 @@ export function RlhfSignatureHero() {
         <div className={styles.rewardBoard}>
           <span>奖励模型 · 只是代理尺</span>
           <div className={styles.rewardDial} data-active={scene.step >= 2}><ChartLine size={20} /><strong>{scene.step < 2 ? "—" : proxy ? "0.91" : "0.78"}</strong><small>{scene.step < 2 ? "等待比较" : proxy ? "语气很顺，但要换测试" : "更偏向 B"}</small></div>
-          <div className={styles.rewardNotice} data-warn={proxy}>{proxy ? <WarningCircle size={17} /> : scene.step >= 2 ? <CheckCircle size={17} /> : <User size={17} />}<span>{scene.step < 2 ? "人的判断还没有进入尺子" : proxy ? "奖励高，不代表事实已核验" : "比较被转成训练信号"}</span></div>
+          <div className={styles.rewardNotice} data-warn={proxy}>{proxy ? <WarningCircle size={17} /> : scene.step >= 2 ? <CheckCircle size={17} /> : <User size={17} />}<span>{scene.step < 2 ? "人的判断还没有进入尺子" : proxy ? "奖励分数与事实核验" : "比较被转成训练信号"}</span></div>
         </div>
       </div>
     </div>
-    <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 2 ? "先让人比较具体回答，奖励模型才知道这批任务里的“更好”长什么样。" : proxy ? "奖励是代理目标；换题、换标注标准和独立事实检查仍然必要。" : "偏好被压成一把可训练的尺，但它不等于完整的人类价值。"}</p></figcaption>
+    <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 2 ? "先让人比较具体回答，奖励模型才知道这批任务里的“更好”长什么样。" : proxy ? "奖励是代理目标；换题、换标注标准和独立事实检查仍然必要。" : "偏好被压成一把可训练的尺。"}</p></figcaption>
   </figure>;
 }
 
@@ -120,7 +120,7 @@ export function DirectPreferenceOptimizationSignatureHero() {
     <div className={styles.canvas}>
       <div className={styles.dpoBoard}>
         <div className={styles.dpoPairs}>
-          <span>偏好数据 · 不是绝对真理</span>
+          <span>偏好样本</span>
           <div className={styles.dpoAnswer} data-chosen={scene.step >= 1} data-bad={badLabel}><CheckCircle size={16} /><strong>chosen · {chosen}</strong><small>{badLabel ? "标签把讨喜当成更好" : "标注者选中"}</small></div>
           <div className={styles.dpoAnswer} data-rejected={scene.step >= 1} data-bad={badLabel}><WarningCircle size={16} /><strong>rejected · {rejected}</strong><small>{badLabel ? "更可靠却被拒" : "相对被拒"}</small></div>
         </div>
@@ -156,7 +156,7 @@ export function RedTeamingSignatureHero() {
         </div>
       </div>
     </div>
-    <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 1 ? "红队先把授权、成功标准和停止条件写在边界里。" : fixed ? "修复后要用原样例和变体回归；一张截图不能代表系统安全。" : tested ? "发现要带着版本、约束和影响回到修复，而不是只收藏一个漂亮的攻击。" : "只有被选中的入口才进入测试，范围外的真实系统保持不动。"}</p></figcaption>
+    <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 1 ? "红队先把授权、成功标准和停止条件写在边界里。" : fixed ? "修复后要用原样例和变体回归；一张截图不能代表系统安全。" : tested ? "发现要带着版本、约束和影响回到修复。" : "只有被选中的入口才进入测试，范围外的真实系统保持不动。"}</p></figcaption>
   </figure>;
 }
 
@@ -179,7 +179,7 @@ export function JailbreakSignatureHero() {
         </div>
       </div>
     </div>
-    <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 1 ? "先有一条正常基线，才知道包装变化后究竟松动了哪一层。" : blocked ? "安全结论来自跨版本、跨语言和多轮回归；测试类别不等于可滥用载荷。" : "越狱研究的是行为边界，输入来源、过滤和工具权限还要分别检查。"}</p></figcaption>
+    <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 1 ? "先有一条正常基线，才知道包装变化后究竟松动了哪一层。" : blocked ? "安全结论来自跨版本、跨语言和多轮回归。" : "越狱研究的是行为边界，输入来源、过滤和工具权限还要分别检查。"}</p></figcaption>
   </figure>;
 }
 
@@ -205,7 +205,7 @@ export function ModelSpecSignatureHero() {
         </div>
       </div>
     </div>
-    <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 2 ? "规范先帮助解释指令冲突，读者能看到规则怎样影响行为目标。" : allowed ? "最后仍要经过真实工具授权；这两把锁同时满足，动作才可以发生。" : "模型规范不是权限系统，不能因为文字上“应该允许”就读取或发送真实数据。"}</p></figcaption>
+    <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 2 ? "规范先帮助解释指令冲突，读者能看到规则怎样影响行为目标。" : allowed ? "最后仍要经过真实工具授权；这两把锁同时满足，动作才可以发生。" : "不能因为文字上“应该允许”就读取或发送真实数据。"}</p></figcaption>
   </figure>;
 }
 
@@ -231,7 +231,7 @@ export function PromptChainingSignatureHero() {
         </div>
       </div>
     </div>
-    <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 2 ? "拆分不是把大提示切成几块，而是让下一步拿到一张有边界的中间卡。" : complete ? "闸门通过后才拼正文；调用次数、失败项和回退选择都留在账本里。" : "连接处发现缺口就停下，避免错误一路复制到最后一段文字。"}</p></figcaption>
+    <figcaption className={styles.caption}><span>{String(scene.step + 1).padStart(2, "0")}</span><p>{scene.step < 2 ? "拆分是让下一步拿到一张有边界的中间卡。" : complete ? "闸门通过后才拼正文；调用次数、失败项和回退选择都留在账本里。" : "连接处发现缺口就停下，避免错误一路复制到最后一段文字。"}</p></figcaption>
   </figure>;
 }
 

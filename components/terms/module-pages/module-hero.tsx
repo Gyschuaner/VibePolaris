@@ -9,7 +9,7 @@ const frames = [
   { label: "各自求值", title: "format.js", detail: "export function format()", note: "依赖模块先完成初始化；同一个模块不会因为被多处导入而重复求值。", tone: "evaluate" },
   { label: "接上绑定", title: "settings.js", detail: "export let locale = 'zh'", note: "导入拿到的是导出绑定，模块内部更新后，读取者看到新的值。", tone: "live" },
   { label: "结果回来", title: "entry.js", detail: "format(locale) → '你好'", note: "模块边界把职责接起来，调用方不用复制内部变量。", tone: "result" },
-  { label: "回路先停下", title: "a.js ↔ b.js", detail: "读取未初始化 binding", note: "循环依赖本身不是句号；在初始化完成前读取绑定，才会落入 TDZ。", tone: "cycle" },
+  { label: "回路先停下", title: "a.js ↔ b.js", detail: "读取未初始化 binding", note: "在初始化完成前读取绑定，才会落入 TDZ。", tone: "cycle" },
 ];
 
 export function ModuleHero() {
@@ -24,6 +24,6 @@ export function ModuleHero() {
       <div className={styles.heroResult}><ResultIcon size={17} aria-hidden="true" /><span>当前结果</span><strong>{current.tone === "live" ? "live" : current.tone === "result" ? "可调用" : current.tone === "cycle" ? "TDZ" : "等待"}</strong><small>{current.note}</small></div>
     </div>
     <div className={styles.heroNote} role="status"><Lightning size={14} aria-hidden="true" /><span><strong>{current.label}</strong> · {current.note}</span></div>
-    <figcaption>模块把文件边界、依赖顺序和导出绑定写成可分析的关系；import 不是把另一份源码粘贴进来。</figcaption>
+    <figcaption>模块把文件边界、依赖顺序和导出绑定写成可分析的关系。</figcaption>
   </figure>;
 }

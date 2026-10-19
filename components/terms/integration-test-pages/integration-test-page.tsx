@@ -20,7 +20,7 @@ export function IntegrationTestTermPage() {
     </ArticleSection>
     <ArticleSection id="integration-sequence" title="请求、事务和状态要连成一条证据链">
       <p id="integration-sequence-evidence" className="vp-citation-target">ASP.NET Core 的集成测试示例把流程拆成配置测试宿主、创建客户端、准备请求、发送请求、检查响应五步。这个顺序很重要：如果只直接调用服务类，就跳过了路由、序列化、认证和中间件这些可能出错的接缝。<Cite id="integration-sequence-evidence" sources={integrationTestSources} /></p>
-      <p id="integration-request" className="vp-citation-target">Playwright 的 API testing 让测试通过请求客户端调用真实 HTTP API，而不是把调用压缩成一个内部函数。请求方法、路径、payload 和返回状态都成为可观察证据；之后还要把持久化状态一起读出来。<Cite id="integration-request" sources={integrationTestSources} /></p>
+      <p id="integration-request" className="vp-citation-target">Playwright 的 API testing 让测试通过请求客户端调用真实 HTTP API。请求方法、路径、payload 和返回状态都成为可观察证据；之后还要把持久化状态一起读出来。<Cite id="integration-request" sources={integrationTestSources} /></p>
       <IntegrationTestLesson />
       <p id="integration-response" className="vp-citation-target">Playwright 的 APIResponseAssertions 提供 `toBeOK()` 这类针对响应的断言，但一个 502 只是接口层的一半故事。工作台里还查 `orders` 和 `outbox`：支付失败时，响应错误与真实数据库 0 行必须同时出现，回滚才是被证明的行为。<Cite id="integration-response" sources={integrationTestSources} /></p>
     </ArticleSection>

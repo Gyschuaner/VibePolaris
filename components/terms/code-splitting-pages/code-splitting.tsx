@@ -15,7 +15,7 @@ export function CodeSplittingLesson() {
   const isReady = current === 3;
   const isFragmented = current === 4;
   const StatusIcon = isFragmented ? WarningCircle : isReady ? CheckCircle : isLoading ? CloudArrowDown : Gear;
-  const status = isHome ? "首页先可用，编辑器 chunk 还没有理由进入网络瀑布。" : isBoundary ? "边界已经画出：动态 import 是一扇门，不是把首页内容拆成空壳。" : isLoading ? "进入编辑器后才请求 chunk；此刻要给用户一个真实的加载状态。" : isReady ? "chunk 到达并执行，编辑器挂上原来的入口；下一次可以从缓存开始。" : "过多小 chunk 会增加请求和调度；首包数字变小，不代表点击后的等待消失。";
+  const status = isHome ? "首页先可用，编辑器 chunk 还没有理由进入网络瀑布。" : isBoundary ? "边界已经画出：动态 import 是一扇门。" : isLoading ? "进入编辑器后才请求 chunk；此刻要给用户一个真实的加载状态。" : isReady ? "chunk 到达并执行，编辑器挂上原来的入口；下一次可以从缓存开始。" : "过多小 chunk 会增加请求和调度。";
   return <div ref={scene.ref} className={styles.codeSplittingLab} role="region" aria-label="代码分割入口、chunk 请求与缓存工作台">
     <div className={styles.codeSplittingHeader}><span>改一个加载边界，看网络什么时候动</span><strong>{scene.step + 1} / {labels.length}</strong></div>
     <SceneControls scene={scene} labels={labels} />
@@ -43,7 +43,7 @@ export function CodeSplittingLesson() {
           <div className={styles.codeSplittingLabRow} data-active={isReady}><code>可交互</code><strong>{isReady ? "编辑器" : "等待"}</strong></div>
           <div className={styles.codeSplittingLabRow} data-active={isReady}><code>缓存</code><strong>{isReady ? "下次复用" : "尚未命中"}</strong></div>
         </div>
-        <small>加载、执行和缓存是三个可观察状态；不要把“请求发出”当成“功能已经可用”。</small>
+        <small>加载、执行和缓存是三个可观察状态。</small>
       </div>
     </div>
     <div className={styles.codeSplittingLabMetrics}><div><span>首包</span><strong>{isFragmented ? "70 KB" : "82 KB"}</strong></div><div><span>额外请求</span><strong>{isHome || isBoundary ? "0" : isFragmented ? "20" : "1"}</strong></div><div><span>编辑器状态</span><strong>{isReady ? "ready" : isLoading ? "loading" : "deferred"}</strong></div></div>

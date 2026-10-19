@@ -17,7 +17,7 @@ export function BranchTermPage() {
     sources={branchSources}
     sections={sections}
     hero={<GitHero trigger="我想试做功能，又不想让未完成代码混进主线，应该隔离什么？" change="共同提交 → 新指针 → 各自前进" proof="创建分支只增加一个引用；提交后当前分支移动，主线仍停在原提交" />}
-    intro={<>Git 分支是指向某个提交的名字。它让你从共同起点分出一条提交线，先在自己的上下文里记录工作；分支不是复制一份项目，也不是自动提供权限隔离。</>}
+    intro={<>Git 分支是指向某个提交的名字。它让你从共同起点分出一条提交线，先在自己的上下文里记录工作。</>}
   >
     <ArticleSection id="branch-meaning" title="分支只是会移动的名字">
       <p>把提交看成一串快照，分支就是贴在其中一个快照上的可移动标签。<code>main</code> 和新建的 <code>feature</code> 可以先同时指向提交 A；此时没有第二套完整文件，只有两个名字共享同一个历史位置。</p>
@@ -28,7 +28,7 @@ export function BranchTermPage() {
 
     <ArticleSection id="branch-process" title="从共同起点走出两条线">
       <p id="branch-switch" className="vp-citation-target"><code>git switch feature</code> 会把 HEAD 移到目标分支，并尝试让索引和工作区与该分支的提交一致。切换动作改变的是当前观察哪条历史线，不会把未提交工作自动写进提交。<Cite id="branch-switch" sources={branchSources} /></p>
-      <p>在 <code>feature</code> 上提交后，feature 指向 B，而 <code>main</code> 仍指向 A；主线之后也可以继续前进到 C。读者要比较的是两个分支各自从共同祖先以来的变化，而不是把分支想成两份完全独立的代码目录。</p>
+      <p>在 <code>feature</code> 上提交后，feature 指向 B，而 <code>main</code> 仍指向 A；主线之后也可以继续前进到 C。读者要比较的是两个分支各自从共同祖先以来的变化。</p>
       <p>一个简单的工作节奏是：从最新主线创建 feature；每次提交只表达一个可审查的意图；提交前检查差异和测试；准备合并时再确认主线的新提交和冲突范围。分支名字可以换，提交历史才是变化的证据。</p>
     </ArticleSection>
 

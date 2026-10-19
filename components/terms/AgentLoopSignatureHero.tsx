@@ -13,8 +13,8 @@ export function AgentLoopSignatureHero() {
   const nextAction = scene.step === 0 ? "inspect_config()" : scene.step === 1 ? "读取 config.env" : scene.step === 2 ? "记录 issue=config" : scene.step === 3 ? "set API_BASE_URL" : scene.step === 4 ? "GET /health" : scene.step === 5 ? "等待新回执" : "停止";
   const evidenceTitle = scene.step === 0 ? "等待工具回执" : scene.step === 1 ? "config.env" : "payment.log";
   const evidenceCode = scene.step === 0 ? "—" : scene.step === 1 ? "API_BASE_URL = (missing)" : scene.step < 4 ? "gateway_timeout · 14:02:08" : scene.step === 4 ? "API_BASE_URL = https://api.example" : scene.step === 5 ? "GET /health · checking" : "200 OK · verified";
-  const evidenceNote = scene.step < 2 ? "先读取配置，不能凭 500 猜原因" : scene.step < 4 ? "回执把问题指向配置" : scene.step === 4 ? "修复写回账本，但还未证明健康" : scene.step === 5 ? "只有新回执才能打开停止闸门" : "完成条件满足，循环封存";
-  return <SignatureFrame scene={scene} labels={labels} ariaLabel="智能体循环用任务账本和停止刻度记录失败、证据、修复与停止条件" caption={done ? "新的 200 OK 回执满足停止条件，账本封存；如果只有旧的 500，就不能假装任务已经完成。" : scene.step >= 4 ? "配置写回只是中间状态；循环要再拿一份新的外部回执，才能决定继续还是停止。" : "每一轮都留下状态、证据和下一步，循环不是把同一个请求无限重放。"}>
+  const evidenceNote = scene.step < 2 ? "先读取配置，不能凭 500 猜原因" : scene.step < 4 ? "回执把问题指向配置" : scene.step === 4 ? "修复已写回，等待健康检查" : scene.step === 5 ? "只有新回执才能打开停止闸门" : "完成条件满足，循环封存";
+  return <SignatureFrame scene={scene} labels={labels} ariaLabel="智能体循环用任务账本和停止刻度记录失败、证据、修复与停止条件" caption={done ? "新的 200 OK 回执满足停止条件，账本封存；如果只有旧的 500，就不能假装任务已经完成。" : scene.step >= 4 ? "配置写回只是中间状态；循环要再拿一份新的外部回执，才能决定继续还是停止。" : "每一轮都记录状态、证据与下一步，并根据反馈继续或停止。"}>
     <div className={styles.loopBoard} data-stage={scene.step}>
       <BoardHeader eyebrow="TASK LEDGER / STOP GAUGE" title="查清支付失败原因" status={done ? "SEALED" : "OPEN"} />
       <div className={styles.loopDesk}>

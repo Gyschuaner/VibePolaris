@@ -1,8 +1,8 @@
 {
   "slug": "replit-microsoft-enterprise-vibe-coding-20250708",
   "title": "Replit 与微软合作把“自然语言写应用”接入 Azure 企业链路",
-  "summary": "7 月 8 日，Replit 宣布与 Microsoft 建立战略合作：企业可以从 Replit 创建应用，再接入 Azure Container Apps、Azure Virtual Machines 和 Neon Serverless Postgres，并通过 Azure Marketplace 采购。它把 AI 编程工具推进到企业采购和部署环节，但不等于 Replit 取代 GitHub Copilot，也不等于应用天然安全。",
-  "body": "7 月 8 日，Replit 宣布与 Microsoft 合作，把自己的 agentic 软件创建平台接到 Azure 的企业服务链路上。Replit 的公告给出的路径是：业务团队用自然语言描述想法，在 Replit 中创建应用，再把应用部署到 Azure Container Apps 或 Azure Virtual Machines；相关订阅也计划通过 Azure Marketplace 采购。\n\n这件事的新闻价值在于“从生成代码走向企业交付”。如果 AI 只停留在编辑器里，它解决的是写出第一版代码；一旦接上云容器、虚拟机和数据库，系统就会碰到网络、身份、数据、成本和上线回滚。Replit 的公告还提到 Neon Serverless Postgres 的 Azure 原生集成，意味着应用生成不再只是一个文件夹，而是可能直接带着持久化数据进入运行环境。\n\nReplit 把这次合作称为让非工程团队也能创建和部署企业级软件。公司称已有超过 50 万商业用户，这个数字属于公司口径；TechCrunch 则指出 Replit 和 GitHub Copilot 面向的用户与场景并不完全相同。因此，不能把“vibe coding”理解成不需要工程审查，更准确的理解是：自然语言成为入口，后面的架构、权限和运维责任仍然存在。\n\n对企业来说，最容易被忽略的是授权链。模型可以提出文件修改、调用构建工具或创建云资源，但谁批准了这些动作、生成的密钥放在哪里、数据库能访问哪些表、失败时怎样恢复，都应该在部署前明确。Azure Marketplace 能简化采购，却不会替团队回答这些问题。\n\n这次合作也说明 AI 编程的竞争正在离开单一编辑器。平台要争夺的是从提示到运行应用的完整路径：模型会不会遵守项目上下文，工具调用能否被审计，生成的代码能否被测试，以及业务人员能否在不绕过安全门的情况下真正完成发布。",
+  "summary": "7 月 8 日，Replit 宣布与 Microsoft 建立战略合作：企业可以从 Replit 创建应用，再接入 Azure Container Apps、Azure Virtual Machines 和 Neon Serverless Postgres，并通过 Azure Marketplace 采购。",
+  "body": "7 月 8 日，Replit 宣布与 Microsoft 合作，把自己的 agentic 软件创建平台接到 Azure 的企业服务链路上。Replit 的公告给出的路径是：业务团队用自然语言描述想法，在 Replit 中创建应用，再把应用部署到 Azure Container Apps 或 Azure Virtual Machines；相关订阅也计划通过 Azure Marketplace 采购。\n\n这件事的新闻价值在于“从生成代码走向企业交付”。如果 AI 只停留在编辑器里，它解决的是写出第一版代码；一旦接上云容器、虚拟机和数据库，系统就会碰到网络、身份、数据、成本和上线回滚。Replit 的公告还提到 Neon Serverless Postgres 的 Azure 原生集成，意味着应用生成不再只是一个文件夹，而是可能直接带着持久化数据进入运行环境。\n\nReplit 把这次合作称为让非工程团队也能创建和部署企业级软件。公司称已有超过 50 万商业用户，这个数字属于公司口径。更准确的理解是：自然语言成为入口。\n\n对企业来说，最容易被忽略的是授权链。模型可以提出文件修改、调用构建工具或创建云资源，但谁批准了这些动作、生成的密钥放在哪里、数据库能访问哪些表、失败时怎样恢复，都应该在部署前明确。Azure Marketplace 能简化采购，却不会替团队回答这些问题。\n\n这次合作也说明 AI 编程的竞争正在离开单一编辑器。平台要争夺的是从提示到运行应用的完整路径：模型会不会遵守项目上下文，工具调用能否被审计，生成的代码能否被测试，以及业务人员能否在不绕过安全门的情况下真正完成发布。",
   "publishedAt": "2025-07-08",
   "eventDate": "2025-07-08",
   "isExample": false,
@@ -28,13 +28,13 @@
     },
     {
       "id": "copilot-boundary",
-      "title": "它和 GitHub Copilot 不是同一条产品线",
+      "title": "产品定位与 GitHub Copilot 的业务关系",
       "body": "TechCrunch 认为两者面向的用户和场景不同；Replit 的自然语言入口也不能推导出无需工程审查。",
       "kind": "comparison"
     },
     {
       "id": "permission-chain",
-      "title": "模型提出动作，不等于它已经拥有云权限",
+      "title": "模型建议动作后的云权限检查",
       "body": "创建资源、读取数据库和部署应用都需要独立授权、审计和预算边界，采购入口不会自动完成安全设计。",
       "kind": "boundary"
     },
@@ -72,7 +72,7 @@
       },
       {
         "label": "观察、批准和回滚",
-        "detail": "上线前后都要看日志、成本和错误率，异常时撤销本次变更而不是继续让 agent 猜。",
+        "detail": "上线前后都要看日志、成本和错误率，异常时撤销本次变更。",
         "evidence": "authorization"
       }
     ]
@@ -100,7 +100,7 @@
     },
     {
       "url": "https://techcrunch.com/2025/07/08/in-a-blow-to-google-cloud-replit-partners-with-microsoft/",
-      "claim": "TechCrunch 交叉报道合作内容，并说明 Replit 与 GitHub Copilot 面向的用户和使用场景并不完全相同。",
+      "claim": "TechCrunch 交叉报道合作内容，并介绍 Replit 与 GitHub Copilot 各自面向的用户和场景。",
       "excerpt": "TechCrunch, “In a blow to Google Cloud, Replit partners with Microsoft”, July 8, 2025."
     }
   ],

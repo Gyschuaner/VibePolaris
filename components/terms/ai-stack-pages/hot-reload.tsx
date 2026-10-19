@@ -10,14 +10,14 @@ const sections: [string, string][] = [["hot-reload-definition", "热重载先重
 export function HotReloadTermPage() {
   return <Article slug="hot-reload" title="热重载" subtitle="Hot Reload · 保存后让开发页面整页重新加载" sources={hotReloadSources} sections={sections}
 
-    intro={<>你在本地页面里点了几次按钮，计数停在 7；保存一份 CSS 后，页面突然重新出现，计数回到了 0。<strong>这条开发反馈路径做的是整页 reload：新文件被送到浏览器，旧页面运行时随之结束。</strong>热重载解决的是“保存后看到新代码”，不承诺保留页面内存。</>}> 
+    intro={<>你在本地页面里点了几次按钮，计数停在 7；保存一份 CSS 后，页面突然重新出现，计数回到了 0。<strong>这条开发反馈路径做的是整页 reload：新文件被送到浏览器，旧页面运行时随之结束。</strong>热重载让保存后的代码及时显示，页面内存保留情况取决于实现与更新方式。</>}>
     <ArticleSection id="hot-reload-definition" title="热重载先重载了什么">
       <p id="hot-reload-definition-text" className="vp-citation-target">热重载是开发阶段的一种更新方式：开发服务器或监听器发现源码变化，处理完文件后让浏览器重新加载页面。它依赖开发工具提供监听与通知，浏览器本身不会因为磁盘文件变化就自动重建当前页面。<Cite id="hot-reload-definition-text" sources={hotReloadSources}/></p>
       <p id="hot-reload-reload" className="vp-citation-target">浏览器的 `Location.reload()` 会重新加载当前资源；在这个动作里，页面脚本和组件树会重新初始化。演示里的 7 是页面内存中的计数，因此它会随着整页重建回到初始值。<Cite id="hot-reload-reload" sources={hotReloadSources}/></p>
-      <ArticleAside title="为什么它不是普通浏览器刷新"><p id="hot-reload-dev-server" className="vp-citation-target">开发服务器会在文件保存后参与这条链路：它监听变化、准备新的开发资源，再决定向页面发出刷新或模块更新。webpack 的 devServer 也把文件监听和自动刷新作为开发配置的一部分；生产网站不会因此获得同样的监听通道。<Cite id="hot-reload-dev-server" sources={hotReloadSources}/></p></ArticleAside>
+      <ArticleAside title="热更新怎样保留运行状态"><p id="hot-reload-dev-server" className="vp-citation-target">开发服务器会在文件保存后参与这条链路：它监听变化、准备新的开发资源，再决定向页面发出刷新或模块更新。webpack 的 devServer 也把文件监听和自动刷新作为开发配置的一部分；生产网站不会因此获得同样的监听通道。<Cite id="hot-reload-dev-server" sources={hotReloadSources}/></p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="hot-reload-loop" title="保存一次文件发生什么">
-      <p id="hot-reload-update" className="vp-citation-target">把一次保存拆开看：`button.css` 先从未保存变成已保存，开发服务捕获变化并发出整页 reload，浏览器重新请求页面，新的按钮颜色才出现。通知发出和页面重建之间有一个短暂的过渡，不能把“文件已经保存”当成“页面已经更新”。<Cite id="hot-reload-update" sources={hotReloadSources}/></p>
+      <p id="hot-reload-update" className="vp-citation-target">把一次保存拆开看：`button.css` 先从未保存变成已保存，开发服务捕获变化并发出整页 reload，浏览器重新请求页面，新的按钮颜色才出现。通知发出和页面重建之间有一个短暂的过渡。<Cite id="hot-reload-update" sources={hotReloadSources}/></p>
       <p>下面的演示让同一条路径停在每个中间点。点击“保存 button.css”会直接跳到保存事件；再逐步播放，你能看到通知尚未执行时计数仍是 7，直到整页重建才回到 0。</p>
       <HotReloadLesson />
     </ArticleSection>

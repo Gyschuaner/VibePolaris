@@ -7,7 +7,7 @@ import styles from "./AssertionConcept.module.css";
 
 const steps = [
   { label: "点下保存", title: "动作已经发生，结果还没到", detail: "用户点击保存；测试现在只能知道请求发出了。", Icon: CursorText },
-  { label: "响应在路上", title: "屏幕暂时没有新状态", detail: "按钮要等后端回执，先出现的空白不等于失败。", Icon: Pulse },
+  { label: "响应在路上", title: "屏幕暂时没有新状态", detail: "按钮要等后端回执。", Icon: Pulse },
   { label: "固定时刻取样", title: "sleep 到点就要做决定", detail: "固定等待只看一个时间点；响应晚一点，它会先报错。", Icon: Timer },
   { label: "条件继续看", title: "断言跟着目标状态走", detail: "条件断言在期限内重读目标，状态一出现就结束等待。", Icon: Eye },
   { label: "比较并报告", title: "差异告诉你该查哪里", detail: "同一个 visible 结果，等待方式不同，证据质量也不同。", Icon: CheckCircle },
@@ -67,7 +67,7 @@ export function AssertionHero() {
       </div>
     </div>
     <div className={styles.assertHeroMetrics}><div><span>实际状态</span><strong>{scene.step >= 3 ? "visible" : "hidden"}</strong></div><div><span>固定等待</span><strong>{fixedResult}</strong></div><div><span>条件等待</span><strong>{conditionResult}</strong></div></div>
-    <div className={styles.assertStatus} data-danger={fixedDanger} role="status"><current.Icon size={19} aria-hidden="true" /><span><strong>{current.title}</strong> · {fixedDanger ? "红灯只说明 1 秒取样太早；先读差异，再判断业务是否坏了。" : current.detail}</span></div>
-    <figcaption>断言不是把一个布尔值涂成绿色，而是把“什么算完成、允许等多久、失败时看到什么差异”写成可判定条件。</figcaption>
+    <div className={styles.assertStatus} data-danger={fixedDanger} role="status"><current.Icon size={19} aria-hidden="true" /><span><strong>{current.title}</strong> · {fixedDanger ? "红灯说明 1 秒取样太早；先读差异，再判断业务是否坏了。" : current.detail}</span></div>
+    <figcaption>断言是把“什么算完成、允许等多久、失败时看到什么差异”写成可判定条件。</figcaption>
   </figure>;
 }

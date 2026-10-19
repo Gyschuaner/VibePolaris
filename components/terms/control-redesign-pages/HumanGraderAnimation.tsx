@@ -72,6 +72,6 @@ export function HumanGraderLesson() {
         <span>校准抽屉</span><strong>{current.drawer}</strong><small>{current.drawerNote}</small>
       </div>
     </div>
-    <div className={styles.result} role="status"><strong>{current.result}</strong><span>人工评分留下分数、理由和状态，才能回到规则复核，而不是把个人感觉藏进平均数。</span></div>
+    <div className={styles.result} role="status"><strong>{current.result}</strong><span>人工评分留下分数、理由和状态，才能回到规则复核。</span></div>
   </section>;
 }

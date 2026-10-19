@@ -55,7 +55,7 @@ export function DeadLetterQueueLesson() {
       <div><span>主队列影响</span><strong>{poison ? "已隔离" : "已前进"}</strong></div>
     </div>
     <p className={styles.deadLetterLabNote} data-danger={poison && final && !repaired} role="status">
-      {poison && final && !repaired ? <><WarningCircle size={17} aria-hidden="true" /><span>只调查不会让消息自动成功。先修复 payload、确认权限和幂等，再决定是否 redrive；死信区不是垃圾桶，也不是答案。</span></> : poison && final && repaired ? <><CheckCircle size={17} aria-hidden="true" /><span>修复后重放只是再次进入主流程，仍要重新处理和确认；如果根因没修好，消息还会回到这里。</span></> : !poison && final ? <><CheckCircle size={17} aria-hidden="true" /><span>正常消息在消费者确认后离开主队列，不需要被“为了保险”送进死信区。</span></> : <><MagnifyingGlass size={17} aria-hidden="true" /><span>先记录消息本体、投递次数和失败理由，再把“重试、隔离、重放”分成三个动作。</span></>}
+      {poison && final && !repaired ? <><WarningCircle size={17} aria-hidden="true" /><span>只调查不会让消息自动成功。先修复 payload、确认权限和幂等，再决定是否 redrive。</span></> : poison && final && repaired ? <><CheckCircle size={17} aria-hidden="true" /><span>修复后重放只是再次进入主流程，仍要重新处理和确认；如果根因没修好，消息还会回到这里。</span></> : !poison && final ? <><CheckCircle size={17} aria-hidden="true" /><span>正常消息在消费者确认后离开主队列，不需要被“为了保险”送进死信区。</span></> : <><MagnifyingGlass size={17} aria-hidden="true" /><span>先记录消息本体、投递次数和失败理由，再把“重试、隔离、重放”分成三个动作。</span></>}
     </p>
   </div>;
 }

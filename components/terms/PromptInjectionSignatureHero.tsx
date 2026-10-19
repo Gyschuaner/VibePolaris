@@ -10,7 +10,7 @@ export function PromptInjectionSignatureHero() {
   const labels = ["任务和资料摆上桌", "可疑句子露出来", "错误信任贴上去", "工具闸门拒绝", "放回资料袋，继续摘要"];
   const blocked = scene.step === 3;
   const completed = scene.step === 4;
-  return <SignatureFrame scene={scene} labels={labels} ariaLabel="提示注入用权威账本区分系统规则与外部文字，阻止不可信内容改写权限并完成安全摘要" caption={completed ? "网页恢复为 DATA，摘要继续完成；危险工具始终是 0 次。" : blocked ? "外部文字可以提供资料，却不能凭一句‘忽略上面规则’改变系统权限。拒绝理由也要留在记录里。" : scene.step === 2 ? "权威账本把来源和权限分开；可读不等于可执行。" : "先摆清规则来源，再观察一段外部文字试图把自己冒充成指令。"}>
+  return <SignatureFrame scene={scene} labels={labels} ariaLabel="提示注入用权威账本区分系统规则与外部文字，阻止不可信内容改写权限并完成安全摘要" caption={completed ? "网页恢复为 DATA，摘要继续完成；危险工具始终是 0 次。" : blocked ? "外部文字可以提供资料，却不能凭一句‘忽略上面规则’改变系统权限。拒绝理由也要留在记录里。" : scene.step === 2 ? "权威账本分别记录资料来源与执行权限。" : "先摆清规则来源，再观察一段外部文字试图把自己冒充成指令。"}>
     <div className={styles.injectionBoard} data-stage={scene.step} data-blocked={blocked} data-completed={completed}>
       <BoardHeader eyebrow="AUTHORITY LEDGER / TRUST BOUNDARY" title="读取一封不可信邮件" status={completed ? "SUMMARY READY" : blocked ? "OVERRIDDEN · NO" : "INSPECTING"} />
       <div className={styles.injectionDesk}>

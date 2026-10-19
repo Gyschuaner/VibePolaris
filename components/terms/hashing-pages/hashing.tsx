@@ -58,10 +58,10 @@ export function HashingLesson() {
         <h3>{current.record}</h3>
         <div className={styles.hashVerifyRows}><div><span>保存原文</span><b>never</b></div><div><span>重新计算</span><b>{scene.step >= 5 ? "done" : "待做"}</b></div><div><span>结论</span><b>{current.verdict}</b></div></div>
         <div className={styles.hashLabVerdict}>{!final ? "等待下一步" : safe ? "PASS · 可验证" : "WEAK · 易批量猜"}</div>
-        <small>{!final ? "先把算法、盐和成本放进同一张记录。" : safe ? "服务能验证密码，却不必拿回密码原文。" : "能验证不代表保存方案抗离线猜测。"}</small>
+        <small>{!final ? "先把算法、盐和成本放进同一张记录。" : safe ? "服务能验证密码，却不必拿回密码原文。" : "保存方案的抗离线猜测能力，需要结合算法与参数评估。"}</small>
       </section>
     </div>
     <div className={styles.hashLabRail}><div data-on={scene.step >= 0}><FileCode size={15} aria-hidden="true" /><span>输入</span></div><div data-on={scene.step >= 1}><Code size={15} aria-hidden="true" /><span>选函数</span></div><div data-on={scene.step >= 2}><LockKey size={15} aria-hidden="true" /><span>加盐</span></div><div data-on={scene.step >= 3}><Clock size={15} aria-hidden="true" /><span>调成本</span></div><div data-on={scene.step >= 4} data-danger={final && !safe}><Database size={15} aria-hidden="true" /><span>留记录</span></div><div data-on={scene.step >= 5} data-danger={final && !safe}><CheckCircle size={15} aria-hidden="true" /><span>重算</span></div></div>
-    <p className={`${styles.hashLabNote} ${final && !safe ? styles.hashLabDanger : ""}`} role="status">{!final ? <><ArrowCounterClockwise size={17} aria-hidden="true" /><span>哈希不是把秘密“锁起来”，而是留下可重新计算的结果；密码场景还要控制每次猜测的成本。</span></> : safe ? <><CheckCircle size={17} aria-hidden="true" /><span>盐让保存值分开，成本让离线猜测变贵，验证只比较重算结果。</span></> : <><WarningCircle size={17} aria-hidden="true" /><span>直接 SHA-256 可以算对，但太快、无盐、可批量猜，不能当密码存储方案。</span></>}</p>
+    <p className={`${styles.hashLabNote} ${final && !safe ? styles.hashLabDanger : ""}`} role="status">{!final ? <><ArrowCounterClockwise size={17} aria-hidden="true" /><span>哈希是留下可重新计算的结果；密码场景还要控制每次猜测的成本。</span></> : safe ? <><CheckCircle size={17} aria-hidden="true" /><span>盐让保存值分开，成本让离线猜测变贵，验证只比较重算结果。</span></> : <><WarningCircle size={17} aria-hidden="true" /><span>直接 SHA-256 可以算对，但太快、无盐、可批量猜，不能当密码存储方案。</span></>}</p>
   </div>;
 }

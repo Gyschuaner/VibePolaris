@@ -40,7 +40,7 @@ export function EventualConsistencyLesson() {
         <div className={styles.eventualLabLabel}><Eye size={16} aria-hidden="true" /><span>读取</span></div>
         <h3>{eventual ? "任一副本" : "同区强读"}</h3>
         <div className={styles.eventualLabReadBox}><strong>{stale ? "pending" : scene.step >= 1 ? "paid" : "等待"}</strong><small>{stale ? "复制尚未到达" : eventual ? "副本已追上" : "读取最新已提交值"}</small></div>
-        <small>{eventual ? "便宜、低延迟，但允许窗口内旧读。" : "只在支持的同区路径使用，不等于跨区都强。"}</small>
+        <small>{eventual ? "便宜、低延迟，但允许窗口内旧读。" : "只在支持的同区路径使用。"}</small>
       </div>
       <div className={styles.eventualLabPanel + " " + styles.eventualLabResolve} data-active={scene.step === 3} data-danger={conflict && final}>
         <div className={styles.eventualLabLabel}><GitBranch size={16} aria-hidden="true" /><span>收敛规则</span></div>
@@ -55,7 +55,7 @@ export function EventualConsistencyLesson() {
       <div><span>并发冲突</span><strong>{conflict ? "需要规则" : "无"}</strong></div>
     </div>
     <p className={styles.eventualLabNote} data-danger={stale || (conflict && final)} role="status">
-      {stale ? <><WarningCircle size={17} aria-hidden="true" /><span>写入已经返回成功，但任一副本可能还没追上。不要把一次旧读直接解释成“写入失败”，也不要把它当作永远会在某个固定秒数内完成。</span></> : conflict && final ? <><GitBranch size={17} aria-hidden="true" /><span>副本可以最终对齐，但 last writer wins 只是一种裁决规则；如果业务不能接受覆盖，就要把冲突带回应用层。</span></> : final ? <><CheckCircle size={17} aria-hidden="true" /><span>等到没有新写入后，副本收敛到同一个值；产品仍要说明用户在收敛窗口里能看到什么。</span></> : <><ArrowsClockwise size={17} aria-hidden="true" /><span>先分开“写入成功”“读到什么”和“副本何时对齐”，再选择能承受的读取一致性。</span></>}
+      {stale ? <><WarningCircle size={17} aria-hidden="true" /><span>写入已经返回成功，但任一副本可能还没追上。</span></> : conflict && final ? <><GitBranch size={17} aria-hidden="true" /><span>副本可以最终对齐，但 last writer wins 只是一种裁决规则；如果业务不能接受覆盖，就要把冲突带回应用层。</span></> : final ? <><CheckCircle size={17} aria-hidden="true" /><span>等到没有新写入后，副本收敛到同一个值；产品仍要说明用户在收敛窗口里能看到什么。</span></> : <><ArrowsClockwise size={17} aria-hidden="true" /><span>先分开“写入成功”“读到什么”和“副本何时对齐”，再选择能承受的读取一致性。</span></>}
     </p>
   </div>;
 }

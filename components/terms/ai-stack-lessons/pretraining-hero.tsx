@@ -8,7 +8,7 @@ import styles from "./PretrainingConcept.module.css";
 const heroSteps = [
   { label: "切开语料", title: "先把一行话切成练习格", detail: "每个 token 都有位置，目标还没有揭晓。", Icon: FileText },
   { label: "摆上目标", title: "给这一次猜测一个可对照的目标", detail: "自回归目标是下一个 token，掩码目标是被遮住的 token。", Icon: Target },
-  { label: "算出损失", title: "把猜测和目标之间的差距量出来", detail: "loss 是这道练习题的误差，不是事实评分。", Icon: Brain },
+  { label: "算出损失", title: "把猜测和目标之间的差距量出来", detail: "loss 是这道练习题的误差。", Icon: Brain },
   { label: "拨动参数", title: "沿着梯度只改一小格", detail: "一次 batch 结束，参数才有机会朝新方向移动。", Icon: ArrowsClockwise },
 ];
 
@@ -115,7 +115,7 @@ export function PretrainingLesson() {
         <div className={styles.pretrainingLabLabel}><ArrowsClockwise size={16} aria-hidden="true" /><span>参数刻度</span></div>
         <h3>{blocked ? "没有更新信号" : final ? "收到一次小步更新" : "等待损失"}</h3>
         <div className={styles.pretrainingLabWeightRail}><span data-shifted={final && !blocked} /><b>W</b></div>
-        <div className={styles.pretrainingLabUpdateText}><strong>{blocked ? "更新 0 次" : final ? "更新 1 次" : "更新 0 次"}</strong><small>{stale ? "参数可能学会旧规则；低损失只说明贴合这张卡。" : "参数朝降低这次损失的方向移动，不等于记下了一条经过核验的事实。"}</small></div>
+        <div className={styles.pretrainingLabUpdateText}><strong>{blocked ? "更新 0 次" : final ? "更新 1 次" : "更新 0 次"}</strong><small>{stale ? "参数可能学会旧规则；低损失说明贴合这张卡。" : "参数朝降低本次损失的方向调整，语料中的事实按来源核验。"}</small></div>
       </div>
     </div>
     <div className={styles.pretrainingLabMetrics}>
@@ -124,7 +124,7 @@ export function PretrainingLesson() {
       <div><span>权重变化</span><strong>{blocked ? "0" : final ? "1 次" : "0"}</strong></div>
     </div>
     <p className={styles.pretrainingLabNote} data-danger={blocked || stale} role="status">
-      {blocked ? <><WarningCircle size={17} aria-hidden="true" /><span>拿走目标标签后，训练样本仍然存在，但没有可比较的答案，loss 无法定义，参数也不会凭空更新。自监督学习的“标签”通常正是从输入里构造出来的。</span></> : stale ? <><WarningCircle size={17} aria-hidden="true" /><span>这张旧规则卡可能让 loss 很低，因为模型猜中了它；低 loss 只能说明贴合训练目标，不能替代对规则时效和事实的核验。</span></> : final ? <><CheckCircle size={17} aria-hidden="true" /><span>一次更新只改变参数的一小步。还要继续看更多样本、独立评估和数据是否代表你要面对的世界。</span></> : <><Target size={17} aria-hidden="true" /><span>{objective === "causal" ? "先由下一个 token 生成目标，再把预测分布和目标比较。" : "先把一个 token 藏起来，再用可见上下文定义要预测的目标。"}</span></>}
+      {blocked ? <><WarningCircle size={17} aria-hidden="true" /><span>拿走目标标签后，训练样本仍然存在，但没有可比较的答案，loss 无法定义，参数也不会凭空更新。自监督学习的“标签”通常正是从输入里构造出来的。</span></> : stale ? <><WarningCircle size={17} aria-hidden="true" /><span>模型猜中旧规则卡时 loss 可能很低，说明贴合训练目标；规则时效与事实需进一步核对。</span></> : final ? <><CheckCircle size={17} aria-hidden="true" /><span>一次更新只改变参数的一小步。还要继续看更多样本、独立评估和数据是否代表你要面对的世界。</span></> : <><Target size={17} aria-hidden="true" /><span>{objective === "causal" ? "先由下一个 token 生成目标，再把预测分布和目标比较。" : "先把一个 token 藏起来，再用可见上下文定义要预测的目标。"}</span></>}
     </p>
   </div>;
 }

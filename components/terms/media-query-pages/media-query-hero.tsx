@@ -8,7 +8,7 @@ import styles from "./MediaQueryConcept.module.css";
 const frames = [
   { label: "先用基础规则接住页面", stage: "BASE", width: "860px", widthActive: false, hover: true, motion: false, columns: "3 列", tip: "可悬停提示", animation: "轻微位移", note: "先让普通 CSS 负责默认状态，媒体条件还没有改变页面。" },
   { label: "宽度条件变真", stage: "WIDTH", width: "560px", widthActive: true, hover: true, motion: false, columns: "1 列", tip: "可悬停提示", animation: "轻微位移", note: "同一份内容遇到窄空间，width 条件成立，只替换列数这条规则。" },
-  { label: "悬停能力缺席", stage: "HOVER", width: "860px", widthActive: false, hover: false, motion: false, columns: "3 列", tip: "提示常驻", animation: "轻微位移", note: "hover 查询的是当前输入能力；没有鼠标时，不能把关键信息藏在悬停后。" },
+  { label: "悬停能力缺席", stage: "HOVER", width: "860px", widthActive: false, hover: false, motion: false, columns: "3 列", tip: "提示常驻", animation: "轻微位移", note: "hover 查询的是当前输入能力，没有鼠标时。" },
   { label: "用户要求少动一点", stage: "MOTION", width: "860px", widthActive: false, hover: true, motion: true, columns: "3 列", tip: "可悬停提示", animation: "静止反馈", note: "prefers-reduced-motion 只收住动效，不会顺手把页面改成另一种布局。" },
   { label: "三个条件同时成立", stage: "COMBINE", width: "560px", widthActive: true, hover: false, motion: true, columns: "1 列", tip: "提示常驻", animation: "静止反馈", note: "width、hover 和 reduced-motion 各自判断；组合成立时，三条规则一起参与。" },
   { label: "条件变化，内容不换", stage: "RESET", width: "860px", widthActive: false, hover: false, motion: false, columns: "3 列", tip: "提示常驻", animation: "轻微位移", note: "媒体查询只是换一组 CSS 声明，DOM 和阅读顺序始终留在原地。" },
@@ -32,7 +32,7 @@ export function MediaQueryHero() {
         <div className={styles.mediaQueryLabel}><Monitor size={17} aria-hidden="true" /><span>媒体环境</span></div>
         <h3>浏览器正在测什么</h3>
         <div className={styles.mediaQueryInputs}>{inputRows.map(row => <div key={row.label} className={styles.mediaQueryInput} data-active={row.active}><span>{row.icon}</span><span>{row.label}</span><code>{row.value}</code></div>)}</div>
-        <small>每个 media feature 都是一个输入；它们不是设备型号的别名，也不会自己生成布局。</small>
+        <small>每个 media feature 都是一个输入，也不会自己生成布局。</small>
       </div>
       <div className={styles.mediaQueryArrow} aria-hidden="true"><Gear size={21} /><span>匹配</span></div>
       <div className={styles.mediaQueryPanel} data-active={current.widthActive || !current.hover || current.motion}>
