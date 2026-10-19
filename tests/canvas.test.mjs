@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { availablePosition, connectNodes, emptyCanvas, markdownFileName, moveView, nodePreview, parseCanvas } from "../lib/canvas.ts";
+import { availablePosition, connectNodes, editNodeTask, emptyCanvas, exportNodeMarkdown, importNodeMarkdown, markdownFileName, moveView, nodePreview, nodeResource, nodeTasks, parseCanvas, safeNodeUrl, withNodeResource } from "../lib/canvas.ts";
 import { connectionPath } from "../lib/canvas-routing.ts";
 
 const note = (id, markdown) => ({ id, markdown, fileName: "", x: 20, y: -40, createdAt: "2026-10-19T02:00:00.000Z", updatedAt: "2026-10-19T02:00:00.000Z" });
@@ -19,6 +19,37 @@ test("新建和导入避开已有节点，窄画布逐行放置", () => {
   const existing = [{ x: 0, y: 0 }, { x: 330, y: 0 }];
   assert.deepEqual(availablePosition(existing, { x: 0, y: 0 }), { x: 660, y: 0 });
   assert.deepEqual(availablePosition(existing, { x: 0, y: 0 }, 1), { x: 0, y: 170 });
+  assert.deepEqual(availablePosition([{ x: 0, y: 0, kind: "image" }], { x: 0, y: 170 }, 1), { x: 0, y: 340 });
+});
+
+test("旧画布兼容；节点显示信息和四种内容可随 Markdown 往返且不改正文", () => {
+  const original = note("old", "# 原正文标题\r\n\r\n正文 **保留**。\r\n");
+  assert.deepEqual(parseCanvas({ ...emptyCanvas(), nodes: [original] }).nodes[0], original);
+  assert.equal(parseCanvas({ ...emptyCanvas(), version: 1 }).version, 2);
+  assert.equal(exportNodeMarkdown(original), original.markdown);
+  for (const kind of ["note", "link", "image", "todo"]) {
+    const node = { ...original, kind, title: "画布标题 --> <script>", summary: "手动摘要\n第二行" };
+    assert.deepEqual(importNodeMarkdown(exportNodeMarkdown(node)), { kind, title: node.title, summary: node.summary, markdown: original.markdown });
+    assert.equal(nodePreview(node).title, node.title);
+    assert.equal(nodePreview({ ...node, summary: "" }).summary, "");
+  }
+  assert.throws(() => importNodeMarkdown('<!-- vibepolaris-node {"kind":"unknown"} -->\n正文'));
+  assert.equal(safeNodeUrl("javascript:alert(1)"), undefined);
+  assert.equal(safeNodeUrl("data:image/svg+xml;base64,PHN2Zz4=", true), undefined);
+  assert.equal(safeNodeUrl("/terms/css"), "/terms/css");
+  const image = { kind: "image", markdown: "![图片](<https://example.com/a.png>)\n\n保留图注" };
+  const src = "data:image/png;base64,aGVsbG8=";
+  assert.equal(safeNodeUrl(src, true), src);
+  assert.equal(safeNodeUrl(src), undefined);
+  const changed = { ...image, markdown: withNodeResource(image, src) };
+  assert.equal(nodeResource(changed), src);
+  assert.ok(changed.markdown.endsWith("\n\n保留图注"));
+  const todo = "# 清单\n\n- [ ] 读书\n- [x] 写笔记\n\n正文";
+  const tasks = nodeTasks(todo);
+  assert.deepEqual(tasks.map(({ text, checked }) => [text, checked]), [["读书", false], ["写笔记", true]]);
+  assert.ok(editNodeTask(todo, tasks[0].line, true).includes("- [x] 读书"));
+  assert.equal(editNodeTask(todo, tasks[1].line, null), "# 清单\n\n- [ ] 读书\n\n正文");
+  assert.equal(nodeTasks("```md\n- [ ] 示例\n```\n- [ ] 真正待办").length, 1);
 });
 
 test("连线不重复、不自连、不指向不存在的节点；损坏存储不作为空画布覆盖", () => {
