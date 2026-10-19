@@ -17,4 +17,8 @@
 
 VBP-095 早期以文字底色遮盖连线的处理已由本次实际路径避让替换。历史 ImageGen 与原始画布证据保留在 `docs/design/VBP-095-free-canvas/`。
 
+## 生产验收
+
+main `598a2a4c` 已发布到 `https://vibe.chuansgu.top/canvas`，容器 healthy，公开页面 200、未授权接口 401。生产浏览器实际新建、分栏、拖动避让、阅读刷新、原文复制导出及追加导入通过，console 为空；验收样例已清理并刷新确认空白画布。证据为 `docs/design/VBP-096-canvas-refinements/production-*.png`、`production-browser.json` 及 `production-cleanup.json`，发布、备份与回滚见 `docs/development/VBP-096-canvas-production.md`。
+
 final result: passed

@@ -15,4 +15,4 @@
 - 实际拖动咖啡节点进入读书节点到短句的连接路径后，路径自动绕开；选中后文字高度 68.59→38.80px，路径随之更新。原连线可键盘选中；120%→100% 缩放，surface scrollTop 始终为 0。恢复原始位置与缩放。
 - 证据：`editor.png`、`mobile-editor.png`、`canvas.png`、`drag-routing.png`、`browser-checks.json`。先前 VBP-095 的完整导入导出及数据保护验收见相邻目录。
 
-本轮没有新增依赖或修改数据存储。本机不存在指定的 `D:/Obsidian/gysnote`，研发记录保存在本目录及 DP。用户随后已明确授权检查通过后直接上线，实际发布版本、备份和线上结果在生产记录中补充。
+本轮没有新增依赖或修改数据存储。本机不存在指定的 `D:/Obsidian/gysnote`，研发记录保存在本目录及 DP。用户明确授权检查通过后直接上线，已发布 main `598a2a4c` 并完成线上浏览器冒烟，详见 [生产记录](../../development/VBP-096-canvas-production.md)。
