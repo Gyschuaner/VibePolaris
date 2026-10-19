@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     ];
     const result = await callModel({ store, identity, run: requestId, messages, signal: AbortSignal.any([request.signal, deadline]), completion: { charge: charging } });
     store.checkIdentity(identity);
-    const text = shortCompletion(result.message.content || "");
+    const text = shortCompletion(result.message.content || "", prefix);
     if (!text.trim()) throw new XiaobeiError("这次没有生成可用的补全，请再试一次。", 502);
     return NextResponse.json({ text, credits: store.balance(identity.invite) / 1e6, charging }, { headers: privateHeaders });
   } catch (error) {
