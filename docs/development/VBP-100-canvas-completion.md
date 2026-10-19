@@ -30,6 +30,10 @@ BUG-2470593E：共享按钮重置覆盖了提示颜色，导致继承镜像透�
 
 390px宽、844px高的真实浏览器iframe检查中，文档宽度390、编辑区宽度390，停顿提示可见，无横向溢出，截图 `../design/VBP-100-canvas-completion/evidence/local-390px.png`。后台浏览器视口覆盖未生效，改用同一应用的受限iframe检查布局；该环境无法派发嵌套框架快捷键，因此窄屏只验证编辑和提示布局，完整快捷键流程由桌面验收覆盖。
 
-dev集成与生产结果待执行后补充。未实测系统中文组字、真机键盘及其他浏览器；组字与按键重复已有事件分支保护。
+PR492已合入dev `195ee84e8e721d209392295775dbc8fce496d8c5`，Git树与已构建功能提交一致。本机独立数据库重启后，真实浏览器通过新建、全文编辑、停顿提示、Esc与清理，控制台无error，证据 `../design/VBP-100-canvas-completion/evidence/dev-hint.png`。
+
+首轮生产PR493提交 `f6399040ba07c8c807db22625781167b0934b4ce` 于2026-10-19 10:52 UTC上线，服务健康且扣费false。SQLite在线备份 `/opt/vibepolaris/backups/20261019T104731Z-from-a9de70c8`，quick_check为ok；回滚脚本 `/opt/vibepolaris/releases/20261019T104731Z-f6399040/rollback.sh`。真实模型冒烟发现BUG-0F1F7D8A：前文“今天我想试着”，模型候选重复同一开头。已放弃该候选，原文未变；证据 `../design/VBP-100-canvas-completion/evidence/production-repetition.png`。服务端现在先移除至少4个非纯空白Unicode码点的精确首尾重叠，再限制长度；短词与Markdown换行保留，新增实际复现及边界断言通过。待修复集成和第二轮生产冒烟完成后补充最终发布结果。
+
+未实测系统中文组字、真机键盘及其他浏览器；组字与按键重复已有事件分支保护。
 
 本机没有指定的 `D:/Obsidian/gysnote`，研发记录保存在Git与DP。

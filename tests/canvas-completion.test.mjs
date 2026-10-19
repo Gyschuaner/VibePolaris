@@ -17,6 +17,11 @@ test("补全只取光标前文并限制上下文和Unicode输出", () => {
   assert.equal(shortCompletion("\n- 保留列表\r\n"), "\n- 保留列表");
   assert.equal(Array.from(shortCompletion("🌱".repeat(101))).length, 100);
   assert.equal(shortCompletion("这".repeat(25) + "。" + "下".repeat(100)), "这".repeat(25) + "。");
+  assert.equal(shortCompletion("今天我想试着把那些零散的念头固定下来。", "前文。\n\n今天我想试着"), "把那些零散的念头固定下来。");
+  assert.equal(shortCompletion("I want to keep writing.", "Today I want to"), " keep writing.");
+  assert.equal(shortCompletion("哈哈接着写", "哈哈"), "哈哈接着写");
+  assert.equal(shortCompletion("\n- 保留列表", "前文\n\n\n\n"), "\n- 保留列表");
+  assert.equal(shortCompletion("🌱🌱🌱🌱" + "新".repeat(101), "前文🌱🌱🌱🌱"), "新".repeat(100));
 });
 
 test("免费请求不预占或扣分，余额零仍计量；收费沿用原价且策略按请求固定", () => {
