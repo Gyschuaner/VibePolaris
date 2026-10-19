@@ -57,6 +57,8 @@ Harness 正文中的局部星图复用 `ConceptGraph` 的 inline 模式：仅加
 
 画布、位置和连线使用独立的本地 IndexedDB 自动保存，首次为空白画布。不同浏览器、域名或端口不共享数据；清除网站数据前请导出需要的 `.md`。多窗口同时修改发生冲突时保留当前草稿，提示先导出再重新载入。旧画布兼容读取，首次保存升级为版本 2；回退旧程序时会拒绝读取新版本，保留数据，避免旧程序覆盖节点信息。代码及验收证据见 [VBP-095 自由画布](docs/design/VBP-095-free-canvas/README.md)。
 
+画布 Markdown 编辑时停顿约 3 秒，光标后出现淡灰快捷键提示。按 Command/Ctrl+Enter 或点提示主动请求一次小北补全，Tab 接受、Escape 放弃；接受前不写入正文，接受后可撤销。停顿本身不调用模型。使用沿用小北邀请码，首次调用说明会向小北发送本笔记标题、前文提纲及最多 6000 字符的光标前文；笔记仍在本地保存，服务端不新增正文或补全历史持久化。`XIAOBEI_COMPLETION_CHARGE_ENABLED=false` 默认关闭扣费，真实 Token 与原价积分仍计量，预占和实际扣分为 0；聊天计费不变。详见 [VBP-100 补全接入](docs/development/VBP-100-canvas-completion.md)。
+
 记忆、上下文窗口、提示词、执行沙箱在 `ExtendedConceptPages` 中扩展：分别使用跨会话存取、容量尺、任务稿编辑、空间访问边界。`ExtendedConceptHeroes` 提供独立首图，复用 `ConceptHero` 的可见性与重播控制；`ExtendedConceptLessons` 保存本地状态，`lib/extended-concept-sources.ts` 维护来源与引用锚点。窗口的 100 格为示意配额；所有示例均不调用模型、读写用户文件或连接真实 MCP 服务器。
 
 MCP 使用 `McpTermPage` 与 `McpLab`：以图书馆查询解释能力发现、请求和结果往返，切换两个应用展示同一服务说明的复用。首图与正文演示均有限播放；正文支持暂停、单步、重播，离屏停止，断开不清除已取得的历史。

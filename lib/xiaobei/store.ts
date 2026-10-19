@@ -17,6 +17,7 @@ export type Identity = { session: string; invite: string };
 export type HistoryIdentity = Identity & { browser: string };
 type ConversationRow = { id: string; title: string; updated: number; active_run: string | null; data: string; running: number };
 export type Usage = { input: number; cached: number; output: number };
+export type UsagePolicy = { feature: "chat" | "canvas_completion"; charge: boolean };
 export const digest = (value: string) => createHash("sha256").update(value).digest("hex");
 export const dayKey = (now = Date.now()) => new Intl.DateTimeFormat("en-CA", {
   timeZone: "Asia/Shanghai", year: "numeric", month: "2-digit", day: "2-digit",
@@ -42,9 +43,14 @@ export class XiaobeiStore {
       CREATE TABLE IF NOT EXISTS usage (id TEXT PRIMARY KEY, invite TEXT NOT NULL REFERENCES invites(id), day TEXT NOT NULL, reserved INTEGER NOT NULL, cost INTEGER, input INTEGER, cached INTEGER, output INTEGER);
       CREATE INDEX IF NOT EXISTS daily_usage ON usage(invite, day);
       CREATE TABLE IF NOT EXISTS activation_attempts (key TEXT PRIMARY KEY, count INTEGER NOT NULL, until INTEGER NOT NULL);
+      CREATE TABLE IF NOT EXISTS completion_cooldowns (invite TEXT PRIMARY KEY REFERENCES invites(id), until INTEGER NOT NULL);
       CREATE TABLE IF NOT EXISTS conversations (id TEXT PRIMARY KEY, invite TEXT NOT NULL REFERENCES invites(id), browser TEXT NOT NULL,
         title TEXT NOT NULL, updated INTEGER NOT NULL, active_run TEXT, data TEXT NOT NULL);
       CREATE INDEX IF NOT EXISTS conversation_history ON conversations(invite,browser,updated DESC,id DESC);`);
+    const usageColumns = new Set(this.db.prepare("PRAGMA table_info(usage)").all().map(row => row.name));
+    for (const [name, definition] of Object.entries({ feature: "TEXT NOT NULL DEFAULT 'chat'", charge: "INTEGER NOT NULL DEFAULT 1", calculated_cost: "INTEGER" })) {
+      if (!usageColumns.has(name)) this.db.exec(`ALTER TABLE usage ADD COLUMN ${name} ${definition}`);
+    }
   }
   transaction<T>(fn: () => T): T {
     this.db.exec("BEGIN IMMEDIATE");
@@ -93,34 +99,38 @@ export class XiaobeiStore {
     const row = this.db.prepare("SELECT COALESCE(SUM(COALESCE(cost,reserved)),0) AS used FROM usage WHERE invite=? AND day=?").get(invite, day) as { used: number };
     return Math.max(0, DAILY_CREDITS - row.used);
   }
-  startRun(identity: Identity, id: string, now = Date.now()) {
+  startRun(identity: Identity, id: string, now = Date.now(), cooldown = 0) {
     this.transaction(() => {
       this.checkIdentity(identity, now);
       if (this.db.prepare("SELECT 1 FROM runs WHERE id=?").get(id)) throw new XiaobeiError("该请求已处理，请勿重复发送。", 409);
       if (this.db.prepare("SELECT 1 FROM runs WHERE invite=? AND done=0 AND lease>?").get(identity.invite, now)) throw new XiaobeiError("这个邀请码已有问题正在回答，请稍后再试。", 409);
-      this.db.prepare("INSERT INTO runs VALUES(?,?,?,?,0)").run(id, identity.invite, identity.session, now + 120_000);
+      if (cooldown) {
+        if (this.db.prepare("SELECT 1 FROM completion_cooldowns WHERE invite=? AND until>?").get(identity.invite, now)) throw new XiaobeiError("补全请求较快，请稍等两秒再试。", 429);
+        this.db.prepare("INSERT INTO completion_cooldowns VALUES(?,?) ON CONFLICT(invite) DO UPDATE SET until=excluded.until").run(identity.invite, now + cooldown);
+      }
+      this.db.prepare("INSERT INTO runs(id,invite,session,lease,done) VALUES(?,?,?,?,0)").run(id, identity.invite, identity.session, now + 120_000);
     });
   }
   renewRun(id: string, now = Date.now()) {
     return this.db.prepare("UPDATE runs SET lease=? WHERE id=? AND done=0 AND lease>?").run(now + 120_000, id, now).changes > 0;
   }
   finishRun(id: string) { this.db.prepare("UPDATE runs SET done=1 WHERE id=?").run(id); }
-  reserve(identity: Identity, run: string, inputBound: number, wantedOutput: number, now = Date.now()) {
+  reserve(identity: Identity, run: string, inputBound: number, wantedOutput: number, now = Date.now(), policy: UsagePolicy = { feature: "chat", charge: true }) {
     return this.transaction(() => {
       this.checkIdentity(identity, now);
       if (!this.db.prepare("SELECT 1 FROM runs WHERE id=? AND session=? AND done=0 AND lease>?").get(run, identity.session, now)) throw new XiaobeiError("本次请求已结束，请重新提问。", 409);
       const day = dayKey(now);
       const available = this.balance(identity.invite, day);
-      const maxOutput = Math.min(wantedOutput, Math.floor((available - inputBound * 10) / 30));
+      const maxOutput = policy.charge ? Math.min(wantedOutput, Math.floor((available - inputBound * 10) / 30)) : wantedOutput;
       if (maxOutput < 256) throw new XiaobeiError("今日积分不足，明日恢复。", 429);
       const id = randomUUID();
-      this.db.prepare("INSERT INTO usage(id,invite,day,reserved) VALUES(?,?,?,?)").run(id, identity.invite, day, inputBound * 10 + maxOutput * 30);
+      this.db.prepare("INSERT INTO usage(id,invite,day,reserved,feature,charge) VALUES(?,?,?,?,?,?)").run(id, identity.invite, day, policy.charge ? inputBound * 10 + maxOutput * 30 : 0, policy.feature, Number(policy.charge));
       return { id, maxOutput };
     });
   }
   settle(id: string, usage: Usage) {
     const cost = usageCost(usage);
-    this.db.prepare("UPDATE usage SET cost=?,input=?,cached=?,output=? WHERE id=? AND cost IS NULL").run(cost, usage.input, usage.cached, usage.output, id);
+    this.db.prepare("UPDATE usage SET cost=CASE WHEN charge=1 THEN ? ELSE 0 END,calculated_cost=?,input=?,cached=?,output=? WHERE id=? AND cost IS NULL").run(cost, cost, usage.input, usage.cached, usage.output, id);
   }
   release(id: string) { this.settle(id, { input: 0, cached: 0, output: 0 }); }
   listConversations(identity: HistoryIdentity, offset = 0, now = Date.now()) {
