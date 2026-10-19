@@ -1,0 +1,42 @@
+[data-canvas-paper] { view-transition-name: canvas-paper; }
+[data-canvas-title] { view-transition-name: canvas-title; }
+[data-canvas-bar] { view-transition-name: canvas-bar; }
+[data-canvas-content] { view-transition-name: canvas-content; }
+[data-canvas-card-content] { view-transition-name: canvas-card-content; }
+html[data-canvas-transition]::view-transition-group(*) {
+  animation-duration: 540ms;
+  animation-timing-function: cubic-bezier(.22, 1, .36, 1);
+}
+html[data-canvas-transition]::view-transition-group(root) { animation-name: none; }
+html[data-canvas-transition]::view-transition-old(root) { animation: canvas-fade-out 540ms both; }
+html[data-canvas-transition]::view-transition-new(root) { animation: canvas-fade-in 540ms both; }
+html[data-canvas-transition]::view-transition-image-pair(canvas-paper) { isolation: isolate; }
+html[data-canvas-transition]::view-transition-old(canvas-paper) { animation: canvas-paper-out 540ms both; mix-blend-mode: normal; }
+html[data-canvas-transition]::view-transition-new(canvas-paper) { animation: canvas-paper-in 540ms both; mix-blend-mode: normal; }
+html[data-canvas-transition]::view-transition-old(canvas-title) { animation: canvas-title-out 540ms both; mix-blend-mode: normal; }
+html[data-canvas-transition]::view-transition-new(canvas-title) { animation: canvas-title-in 540ms both; mix-blend-mode: normal; }
+html[data-canvas-transition]::view-transition-old(canvas-title),
+html[data-canvas-transition]::view-transition-new(canvas-title) { width: auto; height: 100%; max-width: none; object-fit: contain; object-position: left center; }
+html[data-canvas-transition]::view-transition-old(canvas-card-content),
+html[data-canvas-transition]::view-transition-old(canvas-title):only-child { animation: canvas-card-out 540ms both; }
+html[data-canvas-transition]::view-transition-new(canvas-card-content) { animation: canvas-content-in 540ms both; }
+html[data-canvas-transition]::view-transition-new(canvas-content),
+html[data-canvas-transition]::view-transition-new(canvas-bar) { animation: canvas-content-in 540ms both; }
+html[data-canvas-transition]::view-transition-old(canvas-content),
+html[data-canvas-transition]::view-transition-old(canvas-bar) { animation: canvas-content-out 540ms both; }
+html[data-canvas-transition="close"]::view-transition-old(root) { animation-name: canvas-fade-in; animation-direction: reverse; }
+html[data-canvas-transition="close"]::view-transition-new(root) { animation-name: canvas-fade-out; animation-direction: reverse; }
+@keyframes canvas-fade-out { 0% { opacity: 1; } 72%, 100% { opacity: 0; } }
+@keyframes canvas-fade-in { 0%, 28% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes canvas-paper-out { 0%, 50% { opacity: 1; } 92%, 100% { opacity: 0; } }
+@keyframes canvas-paper-in { 0%, 12% { opacity: 0; } 78%, 100% { opacity: 1; } }
+@keyframes canvas-title-out { 0%, 78% { opacity: 1; } 92%, 100% { opacity: 0; } }
+@keyframes canvas-title-in { 0%, 78% { opacity: 0; } 92%, 100% { opacity: 1; } }
+@keyframes canvas-card-out { 0% { opacity: 1; } 30%, 100% { opacity: 0; } }
+@keyframes canvas-content-in { 0%, 50% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
+@keyframes canvas-content-out { 0% { opacity: 1; } 50%, 100% { opacity: 0; transform: translateY(10px); } }
+@media (prefers-reduced-motion: reduce) {
+  html[data-canvas-transition]::view-transition-group(*),
+  html[data-canvas-transition]::view-transition-old(*),
+  html[data-canvas-transition]::view-transition-new(*) { animation-duration: 0s; }
+}
