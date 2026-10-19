@@ -52,7 +52,7 @@ export function E2eTestHero() {
         <h3>{failed ? "首个不变量被破坏" : final ? "完整旅程通过" : "等待最终观察"}</h3>
         <div className={styles.e2eHeroMeta}><span>UI / DB</span><strong>{scene.step >= 4 ? "paid / paid" : "— / —"}</strong></div>
         <div className={styles.e2eHeroMeta}><span>邮件沙箱</span><strong>{scene.step >= 4 ? `${mailDelivered ? "1" : "0"} 封` : "—"}</strong></div>
-        <p>{failed ? "页面显示 paid，但确认邮件没有出现，不能把截图当成通过。" : final ? "用户看到的结果和系统留下的事实相互印证。" : "E2E 要等到关键旅程的跨层结果都能观察。"}</p>
+        <p>{failed ? "确认邮件没有出现。" : final ? "用户看到的结果和系统留下的事实相互印证。" : "E2E 要等到关键旅程的跨层结果都能观察。"}</p>
       </div>
     </div>
     <div className={styles.e2eHeroEvidence} data-danger={failed} aria-live="polite">
@@ -61,6 +61,6 @@ export function E2eTestHero() {
     </div>
     <div className={styles.e2eHeroMetrics}><div><span>测试入口</span><strong>真实浏览器</strong></div><div><span>隔离数据</span><strong>u-42 · order 42</strong></div><div><span>结论</span><strong>{failed ? "FAIL · mail" : final ? "PASS · 3 layers" : "进行中"}</strong></div></div>
     <div className={styles.e2eHeroStatus} data-danger={failed || (scene.step === 4 && outcome === "mail-lost")} role="status"><current.Icon size={19} aria-hidden="true" /><span><strong>{current.title}</strong> · {currentDetail}</span></div>
-    <figcaption>端到端测试不是替页面拍一张“成功”截图，而是让一条最重要的用户旅程穿过真实系统，再把用户看见的结果和系统留下的事实放在一起验收。</figcaption>
+    <figcaption>端到端测试是让一条最重要的用户旅程穿过真实系统，再把用户看见的结果和系统留下的事实放在一起验收。</figcaption>
   </figure>;
 }

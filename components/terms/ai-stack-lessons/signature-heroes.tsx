@@ -86,7 +86,7 @@ export function SubagentContractHero() {
       <div className={styles.subagentContract} data-open={drafted}><span>支线契约</span><code>{drafted ? "3 URLs · currency · tax" : "空白"}</code><small>{drafted ? "只允许查价，不改报告" : "等待字段"}</small></div>
       <div className={styles.subagentResults} data-visible={returned}><div><Tag size={13}/><span>¥420 · 有来源</span></div><div><Tag size={13}/><span>¥580 · 有来源</span></div><div data-gap={!accepted}><Warning size={13}/><span>{accepted ? "1 个缺失已保留" : "1 个无来源"}</span></div></div>
     </div>
-    <div className={styles.signatureProof}>{accepted ? <><CheckCircle size={14}/> 主线验收通过，缺口没有被补写</> : returned ? <><WarningCircle size={14}/> 返回文字不等于通过验收</> : <><Wrench size={14}/> 子智能体只拿到一块可验收的工作</>}</div>
+    <div className={styles.signatureProof}>{accepted ? <><CheckCircle size={14}/> 主线验收通过，缺口没有被补写</> : returned ? <><WarningCircle size={14}/> 根据实际结果逐项验收</> : <><Wrench size={14}/> 子智能体只拿到一块可验收的工作</>}</div>
   </div>;
 }
 
@@ -106,6 +106,6 @@ export function PlanDependencyHero() {
       <div className={styles.planNode} data-state={blocked ? "locked" : repaired ? "ready" : "open"}><LockSimple size={16}/><strong>部署</strong><small>{blocked ? "锁住" : repaired ? "可执行" : "等回执"}</small></div>
       <div className={styles.planRepair} data-visible={repaired}><Wrench size={14}/><span>修复节点</span></div>
     </div>
-    <div className={styles.signatureProof}>{blocked ? <><WarningCircle size={14}/> 失败改变的是依赖图，不是被抹掉的文字</> : repaired ? <><CheckCircle size={14}/> 修复和复测有自己的回执</> : <><Archive size={14}/> 先看依赖，再决定下一步</>}</div>
+    <div className={styles.signatureProof}>{blocked ? <><WarningCircle size={14}/> 失败改变的是依赖图</> : repaired ? <><CheckCircle size={14}/> 修复和复测有自己的回执</> : <><Archive size={14}/> 先看依赖，再决定下一步</>}</div>
   </div>;
 }

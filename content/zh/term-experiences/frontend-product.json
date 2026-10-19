@@ -3,7 +3,7 @@
     "slug": "semantic-html",
     "lead": "页面看起来一样，换成 main、nav、button 后，谁会多知道什么？",
     "definition": "语义化 HTML 按内容职责选择元素：nav 表示导航，main 表示主要内容，article 表示可独立阅读内容，button 表示可触发操作。浏览器据此构造文档和无障碍结构，辅助技术才能按区域和控件导航。",
-    "boundary": "语义元素表达结构与原生行为，不负责颜色、间距或动画；class 命名不会改变语义，ARIA 角色也不应替代已有的原生元素。",
+    "boundary": "语义元素表达结构与原生行为，颜色、间距和动画由样式控制；优先使用合适的原生元素，再按需补充 ARIA。",
     "sceneKind": "tree",
     "sceneTitle": "同一页面在无障碍树里的两种结构",
     "actionLabel": "替换一个语义节点",
@@ -108,7 +108,7 @@
         }
       }
     ],
-    "insight": "语义标签改变的是机器读到的结构和原生行为，不只是代码长相。",
+    "insight": "语义标签影响代码结构、机器理解与原生行为。",
     "quiz": {
       "question": "提交表单的操作应优先使用什么元素？",
       "options": [
@@ -126,7 +126,7 @@
         }
       ],
       "success": "原生 button 自带按钮语义和 Enter/Space 键盘行为。",
-      "retry": "可点击不等于按钮；普通容器需要额外补齐语义、焦点和键盘行为。"
+      "retry": "普通容器需要额外补齐语义、焦点和键盘行为。"
     },
     "prompt": {
       "title": "检查页面的 HTML 语义",
@@ -326,7 +326,7 @@
         ]
       }
     ],
-    "insight": "深度链接不只是一条路径，还要为安装状态、登录状态和失败回退安排明确去向。",
+    "insight": "深度链接要结合安装状态、登录状态与失败情况安排去向。",
     "quiz": {
       "question": "处理需要登录的深度链接时，什么信息应被保留？",
       "options": [
@@ -590,7 +590,7 @@
     "slug": "emulator",
     "lead": "没有每一种实体手机时，怎样先检查不同系统版本和屏幕尺寸？",
     "definition": "仿真器在主机上运行虚拟设备配置，加载目标系统版本和硬件特征，并允许注入网络、位置和设备状态。",
-    "boundary": "仿真器适合功能、兼容性和可重复异常检查；它不能替代真机对真实性能、功耗、触觉、摄像头和传感器差异的确认。",
+    "boundary": "仿真器适合功能、兼容性和可重复异常检查；真实性能、功耗、触觉、摄像头和传感器差异交给真机确认。",
     "sceneKind": "compare",
     "sceneTitle": "同一构建先在仿真器覆盖，再由真机复核",
     "actionLabel": "运行下一项测试",
@@ -775,7 +775,7 @@
     "slug": "code-signing",
     "lead": "系统为什么拒绝安装一个已经构建成功的应用包？",
     "definition": "代码签名用私钥对构建产物的摘要或签名数据进行签名；设备或平台用证书里的公钥验证来源和内容是否被改动。",
-    "boundary": "签名只回答“谁签了、包有没有被改”，不保证代码没有漏洞，也不等于加密；私钥保护和权限管理仍要单独做好。",
+    "boundary": "签名只回答“谁签了、包有没有被改”，私钥保护和权限管理仍要单独做好。",
     "sceneKind": "pipeline",
     "sceneTitle": "Android 应用安装包（APK）从摘要到设备验签",
     "actionLabel": "修改包内一个字节",
@@ -832,7 +832,7 @@
     "frames": [
       {
         "label": "生成摘要",
-        "note": "构建完成后，APK 内容被计算成固定长度摘要；摘要不是原文件本身。",
+        "note": "APK 内容被计算成固定长度摘要。",
         "activeIds": [
           "apk",
           "digest"
@@ -912,7 +912,7 @@
         ]
       }
     ],
-    "insight": "签名把发布者身份与包完整性绑定到安装和更新检查；构建成功不代表设备会接受安装。",
+    "insight": "签名把发布者身份与包完整性绑定到安装和更新检查。",
     "quiz": {
       "question": "签名私钥应怎样管理？",
       "options": [
@@ -960,7 +960,7 @@
       {
         "url": "https://developer.apple.com/library/archive/documentation/Security/Conceptual/CodeSigningGuide/Introduction/Introduction.html",
         "label": "Apple · About Code Signing",
-        "note": "签名能识别来源和发现改动，但不保证代码无漏洞"
+        "note": "签名能识别来源和发现改动"
       }
     ]
   },
@@ -1145,7 +1145,7 @@
       {
         "url": "https://developer.android.com/develop/ui/views/touch-and-input/gestures",
         "label": "Android Developers · Use touch gestures",
-        "note": "触摸手势不是基本行为的唯一入口，需遵循平台惯例"
+        "note": "触摸手势遵循平台惯例，并为基本行为提供可发现的操作入口"
       },
       {
         "url": "https://developer.android.com/develop/ui/views/touch-and-input/gestures/detector",
@@ -1173,7 +1173,7 @@
     "slug": "haptic-feedback",
     "lead": "保存成功时，设备怎样让用户感觉到结果？",
     "definition": "应用先为选择、确认、警告或失败等事件选择对应的语义触感，平台再把它映射到设备执行器的强度、节奏或波形，并受硬件能力和用户设置限制。",
-    "boundary": "触觉是补充通道，不能替代文字、视觉或声音；高频或长振动会干扰任务。设备、系统开关以及浏览器可见性或用户激活策略可能让请求降级或不播放，因此关键结果要保留可见回退。",
+    "boundary": "触觉与文字、视觉或声音配合传达反馈，振动频率和时长应适度，以免干扰任务。设备、系统开关以及浏览器可见性或用户激活策略可能让请求降级或不播放，因此关键结果要保留可见回退。",
     "sceneKind": "compare",
     "sceneTitle": "语义模式怎样落到触感与可见回退",
     "actionLabel": "查看下一种触感",
@@ -1360,7 +1360,7 @@
       {
         "url": "https://developer.android.com/reference/android/os/VibrationEffect",
         "label": "Android API · VibrationEffect",
-        "note": "自定义波形和组合效果受设备能力影响，不能把每种设备都当成同一执行器"
+        "note": "自定义波形和组合效果受设备能力影响"
       },
       {
         "url": "https://developer.apple.com/design/human-interface-guidelines/playing-haptics",
@@ -1382,7 +1382,7 @@
   {
     "slug": "touch-target",
     "lead": "图标看得见，为什么在手机上总是点不中？",
-    "definition": "命中测试看的是控件的可交互边界，不是图标的可见像素；用容器尺寸或内边距扩大热区，再用间距避免相邻热区重叠。",
+    "definition": "命中测试看的是控件的可交互边界，再用间距避免相邻热区重叠。",
     "boundary": "扩大热区不能让不同控件共享同一片可交互区域；dp 是 Android 的密度无关像素，pt 是 Apple 的点，CSS px 是网页 CSS 像素；这些数值不能直接互换，尺寸建议要结合目标平台与布局。",
     "sceneKind": "transform",
     "sceneTitle": "同一图标的可见尺寸与命中边界",
@@ -1562,7 +1562,7 @@
     "slug": "offline-first",
     "lead": "断网时先保存笔记，联网后把变更送到服务器并处理冲突。",
     "definition": "关键读取先命中本地数据源；支持离线写入时，先把变更和同步元数据持久化到本地，再联网上传，并按版本或业务规则处理冲突。",
-    "boundary": "缓存或重试不自动提供离线写入和冲突规则；本地保存也不等于服务器确认。",
+    "boundary": "缓存或重试不自动提供离线写入和冲突规则。",
     "sceneKind": "queue",
     "sceneTitle": "一条笔记从断网编辑到冲突处理",
     "actionLabel": "推进同步队列并选择冲突结果",
@@ -1632,7 +1632,7 @@
     "frames": [
       {
         "label": "断网仍可编辑",
-        "note": "保存动作先写入本地持久化数据，界面显示新标题；这表示设备已保存，不代表服务器已经确认。",
+        "note": "保存动作先写入本地持久化数据，这表示设备已保存。",
         "activeIds": [
           "editor",
           "local"
@@ -1676,7 +1676,7 @@
       },
       {
         "label": "恢复网络上传",
-        "note": "网络恢复后队列进入上传中，但服务器已有另一台设备写入的 v13；这是版本冲突，不是网络错误。",
+        "note": "服务器已有另一台设备写入的 v13，这是版本冲突。",
         "activeIds": [
           "outbox",
           "server"
@@ -1777,8 +1777,8 @@
   {
     "slug": "adaptive-layout",
     "lead": "窗口拖宽后，订单列表和详情怎样重新排列而不丢失当前订单？",
-    "definition": "布局根据应用窗口的可用空间、方向和折叠姿态切换导航与内容关系，而不是读取设备型号；窗口运行中变化时重新计算并保留当前任务和阅读位置。若接入键盘或辅助技术，还应把焦点映射回原控件。",
-    "boundary": "响应式通常指按可用空间改变样式；自适应还会选择面板和导航模式，两者可以重叠。Web 常用 CSS px，Android 窗口大小类别常用 dp，本例 390/720/1000 只是教学示例，不是固定断点。没有键盘时不能假设存在键盘焦点，至少要保留选中任务和阅读位置。",
+    "definition": "布局根据应用窗口的可用空间、方向和折叠姿态切换导航与内容关系；窗口运行中变化时重新计算并保留当前任务和阅读位置。若接入键盘或辅助技术，还应把焦点映射回原控件。",
+    "boundary": "响应式通常指按可用空间改变样式；自适应还会选择面板和导航模式，两者可以重叠。本例 390/720/1000 只是教学示例。没有键盘时不能假设存在键盘焦点，至少要保留选中任务和阅读位置。",
     "sceneKind": "transform",
     "sceneTitle": "单列、并列和侧栏怎样保留当前任务",
     "actionLabel": "拖宽窗口",
@@ -1920,7 +1920,7 @@
         }
       ],
       "success": "布局要回应当前窗口和内容是否能够清楚呈现。",
-      "retry": "品牌和安装日期不能说明页面空间如何使用。"
+      "retry": "布局要回应当前窗口和内容是否能够清楚呈现。"
     },
     "prompt": {
       "title": "规划三种窗口下的布局",
@@ -1950,7 +1950,7 @@
       {
         "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_queries",
         "label": "MDN · CSS container queries",
-        "note": "根据组件容器空间而不是整页视口调整样式"
+        "note": "根据组件容器空间"
       }
     ]
   },
@@ -1958,7 +1958,7 @@
     "slug": "safe-area",
     "lead": "全屏背景可以铺到边缘，底部按钮为什么还要向上留出动态距离？",
     "definition": "系统或浏览器根据刘海、圆角、状态栏和手势区提供动态 inset（系统留出的安全边距）；内容可延伸到屏幕边缘，关键控件需加上相应内边距，旋转或设备形态变化时重新读取。",
-    "boundary": "安全区不是固定 20px，也不等于所有内容都不能铺到屏幕边缘；背景和可操作内容处理不同，平台单位与接口也可能不同。",
+    "boundary": "安全区随平台和界面状态变化；背景与可操作内容按各自规则布局，20px 仅是本例数值。",
     "sceneKind": "layers",
     "sceneTitle": "背景铺满与控件避开危险边界",
     "actionLabel": "切换设备外形",
@@ -1996,7 +1996,7 @@
     "frames": [
       {
         "label": "普通矩形屏（本例无刘海/手势区）",
-        "note": "这是本例没有刘海、圆角和系统手势区的起点，四边值暂为零，不代表所有矩形屏都没有安全边距。",
+        "note": "这是本例没有刘海、圆角和系统手势区的起点。",
         "activeIds": [
           "screen",
           "insets",
@@ -2048,7 +2048,7 @@
       },
       {
         "label": "固定边距造成遮挡",
-        "note": "本例把底部按钮固定在 20px，被手势区盖住；这是错误对照，不是安全布局。",
+        "note": "本例把底部按钮固定在 20px，这是错误对照。",
         "activeIds": [
           "controls"
         ],
@@ -2124,7 +2124,7 @@
     "slug": "app-lifecycle",
     "lead": "用户切到别的应用后，刚写的草稿为什么不能只等退出时再保存？",
     "definition": "以 Android Activity 为例，onCreate/onStart/onResume/onPause/onStop/onDestroy 描述页面阶段；Web 页面可通过 visibilitychange 等事件观察可见性。Android 进程可能在后台被回收，Web 标签页也可能被冻结或被浏览器丢弃，状态要持久化（保存到可跨重启读取的存储）。",
-    "boundary": "不同平台的事件名称和顺序不同，回调不等于可靠的最终保存机会；Android 可能被系统杀掉进程，Web 隐藏标签页可能被冻结或丢弃，丢弃时通常没有 beforeunload 或其他脚本回调。重要数据应在编辑过程中或有机会时持久化。",
+    "boundary": "不同平台的事件名称和顺序不同，Android 可能被系统杀掉进程，Web 隐藏标签页可能被冻结或丢弃，丢弃时通常没有 beforeunload 或其他脚本回调。重要数据应在编辑过程中或有机会时持久化。",
     "sceneKind": "state-machine",
     "sceneTitle": "草稿经历前后台切换与进程回收",
     "actionLabel": "触发下一次生命周期变化",
@@ -2153,7 +2153,7 @@
       {
         "id": "killed",
         "label": "进程已被回收",
-        "detail": "不保证最后回调",
+        "detail": "提前保存重要状态",
         "icon": "gear",
         "group": "状态"
       },
@@ -2258,7 +2258,7 @@
           "active"
         ],
         "values": {
-          "killed": "最后回调不保证",
+          "killed": "在活动期间及时保存状态",
           "draft": "仍有 18 字"
         },
         "activeEdgeIds": [
@@ -2305,7 +2305,7 @@
           "correct": false
         }
       ],
-      "success": "系统终止进程或丢弃页面时，不保证提供完整收尾机会；重要状态要在更早的时机保存。",
+      "success": "重要状态要在更早的时机保存。",
       "retry": "把保存依赖于单一退出回调会产生数据丢失风险。"
     },
     "prompt": {
@@ -2344,7 +2344,7 @@
     "slug": "app-permission",
     "lead": "用户点击拍照上传后，应用怎样解释用途，并在拒绝相机时继续完成上传？",
     "definition": "原生平台先声明能力和用途（Android manifest、iOS Info.plist），Web 按权限 API 和浏览器策略处理；运行时读取拍照权限状态，在用户触发任务时请求，结果可能是允许、拒绝或平台不再直接弹窗。",
-    "boundary": "权限弹窗不是启动时越早越好；Android、iOS 和浏览器的状态与再次请求规则不同。本例第五帧按 Android “不再询问”演示：系统不再直接弹框，需要去设置改回；其他平台由各自授权状态决定。拒绝后仍应保留文件上传等替代路径。",
+    "boundary": "Android、iOS 和浏览器的状态与再次请求规则不同。本例第五帧按 Android “不再询问”演示：系统不再直接弹框，需要去设置改回；其他平台由各自授权状态决定。拒绝后仍应保留文件上传等替代路径。",
     "sceneKind": "branch",
     "sceneTitle": "拍照任务面对允许、拒绝与设置分支",
     "actionLabel": "选择一个授权结果",
@@ -2594,7 +2594,7 @@
     "slug": "push-notification",
     "lead": "订单状态改变后，消息怎样从业务服务器走到设备，并在点击时打开正确订单？",
     "definition": "应用通过 FCM/APNs SDK 取得平台为本次安装生成的注册令牌，业务服务器保存当前映射并在订单变化时提交消息；推送服务按平台规则把消息交给设备，用户已允许通知且系统策略允许展示时才可能出现系统通知，前台也可能由应用改成站内提示。",
-    "boundary": "注册令牌不是固定设备 ID；它可因重装、清理数据、平台刷新或长期不活跃而变化。服务器收到无效或过期反馈应删除映射；投递成功、系统展示、用户点击是三个独立结果，前后台、授权和消息类型由平台决定，订单页面仍要重新核验。",
+    "boundary": "它可因重装、清理数据、平台刷新或长期不活跃而变化。服务器收到无效或过期反馈应删除映射；投递成功、系统展示、用户点击是三个独立结果，前后台、授权和消息类型由平台决定，订单页面仍要重新核验。",
     "sceneKind": "pipeline",
     "sceneTitle": "一条订单通知从令牌到详情页",
     "actionLabel": "发送通知",
@@ -2714,7 +2714,7 @@
       },
       {
         "label": "后台显示通知",
-        "note": "用户已允许通知且消息类型和平台策略支持时，后台可由系统展示；应用前台时也可能由应用回调改成站内提示，投递不等于已展示。",
+        "note": "用户已允许通知且消息类型和平台策略支持时，后台可由系统展示，应用前台时也可能由应用回调改成站内提示。",
         "activeIds": [
           "gateway",
           "device"
@@ -2831,7 +2831,7 @@
     "slug": "cross-platform-development",
     "lead": "订单规则想共用，但相机和权限又各不相同，代码应该怎样分边界？",
     "definition": "跨平台方案把能共享的业务规则、数据和部分界面放在共享核心；编译产物、运行时或平台通道（桥接）负责把统一接口接到 iOS/Android API。适配器就是把“请求相机”等统一接口翻译成各平台实现的薄层。",
-    "boundary": "共享代码不等于所有界面和行为相同；权限、通知、相机、文件系统、导航、生命周期和性能仍可能按平台实现与真机测试，共享比例取决于框架和功能。",
+    "boundary": "权限、通知、相机、文件系统、导航、生命周期和性能仍可能按平台实现与真机测试，共享比例取决于框架和功能。",
     "sceneKind": "assembly",
     "sceneTitle": "共享规则与平台适配器怎样拼成两个应用",
     "actionLabel": "移动一块代码",
@@ -2986,7 +2986,7 @@
         ]
       }
     ],
-    "insight": "跨平台开发共享的是稳定规则和统一接口，不是强迫所有平台行为使用同一份实现；适配器把差异留在平台边界。",
+    "insight": "跨平台开发共享的是稳定规则和统一接口。",
     "quiz": {
       "question": "哪类代码最适合优先共享？",
       "options": [
@@ -3041,8 +3041,8 @@
   {
     "slug": "webview",
     "lead": "活动页想快速复用网页，又需要调用原生分享功能，怎样连接两边？",
-    "definition": "WebView 是原生应用（宿主应用）里由系统网页引擎提供的内嵌页面容器；消息桥把网页消息转换为少量受控原生调用，不是任意 RPC。网页通过它请求能力，宿主校验 origin（协议+域名+端口）、方法、版本和参数后再调用并返回结构化结果。",
-    "boundary": "它不是完整浏览器，也不是原生页面；网页引擎和版本可能与系统浏览器不同，登录状态与能力不会自动一致。宿主负责导航、Cookie/存储、下载、权限、生命周期、内存和桥接安全，不应让不可信页面调用任意原生方法。",
+    "definition": "WebView 是原生应用（宿主应用）里由系统网页引擎提供的内嵌页面容器。网页通过它请求能力，宿主校验 origin（协议+域名+端口）、方法、版本和参数后再调用并返回结构化结果。",
+    "boundary": "网页引擎和版本可能与系统浏览器不同，登录状态与能力不会自动一致。宿主负责导航、Cookie/存储、下载、权限、生命周期、内存和桥接安全，不应让不可信页面调用任意原生方法。",
     "sceneKind": "contract",
     "sceneTitle": "网页消息通过两道校验后调用原生分享",
     "actionLabel": "发送桥接消息",
@@ -3171,7 +3171,7 @@
       },
       {
         "label": "原生返回结果",
-        "note": "分享面板完成后，网页收到可识别的 success、cancel 或 error 结果，而不是直接读取原生内部对象。",
+        "note": "分享面板完成后，网页收到可识别的 success、cancel 或 error 结果。",
         "activeIds": [
           "native",
           "reply"
@@ -3213,7 +3213,7 @@
         ]
       }
     ],
-    "insight": "WebView 桥接是受约束的跨环境接口，来源、方法、版本和参数都要在调用原生能力前验证；失败也要返回可处理的结构化结果，不能把网页输入直接变成任意原生调用。",
+    "insight": "WebView 桥接是受约束的跨环境接口，来源、方法、版本和参数都要在调用原生能力前验证，失败也要返回可处理的结构化结果。",
     "quiz": {
       "question": "WebView 消息桥接收到网页参数后应先做什么？",
       "options": [
@@ -3269,7 +3269,7 @@
     "slug": "css-selector",
     "lead": "样式已经写了，为什么页面上的目标元素没有变化？",
     "definition": "选择器按元素、类、属性、关系和伪类条件匹配 DOM（页面节点树）中的元素；只有匹配成功的声明才进入层叠计算。伪类表示元素状态或结构条件，例如 :hover。",
-    "boundary": "选择器匹配不等于样式一定生效；匹配之后还要比较来源、重要性、层（@layer）、特异性（选择器权重）和声明顺序。",
+    "boundary": "匹配之后还要比较来源、重要性、层（@layer）、特异性（选择器权重）和声明顺序。",
     "sceneKind": "tree",
     "sceneTitle": "选择器输入后哪些 DOM 节点会被命中",
     "actionLabel": "修改选择器",
@@ -3618,7 +3618,7 @@
   "slug": "cascade",
   "lead": "开发者工具里能看到规则，为什么它却被划掉了？",
   "definition": "浏览器先按来源和重要性筛选声明，再比较级联层、优先级、作用域邻近度和出现顺序，为同一属性留下一个级联值。",
-  "boundary": "层叠不是“后写覆盖前写”的单一规则；后写只在前面条件都相等时才决定结果。",
+  "boundary": "后写只在前面条件都相等时才决定结果。",
   "sceneKind": "layers",
   "sceneTitle": "来源、层与重要性怎样筛出最终颜色",
   "actionLabel": "加入下一张便签",
@@ -3797,7 +3797,7 @@
       "activeEdgeIds": []
     }
   ],
-  "insight": "层叠先比较来源与重要性，再看层、优先级、作用域和顺序；!important 会进入独立的比较区，不能把它当成选择器加分。",
+  "insight": "层叠先比较来源与重要性，再看层、优先级、作用域和顺序，!important 会进入独立的比较区。",
   "quiz": {
     "question": "两个同等优先级的规则冲突时，通常哪条生效？",
     "options": [
@@ -3974,7 +3974,7 @@
     },
     {
       "label": ":is() 取最高",
-      "note": ":is(#settings, .panel) .card 取 1-1-0，而不是把两个分支相加。",
+      "note": ":is(#settings, .panel) .card 取 1-1-0。",
       "activeIds": [
         "selector",
         "is",
@@ -4037,7 +4037,7 @@
     {
       "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/:is",
       "label": "MDN · :is() CSS pseudo-class",
-      "note": ":is() 从参数中取最高优先级，而不是把分支相加。"
+      "note": ":is() 从参数中取最高优先级。"
     }
   ]
 },
@@ -4217,7 +4217,7 @@
         "activeEdgeIds": []
       }
     ],
-    "insight": "Flexbox 先在主轴上算自由空间，再按 grow 或 shrink 把它分给项目；wrap 与 column 改变的是分组或方向，不是把它变成二维网格。",
+    "insight": "Flexbox 先在主轴上算自由空间，再按 grow 或 shrink 把它分给项目，wrap 与 column 改变的是分组或方向。",
     "quiz": {
       "question": "容器改成 flex-direction: column 后，哪个属性仍然负责沿主轴分配空白？",
       "options": [
@@ -4407,7 +4407,7 @@
       },
       {
         "label": "缩窄后减少列数",
-        "note": "minmax 给列设下限，容器从三列变成两列，卡片换行而不是被压成无法阅读的窄条。",
+        "note": "minmax 给列设下限，容器从三列变成两列，卡片换行。",
         "activeIds": [
           "tracks",
           "rule",
@@ -4481,7 +4481,7 @@
   "slug": "positioning",
   "lead": "同一个 top，为什么有时挪自己，有时贴住窗口？",
   "definition": "CSS 定位先决定元素采用哪种 positioning scheme，再确定它相对哪个 containing block 计算 inset 偏移；relative 保留原占位，absolute/fixed 通常脱离普通流，sticky 在滚动阈值处贴住边界。",
-  "boundary": "定位不是通用布局工具；absolute 没有合适祖先会向外寻找包含块，sticky 没有滚动空间或阈值也不会产生贴住效果。",
+  "boundary": "absolute 没有合适祖先会向外寻找包含块，sticky 没有滚动空间或阈值也不会产生贴住效果。",
   "sceneKind": "timeline",
   "sceneTitle": "五种定位方式寻找不同参照系",
   "actionLabel": "切换定位方式",
@@ -4635,7 +4635,7 @@
       "activeEdgeIds": []
     }
   ],
-  "insight": "定位先决定参照系，再决定偏移和占位；relative、absolute、fixed、sticky 的差异来自参照和滚动边界，不是 top 数字本身。",
+  "insight": "定位先决定参照系，再决定偏移和占位，relative、absolute、fixed、sticky 的差异来自参照和滚动边界。",
   "quiz": {
     "question": "absolute 元素首先寻找什么？",
     "options": [
@@ -4685,7 +4685,7 @@
   {
     "slug": "breakpoint",
     "lead": "为什么导航还没到手机宽度就已经挤在一起了？",
-    "definition": "断点是内容压力达到临界点时切换布局规则的位置；它由真实内容的第一次失效反推，而不是由设备名字决定。",
+    "definition": "断点是内容压力达到临界点时切换布局规则的位置；它由真实内容的第一次失效反推。",
     "boundary": "它只改变 CSS 规则，不复制另一套 HTML；流体布局或 container query 能解决时，不必增加全局断点。",
     "sceneKind": "spectrum",
     "sceneTitle": "内容压力怎样画出一条断点",
@@ -4745,7 +4745,7 @@
       },
       {
         "label": "间距开始变紧",
-        "note": "840px 时仍能读和点，但空白正在消失；压力是线索，还不是断点。",
+        "note": "840px 时仍能读和点，压力是线索。",
         "activeIds": [
           "content",
           "width"
@@ -4867,12 +4867,12 @@
       {
         "url": "https://web.dev/articles/responsive-web-design-basics",
         "label": "web.dev · Responsive web design basics",
-        "note": "说明从内容而不是设备类别选择断点，并从小屏向上扩展。"
+        "note": "说明从内容。"
       },
       {
         "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Containment/Container_queries",
         "label": "MDN · CSS container queries",
-        "note": "解释组件如何读取自己的容器尺寸，而不是只看视口。"
+        "note": "解释组件如何读取自己的容器尺寸。"
       },
       {
         "url": "https://www.w3.org/WAI/WCAG22/Understanding/reflow.html",
@@ -5154,7 +5154,7 @@
     "slug": "event",
     "lead": "用户点了按钮以后，JavaScript 从哪里收到这个动作？",
     "definition": "用户代理创建带 type、target 和时间等数据的 Event，并沿事件路径依次执行捕获、目标和冒泡阶段的监听器。",
-    "boundary": "事件不是处理函数本身；preventDefault、stopPropagation 和状态更新控制的是不同环节。",
+    "boundary": "preventDefault、stopPropagation 和状态更新控制的是不同环节。",
     "sceneKind": "timeline",
     "sceneTitle": "一次链接点击的捕获、目标、冒泡与默认行为",
     "actionLabel": "派发点击事件",
@@ -5322,7 +5322,7 @@
         }
       ],
       "success": "target 指向事件最初发生的节点。",
-      "retry": "它不是处理函数，也不表示页面地址。"
+      "retry": "不表示页面地址。"
     },
     "prompt": {
       "title": "梳理一个点击交互",
@@ -5340,7 +5340,7 @@
     "slug": "event-bubbling",
     "lead": "为什么点击列表里的按钮，列表容器的点击处理也执行了？",
     "definition": "事件到达目标后按预先构建的事件路径向祖先传播，每个节点的冒泡监听器共享同一个事件对象。",
-    "boundary": "不是父元素重新触发一次新事件；event.target 保持初始目标，currentTarget 才随监听器变化。",
+    "boundary": "同一个事件沿祖先路径继续传播；event.target 保持初始目标，currentTarget 才随监听器变化。",
     "sceneKind": "layers",
     "sceneTitle": "列表按钮的事件如何向外层容器冒泡",
     "actionLabel": "点击删除按钮",
@@ -5496,7 +5496,7 @@
     "slug": "props",
     "lead": "同一个按钮组件怎样在不同位置显示不同文字和图标？",
     "definition": "React 在渲染子组件时把父组件提供的值作为只读快照传入；父级新渲染产生新 props，子组件据此重新计算界面。",
-    "boundary": "props 不是子组件自己的可变状态，直接改 props 既不会按预期通知父级，也破坏单向数据流。",
+    "boundary": "直接改 props 既不会按预期通知父级。",
     "sceneKind": "contract",
     "sceneTitle": "父组件怎样把数据下发并接收子组件动作",
     "actionLabel": "修改一个 prop",
@@ -5677,7 +5677,7 @@
     "slug": "hook",
     "lead": "多个组件都要处理窗口尺寸，怎样避免复制同一段监听代码？",
     "definition": "React 按组件每次渲染中 Hook 的调用顺序，把状态槽与 effect/ref 等能力对应到同一个组件实例；自定义 Hook 组合这些调用。",
-    "boundary": "Hook 不是普通工具函数，也不会让不同组件自动共享同一状态；条件调用会破坏槽位顺序。",
+    "boundary": "不会让不同组件自动共享同一状态，条件调用会破坏槽位顺序。",
     "sceneKind": "memory",
     "sceneTitle": "两次渲染如何按调用顺序找到同一状态槽",
     "actionLabel": "切换条件调用",
@@ -5835,7 +5835,7 @@
     "slug": "effect",
     "lead": "组件显示以后，怎样根据当前用户订阅消息并在离开时取消？",
     "definition": "React 提交界面后运行 Effect setup；依赖变化或卸载前先执行上一次 cleanup，再用新值重新建立外部同步。",
-    "boundary": "Effect 不是所有派生数据和事件处理的容器；没有外部系统时往往不需要 Effect。",
+    "boundary": "没有外部系统时往往不需要 Effect。",
     "sceneKind": "timeline",
     "sceneTitle": "房间订阅切换时旧连接如何被清理",
     "actionLabel": "切换房间",
@@ -6022,7 +6022,7 @@
     },
     "prompt": {
       "title": "检查 Effect 的依赖与清理",
-      "text": "请检查下面 Effect：列出它读取的外部值，修正依赖数组，并补上取消请求或移除监听器的清理逻辑。不要把可直接计算的值留在 Effect 中。"
+      "text": "请检查下面 Effect：列出它读取的外部值，修正依赖数组，并补上取消请求或移除监听器的清理逻辑。"
     },
     "sources": [
       {
@@ -6041,7 +6041,7 @@
     "slug": "browser-api",
     "lead": "JavaScript 为什么能读取地址栏、保存数据或复制文字？",
     "definition": "浏览器作为宿主向 JavaScript 暴露 DOM、网络、存储、设备等接口，并按安全上下文、权限和兼容性决定是否可用。",
-    "boundary": "Web API 不是 JavaScript 语言语法，也不是每个运行时都具备；Node.js 中常没有 document 或 navigator。",
+    "boundary": "Node.js 中常没有 document 或 navigator。",
     "sceneKind": "matrix",
     "sceneTitle": "同一段 Web API 调用在三种运行环境中的结果",
     "actionLabel": "执行能力检测",
@@ -6162,7 +6162,7 @@
         }
       ],
       "success": "fetch 由浏览器等运行环境提供，用于发起网络请求。",
-      "retry": "它不是样式语法，也不是文档元素。"
+      "retry": "fetch 由浏览器等运行环境提供，用于发起网络请求。"
     },
     "prompt": {
       "title": "为浏览器能力补充兼容处理",
@@ -6383,7 +6383,7 @@
     "slug": "promise",
     "lead": "请求还没返回时，代码怎样保存并继续处理未来的结果？",
     "definition": "Promise 在 pending 状态保存 reaction；被 resolve/reject 后状态不可逆，并把 then/catch 回调排入微任务队列。",
-    "boundary": "Promise 不是后台线程，也不等于请求；resolve 另一个 Promise 时还会采用其最终状态。",
+    "boundary": "resolve 另一个 Promise 时还会采用其最终状态。",
     "sceneKind": "queue",
     "sceneTitle": "Promise 终态与微任务执行顺序",
     "actionLabel": "运行一轮事件循环",
@@ -6742,7 +6742,7 @@
     "slug": "module",
     "lead": "项目文件越来越大，怎样拆开代码又不把变量都放到全局？",
     "definition": "模块加载器解析静态 import/export 形成依赖图，每个模块只求值一次，并用 live binding 连接导入与导出。",
-    "boundary": "import 不是复制值，也不是简单把文件文本拼接；循环依赖可能暴露尚未初始化的 binding。",
+    "boundary": "循环依赖可能暴露尚未初始化的 binding。",
     "sceneKind": "network",
     "sceneTitle": "三个 ES 模块如何连接并共享实时绑定",
     "actionLabel": "更新导出变量",
@@ -6936,7 +6936,7 @@
       ]
     }
   ],
-    "insight": "模块先建立依赖和作用域，ES import 读取的是导出绑定，而不是一次性的全局值复制。",
+    "insight": "模块先建立依赖和作用域，ES import 读取的是导出绑定。",
     "quiz": {
       "question": "模块中没有 export 的变量默认如何处理？",
       "options": [
@@ -6987,7 +6987,7 @@
     "slug": "code-splitting",
     "lead": "用户只打开首页，为什么要先下载后台编辑器的全部代码？",
     "definition": "构建器按入口或动态 import 切出异步 chunk；运行时只有走到对应功能边界，才请求并执行那部分代码。",
-    "boundary": "代码分割改变下载时机，不等于删除代码；过细的 chunk 会把成本转成更多请求和等待。",
+    "boundary": "过细的 chunk 会把成本转成更多请求和等待。",
     "sceneKind": "assembly",
     "sceneTitle": "首页与编辑器代码在两个加载边界上到达",
     "actionLabel": "打开编辑器",
@@ -7126,7 +7126,7 @@
       },
       {
         "label": "模块执行完成",
-        "note": "chunk 到达并执行，编辑器变成可用状态；请求完成不是唯一终点。",
+        "note": "编辑器变成可用状态。",
         "activeIds": [
           "editor",
           "network"
@@ -7424,7 +7424,7 @@
       },
       {
         "label": "下一张继续等待",
-        "note": "一张资源 ready 不代表整页都该请求；其他图片仍沿自己的距离和优先级前进。",
+        "note": "其他图片仍沿自己的距离和优先级前进。",
         "activeIds": [
           "viewport",
           "observer",
@@ -7500,8 +7500,8 @@
   {
     "slug": "hydration",
     "lead": "服务器已经返回了按钮，为什么 JavaScript 加载前点它没有反应？",
-    "definition": "客户端框架在服务器已有 HTML 上重建组件与状态对应关系、注册事件并校验首轮输出，通常复用 DOM 而非全部重建。",
-    "boundary": "页面可见不等于已水合可交互；服务端与客户端首轮内容不同会产生 hydration mismatch。",
+    "definition": "客户端框架在服务器已有 HTML 上重建组件与状态对应关系、注册事件并校验首轮输出，通常复用 DOM 。",
+    "boundary": "服务端与客户端首轮内容不同会产生 hydration mismatch。",
     "sceneKind": "assembly",
     "sceneTitle": "服务器 HTML 与客户端组件如何接上事件",
     "actionLabel": "加载客户端脚本",
@@ -7696,7 +7696,7 @@
         }
       ],
       "success": "水合把客户端组件逻辑连接到已有 HTML。",
-      "retry": "它不负责创建数据库，也不等于修改 CSS。"
+      "retry": "它不负责创建数据库。"
     },
     "prompt": {
       "title": "定位水合不一致",
@@ -7729,7 +7729,7 @@
     "slug": "csr",
     "lead": "为什么页面先出现空壳，等脚本运行后才看到内容？",
     "definition": "服务器返回页面壳和脚本，浏览器下载、解析、执行应用代码，再请求数据并生成主要 DOM；后续路由可在客户端更新。",
-    "boundary": "CSR 不是没有服务器，也不是 SPA 的唯一特征；初始内容、SEO 和可交互时间取决于完整请求链。",
+    "boundary": "初始内容、SEO 和可交互时间取决于完整请求链。",
     "sceneKind": "timeline",
     "sceneTitle": "客户端渲染首屏必须等过哪些工作",
     "actionLabel": "调高 CPU 降速",
@@ -7954,7 +7954,7 @@
     "slug": "ssr",
     "lead": "页面内容需要随登录用户变化，又希望浏览器先收到完整 HTML，怎么处理？",
     "definition": "服务器为每个请求读取上下文与数据并生成 HTML 流或字符串，浏览器先呈现内容，再加载客户端代码完成交互。",
-    "boundary": "SSR 不保证更快，也不自动减少客户端 JavaScript；慢数据依赖会推迟首字节。",
+    "boundary": "慢数据依赖会推迟首字节。",
     "sceneKind": "pipeline",
     "sceneTitle": "个性化页面从服务端取数到浏览器可交互",
     "actionLabel": "增加数据延迟",
@@ -8178,7 +8178,7 @@
     "slug": "ssg",
     "lead": "文档内容一天更新一次，是否需要每个访问请求都重新生成页面？",
     "definition": "构建阶段枚举页面路径、读取内容并产出静态 HTML；访问时 CDN/服务器直接返回既有文件，内容更新依赖重新构建或再生成。",
-    "boundary": "SSG 不是“没有 JavaScript”的网站，也不适合必须按当前用户或每秒数据生成的页面。",
+    "boundary": "不适合必须按当前用户或每秒数据生成的页面。",
     "sceneKind": "timeline",
     "sceneTitle": "内容更新为何要经过构建才进入静态页面",
     "actionLabel": "重新构建站点",
@@ -8405,7 +8405,7 @@
     "slug": "routing",
     "lead": "用户打开 /products/42 时，应用怎样知道要显示哪一页？",
     "definition": "路由器把 URL 的路径、参数和查询与规则表匹配，选择页面或处理器；客户端路由还通过 History API 改变地址而不整页刷新。",
-    "boundary": "路由不等于导航菜单，也不负责用户授权；URL 匹配成功后仍需加载数据和校验权限。",
+    "boundary": "不负责用户授权，URL 匹配成功后仍需加载数据和校验权限。",
     "sceneKind": "tree",
     "sceneTitle": "地址被拆成路径参数、查询参数和访问分支",
     "actionLabel": "修改地址栏",
@@ -8653,7 +8653,7 @@
     "slug": "cookie",
     "lead": "登录后刷新页面，服务器怎样继续认出当前会话？",
     "definition": "本页把 Cookie 拆成三步：服务器用 Set-Cookie 写入，浏览器按请求上下文筛选，符合条件的名称和值进入 Cookie 请求头；HttpOnly 再把脚本读取单独关掉。",
-    "boundary": "Cookie 不是页面私藏，也不自动等于安全会话。属性会影响发送和读取，但授权、会话轮换、CSRF 与 XSS 防护仍由系统负责。",
+    "boundary": "不自动等于安全会话。属性会影响发送和读取，但授权、会话轮换、CSRF 与 XSS 防护仍由系统负责。",
     "sceneKind": "contract",
     "sceneTitle": "一条 Cookie 在什么条件下会被带出罐子",
     "actionLabel": "改变请求条件",
@@ -8893,7 +8893,7 @@
         ]
       }
     ],
-    "insight": "保存、网络发送和脚本读取是三件事；Cookie 属性分别参与其中，不能把它们压成一个‘能不能用’开关。",
+    "insight": "保存、网络发送和脚本读取是三件事。",
     "quiz": {
       "question": "HttpOnly 的直接作用是什么？",
       "options": [
@@ -8949,7 +8949,7 @@
     "slug": "local-storage",
     "lead": "用户选择的主题怎样在下次打开网站时继续生效？",
     "definition": "浏览器按 origin 保存同步字符串键值，数据跨页面会话保留；同源其他文档的修改可触发 storage 事件。",
-    "boundary": "localStorage 不是安全保险箱，也不是数据库；同步读写会阻塞主线程，且对象需序列化。",
+    "boundary": "同步读写会阻塞主线程。",
     "sceneKind": "memory",
     "sceneTitle": "两个标签页何时共享同一份 localStorage",
     "actionLabel": "写入一个键",
@@ -9125,7 +9125,7 @@
       "activeEdgeIds": []
     }
     ],
-    "insight": "localStorage 是按来源隔离的字符串存储，同源共享不等于不同标签页会自动同步应用状态。",
+    "insight": "localStorage 是按来源隔离的字符串存储。",
     "quiz": {
       "question": "localStorage 的值以什么形式保存？",
       "options": [
@@ -9143,7 +9143,7 @@
         }
       ],
       "success": "对象通常需要先序列化为字符串再存储。",
-      "retry": "localStorage 不会直接保存对象，也不是服务器数据库。"
+      "retry": "localStorage 不会直接保存对象。"
     },
     "prompt": {
       "title": "为本地偏好补充可靠存储",
@@ -9437,7 +9437,7 @@
         }
       ],
       "success": "长连接结束后，恢复责任回到客户端和服务器的应用协议。",
-      "retry": "通道状态和业务消息恢复不是同一件事。"
+      "retry": "长连接结束后，恢复责任回到客户端和服务器的应用协议。"
     },
     "prompt": {
       "title": "检查一条实时连接",
@@ -9470,7 +9470,7 @@
     "slug": "cors",
     "lead": "接口在命令行能访问，为什么浏览器页面却只能看到一条 CORS 错误？",
     "definition": "本页把 CORS 拆成浏览器的三道门：先比较 origin，非简单请求先走 OPTIONS 预检，再检查响应许可头，最后决定响应是否向脚本开放。",
-    "boundary": "CORS 不是认证、防火墙或服务器拒收。服务器可能已收到并处理请求，命令行也可能读到 body；这条规则只约束浏览器脚本的跨源读取。",
+    "boundary": "服务器可能已收到并处理请求，命令行也可能读到 body；这条规则只约束浏览器脚本的跨源读取。",
     "sceneKind": "contract",
     "sceneTitle": "浏览器为何允许响应到达，却不让脚本读取",
     "actionLabel": "改变跨源请求",
@@ -9683,7 +9683,7 @@
       },
       {
         "label": "凭据与通配来源冲突",
-        "note": "credentials: include 需要明确来源；ACAO=* 不能替代它，读取在浏览器闸门停止。",
+        "note": "credentials: include 需要明确来源；响应为 ACAO=* 时，浏览器会阻止读取。",
         "activeIds": [
           "page-script",
           "cors-browser",
@@ -9758,7 +9758,7 @@
     "slug": "focus-management",
     "lead": "对话框打开后，为什么按 Tab 还会跑到后面的页面？",
     "definition": "浏览器按可聚焦元素与 DOM 顺序建立顺序导航；脚本在对话框等上下文变化时移动焦点，并在关闭后恢复到触发点。",
-    "boundary": "焦点管理不只是画 outline，也不是给所有 div 加 tabindex；视觉顺序和键盘顺序需要保持可理解。",
+    "boundary": "焦点管理需要协调视觉顺序、键盘顺序与可见焦点。",
     "sceneKind": "route",
     "sceneTitle": "键盘焦点进入对话框并回到触发按钮",
     "actionLabel": "按一次 Tab 或 Esc",
@@ -9957,7 +9957,7 @@
     "slug": "working-tree",
     "lead": "文件已经保存，为什么 Git 仍然说这次提交里没有它？",
     "definition": "Git 把 HEAD 对应树写入文件系统形成工作树；编辑后，文件内容先只与索引和 HEAD 产生差异。",
-    "boundary": "保存文件不等于 git add 或 commit，工作树、索引和提交是三个独立快照位置。",
+    "boundary": "工作树、索引和提交是三个独立快照位置。",
     "sceneKind": "layers",
     "sceneTitle": "同一文件在 HEAD、暂存区和工作区的三份状态",
     "actionLabel": "执行下一条 Git 命令",
@@ -10108,7 +10108,7 @@
     "slug": "staging-area",
     "lead": "同一个文件改了两件事，只想先提交其中一件，怎么办？",
     "definition": "索引保存下一次提交的完整候选树；git add 把选中文件或 hunk 的当前内容写入索引，而工作树可以继续变化。",
-    "boundary": "暂存区不是待上传文件列表，也不是简单标记；它保存的是内容版本。",
+    "boundary": "它保存的是内容版本。",
     "sceneKind": "assembly",
     "sceneTitle": "同一文件的两块改动如何拆成两个提交",
     "actionLabel": "暂存选中的 hunk",
@@ -10294,7 +10294,7 @@
     "slug": "diff",
     "lead": "提交前怎样确认自己没有顺手改到无关文件？",
     "definition": "Git 的 diff 系列比较两个端点的 blob 与树，按行生成增删 hunk；不同参数选择 working tree、index、commit 或分支作为端点。",
-    "boundary": "git diff 默认不显示已暂存改动；diff 也只说明文本变化，不说明业务意图和运行结果。",
+    "boundary": "git diff 默认不显示已暂存改动。",
     "sceneKind": "compare",
     "sceneTitle": "改变比较端点后，同一行修改出现在哪里",
     "actionLabel": "切换 diff 端点",
@@ -10447,7 +10447,7 @@
     "slug": "checkout-switch",
     "lead": "工作区还有未提交修改时，为什么 Git 不允许切到另一个分支？",
     "definition": "git switch 移动 HEAD 到目标分支，并尝试把 index 与工作树更新为目标提交；可能覆盖本地修改时会停止。",
-    "boundary": "切换不是复制文件夹，也不会自动提交未完成工作；checkout 还承担恢复路径等旧式多重含义。",
+    "boundary": "不会自动提交未完成工作。",
     "sceneKind": "state-machine",
     "sceneTitle": "未提交改动何时会阻止分支切换",
     "actionLabel": "尝试切到 dev",
@@ -10604,7 +10604,7 @@
         ]
       }
     ],
-    "insight": "分支切换会改写工作树，Git 在本地改动可能被覆盖时会停止，而不是替用户选择保留哪一份。",
+    "insight": "分支切换会改写工作树，Git 在本地改动可能被覆盖时会停止。",
     "quiz": {
       "question": "切换前最基本的检查是什么？",
       "options": [
@@ -10645,7 +10645,7 @@
     "slug": "remote",
     "lead": "本地提交已经存在，为什么同事仍然看不到？",
     "definition": "remote 是远程仓库 URL 与 fetch/push refspec 的命名配置；origin/main 等 remote-tracking ref 记录上次获取到的远程状态。",
-    "boundary": "origin 不是特殊中央服务器，remote-tracking 分支也不是实时读取远端的分支。",
+    "boundary": "origin 是远端的默认别名；remote-tracking 分支保存上次同步取得的远端引用。",
     "sceneKind": "network",
     "sceneTitle": "origin 与 upstream 各自更新哪些远程引用",
     "actionLabel": "获取一个远程",
@@ -10715,7 +10715,7 @@
     "frames": [
       {
         "label": "两台远端各有名字",
-        "note": "本地仓库记录两个 URL，origin 和 upstream 不是特殊关键字。",
+        "note": "本地仓库记录两个 URL。",
         "activeIds": [
           "local",
           "origin",
@@ -10800,7 +10800,7 @@
         }
       ],
       "success": "origin 通常由 clone 创建，但可以改名或存在多个 remote。",
-      "retry": "它不是分支，也不是提交标识。"
+      "retry": "origin 通常由 clone 创建，但可以改名或存在多个 remote。"
     },
     "prompt": {
       "title": "检查本地与远程关联",
@@ -10823,7 +10823,7 @@
     "slug": "clone",
     "lead": "第一次参与项目时，怎样得到可提交和切换分支的完整本地仓库？",
     "definition": "clone 创建新仓库、获取远程对象与引用、配置 origin，并检出默认分支；depth/filter 参数会改变取得的历史和对象范围。",
-    "boundary": "clone 不等于下载 ZIP，后者没有对象历史和远程配置；clone 也不会安装项目依赖。",
+    "boundary": "后者没有对象历史和远程配置，clone 也不会安装项目依赖。",
     "sceneKind": "compare",
     "sceneTitle": "ZIP、完整克隆和浅克隆得到的内部能力",
     "actionLabel": "检查下载结果",
@@ -10987,7 +10987,7 @@
     "slug": "pull",
     "lead": "执行 pull 后为什么工作区里突然出现合并提交或冲突？",
     "definition": "pull 先执行 fetch 更新远程跟踪引用，再按配置用 merge、rebase 或仅快进把目标整合进当前分支。",
-    "boundary": "pull 不是“只下载最新代码”；它会改变当前分支，行为还取决于 pull.rebase 和 ff 配置。",
+    "boundary": "它会改变当前分支。",
     "sceneKind": "pipeline",
     "sceneTitle": "git pull 如何拆成获取与整合两段",
     "actionLabel": "选择 pull 策略",
@@ -11145,7 +11145,7 @@
         ]
       }
     ],
-    "insight": "Pull 不是单一动作，而是先 fetch 再按配置 merge 或 rebase。",
+    "insight": "Pull 是先 fetch 再按配置 merge 或 rebase。",
     "quiz": {
       "question": "只想先查看远程更新，不改变当前分支，应使用什么？",
       "options": [
@@ -11345,7 +11345,7 @@
     "slug": "push",
     "lead": "本地提交正常，为什么 push 会被远程拒绝？",
     "definition": "push 传输远端缺失对象并请求按 refspec 更新远程引用；远端检查快进关系、权限和 hook 后接受或拒绝。",
-    "boundary": "push 不是“上传工作区”，只会发送可达提交对象；推送功能分支也不等于已经合并。",
+    "boundary": "只会发送可达提交对象。",
     "sceneKind": "pipeline",
     "sceneTitle": "哪些本地内容会通过 push 更新远程引用",
     "actionLabel": "推送当前分支",
@@ -11530,7 +11530,7 @@
     "slug": "merge",
     "lead": "功能分支完成后，怎样把它的提交带回开发分支？",
     "definition": "Git 找到两个分支头的最佳共同祖先，进行三方合并；若目标是另一分支祖先可快进，否则生成合并结果。",
-    "boundary": "merge 不一定创建 merge commit，也不是按时间把两份文件简单覆盖。",
+    "boundary": "merge 根据分支关系快进引用或创建合并提交，并按共同祖先整合改动。",
     "sceneKind": "branch",
     "sceneTitle": "共同祖先决定快进或三方合并",
     "actionLabel": "切换分支图",
@@ -11707,7 +11707,7 @@
         }
       ],
       "success": "目标分支可直接移动到功能分支头时无需合并提交。",
-      "retry": "无关历史和未提交工作区不是快进条件。"
+      "retry": "目标分支可直接移动到功能分支头时无需合并提交。"
     },
     "prompt": {
       "title": "阅读分支图并选择合并方式",
@@ -11725,7 +11725,7 @@
     "slug": "rebase",
     "lead": "功能分支落后 dev，怎样把自己的提交接到最新 dev 后面？",
     "definition": "rebase 找出当前分支相对 upstream 的独有提交，重置到新基线，再逐个重放补丁，因父提交变化而生成新对象。",
-    "boundary": "它不是移动原提交；哈希会改变。对已共享历史变基会让协作者看到重复或分叉提交。",
+    "boundary": "哈希会改变。对已共享历史变基会让协作者看到重复或分叉提交。",
     "sceneKind": "transform",
     "sceneTitle": "两个功能提交如何换到新的父提交上",
     "actionLabel": "执行 rebase",
@@ -11907,7 +11907,7 @@
     "slug": "merge-conflict",
     "lead": "两个分支都修改同一段代码时，应该保留哪一边？",
     "definition": "三方合并发现两个分支相对共同祖先对同一区域作出不可自动组合的修改，于是写入冲突阶段和标记，等待人工生成最终内容。",
-    "boundary": "冲突不是选 ours 或 theirs 的格式题；两边可能实现不同需求，最终结果可能需要同时保留。",
+    "boundary": "两边可能实现不同需求，最终结果可能需要同时保留。",
     "sceneKind": "assembly",
     "sceneTitle": "两边改动怎样组成可测试的最终函数",
     "actionLabel": "选择一块冲突内容",
@@ -12060,7 +12060,7 @@
         ]
       }
     ],
-    "insight": "解决冲突是恢复两边改动意图并验证组合结果，不是机械选择 ours 或 theirs。",
+    "insight": "解决冲突是恢复两边改动意图并验证组合结果。",
     "quiz": {
       "question": "冲突文件编辑完成后还应做什么？",
       "options": [
@@ -12101,7 +12101,7 @@
     "slug": "revert",
     "lead": "错误提交已经推送并被团队使用，怎样安全撤销？",
     "definition": "revert 读取目标提交相对父提交的补丁，应用其反向变化并创建新提交，因此公共历史不被重写。",
-    "boundary": "revert 不是回到旧时间点，也不能自动撤销数据库写入和外部副作用。",
+    "boundary": "不能自动撤销数据库写入和外部副作用。",
     "sceneKind": "transform",
     "sceneTitle": "已共享提交如何由新的反向提交撤销",
     "actionLabel": "反向提交 B",
@@ -12274,7 +12274,7 @@
     "slug": "stash",
     "lead": "当前工作还不适合提交，却需要马上切到修复分支，怎么办？",
     "definition": "stash 保存工作树与索引状态为特殊提交对象，再把工作区恢复到基线；apply/pop 将差异合入当前工作树。",
-    "boundary": "stash 不是不可见剪贴板，也默认不一定包含未跟踪文件；pop 还可能因冲突无法删除记录。",
+    "boundary": "默认不一定包含未跟踪文件，pop 还可能因冲突无法删除记录。",
     "sceneKind": "memory",
     "sceneTitle": "临时改动进入 stash 栈后如何恢复",
     "actionLabel": "执行 stash 或恢复",
@@ -12467,7 +12467,7 @@
     "slug": "pull-request",
     "lead": "功能分支写完后，怎样让团队知道改了什么、如何验证？",
     "definition": "托管平台把源分支与目标分支的提交差异组织为可持续更新的评审对象，汇聚评论、审批、检查与合并状态。",
-    "boundary": "PR 不是一个 Git 对象，也不是提交后自动合并；新 push 会改变同一个 PR 的比较结果。",
+    "boundary": "新 push 会改变同一个 PR 的比较结果。",
     "sceneKind": "contract",
     "sceneTitle": "一个新提交怎样同时更新 PR 差异、检查和合并条件",
     "actionLabel": "推送修复提交",
@@ -12667,7 +12667,7 @@
     "slug": "code-review",
     "lead": "评审一份改动时，应该先看代码风格还是业务行为？",
     "definition": "评审者把需求与差异、调用上下文和验证证据对应，提出可定位的问题，再以 comment/approve/request changes 表达决策。",
-    "boundary": "代码评审不是格式检查或个人偏好投票，也不能替代运行测试。",
+    "boundary": "还需运行测试验证行为。",
     "sceneKind": "compare",
     "sceneTitle": "两条评审意见给作者的可执行信息差异",
     "actionLabel": "尝试处理一条评论",
@@ -12825,7 +12825,7 @@
     },
     "prompt": {
       "title": "审查一份功能改动",
-      "text": "请按正确性、边界条件、失败处理、权限、性能和测试覆盖审查下面 diff。每条问题给出文件位置、触发条件和影响；不要把风格偏好列为缺陷。"
+      "text": "请按正确性、边界条件、失败处理、权限、性能和测试覆盖审查下面 diff。"
     },
     "sources": [
       {
@@ -12844,7 +12844,7 @@
     "slug": "ci",
     "lead": "本地测试通过，为什么合并后项目还是坏了？",
     "definition": "代码事件触发隔离运行环境，按依赖图执行构建、测试和静态检查，并把退出状态回写到提交或 PR。",
-    "boundary": "CI 绿灯只说明已配置任务通过，不证明未覆盖场景正确，也不等于已部署。",
+    "boundary": "CI 绿灯说明已配置任务通过。",
     "sceneKind": "pipeline",
     "sceneTitle": "一次提交经过并行检查后如何形成有限结论",
     "actionLabel": "触发 CI",
@@ -13021,7 +13021,7 @@
         ]
       }
     ],
-    "insight": "CI 自动重复已配置的检查，绿色只证明这些检查通过，不代表未覆盖场景也正确。",
+    "insight": "CI 自动重复已配置的检查，绿色只证明这些检查通过。",
     "quiz": {
       "question": "CI 测试未覆盖一个场景时，绿色状态说明什么？",
       "options": [
@@ -13272,7 +13272,7 @@
         }
       ],
       "success": "持续交付保证随时可发布，生产触发可以保留控制。",
-      "retry": "Git 和 CSS 不是两者的定义差异。"
+      "retry": "持续交付保证随时可发布，生产触发可以保留控制。"
     },
     "prompt": {
       "title": "检查交付流水线的制品一致性",
@@ -13290,7 +13290,7 @@
     "slug": "preview-deployment",
     "lead": "设计和产品怎样在代码合并前直接体验页面改动？",
     "definition": "分支或 PR 事件触发独立构建，部署到与提交绑定的临时 URL；新提交更新预览，关闭 PR 后环境被回收。",
-    "boundary": "预览环境不是生产副本，数据、权限、域名和第三方集成可能不同；预览通过不能替代生产冒烟。",
+    "boundary": "数据、权限、域名与第三方集成可能有差异，预览验证后还要在生产执行冒烟检查。",
     "sceneKind": "timeline",
     "sceneTitle": "PR 提交如何生成、更新并回收独立预览环境",
     "actionLabel": "推进 PR 状态",
@@ -13496,7 +13496,7 @@
     "slug": "rollback",
     "lead": "新版本上线后核心页面报错，应该先继续修还是恢复旧版本？",
     "definition": "发布系统把流量或工作负载指针切回已知可用制品，随后执行健康检查；数据模式和外部副作用需要兼容或补偿。",
-    "boundary": "回滚不是 git reset，也不一定撤销数据；重新构建旧源码还可能得到不同制品。",
+    "boundary": "重新构建旧源码还可能得到不同制品。",
     "sceneKind": "route",
     "sceneTitle": "错误率升高后流量如何回到旧制品",
     "actionLabel": "执行回滚",
@@ -13731,7 +13731,7 @@
     "slug": "user-story",
     "lead": "“增加导出按钮”到底服务谁，又解决什么任务？",
     "definition": "用户故事把经研究确认的用户需要切成可交付工作项，并用验收条件连接需要、实现和测试。",
-    "boundary": "“作为用户我想要某功能”不是完整故事；角色、任务、结果若没有证据，只是套格式。",
+    "boundary": "角色、任务、结果若没有证据，只是套格式。",
     "sceneKind": "contract",
     "sceneTitle": "一个导出想法怎样补齐角色、任务和结果",
     "actionLabel": "补充一张故事卡",
@@ -13901,7 +13901,7 @@
         }
       ],
       "success": "验收标准把需求范围转为可检查结果。",
-      "retry": "口号和个人偏好不能说明功能何时完成。"
+      "retry": "验收标准把需求范围转为可检查结果。"
     },
     "prompt": {
       "title": "把功能想法整理为用户故事",
@@ -13934,7 +13934,7 @@
     "slug": "problem-statement",
     "lead": "“我们需要做一个智能搜索”是问题，还是已经选定的方案？",
     "definition": "问题陈述把用户、触发场景、可观察阻碍与影响绑定，给多种方案留下比较空间。",
-    "boundary": "“我们需要智能搜索”已经是方案，不是问题；没有行为证据的痛点也只是猜测。",
+    "boundary": "“我们需要智能搜索”已经是方案，没有行为证据的痛点也只是猜测。",
     "sceneKind": "layers",
     "sceneTitle": "把“做智能搜索”拆回事实、影响与方案",
     "actionLabel": "移动一张证据卡",
@@ -14116,7 +14116,7 @@
     "slug": "target-user",
     "lead": "“所有人都能用”为什么仍不足以指导产品设计？",
     "definition": "目标用户按共同任务、频率、权限和使用环境划定本期服务对象，让设计取舍有具体判断主体。",
-    "boundary": "不是人口统计标签或虚构人物传记，也不等于所有可能访问产品的人。",
+    "boundary": "根据实际任务、情境与证据界定目标用户。",
     "sceneKind": "matrix",
     "sceneTitle": "三组用户按任务、频率、权限和环境分开",
     "actionLabel": "加入一条研究证据",
@@ -14179,7 +14179,7 @@
       },
       {
         "label": "按任务聚成一组",
-        "note": "把每月批量导出的财务人员与临时查账、偶尔查看的人分开，先看任务而不是人口标签。",
+        "note": "把每月批量导出的财务人员与临时查账、偶尔查看的人分开，先看任务。",
         "activeIds": [
           "operators",
           "matrix"
@@ -14234,7 +14234,7 @@
         "activeEdgeIds": []
       }
     ],
-    "insight": "目标用户由当前要解决的任务与使用条件决定，不是给“所有人”起一个宽泛名称。",
+    "insight": "目标用户由当前要解决的任务与使用条件决定。",
     "quiz": {
       "question": "定义目标用户时，什么信息更有指导价值？",
       "options": [
@@ -14252,7 +14252,7 @@
         }
       ],
       "success": "任务和条件会直接影响功能与交互设计。",
-      "retry": "标签和无关兴趣不能说明产品需要解决什么。"
+      "retry": "任务和条件会直接影响功能与交互设计。"
     },
     "prompt": {
       "title": "识别当前版本的目标用户",
@@ -14285,7 +14285,7 @@
     "slug": "use-case",
     "lead": "“用户可以退款”需要覆盖哪些正常和异常情况？",
     "definition": "Use Case 以参与者目标为中心，列出前置条件、触发、主成功场景、替代路径和完成后状态。",
-    "boundary": "它不是单张页面说明，也不是用户旅程；重点是系统与参与者在不同条件下如何交互。",
+    "boundary": "重点是系统与参与者在不同条件下如何交互。",
     "sceneKind": "branch",
     "sceneTitle": "一次退款从前置条件到三个完成状态",
     "actionLabel": "选择退款条件",
@@ -14514,7 +14514,7 @@
     "slug": "acceptance-criteria",
     "lead": "“登录功能已经做好”应由哪些具体结果判断？",
     "definition": "验收标准把需求边界写成给定条件、动作和可观察结果，成为产品、开发和测试共享的完成判断。",
-    "boundary": "不是实现步骤，也不是“体验良好、运行正常”这样的主观要求。",
+    "boundary": "用可观察、可判断的结果描述完成条件。",
     "sceneKind": "contract",
     "sceneTitle": "“登录做好了”如何变成可执行检查",
     "actionLabel": "运行下一条验收",
@@ -14711,7 +14711,7 @@
     "slug": "scope",
     "lead": "需求讨论为什么总会从一个导出按钮扩展到完整报表平台？",
     "definition": "范围基线把目标、包含项、排除项和依赖组合成决策边界；新增工作先判断是否影响目标与承诺，再进入变更评估。",
-    "boundary": "范围不是功能清单越长越完整，也不是永远不可改变；变化需要显式交换成本、时间或其他工作。",
+    "boundary": "变化需要显式交换成本、时间或其他工作。",
     "sceneKind": "layers",
     "sceneTitle": "一个导出版本怎样守住包含项与非范围",
     "actionLabel": "把需求卡放入范围",
@@ -14832,7 +14832,7 @@
         "activeEdgeIds": []
       }
     ],
-    "insight": "范围把当前目标、包含项、非范围和依赖分开，新增价值不等于必须塞进本期。",
+    "insight": "范围把当前目标、包含项、非范围和依赖分开。",
     "quiz": {
       "question": "发现一个有价值但不影响本期目标的想法时，通常怎么处理？",
       "options": [
@@ -14892,8 +14892,8 @@
   {
     "slug": "roadmap",
     "lead": "路线图应该是一张固定功能日期表，还是会随证据调整的计划？",
-    "definition": "路线图按目标、主题、阶段结果和依赖安排方向，并在证据或约束改变后更新，而不是锁死远期功能日期。",
-    "boundary": "路线图不是甘特排期或承诺清单；远期项目越精确，假确定性风险越高。",
+    "definition": "路线图按目标、主题、阶段结果和依赖安排方向，并在证据或约束改变后更新。",
+    "boundary": "假确定性风险越高。",
     "sceneKind": "timeline",
     "sceneTitle": "用户问题、产品目标和交付阶段如何排在时间线上",
     "actionLabel": "加入一条新证据",
@@ -15117,7 +15117,7 @@
     "slug": "priority",
     "lead": "三个需求都说“很重要”，团队该怎样决定先后？",
     "definition": "优先级在同一目标下比较用户影响、时限、风险、依赖和成本，形成当前顺序；输入变化会让顺序重新计算。",
-    "boundary": "不是给每项贴永久 P0/P1，也不是提出者级别或单一打分决定。",
+    "boundary": "根据新证据调整 P0/P1",
     "sceneKind": "spectrum",
     "sceneTitle": "三项工作在影响、时限、依赖与成本之间怎样换位",
     "actionLabel": "调整一个判断条件",
@@ -15218,7 +15218,7 @@
         "activeEdgeIds": []
       },
       {
-        "label": "记录依据而非只留分数",
+        "label": "记录依据",
         "note": "顺序旁保留阻塞用户、截止日期和依赖，条件变化时能重新判断。",
         "activeIds": [
           "factors",
@@ -15236,7 +15236,7 @@
         "activeEdgeIds": []
       }
     ],
-    "insight": "优先级是特定目标和约束下的当前顺序，需要保留判断依据，而不是靠一个永久分数。",
+    "insight": "优先级是特定目标和约束下的当前顺序，需要保留判断依据。",
     "quiz": {
       "question": "哪项不应单独决定需求优先级？",
       "options": [
@@ -15253,7 +15253,7 @@
           "correct": false
         }
       ],
-      "success": "排序应基于问题和约束，而不是职位。",
+      "success": "排序应基于问题和约束。",
       "retry": "用户影响和目标贡献是正常判断依据。"
     },
     "prompt": {
@@ -15269,7 +15269,7 @@
       {
         "url": "https://www.gov.uk/service-manual/agile-delivery/how-the-discovery-phase-works",
         "label": "GOV.UK Service Manual",
-        "note": "用问题证据而不是职位判断价值"
+        "note": "用问题证据"
       },
       {
         "url": "https://www.gov.uk/service-manual/agile-delivery/developing-a-roadmap",
@@ -15292,7 +15292,7 @@
     "slug": "iteration",
     "lead": "为什么不等所有功能一次做完，再让用户看到？",
     "definition": "迭代交付一段可用增量，读取验证结果，再据此保持、修改或停止下一轮工作；每轮需有独立目标和完成判断。",
-    "boundary": "不是无止境地改界面，也不是把基本质量推给“下一版”。",
+    "boundary": "根据反馈逐步改进，同时守住本版的基本质量。",
     "sceneKind": "loop",
     "sceneTitle": "一个大需求如何用三轮可验证增量收敛",
     "actionLabel": "完成本轮并加入结果",
@@ -15454,7 +15454,7 @@
         ]
       }
     ],
-    "insight": "迭代用可运行增量换取下一步证据，不是把大需求机械切成时间相等的小块。",
+    "insight": "迭代用可运行增量换取下一步证据。",
     "quiz": {
       "question": "一轮有效迭代结束时应得到什么？",
       "options": [
@@ -15505,7 +15505,7 @@
     "slug": "conversion-rate",
     "lead": "1000 人看到注册页，120 人完成注册，转化率是多少？",
     "definition": "转化率用同一口径下完成目标的用户或事件数除以起始总体，结果受去重单位、时间窗和事件定义影响。",
-    "boundary": "12% 不是脱离口径的事实；按用户与按会话、到达页与开始表单会得到不同结果。",
+    "boundary": "本例 12% 采用明确的统计口径；按用户或会话、以到达页或开始表单为起点，会得到不同结果。",
     "sceneKind": "transform",
     "sceneTitle": "同一批用户因完成事件口径不同得到两种转化率",
     "actionLabel": "切换完成事件",
@@ -15685,7 +15685,7 @@
     "slug": "funnel",
     "lead": "注册完成率低，是用户没开始，还是在验证码环节离开？",
     "definition": "漏斗对同一用户队列按有序事件和完成窗口逐步过滤，可配置开放/封闭、是否允许直接进入中间步骤。",
-    "boundary": "漏斗显示流失位置，不直接解释原因；把独立事件总量相除也不是用户级漏斗。",
+    "boundary": "漏斗显示流失位置，不直接解释原因；用户级漏斗按同一批用户的事件顺序计算。",
     "sceneKind": "pipeline",
     "sceneTitle": "1000 个用户经过注册三步后在哪里离开",
     "actionLabel": "调整漏斗规则",
@@ -15839,7 +15839,7 @@
       },
       {
         "label": "缩短窗口继续筛出用户",
-        "note": "窗口改为 10 分钟，验证人数下降到 80；这是规则变化，不代表页面刚发生了退化。",
+        "note": "窗口改为 10 分钟，验证人数下降到 80，这是规则变化。",
         "activeIds": [
           "verify",
           "rules",
@@ -15859,7 +15859,7 @@
         ]
       }
     ],
-    "insight": "漏斗按定义好的顺序和窗口统计用户去向，流失位置提供调查线索，不直接说明原因。",
+    "insight": "流失位置提供调查线索。",
     "quiz": {
       "question": "漏斗发现某一步流失高后，下一步应做什么？",
       "options": [
@@ -15909,8 +15909,8 @@
   {
     "slug": "usability-testing",
     "lead": "团队都觉得页面很清楚，怎样验证第一次使用的人也能完成任务？",
-    "definition": "研究者给代表性用户一个目标而非操作指令，观察其实际行为、停顿与错误，再把重复现象关联到具体界面。",
-    "boundary": "不是问用户喜不喜欢，也不能用团队成员演示替代；少量测试擅长发现问题，不直接估计总体比例。",
+    "definition": "研究者给代表性用户一个目标。",
+    "boundary": "请目标用户独立操作，再观察实际过程。",
     "sceneKind": "timeline",
     "sceneTitle": "首次用户完成一次退货任务时主持人记录什么",
     "actionLabel": "播放下一段观察",
@@ -15980,7 +15980,7 @@
     "frames": [
       {
         "label": "任务不透露路径",
-        "note": "主持人只说明退货目标，没有说“点击售后按钮”。",
+        "note": "主持人说明退货目标，没有说“点击售后按钮”。",
         "activeIds": [
           "task",
           "participant",
@@ -16002,7 +16002,7 @@
       },
       {
         "label": "参与者先独立寻找",
-        "note": "参与者查看订单卡片两次但没发现入口，主持人先等待并记录，而不是立刻指路。",
+        "note": "参与者查看订单卡片两次但没发现入口，主持人先等待并记录。",
         "activeIds": [
           "participant",
           "prototype",
@@ -16114,7 +16114,7 @@
     "slug": "mockup",
     "lead": "线框图结构已经确认，怎样讨论最终颜色和排版？",
     "definition": "视觉稿把已确定的信息与布局映射为具体字体、颜色、图像和视觉层级，供团队评审外观与状态覆盖。",
-    "boundary": "视觉稿不是交互原型或生产页面；一张理想状态图不能说明响应式、错误和加载行为。",
+    "boundary": "视觉稿用于确认页面的视觉表现；响应式、错误和加载状态需要各自的视觉稿。",
     "sceneKind": "compare",
     "sceneTitle": "视觉稿能确认什么，哪些内容仍需原型",
     "actionLabel": "切换交付物",
@@ -16250,7 +16250,7 @@
         }
       ],
       "success": "静态画面不能完整表达交互和状态变化。",
-      "retry": "颜色和阴影不能替代操作流程。"
+      "retry": "先确认操作流程，再用颜色和阴影表达状态与层次。"
     },
     "prompt": {
       "title": "审查视觉稿的交付完整性",
@@ -16283,7 +16283,7 @@
   "slug": "sitemap",
   "lead": "读者在站内迷路时，站点地图先把“页面属于哪一组、还有没有入口”摊在桌上。",
   "definition": "站点地图是对网站信息结构的一张可检视模型：它把页面按用户任务组成父子层级，标出哪些页面进入主导航、哪些页面只在子层可达，也能另列一份供爬虫读取的 URL 清单。它帮助作者发现孤立页、层级过深和命名重复，但不会替用户规定唯一的阅读顺序。",
-  "boundary": "这里的站点地图讨论页面之间的归属和入口，不是 XML sitemap 文件本身，也不是“点击首页→列表→详情”的操作流程。XML 清单解决抓取发现，导航解决人的进入路径；两者可能共享 URL，却回答不同问题。地图也不能证明页面内容有用、链接可访问或搜索一定收录。",
+  "boundary": "这里的站点地图讨论页面之间的归属和入口。XML 清单解决抓取发现，导航解决人的进入路径；两者可能共享 URL，却回答不同问题。",
   "sceneKind": "tree",
   "sceneTitle": "一组页面的归属、入口与 XML 清单分开看",
   "actionLabel": "移动节点并切换观察层",
@@ -16429,7 +16429,7 @@
     },
     {
       "label": "把孤立页放回语境",
-      "note": "优惠说明与订单优惠有关，于是进入订单分组；若找不到真实任务归属，就应删除或重新定义，而不是偷偷藏在地图里。",
+      "note": "优惠说明与订单优惠有关，于是进入订单分组；若找不到真实任务归属，就应删除或重新定义。",
       "activeIds": [
         "orders",
         "orphan"
@@ -16472,7 +16472,7 @@
       ]
     }
   ],
-  "insight": "站点地图先表达页面的归属和到达关系，再分别检查人的导航入口与爬虫 URL 清单；它不是把所有点击步骤画成一条线。",
+  "insight": "站点地图先表达页面的归属和到达关系，再分别检查人的导航入口与爬虫 URL 清单。",
   "quiz": {
     "question": "一个页面出现在 XML sitemap 里，但主导航找不到它，最准确的判断是什么？",
     "options": [
@@ -16494,7 +16494,7 @@
   },
   "prompt": {
     "title": "审查一张站点地图",
-    "text": "请把页面按用户任务分组，标出每个页面的父级、主导航入口和 XML sitemap 状态；对孤立页、超过三层的路径和重复命名分别给出处理理由，不要把地图画成用户操作流程。"
+    "text": "对孤立页、超过三层的路径和重复命名分别给出处理理由。"
   },
   "sources": [
     {
@@ -16523,8 +16523,8 @@
   {
   "slug": "design-token",
   "lead": "品牌色要换一套主题时，设计令牌把“用途”和“今天用的颜色”分开，改一次映射就能看见谁跟上、谁掉队。",
-  "definition": "设计令牌是带稳定名称的设计决策，例如 color.action、space.3 或 radius.card。组件引用语义令牌，语义令牌再指向某个主题下的基础值；换主题时改变的是映射关系，按钮、链接和其他消费端都会得到新的值。令牌因此保存了命名、引用和跨工具同步的关系，而不只是把一串十六进制颜色换成变量名。",
-  "boundary": "令牌不会替你决定层级、交互状态或对比度，也不能修复一个根本不该共用颜色的组件。若组件绕过语义名写死旧值，主题切换只会更新一半；若没有记录平台、状态和无障碍约束，令牌数量增加也可能让系统更难维护。统一命名不是统一审美。",
+  "definition": "设计令牌是带稳定名称的设计决策，例如 color.action、space.3 或 radius.card。组件引用语义令牌，语义令牌再指向某个主题下的基础值；换主题时改变的是映射关系，按钮、链接和其他消费端都会得到新的值。令牌保存命名、引用和跨工具同步关系，将颜色值与实际用途连接起来。",
+  "boundary": "令牌不会替你决定层级、交互状态或对比度，也不能修复一个根本不该共用颜色的组件。若组件绕过语义名写死旧值，主题切换只会更新一半；若没有记录平台、状态和无障碍约束，令牌数量增加也可能让系统更难维护。",
   "sceneKind": "network",
   "sceneTitle": "一条语义引用链怎样把主题改动送到组件",
   "actionLabel": "切换主题并检查引用",
@@ -16617,7 +16617,7 @@
     },
     {
       "label": "浅色主题解析",
-      "note": "浅色主题把 color.action 映射到 moss-900，两个消费端同时得到同一套动作色；这一步改变的是映射，不是组件代码。",
+      "note": "浅色主题把 color.action 映射到 moss-900，这一步改变的是映射。",
       "activeIds": [
         "base",
         "semantic",
@@ -16689,7 +16689,7 @@
       "activeEdgeIds": []
     },
     {
-      "label": "验收状态而非只看色板",
+      "label": "验收状态",
       "note": "最后同时检查默认、悬停、禁用和键盘焦点状态；令牌让值能同步，却不替代组件状态和对比度验收。",
       "activeIds": [
         "semantic",
@@ -16746,7 +16746,7 @@
     {
       "url": "https://www.designtokens.org/",
       "label": "Design Tokens · Community",
-      "note": "Design Tokens Community Group 首页：核对令牌作为设计决策而非页面样式的定位。"
+      "note": "Design Tokens Community Group 首页：核对令牌作为设计决策。"
     },
     {
       "url": "https://developer.android.com/develop/ui/compose/designsystems/material3",
@@ -16764,8 +16764,8 @@
   {
   "slug": "visual-hierarchy",
   "lead": "页面上的字、按钮和标签都在争第一眼时，视觉层级先回答“现在该看什么、下一步做什么”。",
-  "definition": "视觉层级是读者在一组信息里形成注意顺序的结果。字号和字重提供尺度，位置和分组提供阅读路径，对比和留白标出主次；它们共同建立“先看标题、再理解任务、最后行动”的节奏。层级不是某个元素越大越重要，而是相对差异、语义结构和当前任务一起让重点容易被找到。",
-  "boundary": "把所有字都加粗、给每个标签都上高饱和色，只会让竞争更激烈。视觉层级不能替代正确的标题结构、清楚的文案或键盘顺序；在窄屏上也不能只靠缩小字号维持桌面布局，而要重新安排分组和操作顺序。注意力热图是观察线索，不是对每个读者的精确预测。",
+  "definition": "视觉层级是读者在一组信息里形成注意顺序的结果。字号和字重提供尺度，位置和分组提供阅读路径，对比和留白标出主次；它们共同建立“先看标题、再理解任务、最后行动”的节奏。层级是相对差异、语义结构和当前任务一起让重点容易被找到。",
+  "boundary": "把所有字都加粗、给每个标签都上高饱和色，只会让竞争更激烈。视觉层级要配合标题结构、清楚的文案和键盘顺序；窄屏上重新安排分组与操作顺序。注意力热图是观察线索。",
   "sceneKind": "spectrum",
   "sceneTitle": "只改变一个变量，观察注意力怎样重新排队",
   "actionLabel": "调一个层级旋钮",
@@ -16846,7 +16846,7 @@
     },
     {
       "label": "拉开标题和说明",
-      "note": "标题得到更大的尺度和留白，说明保留可读对比；热图先落在标题，再进入任务内容，而不是被颜色推着跳。",
+      "note": "标题得到更大的尺度和留白，说明保留可读对比；热图先落在标题，再进入任务内容。",
       "activeIds": [
         "title",
         "secondary",
@@ -16920,7 +16920,7 @@
       }
     ],
     "success": "层级来自相对关系；先撤掉非关键竞争，再把主要操作放回任务语境。",
-    "retry": "继续加重或随意删说明会损害理解，不能证明重点已经清楚。"
+    "retry": "继续加重或随意删说明会损害理解。"
   },
   "prompt": {
     "title": "检查页面的视觉阅读顺序",
@@ -16935,7 +16935,7 @@
     {
       "url": "https://www.w3.org/WAI/WCAG22/Understanding/headings-and-labels.html",
       "label": "W3C · Headings and labels",
-      "note": "WCAG headings and labels：核对视觉强调不能替代语义标题和可理解标签。"
+      "note": "WCAG headings and labels：核对语义标题与标签是否清楚表达内容和用途。"
     },
     {
       "url": "https://www.w3.org/WAI/tutorials/page-structure/headings/",
@@ -16952,9 +16952,9 @@
 },
   {
   "slug": "feedback",
-  "lead": "点击保存后，用户需要看到的不是一颗漂亮星星，而是“已接收、处理中、已保存还是失败，我下一步能做什么”。",
+  "lead": "点击保存后，用户需要看到的是“已接收、处理中、已保存还是失败，我下一步能做什么”。",
   "definition": "反馈是系统把用户动作对应的状态变化呈现出来：动作被接收时确认触发，请求进行时告诉用户仍在工作，成功时显示结果已经落地，失败时保留能恢复的上下文并给出下一步。好的反馈贴着发生变化的对象出现，文字、禁用状态和数据更新各自承担不同证据，不靠一个短暂的 Toast 包办全部沟通。",
-  "boundary": "反馈不等于动效，也不等于每次都弹全局通知。状态消息不能替代表单错误、服务端拒绝或可操作的重试；成功提示也不能在数据尚未保存时提前出现。若结果已经在原位置清楚变化，额外通知可能只是噪声；若动作有副作用，还要说明是否可以撤销。",
+  "boundary": "状态消息与字段错误、服务端反馈和重试操作配合展示，数据保存成功后再提示成功。若结果已经在原位置清楚变化，额外通知可能只是噪声；若动作有副作用，还要说明是否可以撤销。",
   "sceneKind": "state-machine",
   "sceneTitle": "从修改到成功或失败，反馈证据跟着对象走",
   "actionLabel": "推进保存请求",
@@ -17107,7 +17107,7 @@
     },
     {
       "label": "重试沿当前任务继续",
-      "note": "重试只重新发起请求，成功后回到已保存状态；如果服务端返回字段错误，错误应落到字段旁而不是只留一条消失的提示。",
+      "note": "重试只重新发起请求，成功后回到已保存状态；如果服务端返回字段错误，错误应落到字段旁。",
       "activeIds": [
         "form",
         "button",
@@ -17142,12 +17142,12 @@
         "correct": false
       },
       {
-        "label": "让按钮一直转圈但不说明发生了什么",
+        "label": "让按钮持续转圈，状态区域始终空白",
         "correct": false
       }
     ],
     "success": "失败不应抹掉用户已经输入的内容，原因和恢复动作要在同一上下文里可见。",
-    "retry": "装饰动画和无限等待都不能证明数据是否已保存，也没有给出恢复路径。"
+    "retry": "没有给出恢复路径。"
   },
   "prompt": {
     "title": "设计一次可恢复的保存反馈",
@@ -17179,9 +17179,9 @@
 },
   {
   "slug": "loading-state",
-  "lead": "等待不是一个无限转圈：时间变长时，界面要告诉用户还缺什么、已经完成多少、是否该重试。",
-  "definition": "加载状态是异步内容从发起到可用之间的临时界面模型。短操作可以直接完成，稍长的列表需要保留内容骨架，能估计总量时显示确定进度，超过合理等待则给出超时或重试出口。加载状态不是一个装饰 spinner，而是把未知的等待范围、已完成的工作和最终结果分开表达。",
-  "boundary": "骨架屏只能说明页面结构，不代表数据已经到达；进度条只有在系统知道工作总量时才应显示百分比；不确定指示器也不能无限掩盖网络失败。首次加载、增量加载、空结果和错误是不同状态，不能用同一段动画把它们混在一起。",
+  "lead": "界面要告诉用户还缺什么、已经完成多少、是否该重试。",
+  "definition": "加载状态是异步内容从发起到可用之间的临时界面模型。短操作可以直接完成，稍长的列表需要保留内容骨架，能估计总量时显示确定进度，超过合理等待则给出超时或重试出口。加载状态是把未知的等待范围、已完成的工作和最终结果分开表达。",
+  "boundary": "骨架屏展示页面结构，系统知道工作总量时显示百分比，网络失败时及时给出错误与恢复操作。首次加载、增量加载、空结果和错误是不同状态，不能用同一段动画把它们混在一起。",
   "sceneKind": "timeline",
   "sceneTitle": "一条请求的时间预算如何改变等待证据",
   "actionLabel": "拖动请求时间",
@@ -17294,7 +17294,7 @@
     },
     {
       "label": "总量已知再给进度",
-      "note": "上传文件时系统知道总字节数，确定进度显示已完成 6/10；这个数字来自工作量，不是凭感觉加速的动画。",
+      "note": "确定进度显示已完成 6/10，这个数字来自工作量。",
       "activeIds": [
         "timer",
         "placeholder",
@@ -17406,9 +17406,9 @@
 },
   {
   "slug": "microinteraction",
-  "lead": "收藏按钮的微小回弹不是装饰：它告诉用户按下被接收、数量变了、失败能撤回，而且不会把主任务拖走。",
+  "lead": "不会把主任务拖走。",
   "definition": "微交互是围绕单一任务发生的短状态变化：用户或系统触发动作，规则决定允许什么，局部反馈说明动作已被接收，持续状态记录结果，必要时还提供撤销。它可以有形变、颜色或触觉，但动效只是传达状态的手段；真正的对象是按钮、计数、请求结果和下一步操作之间的关系。",
-  "boundary": "没有状态含义的循环装饰不是微交互，持续闪烁也不能代替成功或失败。乐观更新必须有回滚规则，重复点击要处理幂等或禁用，键盘和减少动态模式要得到同样的结果。一个漂亮的图标变形不能证明服务器已经保存。",
+  "boundary": "及时用明确状态告知成功或失败。乐观更新必须有回滚规则，重复点击要处理幂等或禁用，键盘和减少动态模式要得到同样的结果。",
   "sceneKind": "state-machine",
   "sceneTitle": "按钮的局部反馈如何跟随真实请求状态",
   "actionLabel": "点击并观察可逆状态",
@@ -17548,7 +17548,7 @@
     },
     {
       "label": "撤销窗口保持可逆",
-      "note": "再次点击或按撤销，规则把状态改回未收藏并把计数减一；撤销不是把过去抹掉，而是发起另一条明确动作。",
+      "note": "再次点击或按撤销，规则把状态改回未收藏并把计数减一；撤销是发起另一条明确动作。",
       "activeIds": [
         "button",
         "icon",
@@ -17570,7 +17570,7 @@
     },
     {
       "label": "失败回到可解释状态",
-      "note": "网络失败时，乐观的 13 被回滚为 12，消息说明未保存并保留重试；用户看到的是事实与反馈一致，而不是一颗假星星。",
+      "note": "网络失败时，乐观的 13 被回滚为 12，消息说明未保存并保留重试；用户看到的是事实与反馈一致。",
       "activeIds": [
         "icon",
         "count",
@@ -17631,7 +17631,7 @@
     {
       "url": "https://developer.apple.com/design/human-interface-guidelines/playing-haptics",
       "label": "Apple HIG · Haptics",
-      "note": "Apple HIG Haptics：核对触觉作为确认辅助而不是唯一反馈。"
+      "note": "Apple HIG Haptics：核对触觉作为确认辅助。"
     },
     {
       "url": "https://www.w3.org/WAI/WCAG21/Understanding/status-messages.html",
@@ -17643,9 +17643,9 @@
 },
   {
   "slug": "reduced-motion",
-  "lead": "减少动态不是把页面变成无声的静止图，而是把大幅移动换成仍能说明状态的稳定变化。",
+  "lead": "减少动态是把大幅移动换成仍能说明状态的稳定变化。",
   "definition": "prefers-reduced-motion 让页面知道用户希望减少非必要运动。完整模式可以用短距离移动、缩放和连续性提示空间关系；减少动态模式应取消大幅位移、视差和快速缩放，改用原位淡入、即时定位或颜色/文字变化。两种表现的终点必须相同：状态、URL、阅读顺序和键盘焦点不能因为少了动画而消失。",
-  "boundary": "减少动态不是把所有 duration 改成 0，也不是只把速度调慢；快速闪烁和大范围位移仍可能造成不适。需要保留的进度、成功、失败和焦点提示不能被一并删除；动画之外的布局跳动、自动播放和由交互触发的缩放也要一并审查。",
+  "boundary": "减少动态需要调整大范围位移、闪烁和持续运动，保留必要的状态反馈。需要保留的进度、成功、失败和焦点提示不能被一并删除；动画之外的布局跳动、自动播放和由交互触发的缩放也要一并审查。",
   "sceneKind": "compare",
   "sceneTitle": "完整轨迹和稳定替代如何共享状态终点",
   "actionLabel": "切换减少动态偏好",
@@ -17750,7 +17750,7 @@
     },
     {
       "label": "焦点和状态不丢",
-      "note": "动画结束后，两种模式都有相同的 URL、标题和键盘焦点；减少动态不意味着把成功或导航反馈藏起来。",
+      "note": "两种模式都有相同的 URL、标题和键盘焦点。",
       "activeIds": [
         "destination",
         "state"
@@ -17787,7 +17787,7 @@
       "activeEdgeIds": []
     }
   ],
-  "insight": "减少动态改变的是运动方式和预算，不是概念状态；验收时要比较两种模式的终点、焦点、文本和可操作性。",
+  "insight": "减少动态改变的是运动方式和预算，验收时要比较两种模式的终点、焦点、文本和可操作性。",
   "quiz": {
     "question": "用户开启减少动态后，哪一项仍然必须保留？",
     "options": [
@@ -17839,7 +17839,7 @@
     "slug": "dockerfile",
     "lead": "只改一个组件，为什么依赖安装也跟着重跑？",
     "definition": "Dockerfile 把构建输入按顺序变成镜像层；每层的输入决定缓存能否复用，多阶段和 context 规则再决定最终运行时带走什么。",
-    "boundary": "Dockerfile 是镜像的构建轨迹，不是运行中的容器。缓存命中不代表内容安全，镜像变小也不代表权限、秘密和来源已经处理好。",
+    "boundary": "Dockerfile 是镜像的构建轨迹。",
     "sceneKind": "layers",
     "sceneTitle": "从指令顺序到可复用的镜像层",
     "actionLabel": "改变一个输入",
@@ -18059,7 +18059,7 @@
         }
       ],
       "success": "对：lockfile 是安装步骤的输入，变化后应重新计算依赖层。",
-      "retry": "再看安装层的输入：源码文件与 lockfile 不是同一类变化。"
+      "retry": "对：lockfile 是安装步骤的输入，变化后应重新计算依赖层。"
     },
     "prompt": {
       "title": "审查一份 Dockerfile",
@@ -18298,7 +18298,7 @@
       },
       {
         "label": "控制台造成漂移",
-        "note": "远端被手工改成 2 个副本，下一次 plan 先暴露差异，而不是静默覆盖。",
+        "note": "远端被手工改成 2 个副本，下一次 plan 先暴露差异。",
         "activeIds": [
           "config",
           "plan",
@@ -18323,7 +18323,7 @@
         ]
       }
     ],
-    "insight": "IaC 最有价值的瞬间不是 apply 的绿勾，而是 apply 之前有人能看懂差异，apply 之后还能解释现实为何与声明不同。",
+    "insight": "IaC 最有价值的瞬间是 apply 之前有人能看懂差异，apply 之后还能解释现实为何与声明不同。",
     "quiz": {
       "question": "控制台把副本数从 3 改成 2 后，下一步最合适做什么？",
       "options": [
@@ -18341,7 +18341,7 @@
         }
       ],
       "success": "对：先把漂移变成可审查的差异，再决定写回配置、纠正现实或保留紧急修改。",
-      "retry": "漂移不是自动批准的修复；先看 plan 和修改原因。"
+      "retry": "先看 plan 和修改原因。"
     },
     "prompt": {
       "title": "把一次云端变更变成可复盘记录",
@@ -18379,7 +18379,7 @@
     "slug": "cdn",
     "lead": "同一个文件，为什么这次 HIT、下次却 MISS？",
     "definition": "CDN 请求先到边缘缓存，再按缓存键和新鲜度决定直接返回、回源取回或重新验证；发布可以用新的资源 URL 或明确 purge 改变副本边界。",
-    "boundary": "边缘缓存不是权限系统，也不是永久存储。共享缓存的响应必须适合被不同用户复用，命中与源站成功也不能混为同一个指标。",
+    "boundary": "共享缓存的响应必须适合被不同用户复用，命中与源站成功也不能混为同一个指标。",
     "sceneKind": "network",
     "sceneTitle": "从边缘查找走到发布后的新缓存键",
     "actionLabel": "换一个资源 URL",
@@ -18628,8 +18628,8 @@
           "correct": false
         }
       ],
-      "success": "对：MISS 只说明当前键没有可用副本，接下来还要看回源响应与缓存规则。",
-      "retry": "MISS 是缓存结果，不等于源站故障，也不自动说明响应禁止缓存。"
+      "success": "对：MISS 说明当前键没有可用副本，接下来还要看回源响应与缓存规则。",
+      "retry": "MISS 是缓存结果。"
     },
     "prompt": {
       "title": "把一次 CDN 请求走完整",
@@ -18775,7 +18775,7 @@
       },
       {
         "label": "保存 baseline",
-        "note": "把被确认的页面画面和提交关联起来，baseline 不是随手截图。",
+        "note": "把被确认的页面画面和提交关联起来。",
         "activeIds": [
           "environment",
           "baseline"
@@ -18909,7 +18909,7 @@
         }
       ],
       "success": "对：先排除环境噪声，再把差异放回设计、无障碍、响应式和功能证据里决定。",
-      "retry": "diff 是证据，不是批准；先确认环境和变化意图。"
+      "retry": "diff 是证据，先确认环境和变化意图。"
     },
     "prompt": {
       "title": "建立一条可解释的视觉回归流程",
@@ -18947,7 +18947,7 @@
     "slug": "debounce",
     "lead": "搜索框里每敲一个字都要发请求吗？",
     "definition": "防抖把快速连续的事件合并成一次动作：新事件会重置计时，只有安静窗口结束后，最后一个值才被交给回调。",
-    "boundary": "它会舍弃中间事件并增加等待时间；已经发出的异步请求仍可能返回，不能把防抖当成并发控制。",
+    "boundary": "它会舍弃中间事件并增加等待时间，已经发出的异步请求仍可能返回。",
     "sceneKind": "timeline",
     "sceneTitle": "连续输入怎样只触发一次搜索",
     "actionLabel": "推进一个阶段",
@@ -19116,7 +19116,7 @@
     "slug": "optimistic-update",
     "lead": "为什么点一下收藏，星星马上亮了？",
     "definition": "乐观更新把用户动作先反映到本地界面，再等待服务端确认；失败时要用旧状态回滚或进入冲突处理。",
-    "boundary": "本地看到的成功只是暂态，不能直接当作持久事实；重复点击、网络重试和权限失败都需要额外设计。",
+    "boundary": "本地先展示暂态结果，收到服务端确认后再记录为持久状态；重复点击、网络重试和权限失败分别处理。",
     "sceneKind": "state-machine",
     "sceneTitle": "本地状态与服务器确认的两条时间线",
     "actionLabel": "推进一个阶段",

@@ -38,7 +38,7 @@ function ResultBook({ state, lesson = false }: { state: ReturnType<typeof getToo
       </div>
     </div>
     <div className={styles.fieldTab} data-visible={state.validated} data-error={state.variant === "timeout"}><span>{state.variant === "timeout" ? "错误结果/状态" : "业务字段"}</span><strong>{state.validated ? state.fieldValue : "等校验"}</strong></div>
-    <div className={styles.answerSticker} data-ready={state.answerVisible} data-error={state.variant === "timeout"}><span>回答贴纸</span><strong>{state.answerVisible ? state.answer : "尚未生成"}</strong><small>{state.answerVisible ? state.variant === "timeout" ? "错误状态保留，无法改写为业务结论" : "由业务字段改写" : "不能把状态码直接当结论"}</small>{state.answerVisible && <em>{state.variant === "timeout" ? "UNKNOWN" : "READY"}</em>}</div>
+    <div className={styles.answerSticker} data-ready={state.answerVisible} data-error={state.variant === "timeout"}><span>回答贴纸</span><strong>{state.answerVisible ? state.answer : "尚未生成"}</strong><small>{state.answerVisible ? state.variant === "timeout" ? "错误状态保留，无法改写为业务结论" : "由业务字段改写" : "结合业务字段解释返回结果"}</small>{state.answerVisible && <em>{state.variant === "timeout" ? "UNKNOWN" : "READY"}</em>}</div>
   </div>;
 }
 
@@ -48,8 +48,8 @@ export function ToolResultHero() {
   const notes = [
     "查询票先夹入翻页簿，模型还没有库存结论。",
     "原始页翻开：HTTP 200 和 stock: 0 一起被保留下来。",
-    "放大镜抽出业务字段，200 只说明响应到了，不代表有货。",
-    "回答贴上“暂时缺货”，结论来自 stock 字段，不是状态码。",
+    "200 说明响应到了。",
+    "结论来自 stock 字段。",
   ];
   return <figure ref={scene.ref} className={styles.hero} aria-label="工具结果如何从原始 JSON 翻成库存回答的演示">
     <div className={styles.heroTop}><span>库存翻页簿 · INV-7</span><strong>{String(scene.step + 1).padStart(2, "0")}</strong></div>

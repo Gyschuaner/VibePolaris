@@ -18,6 +18,6 @@ export function ObservabilityLesson() {
     <div className={styles.choices} role="group" aria-label="选择追踪跨度"><button type="button" onClick={() => { setSpan("payment"); scene.seek(2); }} aria-pressed={focused}>选中 payment 1.8s</button><button type="button" onClick={() => { setSpan("none"); scene.seek(0); }} aria-pressed={!focused}>清除选择</button></div>
     <div className={styles.resultFlow}><Pulse size={25} /><span>p95 2.4s</span><ArrowRight size={18} /><GitBranch size={25} /><span>trace-7</span><ArrowRight size={18} /><strong data-active={focused}>payment 1.8s</strong></div>
     <div className={styles.contract}><div><Pulse size={25} /><h3>指标</h3><p>确认时间、范围和长尾。</p></div><div><FileCode size={25} /><h3>日志</h3><p>{scene.step >= 3 ? "trace-7 · retry=1 · index=missing" : "先关联 trace_id，再看事件细节。"}</p></div></div>
-    <p className={styles.inputExample}><strong>失败分支</strong>没有 trace_id 时日志仍然存在，却不能证明它属于这次 checkout；“有很多日志”不等于“能回答为什么变慢”。</p>
+    <p className={styles.inputExample}><strong>失败分支</strong>没有 trace_id 时日志仍然存在。</p>
   </div>;
 }

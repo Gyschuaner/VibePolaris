@@ -243,7 +243,7 @@ function buildFrames(variant: HarnessScenario): HarnessFrame[] {
       "PermissionDenied: app.py 的写入操作未获授权",
       "记录权限错误",
       "Harness 保存拒绝原因。模型下一次会看到这个错误，以及之前读到的日志和源码。",
-      "本轮停止在权限边界，不能把等待授权写成修复成功。",
+      "本轮停在权限边界，等待授权后继续修复。",
       "已读取两个文件，没有写入。",
       true,
     );

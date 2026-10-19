@@ -2,7 +2,7 @@
   "slug": "salesforce-koa-crm-reasoning-20260915",
   "title": "Salesforce 与 NVIDIA 发布 Koa：把 CRM 推理模型放进 Agentforce 的信任边界",
   "summary": "Salesforce 与 NVIDIA 于 2026-09-15 发布 Koa，这是面向 Agentforce 的 CRM 推理模型；公司称它用合成企业流程后训练 Nemotron，并在自家 CRM benchmark 中少三倍错误，但客户试点和外部复核仍在进行。",
-  "body": "Salesforce 在 2026-09-15 的 Dreamforce 公告里发布了 Koa，这是它为 Agentforce 打造的第一个 CRM 推理模型，底座来自 NVIDIA Nemotron。Koa 不是通用聊天模型的换名，而是把商机更新、案件路由、跟进安排这类企业动作作为模型要练习的对象。\n\nSalesforce 说，Koa 的后训练数据来自合成场景，模仿近 27 年 CRM 部署里积累的流程、政策和工具调用，不使用客户数据。场景覆盖 14 个以上行业，把角色、目标、步骤和动作顺序一起写进训练任务；公司还提到 SFT 和 GRPO 等后训练方法。这里的关键是训练材料把“回答得像”改成“按正确顺序完成一组动作”，但合成场景能否覆盖每个企业的例外流程，仍需要真实部署检验。\n\n在 Salesforce 自己的 CRM benchmark 中，Koa 被称为在 CRM 动作上达到或超过领先模型，错误数少三倍。这个比较来自 Salesforce 的测试套件和口径，新闻可以记录它提出了怎样的指标，不能把“少三倍”直接改写成所有企业都会得到同样结果。Koa 已在 Salesforce 内部使用，并进入 1-800Accountant、BCU、Engine、Formula 1、UChicago Medicine 和 Xero 等客户试点。\n\nSalesforce 还把模型控制面当成产品卖点：公司保留 Koa 的权重，后训练和推理在自己的信任边界内进行，并计划把 Nemotron 模型和加速计算带进 Missionforce 的私有云、气隙网络等受监管环境。它说没有客户数据跨过这条边界，但这仍是厂商公告中的承诺，实际部署要看合同、日志、访问控制和审计配置。\n\nKoa 的新闻意义是企业软件开始把“领域知识”直接塞进推理模型，并把模型选择、工具轨迹和数据边界一起卖给客户。它是否真的比通用模型更少犯错，要看公开 benchmark、客户试点和失败案例能否被外部复核，而不只是发布会上的一组数字。",
+  "body": "Salesforce 在 2026-09-15 的 Dreamforce 公告里发布了 Koa，这是它为 Agentforce 打造的第一个 CRM 推理模型，底座来自 NVIDIA Nemotron。Koa 是把商机更新、案件路由、跟进安排这类企业动作作为模型要练习的对象。\n\nSalesforce 说，Koa 的后训练数据来自合成场景，模仿近 27 年 CRM 部署里积累的流程、政策和工具调用，不使用客户数据。场景覆盖 14 个以上行业，把角色、目标、步骤和动作顺序一起写进训练任务；公司还提到 SFT 和 GRPO 等后训练方法。这里的关键是训练材料把“回答得像”改成“按正确顺序完成一组动作”，但合成场景能否覆盖每个企业的例外流程，仍需要真实部署检验。\n\n在 Salesforce 自己的 CRM benchmark 中，Koa 被称为在 CRM 动作上达到或超过领先模型，错误数少三倍。这个比较来自 Salesforce 的测试套件和口径，新闻可以记录它提出了怎样的指标。Koa 已在 Salesforce 内部使用，并进入 1-800Accountant、BCU、Engine、Formula 1、UChicago Medicine 和 Xero 等客户试点。\n\nSalesforce 还把模型控制面当成产品卖点：公司保留 Koa 的权重，后训练和推理在自己的信任边界内进行，并计划把 Nemotron 模型和加速计算带进 Missionforce 的私有云、气隙网络等受监管环境。它说没有客户数据跨过这条边界，但这仍是厂商公告中的承诺，实际部署要看合同、日志、访问控制和审计配置。\n\nKoa 的新闻意义是企业软件开始把“领域知识”直接塞进推理模型，并把模型选择、工具轨迹和数据边界一起卖给客户。通过公开 benchmark、客户试点与失败案例复核，比较它和通用模型的实际错误情况。",
   "publishedAt": "2026-09-15",
   "eventDate": "2026-09-15",
   "isExample": false,
@@ -17,12 +17,12 @@
     {
       "id": "domain-model",
       "title": "Koa 把 CRM 动作当成推理对象",
-      "body": "模型训练目标不是写一段销售话术，而是理解商机、服务案件和跟进流程，并按顺序调用正确工具。领域模型的价值因此落在流程结构，而不只在语言流畅度。",
+      "body": "模型训练目标是理解商机、服务案件和跟进流程，并按顺序调用正确工具。领域模型的价值因此落在流程结构，而不只在语言流畅度。",
       "kind": "narrative"
     },
     {
       "id": "synthetic-scenarios",
-      "title": "合成场景模拟企业流程，不等于复制客户数据",
+      "title": "合成场景怎样模拟企业流程",
       "body": "Salesforce 说训练使用跨行业的合成场景，不使用客户数据；这些场景用角色、任务、政策和动作序列描绘工作。覆盖面与真实组织的特殊例外仍需另测。",
       "kind": "technical"
     },
@@ -51,7 +51,7 @@
       },
       {
         "label": "生成流程场景",
-        "detail": "用合成角色和跨行业规则模拟可能出现的输入、决策和工具顺序，而不是导入客户原始记录。",
+        "detail": "用合成角色和跨行业规则模拟可能出现的输入、决策和工具顺序。",
         "evidence": "Koa 合成训练场景"
       },
       {

@@ -44,7 +44,7 @@ export function PreviewDeploymentLesson() {
       </div>
       <div className={styles.previewProof} data-ready={ready} data-closed={closed}>
         {closed ? <ShieldCheck size={21} aria-hidden="true" /> : <GitCommit size={21} aria-hidden="true" />}
-        <p>{closed ? "预览已回收；记录仍保留 branch F5 与 F4 固定链接，production M9 不变。" : ready ? "预览状态只证明当前提交在临时环境可访问。" : "等待构建完成，不能把排队当成预览通过。"}</p>
+        <p>{closed ? "预览已回收；记录仍保留 branch F5 与 F4 固定链接，production M9 不变。" : ready ? "预览状态只证明当前提交在临时环境可访问。" : "等待构建结束后，再检查预览结果。"}</p>
       </div>
     </div>
     <div className={styles.choices} role="group" aria-label="推进预览部署流程">

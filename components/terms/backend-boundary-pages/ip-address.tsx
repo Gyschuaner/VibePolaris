@@ -92,11 +92,11 @@ function IpAddressLab() {
     <div className={styles.ipLabHeader}><div><span>同一条日志，能说明多少？</span><strong>先看远端，再把出口表展开</strong></div><span>{view === "log" ? "远端视角" : "出口视角"}</span></div>
     {view === "log" ? <div className={styles.ipLog}>
       {mappings.map(([device, , publicAddress]) => <div key={device}><Globe size={17} aria-hidden="true" /><span>{device} 的请求</span><code>{publicAddress.split(":")[0]}</code></div>)}
-      <div className={styles.ipLabEvidence} data-warning="true"><WarningCircle size={20} aria-hidden="true" /><p><strong>三个请求，日志里只有一个公网 IP。</strong> 这足够做粗粒度来源统计，却不能证明是同一台设备。</p></div>
+      <div className={styles.ipLabEvidence} data-warning="true"><WarningCircle size={20} aria-hidden="true" /><p><strong>三个请求，日志里只有一个公网 IP。</strong> 该信息适合粗粒度来源统计，设备身份需要结合额外的认证与记录。</p></div>
     </div> : <div className={styles.ipMappingTable}>
       <div className={styles.ipTableHead}><span>设备</span><span>出站前</span><span>出站后</span></div>
       {mappings.map(([device, privateAddress, publicAddress]) => <div key={device} className={styles.ipTableRow}><span>{device}</span><code>{privateAddress}</code><code>{publicAddress}</code></div>)}
-      <div className={styles.ipLabEvidence}><CheckCircle size={20} aria-hidden="true" /><p><strong>映射表补回了差异。</strong> 端口能帮助路由器把返回流量送回正确的连接，但它仍不是用户身份。</p></div>
+      <div className={styles.ipLabEvidence}><CheckCircle size={20} aria-hidden="true" /><p><strong>映射表补回了差异。</strong> 端口能帮助路由器把返回流量送回正确的连接。</p></div>
     </div>}
     <div className={styles.ipLabControls} role="group" aria-label="切换 IP 地址观察视角">
       <button type="button" aria-pressed={view === "log"} onClick={() => setView("log")}>只看远端日志</button>
@@ -112,10 +112,10 @@ export function IpAddressTermPage() {
     ["ip-translation", "地址为什么会在出口变掉"],
     ["ip-log", "日志里的一个地址能说明什么"],
     ["ip-version", "IPv4 和 IPv6 仍然在做同一件事"],
-  ]} intro={<>服务器日志里三个请求的源 IP 完全相同，不一定来自同一台设备。地址先服务于路由；经过 NAT 出口后，远端看到的可能只是“哪一个出口”而不是“哪一个人”。<Cite id="ip-observation" /></>}>
+  ]} intro={<>服务器日志里三个请求的源 IP 完全相同，不一定来自同一台设备。地址先服务于路由；经过 NAT 出口后，远端看到的可能只是“哪一个出口”。<Cite id="ip-observation" /></>}>
     <ArticleSection id="ip-location" title="它标的是哪一个位置">
       <p id="ip-definition" className="vp-citation-target">IP 地址放在网络层报文里，告诉当前这一跳要把数据送向哪个网络接口。IPv4 的地址是 32 位，IPv6 把地址扩展到 128 位；它们都参与转发，却不负责替应用确认用户是谁。<Cite id="ip-definition" /></p>
-      <p id="ip-routing" className="vp-citation-target">路由器拿目的地址和自己的路由表比较，选出下一跳。这个过程只回答“往哪边送”，不会顺便回答“这个请求有没有权限”。一台主机也可能有多个接口，所以地址和设备不是一对一的固定标签。<Cite id="ip-routing" /></p>
+      <p id="ip-routing" className="vp-citation-target">路由器拿目的地址和自己的路由表比较，选出下一跳。这个过程只回答“往哪边送”，不会顺便回答“这个请求有没有权限”。一台主机也可能有多个接口。<Cite id="ip-routing" /></p>
       <IpAddressLab />
     </ArticleSection>
     <ArticleSection id="ip-translation" title="地址为什么会在出口变掉">
@@ -127,7 +127,7 @@ export function IpAddressTermPage() {
       <p>想继续区分请求，可以结合连接端口、登录会话或设备自己的标识。它们解决的是不同问题：IP 帮路由，端口帮复用连接，会话才可能把多次请求关联到一次登录。</p>
     </ArticleSection>
     <ArticleSection id="ip-version" title="IPv4 和 IPv6 仍然在做同一件事">
-      <p id="ip-ipv6" className="vp-citation-target">IPv6 不是把“IP 地址”换成另一种用户编号。它把地址空间扩大，并调整了首部、扩展头和邻居发现等机制；它仍然负责把网络层报文送到接口，而不是替应用确认用户身份。<Cite id="ip-ipv6" /></p>
+      <p id="ip-ipv6" className="vp-citation-target">IPv6 扩大地址空间，并调整首部、扩展头和邻居发现等机制，仍负责将网络层报文送到接口。<Cite id="ip-ipv6" /></p>
       <p>看到一个地址时，先问三个问题：这是哪一层看到的？它有没有经过 NAT？这次判断要解决路由、统计、限流还是身份？问题问对了，IP 才不会被迫承担它没有提供的答案。</p>
     </ArticleSection>
   </ConceptArticle>;

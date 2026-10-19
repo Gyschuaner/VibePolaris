@@ -57,6 +57,6 @@ export function ApiTestingLesson() {
       </section>
     </div>
     <div className={styles.apiLabRail}><div data-on={scene.step >= 0}><Key size={15} aria-hidden="true" /><span>写期待</span></div><div data-on={scene.step >= 1}><ShieldWarning size={15} aria-hidden="true" /><span>看回执</span></div><div data-on={scene.step >= 2}><Database size={15} aria-hidden="true" /><span>查状态</span></div><div data-on={scene.step >= 3}><ArrowCounterClockwise size={15} aria-hidden="true" /><span>重试</span></div><div data-on={scene.step >= 4}><UserCircle size={15} aria-hidden="true" /><span>换身份</span></div><div data-on={scene.step >= 5} data-danger={weak}><CheckCircle size={15} aria-hidden="true" /><span>定结论</span></div></div>
-    <p className={`${styles.apiLabNote} ${weak ? styles.apiDanger : ""}`} role="status">{!final ? <><ArrowCounterClockwise size={17} aria-hidden="true" /><span>接口测试不是给状态码盖章，而是为一次请求收集能解释结果的证据。</span></> : weak ? <><WarningCircle size={17} aria-hidden="true" /><span>200 或 201 只说明一张账本；把副作用和身份检查加进来再下结论。</span></> : <><CheckCircle size={17} aria-hidden="true" /><span>响应、状态和授权都对上了，测试才知道这次请求为什么通过。</span></>}</p>
+    <p className={`${styles.apiLabNote} ${weak ? styles.apiDanger : ""}`} role="status">{!final ? <><ArrowCounterClockwise size={17} aria-hidden="true" /><span>接口测试是为一次请求收集能解释结果的证据。</span></> : weak ? <><WarningCircle size={17} aria-hidden="true" /><span>200 或 201 说明一张账本；把副作用和身份检查加进来再下结论。</span></> : <><CheckCircle size={17} aria-hidden="true" /><span>响应、状态和授权都对上了，测试才知道这次请求为什么通过。</span></>}</p>
   </div>;
 }

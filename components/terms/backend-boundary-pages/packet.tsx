@@ -113,10 +113,10 @@ function PacketLab() {
 
 export function PacketTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={packetSources} />;
-  return <ConceptArticle slug="packet" title="数据包" subtitle="Packet · 网络层一次次搬运的独立小件" sources={packetSources} sections={[["packet-shape", "一个包裹着什么"], ["packet-path", "路由器只看这一跳"], ["packet-mtu", "链路太窄时发生什么"], ["packet-reassemble", "重组和报错都留下证据"]]} intro={<>浏览器传出的不是一整块“网页数据”，而是一件件带着首部的网络层数据报。<strong>数据包负责把这一件送过路径：</strong>它不替应用保证顺序，也不携带完整的端到端路线。<Cite id="packet-definition" /></>}>
+  return <ConceptArticle slug="packet" title="数据包" subtitle="Packet · 网络层一次次搬运的独立小件" sources={packetSources} sections={[["packet-shape", "一个包裹着什么"], ["packet-path", "路由器只看这一跳"], ["packet-mtu", "链路太窄时发生什么"], ["packet-reassemble", "重组和报错都留下证据"]]} intro={<>浏览器传出的是一件件带着首部的网络层数据报。<strong>数据包负责把这一件送过路径：</strong>它不替应用保证顺序，也不携带完整的端到端路线。<Cite id="packet-definition" /></>}>
     <ArticleSection id="packet-shape" title="一个包裹着什么">
       <p id="packet-definition" className="vp-citation-target">IP 数据包由首部和负载组成。首部带着源地址、目的地址、上层协议和控制字段；负载可以是 TCP 段、UDP 数据报或别的上层内容。IP 层把它们当成独立数据报处理，不因为属于同一次网页请求就自动建立一条“包的队列”。<Cite id="packet-definition" /></p>
-      <p id="packet-layer" className="vp-citation-target">所以“一个请求”与“一个包”不是同一件事：应用数据可能先被传输层分成几段，再被 IP 层分别封装。抓包时看到的每个包，先回答的是“这一跳要把什么送到哪里”，不是“业务已经完成了什么”。<Cite id="packet-layer" /></p>
+      <p id="packet-layer" className="vp-citation-target">再被 IP 层分别封装。先回答的是“这一跳要把什么送到哪里”。<Cite id="packet-layer" /></p>
       <PacketLab />
     </ArticleSection>
     <ArticleSection id="packet-path" title="路由器只看这一跳">
@@ -124,12 +124,12 @@ export function PacketTermPage() {
       <p id="packet-hop" className="vp-citation-target">IPv4 用 TTL，IPv6 用 Hop Limit。每个转发节点都要把这个数减一，归零时丢弃数据包；这给环路设置了上限，并可能用 ICMP Time Exceeded 把停止位置告诉发送端。<Cite id="packet-hop" /></p>
     </ArticleSection>
     <ArticleSection id="packet-mtu" title="链路太窄时发生什么">
-      <p id="packet-path-mtu" className="vp-citation-target">路径 MTU 是这条路径上各条链路 MTU 的最小值。发送端如果一直按更大的尺寸发，某一跳就必须拆分、拒绝，或回报“请把包变小”；因此 PMTU 是一条随路径和路由变化的事实，不是网卡上的一个永久数字。<Cite id="packet-path-mtu" /></p>
+      <p id="packet-path-mtu" className="vp-citation-target">路径 MTU 是这条路径上各条链路 MTU 的最小值。发送端如果一直按更大的尺寸发，因此 PMTU 是一条随路径和路由变化的事实。<Cite id="packet-path-mtu" /></p>
       <p id="packet-ipv4-fragment" className="vp-citation-target">IPv4 在允许分片时可以由路由器拆包，片段靠 Identification、Fragment Offset 和 More Fragments 重新拼回。若设置了 DF（Don't Fragment），下一跳装不下时会丢弃并回 ICMP Fragmentation Needed。<Cite id="packet-ipv4-fragment" /></p>
       <p id="packet-ipv6-fragment" className="vp-citation-target">IPv6 路由器不会沿途替源端分片；过大的包会触发 ICMPv6 Packet Too Big，源端据此降低 PMTU 或调整上层的分段大小。过滤 ICMPv6 可能让握手成功的连接在真正传数据时变成“黑洞”。<Cite id="packet-ipv6-fragment" /></p>
     </ArticleSection>
     <ArticleSection id="packet-reassemble" title="重组和报错都留下证据">
-      <p id="packet-reassembly" className="vp-citation-target">分片不是“多发几份副本”。接收端要用同一组源地址、目的地址、协议和标识，把各片按偏移放回原位置；缺片时，原始数据报就无法交给上层。<Cite id="packet-reassembly" /></p>
+      <p id="packet-reassembly" className="vp-citation-target">接收端要用同一组源地址、目的地址、协议和标识，把各片按偏移放回原位置；缺片时，原始数据报就无法交给上层。<Cite id="packet-reassembly" /></p>
       <p id="packet-diagnostic" className="vp-citation-target">排查大包问题时，记录应用负载大小、传输层分段、IP 版本、每一跳 MTU、DF 或 Packet Too Big、TTL/Hop Limit 和最终重组结果。只有看到具体的丢弃或 ICMP 证据，才知道包是在路径哪一关停止。<Cite id="packet-diagnostic" /></p>
       <p>这也是为什么抓包不能只盯着“有没有请求”：请求可能已经发出，但包在某一跳被拆开、被丢弃，或等不到同组的最后一片。把首部字段和路径状态放在一起，才看得见这次传输到底走到了哪里。</p>
     </ArticleSection>

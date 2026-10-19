@@ -16,8 +16,8 @@ export function ScopeLesson() {
       titles={["先固定要解决的任务", "把本期与后续分开", "新增想法先看影响"]}
       copy={[
         "“导出当前筛选结果为 CSV”说清用户任务与交付结果；它比“做报表平台”更能指导本期判断。",
-        "本期：CSV、沿用当前筛选、手动下载；后续：图表和定时报表。被排除的想法仍保留为候选，不等于没价值。",
-        "导出接口和字段权限是依赖；若加入图表会超出容量，就评估移出另一项或调整目标、验收和时间，而不是默默扩大范围。",
+        "本期：CSV、沿用当前筛选、手动下载；后续：图表和定时报表。被排除的想法仍保留为候选。",
+        "导出接口和字段权限是依赖；若加入图表会超出容量，就评估移出另一项或调整目标、验收和时间。",
       ]}
     />
     <div className={styles.scopeBoard} aria-live="polite">
@@ -32,7 +32,7 @@ export function ScopeLesson() {
         <ClipboardText size={23} aria-hidden="true" />
         <strong>{boundaryReady ? "包含与排除" : "需要补齐"}</strong>
         <code>{boundaryReady ? "本期 CSV · 后续图表/定时报表" : "本期做什么 · 不做什么"}</code>
-        <span>{boundaryReady ? "候选被记录但不阻塞本期" : "价值不同不等于本期都做"}</span>
+        <span>{boundaryReady ? "候选被记录但不阻塞本期" : "按本期目标确定范围"}</span>
       </div>
       <ArrowRight className={styles.scopeArrow} size={19} aria-hidden="true" />
       <div className={styles.scopeCard} data-active={changeReady} data-muted={!changeReady}>

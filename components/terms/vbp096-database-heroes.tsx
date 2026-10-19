@@ -26,7 +26,7 @@ export function ColumnMechanismHero() {
       <div className={styles.typeCard} data-active={scene.step >= 0}><Database size={19} /><span>列定义</span><strong>amount {numeric ? "NUMERIC" : "TEXT"}</strong><small>{numeric ? "数字可比较、可求和" : "字符逐个比较"}</small></div>
       <div className={styles.resultGrid}>
         <div data-active={scene.step >= 1}><span>ORDER BY amount</span><strong>{scene.step >= 1 ? sorted.join(" → ") : "等待比较"}</strong><small>{numeric ? "数值序" : "字典序"}</small></div>
-        <div data-active={scene.step >= 2}><span>SUM(amount)</span><strong>{scene.step >= 2 && numeric ? "21.5" : scene.step >= 2 ? "不可直接求和" : "等待运算"}</strong><small>{numeric ? "聚合有数值语义" : "字符串不是金额"}</small></div>
+        <div data-active={scene.step >= 2}><span>SUM(amount)</span><strong>{scene.step >= 2 && numeric ? "21.5" : scene.step >= 2 ? "不可直接求和" : "等待运算"}</strong><small>{numeric ? "聚合有数值语义" : "金额按类型与单位解析"}</small></div>
       </div>
       <div className={styles.guard} data-danger={final && numeric === false} data-active={scene.step >= 3}>
         {final && numeric ? <CheckCircle size={18} /> : final ? <WarningCircle size={18} /> : <ShieldCheck size={18} />}
@@ -34,7 +34,7 @@ export function ColumnMechanismHero() {
       </div>
     </div>
     <div className={styles.status} role="status"><strong>{scene.step === 0 ? "先定义属性" : scene.step === 1 ? "比较依赖类型" : scene.step === 2 ? "计算依赖类型" : "错误暴露的位置也不同"}</strong><span>{numeric ? "NUMERIC 把金额当数量处理。" : "TEXT 只保存字符，不替你赋予金额语义。"}</span></div>
-    <figcaption>列不是表头装饰：它把名称、类型和约束放进写入边界，决定后面的比较、计算与失败位置。</figcaption>
+    <figcaption>决定后面的比较、计算与失败位置。</figcaption>
   </figure>;
 }
 
@@ -59,7 +59,7 @@ export function AcidMechanismHero() {
       <div className={styles.log} data-danger={scene.step >= 2 && powerCut}><span>恢复日志</span><strong>{scene.step < 2 ? "等待 COMMIT" : powerCut ? "ROLLBACK · 两边恢复" : "WAL · 可重放提交"}</strong><small>{powerCut ? "没有半笔转账留在库里" : "提交之后重启仍能找回变化"}</small></div>
       <div className={styles.business} data-danger={!powerCut && scene.step === 3}>{!powerCut && scene.step === 3 ? <WarningCircle size={18} /> : <CheckCircle size={18} />}<span>{!powerCut && scene.step === 3 ? "四项属性不会替你补上风控规则" : scene.step === 3 ? "数据库承诺完成，业务规则仍要写下" : "先分清这一步正在回答哪个问题"}</span></div>
     </div>
-    <div className={styles.status} role="status"><strong>{scene.step === 0 ? "事务开始" : scene.step === 1 ? "并发读取被隔离" : scene.step === 2 ? "提交进入恢复边界" : "ACID 不是万能正确开关"}</strong><span>{powerCut ? "断电演练检查原子性与持久性。" : "规则演练提醒一致性还依赖明确的约束。"}</span></div>
+    <div className={styles.status} role="status"><strong>{scene.step === 0 ? "事务开始" : scene.step === 1 ? "并发读取被隔离" : scene.step === 2 ? "提交进入恢复边界" : "分别验证四项事务约束"}</strong><span>{powerCut ? "断电演练检查原子性与持久性。" : "规则演练提醒一致性还依赖明确的约束。"}</span></div>
     <figcaption>ACID 把全成全败、约束、并发可见性和故障恢复拆成四类承诺；每一项都有自己的失败问题。</figcaption>
   </figure>;
 }

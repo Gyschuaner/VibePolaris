@@ -53,6 +53,6 @@ export function UnitTestHero() {
       <div><span>反馈速度</span><strong>{asserted ? "可重复" : "毫秒级"}</strong></div>
     </div>
     <div className={styles.unitHeroStatus} role="status"><current.Icon size={19} aria-hidden="true" /><span><strong>{current.title}</strong> · {current.detail}</span></div>
-    <figcaption>单元测试把一小段行为放进可重复的实验室：输入、依赖和预期都写在桌面上，失败时能直接指向这段规则，而不是让整套系统陪着猜。</figcaption>
+    <figcaption>单元测试把一小段行为放进可重复的实验室：输入、依赖和预期都写在桌面上，失败时能直接指向这段规则。</figcaption>
   </figure>;
 }

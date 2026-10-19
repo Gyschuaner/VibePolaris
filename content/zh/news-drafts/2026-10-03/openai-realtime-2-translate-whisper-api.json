@@ -2,7 +2,7 @@
   "slug": "openai-realtime-2-translate-whisper-api",
   "title": "OpenAI API 推出 GPT-Realtime-2、Realtime-Translate 和 Realtime-Whisper",
   "summary": "5 月 7 日，OpenAI 在 API 中推出 GPT-Realtime-2、Realtime-Translate 和 Realtime-Whisper，把实时对话、语音翻译和流式转写拆成三类能力。官方还公布了语言覆盖信息；不同口音、噪声和网络条件下的效果仍需端到端测试。",
-  "body": "5 月 7 日，OpenAI 在 API 中推出 GPT-Realtime-2、Realtime-Translate 和 Realtime-Whisper。三个名字对应三段工作：实时对话推理、跨语言翻译和流式转写。开发者可以按需求组合，而不必把识别、翻译和响应交给同一个接口。\n\n拆开之后，系统的责任也更清楚。Realtime-Whisper 负责把声音变成文字，Realtime-Translate 处理语言转换，GPT-Realtime-2 负责理解上下文和生成回应；音频何时结束、用户是否打断、下一步能否调用工具，都要在接口层处理。\n\n多语客服是一个容易看出差别的场景。转写错一个姓名，翻译就会把错误继续传下去；翻译看似正确，实时代理仍可能因为上下文缺失而调用错工具。高风险操作应先显示转写和翻译结果，必要时交给人工确认。\n\n官方页面称 Realtime-Translate 可处理 70 多种输入语言并输出 13 种语言，但没有证明所有口音、噪声和网络环境下都能保持相同的准确率或延迟。api 规定请求和返回，streaming-output 处理连续音频或文字，llm 负责语言推理，function-calling 连接外部系统；把这些层分开，才知道一次失败发生在哪里。\n\n后续测试应同时记录识别、翻译、响应、打断和工具调用的表现。一个组件的好成绩不能替代整条语音链的验证。",
+  "body": "5 月 7 日，OpenAI 在 API 中推出 GPT-Realtime-2、Realtime-Translate 和 Realtime-Whisper。三个名字对应三段工作：实时对话推理、跨语言翻译和流式转写。开发者可以按需求组合，而不必把识别、翻译和响应交给同一个接口。\n\n拆开之后，系统的责任也更清楚。Realtime-Whisper 负责把声音变成文字，Realtime-Translate 处理语言转换，GPT-Realtime-2 负责理解上下文和生成回应；音频何时结束、用户是否打断、下一步能否调用工具，都要在接口层处理。\n\n多语客服是一个容易看出差别的场景。转写错一个姓名，翻译就会把错误继续传下去；翻译看似正确，实时代理仍可能因为上下文缺失而调用错工具。高风险操作应先显示转写和翻译结果，必要时交给人工确认。\n\n官方页面称 Realtime-Translate 可处理 70 多种输入语言并输出 13 种语言。api 规定请求和返回，streaming-output 处理连续音频或文字，llm 负责语言推理，function-calling 连接外部系统；把这些层分开，才知道一次失败发生在哪里。\n\n后续测试应同时记录识别、翻译、响应、打断和工具调用的表现。按完整流程验证整条语音链，再结合各组件结果定位问题。",
   "publishedAt": "2026-05-07",
   "eventDate": "2026-05-07",
   "isExample": false,
@@ -34,8 +34,8 @@
     },
     {
       "id": "scope",
-      "title": "语言覆盖不等于所有环境都可靠",
-      "body": "官方页面没有给出每种口音、噪声和网络条件下的独立准确率，也没有保证每个模型组合都适合生产。api、llm 和 function-calling 的定义能帮助定位故障，却不能代替端到端验证。",
+      "title": "语言覆盖与部署环境",
+      "body": "官方页面没有给出每种口音、噪声和网络条件下的独立准确率。用 api、llm 与 function-calling 定位故障后，执行端到端验证。",
       "kind": "boundary"
     },
     {

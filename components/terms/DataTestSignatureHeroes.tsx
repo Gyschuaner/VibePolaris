@@ -36,7 +36,7 @@ export function DataIngestionSignatureHero() {
   const result = replayed
     ? { icon: ArrowsClockwise, title: "从旧位置重读", detail: "loan-1 / loan-2 已去重，坏记录仍在隔离区", danger: false }
     : [
-      { icon: FileText, title: "来源还没被确认", detail: "读到记录不等于它已经可靠写入" },
+      { icon: FileText, title: "来源还没被确认", detail: "分别核对读取结果与持久化状态" },
       { icon: ArrowDown, title: "先放进暂存篮", detail: "写入失败时 checkpoint 不前移" },
       { icon: Archive, title: "原始层留下记录", detail: "确认位置仍等待保存" },
       { icon: CheckCircle, title: "确认后才可跳过", detail: "checkpoint=2，下一次从第 3 条继续" },
@@ -122,11 +122,11 @@ export function DataValidationSignatureHero() {
   const result = step === 0
     ? { icon: ListChecks, title: "先辨认数据长什么样", detail: "字符串 24 不能冒充整数 24" }
     : step === 1
-      ? { icon: WarningCircle, title: "范围规则留下 r2", detail: "age=-2 说明字段合法不等于值合理", danger: true }
+      ? { icon: WarningCircle, title: "范围规则留下 r2", detail: "age=-2 需要继续检查取值范围", danger: true }
       : step === 2
         ? { icon: WarningCircle, title: "关系规则继续筛", detail: "跨字段条件和单字段类型各自留下原因", danger: true }
         : { icon: CheckCircle, title: "报告每条失败的原因", detail: `${visibleFailures.length} 条待处理，r1 通过` };
-  return <Frame label="数据验证让记录逐层经过类型、范围、跨字段和唯一性检查，并保留具体失败原因" eyebrow="通过哪一关，失败在哪一关" meta="schema → range → relation → unique" scene={scene} steps={validationSteps} result={result} caption="验证结果不是一盏模糊的红灯。每条记录要知道在哪条规则上停下，修复者才知道该改数据、改规则，还是补齐去重身份。" >
+  return <Frame label="数据验证让记录逐层经过类型、范围、跨字段和唯一性检查，并保留具体失败原因" eyebrow="通过哪一关，失败在哪一关" meta="schema → range → relation → unique" scene={scene} steps={validationSteps} result={result} caption="每条记录要知道在哪条规则上停下，修复者才知道该改数据、改规则，还是补齐去重身份。" >
     <div className={styles.validationBoard} data-step={step}>
       <div className={styles.validationRecords}><span>待检查记录</span>{validationRows.map(row => { const failed = row.failures.some(failure => checks.indexOf(failure) <= step); return <div key={row.id} data-failed={failed} data-passed={step === 3 && !failed}><code>{row.id}</code><strong>{row.value}</strong><small>{failed ? row.failures.join(" · ") : step === 3 ? "通过" : "等待"}</small></div>; })}</div>
       <div className={styles.validationSieve}>{checks.map((label, index) => <div key={label} data-active={step === index} data-done={step > index}><span>{index + 1}</span><strong>{label}</strong><small>{step > index ? "已检查" : step === index ? "当前规则" : "排队"}</small></div>)}</div>
@@ -144,13 +144,13 @@ export function DataLineageSignatureHero() {
   const showColumns = step >= 2;
   const showImpact = impact && step >= 3;
   const result = step === 0
-    ? { icon: MagnifyingGlass, title: "先从一个结果问起", detail: "1800 分不是凭空出现的数字" }
+    ? { icon: MagnifyingGlass, title: "先从一个结果问起", detail: "1800 分来自三项费用的合计" }
     : step === 1
       ? { icon: GitBranch, title: "找到生成它的运行", detail: "run-43 使用规则 v2 处理快照 s1" }
       : step === 2
         ? { icon: Database, title: "展开到实际输入列", detail: "amount 与 discount 都参与 sum(amount − discount)" }
         : { icon: FlowArrow, title: "沿登记关系找影响", detail: showImpact ? "daily.total → monthly.total，共 2 个下游输出" : "打开影响分析，看看谁需要复查" };
-  return <Frame label="数据血缘从报表单元展开到实际运行、规则和输入列，再沿关系查看下游影响" eyebrow="从一个数字，沿着关系回到现场" meta="output → run → columns → impact" scene={scene} steps={lineageSteps} result={result} caption="血缘是一条可追溯的关系链：结果对应哪次运行、用了哪个规则、读了哪些列，以及字段变化会波及哪些输出。图上没有一条线，只能说明当前登记范围之外没有证据。" controls={<div className={styles.inlineControls} role="group" aria-label="数据血缘观察模式"><button type="button" aria-pressed={impact} onClick={() => { setImpact(value => !value); scene.seek(3); }}><FlowArrow size={15} />{impact ? "收起影响分析" : "查看下游影响"}</button></div>}>
+  return <Frame label="数据血缘从报表单元展开到实际运行、规则和输入列，再沿关系查看下游影响" eyebrow="从一个数字，沿着关系回到现场" meta="output → run → columns → impact" scene={scene} steps={lineageSteps} result={result} caption="血缘是一条可追溯的关系链：结果对应哪次运行、用了哪个规则、读了哪些列，以及字段变化会波及哪些输出。图中连线反映当前登记范围内已知的依赖证据。" controls={<div className={styles.inlineControls} role="group" aria-label="数据血缘观察模式"><button type="button" aria-pressed={impact} onClick={() => { setImpact(value => !value); scene.seek(3); }}><FlowArrow size={15} />{impact ? "收起影响分析" : "查看下游影响"}</button></div>}>
     <div className={styles.lineageBoard} data-columns={showColumns} data-impact={showImpact}>
       <div className={styles.lineageSource}><span>来源快照 s1</span><div data-active={showColumns}><code>amount</code><strong>1200 · 800</strong></div><div data-active={showColumns}><code>discount</code><strong>200 · 0</strong></div><small>{showColumns ? "两列进入规则 v2" : "点击结果展开"}</small></div>
       <div className={styles.lineageMiddle}><div className={styles.lineageResult}><span>daily.total</span><strong>1800</strong><small>CNY cents · v2</small></div><div className={styles.lineageRun}><GitBranch size={15} /><code>run-43</code><span>sum(amount − discount)</span></div></div>
@@ -169,13 +169,13 @@ export function StreamProcessingSignatureHero() {
   const watermark = step === 0 ? "—" : step < 3 ? "10" : "20";
   const revised = latePolicy === "revise" && step >= 3;
   const result = step === 0
-    ? { icon: Broadcast, title: "先按事件时间记账", detail: "t2 进入 [0,10)，不是按收到顺序猜窗口" }
+    ? { icon: Broadcast, title: "先按事件时间记账", detail: "t2 进入 [0,10)" }
     : step === 1
       ? { icon: Clock, title: "水位推进，窗口准备关门", detail: "[0,10) 可以先输出 1 次，t4 还没出现" }
       : step === 2
         ? { icon: WarningCircle, title: "t4 到得太晚", detail: latePolicy === "side" ? "送进旁路，已发布窗口不被悄悄改写" : "保留窗口状态，等待修订", danger: true }
         : { icon: revised ? CheckCircle : Pulse, title: revised ? "窗口发布修订版" : "旁路留下待复核事件", detail: revised ? "[0,10) 从 1 次更新到 2 次" : "[0,10)=1 · late side=t4" };
-  return <Frame label="流处理用事件时间和水位决定窗口何时输出，晚到事件按策略旁路或修订" eyebrow="记录带着发生时间到来" meta="event time → watermark → window" scene={scene} steps={streamSteps} result={result} caption="水位是在事件时间尺子上向前推进的信号，不是把机器时钟拨快。它决定窗口何时可以给出结果；晚到数据是否旁路、补写还是触发修订，必须由业务策略明确。" controls={<div className={styles.inlineControls} role="group" aria-label="晚到事件处理策略"><button type="button" aria-pressed={latePolicy === "revise"} onClick={() => { setLatePolicy(policy => policy === "side" ? "revise" : "side"); scene.seek(2); }}><Pulse size={15} />{latePolicy === "side" ? "改为窗口修订" : "改为晚到旁路"}</button></div>}>
+  return <Frame label="流处理用事件时间和水位决定窗口何时输出，晚到事件按策略旁路或修订" eyebrow="记录带着发生时间到来" meta="event time → watermark → window" scene={scene} steps={streamSteps} result={result} caption="水位是在事件时间尺子上向前推进的信号。它决定窗口何时可以给出结果；晚到数据是否旁路、补写还是触发修订，必须由业务策略明确。" controls={<div className={styles.inlineControls} role="group" aria-label="晚到事件处理策略"><button type="button" aria-pressed={latePolicy === "revise"} onClick={() => { setLatePolicy(policy => policy === "side" ? "revise" : "side"); scene.seek(2); }}><Pulse size={15} />{latePolicy === "side" ? "改为窗口修订" : "改为晚到旁路"}</button></div>}>
     <div className={styles.streamBoard} data-policy={latePolicy} data-step={step}>
       <div className={styles.streamArrivals}><div className={styles.streamArrivalHeader}><Broadcast size={17} /><span>到达顺序</span></div>{[{ id: "t2", time: 2 }, { id: "t12", time: 12 }, { id: "t4", time: 4 }].map((event, index) => <div key={event.id} data-arrived={index === 0 ? step >= 0 : index === 1 ? step >= 1 : t4Arrived} data-late={event.id === "t4" && t4Arrived}><code>{event.id}</code><span>发生时刻 {event.time}</span><small>{event.id === "t4" && t4Arrived ? "晚到" : index === 1 && step < 1 ? "等待" : "已到"}</small></div>)}</div>
       <div className={styles.streamMeter}><span>watermark</span><strong>{watermark}</strong><div className={styles.streamTicks}><i data-on={step >= 1} /><i data-on={step >= 3} /></div><small>{step >= 1 ? "第一窗口可结算" : "还在等事件"}</small></div>
@@ -203,7 +203,7 @@ export function UnitTestSignatureHero() {
     : step === 1
       ? { icon: fixedClock ? LockSimple : Clock, title: fixedClock ? "依赖被锁住" : "时钟还会漂移", detail: fixedClock ? "clock=2026-08-31，结果不跟今天走" : "同一用例可能在不同日期得到不同结果", danger: !fixedClock }
       : !fixedClock
-        ? { icon: WarningCircle, title: "规则跑了，但环境不稳定", detail: "断言还不能说明行为可重复", danger: true }
+        ? { icon: WarningCircle, title: "规则跑了，但环境不稳定", detail: "重复执行检查行为是否一致", danger: true }
         : asserted
           ? { icon: CheckCircle, title: "契约可以被重复核对", detail: "3 个数值结果通过，1 个预期错误通过" }
           : { icon: Code, title: "只让这一小段规则接受调用", detail: "不把数据库、网络和别的模块拉进来" };
@@ -228,11 +228,11 @@ export function IntegrationTestSignatureHero() {
   const result = step === 0
     ? { icon: Gear, title: "先装一座真实小现场", detail: "服务、schema 和数据库保留真实边界，支付故障可控" }
     : step === 1
-      ? { icon: Globe, title: "请求穿过接口边界", detail: "POST /orders 写入事务，而不是直接调用内部函数" }
+      ? { icon: Globe, title: "请求穿过接口边界", detail: "POST /orders 写入事务" }
       : !paymentFails
         ? { icon: CheckCircle, title: "依赖成功，事务可提交", detail: verified ? "response=201，orders/outbox 各有 1 行" : "再查响应和真实行数" }
         : step === 2
-          ? { icon: WarningCircle, title: "支付边界返回 500", detail: "事务不能把半笔订单留在数据库里", danger: true }
+          ? { icon: WarningCircle, title: "支付边界返回 500", detail: "事务让整笔订单一起提交或回滚", danger: true }
           : { icon: CheckCircle, title: "回滚由两侧证据证明", detail: "response=502，orders/outbox=0 行" };
   return <Frame label="集成测试让请求穿过真实服务与数据库边界，并用受控支付失败核对事务结果" eyebrow="把组件接回一小段真实现场" meta="request → boundary → evidence" scene={scene} steps={integrationSteps} result={result} caption="集成测试把真实协议、配置和状态接回现场，同时把外部故障限定在可重复的控制面。只看 HTTP 响应不够，还要查数据库和 outbox 是否留下了正确副作用。" controls={<div className={styles.inlineControls} role="group" aria-label="集成测试支付依赖"><button type="button" aria-pressed={paymentFails} onClick={() => { setPaymentFails(value => !value); scene.seek(2); }}><WarningCircle size={15} />{paymentFails ? "让支付成功" : "注入支付 500"}</button></div>}>
     <div className={styles.integrationBoard} data-failed={failed} data-success={!paymentFails && verified}>

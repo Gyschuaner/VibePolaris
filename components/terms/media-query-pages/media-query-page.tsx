@@ -10,7 +10,7 @@ const sections: [string, string][] = [
 ];
 
 export function MediaQueryTermPage() {
-  return <Article slug="media-query" title="媒体查询" subtitle="Media Query · 让 CSS 先听见环境" sources={mediaQuerySources} sections={sections} intro={<>页面面对的不是一块永远不变的画布：窗口会收窄，指针可能不支持悬停，用户也可能要求少一点运动。<strong>媒体查询把这些环境信号写成条件，让对应的 CSS 声明加入或退出计算。</strong>它像一组开关，决定规则何时参与，真正的布局仍由 Grid、Flexbox 和普通 CSS 完成。</>}>
+  return <Article slug="media-query" title="媒体查询" subtitle="Media Query · 让 CSS 先听见环境" sources={mediaQuerySources} sections={sections} intro={<>指针可能不支持悬停，用户也可能要求少一点运动。<strong>媒体查询把这些环境信号写成条件，让对应的 CSS 声明加入或退出计算。</strong>它像一组开关，决定规则何时参与，真正的布局仍由 Grid、Flexbox 和普通 CSS 完成。</>}>
     <ArticleSection id="media-query-definition-section" title="它先问环境，再决定规则">
       <p id="mq-condition" className="vp-citation-target">媒体查询由媒体类型、媒体特征和逻辑条件组成。浏览器持续判断条件是否成立，成立时把块里的声明应用到当前文档；条件变成 false，声明就不再命中。<Cite id="mq-condition" sources={mediaQuerySources} /></p>
       <p id="mq-at-rule" className="vp-citation-target"><code>@media</code> 是写这组条件的 at-rule。它不创建新的组件，也不把页面复制成“桌面版”和“手机版”；它只给已有选择器加一层运行时门槛。<Cite id="mq-at-rule" sources={mediaQuerySources} /></p>
@@ -19,14 +19,14 @@ export function MediaQueryTermPage() {
 
     <ArticleSection id="media-query-feature-section" title="宽度只是其中一个输入">
       <p id="mq-feature" className="vp-citation-target">媒体特征可以描述 viewport 宽度、方向、分辨率、输入指针和 hover 能力，也可以描述用户的显示偏好。把媒体查询缩写成“屏幕小于 768px”会把这些不同问题揉成一把尺子。<Cite id="mq-feature" sources={mediaQuerySources} /></p>
-      <p id="mq-width" className="vp-citation-target">宽度查询适合回答“这一组内容还放得下吗”，例如 <code>(width &lt; 640px)</code>。它回答的是当前 viewport 的条件，不等于某个手机型号；组件如果要看自己的容器，应另看 container query。<Cite id="mq-width" sources={mediaQuerySources} /></p>
+      <p id="mq-width" className="vp-citation-target">宽度查询适合回答“这一组内容还放得下吗”，例如 <code>(width &lt; 640px)</code>它回答的是当前 viewport 的条件，组件如果要看自己的容器。<Cite id="mq-width" sources={mediaQuerySources} /></p>
       <p id="mq-hover" className="vp-citation-target"><code>hover</code> 和 <code>pointer</code> 描述的是输入能力。没有 hover 的设备仍然可以点击；因此 tooltip 里唯一的关键信息不能只在鼠标经过时出现。<Cite id="mq-hover" sources={mediaQuerySources} /></p>
     </ArticleSection>
 
     <ArticleSection id="media-query-combine-section" title="多个条件各自开关，结果可以叠加">
-      <p id="mq-logical" className="vp-citation-target"><code>and</code> 要求两边同时成立，逗号可以表达多个可接受分支，<code>not</code> 则把一个条件反过来。逻辑词连接的是条件，不是把几套 HTML 拼在一起。<Cite id="mq-logical" sources={mediaQuerySources} /></p>
+      <p id="mq-logical" className="vp-citation-target"><code>and</code> 要求两边同时成立，逗号可以表达多个可接受分支，<code>not</code> 则把一个条件反过来。逻辑词连接的是条件。<Cite id="mq-logical" sources={mediaQuerySources} /></p>
       <p id="mq-combine" className="vp-citation-target">一条规则可以只管列数，另一条只管提示方式，第三条只管动画。width 变窄时第一条命中；hover 能力变化时第二条命中；用户打开 reduced motion 时第三条命中，它们可以在同一份内容上叠加。<Cite id="mq-combine" sources={mediaQuerySources} /> <Cite id="mq-combine-web" sources={mediaQuerySources} /></p>
-      <p id="mq-motion" className="vp-citation-target"><code>prefers-reduced-motion: reduce</code> 是用户偏好，不是浏览器发现“动画太多”后的自动优化。它应该收住非必要的位移、循环和闪烁，同时保留状态变化和操作反馈。<Cite id="mq-motion" sources={mediaQuerySources} /></p>
+      <p id="mq-motion" className="vp-citation-target"><code>prefers-reduced-motion: reduce</code> 是用户偏好。它应该收住非必要的位移、循环和闪烁，同时保留状态变化和操作反馈。<Cite id="mq-motion" sources={mediaQuerySources} /></p>
     </ArticleSection>
 
     <ArticleSection id="media-query-boundary-section" title="媒体查询不替你完成布局">

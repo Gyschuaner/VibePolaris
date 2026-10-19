@@ -40,7 +40,7 @@ export function FewShotPromptingSignatureHero() {
       scene={scene}
       labels={labels}
       ariaLabel="少样本提示用几张输入输出校样给新工单提供局部标签版式"
-      caption={scene.step < 2 ? "示例不是给模型换一套参数，而是把这次请求要参照的版式摆到桌面上。" : conflict ? "相反校样让标签和格式互相打架；先修示例的覆盖与一致性，再期待稳定结果。" : "新工单沿用的是本轮上下文里的局部模式，离开这组校样后并没有永久学会。"}
+      caption={scene.step < 2 ? "示例是把这次请求要参照的版式摆到桌面上。" : conflict ? "相反校样让标签和格式互相打架；先修示例的覆盖与一致性，再期待稳定结果。" : "新工单沿用的是本轮上下文里的局部模式，离开这组校样后并没有永久学会。"}
     >
       <div className={styles.exampleBoard} data-conflict={conflict}>
         <div className={styles.exampleHeader}>

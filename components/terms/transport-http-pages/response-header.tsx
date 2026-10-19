@@ -11,10 +11,10 @@ import styles from "./transport-http-pages.module.css";
 const frames = [
   { label: "原地交付", status: "200 OK", field: "—", body: "order.json", effect: "交给调用方", note: "没有控制字段时，客户端按普通响应读取 body；字段牌还没有改变下一步。" },
   { label: "Location", status: "302 Found", field: "Location: /login", body: "短提示", effect: "改走 /login", note: "Location 把后续目标交给重定向处理；body 仍然是这次响应自己的载荷。" },
-  { label: "Retry-After", status: "429 Too Many Requests", field: "Retry-After: 30", body: "错误说明", effect: "等待 30 秒", note: "Retry-After 给重试策略一个等待窗口，不是让客户端立即再撞一次。" },
-  { label: "Vary", status: "200 OK", field: "Vary: Accept-Language", body: "中文版本", effect: "缓存键分叉", note: "Vary 告诉缓存：同一个 URL 还要按请求字段区分表示，不能把中文副本发给英文请求。" },
-  { label: "Vary: *", status: "200 OK", field: "Vary: *", body: "个性化内容", effect: "不复用副本", note: "Vary: * 表示当前响应不能被缓存用来满足后续请求；这是一条缓存边界，不是 body 损坏。" },
-  { label: "Cache-Control", status: "200 OK", field: "Cache-Control: max-age=60", body: "app.js", effect: "60 秒内复用", note: "Cache-Control 把新鲜窗口写给缓存；命中与否由缓存按规则决定，不是响应体自己决定。" },
+  { label: "Retry-After", status: "429 Too Many Requests", field: "Retry-After: 30", body: "错误说明", effect: "等待 30 秒", note: "Retry-After 提供建议等待窗口，客户端结合重试策略安排后续请求。" },
+  { label: "Vary", status: "200 OK", field: "Vary: Accept-Language", body: "中文版本", effect: "缓存键分叉", note: "Vary 告诉缓存：同一个 URL 还要按请求字段区分表示。" },
+  { label: "Vary: *", status: "200 OK", field: "Vary: *", body: "个性化内容", effect: "不复用副本", note: "Vary: * 表示当前响应不能被缓存用来满足后续请求，这是一条缓存边界。" },
+  { label: "Cache-Control", status: "200 OK", field: "Cache-Control: max-age=60", body: "app.js", effect: "60 秒内复用", note: "命中与否由缓存按规则决定。" },
 ];
 
 function ResponseHeaderHero() {
@@ -42,7 +42,7 @@ function ResponseHeaderLab() {
   const [mode, setMode] = useState<HeaderMode>("location");
   const cases = {
     location: { label: "Location", status: "302 Found", field: "Location: /login", action: "导航到 /login", note: "控制字段改变下一次请求目标，body 仍可只是简短提示。" },
-    retry: { label: "Retry-After", status: "429 Too Many Requests", field: "Retry-After: 30", action: "至少等待 30 秒", note: "客户端把等待交给重试策略，而不是看到 429 就无限连发。" },
+    retry: { label: "Retry-After", status: "429 Too Many Requests", field: "Retry-After: 30", action: "至少等待 30 秒", note: "并按上限与等待间隔处理 429。" },
     vary: { label: "Vary", status: "200 OK", field: "Vary: Accept-Language", action: "缓存分成 zh / en", note: "同一 URL 的表示随请求字段变化，缓存键也要跟着变化。" },
     cache: { label: "Cache-Control", status: "200 OK", field: "Cache-Control: max-age=60", action: "60 秒内可复用", note: "新鲜窗口由字段声明；过期后还要按缓存验证规则处理。" },
   } satisfies Record<HeaderMode, { label: string; status: string; field: string; action: string; note: string }>;
@@ -57,15 +57,15 @@ function ResponseHeaderLab() {
 
 export function ResponseHeaderTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={responseHeaderSources} />;
-  return <ConceptArticle slug="response-header" title="响应头" subtitle="Response Headers · 一张字段牌，改变下一步处理" sources={responseHeaderSources} sections={[["header-metadata-section", "字段牌在说什么"], ["header-control-section", "Location 和 Retry-After 会推动什么动作"], ["header-cache-section", "Vary 与 Cache-Control 怎样管住缓存"], ["header-boundary-section", "元信息不能替 body 负责"]]} intro={<>响应头不是响应体旁边的注释。它们把内容格式、跳转位置、等待窗口和缓存条件写在 body 之外；同一份 body 换一张字段牌，浏览器、客户端库或中间缓存就可能走向完全不同的下一步。</>}>
+  return <ConceptArticle slug="response-header" title="响应头" subtitle="Response Headers · 一张字段牌，改变下一步处理" sources={responseHeaderSources} sections={[["header-metadata-section", "字段牌在说什么"], ["header-control-section", "Location 和 Retry-After 会推动什么动作"], ["header-cache-section", "Vary 与 Cache-Control 怎样管住缓存"], ["header-boundary-section", "元信息不能替 body 负责"]]} intro={<>它们把内容格式、跳转位置、等待窗口和缓存条件写在 body 之外；同一份 body 换一张字段牌，浏览器、客户端库或中间缓存就可能走向完全不同的下一步。</>}>
     <ArticleSection id="header-metadata-section" title="字段牌在说什么">
-      <p id="header-metadata" className="vp-citation-target">响应字段是跟着状态一起返回的元信息，用来说明这次表示怎样处理、来自哪里、能不能缓存或下一步应该做什么。字段的值不是业务 body 的替身，而是接收方执行协议规则时用的输入。<Cite id="header-metadata" /></p>
-      <p id="header-fields" className="vp-citation-target">字段名不等于任意字符串：标准字段有明确语义，扩展字段也应保持稳定、必要并避免冲突。排查时同时记录字段名、值、来源和接收方，否则“服务器发了什么”与“客户端据此做了什么”很容易混在一起。<Cite id="header-fields" /></p>
+      <p id="header-metadata" className="vp-citation-target">响应字段是跟着状态一起返回的元信息，用来说明这次表示怎样处理、来自哪里、能不能缓存或下一步应该做什么。字段的值是接收方执行协议规则时用的输入。<Cite id="header-metadata" /></p>
+      <p id="header-fields" className="vp-citation-target">扩展字段也应保持稳定、必要并避免冲突。排查时同时记录字段名、值、来源和接收方，否则“服务器发了什么”与“客户端据此做了什么”很容易混在一起。<Cite id="header-fields" /></p>
       <ResponseHeaderLab />
     </ArticleSection>
     <ArticleSection id="header-control-section" title="Location 和 Retry-After 会推动什么动作">
-      <p id="header-location" className="vp-citation-target">Location 在重定向等响应里给出后续目标。客户端是否自动跟随、是否保留方法和凭据，还要看状态码与客户端策略；字段提供位置，不等于所有客户端都会无条件跳转。<Cite id="header-location" /></p>
-      <p id="header-retry" className="vp-citation-target">Retry-After 可以用秒数或日期告诉客户端何时再试。它是节流和维护窗口里的协议提示，调用方仍要结合幂等性、退避和截止时间决定是否重试，不能把它当成“保证成功”的承诺。<Cite id="header-retry" /></p>
+      <p id="header-location" className="vp-citation-target">Location 在重定向等响应里给出后续目标。客户端是否自动跟随、是否保留方法和凭据，还要看状态码与客户端策略，字段提供位置。<Cite id="header-location" /></p>
+      <p id="header-retry" className="vp-citation-target">Retry-After 可以用秒数或日期告诉客户端何时再试。它是节流和维护窗口里的协议提示，调用方仍要结合幂等性、退避和截止时间决定是否重试。<Cite id="header-retry" /></p>
     </ArticleSection>
     <ArticleSection id="header-cache-section" title="Vary 与 Cache-Control 怎样管住缓存">
       <p id="header-vary" className="vp-citation-target">Vary 把影响表示选择的请求字段写进缓存键。例如 Vary: Accept-Language 要让中文和英文副本分开；Vary: * 则表示这次响应不能拿来满足后续请求。<Cite id="header-vary" /><Cite id="header-no-reuse" /></p>

@@ -40,7 +40,7 @@ export function executeFunction(request: FunctionRequest) {
   const stopped = (reason: string) => ({ executions: 0, pass: false, call_id: request.call_id, response: '', reason });
   if (request.name !== 'get_order') return stopped('函数未注册，没有执行');
   let args: unknown;
-  try { args = JSON.parse(request.arguments); } catch { return stopped('参数不是完整 JSON，没有执行'); }
+  try { args = JSON.parse(request.arguments); } catch { return stopped('JSON 参数解析失败，调用已停止'); }
   if (typeof args !== 'object' || args === null || Array.isArray(args) || Object.keys(args).length !== 1 || !('order_id' in args) || typeof args.order_id !== 'string' || !/^A\d{3}$/.test(args.order_id)) return stopped('要求唯一字段 order_id，值为 A 加三位数字，没有执行');
   if (!request.allowed) return stopped('没有订单查询权限，没有执行');
   // A fixed local record; no network or real customer data.

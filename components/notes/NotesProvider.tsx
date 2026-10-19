@@ -117,7 +117,7 @@ export function NotesProvider({ children }: { children: ReactNode }) {
       if (pending.current.size) throw new Error("请先等待本地保存完成，再导入备份。");
       const incoming = parseNotesBackup(await file.text());
       await importNotes(incoming); await reload(); channel.current?.postMessage("changed"); setBackupStatus("导入完成，已有笔记已保留，重复内容已跳过。");
-    } catch (error) { setBackupStatus(error instanceof SyntaxError ? "文件不是有效的笔记备份，已有笔记未改动。" : error instanceof Error ? error.message : "导入失败，已有笔记未改动。"); }
+    } catch (error) { setBackupStatus(error instanceof SyntaxError ? "已有笔记未改动。" : error instanceof Error ? error.message : "导入失败，已有笔记未改动。"); }
     finally { setImporting(false); }
   }
   const active = notes.find(note => note.id === editing);

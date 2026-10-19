@@ -32,7 +32,7 @@ export function FlexboxLesson() {
   }, [activeWidth, scene.step, wrap]);
   const free = scene.step === 3 ? "−60px → 0" : scene.step === 2 && activeWidth === "wide" ? "+120px → 0" : `${widthPx - 360 >= 0 ? "+" : "−"}${Math.abs(widthPx - 360)}px`;
   const wrapped = scene.step === 4 && wrap;
-  const status = scene.step === 0 ? "项目刚排入主轴，还没有分配余量。" : scene.step === 1 ? "先把正空间或负空间算清楚，才能解释项目为什么变宽或变窄。" : scene.step === 2 ? "grow 是比例，不是固定像素；B 拿两份，所以它比 A、C 多一份。" : scene.step === 3 ? "负空间被 shrink 收回；如果禁止缩小或遇到 min-content，仍可能溢出。" : wrapped ? "wrap 开启后，项目进入不同 flex line；每一行各自结算，不会自动对齐成网格。" : "先打开允许换行，才能把空间不足变成多行，而不是继续挤压或溢出。";
+  const status = scene.step === 0 ? "项目刚排入主轴，还没有分配余量。" : scene.step === 1 ? "先把正空间或负空间算清楚，才能解释项目为什么变宽或变窄。" : scene.step === 2 ? "grow 是比例。" : scene.step === 3 ? "负空间被 shrink 收回；如果禁止缩小或遇到 min-content，仍可能溢出。" : wrapped ? "wrap 开启后，项目进入不同 flex line；每一行各自结算，不会自动对齐成网格。" : "先打开允许换行，才能把空间不足变成多行。";
   const StatusIcon = scene.step === 3 ? WarningCircle : scene.step === 4 && wrapped ? CheckCircle : Ruler;
 
   return <div ref={scene.ref} className={styles.flexLab} role="region" aria-label="Flexbox 自由空间、grow、shrink 和换行工作台">
@@ -60,7 +60,7 @@ export function FlexboxLesson() {
         <div className={styles.flexItems} data-wrap={wrapped}>
           {sizes.map((size, index) => <div key={index} className={styles.flexItem} data-item={index === 0 ? "a" : index === 1 ? "b" : "c"} data-wrap={wrapped} style={{ flex: lessonItemFlex(scene.step, wrapped, index) }}><strong>{String.fromCharCode(65 + index)}</strong><code>{size}px</code></div>)}
         </div>
-        <small>{wrapped ? "A、B 先占第一行，C 进入第二行；第二行不会跟第一行共享列轨道。" : "项目宽度变化来自主轴空间结算，不是浏览器随机挤压。"}</small>
+        <small>{wrapped ? "A、B 先占第一行，C 进入第二行；第二行不会跟第一行共享列轨道。" : "项目宽度变化来自主轴空间结算。"}</small>
       </div>
     </div>
     <div className={styles.flexLabMetrics}><div><span>本步自由空间</span><strong>{free}</strong></div><div><span>当前策略</span><strong>{wrapped ? "flex-wrap: wrap" : scene.step === 2 ? "grow = 1:2:1" : scene.step === 3 ? "shrink = 1" : "flex: initial"}</strong></div><div><span>结果</span><strong>{wrapped ? "分成两行" : scene.step === 3 ? "收回负空间" : scene.step >= 2 ? "尺寸已重算" : "等待推进"}</strong></div></div>

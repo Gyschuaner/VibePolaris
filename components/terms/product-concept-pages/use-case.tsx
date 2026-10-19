@@ -17,10 +17,10 @@ export function UseCaseTermPage() {
     sources={useCaseSources}
     sections={sections}
     hero={<UseCaseHero />}
-    intro={<>使用场景（Use Case）围绕一个参与者目标，说明他在什么条件下触发系统、系统如何推进主流程，以及替代或失败路径如何结束。它帮助团队讨论系统行为和结果，不是逐像素画面，也不等于一整段跨服务的用户旅程。</>}
+    intro={<>使用场景（Use Case）围绕一个参与者目标，说明他在什么条件下触发系统、系统如何推进主流程，以及替代或失败路径如何结束。它帮助团队讨论系统行为和结果。</>}
   >
     <ArticleSection id="use-case-goal" title="从参与者目标开始">
-      <p id="use-case-goal-detail" className="vp-citation-target">先写参与者要完成的目标，再决定哪些系统行为属于这个用例。退款用例的目标是让购买者处理一笔符合条件的订单，不是“点击退款按钮”或“调用某个 API”；这样才能检验界面、服务和外部支付方是否共同完成了用户结果。<Cite id="use-case-goal-detail" sources={useCaseSources} /></p>
+      <p id="use-case-goal-detail" className="vp-citation-target">先写参与者要完成的目标，再决定哪些系统行为属于这个用例。退款用例的目标是让购买者处理一笔符合条件的订单，这样才能检验界面、服务和外部支付方是否共同完成了用户结果。<Cite id="use-case-goal-detail" sources={useCaseSources} /></p>
       <p id="use-case-actor-detail" className="vp-citation-target">参与者可以是人，也可以是与系统交互的外部角色或服务。要写清谁触发、谁提供信息、谁接收结果，避免把“页面”“数据库”等内部部件误当成用户角色。<Cite id="use-case-actor-detail" sources={useCaseSources} /></p>
       <p id="use-case-journey-detail" className="vp-citation-target">一个 Use Case 只展开一段可讨论的交互；它仍要放回更大的用户旅程，确认前后步骤、其他团队和线下渠道怎样衔接。完整旅程里可能还有查订单、联系支持和到账确认，不能因为这一段有结果就假设整个问题已解决。<Cite id="use-case-journey-detail" sources={useCaseSources} /></p>
     </ArticleSection>
@@ -32,8 +32,8 @@ export function UseCaseTermPage() {
     </ArticleSection>
 
     <ArticleSection id="use-case-boundary" title="用替代路径守住边界">
-      <p id="use-case-alternative-detail" className="vp-citation-target">替代路径不是把主流程重复一遍，而是说明条件变化后系统如何分叉：期限过了就提前拒绝，外部服务失败就进入可重试状态。每条分支都要写用户看到的结果、是否改变数据，以及它从哪一步结束。<Cite id="use-case-alternative-detail" sources={useCaseSources} /></p>
-      <p id="use-case-context-detail" className="vp-citation-target">用例还要交代它和周围系统的边界：所需证据从哪里来，后台谁处理，用户是否会转到另一个渠道。把这些上下文画出来，才能发现重复输入、死路或跨团队依赖，而不是把异常藏在一句“系统处理失败”里。<Cite id="use-case-context-detail" sources={useCaseSources} /></p>
+      <p id="use-case-alternative-detail" className="vp-citation-target">替代路径是说明条件变化后系统如何分叉：期限过了就提前拒绝，外部服务失败就进入可重试状态。每条分支都要写用户看到的结果、是否改变数据，以及它从哪一步结束。<Cite id="use-case-alternative-detail" sources={useCaseSources} /></p>
+      <p id="use-case-context-detail" className="vp-citation-target">用例还要交代它和周围系统的边界：所需证据从哪里来，后台谁处理，用户是否会转到另一个渠道。把这些上下文画出来，才能发现重复输入、死路或跨团队依赖。<Cite id="use-case-context-detail" sources={useCaseSources} /></p>
       <p><strong>读者判断：</strong>看到“用户可以退款”时，先追问“谁触发？满足什么前置条件？主流程怎样结束？过期、无权限和外部失败各留下什么结果？”如果这些问题答不出来，先补用例边界，再画页面。</p>
     </ArticleSection>
   </GitArticle>;

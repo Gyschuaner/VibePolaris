@@ -34,7 +34,7 @@ export function StashLesson() {
           <Stack size={23} aria-hidden="true" />
           <strong>{saved ? "stash@{0}" : "stash 栈"}</strong>
           <code>{saved ? "工作树 + index" : "等待 git stash push"}</code>
-          <span>{saved ? "-u 才包含 mock.json" : "本地临时记录，不是远程提交"}</span>
+          <span>{saved ? "-u 才包含 mock.json" : "本地临时记录"}</span>
         </div>
         <div className={styles.stashNote}>
           <FileText size={19} aria-hidden="true" />

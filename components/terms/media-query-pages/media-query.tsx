@@ -26,7 +26,7 @@ export function MediaQueryLesson() {
     { id: "hover", label: "没有 hover", code: "hover: none", active: effective.noHover, result: effective.noHover ? "提示常驻" : "可悬停提示", icon: <Cursor size={16} aria-hidden="true" /> },
     { id: "motion", label: "减少动效", code: "prefers-reduced-motion: reduce", active: effective.reduced, result: effective.reduced ? "静止反馈" : "轻微位移", icon: <SpeakerSimpleSlash size={16} aria-hidden="true" /> },
   ];
-  const status = scene.step === 0 ? "先看基础样式，再逐个改变输入；不要把三个条件压成一个屏幕宽度。" : scene.step === 1 ? "只有 width 条件命中，列数改变；hover 和动效规则仍按自己的输入判断。" : scene.step === 2 ? "没有 hover 能力时，提示不能只躲在鼠标经过之后；可见信息要有自己的落点。" : scene.step === 3 ? "减少动效只收住运动，不会顺手改掉内容结构或阅读顺序。" : "三个条件同时命中，三条 CSS 声明各自负责一件事，结果叠加在同一份 HTML 上。";
+  const status = scene.step === 0 ? "先看基础样式，再逐个改变输入。" : scene.step === 1 ? "只有 width 条件命中，列数改变；hover 和动效规则仍按自己的输入判断。" : scene.step === 2 ? "没有 hover 能力时，提示不能只躲在鼠标经过之后；可见信息要有自己的落点。" : scene.step === 3 ? "减少动效只收住运动，不会顺手改掉内容结构或阅读顺序。" : "三个条件同时命中，三条 CSS 声明各自负责一件事，结果叠加在同一份 HTML 上。";
   const StatusIcon = scene.step === 4 ? CheckCircle : scene.step === 2 ? WarningCircle : Gear;
   return <div ref={scene.ref} className={styles.mediaQueryLab} role="region" aria-label="媒体查询条件与 CSS 规则工作台">
     <div className={styles.mediaQueryHeader}><span>改一个输入，看哪条 @media 规则亮起来</span><strong>{scene.step + 1} / {labels.length}</strong></div>

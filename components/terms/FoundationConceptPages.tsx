@@ -18,27 +18,27 @@ export function LlmTermPage() {
       <OldAnchor slug="llm" part="definition" />
       <p>给出“The sky is”，后面可以接 blue，也可以接 gray。哪种续写更合适，取决于已经给出的文字，以及模型在训练中学到的规律。如果你先告诉模型天空阴云密布，它接下来的选择也可能改变。</p>
       <p id="llm-generation" className="vp-citation-target">常见的自回归生成过程会先计算候选 <ConceptTerm slug="token">Token</ConceptTerm> 的概率，再选出一个接到序列后面。<strong>下一次预测会使用更新后的前文，包括刚刚生成的内容。</strong>这一步反复进行，才得到你看到的整段回答。<Cite id="llm-generation" /></p>
-      <p>下面用很小的教学词表手动选择续写，看看一句话怎样分叉。这里的片段和百分比都是预设的，只在演示给出的候选之间分配；某一步只剩句号，就会显示 100%。它们不是真实模型的分词或概率。你点击候选，是替演示指定一条路径，观察后面的候选怎样变。</p>
+      <p>下面用很小的教学词表手动选择续写，看看一句话怎样分叉。这里的片段和百分比都是预设的，只在演示给出的候选之间分配；某一步只剩句号，就会显示 100%。你点击候选，是替演示指定一条路径，观察后面的候选怎样变。</p>
       <OldAnchor slug="llm" part="scene-heading" /><LlmLesson />
       <p>先选 gray，后续就围绕“The sky is gray”继续。回到开头改选 blue，句子和下一步候选都会跟着变。实际生成时，模型会按设定的选法自动选择，不需要用户逐个点击。</p>
     </ArticleSection>
     <ArticleSection id="training" title="训练与这次回答">
-      <p id="llm-training" className="vp-citation-target">训练会调整模型参数，让它逐渐学会数据中的模式；预训练之后，还可以针对任务继续微调。调用一个已经训练好的模型来处理新输入，是推理。<strong>把一段日志放进对话，通常改变的是这次输入，不是在现场重新训练模型。</strong><Cite id="llm-training" /></p>
+      <p id="llm-training" className="vp-citation-target">训练会调整模型参数，让它逐渐学会数据中的模式；预训练之后，还可以针对任务继续微调。调用一个已经训练好的模型来处理新输入，是推理。<strong>通常改变的是这次输入。</strong><Cite id="llm-training" /></p>
       <div className={styles.twoTimes}><div><h3>训练时</h3><p>通过大量样例调整参数。语言、代码和任务中的规律被反映在参数里。</p></div><div><h3>使用时</h3><p>把当前任务与材料交给已有模型，由它生成这次回答。换一份材料，输入就变了。</p></div></div>
-      <p>例如模型可能已经学过 Python 的语法，但要判断你的程序缺不缺冒号，仍需要看到相关代码。训练中学到的一般知识，不能代替查看这次项目的实际情况。</p>
+      <p>例如模型可能已经学过 Python 的语法，但要判断你的程序缺不缺冒号，仍需要看到相关代码。结合训练中的一般知识，读取本次项目的实际资料。</p>
       <ArticleAside title="模型参数与聊天记录"><p>参数属于模型本身；聊天记录、系统说明和工具结果属于本轮<ConceptTerm slug="context">上下文</ConceptTerm>。应用可能另外保存会话或用于后续训练，这取决于具体产品的数据设置，不能仅凭模型在当前对话中记得一句话，就判断它已被写进参数。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="choice" title="同一句话的不同续写" className={styles.offset}>
       <p id="llm-sampling" className="vp-citation-target">有了概率分布，还需要决定怎样选。贪心解码选择当前概率最高的候选；采样则按分布抽取。<ConceptTerm slug="temperature">温度</ConceptTerm>等设置会改变分布的分散程度：通常调高温度，低概率候选更可能被抽到；调低温度，选择更集中在高概率候选。因此，相同输入也可能得到不同续写。<Cite id="llm-sampling" /></p>
-      <blockquote className={styles.pullquote}>候选的概率，衡量的是怎样接下去；<br />它证明不了一句话是不是事实。</blockquote>
-      <p>写一段邀请文案，可以接受几种自然的措辞；问今天服务是否恢复，则需要运行结果。即使调低温度，让模型更常选高概率的续写，它也不会因此拿到缺失的日志，不能据此认定服务恢复。</p>
+      <blockquote className={styles.pullquote}>候选的概率，衡量的是怎样接下去；<br />它证明不了一句话是否事实。</blockquote>
+      <p>写一段邀请文案，可以接受几种自然的措辞；问今天服务是否恢复，则需要运行结果。让模型更常选高概率的续写，它也不会因此拿到缺失的日志。</p>
       <p id="llm-stopping" className="vp-citation-target">生成还需要停止条件，例如结束标记、指定的停止序列或输出长度限制。本页为了展示有限路径，在句号处结束；实际模型不会在每个句号后都停止。达到长度上限时，回答也可能尚未写完。<Cite id="llm-stopping" /></p>
     </ArticleSection>
     <ArticleSection id="evidence" title="回答仍需要依据">
       <OldAnchor slug="llm" part="quiz-heading" /><OldAnchor slug="llm" part="prompt-heading" />
       <p id="llm-evidence" className="vp-citation-target">LLM 可以生成清楚、流畅的文字，也会产生错误或编造的内容，通常称为<ConceptTerm slug="hallucination">幻觉</ConceptTerm>。Google 的课程也将错误预测和偏见列为使用 LLM 时需要考虑的问题。<strong>语言通顺和回答正确，需要分别核对。</strong><Cite id="llm-evidence" /></p>
       <p>如果模型说“服务已经恢复”，应当能找到本次检查的状态码和结果。如果没有执行检查，这句话最多是推测。可追踪的资料、真正运行的工具和明确的验收条件，才能让你查到结论从哪里来。</p>
-      <p>在 <ConceptTerm slug="agent-harness">Harness</ConceptTerm> 里，模型负责根据现有信息提出下一步；运行程序负责执行允许的操作并带回结果。有了这条反馈链，程序才能依据本步结果继续处理文件、日志和任务状态。单独生成一个工具名称，并不等于工具已经运行。</p>
+      <p>在 <ConceptTerm slug="agent-harness">Harness</ConceptTerm> 里，模型负责根据现有信息提出下一步；运行程序负责执行允许的操作并带回结果。有了这条反馈链，程序才能依据本步结果继续处理文件、日志和任务状态。单独生成一个工具名称。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
@@ -52,29 +52,29 @@ export function TokenTermPage() {
     <ArticleSection id="pieces" title="文字与编号">
       <OldAnchor slug="token" part="definition" />
       <p id="token-encoding" className="vp-citation-target">分词器先把文字拆成片段，再通过词表把片段映射为整数编号。模型收到的是这些编号；分词演示把片段单独画出来，是为了让我们看清切分位置，普通聊天仍显示连续文字。<Cite id="token-encoding" /></p>
-      <p>先用两套很小的教学词表看清这件事。切换按字符或按子词，再把文字翻到编号一面。这里的两套词表和编号都是自定义样例，只覆盖 lower 与 lowest，不代表任何真实模型。</p>
+      <p>先用两套很小的教学词表看清这件事。切换按字符或按子词，再把文字翻到编号一面。这里的两套词表和编号都是自定义样例。</p>
       <OldAnchor slug="token" part="scene-heading" /><TokenLesson />
       <p>lower 按字符拆成 5 个单位，按这里的子词表拆成 low 和 er 两个单位。原文没有变，表示它的编号序列变了。编号 1 在一套词表里是 l，在另一套里是 low，离开对应词表就不能直接比较。</p>
-      <p>中文也不能直接按字数推算。假如教学词表里分别收录了“日”和“志”，那么“日志”会占两个单位；若词表收录的是“日志”这一整段，它又可能只占一个。这只是用来说明词表差异的假设，不是任何真实模型对“日志”的计数。</p>
+      <p>中文也不能直接按字数推算。假如教学词表里分别收录了“日”和“志”，那么“日志”会占两个单位；若词表收录的是“日志”这一整段，它又可能只占一个。这只是用来说明词表差异的假设。</p>
     </ArticleSection>
     <ArticleSection id="vocabulary" title="边界由词表决定">
-      <p id="token-boundaries" className="vp-citation-target">按完整单词切分，遇到不常见的词可能无从表示；按字符切分，序列又容易变长。子词方法在这两者之间取舍，让常见片段可以合在一起，其他内容拆成更小的单位。<strong>所以字数、单词数和 Token 数并不是同一个数。</strong><Cite id="token-boundaries" /></p>
+      <p id="token-boundaries" className="vp-citation-target">按完整单词切分，遇到不常见的词可能无从表示；按字符切分，序列又容易变长。子词方法在这两者之间取舍，让常见片段可以合在一起，其他内容拆成更小的单位。<strong>字数、单词数与 Token 数采用各自的计量方式。</strong><Cite id="token-boundaries" /></p>
       <dl className={styles.pairDefinition}><div><dt>Token</dt><dd>切分后得到的一个单位；模型使用它在词表中对应的编号。</dd></div><div><dt>分词器</dt><dd>负责切分和编号转换的程序；它的词表与规则会影响结果。</dd></div></dl>
       <p id="token-vocabulary" className="vp-citation-target">BPE 是一种常见方法：训练分词器时，逐步合并经常相邻出现的片段；处理新文本时，再按学到的合并规则切分。字节级 BPE 从字节出发，因此显示成一个字符的内容也可能涉及多个单位。分词器的训练与语言模型本身的训练是不同环节。<Cite id="token-vocabulary" /></p>
       <p id="token-model-count" className="vp-citation-target">即使原文不变，分词器或词表一换，边界和编号也可能改变。OpenAI 的 tiktoken 就提供了按模型选择编码的接口。想知道一份材料实际占多少，应使用目标模型对应的分词器，把空格、标点和代码符号也连同原文一起输入。<Cite id="token-model-count" /></p>
     </ArticleSection>
     <ArticleSection id="decode" title="从编号回到文字" className={styles.offset}>
-      <p id="token-decoding" className="vp-citation-target">解码按词表把编号转换回可显示的文字。Hugging Face 的课程特别提醒，解码也需要处理空格和子词连接方式，并非简单地在每个片段之间插入空格。不同分词器怎样还原文字，还要看各自的规则，不能把本页的小词表照搬到所有模型。<Cite id="token-decoding" /></p>
+      <p id="token-decoding" className="vp-citation-target">解码按词表把编号转换回可显示的文字。解码也需要处理空格和子词连接方式。还要看各自的规则。<Cite id="token-decoding" /></p>
       <p>在本页的小词表里，[1, 2] 可以还原成 lower。你点击“按编号还原”，看到的是按编号查回 low、er，再把它们接在一起；程序没有判断 lower 是什么意思。</p>
-      <blockquote className={styles.pullquote}>编号让文本可以被计算；<br />编号的大小不代表词义的大小。</blockquote>
-      <p>后续模型会把编号映射到内部表示，再进行计算。Token 与<ConceptTerm slug="embedding">嵌入</ConceptTerm>有关，但不是同一件事：前者是序列里的离散单位，后者是模型使用的数值表示。</p>
+      <blockquote className={styles.pullquote}>编号让文本可以被计算；<br />编号用于标识词表条目。</blockquote>
+      <p>后续模型会把编号映射到内部表示，再进行计算。Token 与<ConceptTerm slug="embedding">嵌入</ConceptTerm>有关，后者是模型使用的数值表示。</p>
     </ArticleSection>
     <ArticleSection id="budget" title="按分词器核算请求">
       <OldAnchor slug="token" part="quiz-heading" /><OldAnchor slug="token" part="prompt-heading" />
       <p id="token-counting" className="vp-citation-target">以 Claude 的计数接口为例，可以在发送消息前估算请求的输入 Token；请求中的系统说明、工具和多模态内容也需要考虑。官方将计数结果称为估计，实际用量可能略有不同。因此，应同时查看对应接口的计数规则和实际请求返回的用量。<Cite id="token-counting" /></p>
       <p>你粘贴的正文只是输入的一部分。应用还可能加入历史消息、工具定义或检索资料；生成的回答也有自己的长度限制。规划<ConceptTerm slug="context-window">上下文窗口</ConceptTerm>时，应给输出和后续工具结果留出空间。</p>
       <p>如果聊天应用没有显示完整请求或用量，你只能估算，不能凭输入框里的字数断定还剩多少空间。</p>
-      <p>编号序列更短，不代表回答更好。删掉重复日志可能有帮助，删掉唯一的错误位置则可能让模型失去依据。控制数量时，仍要保留当前任务真正需要的内容。</p>
+      <p>编号序列更短。删掉重复日志可能有帮助，删掉唯一的错误位置则可能让模型失去依据。控制数量时，仍要保留当前任务真正需要的内容。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
@@ -95,7 +95,7 @@ export function AgentTermPage() {
     <ArticleSection id="calendar" title="根据查到的结果行动">
       <p>先让日历结果回来，再决定下一步。下面是两条固定的教学路径，点击按钮只是逐步查看动作；这里没有连接真实日历，没有调用模型，也不会发送邀请。</p>
       <OldAnchor slug="agent" part="scene-heading" /><AgentLesson />
-      <p id="agent-feedback" className="vp-citation-target">实际运行的智能体需要从工具和环境取得反馈，用来判断进度。在这个例子里，模型先提出读取日历，运行程序核对后调用日历工具，把结果交回模型。模型据此选择准备草稿或询问其他时间；若要写草稿，程序还需确认没有越过“只准备邀请”的范围。Hugging Face 的课程把决定下一步、调用工具、观察结果串成一个循环；Anthropic 的实践文章也强调，应依据真实工具返回或执行结果继续，而非只依据模型先前的计划。<strong>计划要查日历，与已经查到空档，是两件事。</strong><Cite id="agent-feedback" /></p>
+      <p id="agent-feedback" className="vp-citation-target">实际运行的智能体需要从工具和环境取得反馈，用来判断进度。在这个例子里，模型先提出读取日历，运行程序核对后调用日历工具，把结果交回模型。模型据此选择准备草稿或询问其他时间；若要写草稿，程序还需确认没有越过“只准备邀请”的范围。Hugging Face 的课程把决定下一步、调用工具、观察结果串成一个循环；Anthropic 的实践文章也强调，应依据真实工具返回或执行结果继续。<strong>计划要查日历，与已经查到空档，是两件事。</strong><Cite id="agent-feedback" /></p>
       <p>切到“没有共同空档”，继续执行时，页面会询问你能否换个时间，而不会编出一张邀请。目标没有变，下一步却因为证据不同而改变。把缺少的信息说明白，也是这个系统应当具备的能力。</p>
     </ArticleSection>
     <ArticleSection id="roles" title="模型与运行程序">
@@ -106,7 +106,7 @@ export function AgentTermPage() {
     <ArticleSection id="workflow" title="固定步骤与自主选择" className={styles.offset}>
       <p id="agent-workflow" className="vp-citation-target">“Agent”并没有一种覆盖所有产品的统一定义。Anthropic 在其工程文章中区分：工作流按预先写好的代码路径组织操作；智能体则让模型动态决定过程和工具使用。对路径明确的任务，固定工作流往往更容易预测。<Cite id="agent-workflow" /></p>
       <p>比如每天把同一份报表转换格式再存档，规则已经清楚，未必需要模型临场规划。若要调查原因不明的服务故障，下一次该读哪个文件取决于刚发现的线索，才更需要动态选择。</p>
-      <ArticleAside title="本页演示与真实智能体"><p>本页用写好的分支让结果稳定可复现，它本身是教学程序。真实的语言模型智能体由模型提出动作，运行程序检查和执行；模型也可能选错，所以不能把演示中两条正确路径当作实际可靠性的证明。</p></ArticleAside>
+      <ArticleAside title="本页演示与真实智能体"><p>本页用写好的分支让结果稳定可复现，它本身是教学程序。真实的语言模型智能体由模型提出动作，运行程序检查和执行，模型也可能选错。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="stop" title="完成和停止">
       <OldAnchor slug="agent" part="quiz-heading" /><OldAnchor slug="agent" part="prompt-heading" />

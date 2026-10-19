@@ -66,6 +66,6 @@ export function RuntimeValidationLab() {
       <div className={styles.boundaryCode}><div className={styles.controls} role="group" aria-label="选择数据处理方式"><button type="button" aria-pressed={!checksValue} onClick={() => { setChecksValue(false); setOutcome(null); }}>只做类型断言</button><button type="button" aria-pressed={checksValue} onClick={() => { setChecksValue(true); setOutcome(null); }}>真正检查值</button></div><pre><code>{checksValue ? 'if (typeof quantity !== "number") {\n  throw new Error("需要数字");\n}\nquantity + 3;' : 'const count = quantity as number;\ncount + 3;'}</code></pre></div>
     </div>
     <div className={styles.runStrip}><button type="button" onClick={run}><Play size={16} weight="fill" />处理当前数据</button><output aria-live="polite" data-rejected={outcome?.rejected}><span>{outcome?.rejected ? "校验结果" : "计算结果"}</span><strong key={`${json}-${checksValue}-${outcome?.result}`}>{outcome?.result ?? "—"}</strong></output></div>
-    <figcaption><code>as number</code> 不改变值。这里的校验只检查“是不是数字”；商品数量是否为正整数，还需要单独检查。</figcaption>
+    <figcaption><code>as number</code> 不改变值。商品数量是否为正整数，还需要单独检查。</figcaption>
   </figure>;
 }

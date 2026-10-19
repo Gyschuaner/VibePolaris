@@ -72,7 +72,7 @@ export function getRetrievalDemoState(
       ? "缺证据 · 不生成结论"
       : status === "citable"
         ? "有来源候选 · 仍需核对"
-        : "候选已返回 · 还不是答案";
+        : "候选已返回 · 继续核对资料";
   const statusDetail = status === "missing"
     ? selected
       ? "最高分卡片没有来源 ID；把相似度当成事实会越过引用闸门。"

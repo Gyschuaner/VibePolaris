@@ -1,8 +1,8 @@
 {
   "slug": "claude-token-theft-session-20260908",
   "title": "Claude 订阅额度异常消耗：被盗会话密钥怎样变成可消耗的 token",
-  "summary": "TechCrunch 于 2026-09-08 报道，一名英国独立顾问发现自己未使用 Claude 时账户额度仍在下降；Anthropic 调查后称，在部分案例中信息窃取恶意软件盗走登录会话，再访问账户并消耗额度。报道还描述了会话密钥铸造未经授权 OAuth token、撤销授权和部分退款；这不是 Anthropic 已确认所有账户都受影响。",
-  "body": "TechCrunch 在 9 月 8 日报道，英国独立 AI 顾问 Grant De Swardt 发现 Claude Max 20x 账户在自己没有工作时持续消耗 token。关闭已连接的 Cowork、Dispatch 和本地任务后，额度仍从 45% 上升到 55%。Anthropic 暂停了他的付费账户、撤销会话和服务器端 Claude Code token，并退还剩余订阅费用的一部分。\n\nAnthropic 后来告诉他，调查发现一个被攻破的 Claude session key 被用来铸造未经授权的 Claude Code OAuth token。TechCrunch 还刊出了 Anthropic 发给其他用户的邮件：公司怀疑常见的信息窃取恶意软件从电脑中盗取登录会话，再用会话访问 Claude 账户、消耗额度。恶意软件可能来自感染的软件或广告，并不等同于 Claude 本身感染了用户设备。\n\n事件的关键不是“模型偷了 token”，而是订阅系统把会话、授权和用量绑定在一起：一旦攻击者拿到还有效的会话，就能让后台任务看起来像账户正常使用，额度和费用就变成受害者承担的资源。报告中的个案还反映出支持系统缺少逐项用量明细，用户很难第一时间判断是自己、定时任务还是第三方在消耗。\n\nTechCrunch 采访了多名用户，有人称额度在几分钟内从 0% 变到 49%，也有人收到 Anthropic 的提醒和授权撤销。它们是报道中的用户陈述与公司邮件，不是一个经过独立统计的整体发生率。Anthropic 没有向 De Swardt 提供完整的逐项用量说明，也未回答所有识别滥用的问题。\n\n对使用代理和代码工具的人，最实用的教训是把会话当成凭据：启用多因素认证、撤销不用的连接、避免在不可信电脑登录、监控 token 与 OAuth 授权变化，并要求服务商提供能定位到任务、时间和 IP 的用量日志。安全边界还需要平台方补上，而不应完全转嫁给订阅者。",
+  "summary": "TechCrunch 于 2026-09-08 报道，一名英国独立顾问发现自己未使用 Claude 时账户额度仍在下降；Anthropic 调查后称，在部分案例中信息窃取恶意软件盗走登录会话，再访问账户并消耗额度。报道还描述了会话密钥铸造未经授权 OAuth token、撤销授权和部分退款。",
+  "body": "TechCrunch 在 9 月 8 日报道，英国独立 AI 顾问 Grant De Swardt 发现 Claude Max 20x 账户在自己没有工作时持续消耗 token。关闭已连接的 Cowork、Dispatch 和本地任务后，额度仍从 45% 上升到 55%。Anthropic 暂停了他的付费账户、撤销会话和服务器端 Claude Code token，并退还剩余订阅费用的一部分。\n\nAnthropic 后来告诉他，调查发现一个被攻破的 Claude session key 被用来铸造未经授权的 Claude Code OAuth token。TechCrunch 还刊出了 Anthropic 发给其他用户的邮件：公司怀疑常见的信息窃取恶意软件从电脑中盗取登录会话，再用会话访问 Claude 账户、消耗额度。恶意软件可能来自感染的软件或广告。\n\n事件的关键是订阅系统把会话、授权和用量绑定在一起：一旦攻击者拿到还有效的会话，就能让后台任务看起来像账户正常使用，额度和费用就变成受害者承担的资源。报告中的个案还反映出支持系统缺少逐项用量明细，用户很难第一时间判断是自己、定时任务还是第三方在消耗。\n\nTechCrunch 采访了多名用户，有人称额度在几分钟内从 0% 变到 49%，也有人收到 Anthropic 的提醒和授权撤销。它们是报道中的用户陈述与公司邮件。Anthropic 没有向 De Swardt 提供完整的逐项用量说明，也未回答所有识别滥用的问题。\n\n对使用代理和代码工具的人，最实用的教训是把会话当成凭据：启用多因素认证、撤销不用的连接、避免在不可信电脑登录、监控 token 与 OAuth 授权变化，并要求服务商提供能定位到任务、时间和 IP 的用量日志。安全边界还需要平台方补上，而不应完全转嫁给订阅者。",
   "publishedAt": "2026-09-08",
   "eventDate": "2026-09-08",
   "isExample": false,
@@ -29,7 +29,7 @@
     {
       "id": "infostealer",
       "title": "恶意软件来自用户环境的可能性",
-      "body": "Anthropic 邮件称常见 infostealer 可盗取登录会话。报道没有证明所有受影响用户都感染同一种恶意软件，也没有说 Claude 服务本身被攻破。",
+      "body": "Anthropic 邮件称常见 infostealer 可盗取登录会话。没有说 Claude 服务本身被攻破。",
       "kind": "boundary"
     },
     {
@@ -105,7 +105,7 @@
     },
     {
       "url": "https://techcrunch.com/2026/09/08/hackers-are-stealing-claude-tokens-from-subscribers/",
-      "claim": "报道中的异常用量和用户数量来自个案与用户自报，不代表所有订阅账户的发生率。",
+      "claim": "报道中的异常用量和用户数量来自个案与用户自报。",
       "excerpt": "Other users reported similar spikes, but the story does not establish a population-wide rate."
     }
   ],

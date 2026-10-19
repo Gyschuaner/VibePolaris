@@ -6,7 +6,7 @@ import styles from "./BackpressureConcept.module.css";
 
 const steps = [
   { label: "生产数据", title: "上游先把数据推过来", detail: "生产者的速度暂时高于下游处理速度。", Icon: Broadcast },
-  { label: "缓冲变满", title: "缓冲区不是无限仓库", detail: "槽位到顶后，继续塞只会把风险往后推。", Icon: Gauge },
+  { label: "缓冲变满", title: "缓冲区有明确容量", detail: "槽位到顶后，继续塞只会把风险往后推。", Icon: Gauge },
   { label: "压力回传", title: "让上游慢下来或暂停", detail: "下游用容量信号收回节奏控制权。", Icon: Pause },
   { label: "重新平衡", title: "下游接住后再继续", detail: "队列保持有界，流量恢复才不会再冲垮它。", Icon: CheckCircle },
 ];
@@ -51,6 +51,6 @@ export function BackpressureHero() {
       <div><span>下游结果</span><strong>{scene.step === 3 ? "继续交付" : "等待"}</strong></div>
     </div>
     <div className={styles.backpressureHeroResult} role="status"><current.Icon size={19} aria-hidden="true" /><span><strong>{current.title}</strong> · {current.detail}</span></div>
-    <figcaption>背压把“谁能继续生产”的决定交给真正知道容量的下游。它不是无穷加大队列，也不是默认丢弃数据，而是一条能让压力沿流反向传播的控制信号。</figcaption>
+    <figcaption>背压把“谁能继续生产”的决定交给真正知道容量的下游。它是一条能让压力沿流反向传播的控制信号。</figcaption>
   </figure>;
 }

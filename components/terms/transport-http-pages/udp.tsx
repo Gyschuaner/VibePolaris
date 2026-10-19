@@ -52,11 +52,11 @@ export function UdpTermPage() {
     <ArticleSection id="udp-datagram-section" title="UDP 交付的是一封封数据报">
       <p id="udp-datagram" className="vp-citation-target">UDP 的最小报文包含源端口、目标端口、长度和校验和。端口把数据报交给对应的应用端点，长度让接收方知道这一封在哪里结束；它不会像 TCP 那样把相邻写入拼成一条没有边界的字节流。端口号登记只是服务命名与分配参考，不会替协议补可靠性。<Cite id="udp-datagram" /><Cite id="udp-port" /></p>
       <div className={styles.udpHeaderStrip}><div><span>Source Port</span><code>51000</code></div><div><span>Destination Port</span><code>4000</code></div><div><span>Length</span><code>64 bytes</code></div><div><span>Checksum</span><code>检测部分错误</code></div></div>
-      <p id="udp-fields" className="vp-citation-target">校验和的作用是发现传输中的部分错误，不是承诺修复错误。收到的每一封数据报仍是一个独立结果；如果校验失败、数据报被丢弃，UDP 没有内建的补发步骤。<Cite id="udp-fields" /><Cite id="udp-checksum" /></p>
+      <p id="udp-fields" className="vp-citation-target">校验和的作用是发现传输中的部分错误。收到的每一封数据报仍是一个独立结果；如果校验失败、数据报被丢弃，UDP 没有内建的补发步骤。<Cite id="udp-fields" /><Cite id="udp-checksum" /></p>
     </ArticleSection>
     <ArticleSection id="udp-guarantees-section" title="少做保证，应用多做决定">
-      <p id="udp-delivery" className="vp-citation-target">UDP 不保证数据报一定到达、按序到达或只到达一次。上图里 1、4、3 仍各自完整，但应用必须知道它们的编号和时间，才能判断 4 是最新画面还是一次乱序。<Cite id="udp-delivery" /></p>
-      <p id="udp-tradeoff" className="vp-citation-target">它不需要 TCP 那样的连接建立和维护状态，适合服务发现、实时媒体、查询响应等已经知道怎样处理缺失或过期数据的场景。少做传输层保证不是“天然更快”；应用重试、等待和排序照样会占用时间。<Cite id="udp-tradeoff" /></p>
+      <p id="udp-delivery" className="vp-citation-target">上图里 1、4、3 仍各自完整，但应用必须知道它们的编号和时间，才能判断 4 是最新画面还是一次乱序。<Cite id="udp-delivery" /></p>
+      <p id="udp-tradeoff" className="vp-citation-target">它不需要 TCP 那样的连接建立和维护状态，适合服务发现、实时媒体、查询响应等已经知道怎样处理缺失或过期数据的场景。应用重试、等待和排序照样会占用时间。<Cite id="udp-tradeoff" /></p>
       <UdpPolicyLab />
     </ArticleSection>
     <ArticleSection id="udp-path-section" title="路径上的风险仍要有人负责">

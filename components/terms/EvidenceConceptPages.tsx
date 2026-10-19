@@ -14,23 +14,23 @@ export function HybridSearchTermPage() {
     <ArticleSection id="routes" title="一次查询，两种检索信号"><Legacy slug="hybrid-search" names={["question", "definition"]}/>
       <p id="hybrid-definition" className="vp-citation-target"><strong>混合搜索把不同检索方法的结果组合起来。</strong>Azure AI Search 的实现并行执行全文（关键词路线）与向量（语义路线）查询，再用 RRF（Reciprocal Rank Fusion，一种只看名次的融合方法）合并排名。词项匹配可以利用型号、代码等具体表达；向量查询先把文字编码成一组数字，意思相近的文字在这个数字空间里离得更近，再按远近寻找候选。<strong>两种信号互补，也都可能找到无关资料。</strong>这只是混合搜索的一种实现，后续还可以重排。<Cite id="hybrid-definition"/></p>
       <p>产品型号与故障描述承担不同作用。“MX-42”确定了对象，“经常断开连接”表达了问题；如果资料只写“掉线重连”，单纯词项匹配可能漏掉它。反过来，另一型号的重连指南即使意思接近，也未必适用。</p>
-      <p>硬性条件应单独限定。例如只允许返回 MX-42 的资料，就要明确过滤型号；给型号匹配加一点分，只会提高它的排名，另一型号里“断开连接”写得更详细的资料仍可能压过它。过滤是直接把不合格资料排除出候选。<ConceptTerm slug="semantic-search">语义搜索</ConceptTerm> 帮助找相近表达，不能替代适用范围检查。</p>
+      <p>硬性条件应单独限定。例如只允许返回 MX-42 的资料，就要明确过滤型号；给型号匹配加一点分，只会提高它的排名，另一型号里“断开连接”写得更详细的资料仍可能压过它。过滤是直接把不合格资料排除出候选。<ConceptTerm slug="semantic-search">语义搜索</ConceptTerm> 找到相近表达后，继续检查资料的适用范围。</p>
     </ArticleSection>
     <ArticleSection id="fusion" title="把两路排名合成一份"><Legacy slug="hybrid-search" names={["scene-heading"]}/>
       <p id="hybrid-calculation" className="vp-citation-target">RRF 按名次分配贡献：<strong>一个候选在每一路里每出现一次，就加上 1 / (k + 名次)</strong>；没进某一路，这一路的贡献记 0；同一个 ID 在两路都出现，两边分数相加。Elastic 的实现以第一名为 1，并通过候选窗口限制参与融合的结果。它使用排名，避免直接比较两种原始分数。<Cite id="hybrid-calculation"/></p>
-      <p>下面是四篇虚构资料和两份预设排名：关键词路是 A①、B②、C③，语义路是 B①、D②、A③；名次从 1 开始，没有执行真实检索。本例取 k = 60，每路最多三条，融合后只显示前三条。k 是缓和名次差距的常数，不是取 60 条；条形的深浅分别对应两路贡献，改动路线或窗口，再融合一次。</p>
+      <p>下面是四篇虚构资料和两份预设排名：关键词路是 A①、B②、C③，语义路是 B①、D②、A③；名次从 1 开始，没有执行真实检索。本例取 k = 60，每路最多三条，融合后只显示前三条。k = 60 是本例用于缓和名次差距的常数。</p>
       <HybridLesson/>
       <p>在这组示例排名下，B 贡献 1/62 + 1/61，A 是 1/61 + 1/63，所以 B 略高。D 只在向量（语义）这一路排第二，也能进入前三。<strong>同一文档被两路找到，会合计贡献，但不会复制成两条。</strong>同分时本例按 ID 排序，这只是确定展示顺序的约定。</p>
     </ArticleSection>
     <ArticleSection id="scores" title="两路分数不能直接相加"><Legacy slug="hybrid-search" names={["quiz-heading"]}/>
       <p id="hybrid-scales" className="vp-citation-target">全文分数与向量相似度可能使用不同尺度。Weaviate 文档对比基于排名的融合与先归一化再加权的融合：前者主要保留顺序，后者还保留分数间的相对差距。<strong>融合规则决定保留哪种信息。</strong>归一化加权要先把每路分数缩到可比较的区间，再按权重相加；RRF 则不要求把原始分数先变成同一种单位。<Cite id="hybrid-scales"/></p>
       <div className={s.pair}><div><h3>按排名融合</h3><p>第一与第二差一点还是差很多，都只通过名次体现。参数 k 改变名次差异的影响，本页固定为 60。</p></div><div><h3>按归一分数融合</h3><p>先处理每路分数尺度，再按权重相加。归一方式、异常高分与权重会影响结果，需要用实际问题评估。</p></div></div>
-      <p>融合分数表达这套规则下的排序贡献，<strong>不是答案正确率，也不是资料真实度。</strong>无论怎样融合，仍要读取原文，核对型号、版本、条件和问题是否对应。</p>
+      <p>融合分数表达这套规则下的排序贡献，<strong>分数用于融合两路排名。</strong>无论怎样融合，仍要读取原文，核对型号、版本、条件和问题是否对应。</p>
     </ArticleSection>
     <ArticleSection id="limits" title="候选范围决定融合结果" className={base.offset}><Legacy slug="hybrid-search" names={["prompt-heading"]}/>
       <p id="hybrid-window" className="vp-citation-target">每路候选窗口就是这一路最多取前几名；候选窗口与最终显示数量是两个步骤。Elastic 先取各路窗口中的结果参与融合，再截取最终数量。<strong>不在任何一路窗口里的资料，不会进入融合结果。</strong>把本例窗口改成 1，只剩 A、B；D 即使有用，也没有参与这次计算。<Cite id="hybrid-window"/></p>
       <p id="hybrid-evaluation" className="vp-citation-target">RRF 原始论文用多个 TREC 与 LETOR 实验考察排名融合，并在研究中选择 k = 60。结果支持它在这些实验中的效果，<strong>不能由此推断所有资料库都必然改善。</strong>自己的问题集仍需检查关键资料是否进入前排、型号不符的内容是否被误选，以及增加路线的成本。<Cite id="hybrid-evaluation"/></p>
-      <ArticleAside title="融合后的核对"><p>需要更细地比较查询与候选时，可以继续做 <ConceptTerm slug="reranking">重排序</ConceptTerm>。它处理已经选出的候选；融合扩大了可比较的范围，但两者都无法代替资料本身的质量。</p></ArticleAside>
+      <ArticleAside title="融合后的核对"><p>需要更细地比较查询与候选时，可以继续做 <ConceptTerm slug="reranking">重排序</ConceptTerm>。融合扩大候选范围，重排比较已选候选，资料质量在检索前后持续检查。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }
@@ -48,7 +48,7 @@ export function VectorStoreTermPage() {
     <ArticleSection id="versions" title="原文更新，记录仍可能是旧的"><Legacy slug="vector-store" names={["scene-heading"]}/>
       <p>下面只在浏览器内存里保存两条虚构记录。A 是退款规则，B 是打印说明。二维向量是手工指定的单位向量；真实系统通常先由嵌入模型（embedding 模型）把查询编码成向量，本例为聚焦版本流程而固定使用 [1, 0]，按余弦相似度取第一条得分超过 0.2 的结果（两个向量的方向越接近，相似度越高）。没有调用嵌入模型或数据库。</p>
       <VectorStoreLesson/>
-      <p>先写入 v1，再把原文改成 v2，查询仍会返回 A 的“三个工作日”。<strong>修改源文件，不等于修改存储记录。</strong>启用当前版本过滤后，旧 A 被排除；B 的余弦为 0，也过不了本例阈值，所以页面显示没有可用依据。过滤只是不让旧值被使用，不会产生新值；同步 A 后，再查询才会返回“七个工作日”。</p>
+      <p>先写入 v1，再把原文改成 v2，查询仍会返回 A 的“三个工作日”。<strong>存储记录需要通过实际写入更新。</strong>启用当前版本过滤后，旧 A 被排除；B 的余弦为 0，也过不了本例阈值，所以页面显示没有可用依据。过滤只是不让旧值被使用，不会产生新值；同步 A 后，再查询才会返回“七个工作日”。</p>
       <p>“当前版本”来自本例的原文版本选择器。真实应用需要自己的版本记录、更新触发和同步检查；只给记录加一个 version 字段，没有比较对象和过滤流程，仍会读到旧内容。</p>
     </ArticleSection>
     <ArticleSection id="sync" title="用同一ID更新一条记录"><Legacy slug="vector-store" names={["quiz-heading"]}/>
@@ -57,7 +57,7 @@ export function VectorStoreTermPage() {
       <p>删除 A，只删除本例存储中的记录；原文仍在左侧。之后查询退款没有结果，说明删除已经影响候选。原文是否也需要删除、哪些副本仍然存在、历史版本是否保留，要由应用另外处理。</p>
     </ArticleSection>
     <ArticleSection id="lifetime" title="保存多久，由实现决定" className={base.offset}><Legacy slug="vector-store" names={["prompt-heading"]}/>
-      <p id="store-lifetime" className="vp-citation-target">LangChain 把不同实现放在向量存储接口下，进程内存与持久服务的保存方式不同；是否有近似索引通常影响规模变大时的速度与召回取舍，不自动改变“记录是什么”。<strong>接口相似，不代表生命周期、访问限制或运维能力相同。</strong>本页刷新后数据消失；需要长期保存时，应选择相应存储，并检查持久化、备份、更新和删除流程。<Cite id="store-lifetime"/></p>
+      <p id="store-lifetime" className="vp-citation-target">LangChain 把不同实现放在向量存储接口下，进程内存与持久服务的保存方式不同；是否有近似索引通常影响规模变大时的速度与召回取舍，不自动改变“记录是什么”。<strong>选择存储时，分别核对生命周期、访问限制与运维能力。</strong>本页刷新后数据消失；需要长期保存时，应选择相应存储，并检查持久化、备份、更新和删除流程。<Cite id="store-lifetime"/></p>
       <ArticleAside title="向量存储与向量数据库"><p><ConceptTerm slug="vector-database">向量数据库</ConceptTerm> 是提供向量管理与查询能力的一种数据库实现。向量存储是更宽的能力名称，也可能只是一个内存接口。本项目保留“向量数据库”作为该词常见叫法，阅读具体文档时仍要确认它说的是接口还是产品。ID 通常只在一个 collection（集合）或 namespace（命名空间）内唯一，更新和删除时要说清是哪个集合、哪个命名空间。</p><p>在 <ConceptTerm slug="rag">RAG</ConceptTerm> 中，它负责保存和返回候选资料；后续如何读取、组织输入和生成回答，是另一部分工作。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
@@ -66,7 +66,7 @@ export function VectorStoreTermPage() {
 export function CitationTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={citationSources}/>;
   return <ConceptArticle slug="citation" title="引用" sources={citationSources} sections={[["location", "让读者找得到具体出处"], ["support", "出处是否支持这句话"], ["selector", "从文章入口到具体段落"], ["identifiers", "链接、版本与检查时间"]]}
-    intro={<>“退款三个工作日到账”后面放了一个链接，读者仍不知道它是否适用于线上退款、是否要求审核通过、是不是保证时效。引用要把结论和对应材料连起来，让这些条件能够被核对。</>}
+    intro={<>引用要把结论和对应材料连起来，让这些条件能够被核对。</>}
     >
     <ArticleSection id="location" title="让读者找得到具体出处"><Legacy slug="citation" names={["question", "definition"]}/>
       <p><strong>引用标明一句话或一项论断的来源，让读者能回到材料核对。</strong>它可以是脚注、角标或作者与年份标记；形式应配合阅读场景。普通链接只告诉你“去哪个页面”，引用还要说明“这句话用了哪份材料的哪一处”。参考资料列表列出材料，正文中的标记则说明哪一处使用了哪份材料。</p>
@@ -74,19 +74,19 @@ export function CitationTermPage() {
       <p>引用也不要求把整段原文搬过来。概括别人的研究时，用自己的话准确保留范围和条件；直接引文要明确区分原话与自己的解释。本页用示例或演示呈现的机制，也要说清哪些来自资料，哪些是本页设计的演示约定。</p>
     </ArticleSection>
     <ArticleSection id="support" title="出处是否支持这句话"><Legacy slug="citation" names={["scene-heading"]}/>
-      <p id="citation-support" className="vp-citation-target">引用质量研究会把“出处标得对不对”和“这句话写得好不好”分开看。<strong>写了引用标记，并不等于这条引用支持结论。</strong>它可能只提到相同主题，或只支持复合句中的一部分；还要检查重要主张是否漏了引用。具体判断要逐项对照渠道、对象、时间和确定程度。<Cite id="citation-support"/></p>
+      <p id="citation-support" className="vp-citation-target">引用质量研究会把“出处标得对不对”和“这句话写得好不好”分开看。<strong>引用标记需要对应支持结论的资料内容。</strong>它可能只提到相同主题，或只支持复合句中的一部分；还要检查重要主张是否漏了引用。具体判断要逐项对照渠道、对象、时间和确定程度。<Cite id="citation-support"/></p>
       <p>下面三段退款规则是练习用的虚构材料。你扮演审核 AI 草稿的人：选择一句草稿和一个出处，先把它们配起来，再点击角标定位，最后按条件查看页面展示的判定依据。这个练习的规则是虚构的，但“逐项对照支持范围”的方法适用于真实材料；页面不会调用自动事实核查模型。</p>
       <CitationLesson/>
-      <p>线上规则支持“线上、审核通过后、通常、三个工作日、原路退回”。改写成“所有退款都保证到账”，范围从线上退款扩大到所有退款，确定程度也从“通常”变成“保证”，和原材料对不上了。<strong>保留原文限定，往往比增加引用数量更有用。</strong>如果把申请入口段错配给到账这句话，它不能证明到账时间；同样，材料没有写费用时，也不能替它补成免费。</p>
+      <p>线上规则支持“线上、审核通过后、通常、三个工作日、原路退回”。改写成“所有退款都保证到账”，范围从线上退款扩大到所有退款，确定程度也从“通常”变成“保证”，和原材料对不上了。<strong>保留原文限定，往往比增加引用数量更有用。</strong>材料没有写费用时，也不能替它补成免费。</p>
     </ArticleSection>
     <ArticleSection id="selector" title="从文章入口到具体段落"><Legacy slug="citation" names={["quiz-heading"]}/>
-      <p id="citation-selector" className="vp-citation-target">W3C 的 Web Annotation Data Model 提供文本引用选择器：可以保存要找的原文片段，以及它前后的短文；也可以保存字符起止位置。前一种更像“在页面里找这句”，后一种按位置记，原文编辑后可能偏到别处。<strong>实现定位时，要同时记录原文范围、版本或检查状态。</strong>本页互动里的定位是本地虚构段落，用来演示“从角标找到依据”，不是把角标直接跳到远程网页的某一行。<Cite id="citation-selector"/></p>
+      <p id="citation-selector" className="vp-citation-target">W3C 的 Web Annotation Data Model 提供文本引用选择器：可以保存要找的原文片段，以及它前后的短文；也可以保存字符起止位置。前一种更像“在页面里找这句”，后一种按位置记，原文编辑后可能偏到别处。<strong>实现定位时，要同时记录原文范围、版本或检查状态。</strong>本页互动里的定位是本地虚构段落。<Cite id="citation-selector"/></p>
       <div className={s.pair}><div><h3>找到材料</h3><p>标题、作者或机构、网址或标识符。读者能判断是哪份文档，并打开材料。</p></div><div><h3>找到依据</h3><p>页码、章节、段落或原文片段。读者能把这项结论与具体内容对应起来。</p></div></div>
-      <p id="citation-limits" className="vp-citation-target">自动评估引用是否成立的研究（如 ALCE 基准）也指出了限制：部分支持等情况并不总能准确识别。<strong>自动评估结果仍要配合人工阅读。</strong>即使材料支持这句话，材料本身也可能过时、缺少适用条件或存在错误；引用使核查有入口，并不会替代核查。<Cite id="citation-limits"/></p>
+      <p id="citation-limits" className="vp-citation-target">ALCE 等引用评估研究也讨论部分支持的识别误差，实际判断需要回到具体片段核对。<strong>自动评估结果仍要配合人工阅读。</strong>即使材料支持这句话，材料本身也可能过时、缺少适用条件或存在错误，引用使核查有入口。<Cite id="citation-limits"/></p>
     </ArticleSection>
     <ArticleSection id="identifiers" title="链接、版本与检查时间" className={base.offset}><Legacy slug="citation" names={["prompt-heading"]}/>
-      <p id="citation-identifiers" className="vp-citation-target">DOI（学术文献的持久标识符）由注册机构 Crossref 建议显示为完整的 https://doi.org/ 地址；DOI 指向的网页地址可以被更新，所以材料换了网址，读者仍能通过原标识符找到它。<strong>稳定入口解决的是去哪找，不是内容是否正确。</strong>本页参考资料保留完整网址与机构，研究论文注明年份；会变化的技术文档还应记录版本和检查时间，因为同一个链接里的政策或接口可能已经更新。<Cite id="citation-identifiers"/></p>
-      <ArticleAside title="沿引用核对结论"><p>先看原文是否真的存在，再看渠道、对象、时间和结论是否对应。如果系统只 <ConceptTerm slug="retrieval">检索</ConceptTerm> 到一个标题，还没有读到支持段落，就不能据此声称这句话已有依据。材料缺失时，可以缩小结论或继续查找。</p></ArticleAside>
+      <p id="citation-identifiers" className="vp-citation-target">DOI（学术文献的持久标识符）由注册机构 Crossref 建议显示为完整的 https://doi.org/ 地址；DOI 指向的网页地址可以被更新，所以材料换了网址，读者仍能通过原标识符找到它。<strong>稳定入口解决的是去哪找。</strong>本页参考资料保留完整网址与机构，研究论文注明年份；会变化的技术文档还应记录版本和检查时间，因为同一个链接里的政策或接口可能已经更新。<Cite id="citation-identifiers"/></p>
+      <ArticleAside title="沿引用核对结论"><p>先看原文是否真的存在，再看渠道、对象、时间和结论是否对应。如果系统只 <ConceptTerm slug="retrieval">检索</ConceptTerm> 还没有读到支持段落。材料缺失时，可以缩小结论或继续查找。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }

@@ -49,12 +49,12 @@ export function AssertionLesson() {
         <div className={styles.assertPanelLabel}>{failed || weak ? <WarningCircle size={16} aria-hidden="true" /> : final ? <CheckCircle size={16} aria-hidden="true" /> : <GitDiff size={16} aria-hidden="true" />}<span>Verdict · 结论</span></div>
         <h3>{outcome}</h3>
         <div className={styles.assertPanelBig}>{final ? (failed ? "1s ≠ visible" : weak ? "实现 ≠ 行为" : "visible = true") : "—"}</div>
-        <small>{!final ? "先让事实抵达，再比较。" : failed ? "不是把 sleep 调成 2 秒就完事；应该等待状态，或承认这条检查的期限。" : weak ? "内部变量绿了，用户界面仍可能坏；换成可观察结果才有业务证据。" : "断言现在绑定了状态，而不是猜响应会在第几毫秒完成。"}</small>
+        <small>{!final ? "先让事实抵达，再比较。" : failed ? "根据目标状态设定等待期限，并记录超时结果。" : weak ? "内部变量绿了，用户界面仍可能坏；换成可观察结果才有业务证据。" : "断言现在绑定了状态。"}</small>
       </div>
     </div>
     <div className={styles.assertTimeline}><div data-on={scene.step >= 0}><Code size={15} aria-hidden="true" /><span>写条件</span></div><div data-on={scene.step >= 1}><ArrowCounterClockwise size={15} aria-hidden="true" /><span>发动作</span></div><div data-on={scene.step >= 2}><Hourglass size={15} aria-hidden="true" /><span>等状态</span></div><div data-on={scene.step >= 4} data-danger={failed}><Eye size={15} aria-hidden="true" /><span>解释差异</span></div></div>
     <div className={styles.assertLabMetrics}><div><span>观察对象</span><strong>{oracle === "visible" ? "用户状态" : "内部变量"}</strong></div><div><span>同步点</span><strong>{waitMode === "condition" ? "条件成立" : "固定 1s"}</strong></div><div><span>结论</span><strong>{outcome}</strong></div></div>
-    <p className={styles.assertLabNote} data-danger={failed} data-weak={weak} role="status">{!final ? <><Hourglass size={17} aria-hidden="true" /><span>断言要等真正的观察点出现；在它出现以前，测试只有过程，没有结论。</span></> : failed ? <><WarningCircle size={17} aria-hidden="true" /><span>固定等待把时间当成事实。把 <code>sleep(1000)</code> 换成条件断言，让失败说明“状态没到”，而不是说明“这一秒没到”。</span></> : weak ? <><WarningCircle size={17} aria-hidden="true" /><span>内部变量是线索，不一定是用户契约。断言应尽量靠近可见状态、响应或持久化结果。</span></> : <><CheckCircle size={17} aria-hidden="true" /><span>一条好断言同时说清期待、实际、等待上限和失败差异；它让下一步排查有方向。</span></>}</p>
+    <p className={styles.assertLabNote} data-danger={failed} data-weak={weak} role="status">{!final ? <><Hourglass size={17} aria-hidden="true" /><span>断言要等真正的观察点出现；在它出现以前，测试只有过程，没有结论。</span></> : failed ? <><WarningCircle size={17} aria-hidden="true" /><span>固定等待把时间当成事实。把 <code>sleep(1000)</code> 换成条件断言，让失败说明“状态没到”。</span></> : weak ? <><WarningCircle size={17} aria-hidden="true" /><span>内部变量是线索，不一定是用户契约。断言应尽量靠近可见状态、响应或持久化结果。</span></> : <><CheckCircle size={17} aria-hidden="true" /><span>一条好断言同时说清期待、实际、等待上限和失败差异；它让下一步排查有方向。</span></>}</p>
   </div>;
 }
 

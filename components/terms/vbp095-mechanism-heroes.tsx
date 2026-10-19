@@ -44,7 +44,7 @@ export function DesignTokenMechanismHero() {
         <div className={styles.tokenConsumer} data-role="button"><strong>按钮</strong><small>跟随映射</small></div>
         <div className={styles.tokenConsumer} data-role="link" data-broken={broken}><strong>链接</strong><small>{broken ? "旧值 · 脱离" : "跟随映射"}</small></div>
       </div>
-      <div className={styles.tokenMapping}><small>现在看关系</small><strong>{broken ? "一个组件没有换" : dark ? "映射换了，组件同步" : "组件消费用途"}</strong><p>{broken ? "色值改名不等于建立主题系统。" : "基础值变化集中在语义层。"}</p></div>
+      <div className={styles.tokenMapping}><small>现在看关系</small><strong>{broken ? "一个组件没有换" : dark ? "映射换了，组件同步" : "组件消费用途"}</strong><p>{broken ? "语义令牌按主题映射到实际色值。" : "基础值变化集中在语义层。"}</p></div>
     </div>
   </MechanismFrame>;
 }
@@ -116,10 +116,10 @@ export function LoadingStateMechanismHero() {
 
 const microLabels = ["未收藏", "按下进入 pending", "服务端确认", "撤销", "失败回滚"];
 const microCaptions = [
-  "空闲状态只说明当前事实：还没有收藏，计数是 12，按钮仍可由鼠标或键盘触发。",
+  "空闲状态说明当前事实：还没有收藏，计数是 12，按钮仍可由鼠标或键盘触发。",
   "按下先给即时确认，图标进入 pending；计数可以乐观显示 13，但请求还没有被确认。",
   "服务端确认后，实心星和 13 停住，局部消息把成功留在按钮旁。",
-  "再次点击发起撤销，图标回到轮廓，计数随撤销回到 12；这是另一条动作，不是倒放旧动画。",
+  "再次点击发起撤销，计数随撤销回到 12，这是另一条动作。",
   "请求失败时回滚到 12，消息说明未保存并保留重试，界面不留下假成功。",
 ];
 export function MicrointeractionMechanismHero() {
@@ -177,7 +177,7 @@ const nosqlLabels = ["读一个用户", "改共享价格", "选择模型"];
 const nosqlCaptions = [
   "profile 文档把常一起读取的资料放在一处，一次读取就得到完整对象。",
   "若价格复制进 120 个订单，一次共享变化会把更新范围放大。",
-  "NoSQL 选择的是访问路径和取舍，不是给所有 JSON 贴上‘更快’的标签。",
+  "NoSQL 选择的是访问路径和取舍。",
 ];
 export function NosqlMechanismHero() {
   const scene = useScene(nosqlLabels.length);
@@ -195,7 +195,7 @@ const rowCaptions = [
   "A 为 id=7 创建 balance=80 的新版本，但它还没有对其他事务开放。",
   "B 在 A 提交前建立快照，所以仍然读到已提交的 100。",
   "A 提交 v2；B 的既有快照不自动改写，仍然看见 100。",
-  "提交后开始的事务 C 看到 80；变化来自可见版本，不是换了第三行。",
+  "提交后开始的事务 C 看到 80，变化来自可见版本。",
 ];
 export function RowMechanismHero() {
   const scene = useScene(rowLabels.length);
@@ -203,7 +203,7 @@ export function RowMechanismHero() {
   return <MechanismFrame scene={scene} title="同一逻辑行怎样保留不同事务的可见版本" labels={rowLabels} caption={rowCaptions[step]}>
     <div className={styles.rowScene} data-step={step}>
       <div className={styles.rowRecord}><div className={styles.rowRecordHead}><strong>orders · id=7</strong><span>逻辑身份不变</span></div><div className={styles.rowVersion} data-on={step >= 0}><small>B</small><strong>balance = 100</strong><span>已提交</span></div><div className={styles.rowVersion} data-on={step >= 1}><small>A</small><strong>balance = 80</strong><span>{step >= 2 ? "已提交" : "未提交"}</span></div></div>
-      <div className={styles.rowReadout}><small>{step >= 3 ? "事务 C 新快照" : "读取者看到"}</small><strong>{step === 0 ? "100" : step === 1 ? "B 仍看 100" : step === 2 ? "B 仍看 100" : "C 看 80"}</strong><p>{step >= 2 ? "提交边界改变可见版本，不是把‘第三行’换了。" : "位置不是身份，快照才解释读到了什么。"}</p></div>
+      <div className={styles.rowReadout}><small>{step >= 3 ? "事务 C 新快照" : "读取者看到"}</small><strong>{step === 0 ? "100" : step === 1 ? "B 仍看 100" : step === 2 ? "B 仍看 100" : "C 看 80"}</strong><p>{step >= 2 ? "提交边界改变可见版本。" : "主键标识对象，快照决定当前读到的版本。"}</p></div>
     </div>
   </MechanismFrame>;
 }

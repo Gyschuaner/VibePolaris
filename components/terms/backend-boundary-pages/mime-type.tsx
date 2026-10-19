@@ -39,7 +39,7 @@ const frames = [
     parser: "JSON parser",
     parserDetail: "期待一个值",
     evidence: "错误停在 }",
-    note: "application/json 只告诉接收端用 JSON 规则尝试解析，不能把缺少值的字节修成合法 JSON。",
+    note: "application/json 提示接收方尝试 JSON 解析，缺少值时按语法错误处理。",
     active: ["label", "body", "parser", "result"],
   },
   {
@@ -50,7 +50,7 @@ const frames = [
     parser: "gunzip → JSON",
     parserDetail: "先解码，再按类型解释",
     evidence: "得到 count=2",
-    note: "Content-Encoding 负责把压缩层解开，Content-Type 仍负责说明解开后是什么格式；两层不能互相替代。",
+    note: "Content-Encoding 解开压缩层，Content-Type 描述解开后的格式。",
     active: ["label", "body", "parser", "result"],
   },
 ];
@@ -81,7 +81,7 @@ const scenarios = [
     parser: "JSON.parse",
     result: "SyntaxError",
     status: "error",
-    note: "声明格式不是校验通过的证明；解析器在缺少值的位置停止。",
+    note: "解析器在缺少值的位置停止，并返回语法错误。",
   },
   {
     label: "multipart · boundary 分段",
@@ -90,7 +90,7 @@ const scenarios = [
     parser: "boundary splitter",
     result: "2 parts",
     status: "ok",
-    note: "multipart 是容器类型，boundary 把字段和文件分成独立部分；它不是某一种文件格式。",
+    note: "multipart 是容器类型。",
   },
   {
     label: "错配 · 可能触发 sniffing",
@@ -163,23 +163,23 @@ export function MimeTypeTermPage() {
   return <ConceptArticle slug="mime-type" title="MIME 类型" subtitle="Media Type · 给字节挑一条解释规则" sources={mimeTypeSources} sections={[["mime-type-shape", "一条类型名有两半"], ["mime-type-content", "Content-Type 选解释器"], ["mime-type-parameters", "参数补足细节"], ["mime-type-multipart", "一份消息也能装多个部分"], ["mime-type-sniffing", "声明错了，浏览器可能猜"]]} intro={<>MIME 类型像贴在数据外面的解释标签：<code>text/html</code>、<code>image/png</code>、<code>application/json</code> 会告诉接收端该用哪类规则处理字节。<strong>标签不会替你修改内容，也不会替你证明内容合法。</strong><Cite id="mime-type-content-type" /></>}>
     <ArticleSection id="mime-type-shape" title="一条类型名有两半">
       <p id="mime-type-shape-detail" className="vp-citation-target">媒体类型由 <code>type/subtype</code> 组成，后面可以跟用分号分开的参数。type 先划出大类，subtype 再说明具体格式；两部分的名字不区分大小写，<code>application/problem+json</code> 里的 <code>+json</code> 还可以表示它遵循某种结构化语法。<Cite id="mime-type-shape" /></p>
-      <p id="mime-type-parameters" className="vp-citation-target">这串名字不是文件扩展名的另一种写法。扩展名是文件名的一部分，媒体类型是协议和接收端使用的表示描述；一个文件可以被改名，字节本身却没有因此换格式。<Cite id="mime-type-parameters" /></p>
+      <p id="mime-type-parameters" className="vp-citation-target">扩展名是文件名的一部分，媒体类型是协议和接收端使用的表示描述；一个文件可以被改名，字节本身却没有因此换格式。<Cite id="mime-type-parameters" /></p>
       <MimeTypeLab />
     </ArticleSection>
     <ArticleSection id="mime-type-content" title="Content-Type 选解释器">
       <p id="mime-type-content-type" className="vp-citation-target">HTTP 的 <code>Content-Type</code> 说明响应表示采用哪种媒体类型，接收端再在当前消息语义下决定怎样处理它。服务器返回同一串 <code>&lt;h1&gt;Hi&lt;/h1&gt;</code>，声明为 <code>text/html</code> 时可以构造元素，声明为 <code>text/plain</code> 时则把尖括号当作普通字符。<Cite id="mime-type-content-type" /></p>
-      <p id="mime-type-application" className="vp-citation-target"><code>application</code> 顶层类型通常表示需要应用程序进一步处理的数据，所以 <code>application/json</code> 不是“浏览器已经帮我解析好的对象”，而是“请按 JSON 的格式尝试处理”。<Cite id="mime-type-application" /></p>
+      <p id="mime-type-application" className="vp-citation-target"><code>application</code> 顶层类型通常表示需要应用程序进一步处理的数据，所以 <code>application/json</code> 是“请按 JSON 的格式尝试处理”。<Cite id="mime-type-application" /></p>
     </ArticleSection>
     <ArticleSection id="mime-type-parameters-section" title="参数补足细节">
       <p id="mime-type-charset" className="vp-citation-target">对文本类型来说，<code>charset</code> 说明字节该按哪种字符集解码。它和 <code>text/html</code> 是两件事：前者回答“这些字节怎样变成文字”，后者回答“文字和标记按什么媒体类型处理”。<Cite id="mime-type-charset" /></p>
-      <p id="mime-type-encoding" className="vp-citation-target"><code>Content-Encoding: gzip</code> 也不是 MIME 类型。它是外层内容编码：接收端先解压，再按 <code>Content-Type</code> 解释解压后的表示。把 gzip 写成 <code>application/gzip</code> 和给 JSON 响应加 gzip 编码，表达的是两件不同的事。<Cite id="mime-type-encoding" /></p>
+      <p id="mime-type-encoding" className="vp-citation-target"><code>Content-Encoding: gzip</code> 它是外层内容编码：接收端先解压，再按 <code>Content-Type</code> 解释解压后的表示。把 gzip 写成 <code>application/gzip</code> 和给 JSON 响应加 gzip 编码，表达的是两件不同的事。<Cite id="mime-type-encoding" /></p>
     </ArticleSection>
     <ArticleSection id="mime-type-multipart" title="一份消息也能装多个部分">
-      <p id="mime-type-multipart-detail" className="vp-citation-target"><code>multipart</code> 是复合媒体类型：一条消息里可以封装多个各自带媒体类型的部分。<code>boundary</code> 参数把这些部分隔开，接收端按边界拆出字段、文件或不同版本；它描述的是容器结构，不是某一个文件后缀。<Cite id="mime-type-multipart" /></p>
+      <p id="mime-type-multipart-detail" className="vp-citation-target"><code>multipart</code> 是复合媒体类型：一条消息里可以封装多个各自带媒体类型的部分。<code>boundary</code> 它描述的是容器结构。<Cite id="mime-type-multipart" /></p>
     </ArticleSection>
     <ArticleSection id="mime-type-sniffing" title="声明错了，浏览器可能猜">
       <p id="mime-type-sniffing-detail" className="vp-citation-target">服务器没有给出正确的 <code>Content-Type</code> 时，用户代理有时会查看内容来猜一个有效类型；不同上下文和实现可能得出不同结果。尤其是用户上传的文件，如果服务器以低权限类型声明，浏览器却把内容当成 HTML，原本想展示的文件可能获得执行脚本的待遇。<Cite id="mime-type-sniffing" /></p>
-      <p>所以排查“浏览器为什么这样处理”时，要把响应头、字符集、内容编码和实际字节一起记录。状态码是 <code>200</code>，只说明请求层成功，并不能替内容通过对应格式的解析。<Cite id="mime-type-sniffing" /></p>
+      <p>所以排查“浏览器为什么这样处理”时，要把响应头、字符集、内容编码和实际字节一起记录。状态码是 <code>200</code>，表示请求已得到响应，内容随后按对应格式解析。<Cite id="mime-type-sniffing" /></p>
     </ArticleSection>
   </ConceptArticle>;
 }

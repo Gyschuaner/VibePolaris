@@ -64,12 +64,12 @@ export function FrameworkTermPage(_props: BespokeTermPageProps) {
       <p>约定的好处是团队有共同地图，代价是你要读懂这张地图。遇到“文件明明存在却没有页面”时，先查框架要求的目录、导出和运行环境，不要只在组件里加更多代码。</p>
     </ArticleSection>
     <ArticleSection id="framework-library-section" title="框架和库，控制权方向不同">
-      <p id="framework-library" className="vp-citation-target">库通常由应用代码主动导入和调用；框架则常在自己的生命周期里调用应用提供的入口。React 更常被描述为用于构建 UI 的库，Next.js、Angular 等则在路由、构建或应用结构上提供更大范围的约定。边界不是永远绝对，但“谁掌握主循环”是有用的判断线索。<Cite id="framework-library" sources={frameworkSources} /></p>
-      <p>这不是给工具分高低。小页面可能只需要一个库，完整应用可能需要框架统一路由、数据边界和构建产物。选型前先说清楚你要解决的是一件局部能力，还是整套应用组织问题。</p>
+      <p id="framework-library" className="vp-citation-target">库通常由应用代码主动导入和调用；框架则常在自己的生命周期里调用应用提供的入口。React 更常被描述为用于构建 UI 的库，Next.js、Angular 等则在路由、构建或应用结构上提供更大范围的约定。“谁掌握主循环”是有用的判断线索。<Cite id="framework-library" sources={frameworkSources} /></p>
+      <p>小页面可能只需要一个库，完整应用可能需要框架统一路由、数据边界和构建产物。选型前先说清楚你要解决的是一件局部能力，还是整套应用组织问题。</p>
       <ArticleAside title="问自己三个问题"><p>入口由谁决定？路由由谁接线？我需要主动调用一个能力，还是需要一套约定来安排整个应用？回答这三问，比背“框架和库的定义”更能帮你做判断。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="framework-runtime-section" title="构建与运行仍是两件事">
-      <p id="framework-runtime" className="vp-citation-target">现代框架往往把代码分到构建阶段、服务器运行时和浏览器客户端。构建工具可能预先生成文件，服务器可能处理请求，浏览器再接上交互；同一个组件文件不代表每一段都在同一个地方执行。<Cite id="framework-runtime" sources={frameworkSources} /></p>
+      <p id="framework-runtime" className="vp-citation-target">现代框架往往把代码分到构建阶段、服务器运行时和浏览器客户端。构建工具可能预先生成文件，服务器可能处理请求，浏览器再接上交互。<Cite id="framework-runtime" sources={frameworkSources} /></p>
       <p>遇到一个 API “在本地能用、部署后不能用”，先问它属于哪个运行阶段。框架的约定可以帮你把代码放到正确位置，却不会把浏览器接口凭空变成服务器接口。</p>
     </ArticleSection>
     <ArticleSection id="framework-boundary-section" title="框架不会替你决定业务">

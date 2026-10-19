@@ -20,7 +20,7 @@ export const harnessMarkdown = [
   "本地教学示例：同一模型、同一任务——汇总产品反馈。只给模型且不提供反馈正文或读取工具时，只能获得建议；接入 Harness 后可以读取资料、循环处理并留下验收证据。直接提供完整资料时，模型也能完成文本归纳。",
   ...harnessSteps.map((step, i) => `### ${i + 1}. ${step.title}\n${step.summary}\n\n${step.evidence}\n\n${step.note}`),
   "## 什么时候需要它", "任务涉及多次工具调用、长时间执行或失败重试，需要记录过程，并按明确标准检查交付。",
-  "## 它的边界", "Harness 不等于模型本身，也不只是测试脚本。它约束工具权限、停止条件与验收规则，但不能保证模型每次判断都正确。",
+  "## 它的边界", "它组织工具、执行流程与结果检查。",
   "## 继续理解", "- [上下文](/terms/context)\n- [工具调用](/terms/tools)\n- [智能体循环](/terms/agent-loop)",
   "## 参考来源", ...harnessSources.map(source => `- [${source.label}](${source.url})`),
 ].join("\n\n");

@@ -9,7 +9,7 @@ import styles from "./AsyncConcepts.module.css";
 const resources = [
   { label: "正常书目", file: "books.json" },
   { label: "找不到文件 · 404", file: "missing.json" },
-  { label: "内容不是 JSON", file: "invalid.txt" },
+  { label: "JSON 解析失败", file: "invalid.txt" },
   { label: "JSON 字段不符合约定", file: "wrong-shape.json" },
 ];
 

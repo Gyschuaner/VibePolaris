@@ -25,7 +25,7 @@ export function PassFailLesson() {
   const [result, setResult] = useState<Result>("pass");
   const current = states[result];
   return <section className={styles.lesson} aria-label="通过失败判定印章机演示">
-    <div className={styles.lessonHeader}><strong>换一张证据单再盖章</strong><span>缺证据不等于失败</span></div>
+    <div className={styles.lessonHeader}><strong>换一张证据单再盖章</strong><span>证据缺失时保留未评分</span></div>
     <div className={styles.controls}>
       <button type="button" aria-pressed={result === "pass"} onClick={() => setResult("pass")}>证据正确</button>
       <button type="button" aria-pressed={result === "fail"} onClick={() => setResult("fail")}>字段错误</button>

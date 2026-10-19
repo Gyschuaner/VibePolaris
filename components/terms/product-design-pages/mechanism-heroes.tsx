@@ -7,7 +7,7 @@ import { MechanismFrame, mechanismStyles as styles } from "../ConceptMechanismHe
 
 const iterationLabels = ["交付一块", "观察任务", "带回证据", "决定下一轮"];
 const iterationCaptions = [
-  "先交付一个能运行的小范围结果，别把全部风险藏到最后。",
+  "先交付一个能运行的小范围结果。",
   "让真实任务经过这块结果，停顿、失败和遗漏才会出现。",
   "把观察到的证据带回工作台：保留有效部分，标出真正卡住的字段。",
   "下一轮收窄到这个缺口；如果目标已达成或继续没有新证据，也可以停止。",
@@ -19,7 +19,7 @@ export function IterationHero() {
   return <MechanismFrame scene={scene} title="一轮结果怎样拨动下一轮" labels={iterationLabels} caption={iterationCaptions[step]}>
     <div className={styles.iterationScene}>
       <div className={styles.iterationLoop}><div className={styles.iterationNode} data-active={step >= 0}><span>交付</span><strong>CSV 导出</strong></div><div className={styles.iterationArc} data-on={step >= 1} /><div className={styles.iterationNode} data-active={step >= 1}><span>观察</span><strong>用户任务</strong></div><div className={styles.iterationArc} data-on={step >= 2} /><div className={styles.iterationNode} data-active={step >= 2}><span>调整</span><strong>{step >= 3 ? "字段提示" : "证据"}</strong></div></div>
-      <div className={styles.iterationEvidence} data-ready={step >= 2}><div className={styles.iterationEvidenceHead}><MagnifyingGlass size={15} /><span>OBSERVATION</span></div><strong>{step >= 2 ? "用户在空状态停住" : "还没有跑过真实任务"}</strong><small>{step >= 2 ? "下一轮：补空状态提示，而不是重做整页" : "交付后才知道哪里需要收窄"}</small></div>
+      <div className={styles.iterationEvidence} data-ready={step >= 2}><div className={styles.iterationEvidenceHead}><MagnifyingGlass size={15} /><span>OBSERVATION</span></div><strong>{step >= 2 ? "用户在空状态停住" : "还没有跑过真实任务"}</strong><small>{step >= 2 ? "下一轮：补空状态提示" : "交付后才知道哪里需要收窄"}</small></div>
       <div className={styles.iterationProof} role="status"><ArrowsClockwise size={15} /><span>{step === 3 ? "完成条件或新证据决定是否继续" : "每一轮带着证据回来"}</span></div>
     </div>
   </MechanismFrame>;
@@ -30,7 +30,7 @@ const conversionCaptions = [
   "先圈出进入注册页的独立用户；分母一变，后面的百分比就不再可比。",
   "把提交表单定为完成事件，180 个完成者落在 1000 个起点用户里，得到 18%。",
   "改成验证邮箱后，完成条件更严格，分子变成 120，指标变为 12%。",
-  "把窗口缩成一小时，只记到 90 个及时验证者，得到 9%；这和 24 小时不是同一口径。",
+  "在当前较短统计窗口内，90 个及时验证者对应 9%；24 小时窗口按完整时限重新统计。",
 ];
 
 export function ConversionRateHero() {
@@ -87,7 +87,7 @@ export function UsabilityTestingHero() {
     <div className={styles.usabilityScene}>
       <div className={styles.usabilityTask}><div className={styles.usabilityTaskHead}><ClipboardText size={15} /><span>TASK CARD</span></div><strong>退回一件尺码不合适的商品</strong><small>{step >= 1 ? "不透露入口和按钮名" : "只给目标，不给答案"}</small></div>
       <div className={styles.usabilityViewport}><div className={styles.usabilityHeader}>订单详情 <span>⋯</span></div><div className={styles.usabilityRows}><span>商品 A · 已送达</span><span data-hot={step >= 1}>售后入口</span><span>配送记录</span></div><Cursor className={styles.usabilityCursor} style={{ transform: `translate(${step * 34}px, ${step >= 1 ? 17 : 55}px)` }} /><div className={styles.usabilityTrace} data-on={step >= 1} /></div>
-      <div className={styles.usabilityNotes}><div className={styles.usabilityTaskHead}><TestTube size={15} /><span>OBSERVER NOTES</span></div><p data-on={step >= 1}>{step >= 1 ? "12s 停顿 · 视线回到菜单" : "等待真实动作"}</p><p data-on={step >= 3}>{step >= 3 ? "模式：入口命名不符合任务语言" : "不要把意见当完成率"}</p><small>{step >= 3 ? "结果：下一轮改入口文案" : "记录事实、提示和上下文"}</small></div>
+      <div className={styles.usabilityNotes}><div className={styles.usabilityTaskHead}><TestTube size={15} /><span>OBSERVER NOTES</span></div><p data-on={step >= 1}>{step >= 1 ? "12s 停顿 · 视线回到菜单" : "等待真实动作"}</p><p data-on={step >= 3}>{step >= 3 ? "模式：入口命名不符合任务语言" : "按实际完成任务的人数统计"}</p><small>{step >= 3 ? "结果：下一轮改入口文案" : "记录事实、提示和上下文"}</small></div>
     </div>
   </MechanismFrame>;
 }
@@ -95,9 +95,9 @@ export function UsabilityTestingHero() {
 const mockupLabels = ["线框", "补层级", "做状态", "试交互"];
 const mockupCaptions = [
   "先用低保真的框表达结构和任务，不把视觉细节假装成已经决定。",
-  "补进字号、间距和视觉层级，让团队讨论信息关系而不是空白框。",
+  "补进字号、间距和视觉层级，让团队讨论信息关系。",
   "把加载、错误和空状态一起放进稿子，静态截图不能代表完整体验。",
-  "加上最小可点击路径，让真实任务验证入口、顺序和反馈；稿子仍不是生产代码。",
+  "加上最小可点击路径，让真实任务验证入口、顺序和反馈。",
 ];
 
 export function MockupHero() {

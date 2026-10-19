@@ -83,13 +83,13 @@ export function getFallbackRelayState(
   const statusDetail = safeStep === 0
     ? "先记录主调用的真实状态，再决定是否交接。"
     : safeStep === 1
-      ? primary === "timeout" ? "没有响应不等于收到了 429；远端是否完成仍要核实。" : primary === "auth" ? "身份问题不会因为换模型而消失。" : primary === "success" ? "主调用已满足本例字段要求，不需要备用。" : "429 是限流信号，是否切换仍由策略决定。"
+      ? primary === "timeout" ? "超时与 429 分别表示等待超限与服务限流；远端完成状态需要查询确认。" : primary === "auth" ? "身份问题不会因为换模型而消失。" : primary === "success" ? "主调用已满足本例字段要求，不需要备用。" : "429 是限流信号，是否切换仍由策略决定。"
       : safeStep === 2
         ? policyLabel
         : !policyAllowed
           ? `${policyLabel}；本例不发起第二次调用。`
           : safeStep === 3
-            ? "备用收到同一份任务，但不代表它与主模型完全等价。"
+            ? "备用模型收到同一份任务，按它的能力与输出约定检查结果。"
             : backupPassed
               ? "备用返回 amount=120，接替原因仍保留在记录里。"
               : "备用有回复却没通过字段检查，任务仍未完成。";

@@ -8,7 +8,7 @@ const steps = [
   { label: "投递", title: "消息先进入主队列", detail: "消费者拿到一条待处理的任务。", Icon: FileText },
   { label: "重试", title: "暂时失败可以再试", detail: "每次失败都要留下次数和原因。", Icon: ArrowsClockwise },
   { label: "隔离", title: "超过上限就移出主路径", detail: "坏消息不再阻塞后面的正常消息。", Icon: Archive },
-  { label: "处理", title: "查明原因后再决定重放", detail: "死信是待调查的工作，不是自动成功。", Icon: MagnifyingGlass },
+  { label: "处理", title: "查明原因后再决定重放", detail: "死信是待调查的工作。", Icon: MagnifyingGlass },
 ];
 
 export function DeadLetterQueueHero() {

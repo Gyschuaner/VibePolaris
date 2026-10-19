@@ -43,7 +43,7 @@ export function UseCaseLesson() {
       </div>
       <div className={styles.useCaseProof} data-ready={successReady || alternateReady}>
         <FileText size={21} aria-hidden="true" />
-        <p><strong>{alternateReady ? "分支结果可复核" : successReady ? "主流程可复述" : "用例还没站稳"}</strong>{alternateReady ? " 每条路径都说明用户看到什么、订单是否改变以及下一步怎么走。" : successReady ? " 从触发到状态变化都能说明，替代条件还要继续补齐。" : " 不要把单张页面或一句“可以退款”当成完整用例。"}</p>
+        <p><strong>{alternateReady ? "分支结果可复核" : successReady ? "主流程可复述" : "用例还没站稳"}</strong>{alternateReady ? " 每条路径都说明用户看到什么、订单是否改变以及下一步怎么走。" : successReady ? " 从触发到状态变化都能说明，替代条件还要继续补齐。" : "用例要写清参与者、触发条件、完整交互与结果。"}</p>
       </div>
     </div>
     <div className={styles.choices} role="group" aria-label="推进使用场景演示">

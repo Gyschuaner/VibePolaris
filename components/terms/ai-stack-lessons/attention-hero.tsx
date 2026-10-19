@@ -34,7 +34,7 @@ export function AttentionHero() {
       <div className={styles.attentionHeroKeys} data-active={scene.step === 1 || scene.step === 2}>
         <div className={styles.attentionHeroLabel}><MagnifyingGlass size={17} aria-hidden="true" /><span>Keys · 可匹配的标签</span></div>
         <h3>把每张卡拿来比较</h3>
-        <p>分数只是本轮计算的权重信号，不是“这张卡就是答案”的盖章。</p>
+        <p>分数只是本轮计算的权重信号。</p>
         <div className={styles.attentionHeroKeyList}>
           {keys.map((key, index) => <div key={key.label} className={styles.attentionHeroKey} data-visible={scene.step >= 1} data-hit={scene.step >= 1 && index === 0} data-rank={key.rank}><span><strong>{key.label}</strong> · {key.detail}</span><div className={styles.attentionHeroMeter}><i /></div></div>)}
         </div>
@@ -42,7 +42,7 @@ export function AttentionHero() {
       <div className={styles.attentionHeroAnswer} data-active={scene.step >= 2}>
         <div className={styles.attentionHeroLabel}><Eye size={17} aria-hidden="true" /><span>Values · 取回内容</span></div>
         <h3>把相关内容带回来</h3>
-        <p>输出不是一张原封不动的卡，而是按权重组合后的定宽向量。</p>
+        <p>输出是按权重组合后的定宽向量。</p>
         <div className={styles.attentionHeroAnswerRows}>
           <div className={styles.attentionHeroAnswerRow} data-visible={scene.step >= 2}><span>可选规格</span><small>无糖</small></div>
           <div className={styles.attentionHeroAnswerRow} data-visible={scene.step >= 2}><span>价格线索</span><small>¥18</small></div>
@@ -51,6 +51,6 @@ export function AttentionHero() {
       </div>
     </div>
     <div className={styles.attentionHeroResult} role="status"><current.Icon size={19} aria-hidden="true" /><span><strong>{current.title}</strong> · {current.detail}</span></div>
-    <figcaption>注意力把“谁在问、拿什么匹配、取回什么”分成 Q、K、V；高权重适合做观察线索，不能单独当作模型的解释或事实证据。</figcaption>
+    <figcaption>注意力用 Q、K、V 分别表示查询、匹配与取回，高权重提供观察线索，解释模型行为和事实仍需其他证据。</figcaption>
   </figure>;
 }

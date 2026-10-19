@@ -12,22 +12,22 @@ export function BenchmarkTermPage() {
     intro={<>基准测试把一组任务、指标和运行约定组织起来，让不同方案的成绩有比较依据。读一个排名之前，先看它测了哪些任务、按什么规则计分，以及模型、工具和运行条件分别是什么。</>}
     >
     <ArticleSection id="suite" title="任务、指标与比较条件"><Legacy slug="benchmark" names={["question", "definition"]}/>
-      <p id="bench-definition" className="vp-citation-target"><strong>基准测试是一套用于比较表现的任务和评测约定。</strong>GLUE 把九种自然语言理解任务放入同一评测平台，各任务使用相应指标，并提供诊断数据。它测的是这些任务上的表现，不是模型的一切能力。一个基准可以包含多种任务，也不必只报告一个分数。<Cite id="bench-definition"/></p>
+      <p id="bench-definition" className="vp-citation-target"><strong>基准测试是一套用于比较表现的任务和评测约定。</strong>GLUE 把九种自然语言理解任务放入同一评测平台，各任务使用相应指标，并提供诊断数据。它测的是这些任务上的表现。一个基准可以包含多种任务，也不必只报告一个分数。<Cite id="bench-definition"/></p>
       <p>“A 比 B 好”需要补上条件：在哪组任务、哪个版本、哪种输入和判据下更好？两份成绩使用不同题集，分数差异就可能来自题目本身的变化，不能直接归到能力差别上。对智能体，还要说明可用工具、运行预算（单次任务允许的时间、token 或费用上限）与 <ConceptTerm slug="agent-harness">Harness</ConceptTerm>，因为这些也影响完成任务的能力。</p>
-      <p id="bench-protocol" className="vp-citation-target">推理性能基准 MLPerf Inference 区分硬件与软件组成的被测系统、运行场景、准确性检查，以及不同提交类别的约束。<strong>可比条件取决于要比较什么。</strong>测试硬件时硬件本来可以不同；比较模型改动时则要尽量固定其他因素，并记录无法固定的差异。不能把“所有配置都完全相同”当成所有基准的定义；硬件、软件版本和运行协议都可能改变成绩。<Cite id="bench-protocol"/></p>
+      <p id="bench-protocol" className="vp-citation-target">推理性能基准 MLPerf Inference 区分硬件与软件组成的被测系统、运行场景、准确性检查，以及不同提交类别的约束。<strong>可比条件取决于要比较什么。</strong>测试硬件时硬件本来可以不同；比较模型改动时则要尽量固定其他因素，并记录无法固定的差异。硬件、软件版本和运行协议都可能改变成绩。<Cite id="bench-protocol"/></p>
     </ArticleSection>
     <ArticleSection id="comparison" title="先对齐记录，再看成绩"><Legacy slug="benchmark" names={["scene-heading"]}/>
       <p>下面是两组虚构任务与预先写好的运行摘要，不运行模型或测速。A、B 的输入格式和判据在同一题集内相同。一般任务与业务任务各有十题；切换 B 的记录，可以看到为什么版本不一致时不能直接排名。</p>
       <BenchmarkLesson/>
-      <p>一般任务中，B 通过九题，A 通过八题；业务任务中，A 仍通过八题，B 只通过七题。<strong>排名跟着任务集合变化，没有矛盾。</strong>两组任务关注的能力不同。若 B 换成 v2 的十二题，比较记录已经不对应，不能把多通过几题解释成模型更强。</p>
+      <p>一般任务中，B 通过九题，A 通过八题；业务任务中，A 仍通过八题，B 只通过七题。<strong>排名跟着任务集合变化，没有矛盾。</strong>两组任务关注的能力不同。若 B 换成 v2 的十二题，比较记录已经不对应。</p>
     </ArticleSection>
     <ArticleSection id="dimensions" title="通过更多，还是响应更快" className={base.offset}><Legacy slug="benchmark" names={["quiz-heading"]}/>
-      <p id="bench-metrics" className="vp-citation-target">整体评测基准 HELM 同时考察多个场景与准确性、稳健性、效率等维度，并明确评测覆盖仍不完整。<strong>领先哪个指标，与能否满足业务要求，是不同判断。</strong>一个方案通过更多题，也可能等待更久；单一总分会省掉这些差别。延迟的中位数只说明典型请求，不能代表最慢的请求；真实服务还可能要看尾部延迟（最慢那批请求的耗时）、并发负载和失败率。<Cite id="bench-metrics"/></p>
+      <p id="bench-metrics" className="vp-citation-target">整体评测基准 HELM 同时考察多个场景与准确性、稳健性、效率等维度，并明确评测覆盖仍不完整。<strong>领先哪个指标，与能否满足业务要求，是不同判断。</strong>一个方案通过更多题，也可能等待更久；单一总分会省掉这些差别。延迟的中位数说明典型请求，不能代表最慢的请求；真实服务还可能要看尾部延迟（最慢那批请求的耗时）、并发负载和失败率。<Cite id="bench-metrics"/></p>
       <div className={s.metricNotes}><div><h3>先核对底线</h3><p>需要达到的正确性、可接受的失败类型、响应时间上限，要来自实际任务要求。</p></div><div><h3>再比较取舍</h3><p>在满足必要条件的方案之间，分别看质量、延迟与费用，不把全部差异压成一个未经解释的数字。</p></div></div>
       <p>本例 A 的延迟中位数更短，却没有因此被宣布为最佳方案。怎样汇总取决于使用场景，数字旁应保留它的测量定义。</p>
     </ArticleSection>
     <ArticleSection id="scope" title="榜单以外的任务"><Legacy slug="benchmark" names={["prompt-heading"]}/>
-      <p id="bench-transfer" className="vp-citation-target">Dynabench 讨论固定测试集的局限，让人针对当前模型提出挑战样本，逐轮收集新的评测数据。<strong>在熟悉的基准上得高分，不代表模型能应对新情况，也不一定处理得好自己的业务。</strong>更新评测目标可以暴露原题集没有测到的问题，但版本更新也需要清楚标记，避免混用成绩。<Cite id="bench-transfer"/></p>
+      <p id="bench-transfer" className="vp-citation-target">Dynabench 讨论固定测试集的局限，让人针对当前模型提出挑战样本，逐轮收集新的评测数据。<strong>不一定处理得好自己的业务。</strong>更新评测目标可以暴露原题集没有测到的问题，但版本更新也需要清楚标记，避免混用成绩。<Cite id="bench-transfer"/></p>
       <p>选择方案时，可以先用公开基准了解表现范围，再用自己的 <ConceptTerm slug="evaluation-dataset">评测数据集</ConceptTerm> 检查真实输入、资料缺失、边界情况与关键失败。记录模型版本、运行配置和原始结果，才能在下一次改动后进行有依据的比较。</p>
       <ArticleAside title="基准测试与评测的关系"><p><ConceptTerm slug="eval">评测</ConceptTerm> 是检查系统表现的活动；基准测试通常强调组织好的比较任务与约定。业务内一次提示词改动也可以做评测，不必公开、也不必上榜单。公开与否不决定评测是否严谨。</p></ArticleAside>
     </ArticleSection>
@@ -41,26 +41,26 @@ export function GraderTermPage() {
     >
     <ArticleSection id="criterion" title="把要求变成可检查的判据"><Legacy slug="grader" names={["question"]}/>
       <p id="grader-definition" className="vp-citation-target"><strong>评分器按事先写好的判据（也就是可检查的判定依据），把输出或执行结果转换成评价。</strong>Inspect 的评分系统支持文本匹配、数学答案、模型评分和自定义检查，再把逐条分数汇总成指标。评分器可以是程序，可以是模型，也可以是人。评分器是 <ConceptTerm slug="eval">评测</ConceptTerm> 中的一部分：题目规定要做什么，它规定怎样判断做得如何。<Cite id="grader-definition"/></p>
-      <p>判据应对应任务目标。选择题可以检查选项；金额字段可以按数值核对；代码任务可以运行测试。开放回答可能需要评价准确性、相关性或写作质量，但回答写得长、说得自信，本身并不等于准确或相关；除非判据里写明了为什么可以这样判，否则不能拿它们顶替。</p>
+      <p>判据应对应任务目标。选择题可以检查选项；金额字段可以按数值核对；代码任务可以运行测试。开放回答可能需要评价准确性、相关性或写作质量，除非判据里写明了为什么可以这样判，否则不能拿它们顶替。</p>
       <p>一个任务可以有多个评分器，分别检查格式、结果和关键限制。它们不一定合成一个总分。先保留各项证据，才能看出系统是答案正确但格式不符，还是格式漂亮却做错了任务。</p>
     </ArticleSection>
     <ArticleSection id="evidence" title="回复与实际结果"><Legacy slug="grader" names={["scene-heading"]}/>
       <p id="grader-outcome" className="vp-citation-target">Anthropic 的智能体评测文章区分对话记录与实际环境结果。例如一次尝试声称“已完成”，还应去核查目标操作是否真的发生。<strong>评分需要检查目标对应的证据。</strong>关键词只能证明回复里出现了某个词，文件、数据库或工具的实际结果才可能证明动作真的发生。<Cite id="grader-outcome"/></p>
       <p>本例任务是生成 answer.json，其中 amount 为 120。四次尝试、回复和文件状态都是虚构记录；下方只运行固定检查逻辑，不访问真实文件，也不调用评分模型。先试措辞判据，再换成结果判据。</p>
       <GraderLesson/>
-      <p>“已完成”却没有文件，会通过关键词判据；“文件已保存”且内容正确，反而不通过它。关键词检查不是没有用途，它只是<strong>没有测到这个任务的完成条件</strong>。文件存在也不够，还要检查内容里的金额。</p>
-      <p id="grader-unscored" className="vp-citation-target">Inspect 的评分策略区分如何处理运行失败，包括保留未评分状态。检查环境不可读时，需要先辨别评测设施问题与任务本身失败。<strong>未评分不应悄悄变成通过，也不能随意当作系统失败。</strong>具体错误怎样计入指标，必须在评测规则中声明；本例选择未评分，表示这一次没有足够证据下结论。<Cite id="grader-unscored"/></p>
+      <p>“已完成”却没有文件，会通过关键词判据；“文件已保存”且内容正确，反而不通过它。它只是<strong>没有测到这个任务的完成条件</strong>。文件存在也不够，还要检查内容里的金额。</p>
+      <p id="grader-unscored" className="vp-citation-target">Inspect 的评分策略区分如何处理运行失败，包括保留未评分状态。检查环境不可读时，需要先辨别评测设施问题与任务本身失败。<strong>未评分样本单独记录为待评估状态。</strong>具体错误怎样计入指标，必须在评测规则中声明；本例选择未评分，表示这一次没有足够证据下结论。<Cite id="grader-unscored"/></p>
     </ArticleSection>
     <ArticleSection id="rubric" title="开放回答的评分依据"><Legacy slug="grader" names={["quiz-heading"]}/>
-      <p id="grader-rubric" className="vp-citation-target">G-Eval 研究用模型依据任务说明、评价标准与评价步骤，对生成文本打分。<strong>把“好不好”拆成明确维度，会让评分更容易核对。</strong>论文报告模型评分与人工评分有较高相关性，但这只针对特定摘要与对话任务，不等于任意任务都能正确判分。<Cite id="grader-rubric"/></p>
+      <p id="grader-rubric" className="vp-citation-target">G-Eval 研究用模型依据任务说明、评价标准与评价步骤，对生成文本打分。<strong>把“好不好”拆成明确维度，会让评分更容易核对。</strong>论文报告模型评分与人工评分有较高相关性，但这只针对特定摘要与对话任务。<Cite id="grader-rubric"/></p>
       <div className={s.rubric}><h3>例：解释退款规则</h3><dl><dt>事实</dt><dd>天数、渠道和费用与提供资料一致。</dd><dt>条件</dt><dd>保留“审核通过后”和“通常”等重要限定。</dd><dt>缺口</dt><dd>资料没有费用时，不自行承诺免费。</dd></dl></div>
       <p>这些是需要分别检查的维度，不能只给评分模型一句“请给出 1 到 5 分”。评分说明还应写清各档意味着什么、遇到缺资料怎样处理，并用人工确认的样本核对评分行为。参考答案有帮助，但不应让合理的不同措辞全都失分。</p>
       <ArticleAside title="代码、模型与人工的分工"><p>明确字段与可执行测试优先交给代码。含义、写作质量等难以枚举的判断可以用模型或人工。人工样本也需要清楚判据；把分歧记录下来，比默认某一方永远正确更有助于修正标准。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="review" title="检查评分器的判断" className={base.offset}><Legacy slug="grader" names={["prompt-heading"]}/>
-      <p id="grader-bias" className="vp-citation-target">MT-Bench 与 Chatbot Arena 的研究检查了模型裁判的位置、长度和自我偏好等偏差。<strong>模型评分也有需要验证的行为。</strong>交换候选回答的顺序、抽样与人工对照，可以发现评分信号是否受无关因素影响；这些检查本身不保证消除全部偏差。<Cite id="grader-bias"/></p>
+      <p id="grader-bias" className="vp-citation-target">MT-Bench 与 Chatbot Arena 的研究检查了模型裁判的位置、长度和自我偏好等偏差。<strong>模型评分也有需要验证的行为。</strong>可以发现评分信号是否受无关因素影响。<Cite id="grader-bias"/></p>
       <p>保留原回答、判据、评分器版本、评价与可核对证据。系统改动后成绩提高时，也要确认是否同时改了评分规则。更宽松的判据可能提高数字，却没有改善任务结果。</p>
-      <p>发现反常分数时，回到具体样本，检查输入是否足够、结果是否可观察、判据是否误测了措辞。<strong>评分器不是最终事实来源，它是需要校验的判断工具。</strong></p>
+      <p>发现反常分数时，回到具体样本，检查输入是否足够、结果是否可观察、判据是否误测了措辞。<strong>它是需要校验的判断工具。</strong></p>
     </ArticleSection>
   </ConceptArticle>;
 }
@@ -68,30 +68,30 @@ export function GraderTermPage() {
 export function EvalDatasetTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={evalDatasetSources}/>;
   return <ConceptArticle slug="evaluation-dataset" title="评测数据集" sources={evalDatasetSources} sections={[["case", "一条样本的必要信息"], ["split", "把关联样本放在同一组"], ["holdout", "留出集要测新的输入"], ["record", "记录范围与版本"]]}
-    intro={<>评测数据集收集用来检查系统表现的输入、必要背景与评价信息。选哪些案例、怎样划分开发与留出样本，决定分数能够说明什么。把几百条问题放在一起，还不足以证明它代表真实任务。</>}
+    intro={<>评测数据集收集用来检查系统表现的输入、必要背景与评价信息。选哪些案例、怎样划分开发与留出样本，决定分数能够说明什么。</>}
     >
     <ArticleSection id="case" title="一条样本的必要信息"><Legacy slug="evaluation-dataset" names={["question", "definition"]}/>
-      <p id="evaldata-definition" className="vp-citation-target"><strong>评测数据集组织一组可检查的任务样本。</strong>Anthropic 的智能体评测文章强调任务描述与成功标准应明确。样本如果只有一句问题，出题时的资料、环境和预期行为都没有留下，后来就无从重现这道题怎么判；样本数量多，也不等于覆盖了重要输入。<Cite id="evaldata-definition"/></p>
+      <p id="evaldata-definition" className="vp-citation-target"><strong>评测数据集组织一组可检查的任务样本。</strong>Anthropic 的智能体评测文章强调任务描述与成功标准应明确。样本如果只有一句问题，出题时的资料、环境和预期行为都没有留下。<Cite id="evaldata-definition"/></p>
       <div className={s.caseSheet}><span>示例 · 一条退款案例</span><dl><dt>输入</dt><dd>退款多久到账？</dd><dt>背景</dt><dd>线上退款规则：审核通过后，通常三个工作日。</dd><dt>预期行为</dt><dd>回答保留审核条件与通常时效，不新增费用保证。</dd></dl></div>
       <p>有些任务有唯一标准答案，有些更适合记录期望行为与约束；不能为了方便计分，把所有任务改成精确字符串匹配。数据集保存案例，<ConceptTerm slug="grader">评分器</ConceptTerm> 根据这些信息检查尝试，它们承担不同职责。</p>
       <p>案例还应覆盖实际关心的变化：普通输入、资料缺失、模糊追问或关键限制。数量多不一定覆盖广，复制同一类简单问题也不会增加新的判断能力。</p>
     </ArticleSection>
     <ArticleSection id="split" title="把关联样本放在同一组"><Legacy slug="evaluation-dataset" names={["scene-heading"]}/>
-      <p id="evaldata-groups" className="vp-citation-target">scikit-learn 的分组交叉验证，是把数据分成训练、测试几部分轮流使用的一种做法；它让同一组样本不同时出现在两侧，例如同一个人的多次记录。<strong>如何定义组，要对应你想检验的新情况：希望系统在哪种没见过的数据上也做对？</strong>若要测试新工单，同一工单的追问应考虑作为关联样本处理，不能仅因句子不同就当作彼此独立；否则测试集可能已经带着开发时见过的背景。<Cite id="evaldata-groups"/></p>
+      <p id="evaldata-groups" className="vp-citation-target">scikit-learn 的分组交叉验证，是把数据分成训练、测试几部分轮流使用的一种做法；它让同一组样本不同时出现在两侧，例如同一个人的多次记录。<strong>如何定义组，要对应你想检验的新情况：希望系统在哪种没见过的数据上也做对？</strong>测试新工单时，将同一工单的追问作为关联样本处理，避免开发背景随相似问题进入测试集。<Cite id="evaldata-groups"/></p>
       <p>下面是三个虚构工单、每单两条不同问题。逐行交替会把每个工单拆到两边；按工单分组时，本例固定留出最后一个工单。它没有运行训练或模型，只展示样本归属和覆盖检查。</p>
       <EvalDatasetLesson/>
-      <p>开发时读过工单 A 的背景，再用 A 的追问测试，可能借用了已经见过的信息。<strong>把关联样本整体分在同一侧，是针对这种泄漏的措施，不是所有评测都必须按工单划分。</strong>如果目标是检验已知工单的后续处理，划分标准会不同；先说明想检验什么。</p>
+      <p>开发时读过工单 A 的背景，再用 A 的追问测试，可能借用了已经见过的信息。<strong>是针对这种泄漏的措施。</strong>如果目标是检验已知工单的后续处理，划分标准会不同；先说明想检验什么。</p>
     </ArticleSection>
     <ArticleSection id="holdout" title="留出集要测新的输入" className={base.offset}><Legacy slug="evaluation-dataset" names={["quiz-heading"]}/>
       <p id="evaldata-holdout" className="vp-citation-target">Google 的机器学习课程区分训练、验证与测试集，讨论重复样本泄漏，以及反复按测试成绩调整、结果连测试题也被“练”进去的过拟合问题。<strong>留出集一旦被用来决定下一版怎么改，就不再是未见过的检验，应归回开发用例。</strong>调提示词时，开发用例与最终检查用例要分开用途。<Cite id="evaldata-holdout"/></p>
-      <p>独立性和覆盖范围也需要分别看。本例按工单分组后，留出组只有 C 的关键问题，没有普通与资料缺失问题。它能检查部分权限行为，却不能据此总结全部业务表现。需要补充不同背景的新工单，而不是把 A、B 的追问重新拆进来。</p>
+      <p>独立性和覆盖范围也需要分别看。本例按工单分组后，留出组只有 C 的关键问题，没有普通与资料缺失问题。它能检查部分权限行为。需要补充不同背景的新工单。</p>
       <p>发现真实失败，可以把相应案例纳入后续开发并更新版本；同时准备一些没有用于修补的新样本，检验改进能不能推广到没见过的输入。留出集不必永远不变，但每次使用与更新应该能追溯，不能对熟悉题库反复调优后仍宣称未见测试成功。</p>
     </ArticleSection>
     <ArticleSection id="record" title="记录范围与版本"><Legacy slug="evaluation-dataset" names={["prompt-heading"]}/>
-      <p id="evaldata-document" className="vp-citation-target">Datasheets for Datasets 建议记录数据的动机、组成、收集、用途与维护安排，也询问样本关系和推荐划分方式。<strong>数据说明让使用者判断这组样本适合测什么。</strong>还要记录版本、时间范围、缺失信息和划分变化；这些问题应按实际需要选择，并非每份评测集都要机械填写所有项目。<Cite id="evaldata-document"/></p>
+      <p id="evaldata-document" className="vp-citation-target">Datasheets for Datasets 建议记录数据的动机、组成、收集、用途与维护安排，也询问样本关系和推荐划分方式。<strong>数据说明让使用者判断这组样本适合测什么。</strong>还要记录版本、时间范围、缺失信息和划分变化，这些问题应按实际需要选择。<Cite id="evaldata-document"/></p>
       <div className={s.datasetNotes}><div><h3>这次包含什么</h3><p>样本来源、时间范围、分组与缺失信息；哪些能力有覆盖，哪些尚未检查。</p></div><div><h3>与上次有什么不同</h3><p>新增或修正了哪些案例、判据与划分。保留版本，避免把不同题集的成绩直接拼在一起。</p></div></div>
       <p>修正错误答案或更新政策时，记录变化原因，并核对受影响的预期行为。比较系统版本时，尽量用相同的有效案例与判据；案例不得不变化时，就把评测集变化与系统变化分开说明。</p>
-      <ArticleAside title="评测数据集与基准测试"><p>数据集提供案例；<ConceptTerm slug="benchmark">基准测试</ConceptTerm> 还组织比较目标、指标和运行约定。公开基准可以帮助了解某类能力，自己的业务数据集则用于检查实际输入。两者都需要说明范围，不能靠样本数量代替质量。</p></ArticleAside>
+      <ArticleAside title="评测数据集与基准测试"><p>数据集提供案例；<ConceptTerm slug="benchmark">基准测试</ConceptTerm> 还组织比较目标、指标和运行约定。公开基准可以帮助了解某类能力，自己的业务数据集则用于检查实际输入。分别说明范围，并检查样本质量与数量。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }
@@ -103,27 +103,27 @@ export function EvaluationRunTermPage() {
     intro={<>评测运行是一次具体的评测执行记录：它把哪一版题集、哪一版系统、什么评分器和运行环境放在一起，并留下每道题的尝试、轨迹与汇总结果。看到“9/12”时，先问这十二道题和这些条件是否真的来自同一次、可核对的运行。</>}
     >
     <ArticleSection id="run-definition" title="一次运行到底记录什么"><Legacy slug="evaluation-run" names={['question', 'definition']}/>
-      <p id="evalrun-definition" className="vp-citation-target"><strong>评测运行是把一次评测执行的输入、条件、输出和判断结果放在同一份记录里的实例。</strong>OpenAI 的 evals 文档把评测组织成数据集、被测对象、运行和结果；运行记录让一次“试了什么”能够与后来的分数对应，而不是只留下一个孤立数字。<Cite id="evalrun-definition"/></p>
+      <p id="evalrun-definition" className="vp-citation-target"><strong>评测运行是把一次评测执行的输入、条件、输出和判断结果放在同一份记录里的实例。</strong>OpenAI 的 evals 文档把评测组织成数据集、被测对象、运行和结果；运行记录让一次“试了什么”能够与后来的分数对应。<Cite id="evalrun-definition"/></p>
       <p>先把几个容易混在一起的词拆开：<ConceptTerm slug="evaluation-dataset">评测数据集</ConceptTerm> 保存要问的案例；一次运行把这组案例交给某个被测版本；<ConceptTerm slug="grader">评分器</ConceptTerm> 按判据检查每条尝试；汇总分数只是把逐条结果压缩后的读数。题集、运行和评分器各自变化，都会改变最后看到的数字。</p>
       <p id="evalrun-record" className="vp-citation-target">一条有用的运行记录至少能说明题集及其版本、被测模型或智能体版本、评分器版本、关键运行配置，以及每个样本的输出和状态。OpenAI 的评测流程支持保存运行结果与样本级评分；<strong>记录的价值在于可以从汇总回到具体样本。</strong><Cite id="evalrun-record"/></p>
       <div className={s.runChecklist}><div><span>运行前</span><strong>固定条件</strong><p>题集版本、被测版本、评分器和环境。</p></div><div><span>运行中</span><strong>留下轨迹</strong><p>输入、输出、工具调用与失败状态。</p></div><div><span>运行后</span><strong>汇总但可回查</strong><p>总分旁保留逐项结果，不只存平均数。</p></div></div>
     </ArticleSection>
     <ArticleSection id="run-evidence" title="从试跑到逐项证据"><Legacy slug="evaluation-run" names={['scene-heading']}/>
-      <p id="evalrun-trace" className="vp-citation-target">对于会调用工具或经过多步推理的智能体，一次尝试不只有最后一句回复，还可能包括工具调用、环境变化和失败原因。Anthropic 将评测轨迹与任务结果放在一起讨论：要知道为什么通过或失败，必须能回到这条尝试的过程和最终状态。<strong>轨迹是解释运行结果的证据，不是装饰性的日志。</strong><Cite id="evalrun-trace"/></p>
+      <p id="evalrun-trace" className="vp-citation-target">对于会调用工具或经过多步推理的智能体，一次尝试不只有最后一句回复，还可能包括工具调用、环境变化和失败原因。Anthropic 将评测轨迹与任务结果放在一起讨论：要知道为什么通过或失败，必须能回到这条尝试的过程和最终状态。<strong>轨迹是解释运行结果的证据。</strong><Cite id="evalrun-trace"/></p>
       <p>下面不调用模型，只操作两份固定的虚构运行记录。先看题集、被测版本、评分器和逐项轨迹；再改变一个条件，观察“可以比较”“暂不比较”和“运行不完整”分别如何出现。注意每个数字都来自记录本身，按钮不会凭空重算一个更漂亮的成绩。</p>
       <EvaluationRunLesson/>
       <p id="evalrun-grader" className="vp-citation-target">评分器可以对每条样本给出通过、失败或未评分，再由运行报告汇总。OpenAI 的 graders 文档把评分逻辑与被评测输出分开：同一次运行换了评分器，也可能得到不同分数。<strong>看到汇总变化时，要同时检查逐项评分和评分器版本。</strong><Cite id="evalrun-grader"/></p>
-      <p>如果一条轨迹只记录“失败”，还应保留能解释失败的最小证据，例如输入、工具返回、环境状态和评分理由。不同任务需要不同证据；代码任务可能要保存测试输出，知识问答可能需要保存引用与判据命中。运行记录不是把所有调试日志无限堆进去，而是让这次判断可复核。</p>
+      <p>如果一条轨迹只记录“失败”，还应保留能解释失败的最小证据，例如输入、工具返回、环境状态和评分理由。不同任务需要不同证据；代码任务可能要保存测试输出，知识问答可能需要保存引用与判据命中。运行记录是让这次判断可复核。</p>
     </ArticleSection>
     <ArticleSection id="run-compare" title="什么时候可以比较" className={base.offset}><Legacy slug="evaluation-run" names={['quiz-heading']}/>
-      <p id="evalrun-compare" className="vp-citation-target">两次运行要比较总分，至少要先对齐想要保持不变的条件：题集及版本、评分器及版本、输入约定、被测系统和相关环境。Anthropic 的评测实践强调任务、成功标准和运行条件要能重现；<strong>“同一批题”不只是题目文字相似，还包括版本和判断规则。</strong><Cite id="evalrun-compare"/></p>
+      <p id="evalrun-compare" className="vp-citation-target">两次运行要比较总分，至少要先对齐想要保持不变的条件：题集及版本、评分器及版本、输入约定、被测系统和相关环境。Anthropic 的评测实践强调任务、成功标准和运行条件要能重现；<strong>“同一批题”需要对齐文字、版本与判断规则。</strong><Cite id="evalrun-compare"/></p>
       <p>条件对齐后，汇总差异才有解释空间：本例中 run-18 比 run-17 多通过一题，可以回到第几条轨迹发生了变化。若切换到 support-v2，新增或删除的题目本身就可能改变分母；若评分器从 rubric-v2 换成别的规则，变化也不能直接归因于被测版本。</p>
-      <ArticleAside title="先比什么，再比多少"><p>先核对运行身份和可回查证据，再看通过率、延迟或费用。运行报告可以同时保留这些指标，但每个指标都要注明分母、排除项和测量条件；一个总分不能替代全部判断。</p></ArticleAside>
+      <ArticleAside title="先比什么，再比多少"><p>先核对运行身份和可回查证据，再看通过率、延迟或费用。报告可以保留多个指标，分别注明分母、排除项与测量条件，再结合任务判断。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="run-boundary" title="缺记录时不要补成分数"><Legacy slug="evaluation-run" names={['prompt-heading']}/>
-      <p id="evalrun-boundary" className="vp-citation-target">NIST AI RMF Playbook 将测量、记录和持续评估放在风险管理的治理与测量工作中；记录缺口会限制你能对系统作出的判断。<strong>一条没有输出或轨迹的样本应标为未评分或运行不完整，而不是静默地当成失败或成功。</strong><Cite id="evalrun-boundary"/></p>
-      <p>这条边界很实际：运行中途断网、工具超时、评分器无法读取结果时，缺失原因可能来自评测设施，而不是被测系统的能力。把它们都塞进分母，会让分数看似完整却无法解释；把它们都删掉，也可能隐藏某类系统性失败。先记录状态，再按预先声明的规则决定是否重跑、排除或单独报告。</p>
-      <p>评测运行也不能证明业务事实本身。它只能说明在给定题集、输入和判断规则下，这次执行留下了什么证据。需要改版本时，保留旧运行；需要更新题集时，给新运行新的身份。这样下一次回看，才能知道变化来自系统、题目、评分器，还是运行环境。</p>
+      <p id="evalrun-boundary" className="vp-citation-target">NIST AI RMF Playbook 将测量、记录和持续评估放在风险管理的治理与测量工作中；记录缺口会限制你能对系统作出的判断。<strong>一条没有输出或轨迹的样本应标为未评分或运行不完整。</strong><Cite id="evalrun-boundary"/></p>
+      <p>这条边界很实际：运行中途断网、工具超时、评分器无法读取结果时，缺失原因可能来自评测设施。把它们都塞进分母，会让分数看似完整却无法解释；把它们都删掉，也可能隐藏某类系统性失败。先记录状态，再按预先声明的规则决定是否重跑、排除或单独报告。</p>
+      <p>它记录给定题集、输入和判断规则下，本次执行产生的证据。需要改版本时，保留旧运行；需要更新题集时，给新运行新的身份。这样下一次回看，才能知道变化来自系统、题目、评分器，还是运行环境。</p>
       <ArticleAside title="读一个运行摘要的顺序"><p>先看运行 ID 与时间，再看题集和版本、被测版本、评分器和环境，最后看逐项轨迹及未评分原因。只有这些条件都足够明确，汇总分数才值得进入比较表。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
@@ -132,29 +132,29 @@ export function EvaluationRunTermPage() {
 export function GradingRubricTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={gradingRubricSources}/>;
   return <ConceptArticle slug="grading-rubric" title="评分规则" subtitle="Grading Rubric · 把“好不好”拆成可核对的要求" sources={gradingRubricSources}
-    sections={[['rubric-definition', '评分规则不是一句“请打分”'], ['rubric-dimensions', '把回答拆成多个维度'], ['rubric-calibration', '让不同评分有共同尺度'], ['rubric-boundary', '规则能判断什么，不能判断什么']]}
-    intro={<>评分规则把一个开放目标拆成维度、等级和判定依据，让人、程序或模型可以逐项检查。它不是把“感觉不错”换成一个更大的数字，而是先说明哪些证据算满足、缺什么会扣分，以及资料不足时如何停在未评分。</>}
+    sections={[['rubric-definition', '将评分维度与判据写具体'], ['rubric-dimensions', '把回答拆成多个维度'], ['rubric-calibration', '让不同评分有共同尺度'], ['rubric-boundary', '规则能判断什么，不能判断什么']]}
+    intro={<>评分规则把一个开放目标拆成维度、等级和判定依据，让人、程序或模型可以逐项检查。它是先说明哪些证据算满足、缺什么会扣分，以及资料不足时如何停在未评分。</>}
     >
-    <ArticleSection id="rubric-definition" title="评分规则不是一句“请打分”"><Legacy slug="grading-rubric" names={['question', 'definition']}/>
+    <ArticleSection id="rubric-definition" title="将评分维度与判据写具体"><Legacy slug="grading-rubric" names={['question', 'definition']}/>
       <p id="rubric-definition-detail" className="vp-citation-target"><strong>评分规则（rubric）是一份把任务要求写成可检查维度、等级和证据的说明。</strong>OpenAI 的 graders 文档把评分标准作为评分器输入的一部分：评分器负责执行判定，规则先说明什么结果算好、什么结果不满足。<Cite id="rubric-definition-detail"/></p>
-      <p>“请给这段回答打 1 到 5 分”没有告诉评分者怎样区分 2 分和 4 分，也没有告诉它缺少关键资料时该怎么办。一个可用的规则会把任务目标写成几条可以回看的要求，例如事实是否正确、前提是否保留、有没有添加资料没有支持的承诺。评分器是执行者，规则是它执行的标准，两者不要混成同一个词。</p>
+      <p>“请给这段回答打 1 到 5 分”没有告诉评分者怎样区分 2 分和 4 分，也没有告诉它缺少关键资料时该怎么办。规则把任务目标写成可回看的要求，例如事实准确、前提完整，以及承诺有资料支持。评分器是执行者，规则是它执行的标准，两者不要混成同一个词。</p>
       <div className={s.rubricAnatomy}><div><span>维度</span><strong>检查哪件事</strong><p>事实、条件、范围或格式。</p></div><div><span>等级</span><strong>满足到什么程度</strong><p>通过、部分满足、未满足。</p></div><div><span>证据</span><strong>凭什么这样判</strong><p>回答中的句子或外部结果。</p></div></div>
     </ArticleSection>
     <ArticleSection id="rubric-dimensions" title="把回答拆成多个维度"><Legacy slug="grading-rubric" names={['scene-heading']}/>
-      <p id="rubric-dimensions-detail" className="vp-citation-target">G-Eval 研究让模型按照任务说明、评价标准与评价步骤进行判断，并将开放式质量拆成更具体的评价过程。<strong>维度拆开后，评分者可以指出是事实错了，还是条件漏了，而不是只留下一个无法解释的总分。</strong><Cite id="rubric-dimensions-detail"/></p>
-      <p>下面的固定样本回答同一条退款规则。选择不同回答并运行评分，会看到三个维度分别亮起或变灰；这不是对语言风格的偏好，而是把资料里的事实、条件和禁止越界承诺逐项对照。实际项目可以有更多维度，但每增加一条，都要说明它测什么、证据在哪里。</p>
+      <p id="rubric-dimensions-detail" className="vp-citation-target">G-Eval 研究让模型按照任务说明、评价标准与评价步骤进行判断，并将开放式质量拆成更具体的评价过程。<strong>维度拆开后，评分者可以指出是事实错了，还是条件漏了。</strong><Cite id="rubric-dimensions-detail"/></p>
+      <p>下面的固定样本回答同一条退款规则。选择不同回答并运行评分，会看到三个维度分别亮起或变灰；这是把资料里的事实、条件和禁止越界承诺逐项对照。实际项目可以有更多维度，但每增加一条，都要说明它测什么、证据在哪里。</p>
       <GradingRubricLesson/>
-      <p>维度之间也可能冲突：回答事实正确，却因为漏掉重要限制而不满足任务；回答很完整，却添加了资料没有支持的保证。把维度分开保留，后续才能决定是修正系统、补充资料，还是调整规则，而不是盲目追逐总分。</p>
+      <p>维度之间也可能冲突：回答事实正确，却因为漏掉重要限制而不满足任务；回答很完整，却添加了资料没有支持的保证。把维度分开保留，后续才能决定是修正系统、补充资料，还是调整规则。</p>
     </ArticleSection>
     <ArticleSection id="rubric-calibration" title="让不同评分有共同尺度" className={base.offset}><Legacy slug="grading-rubric" names={['quiz-heading']}/>
       <p id="rubric-calibration-detail" className="vp-citation-target">智能体评测需要明确任务和成功标准，并用样本检查评分是否与目标一致。Anthropic 的评测实践强调先定义成功，再用真实任务验证评测；<strong>规则写得越清楚，人工、程序和模型评分才越有机会落在同一尺度上。</strong><Cite id="rubric-calibration-detail"/></p>
       <p>校准可以从一小组共同样本开始：让两位评分者独立应用规则，比较分歧，补充“通常”“资料不足”“无法观察”等边界的写法，再重新评分。规则变更要记录版本；否则下一次分数变化时，你无法区分回答变好了，还是评分方式变宽了。</p>
-      <ArticleAside title="等级不是越多越精确"><p>三档足够表达通过、部分满足和未满足时，不必为了看起来精细而加到十档。等级太多却没有稳定证据，可能只制造假精度。先让相邻等级有可观察差别，再决定是否需要更细。</p></ArticleAside>
+      <ArticleAside title="按可观察差别设置等级"><p>三档足够表达通过、部分满足和未满足时，不必为了看起来精细而加到十档。等级太多却没有稳定证据，可能只制造假精度。先让相邻等级有可观察差别，再决定是否需要更细。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="rubric-boundary" title="规则能判断什么，不能判断什么"><Legacy slug="grading-rubric" names={['prompt-heading']}/>
       <p id="rubric-boundary-detail" className="vp-citation-target">Inspect 的评分系统区分不同评分方法与未评分情况，提醒评测设计者明确运行失败、证据不足和任务失败怎样进入结果。<strong>规则只能根据声明的证据判断，不应把看不到的事实当成已满足。</strong><Cite id="rubric-boundary-detail"/></p>
-      <p>如果回答声称“已经退款”，但运行记录没有实际支付状态，规则最多能判断它是否使用了合适的措辞，不能证明退款真的发生。若工具超时导致结果不可读，应标为未评分或设施失败，不能随意给零分。规则也不能替代业务政策：政策改变后，先更新规则和样本，再解释新旧分数。</p>
-      <p>最后检查规则是否测到了真正的目标：它是否奖励了真实结果，而不是长度、自信语气或某个固定短语？保留逐项理由、规则版本和样本证据，才能在一次异常评分后回到具体判断。</p>
+      <p>如果回答声称“已经退款”，但运行记录没有实际支付状态，规则最多能判断它是否使用了合适的措辞。若工具超时导致结果不可读，应标为未评分或设施失败，不能随意给零分。业务政策改变后，更新规则与样本，再解释新旧分数。</p>
+      <p>最后检查规则是否测到了真正的目标：它是否奖励了真实结果？保留逐项理由、规则版本和样本证据，才能在一次异常评分后回到具体判断。</p>
       <ArticleAside title="评分规则的最小审查表"><p>每条维度都应回答：检查什么、需要什么证据、缺证据怎样处理、与相邻等级差在哪里。四个问题有一个答不上来，就先把规则当成草稿。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
@@ -164,10 +164,10 @@ export function RegressionEvaluationTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={regressionEvaluationSources}/>;
   return <ConceptArticle slug="regression-evaluation" title="回归评测" subtitle="Regression Evaluation · 改动后检查原来通过的能力是否退回" sources={regressionEvaluationSources}
     sections={[['regression-definition', '先把“回退”说清楚'], ['regression-diff', '逐项比较基线和候选'], ['regression-gate', '关键失败可以阻断发布'], ['regression-boundary', '题集和证据的边界']]}
-    intro={<>回归评测用一套固定任务比较旧版本和新版本，专门找出“以前做对、现在做错”的变化。新版本总分变高，只能说明某些题的结果变好；它不能自动证明原来的关键行为都还在。</>}
+    intro={<>回归评测用一套固定任务比较旧版本和新版本，专门找出“以前做对、现在做错”的变化。这些题目在本次评测中的结果有所改善。</>}
     >
     <ArticleSection id="regression-definition" title="先把“回退”说清楚"><Legacy slug="regression-evaluation" names={['question', 'definition']}/>
-      <p id="regression-definition-detail" className="vp-citation-target"><strong>回归评测是在相同题集、输入约定和评分规则下，把基线版本与候选版本逐项对照。</strong>OpenAI 的评测指南把评测对象、数据集、评分器和运行结果作为可追溯的记录；这里的“回归”特指改动后原先通过的行为变成失败，而不是所有新失败都自动叫回归。<Cite id="regression-definition-detail"/></p>
+      <p id="regression-definition-detail" className="vp-citation-target"><strong>回归评测是在相同题集、输入约定和评分规则下，把基线版本与候选版本逐项对照。</strong>OpenAI 的评测指南把评测对象、数据集、评分器和运行结果作为可追溯的记录；这里的“回归”特指改动后原先通过的行为变成失败。<Cite id="regression-definition-detail"/></p>
       <p id="regression-record-detail" className="vp-citation-target">因此，至少要保留题集版本、基线和候选版本、每条任务的结果，以及哪些任务属于关键行为。<strong>只保存“17/20 变成 18/20”会丢掉最需要查的那一条。</strong>如果基线本身没有稳定记录，就无法知道候选到底是回退，还是两次运行的条件不同。<Cite id="regression-record-detail"/></p>
       <div className={s.regressionChecklist}><div><span>固定什么</span><strong>题集与评分规则</strong><p>先确定比较的分母和判据。</p></div><div><span>保留什么</span><strong>逐题结果</strong><p>把关键行为单独标出来。</p></div><div><span>寻找什么</span><strong>通过 → 失败</strong><p>回到原始证据看变化。</p></div></div>
     </ArticleSection>
@@ -178,14 +178,14 @@ export function RegressionEvaluationTermPage() {
       <p>正常状态下，同一题集、关键失败为 0，才可以继续分析普通失败。发现关键回退时，即使总分增加，也要先修复并复测。题集换成 suite-v2 时，分母和任务集合发生变化，应该先标记为暂不比较。</p>
     </ArticleSection>
     <ArticleSection id="regression-gate" title="关键失败可以阻断发布" className={base.offset}><Legacy slug="regression-evaluation" names={['quiz-heading']}/>
-      <p id="regression-gate-detail" className="vp-citation-target">NIST AI RMF Playbook 把持续测量、记录和复查放进风险管理流程。对需要保护的行为，可以预先写出发布门槛：关键失败必须为零，或某类失败不得超过规定数量。<strong>门槛不是为了让分数看起来更低，而是防止平均值掩盖高风险回退。</strong><Cite id="regression-gate-detail"/></p>
-      <p>关键行为要来自真实任务风险，而不是看到结果后临时挑一条。比如写入前确认、退款条件和高风险转人工都可能比普通格式更重要；如果这些样本没有进入题集，回归评测就没有机会发现它们。门槛也要写清“未评分”怎样处理，不能把运行设施的缺口默默算成通过。</p>
+      <p id="regression-gate-detail" className="vp-citation-target">NIST AI RMF Playbook 把持续测量、记录和复查放进风险管理流程。对需要保护的行为，可以预先写出发布门槛：关键失败必须为零，或某类失败不得超过规定数量。<strong>门槛是防止平均值掩盖高风险回退。</strong><Cite id="regression-gate-detail"/></p>
+      <p>关键行为要来自真实任务风险。比如写入前确认、退款条件和高风险转人工都可能比普通格式更重要；如果这些样本没有进入题集，回归评测就没有机会发现它们。门槛也要写清“未评分”怎样处理。</p>
       <ArticleAside title="一次发布前的最小检查"><p>确认基线稳定；确认题集和评分器版本一致；检查每条关键题的通过状态；记录新增失败、关键失败和未评分；关键失败修复后，用同一题集重新运行。平均分只作为补充信号。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="regression-boundary" title="题集和证据的边界"><Legacy slug="regression-evaluation" names={['prompt-heading']}/>
-      <p id="regression-boundary-detail" className="vp-citation-target">HELM 通过多个场景和维度报告模型表现，也强调评测覆盖不是无限的。<strong>回归评测只能回答题集实际覆盖的问题；它没有测到的行为，不会因为总分稳定就自动安全。</strong>题集变窄、评分器改宽或基线本身漂移，都会让结论失去可比性。<Cite id="regression-boundary-detail"/></p>
-      <p>如果工具超时、输出缺失或评分器无法读取证据，先记录为未评分或运行不完整，再按预先规则决定重跑、排除还是单独报告。不要因为候选版本的总分更高，就把这些状态解释成能力提升。回归结果说明的是“在这一版题集、规则和运行条件下发生了什么”，不是系统在所有未来输入上的保证。</p>
-      <ArticleAside title="读到一个“通过”时再问三句"><p>题集版本有没有变？关键行为是否逐项通过？有没有未评分或无法观察的样本？这三句有一个答不上来，就先把结果当作需要补证据的比较，而不是发布结论。</p></ArticleAside>
+      <p id="regression-boundary-detail" className="vp-citation-target">HELM 通过多个场景和维度报告模型表现，并记录评测覆盖范围。<strong>回归评测只能回答题集实际覆盖的问题；它没有测到的行为，不会因为总分稳定就自动安全。</strong>题集变窄、评分器改宽或基线本身漂移，都会让结论失去可比性。<Cite id="regression-boundary-detail"/></p>
+      <p>如果工具超时、输出缺失或评分器无法读取证据，先记录为未评分或运行不完整，再按预先规则决定重跑、排除还是单独报告。不要因为候选版本的总分更高，就把这些状态解释成能力提升。回归结果说明的是“在这一版题集、规则和运行条件下发生了什么”。</p>
+      <ArticleAside title="读到一个“通过”时再问三句"><p>题集版本有没有变？关键行为是否逐项通过？有没有未评分或无法观察的样本？这三句有一个答不上来，就先把结果当作需要补证据的比较。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }
@@ -193,16 +193,16 @@ export function RegressionEvaluationTermPage() {
 export function SafetyEvaluationTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={safetyEvaluationSources}/>;
   return <ConceptArticle slug="safety-evaluation" title="安全评测" subtitle="Safety Evaluation · 检查危险请求有没有变成真实副作用" sources={safetyEvaluationSources}
-    sections={[['safety-definition', '安全不是只看拒答'], ['safety-cases', '把风险案例放进真实边界'], ['safety-gate', '用高风险门槛处理失败'], ['safety-boundary', '评测能证明到哪里']]}
+    sections={[['safety-definition', '同时检查拒答与实际动作'], ['safety-cases', '把风险案例放进真实边界'], ['safety-gate', '用高风险门槛处理失败'], ['safety-boundary', '评测能证明到哪里']]}
     intro={<>安全评测把正常任务、越权请求和攻击变体放进同一套检查，观察系统的回答、权限判断和工具结果。模型说“我拒绝”只是一个信号；真正要确认的是敏感动作有没有发生。</>}
     >
-    <ArticleSection id="safety-definition" title="安全不是只看拒答"><Legacy slug="safety-evaluation" names={['question', 'definition']}/>
-      <p id="safety-definition-detail" className="vp-citation-target"><strong>安全评测用一组有代表性的风险任务，检查系统是否按允许、拒绝、升级和隔离规则行动。</strong>OpenAI 的安全实践把模型输出、应用约束和高风险动作放在一起考虑；安全评测因此要同时看模型与应用的组合，而不是给模型做一次脱离环境的过滤器扫描。<Cite id="safety-definition-detail"/></p>
-      <p id="safety-record-detail" className="vp-citation-target">一次安全结果至少要记录输入类型、模型回答、权限判断、工具请求和环境状态。<strong>“我拒绝了”不能替代“敏感工具没有执行”。</strong>如果没有工具日志或环境证据，应标为无法判断，而不是直接算通过。<Cite id="safety-record-detail"/></p>
+    <ArticleSection id="safety-definition" title="同时检查拒答与实际动作"><Legacy slug="safety-evaluation" names={['question', 'definition']}/>
+      <p id="safety-definition-detail" className="vp-citation-target"><strong>安全评测用一组有代表性的风险任务，检查系统是否按允许、拒绝、升级和隔离规则行动。</strong>OpenAI 的安全实践把模型输出、应用约束和高风险动作放在一起考虑；安全评测因此要同时看模型与应用的组合。<Cite id="safety-definition-detail"/></p>
+      <p id="safety-record-detail" className="vp-citation-target">一次安全结果至少要记录输入类型、模型回答、权限判断、工具请求和环境状态。<strong>核对拒绝回答后，确认敏感工具的实际执行状态。</strong>如果没有工具日志或环境证据，应标为无法判断。<Cite id="safety-record-detail"/></p>
       <div className={s.safetyChecklist}><div><span>输入</span><strong>正常、越权、攻击</strong><p>覆盖应该完成和应该挡住的请求。</p></div><div><span>回答</span><strong>完成、拒绝、升级</strong><p>记录系统给用户看的结果。</p></div><div><span>副作用</span><strong>工具与环境</strong><p>核对真实动作有没有发生。</p></div></div>
     </ArticleSection>
     <ArticleSection id="safety-cases" title="把风险案例放进真实边界"><Legacy slug="safety-evaluation" names={['scene-heading']}/>
-      <p id="safety-cases-detail" className="vp-citation-target">Anthropic 的智能体评测实践把任务、成功标准、轨迹和环境结果一起纳入检查；安全题也要把攻击变体和可观察的副作用写进成功标准。<strong>一条拒答通过，不代表同一风险的改写、间接注入或工具路径也通过。</strong><Cite id="safety-cases-detail"/></p>
+      <p id="safety-cases-detail" className="vp-citation-target">Anthropic 的智能体评测实践把任务、成功标准、轨迹和环境结果一起纳入检查；安全题也要把攻击变体和可观察的副作用写进成功标准。<strong>对同一风险，需要继续检查改写、间接注入和工具路径的表现。</strong><Cite id="safety-cases-detail"/></p>
       <p>下面是预先写好的三个案例，不调用模型或敏感工具。正常请求应完成；越权请求应拒绝或升级，同时没有工具副作用；间接注入如果让工具读出敏感字段，就算出现一次高风险失败。切换案例并运行检查，看到回答和工具证据是否一致。</p>
       <SafetyEvaluationLesson/>
       <p>把允许任务也放进来很重要：如果只收集危险问题，评测可能奖励“什么都拒绝”的系统。正常完成、合理拒绝和安全升级都要有各自的成功条件，并记录题集版本。</p>
@@ -213,7 +213,7 @@ export function SafetyEvaluationTermPage() {
       <ArticleAside title="安全发布前的最小检查"><p>每类风险都有代表性样本；允许任务仍能完成；拒绝和升级没有副作用；工具日志与回答一致；敏感动作有独立门槛；无法观察的样本被标为未评分并单独处理。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="safety-boundary" title="评测能证明到哪里"><Legacy slug="safety-evaluation" names={['prompt-heading']}/>
-      <p id="safety-boundary-detail" className="vp-citation-target">HELM 用多个场景和维度报告模型表现，也提醒评测覆盖不可能穷尽所有输入。<strong>安全评测能说明这套题集和环境里观察到的行为，不能证明未来每一种攻击都会被挡住。</strong>应用权限、工具实现、部署配置和新出现的攻击面仍需独立检查。<Cite id="safety-boundary-detail"/></p>
+      <p id="safety-boundary-detail" className="vp-citation-target">HELM 用多个场景和维度报告模型表现，也提醒评测覆盖不可能穷尽所有输入。<strong>安全评测能说明这套题集和环境里观察到的行为。</strong>应用权限、工具实现、部署配置和新出现的攻击面仍需独立检查。<Cite id="safety-boundary-detail"/></p>
       <p>如果题集只测直接提示，没有测资料中的间接指令；只看文本，没有读工具日志；只在沙箱里测，却没有核对生产权限，结论都应缩小范围。保留版本、案例类别、环境和未覆盖项，下一轮才能知道是扩大了覆盖，还是只是换了说法。</p>
       <ArticleAside title="读到“安全通过”时再问三句"><p>通过的是哪类风险？观察到的是回答还是实际动作？哪些工具、权限和环境没有进入这次评测？三句都能回答，结论才有明确边界。</p></ArticleAside>
     </ArticleSection>
@@ -223,11 +223,11 @@ export function SafetyEvaluationTermPage() {
 export function CostEvaluationTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={costEvaluationSources}/>;
   return <ConceptArticle slug="cost-evaluation" title="成本评测" subtitle="Cost Evaluation · 比较一次任务的真实消耗是否值得" sources={costEvaluationSources}
-    sections={[['cost-definition', '价格不是任务成本'], ['cost-measure', '把一次任务的消耗拆开'], ['cost-budget', '质量和预算一起设门槛'], ['cost-boundary', '数字只在条件一致时可比']]}
-    intro={<>成本评测不是把价格表上的单价抄进表格，而是在同一组任务上记录令牌、工具、重试和缓存等消耗，再与质量和等待时间一起判断。更便宜的方案如果经常失败或重试，未必真的省钱。</>}
+    sections={[['cost-definition', '按单价与用量计算任务成本'], ['cost-measure', '把一次任务的消耗拆开'], ['cost-budget', '质量和预算一起设门槛'], ['cost-boundary', '数字只在条件一致时可比']]}
+    intro={<>成本评测是在同一组任务上记录令牌、工具、重试和缓存等消耗，再与质量和等待时间一起判断。更便宜的方案如果经常失败或重试，未必真的省钱。</>}
     >
-    <ArticleSection id="cost-definition" title="价格不是任务成本"><Legacy slug="cost-evaluation" names={['question', 'definition']}/>
-      <p id="cost-definition-detail" className="vp-citation-target"><strong>成本评测是在固定任务和质量判据下，统计一次完整任务实际消耗的资源与费用。</strong>OpenAI 的成本优化文档把令牌、模型选择、缓存和请求策略放进成本判断；所以“每百万令牌多少钱”只是输入，不是一次任务的结论。<Cite id="cost-definition-detail"/></p>
+    <ArticleSection id="cost-definition" title="按单价与用量计算任务成本"><Legacy slug="cost-evaluation" names={['question', 'definition']}/>
+      <p id="cost-definition-detail" className="vp-citation-target"><strong>成本评测是在固定任务和质量判据下，统计一次完整任务实际消耗的资源与费用。</strong>OpenAI 的成本优化文档把令牌、模型选择、缓存和请求策略放进成本判断，所以“每百万令牌多少钱”只是输入。<Cite id="cost-definition-detail"/></p>
       <p id="cost-record-detail" className="vp-citation-target">一次任务可能包含多轮模型调用、工具调用、失败重试和不同长度的输入输出。<strong>要比较方案，至少要保留题集版本、通过结果、输入输出令牌、工具次数、重试和计费条件。</strong>只看一次成功请求，会把失败成本和补救动作藏起来。<Cite id="cost-record-detail"/></p>
       <div className={s.costChecklist}><div><span>质量</span><strong>通过多少题</strong><p>先确认比较的是同一组任务。</p></div><div><span>消耗</span><strong>令牌、工具、重试</strong><p>把完整任务的资源算进去。</p></div><div><span>费用</span><strong>每任务实际成本</strong><p>注明缓存、批量和计费条件。</p></div></div>
     </ArticleSection>
@@ -239,13 +239,13 @@ export function CostEvaluationTermPage() {
     </ArticleSection>
     <ArticleSection id="cost-budget" title="质量和预算一起设门槛" className={base.offset}><Legacy slug="cost-evaluation" names={['quiz-heading']}/>
       <p id="cost-budget-detail" className="vp-citation-target">智能体评测的成功标准应能反映任务目标和失败代价；成本门槛也要和质量门槛一起声明。<strong>“低于预算”不能覆盖关键任务失败，“通过更多”也不能覆盖不可接受的成本。</strong><Cite id="cost-budget-detail"/></p>
-      <p>例如先规定关键任务必须通过，再要求单任务成本不超过 ¥1.00；超过时进入复核，查看是否由重试、工具调用或异常长输出造成。预算不是越低越好，应该说明它服务的场景、可接受的质量下限和超限后的动作。</p>
+      <p>例如先规定关键任务必须通过，再要求单任务成本不超过 ¥1.00；超过时进入复核，查看是否由重试、工具调用或异常长输出造成。应该说明它服务的场景、可接受的质量下限和超限后的动作。</p>
       <ArticleAside title="一张成本评测表要回答什么"><p>同一任务上两套方案各通过多少？每套用了多少输入输出令牌、工具和重试？是否命中缓存？延迟和失败率怎样？超过预算时是降级、限流、重试，还是交给人工？</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="cost-boundary" title="数字只在条件一致时可比"><Legacy slug="cost-evaluation" names={['prompt-heading']}/>
       <p id="cost-boundary-detail" className="vp-citation-target">OpenAI Batch API 以异步批量处理换取不同的吞吐和价格条件；这类执行方式与在线请求的等待、并发和失败处理不同。<strong>换了缓存命中、批量方式、题集或重试策略，成本数字就不能直接排成同一条排名。</strong><Cite id="cost-boundary-detail"/></p>
       <p>发现条件变化时，先统一口径或把两次结果分组报告。把一次缓存命中的低价外推到所有流量，会低估冷启动成本；把评测题集的平均成本外推到长对话，也会漏掉输出长度和工具路径的差异。每个数字旁都保留适用条件。</p>
-      <ArticleAside title="看到更便宜时再问三句"><p>这是不是同一组任务？计费和缓存条件是否一样？失败、重试和工具费用有没有算全？三句有一个答不上来，就先把它当作不同条件下的两个记录。</p></ArticleAside>
+      <ArticleAside title="看到更便宜时再问三句"><p>计费和缓存条件是否一样？失败、重试和工具费用有没有算全？三句有一个答不上来，就先把它当作不同条件下的两个记录。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }
@@ -257,24 +257,24 @@ export function LatencyEvaluationTermPage() {
     intro={<>延迟评测记录请求从发出到看到首字、等待工具、完成或超时的时间。平均响应很快，仍可能有一部分用户一直等；把时间点和分布拆开，才知道慢在哪里。</>}
     >
     <ArticleSection id="latency-definition" title="首字和完成是两件事"><Legacy slug="latency-evaluation" names={['question', 'definition']}/>
-      <p id="latency-definition-detail" className="vp-citation-target"><strong>延迟评测把一次请求的等待拆成可观察的时间点，例如排队、首字、工具返回和最终完成。</strong>OpenAI 的延迟优化文档区分首 token 时间和完整响应时间；用户开始看到反馈，不等于任务已经完成。<Cite id="latency-definition-detail"/></p>
+      <p id="latency-definition-detail" className="vp-citation-target"><strong>延迟评测把一次请求的等待拆成可观察的时间点，例如排队、首字、工具返回和最终完成。</strong>OpenAI 的延迟优化文档区分首 token 时间与完整响应时间，分别对应开始反馈与完成输出的等待。<Cite id="latency-definition-detail"/></p>
       <p>如果聊天界面 420ms 就出现了首字，用户会感觉系统开始回应；工具仍在等待时，任务可能还没有结果。评测要先说明“完成”指什么：最后一个 token、工具结果写入，还是用户可以继续操作的状态。不同定义不能放进同一个平均数里。</p>
       <div className={s.latencyChecklist}><div><span>首字</span><strong>何时开始反馈</strong><p>决定用户什么时候不再面对空白。</p></div><div><span>工具</span><strong>哪里在等待</strong><p>找出外部服务或队列造成的停顿。</p></div><div><span>完成</span><strong>何时结束任务</strong><p>定义可以交付结果的时间点。</p></div></div>
     </ArticleSection>
     <ArticleSection id="latency-record" title="把一次等待拆开记录"><Legacy slug="latency-evaluation" names={['scene-heading']}/>
       <p id="latency-record-detail" className="vp-citation-target">评测运行记录需要保留输入、运行条件和结果；延迟记录也应把时间点放回同一条任务轨迹。<strong>只有一个总耗时，就无法区分模型生成慢、工具慢、排队慢还是请求中途超时。</strong><Cite id="latency-record-detail"/></p>
-      <p>下面是虚构的时间线，不调用模型或测速。统一请求先看到首字，再等待工具，最后完成；切换长尾或超时状态，观察统计和结论怎样变化。时间只用于解释评测口径，不代表某个服务的真实性能。</p>
+      <p>下面是虚构的时间线，不调用模型或测速。统一请求先看到首字，再等待工具，最后完成；切换长尾或超时状态，观察统计和结论怎样变化。时间只用于解释评测口径。</p>
       <LatencyEvaluationLesson/>
       <p>优化要跟着阶段走：首字慢可以看排队或首 token，工具慢要看外部依赖，完成慢要看输出长度和后续调用。把所有问题都归因给模型，会让修复方向偏掉。</p>
     </ArticleSection>
     <ArticleSection id="latency-tail" title="p50 看典型，p95 看长尾" className={base.offset}><Legacy slug="latency-evaluation" names={['quiz-heading']}/>
       <p id="latency-tail-detail" className="vp-citation-target">智能体评测要在真实任务上观察运行结果；一组请求的中位数只能描述中间位置，不能代表最慢那部分。<strong>p50 让你看到典型等待，p95 则提醒还有约一小部分请求明显更慢。</strong>两者回答的是不同问题。<Cite id="latency-tail-detail"/></p>
-      <p>本例 p50 为 1.9s，p95 为 4.8s；如果门槛是 4s，不能用 p50 掩盖 p95 超限。分位数也不是越高越好：p99、最大值和超时率要按用户场景选择。样本太少时，分位数本身也不稳定，应同时记录样本量和过滤条件。</p>
+      <p>本例 p50 为 1.9s，p95 为 4.8s；以 4s 为门槛时，p95 已超限。p99、最大值与超时率按用户场景选择。样本太少时，分位数本身也不稳定，应同时记录样本量和过滤条件。</p>
       <ArticleAside title="一条延迟门槛要写清什么"><p>测量哪一段？样本包含哪些任务？p50、p95 或超时率的门槛是多少？流式响应与非流式响应怎样区分？工具超时和用户取消怎样报告？</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="latency-boundary" title="条件变化时不要硬比"><Legacy slug="latency-evaluation" names={['prompt-heading']}/>
       <p id="latency-boundary-detail" className="vp-citation-target">MLPerf Inference 在统一场景和准确性约束下报告延迟与吞吐，说明硬件、软件、负载和测量协议都会影响结果。<strong>换了并发、输出长度、工具版本或超时策略，新的 p95 就不能直接排成同一条排名。</strong><Cite id="latency-boundary-detail"/></p>
-      <p>如果工具超时，先把它标成运行不完整，保留超时阶段和原因；不要把未完成请求当作一个普通的 5 秒完成样本，也不要静默删掉它。比较版本时，固定任务、并发和统计窗口；条件必须变化时，就在结果旁说明变化。</p>
+      <p>先标记运行不完整，保留超时阶段与原因，并将等待了 5 秒的未完成请求单独计入统计。比较版本时，固定任务、并发和统计窗口；条件必须变化时，就在结果旁说明变化。</p>
       <ArticleAside title="看到平均值变快时再问三句"><p>首字变快了吗，还是只有最后完成变快？p95 和超时率有没有同步改善？样本、并发和工具条件相同吗？这三句能避免把一部分用户的长尾藏在平均数后面。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
@@ -283,12 +283,12 @@ export function LatencyEvaluationTermPage() {
 export function HumanGraderTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={humanGraderSources}/>;
   return <ConceptArticle slug="human-grader" title="人工评分器" subtitle="Human Grader · 用可解释的人类判断校准规则和自动评分" sources={humanGraderSources}
-    sections={[['human-definition', '人工评分不是凭感觉打分'], ['human-process', '先独立评分，再比较理由'], ['human-calibration', '把分歧变成校准样例'], ['human-boundary', '看不到证据时停在未评分']]}
+    sections={[['human-definition', '人工评分依据明确判据'], ['human-process', '先独立评分，再比较理由'], ['human-calibration', '把分歧变成校准样例'], ['human-boundary', '看不到证据时停在未评分']]}
     intro={<>人工评分器让评审者按同一套评分规则检查输出，留下分数、理由和分歧。它的价值是提供可解释的参考，帮助发现规则或自动评分的误判；人本身也需要盲评、校准和清楚的证据边界。</>}
     >
-    <ArticleSection id="human-definition" title="人工评分不是凭感觉打分"><Legacy slug="human-grader" names={['question', 'definition']}/>
+    <ArticleSection id="human-definition" title="人工评分依据明确判据"><Legacy slug="human-grader" names={['question', 'definition']}/>
       <p id="human-definition-detail" className="vp-citation-target"><strong>人工评分器是由评审者按事先写好的评分规则检查输出，并保留分数、理由和证据的过程。</strong>OpenAI 的 graders 文档把人、程序和模型都视为可以执行判定的评分器；规则决定检查什么，人工负责把样本中的证据和判断留下来。<Cite id="human-definition-detail"/></p>
-      <p>“这段回答读起来不错”不是可复核的分数。评审者要知道哪条事实正确、哪条条件缺失、哪种风险必须扣分，以及证据不足时能不能拒绝判断。人工评分也不是天然真相：没有量表和理由，另一个人无法复查这次判断。</p>
+      <p>评审者要知道哪条事实正确、哪条条件缺失、哪种风险必须扣分，以及证据不足时能不能拒绝判断。</p>
       <div className={s.humanChecklist}><div><span>先看</span><strong>规则与反例</strong><p>确认每个分档需要什么证据。</p></div><div><span>再评</span><strong>输出与证据</strong><p>逐项给分并写理由。</p></div><div><span>保留</span><strong>分数与分歧</strong><p>让后来的人能回到原样本。</p></div></div>
     </ArticleSection>
     <ArticleSection id="human-process" title="先独立评分，再比较理由"><Legacy slug="human-grader" names={['scene-heading']}/>
@@ -298,13 +298,13 @@ export function HumanGraderTermPage() {
       <p>盲评可以减少知道模型名称、回答顺序或上一位分数带来的影响。双人复核不要求所有人永远一致，而是把不一致暴露出来，作为改规则或补样例的入口。</p>
     </ArticleSection>
     <ArticleSection id="human-calibration" title="把分歧变成校准样例" className={base.offset}><Legacy slug="human-grader" names={['quiz-heading']}/>
-      <p id="human-calibration-detail" className="vp-citation-target">G-Eval 研究比较模型评价与人工判断，说明人工参考样本能帮助检查自动评分是否偏离目标；人工之间的分歧同样能暴露规则没有写清的边界。<strong>校准不是把最高分和最低分平均一下，而是说明哪条证据导致了分差，并把结论写回规则或示例。</strong><Cite id="human-calibration-detail"/></p>
+      <p id="human-calibration-detail" className="vp-citation-target">G-Eval 研究比较模型评价与人工判断，说明人工参考样本能帮助检查自动评分是否偏离目标；人工之间的分歧同样能暴露规则没有写清的边界。<strong>校准是说明哪条证据导致了分差，并把结论写回规则或示例。</strong><Cite id="human-calibration-detail"/></p>
       <p>校准样例要保留原回答、各自分数、理由、最终处理和规则版本。规则改过后，旧样例仍应标明使用的版本，否则下一轮分数变化时，无法区分回答变了还是尺度变了。代表性样本比只挑容易一致的样本更有价值。</p>
       <ArticleAside title="一次分歧复核的顺序"><p>先遮住彼此分数；分别写出维度和证据；指出哪条规则产生不同解释；由第三人或约定流程做决定；把结果加入校准集，并补上可复用的正反例。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="human-boundary" title="看不到证据时停在未评分"><Legacy slug="human-grader" names={['prompt-heading']}/>
       <p id="human-boundary-detail" className="vp-citation-target">MT-Bench 与 Chatbot Arena 的研究讨论模型裁判的位置、长度和自我偏好等偏差，提醒评价判断本身需要验证。<strong>人工也不能从看不见的环境状态补出事实；证据缺失时，未评分比猜一个分数更诚实。</strong><Cite id="human-boundary-detail"/></p>
-      <p>例如回答声称“已经退款”，但没有支付状态、工具日志或可核对的账单，评审者可以评价措辞是否符合规则，却不能证明退款真的发生。把这类样本记成未评分，并写明需要补什么证据。等待补证据期间，不要把它悄悄塞进通过率或失败率。</p>
+      <p>例如回答声称“已经退款”，但没有支付状态、工具日志或可核对的账单，评审者可以评价措辞是否符合规则。把这类样本记成未评分，并写明需要补什么证据。</p>
       <ArticleAside title="人工评分的边界检查"><p>评审者是否看到相同材料？规则是否有正反例？分数有没有逐项理由？分歧是否留下记录？证据不足是否允许未评分？五个问题有一个答不上来，就先修流程。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
@@ -313,12 +313,12 @@ export function HumanGraderTermPage() {
 export function ModelGraderTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={modelGraderSources}/>;
   return <ConceptArticle slug="model-grader" title="模型评分器" subtitle="Model Grader · 批量评分与人工校准" sources={modelGraderSources}
-    sections={[['model-definition', '模型评分不是第二个真理来源'], ['model-protocol', '先固定输入和输出格式'], ['model-calibration', '用人工参考发现系统性偏差'], ['model-boundary', '证据不足时返回未评分']]}
-    intro={<>模型评分器把待评输出、评分规则和必要参考交给另一个模型，让它按结构化格式给出分数、理由或未评分状态。它可以批量处理开放回答，但必须用人工参考样本检查偏差，不能把模型的分数当成客观事实。</>}
+    sections={[['model-definition', '用样本校验模型评分'], ['model-protocol', '先固定输入和输出格式'], ['model-calibration', '用人工参考发现系统性偏差'], ['model-boundary', '证据不足时返回未评分']]}
+    intro={<>模型评分器把待评输出、评分规则和必要参考交给另一个模型，让它按结构化格式给出分数、理由或未评分状态。它可以批量处理开放回答，但必须用人工参考样本检查偏差。</>}
     >
-    <ArticleSection id="model-definition" title="模型评分不是第二个真理来源"><Legacy slug="model-grader" names={['question', 'definition']}/>
+    <ArticleSection id="model-definition" title="用样本校验模型评分"><Legacy slug="model-grader" names={['question', 'definition']}/>
       <p id="model-definition-detail" className="vp-citation-target"><strong>模型评分器让一个模型按照评分规则检查另一个输出，并返回分数、理由或通过状态。</strong>OpenAI 的 graders 文档把模型评分列为评分器的一种，结果仍然需要和任务判据、人工参考一起解释。评分器可以提高批量检查速度，却不会因为“也是模型”就自动客观。<Cite id="model-definition-detail"/></p>
-      <p>被评模型和评分模型可以相同，也可以不同；无论怎样，评分模型都可能偏爱某种语气、回答长度或自己的答案。看到 4/5 只能说明它在这条规则和这条样本上给了 4/5，不能直接推出回答真实正确，更不能替代文件、工具或支付状态等外部证据。</p>
+      <p>被评模型和评分模型可以相同，也可以不同；无论怎样，评分模型都可能偏爱某种语气、回答长度或自己的答案。4/5 记录这条样本按当前规则得到的分数；文件、工具或支付的真实状态还需外部记录确认。</p>
       <div className={s.modelChecklist}><div><span>输入</span><strong>输出与必要参考</strong><p>把评分所需的回答、资料和环境证据一起固定。</p></div><div><span>规则</span><strong>维度与分档</strong><p>写清准确、完整、风险各档需要什么证据。</p></div><div><span>结果</span><strong>分数与理由</strong><p>保留结构化字段，方便回到原样本复查。</p></div></div>
     </ArticleSection>
     <ArticleSection id="model-protocol" title="先固定输入和输出格式"><Legacy slug="model-grader" names={['scene-heading']}/>
@@ -326,7 +326,7 @@ export function ModelGraderTermPage() {
       <p>例如规定准确性、完整性和风险各为 0–2 分，并要求返回 <code>{'{"score":4,"reasons":["保留审核条件"]}'}</code>。还要写清缺少支付状态时能否判断、理由必须指向哪条证据、无法判断时返回什么。只要求“给个 1 到 5 分”，会把规则藏在评分模型的临时判断里。</p>
       <p>下面的记录是虚构的，不会调用模型。切换校准状态，观察固定协议、系统性高估和证据不足怎样改变结果；评分结果只用于解释评测口径。</p>
       <ModelGraderLesson/>
-      <p>先把单条记录做成可解析的 JSON，再在多条代表性样本上统计误差。结构化格式方便筛出缺字段、理由为空或分数越界的记录，但它本身不能证明分数正确。</p>
+      <p>先把单条记录做成可解析的 JSON，再在多条代表性样本上统计误差。结构化格式方便筛出缺字段、理由为空或分数越界的记录。</p>
     </ArticleSection>
     <ArticleSection id="model-calibration" title="用人工参考发现系统性偏差" className={base.offset}><Legacy slug="model-grader" names={['quiz-heading']}/>
       <p id="model-calibration-detail" className="vp-citation-target">G-Eval 研究比较模型评价与人工判断，说明模型评分可以和人工参考比较，但相关性取决于任务、评价标准和样本。<strong>一条 4/5 对 3/5 的分差只是线索；同一组校准样本里反复高估或低估，才说明评分器需要调整。</strong><Cite id="model-calibration-detail"/></p>
@@ -334,8 +334,8 @@ export function ModelGraderTermPage() {
       <ArticleAside title="一组校准记录至少保留什么"><p>原回答、必要参考、人工分数、模型分数、逐项理由、模型与量表版本，以及高估、低估、位置偏差和理由缺失等误判类型。汇总数字要能回到具体样本。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="model-boundary" title="证据不足时返回未评分"><Legacy slug="model-grader" names={['prompt-heading']}/>
-      <p id="model-boundary-detail" className="vp-citation-target">MT-Bench 与 Chatbot Arena 的研究讨论模型裁判的位置、长度和自我偏好等偏差，提醒评分模型的判断需要单独验证。<strong>当样本缺少决定性证据时，评分器应返回未评分，而不是用自信措辞补出一个分数。</strong><Cite id="model-boundary-detail"/></p>
-      <p>例如回答声称“已经退款”，但没有支付状态、工具日志或可核对账单。模型可以评价回答是否保留了“审核通过后”等措辞，却不能证明退款已经发生。把这条记成 <code>unscored</code>，写明需要补什么证据，并从通过率和失败率中单独报告。</p>
+      <p id="model-boundary-detail" className="vp-citation-target">MT-Bench 与 Chatbot Arena 的研究讨论模型裁判的位置、长度和自我偏好等偏差，提醒评分模型的判断需要单独验证。<strong>当样本缺少决定性证据时，评分器应返回未评分。</strong><Cite id="model-boundary-detail"/></p>
+      <p>例如回答声称“已经退款”，但没有支付状态、工具日志或可核对账单。模型可以评价回答是否保留了“审核通过后”等措辞。把这条记成 <code>unscored</code>，写明需要补什么证据，并从通过率和失败率中单独报告。</p>
       <p>上线前还要测试交换回答顺序、隐藏模型名称、改变回答长度和加入边界样本。发现分数随无关变化而变化时，先修评分协议和校准集，再解释业务指标。模型评分器是判断工具，最终结论仍要回到任务目标和可核对的结果。</p>
       <ArticleAside title="看到模型评分变高时再问三句"><p>人工参考是否也变好？高估和低估是否集中在某类输入？证据不足的样本有没有被迫塞进分数？三句有一个答不上来，就先保留未评分并回到样本。</p></ArticleAside>
     </ArticleSection>
@@ -345,28 +345,28 @@ export function ModelGraderTermPage() {
 export function PassFailGraderTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={passFailGraderSources}/>;
   return <ConceptArticle slug="pass-fail-grader" title="通过失败评分器" subtitle="Pass/Fail Grader · 先把成功证据写清，再决定是否通过" sources={passFailGraderSources}
-    sections={[['passfail-definition', '二值结果从哪条证据来'], ['passfail-evidence', '检查结果，不听口头完成'], ['passfail-unscored', '无法检查不等于失败'], ['passfail-gate', '发布门槛要写清后续动作']]}
-    intro={<>通过失败评分器把成功条件变成可执行检查，最后给出通过或失败。它适合文件存在、字段正确或副作用已发生这类清晰判据；检查环境不可读时要保留未评分，不能把所有非通过都压成同一个 false。</>}
+    sections={[['passfail-definition', '二值结果从哪条证据来'], ['passfail-evidence', '检查结果，不听口头完成'], ['passfail-unscored', '检查条件不足时保持未评分'], ['passfail-gate', '发布门槛要写清后续动作']]}
+    intro={<>通过失败评分器把成功条件变成可执行检查，最后给出通过或失败。它适合文件存在、字段正确或副作用已发生这类清晰判据，检查环境不可读时要保留未评分。</>}
     >
     <ArticleSection id="passfail-definition" title="二值结果从哪条证据来"><Legacy slug="pass-fail-grader" names={['question', 'definition']}/>
       <p id="passfail-definition-detail" className="vp-citation-target"><strong>通过失败评分器按照预先写好的成功条件检查一次尝试，并输出通过或失败。</strong>OpenAI 的 graders 文档把代码、模型和人工都列为可执行评分的方式；对文件、字段或明确副作用，可以把判据写成程序检查，保留每项检查的结果。<Cite id="passfail-definition-detail"/></p>
-      <p>“通过”不是评分器觉得回答不错，而是声明的证据满足要求。比如任务要求生成 <code>answer.json</code>，成功条件可以是文件存在、JSON 能解析、<code>amount</code> 等于 120。文件存在但金额错误，就不能因为完成了第一步而整体通过；多个条件要说明是全部满足还是按规则组合。</p>
+      <p>“通过”是声明的证据满足要求。比如任务要求生成 <code>answer.json</code>，成功条件可以是文件存在、JSON 能解析、<code>amount</code> 等于 120。文件存在但金额错误，就不能因为完成了第一步而整体通过；多个条件要说明是全部满足还是按规则组合。</p>
       <div className={s.modelChecklist}><div><span>目标</span><strong>写出成功条件</strong><p>把“完成任务”拆成可观察的文件、字段或副作用。</p></div><div><span>检查</span><strong>逐项保留证据</strong><p>记录每条判据满足还是不满足。</p></div><div><span>结果</span><strong>汇总为 pass / fail</strong><p>总结果能回到具体失败条件。</p></div></div>
     </ArticleSection>
     <ArticleSection id="passfail-evidence" title="检查结果，不听口头完成"><Legacy slug="pass-fail-grader" names={['scene-heading']}/>
-      <p id="passfail-evidence-detail" className="vp-citation-target">Anthropic 的智能体评测实践把任务结果和运行轨迹放在一起检查。<strong>评分器应读取任务对应的结果证据，而不是只匹配“已完成”这类回复措辞。</strong>口头回复可以作为记录的一部分，却不能单独证明文件写入、数据库更新或工具副作用真的发生。<Cite id="passfail-evidence-detail"/></p>
+      <p id="passfail-evidence-detail" className="vp-citation-target">Anthropic 的智能体评测实践把任务结果和运行轨迹放在一起检查。<strong>评分器应读取任务对应的结果证据。</strong>口头回复可以作为记录的一部分，却不能单独证明文件写入、数据库更新或工具副作用真的发生。<Cite id="passfail-evidence-detail"/></p>
       <p>下面只操作固定的虚构检查记录，不访问真实文件，也不调用模型。切换三种状态：文件和金额都对，文件存在但金额错，或者检查环境没有返回结果。执行判据后，再看发布门槛为什么对三种状态采取不同动作。</p>
       <PassFailLesson/>
       <p>二值判定把复杂任务中的一个清晰条件说清楚，不会自动替代开放质量评价。回答是否准确、是否有帮助，可能仍需要评分规则、人工或模型评分；通过失败评分器只对它声明的条件负责。</p>
     </ArticleSection>
-    <ArticleSection id="passfail-unscored" title="无法检查不等于失败" className={base.offset}><Legacy slug="pass-fail-grader" names={['quiz-heading']}/>
+    <ArticleSection id="passfail-unscored" title="检查条件不足时保持未评分" className={base.offset}><Legacy slug="pass-fail-grader" names={['quiz-heading']}/>
       <p id="passfail-unscored-detail" className="vp-citation-target">OpenAI 的安全实践强调在高风险动作前使用检查、限制和人工介入，并把应用外的安全边界落实到代码和工具。<strong>如果检查环境不可读，评分器没有证据把任务判成成功或失败，应返回未评分并说明缺口。</strong><Cite id="passfail-unscored-detail"/></p>
-      <p>未评分不是第三种“更差的失败”。它表示这次检查没有能力得到结论：工具超时、文件系统不可用、权限不足或结果尚未返回，都可能属于这个状态。补齐环境后可以重跑；如果重跑后证据明确不满足，才记录为失败。把设施故障直接算进失败率，会混淆被测系统和评测设施的问题。</p>
+      <p>它表示这次检查没有能力得到结论：工具超时、文件系统不可用、权限不足或结果尚未返回，都可能属于这个状态。补齐环境后可以重跑；如果重跑后证据明确不满足，才记录为失败。把设施故障直接算进失败率，会混淆被测系统和评测设施的问题。</p>
       <ArticleAside title="缺证据时先写清什么"><p>哪一条判据无法检查？是环境不可读、权限不足，还是任务确实没有产生结果？下一步是重跑、补权限、人工核对，还是终止运行？把动作写在评分规则里，结果才不会由每次执行者临时决定。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="passfail-gate" title="发布门槛要写清后续动作"><Legacy slug="pass-fail-grader" names={['prompt-heading']}/>
       <p id="passfail-gate-detail" className="vp-citation-target">NIST AI RMF Playbook 将测量、记录和持续评估放在风险管理流程中；指标只有连同范围、记录和处理方式，才足以支持下一步决策。<strong>发布门槛要同时声明通过、失败和未评分如何处理，不能只保留一个通过率。</strong><Cite id="passfail-gate-detail"/></p>
-      <p>本例可以规定：所有关键条件通过才允许发布；失败进入修复；未评分暂停发布并重跑或补证据。若任务包含高风险副作用，还要让门槛检查实际结果与权限记录，而不是只看模型回复。门槛是流程决策，不是把所有业务质量压成一个数字。</p>
+      <p>本例可以规定：所有关键条件通过才允许发布；失败进入修复；未评分暂停发布并重跑或补证据。若任务包含高风险副作用，还要让门槛检查实际结果与权限记录。门槛是流程决策。</p>
       <ArticleAside title="读一条 pass / fail 记录"><p>先看判据版本，再看逐项证据和结果状态，最后看门槛动作。比较两次运行时，确认题集、被测版本、评分器和环境一致；否则相同的 pass 数字也可能来自不同条件。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
@@ -375,28 +375,28 @@ export function PassFailGraderTermPage() {
 export function ContextOverflowTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={contextOverflowSources}/>;
   return <ConceptArticle slug="context-overflow" title="上下文溢出" subtitle="Context Overflow · 先算预算，再决定保留什么" sources={contextOverflowSources}
-    sections={[['context-overflow-definition', '窗口算的是整轮预算'], ['context-overflow-overflow', '超限先停，不要重复原请求'], ['context-overflow-recovery', '压缩后要验证保留了什么'], ['context-overflow-boundary', '能装下不等于用得好']]}
-    intro={<>上下文溢出发生在一次请求需要的令牌超过模型窗口：系统指令、历史消息、工具结果和预计输出都占预算。处理它不是把旧内容无限塞回去，而是先找出哪些事实必须留下，再用压缩、检索或分段让下一轮可检查、可继续。</>}
+    sections={[['context-overflow-definition', '窗口算的是整轮预算'], ['context-overflow-overflow', '超限先停，不要重复原请求'], ['context-overflow-recovery', '压缩后要验证保留了什么'], ['context-overflow-boundary', '检查长上下文的实际利用效果']]}
+    intro={<>上下文溢出发生在一次请求需要的令牌超过模型窗口：系统指令、历史消息、工具结果和预计输出都占预算。处理它是先找出哪些事实必须留下，再用压缩、检索或分段让下一轮可检查、可继续。</>}
     >
     <ArticleSection id="context-overflow-definition" title="窗口算的是整轮预算"><Legacy slug="context-overflow" names={['question', 'definition-anchor']}/>
-      <p id="context-overflow-definition-detail" className="vp-citation-target"><strong>上下文窗口是模型本轮生成时可以参考的全部令牌空间，也包括它将要生成的输出。</strong>Claude 文档明确把系统提示、消息、工具结果、图片、文档、工具定义和输出都算进窗口；窗口大小不是只给用户文字预留的容量。<Cite id="context-overflow-definition-detail"/></p>
+      <p id="context-overflow-definition-detail" className="vp-citation-target"><strong>上下文窗口是模型本轮生成时可以参考的全部令牌空间，也包括它将要生成的输出。</strong>Claude 文档明确把系统提示、消息、工具结果、图片、文档、工具定义和输出都算进窗口。<Cite id="context-overflow-definition-detail"/></p>
       <p>因此要先把一轮请求拆成几块：系统规则、当前问题、历史、工具结果、预计输出。每块都可能随对话增长。把“还有多少字能发”当成预算，会漏掉工具定义、图片和模型输出，直到服务端在发送或生成过程中拒绝请求。</p>
-      <div className={s.modelChecklist}><div><span>先列</span><strong>来源与令牌</strong><p>把系统、历史、工具和输出分开估算。</p></div><div><span>再标</span><strong>必须保留的事实</strong><p>目标、约束、决定和未完成动作要能回看。</p></div><div><span>最后留</span><strong>输出余量</strong><p>不要把窗口全部占满，给本轮生成留空间。</p></div></div>
+      <div className={s.modelChecklist}><div><span>先列</span><strong>来源与令牌</strong><p>把系统、历史、工具和输出分开估算。</p></div><div><span>再标</span><strong>必须保留的事实</strong><p>目标、约束、决定和未完成动作要能回看。</p></div><div><span>最后留</span><strong>输出余量</strong><p>给本轮生成留空间。</p></div></div>
     </ArticleSection>
     <ArticleSection id="context-overflow-overflow" title="超限先停，不要重复原请求"><Legacy slug="context-overflow" names={['scene-heading']}/>
-      <p id="context-overflow-overflow-detail" className="vp-citation-target">当输入本身已经超过窗口时，Claude API 会返回请求过长的错误；在某些模型上，输入加上 <code>max_tokens</code> 也可能在生成时以窗口超限停止。<strong>溢出说明这次请求没有足够容量，不说明模型突然不会回答。</strong><Cite id="context-overflow-overflow-detail"/></p>
+      <p id="context-overflow-overflow-detail" className="vp-citation-target">当输入本身已经超过窗口时，Claude API 会返回请求过长的错误；在某些模型上，输入加上 <code>max_tokens</code> 也可能在生成时以窗口超限停止。<strong>溢出说明这次请求没有足够容量。</strong><Cite id="context-overflow-overflow-detail"/></p>
       <p>下面只使用固定的虚构预算，不发送真实请求。切换短历史、原始长历史和压缩后的记录，先看每一块占多少，再点击估算。长历史的失败分支保留“最新任务未执行”，压缩分支也保留复查动作，不把容量恢复误写成事实已经正确。</p>
       <ContextOverflowLesson/>
       <p>实际系统可以在发送前调用令牌计数，或在服务端错误后进入压缩、检索和分段流程。关键是记录采用了哪种策略，以及哪些原始证据不再直接可见。</p>
     </ArticleSection>
     <ArticleSection id="context-overflow-recovery" title="压缩后要验证保留了什么" className={base.offset}><Legacy slug="context-overflow" names={['quiz-heading']}/>
-      <p id="context-overflow-recovery-detail" className="vp-citation-target">OpenAI 的评测流程把“描述任务、用测试输入运行、分析结果并迭代”分成连续步骤。<strong>上下文压缩或裁剪后，应用一组固定检查重新确认关键事实、约束和未完成动作，而不是只看令牌数下降。</strong><Cite id="context-overflow-recovery-detail"/></p>
+      <p id="context-overflow-recovery-detail" className="vp-citation-target">OpenAI 的评测流程把“描述任务、用测试输入运行、分析结果并迭代”分成连续步骤。<strong>上下文压缩或裁剪后，应用一组固定检查重新确认关键事实、约束和未完成动作。</strong><Cite id="context-overflow-recovery-detail"/></p>
       <p>例如原对话里有一个退款上限、一次已经批准的决定和一个尚未执行的工具动作。摘要如果只留下“用户要退款”，下一轮可能重复询问、越过上限或误以为动作已经完成。压缩后的记录要能回答：目标是什么、哪些决定已经做出、下一步还缺什么证据。</p>
-      <ArticleAside title="一次压缩后的最小复查"><p>从原文抽几条高风险事实做成固定问题；比较压缩前后的答案；发现遗漏就调整摘要规则或改用检索，而不是悄悄继续。</p></ArticleAside>
+      <ArticleAside title="一次压缩后的最小复查"><p>从原文抽几条高风险事实做成固定问题；比较压缩前后的答案；发现遗漏就调整摘要规则或改用检索。</p></ArticleAside>
     </ArticleSection>
-    <ArticleSection id="context-overflow-boundary" title="能装下不等于用得好"><Legacy slug="context-overflow" names={['prompt-heading']}/>
-      <p id="context-overflow-boundary-detail" className="vp-citation-target">Anthropic 将上下文视为有限资源，指出令牌增加时准确率和召回可能下降；“Lost in the Middle”研究也发现，相关信息放在长输入中间时，模型检索表现会明显变差。<strong>没有硬性溢出，只代表请求被接受，不代表关键事实一定被稳定使用。</strong><Cite id="context-overflow-boundary-detail"/></p>
-      <p>所以“把所有历史都留下”不是默认的保真方案。低信号闲聊、重复工具结果和已完成的中间步骤可以裁剪；关键决定、约束、来源定位和未完成动作应该结构化保留。对于不能丢的事实，优先存成外部状态或可检索记录，让模型按需取回。</p>
+    <ArticleSection id="context-overflow-boundary" title="检查长上下文的实际利用效果"><Legacy slug="context-overflow" names={['prompt-heading']}/>
+      <p id="context-overflow-boundary-detail" className="vp-citation-target">Anthropic 将上下文视为有限资源，指出令牌增加时准确率和召回可能下降；“Lost in the Middle”研究也发现，相关信息放在长输入中间时，模型检索表现会明显变差。<strong>没有硬性溢出。</strong><Cite id="context-overflow-boundary-detail"/></p>
+      <p>低信号闲聊、重复工具结果和已完成的中间步骤可以裁剪；关键决定、约束、来源定位和未完成动作应该结构化保留。对于不能丢的事实，优先存成外部状态或可检索记录，让模型按需取回。</p>
       <ArticleAside title="看到窗口还剩很多时再问三句"><p>关键信息是否在摘要里？它能回到哪条原始证据？下一轮如果只读这份上下文，能否知道已经做过什么和还要做什么？三句答不上来，就先整理上下文再继续。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;

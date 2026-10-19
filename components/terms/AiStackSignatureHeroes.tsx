@@ -44,7 +44,7 @@ export function ModelGraderSignatureHero() {
     { title: "先把名字藏起来", detail: "回答 A / B 只剩内容可看", Icon: Envelope },
     { title: "同一把尺逐项落下", detail: "事实 · 完整 · 风险", Icon: Scales },
     { title: "分数回到人工样本", detail: "5 条校准样本，高估 2 条", Icon: GitBranch },
-    { title: "证据不足就停手", detail: "unscored 不是一分，也不是通过", Icon: WarningCircle },
+    { title: "证据不足就停手", detail: "unscored 保留未评分状态", Icon: WarningCircle },
   ][scene.step];
   return <figure ref={scene.ref} className={`${styles.frame} ${styles.modelGrader}`} aria-label="模型评分器用盲评、规则和人工校准检查回答" data-step={scene.step}>
     <Header eyebrow="评分器的偏差要露在样本上" meta="blind review · calibration" />
@@ -95,7 +95,7 @@ export function RegressionEvaluationSignatureHero() {
       <div className={styles.releaseGate}><span>发布闸门</span><strong data-blocked={scene.step >= 2 && suite === "v1"}>{scene.step >= 2 && suite === "v1" ? "BLOCK" : scene.step === 3 && suite === "v2" ? "COMPARE LATER" : "检查中"}</strong></div>
     </div>
     <Result icon={current.Icon} title={current.title} detail={current.detail} />
-    <figcaption>回归评测看的不是“新版本平均变高了没有”，而是原来重要的通过项有没有被改坏；换了题集，先承认不能比较。</figcaption>
+    <figcaption>回归评测看的是原来重要的通过项有没有被改坏；换了题集，先承认不能比较。</figcaption>
   </figure>;
 }
 
@@ -120,7 +120,7 @@ export function ContextOverflowSignatureHero() {
       <div className={styles.overflowFacts}><span>必须保留</span>{["用户目标", "关键证据", "未完成动作"].map((fact, index) => <div key={fact} data-kept={compressed || scene.step < 2 || index === 0}><Check size={14} />{fact}</div>)}</div>
     </div>
     <Result icon={current.Icon} title={current.title} detail={current.detail} />
-    <figcaption>溢出不是模型忽然失忆，而是这次请求的各部分加起来超过了窗口；压缩后也要检查关键事实是否真的留下。</figcaption>
+    <figcaption>溢出是这次请求的各部分加起来超过了窗口；压缩后也要检查关键事实是否真的留下。</figcaption>
   </figure>;
 }
 
@@ -134,7 +134,7 @@ export function TransformerSignatureHero() {
     { title: "表示继续向前", detail: "下一层仍可交换信息", Icon: ArrowRight },
   ][scene.step];
   return <figure ref={scene.ref} className={`${styles.frame} ${styles.transformer}`} aria-label="Transformer 用层叠的透明计算片交换并改写 token 表示" data-step={scene.step}>
-    <Header eyebrow="不是一条流水线，是一摞会叠加的透明片" meta="attention + FFN" />
+    <Header eyebrow="是一摞会叠加的透明片" meta="attention + FFN" />
     <SceneControls scene={scene} labels={steps} />
     <div className={styles.transformerStack}>
       <div className={styles.tokenStrip}>{["小猫", "坐在", "窗边", "它", "看见", "雨"].map((token, index) => <span key={token} data-focus={scene.step >= 1 && [0, 3, 4, 5].includes(index)}><strong>{token}</strong><small>p{index + 1}</small></span>)}</div>
@@ -146,7 +146,7 @@ export function TransformerSignatureHero() {
       <div className={styles.transformerOut}><ArrowDown size={19} /><strong>{scene.step < 3 ? "正在叠层" : "下一层输入"}</strong><small>{scene.step < 3 ? "一张片完成后再叠下一张" : "带着位置继续前进"}</small></div>
     </div>
     <Result icon={current.Icon} title={current.title} detail={current.detail} />
-    <figcaption>Transformer 的核心不是一条固定流程图，而是同一排位置反复经过“交换信息—各自改写”的层叠计算。</figcaption>
+    <figcaption>Transformer 的核心是同一排位置反复经过“交换信息—各自改写”的层叠计算。</figcaption>
   </figure>;
 }
 
@@ -157,8 +157,8 @@ export function AttentionSignatureHero() {
   const current = [
     { title: "Query 先说清想找什么", detail: "查：无糖饮品", Icon: Target },
     { title: "磁力只作用于比较线索", detail: masked ? "无糖被遮住，权重转向剩余卡片" : "无糖标签吸力最强", Icon: MagnifyingGlass },
-    { title: "带回的是 Value", detail: "规格与价格，不是事实盖章", Icon: Funnel },
-    { title: "一层输出一份加权表示", detail: "亮度说明偏向，不说明唯一原因", Icon: CheckCircle },
+    { title: "带回的是 Value", detail: "按规格、价格与任务选择", Icon: Funnel },
+    { title: "一层输出一份加权表示", detail: "亮度显示当前偏向", Icon: CheckCircle },
   ][scene.step];
   return <figure ref={scene.ref} className={`${styles.frame} ${styles.attention}`} aria-label="注意力用 Query 吸引 Key，再按权重混合 Value" data-step={scene.step}>
     <Header eyebrow="把注意力看成一次带磁力的取数" meta="Q → K → V" />
@@ -195,7 +195,7 @@ export function InferenceSignatureHero() {
     </div>
     <div className={styles.inferenceStops}><span><Timer size={16} />首 token <strong>{scene.step >= 2 ? "已返回" : "等待"}</strong></span><span><Pause size={16} />完整结束 <strong>{scene.step === 3 ? "是" : "否"}</strong></span><span><Check size={16} />事实核验 <strong>另行检查</strong></span></div>
     <Result icon={current.Icon} title={current.title} detail={current.detail} />
-    <figcaption>流式页面先显示几个字，不等于推理已经完成；prefill、decode、停止和事实核验是四个不同的检查点。</figcaption>
+    <figcaption>流式页面先显示几个字，prefill、decode、停止和事实核验是四个不同的检查点。</figcaption>
   </figure>;
 }
 
@@ -209,16 +209,16 @@ export function PretrainingSignatureHero() {
     { title: "梯度只推一小步", detail: "W → W + ΔW", Icon: Lightning },
   ][scene.step];
   return <figure ref={scene.ref} className={`${styles.frame} ${styles.pretraining}`} aria-label="预训练从语料构造目标，计算损失，再用梯度更新参数" data-step={scene.step}>
-    <Header eyebrow="目标不是人工写在天上的答案" meta="data → loss → update" />
+    <Header eyebrow="从训练样本构造目标" meta="data → loss → update" />
     <SceneControls scene={scene} labels={steps} />
     <div className={styles.trainingLoom}>
       <div className={styles.loomStrip}><span>语料线</span>{["退款", "需", "在", "七日内"].map((token,index)=><b key={token} data-hidden={scene.step === 1 && index === 3} data-target={index === 3 && scene.step >= 1}>{token}</b>)}</div>
       <div className={styles.loomNeedle}><ArrowDown size={20} /><span>{scene.step === 1 ? "目标" : scene.step === 2 ? "比较" : scene.step === 3 ? "更新" : "样本"}</span></div>
       <div className={styles.loomCards}><div><small>模型猜测</small><strong>{scene.step >= 1 ? "三日内" : "?"}</strong><i /></div><div className={styles.loomLoss} data-active={scene.step >= 2}><small>loss</small><strong>{scene.step >= 2 ? "0.42" : "—"}</strong><span>{scene.step >= 2 ? "有误差，才能有方向" : "需要目标比较"}</span></div><div><small>参数</small><strong>{scene.step >= 3 ? "W + ΔW" : "W"}</strong><i data-move={scene.step >= 3} /></div></div>
-      <div className={styles.loomBoundary}><WarningCircle size={15} />低损失只说明贴近目标，不等于语料事实已核验</div>
+      <div className={styles.loomBoundary}><WarningCircle size={15} />低损失表示预测更贴近训练目标</div>
     </div>
     <Result icon={current.Icon} title={current.title} detail={current.detail} />
-    <figcaption>自监督不等于没有目标：目标从数据构造，损失才能定义，梯度才能移动参数；这条训练信号也不会自动替语料做事实核查。</figcaption>
+    <figcaption>损失才能定义，梯度才能移动参数，这条训练信号也不会自动替语料做事实核查。</figcaption>
   </figure>;
 }
 
@@ -233,7 +233,7 @@ export function KvCacheSignatureHero() {
     { title: changed ? "前缀改了，书签失效" : "同一前缀可以少算一段", detail: changed ? "不能按大意复用" : "命中 · 复用 block 0", Icon: changed ? WarningCircle : CheckCircle },
   ][scene.step];
   return <figure ref={scene.ref} className={`${styles.frame} ${styles.kvCache}`} aria-label="KV Cache 把过去 token 的 K/V 中间状态保存成可复用书签" data-step={scene.step}>
-    <Header eyebrow="缓存的是中间状态，不是一份答案" meta="K / V shelf" />
+    <Header eyebrow="缓存的是中间状态" meta="K / V shelf" />
     <SceneControls scene={scene} labels={steps} />
     <div className={styles.kvControls}><button type="button" aria-pressed={changed} onClick={() => setChanged(value => !value)}>{changed ? "还原前缀" : "改一个词：客服 → 销售"}</button></div>
     <div className={styles.kvShelf} data-changed={changed}>
@@ -243,7 +243,7 @@ export function KvCacheSignatureHero() {
       <div className={styles.kvTier}><span>容量层级</span><b>GPU</b><b>CPU</b><b>disk</b><small>{scene.step === 3 ? changed ? "miss · 重新算" : "hit · 少算前缀" : "取回成本另算"}</small></div>
     </div>
     <Result icon={current.Icon} title={current.title} detail={current.detail} />
-    <figcaption>KV cache 保存注意力已经算过的 K/V；它依赖具体前缀和位置，改一个词即使大意相近，也不能把旧书签当成答案。</figcaption>
+    <figcaption>KV cache 保存注意力已经算过的 K/V，它依赖具体前缀和位置。</figcaption>
   </figure>;
 }
 
@@ -267,7 +267,7 @@ export function AgentWorkflowSignatureHero() {
     </div>
     <div className={styles.workflowStamp}><span>副作用</span><strong>{scene.step >= 3 ? "验收后才允许" : "仍被护栏挡住"}</strong><small>模型提出选择 ≠ 系统已经执行</small></div>
     <Result icon={current.Icon} title={current.title} detail={current.detail} />
-    <figcaption>工作流不是把模型画成一条自动流水线，而是把权限、状态、回执和人工接管留在可追踪的任务路径上。</figcaption>
+    <figcaption>工作流是把权限、状态、回执和人工接管留在可追踪的任务路径上。</figcaption>
   </figure>;
 }
 
@@ -293,6 +293,6 @@ export function BackpressureSignatureHero() {
     </div>
     <div className={styles.pressureReturn} data-active={scene.step === 2}><ArrowsClockwise size={17} /><span>{scene.step === 1 ? "红线已到：容量信号准备回传" : scene.step === 2 ? "capacity = 0 · 让上游暂停" : "需求沿相反方向传回"}</span></div>
     <Result icon={current.Icon} title={current.title} detail={current.detail} />
-    <figcaption>背压不是把队列藏到更深处，而是让真正知道容量的下游把“可以继续多少”传回生产者。</figcaption>
+    <figcaption>背压是让真正知道容量的下游把“可以继续多少”传回生产者。</figcaption>
   </figure>;
 }

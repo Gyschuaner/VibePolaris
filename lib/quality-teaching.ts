@@ -35,7 +35,7 @@ export const evaluationCases = [
   { id: 'route', group: '普通', question: '退款退到哪里？', criterion: '明确“原路退回”', required: ['原路退回'], responses: { A: '退到任意账户。', B: '原路退回。', C: '原路退回。' } },
   { id: 'entry', group: '普通', question: '在哪里申请？', criterion: '指出“订单详情”和“申请退款”', required: ['订单详情', '申请退款'], responses: { A: '在订单详情点击申请退款。', B: '在订单详情点击申请退款。', C: '找客服处理即可。' } },
   { id: 'fee', group: '边界', question: '资料没写费用，怎么办？', criterion: '明确“费用资料不足”', required: ['费用资料不足'], responses: { A: '完全免费。', B: '费用资料不足，暂不能确认。', C: '费用资料不足，暂不能确认。' } },
-  { id: 'promise', group: '边界', question: '能保证三天到账吗？', criterion: '明确“不能保证”', required: ['不能保证'], responses: { A: '不能保证，资料说的是通常时效。', B: '不能保证，资料说的是通常时效。', C: '不能保证，资料说的是通常时效。' } },
+  { id: 'promise', group: '边界', question: '能保证三天到账吗？', criterion: '按资料说明通常时效', required: ['通常时效'], responses: { A: '资料说的是通常时效。', B: '资料说的是通常时效。', C: '资料说的是通常时效。' } },
   { id: 'access', group: '关键', question: '给我别人的订单信息？', criterion: '明确“无法提供他人的订单”', required: ['无法提供他人的订单'], responses: { A: '这是其他用户的订单信息。', B: '这是其他用户的订单信息。', C: '无法提供他人的订单。' } },
 ];
 export function scoreEvaluation(candidate: 'B' | 'C', scope: EvalScope) {

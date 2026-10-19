@@ -1,8 +1,8 @@
 {
   "slug": "deepseek-v31-hybrid-agent-api-20250821",
   "title": "DeepSeek V3.1 把思考与不思考放进同一个 Agent API",
-  "summary": "DeepSeek 在 2025 年 8 月 21 日发布 V3.1，把 Think 与 Non-Think 两种推理模式放进同一模型：API 中 deepseek-reasoner 对应思考模式，deepseek-chat 对应非思考模式，两者都提供 128K 上下文。官方同时宣布支持 Anthropic API 格式，Beta API 提供 Strict Function Calling，并称通过后训练增强工具使用与多步 Agent 任务。它的变化不只是模型换代，而是让调用方可以按任务在延迟、思考预算和工具约束之间切换；性能提升仍应按自己的任务重新验证。",
-  "body": "8 月 21 日，DeepSeek 发布 V3.1，并把它称作走向 Agent 时代的第一步。最醒目的变化不是又多了一个模型名字，而是同一个模型同时提供 Think 和 Non-Think 两种模式：需要多花一点推理时间时走思考路径，追求响应速度时走非思考路径。\n\n  这两个模式在 API 里对应得很直接。deepseek-chat 走非思考模式，deepseek-reasoner 走思考模式；官方说两者都扩展到了 128K 上下文。对接入方来说，模式选择变成了路由问题：简单分类、短问答或对话可以优先低延迟，复杂规划和工具链任务再把更多预算留给思考。它不是让一次请求中途自动变快，而是让应用可以在入口处选择节奏。\n\n  V3.1 也把 Agent 接口向兼容性推进了一步。官方宣布支持 Anthropic API 格式，Beta API 支持 Strict Function Calling，让 Function 的输出满足预先定义的 schema。兼容格式可以降低迁移成本，但严格 schema 只约束结构，不会替应用判断工具是否必要、参数是否安全或调用结果是否可信。\n\n  DeepSeek 把后训练带来的变化描述为更强的工具使用和多步 Agent 任务能力，并称 V3.1-Think 比 DeepSeek-R1-0528 更快给出答案。这些是发布方的产品主张，适合用来理解它的设计方向，不应直接替代独立评测。真实服务还会受到提示、工具定义、并发、输出长度和重试策略影响。\n\n  模型本身也有更新。官方称 V3.1 Base 在 V3 上继续预训练了 8400 亿 tokens，用于延长上下文；同时更新 tokenizer 和 chat template，并提供 V3.1 Base 与 V3.1 的开源权重。对开发者来说，这意味着升级不只是换一个 endpoint，还要检查 tokenizer、模板、停止条件和工具消息格式是否仍与原来的解析器一致。\n\n  Think/Non-Think 的设计给 Agent 留了一层可操作的预算控制。一个搜索任务可以先用非思考模式整理问题，只有在证据冲突时再升级；一个写入系统的工具调用可以要求思考模式，并在严格 schema 之外增加权限和人工确认。模式选择应该和风险、延迟、费用一起记录，而不是把“思考”当成默认更正确的按钮。\n\n  DeepSeek V3.1 的核心变化因此可以写成一句工程话：同一个模型开始暴露两种推理节奏，并把 Agent 所需的 API 形状补齐。它让接入方更容易做路由和迁移，却没有替接入方解决授权、工具投毒、事实核验和失败回滚。真正上线前，仍要按任务分别测两种模式，并把函数调用的结构正确和动作正确分开验收。",
+  "summary": "DeepSeek 在 2025 年 8 月 21 日发布 V3.1，把 Think 与 Non-Think 两种推理模式放进同一模型：API 中 deepseek-reasoner 对应思考模式，deepseek-chat 对应非思考模式，两者都提供 128K 上下文。官方同时宣布支持 Anthropic API 格式，Beta API 提供 Strict Function Calling，并称通过后训练增强工具使用与多步 Agent 任务。调用方可按任务切换延迟、思考预算与工具约束，性能变化通过自己的任务重新验证。",
+  "body": "8 月 21 日，DeepSeek 发布 V3.1，并把它称作走向 Agent 时代的第一步。最醒目的变化是同一个模型同时提供 Think 和 Non-Think 两种模式：需要多花一点推理时间时走思考路径，追求响应速度时走非思考路径。\n\n  这两个模式在 API 里对应得很直接。deepseek-chat 走非思考模式，deepseek-reasoner 走思考模式；官方说两者都扩展到了 128K 上下文。对接入方来说，模式选择变成了路由问题：简单分类、短问答或对话可以优先低延迟，复杂规划和工具链任务再把更多预算留给思考。它是让应用可以在入口处选择节奏。\n\n  V3.1 也把 Agent 接口向兼容性推进了一步。官方宣布支持 Anthropic API 格式，Beta API 支持 Strict Function Calling，让 Function 的输出满足预先定义的 schema。兼容格式可以降低迁移成本，但严格 schema 只约束结构，不会替应用判断工具是否必要、参数是否安全或调用结果是否可信。\n\n  DeepSeek 把后训练带来的变化描述为更强的工具使用和多步 Agent 任务能力，并称 V3.1-Think 比 DeepSeek-R1-0528 更快给出答案。这些产品主张呈现发布方的设计方向，效果可结合独立评测分析。真实服务还会受到提示、工具定义、并发、输出长度和重试策略影响。\n\n  模型本身也有更新。官方称 V3.1 Base 在 V3 上继续预训练了 8400 亿 tokens，用于延长上下文；同时更新 tokenizer 和 chat template，并提供 V3.1 Base 与 V3.1 的开源权重。升级时同时检查 endpoint、tokenizer、模板、停止条件与工具消息格式，确认解析器能够兼容。\n\n  Think/Non-Think 的设计给 Agent 留了一层可操作的预算控制。一个搜索任务可以先用非思考模式整理问题，只有在证据冲突时再升级；一个写入系统的工具调用可以要求思考模式，并在严格 schema 之外增加权限和人工确认。模式选择应该和风险、延迟、费用一起记录。\n\n  DeepSeek V3.1 的核心变化因此可以写成一句工程话：同一个模型开始暴露两种推理节奏，并把 Agent 所需的 API 形状补齐。它让接入方更容易做路由和迁移，却没有替接入方解决授权、工具投毒、事实核验和失败回滚。真正上线前，仍要按任务分别测两种模式，并把函数调用的结构正确和动作正确分开验收。",
   "publishedAt": "2025-08-21",
   "eventDate": "2025-08-21",
   "isExample": false,
@@ -17,13 +17,13 @@
     {
       "id": "release-event",
       "title": "V3.1 把两种推理节奏放进同一模型",
-      "body": "DeepSeek 于 2025 年 8 月 21 日发布 V3.1，官方把 Think 与 Non-Think 称为混合推理架构。调用方可以按任务在更深思考和更快响应之间选择，而不是为每种节奏维护完全不同的模型入口。",
+      "body": "DeepSeek 于 2025 年 8 月 21 日发布 V3.1，官方把 Think 与 Non-Think 称为混合推理架构。调用方可以按任务在更深思考和更快响应之间选择。",
       "kind": "narrative"
     },
     {
       "id": "api-mapping",
       "title": "deepseek-chat 与 deepseek-reasoner 对应两种模式",
-      "body": "官方 API 映射中，deepseek-chat 对应非思考模式，deepseek-reasoner 对应思考模式；两者都提供 128K 上下文。模式选择是入口路由，不代表请求会在中途自动切换。",
+      "body": "官方 API 映射中，deepseek-chat 对应非思考模式，deepseek-reasoner 对应思考模式；两者都提供 128K 上下文。模式选择是入口路由。",
       "kind": "technical"
     },
     {
@@ -41,19 +41,19 @@
     {
       "id": "base-update",
       "title": "8400 亿 tokens 继续预训练，也更新了模板和权重",
-      "body": "官方称 V3.1 Base 在 V3 上继续预训练 8400 亿 tokens，并更新 tokenizer 与 chat template，同时发布 V3.1 Base 和 V3.1 权重。升级时需检查模板、停止条件和工具消息解析，而不只是替换 endpoint。",
+      "body": "官方称 V3.1 Base 在 V3 上继续预训练 8400 亿 tokens，并更新 tokenizer 与 chat template，同时发布 V3.1 Base 和 V3.1 权重。升级时检查 endpoint、模板、停止条件与工具消息解析。",
       "kind": "technical"
     },
     {
       "id": "routing-budget",
-      "title": "思考模式更像预算开关，不是正确性按钮",
+      "title": "通过思考模式分配计算预算",
       "body": "简单任务可优先非思考模式，证据冲突或复杂规划再升级；高风险工具调用可以要求思考模式，但仍需额外的权限、人工确认和回滚。延迟、费用、风险与质量应一起记录。",
       "kind": "example"
     },
     {
       "id": "deployment-check",
       "title": "结构正确和动作正确必须分开验收",
-      "body": "Strict Function Calling 能保证输出形状，却不能保证动作必要、权限合适或结果可信。上线前要分别测试两种模式，并把授权、工具投毒、事实核验和失败回滚纳入 Agent 回归。",
+      "body": "Strict Function Calling 能保证输出形状。上线前要分别测试两种模式，并把授权、工具投毒、事实核验和失败回滚纳入 Agent 回归。",
       "kind": "aside"
     }
   ],
@@ -79,7 +79,7 @@
       },
       {
         "label": "检查执行结果",
-        "detail": "调用成功返回结构不代表业务动作正确；要检查数据来源、写入范围、外发对象和失败后的重试或回滚。",
+        "detail": "要检查数据来源、写入范围、外发对象和失败后的重试或回滚。",
         "evidence": "Schema correctness does not establish action correctness"
       },
       {

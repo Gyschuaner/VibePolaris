@@ -1,6 +1,6 @@
 export const retrievalQueries = ['退款', '打印', '赛事'];
 export const retrievalDocuments = [
-  { id: 'A', title: '退款申请入口', access: '公开', keywords: ['退款', '申请'], text: '线上退款申请从订单详情提交。这份说明只介绍申请入口，不说明到账时间。' },
+  { id: 'A', title: '退款申请入口', access: '公开', keywords: ['退款', '申请'], text: '线上退款申请从订单详情提交。' },
   { id: 'B', title: '退款到账时间', access: '公开', keywords: ['退款', '到账'], text: '线上退款审核通过后，通常在三个工作日内原路退回。审核未通过时不进入退款流程。' },
   { id: 'C', title: '打印指南', access: '公开', keywords: ['打印'], text: '打印文件需到服务台，与退款到账无关。' },
   { id: 'D', title: '商户退款记录', access: '运营', keywords: ['退款', '记录'], text: '这是一份虚构的内部退款记录。演示里只有运营身份可以把它选入候选。' },

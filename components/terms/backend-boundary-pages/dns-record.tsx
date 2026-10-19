@@ -18,7 +18,7 @@ const frames = [
     data: "203.0.113.10",
     source: "权威区文件",
     cache: "尚未缓存",
-    note: "一条 DNS 记录不只是‘域名等于 IP’：owner、type、class、TTL 和 RDATA 一起描述这条信息是谁、是什么、能用多久。",
+    note: "DNS 记录用 owner、type、class、TTL 和 RDATA 描述名称、类型、有效期与数据。",
   },
   {
     label: "同名同类型组成 RRSet",
@@ -52,7 +52,7 @@ const scenarios = [
     meaning: "主机地址",
     evidence: "2 条 RR · TTL 60s",
     good: true,
-    note: "A 记录的 RDATA 是 IPv4 地址；两条同名同类型记录属于同一个 RRSet，不是两次不同查询。",
+    note: "A 记录的 RDATA 是 IPv4 地址，两条同名同类型记录属于同一个 RRSet。",
   },
   {
     label: "CNAME · 别名",
@@ -61,7 +61,7 @@ const scenarios = [
     meaning: "canonical name",
     evidence: "别名 → 规范名",
     good: true,
-    note: "CNAME 是 DNS 里的别名关系，不是浏览器收到的 HTTP 302；后续还要解析规范名的地址记录。",
+    note: "CNAME 在 DNS 中建立别名关系，解析器继续查找规范名的地址记录；HTTP 302 由服务器作为重定向响应返回。",
   },
   {
     label: "MX · 邮件路由",
@@ -70,7 +70,7 @@ const scenarios = [
     meaning: "mail exchange",
     evidence: "优先级 10",
     good: true,
-    note: "MX 的 RDATA 是邮件交换主机和优先级，不能把看到 MX 就当作网站入口或 A 记录。",
+    note: "MX 的 RDATA 是邮件交换主机和优先级。",
   },
   {
     label: "NXDOMAIN · 负缓存",
@@ -119,7 +119,7 @@ function DnsRecordLab() {
   const [selected, setSelected] = useState(0);
   const current = scenarios[selected];
   return <div className={styles.dnsRecordLab} role="region" aria-label="DNS 记录类型与缓存实验">
-    <div className={styles.dnsRecordLabHeader}><div><span>别把每种记录都翻译成“指向 IP”</span><strong>看查询类型怎样改变回答语义</strong></div><span>{selected + 1} / {scenarios.length}</span></div>
+    <div className={styles.dnsRecordLabHeader}><div><span>分别解释各类 DNS 记录</span><strong>看查询类型怎样改变回答语义</strong></div><span>{selected + 1} / {scenarios.length}</span></div>
     <div className={styles.dnsRecordLabPath}>
       <div className={styles.dnsRecordLabNode}><ListNumbers size={19} aria-hidden="true" /><span>查询</span><code>{current.query}</code></div><ArrowRight className={styles.dnsRecordArrow} size={18} aria-hidden="true" />
       <div className={styles.dnsRecordLabNode}><Network size={19} aria-hidden="true" /><span>RDATA / 状态</span><code>{current.answer}</code><code>{current.evidence}</code></div><ArrowRight className={styles.dnsRecordArrow} size={18} aria-hidden="true" />
@@ -132,10 +132,10 @@ function DnsRecordLab() {
 
 export function DnsRecordTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={dnsRecordSources} />;
-  return <ConceptArticle slug="dns-record" title="DNS 记录" subtitle="DNS Record · 把名称、类型和数据放在一起的条目" sources={dnsRecordSources} sections={[["dns-record-shape", "一行记录其实有五个边界"], ["dns-record-set", "同名记录会组成集合"], ["dns-record-types", "类型决定 RDATA 在说什么"], ["dns-record-cache", "权威改动不会瞬间穿透缓存"]]} intro={<>DNS 不是一张“域名 → IP”的字典，而是一组带类型、TTL 和数据格式的资源记录。<strong>先读清记录，再判断它能不能回答你的问题。</strong><Cite id="dns-record-shape-detail" /></>}>
+  return <ConceptArticle slug="dns-record" title="DNS 记录" subtitle="DNS Record · 把名称、类型和数据放在一起的条目" sources={dnsRecordSources} sections={[["dns-record-shape", "一行记录其实有五个边界"], ["dns-record-set", "同名记录会组成集合"], ["dns-record-types", "类型决定 RDATA 在说什么"], ["dns-record-cache", "权威改动不会瞬间穿透缓存"]]} intro={<>DNS 是一组带类型、TTL 和数据格式的资源记录。<strong>先读清记录，再判断它能不能回答你的问题。</strong><Cite id="dns-record-shape-detail" /></>}>
     <ArticleSection id="dns-record-shape" title="一行记录其实有五个边界">
       <p id="dns-record-shape-detail" className="vp-citation-target">一条 DNS Resource Record 至少要看 owner name、type、class、TTL 和 RDATA。owner 说这条信息挂在哪个名字下，type 决定如何解释数据，TTL 说缓存多久，RDATA 才是具体地址、别名、优先级或文本。<Cite id="dns-record-shape-detail" /></p>
-      <p id="dns-record-authority" className="vp-citation-target">同一个名字可能存在于不同 zone；只有负责该 zone 的权威服务器，才是这组数据的正式来源。resolver 返回的回答可能来自缓存，看到“有一条记录”不等于已经确认它来自权威区。<Cite id="dns-record-authority" /></p>
+      <p id="dns-record-authority" className="vp-citation-target">同一个名字可能存在于不同 zone；只有负责该 zone 的权威服务器，才是这组数据的正式来源。resolver 返回的回答可能来自缓存。<Cite id="dns-record-authority" /></p>
       <DnsRecordLab />
     </ArticleSection>
     <ArticleSection id="dns-record-set" title="同名记录会组成集合">
@@ -143,8 +143,8 @@ export function DnsRecordTermPage() {
       <p id="dns-record-cname" className="vp-citation-target">CNAME 是一个特殊边界：一个 alias 只能有一个 canonical name，而且 alias 不能再同时放普通数据记录。把 CNAME 的 owner 叫“规范名”会把方向说反，规范名在它的 RDATA 里。<Cite id="dns-record-cname" /></p>
     </ArticleSection>
     <ArticleSection id="dns-record-types" title="类型决定 RDATA 在说什么">
-      <p id="dns-record-type" className="vp-citation-target">A 的 RDATA 是 IPv4 地址，CNAME 的 RDATA 是另一个域名，MX 的 RDATA 是优先级和邮件交换主机，TXT 则承载文本。它们都叫 DNS 记录，却不能用同一个“指向服务器”的解释替代。<Cite id="dns-record-type" /></p>
-      <p>因此查网站要问 A/AAAA，查别名要问 CNAME，查邮件要问 MX，查验证文本要问 TXT。记录类型本身不是应用层动作：CNAME 不会让浏览器收到 HTTP 重定向，MX 也不会决定网页请求走哪条路径。<Cite id="dns-record-type" /></p>
+      <p id="dns-record-type" className="vp-citation-target">A 的 RDATA 是 IPv4 地址，CNAME 的 RDATA 是另一个域名，MX 的 RDATA 是优先级和邮件交换主机，TXT 则承载文本。根据各类 DNS 记录的类型解释其具体数据与用途。<Cite id="dns-record-type" /></p>
+      <p>因此查网站要问 A/AAAA，查别名要问 CNAME，查邮件要问 MX，查验证文本要问 TXT。MX 也不会决定网页请求走哪条路径。<Cite id="dns-record-type" /></p>
     </ArticleSection>
     <ArticleSection id="dns-record-cache" title="权威改动不会瞬间穿透缓存">
       <p id="dns-record-cache-detail" className="vp-citation-target">TTL 是 resolver 可以继续复用这条 RR 的时间窗口；权威区把 A 从 .10 改成 .20 后，旧回答仍可能在 TTL 归零前被返回。排查变更时要同时查权威服务器、递归缓存、回答里的 TTL 和查询时间。<Cite id="dns-record-cache" /></p>

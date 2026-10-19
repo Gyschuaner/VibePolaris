@@ -13,7 +13,7 @@ export function SemanticVersioningTermPage() {
     intro={<>你维护一个已经发布的包，当前版本是 `1.4.2`。这次可能只是修 Bug，也可能加了新能力，甚至删掉一个公开 API。<strong>语义化版本把这三种兼容性变化写进 MAJOR.MINOR.PATCH 三段数字。</strong>读者先判断旧调用，再决定下一版。</>}> 
     <ArticleSection id="semver-definition" title="三段数字先说清什么">
       <p id="semver-definition-text" className="vp-citation-target">语义化版本（SemVer）把版本写成 `MAJOR.MINOR.PATCH`：向后兼容的缺陷修复增加 PATCH，向后兼容的功能新增增加 MINOR，不兼容的公开 API 变化增加 MAJOR。它要求发布者先说清自己的公开 API，版本号才有可解释的含义。<Cite id="semver-definition-text" sources={semanticVersioningSources}/></p>
-      <p id="semver-choice-text" className="vp-citation-target">从 `1.4.2` 到 `1.4.3`，使用方可以把它理解为修复而不是接口改名；从 `1.4.2` 到 `1.5.0`，表示多了兼容功能；如果旧调用已经不能成立，就应到 `2.0.0`。npm 也把这三类变化分别对应到第三、第二、第一段数字。<Cite id="semver-choice-text" sources={semanticVersioningSources}/></p>
+      <p id="semver-choice-text" className="vp-citation-target">从 `1.4.2` 到 `1.4.3`，使用方可以把它理解为修复；从 `1.4.2` 到 `1.5.0`，表示多了兼容功能；如果旧调用已经不能成立，就应到 `2.0.0`。npm 也把这三类变化分别对应到第三、第二、第一段数字。<Cite id="semver-choice-text" sources={semanticVersioningSources}/></p>
       <ArticleAside title="先定义公开 API"><p>公开 API 可以是导出的函数、组件、命令和配置格式，也可以是文档承诺的行为。没有这条基线，“改动很大”或“只改了一行”都不能直接推出应该升哪一段。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="semver-choice" title="从一次改动选下一版">
@@ -23,7 +23,7 @@ export function SemanticVersioningTermPage() {
     </ArticleSection>
     <ArticleSection id="semver-boundary" title="版本号没有替你检查什么">
       <p id="semver-boundary-text" className="vp-citation-target">SemVer 是发布者和使用方之间的约定，规范不会自动检查实现是否真的兼容。`0.y.z` 仍处于初始开发阶段，任何一段都可能变化；预发布标识还有自己的优先级规则。即使版本号写对了，迁移文档、测试和依赖范围也仍要单独维护。<Cite id="semver-boundary-text" sources={semanticVersioningSources}/></p>
-      <p>因此，看到一个 `2.0.0` 不要只问“是不是大改版”，要回到具体接口：哪个旧调用会失效？能不能给出替代写法？看到一个 `1.4.3` 也不要把它当成质量证明，它只是发布者对变化类型的声明。</p>
+      <p>看到一个 `2.0.0`，先核对旧调用的兼容变化与替代写法；`1.4.3` 则是发布者对补丁变化的版本声明，实际质量通过验证确认。</p>
       <p><strong>读者判断</strong>：如果删除了一个仍被用户调用的公开函数，下一步先写什么？答案是把它归为破坏性变化，升主版本，并同时写迁移说明。</p>
     </ArticleSection>
   </Article>;

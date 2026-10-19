@@ -7,11 +7,11 @@ import styles from "./LazyLoadingConcept.module.css";
 
 const frames = [
   { label: "先留一个盒子", stage: "FAR", distance: "1200px", state: "placeholder", request: "未请求", note: "内容还在视口下面，先保留尺寸，浏览器不必为看不见的图片付网络成本。" },
-  { label: "接近视口边缘", stage: "NEAR", distance: "300px", state: "placeholder", request: "等待阈值", note: "元素接近观察范围，IntersectionObserver 可以开始准备；距离是策略，不是用户动作本身。" },
+  { label: "接近视口边缘", stage: "NEAR", distance: "300px", state: "placeholder", request: "等待阈值", note: "IntersectionObserver 可以开始准备，距离是策略。" },
   { label: "进入观察范围", stage: "INTERSECT", distance: "0px", state: "loading", request: "GET image", note: "元素与观察区域相交，加载条件成立，浏览器才把图片请求放进瀑布。" },
   { label: "资源解码完成", stage: "READY", distance: "0px", state: "ready", request: "200 · decoded", note: "图片到达并解码后替换占位；盒子的尺寸先前已经保住，页面不会突然跳动。" },
-  { label: "请求失败也要有路", stage: "ERROR", distance: "0px", state: "error", request: "retry / fallback", note: "延迟加载不是延迟处理错误；失败、重试和替代内容必须仍然占住同一个位置。" },
-  { label: "下一张继续等待", stage: "NEXT", distance: "860px", state: "placeholder", request: "未请求", note: "一张资源就绪不代表整页全部加载；其他内容仍可沿自己的可见性边界前进。" },
+  { label: "请求失败也要有路", stage: "ERROR", distance: "0px", state: "error", request: "retry / fallback", note: "延迟加载保留固定的反馈位置，分别展示失败、重试与替代内容。" },
+  { label: "下一张继续等待", stage: "NEXT", distance: "860px", state: "placeholder", request: "未请求", note: "其他内容仍可沿自己的可见性边界前进。" },
 ] as const;
 
 export function LazyLoadingHero() {

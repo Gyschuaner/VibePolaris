@@ -45,7 +45,7 @@ export function ToolChoiceHero() {
   const state = getToolChoiceDemoState(scene.step, "auto");
   const notes = [
     "任务票只说要改会议时间，桌上还没有任何调用。",
-    "转盘打开，读取、更新和搜索各自是候选，不是已经发生的动作。",
+    "读取、更新和搜索各自是候选。",
     "选择针落在 calendar_update，先生成一张待检查的写操作票。",
     "票据停在审批台；选择完成了，日历仍然没有改变。",
   ];

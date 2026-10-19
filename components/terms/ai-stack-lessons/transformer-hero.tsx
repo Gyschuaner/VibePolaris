@@ -47,6 +47,6 @@ export function TransformerHero() {
       </div>
     </div>
     <div className={styles.transformerHeroResult} role="status"><current.Icon size={19} aria-hidden="true" /><span><strong>{current.title}</strong> · {current.detail}</span></div>
-    <figcaption>这里画的是可观察的计算路径：注意力让位置交换信息，前馈层在各位置上继续变换表示；它不是模型“读懂事实”的证明。</figcaption>
+    <figcaption>这里画的是可观察的计算路径：注意力让位置交换信息，前馈层在各位置上继续变换表示。</figcaption>
   </figure>;
 }

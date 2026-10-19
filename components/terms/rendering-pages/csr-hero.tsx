@@ -25,6 +25,6 @@ export function CsrHero() {
       <div className={styles.heroResult}><ResultIcon size={17} aria-hidden="true" /><span>首屏结果</span><strong>{current.result}</strong><small>{current.note}</small></div>
     </div>
     <div className={styles.heroNote} role="status"><Clock size={14} aria-hidden="true" /><span><strong>{current.label}</strong> · {current.note}</span></div>
-    <figcaption>CSR 不是没有服务器，而是把主要渲染工作推到浏览器；要看完整体验，得把下载、执行、取数和 DOM 更新排在一起。</figcaption>
+    <figcaption>CSR 是把主要渲染工作推到浏览器；要看完整体验，得把下载、执行、取数和 DOM 更新排在一起。</figcaption>
   </figure>;
 }

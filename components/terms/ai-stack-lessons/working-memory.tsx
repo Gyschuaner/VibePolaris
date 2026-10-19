@@ -50,6 +50,6 @@ export function WorkingMemoryLesson() {
       <button type="button" onClick={() => setInventoryReturned(true)} disabled={scene.step < 2} aria-pressed={scene.step >= 2 && inventoryReturned}>库存已返回</button>
       <button type="button" onClick={() => setInventoryReturned(false)} disabled={scene.step < 2} aria-pressed={scene.step >= 2 && !inventoryReturned}>库存未返回</button>
     </div>
-    <p className={styles.windowVerdict} role="status"><VerdictIcon size={17} aria-hidden="true" /> {scene.step === 0 ? "工作记忆先保存目标和候选，下一步才有依据。" : scene.step === 1 ? "预算筛掉 B、D 后还剩 A、C、E 三个；库存结果还没回来，不能先写成现货。" : scene.step === 2 && !stockKnown ? "库存未返回，仍保留 3 个候选，不进入 2 个，也不把未知写成有货。" : scene.step === 2 ? "库存结果排除 E，A 和 C 留下；工作状态已经收敛，但它仍只服务当前任务。" : !stockKnown ? "交付被挡住：库存没有返回，临时清单继续保留，不能清理成一个假结果。" : "交付后清理临时清单；是否把 A、C 保存为长期偏好，是另一项决定。"}</p>
+    <p className={styles.windowVerdict} role="status"><VerdictIcon size={17} aria-hidden="true" /> {scene.step === 0 ? "工作记忆先保存目标和候选，下一步才有依据。" : scene.step === 1 ? "预算筛掉 B、D 后剩 A、C、E，待库存结果返回后再确认现货。" : scene.step === 2 && !stockKnown ? "库存未返回，仍保留 3 个候选，不进入 2 个，也不把未知写成有货。" : scene.step === 2 ? "库存结果排除 E，A 和 C 留下；工作状态已经收敛，但它仍只服务当前任务。" : !stockKnown ? "交付被挡住：库存没有返回，临时清单继续保留，不能清理成一个假结果。" : "交付后清理临时清单；是否把 A、C 保存为长期偏好，是另一项决定。"}</p>
   </div>;
 }

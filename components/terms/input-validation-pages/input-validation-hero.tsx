@@ -9,7 +9,7 @@ const steps = [
   { label: "解析结构", title: "先把字节读成可检查的字段", detail: "请求大小和 JSON 结构先过关，未知字段不会悄悄混进业务对象。" },
   { label: "检查语义", title: "日期格式对了，顺序仍然可能错", detail: "结束日早于开始日，查询还没执行就停在 422。" },
   { label: "固定入口", title: "排序字段只能从允许列表挑", detail: "createdAt 映射成代码里的 created_at，用户值不会变成 SQL 片段。" },
-  { label: "检查归属", title: "合法账号也不代表你能看", detail: "acct-lee 的格式没有问题，但阿青没有它的访问关系。" },
+  { label: "检查归属", title: "服务端按账号归属检查权限", detail: "acct-lee 的格式没有问题，但阿青没有它的访问关系。" },
   { label: "交付结果", title: "自己的账号才拿到账单", detail: "通过校验和授权后，查询才返回 12 行可排序的账单。" },
 ];
 
@@ -48,7 +48,7 @@ export function InputValidationHero() {
         <h3>阿青要看一段账单</h3>
         <div className={styles.ivRequestRows}><span>startAt</span><b>2026-10-05</b><span>endAt</span><b className={scene.step === 2 ? styles.ivDangerText : ""}>{request.end}</b><span>accountId</span><b>{request.owner}</b><span>sort</span><b>{request.sort}</b></div>
         <div className={styles.ivBrowserHint}><CheckCircle size={15} aria-hidden="true" /><span>{scene.step === 0 ? "前端提示：格式看起来没问题" : "直接发请求也能到这里"}</span></div>
-        <small>输入来自网络，页面上的限制不是信任边界。</small>
+        <small>输入来自网络。</small>
       </section>
 
       <div className={styles.ivHeroFlow} aria-hidden="true"><ArrowRight size={22} /><span>server</span></div>

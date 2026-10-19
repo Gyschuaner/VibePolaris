@@ -43,7 +43,7 @@ export function RollbackLesson() {
       </div>
       <div className={styles.rollbackProof} data-active={verified}>
         <Database size={21} aria-hidden="true" />
-        <p><strong>数据边界</strong>{verified ? " 生产回滚切的是运行版本，不是 git revert/reset；兼容读取转绿，不兼容写入和外部消息要走补偿。" : " 回滚代码不等于撤销数据库写入。"}</p>
+        <p><strong>数据边界</strong>{verified ? "生产回滚切的是运行版本，兼容读取转绿，不兼容写入和外部消息要走补偿。" : "代码回滚后，数据库写入按数据恢复方案处理。"}</p>
         <ShieldCheck size={21} aria-hidden="true" />
       </div>
     </div>

@@ -19,7 +19,7 @@ export function SsrTermPage() {
       <p>上面的打印演示里，切换“打开流式”，你会看到外壳先进入浏览器；关闭它，整页就等数据齐了才一起出现。这里的纸带对应 HTML 字节，打印头只是帮助看清“准备好一部分就先发送”的时间关系。</p>
     </ArticleSection>
     <ArticleSection id="ssr-boundary-section" title="先可见和可交互是两件事">
-      <p id="ssr-hydrate" className="vp-citation-target">浏览器先能显示服务器给的 HTML，并不代表按钮已经绑定事件。<Cite id="ssr-hydrate" sources={ssrSources} />客户端脚本仍要加载并完成水合，页面才进入完整交互状态。</p>
+      <p id="ssr-hydrate" className="vp-citation-target">浏览器先能显示服务器给的 HTML。<Cite id="ssr-hydrate" sources={ssrSources} />客户端脚本仍要加载并完成水合，页面才进入完整交互状态。</p>
       <p>SSR 的取舍因此要同时看首字节、内容可见、脚本下载和交互接管。它可以改善首屏内容的到达，也可能增加服务器负担；没有上下文就说“SSR 更快”是不完整的判断。</p>
     </ArticleSection>
   </Article>;

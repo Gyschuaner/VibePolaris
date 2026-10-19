@@ -73,7 +73,7 @@ const scenarios = [
     host: "请求尚未发送",
     result: "TLS 证书不匹配",
     good: false,
-    note: "IP 能连通不等于 HTTPS 身份正确；证书中的 DNS-ID 必须能证明目标名称，握手会在 HTTP 之前停下。",
+    note: "证书中的 DNS-ID 必须能证明目标名称，握手会在 HTTP 之前停下。",
   },
   {
     label: "缓存还留着旧地址",
@@ -136,23 +136,23 @@ function HostnameLab() {
 
 export function HostnameTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={hostnameSources} />;
-  return <ConceptArticle slug="hostname" title="主机名" subtitle="Hostname · 给网络服务使用的可读名字" sources={hostnameSources} sections={[["hostname-shape", "名字不是地址"], ["hostname-resolution", "解析会给你一组可能的地址"], ["hostname-identity", "TLS 和 HTTP 还会继续使用名字"], ["hostname-debug", "排查时把三层证据放在一起"]]} intro={<>你记住的是 <code>api.example.com</code>，网络先把它换成地址，再用原来的名字核对证书和服务。<strong>主机名是一条跨层传递的线索，不是某台机器的永久身份证。</strong><Cite id="hostname-definition" /></>}>
-    <ArticleSection id="hostname-shape" title="名字不是地址">
-      <p id="hostname-definition" className="vp-citation-target">主机名通常是由点分开的标签，例如 <code>api.example.com</code>。DNS 把这些名字放进树状命名空间；名字可以指向一个节点、一个别名或一组资源记录，所以它描述的是“怎样称呼目标”，不是一张固定网卡。<Cite id="hostname-definition" /></p>
-      <p id="hostname-syntax" className="vp-citation-target">“hostname”这个词在不同系统里用得并不总是一样：有人指完整的 FQDN，有人只指第一段 <code>api</code>。常见主机名标签允许字母、数字和连字符，大小写比较通常不区分；写下完整名称和末尾点的语境，才能避免把相对名当成完整地址。<Cite id="hostname-syntax" /></p>
+  return <ConceptArticle slug="hostname" title="主机名" subtitle="Hostname · 给网络服务使用的可读名字" sources={hostnameSources} sections={[["hostname-shape", "主机名怎样解析为地址"], ["hostname-resolution", "解析会给你一组可能的地址"], ["hostname-identity", "TLS 和 HTTP 还会继续使用名字"], ["hostname-debug", "排查时把三层证据放在一起"]]} intro={<>你记住的是 <code>api.example.com</code>，网络先把它换成地址，再用原来的名字核对证书和服务。<strong>主机名是一条跨层传递的线索。</strong><Cite id="hostname-definition" /></>}>
+    <ArticleSection id="hostname-shape" title="主机名怎样解析为地址">
+      <p id="hostname-definition" className="vp-citation-target">主机名通常是由点分开的标签，例如 <code>api.example.com</code>名字可以指向一个节点、一个别名或一组资源记录，所以它描述的是“怎样称呼目标”。<Cite id="hostname-definition" /></p>
+      <p id="hostname-syntax" className="vp-citation-target">有人只指第一段 <code>api</code>。常见主机名标签允许字母、数字和连字符，大小写比较通常不区分；写下完整名称和末尾点的语境，才能避免把相对名当成完整地址。<Cite id="hostname-syntax" /></p>
       <HostnameLab />
     </ArticleSection>
     <ArticleSection id="hostname-resolution" title="解析会给你一组可能的地址">
-      <p id="hostname-resolution-detail" className="vp-citation-target">应用把主机名交给 resolver，resolver 从缓存或 DNS name server 得到与该名称关联的记录，再返回一个或多个 IP 地址。解析器把分布在不同服务器上的 DNS 数据藏在一个查询接口后面，回答本身并不等于目标应用已经健康。<Cite id="hostname-resolution" /></p>
+      <p id="hostname-resolution-detail" className="vp-citation-target">应用把主机名交给 resolver，resolver 从缓存或 DNS name server 得到与该名称关联的记录，再返回一个或多个 IP 地址。<Cite id="hostname-resolution" /></p>
       <p id="hostname-multihomed" className="vp-citation-target">同一个名字有多个地址时，客户端可能按偏好选择其中一条，失败后再尝试另一条；不同地址意味着不同路径、边缘节点或故障域。排查时把回答里的全部地址、顺序和 TTL 留下来，才能解释“有时能开、有时超时”。<Cite id="hostname-multihomed" /></p>
     </ArticleSection>
     <ArticleSection id="hostname-identity" title="TLS 和 HTTP 还会继续使用名字">
-      <p id="hostname-tls" className="vp-citation-target">HTTPS 不把 DNS 返回的 IP 直接当作服务身份。TLS 客户端要用目标主机名去核对证书里的 DNS-ID；证书证明的是“这个名称的服务”，不是“这次恰好连到的数字地址”。因此 IP 可达、TCP 成功，仍可能在握手时因名称不匹配停下。<Cite id="hostname-tls" /></p>
+      <p id="hostname-tls" className="vp-citation-target">HTTPS 不把 DNS 返回的 IP 直接当作服务身份。TLS 客户端要用目标主机名去核对证书里的 DNS-ID，证书证明的是“这个名称的服务”。因此 IP 可达、TCP 成功，仍可能在握手时因名称不匹配停下。<Cite id="hostname-tls" /></p>
       <p id="hostname-host" className="vp-citation-target">握手完成后，HTTP 还会把目标的 host 和 port 放进 Host（HTTP/2、HTTP/3 对应 <code>:authority</code>）。同一个 IP 上有多个虚拟主机时，服务器靠这个字段把请求分给正确站点；只改 Host，可能得到另一站点或被当成误定向请求。<Cite id="hostname-host" /></p>
     </ArticleSection>
     <ArticleSection id="hostname-debug" title="排查时把三层证据放在一起">
       <p id="hostname-diagnostic" className="vp-citation-target">一次完整记录至少要有：用户输入的主机名、DNS 回答及来源、实际选择的 IP 和端口、TLS 使用的名称与证书标识、HTTP Host，以及最终响应。每一层都通过后，才可以说“这个名字指向的服务完成了请求”。<Cite id="hostname-diagnostic" /></p>
-      <p>所以“ping 通了”只能说明某个地址对 ICMP 或探测作出回应；它回答不了证书是否匹配，也回答不了 Host 会把请求送到哪一个虚拟主机。把上面实验里的一个条件单独替换，失败就会停在不同的层，诊断才不会变成猜谜。</p>
+      <p>ping 检查地址对 ICMP 或探测的响应，证书匹配和 Host 虚拟主机路由需分别验证。把上面实验里的一个条件单独替换，失败就会停在不同的层，诊断才不会变成猜谜。</p>
     </ArticleSection>
   </ConceptArticle>;
 }

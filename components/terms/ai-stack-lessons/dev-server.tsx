@@ -106,7 +106,7 @@ export function DevServerLesson() {
     </div>
     <div className={styles.devServerLegend}><span><Network size={15} aria-hidden="true" />WebSocket：保持更新通道</span><span><Globe size={15} aria-hidden="true" />错误时保留旧页面</span></div>
     <div className={styles.devServerStatus} aria-live="polite">
-      {isError && stage >= 2 ? <><Warning size={19} aria-hidden="true" /><p><strong>错误覆盖层回来了。</strong> `button.css:1:8` 被送回页面显示，旧模块没有被执行。</p></> : stage === 3 ? <><CheckCircle size={19} aria-hidden="true" /><p><strong>样式更新抵达浏览器。</strong> 这是开发反馈，不代表生产构建已经完成。</p></> : <><Network size={19} aria-hidden="true" /><p>{stage === 0 ? "本地页已打开，更新通道正在等下一次保存。" : stage === 1 ? "监听器捕获了保存事件，浏览器还没有收到新模块。" : "服务器正在处理受影响的文件，结果还在路上。"}</p></>}
+      {isError && stage >= 2 ? <><Warning size={19} aria-hidden="true" /><p><strong>错误覆盖层回来了。</strong> `button.css:1:8` 被送回页面显示，旧模块没有被执行。</p></> : stage === 3 ? <><CheckCircle size={19} aria-hidden="true" /><p><strong>样式更新抵达浏览器。</strong> 这是开发反馈。</p></> : <><Network size={19} aria-hidden="true" /><p>{stage === 0 ? "本地页已打开，更新通道正在等下一次保存。" : stage === 1 ? "监听器捕获了保存事件，浏览器还没有收到新模块。" : "服务器正在处理受影响的文件，结果还在路上。"}</p></>}
     </div>
     <div className={styles.devServerControls}><SceneControls scene={scene} labels={labels} /></div>
     <p className={styles.devServerBoundary}><strong>本地反馈有自己的边界。</strong>开发服务器负责按请求提供资源、监听变化和传回诊断；构建产物、缓存、鉴权和公网容量还要由生产链路负责。</p>

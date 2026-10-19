@@ -56,7 +56,7 @@ export function AgentHarnessTermPage() {
           <p>Harness 通常还要把工具的名称、用途和<Term slug="parameter">参数</Term>要求告诉模型。以读日志为例，模型需要知道有一个读取文件的工具，以及调用时必须提供文件路径，才能提出可执行的请求。</p>
           <p>这里的“参数”就是执行操作时需要的具体信息。例如“读文件”还不够，必须说明读哪一个；<code>server.log</code> 就是这次传给读取工具的文件名。模型给出名字，工具才有明确的读取对象。</p>
           <HarnessRequestFlow />
-          <p id="cite-tool-request" className="vp-citation-target">图中的 <code>read_file("server.log")</code> 表示模型提出的工具请求。实际接口通常把工具名和参数放在结构化数据里；<strong>普通回复里出现这段文字，并不等于文件已经被读取</strong>。应用处理请求、执行工具后，才会产生结果。<Citation id="cite-tool-request" /></p>
+          <p id="cite-tool-request" className="vp-citation-target">图中的 <code>read_file("server.log")</code> 表示模型提出的工具请求。实际接口通常把工具名和参数放在结构化数据里；<strong>普通回复里出现这段文字</strong>。应用处理请求、执行工具后，才会产生结果。<Citation id="cite-tool-request" /></p>
           <p id="cite-tools" className="vp-citation-target">工具只负责这次操作。例如读取工具返回“文件不存在”，它的工作就结束了。接下来是换路径、查询目录还是询问用户，需要模型结合报错来判断。模型提出新的请求后，再由 Harness 处理。<Citation id="cite-tools" /></p>
           <p>本文把模型、Harness 和工具协作完成任务的系统称为 Agent（智能体）。Harness 指其中组织运行的程序及配置：用哪些指令、开放哪些工具、怎样保存进度，都在它的设计范围内。做简单任务时，可以先接好少量工具和模型调用；需要跨会话继续时，再加上进度保存。</p>
           <details className={styles.supplement} id="compare">
@@ -89,13 +89,13 @@ export function AgentHarnessTermPage() {
           <p>第一次调用时，模型只知道“服务启动失败”，所以先请求日志。下一次调用带上了“第一行缺少冒号”的报错，模型才有依据去检查 <code>app.py</code>。这两次调用可以使用同一个模型，变化的是它收到的信息。</p>
           <HarnessContextFlow />
           <p id="cite-state" className="vp-citation-target">Harness 保存的<Term slug="state">运行状态</Term>可以包含已经执行的请求、返回结果和任务进度。上下文则是<strong>本轮实际提供给模型的信息</strong>：外部可以<strong>保存完整日志，每次调用只取其中需要的部分</strong>。下次要用到某条旧记录时，还得把它重新带进输入。<Citation id="cite-state" /></p>
-          <p>这也解释了为什么“系统里有这份文件”不等于“模型已经看过它”。就像你把一份报告留在电脑里，聊天框中的 AI 也不会因此知道报告内容；应用需要先取得相关内容，再随这一次请求交给模型。系统保存了哪些材料，和这一轮实际给模型看哪些材料，需要分开看。</p>
+          <p>就像你把一份报告留在电脑里，聊天框中的 AI 也不会因此知道报告内容；应用需要先取得相关内容，再随这一次请求交给模型。系统保存了哪些材料，和这一轮实际给模型看哪些材料，需要分开看。</p>
           <p id="cite-context-selection" className="vp-citation-target">例如日志有几万行，可以先搜索报错位置，再读附近的内容；已经处理过的旧输出可以整理成摘要，保留当前错误和未完成事项。这样能把有限的上下文留给眼前的问题。摘要也可能遗漏细节，所以关键文件和原始结果仍要能查回。<Citation id="cite-context-selection" /></p>
           <p id="cite-loop" className="vp-citation-target">模型提出请求，工具执行，结果进入下一次输入，模型再判断下一步。这个反复进行的过程叫 <Term slug="agent-loop">Agent Loop（智能体循环）</Term>。单次调用负责生成这一轮的回复或请求，Harness 负责把多轮调用和执行过程接起来。<Citation id="cite-loop" /></p>
           <p id="cite-workflow" className="vp-citation-target">网页重播的是预先写好的修复样例，用来说明各方怎样配合，并没有真的运行一个模型。实际应用中，读哪个文件、要不要再查日志，可以由模型根据新结果选择。如果实际任务的步骤始终由程序预先排好，通常称为工作流；这类做法适合路径明确的任务。Harness 可以支持固定步骤，也可以让模型根据结果临时决定下一步。<Citation id="cite-workflow" /></p>
           <h3>跨会话继续任务</h3>
           <p id="cite-handoff" className="vp-citation-target">任务做得久了，还会遇到上下文放不下、需要换一次会话继续的情况。Anthropic 在长任务实验中把它比作工程师交班：下一班要知道目标、进度和遗留问题。他们让智能体<strong>留下进度文件和 Git 提交</strong>。进度文件说明做到哪一步；Git 是记录代码版本的工具，一次提交会保存当时的代码版本和变更说明。下一次会话先读取这些记录，再选择未完成的工作，就有依据接着做。<Citation id="cite-handoff" /></p>
-          <p id="cite-handoff-example" className="vp-citation-target">放到修服务的例子里，交接记录可以是：“已补上 <code>app.py</code> 的冒号；服务能启动；<code>/health</code> 仍返回 500；下一步检查健康检查函数。”新会话拿到这些记录后，先核对文件与检查结果，再继续处理。只保存一句“正在修复服务”，不足以说明哪些操作已经做过。<Citation id="cite-handoff-example" /></p>
+          <p id="cite-handoff-example" className="vp-citation-target">放到修服务的例子里，交接记录可以是：“已补上 <code>app.py</code> 的冒号；服务能启动；<code>/health</code> 仍返回 500；下一步检查健康检查函数。”新会话拿到这些记录后，先核对文件与检查结果，再继续处理。<Citation id="cite-handoff-example" /></p>
           <details className={styles.supplement} id="practice">
             <summary><HardDrives size={22} aria-hidden="true" /><span>磁盘占用示例</span><Plus className={styles.supplementToggle} size={18} aria-hidden="true" /></summary>
             <div className={styles.supplementBody}>
@@ -115,12 +115,12 @@ export function AgentHarnessTermPage() {
 
         <section className="vp-chapter" id="quality"><div className="vp-chapter-content">
           <h2>{harnessSectionTitles.quality}</h2>
-          <p id="cite-verification" className="vp-citation-target"><strong>文件写入成功，只能说明修改已经保存</strong>。要判断服务是否修好，还需要事先明确检查条件。本例先确认程序能够启动，再向专门检查运行情况的地址 <code>/health</code> 发一个请求：返回 <code>200</code> 表示这次请求成功，返回 <code>500</code> 表示处理时出错。这个检查地址和预期结果由示例预先规定，模型说“修好了”不能代替检查。<Citation id="cite-verification" /></p>
+          <p id="cite-verification" className="vp-citation-target"><strong>文件写入成功后，继续检查修改效果</strong>。要判断服务是否修好，还需要事先明确检查条件。本例先确认程序能够启动，再向专门检查运行情况的地址 <code>/health</code> 发一个请求：返回 <code>200</code> 表示这次请求成功，返回 <code>500</code> 表示处理时出错。示例预先规定检查地址和预期结果，修改后按该标准验证。<Citation id="cite-verification" /></p>
           <p>补上冒号，可能只解决了“程序无法启动”的问题；处理请求时用到的另一行代码仍可能有错。下面分别演示检查通过、检查失败和未获写入授权。看文件有没有改，再看检查有没有结果，就能知道任务停在哪一步。切换选项会从头演示对应情况。</p>
           <p>如果检查失败，Harness 把错误交回模型，让它继续修正。如果操作没有获得授权，则应在执行前由<Term slug="permission-boundary">权限检查</Term>拦住。把“不要修改文件”写在指令里可以指导模型，但<strong>实际能否写入，还需要由程序或运行环境限制</strong>。</p>
           <HarnessOutcomeFlow />
           <p id="cite-environment" className="vp-citation-target">需要接入能实际执行检查的工具，也要把结果交给模型。在 OpenAI Agents SDK 中，运行器会在模型的最终回答、工具调用和交接之间分流；工具结果回到运行器后，才有机会进入下一轮判断。沿用这个边界，修服务时应让模型拿到实际启动日志和健康检查响应，才能依据结果继续处理。<Citation id="cite-environment" /></p>
-          <p id="cite-stopping" className="vp-citation-target"><strong>循环也需要停止条件</strong>：检查通过后返回结果，缺少信息或授权时等待用户，达到设定的轮数或时间上限时结束。这样即使模型反复尝试同一种无效操作，系统也有办法停下来，而不是一直消耗资源。<Citation id="cite-stopping" /></p>
+          <p id="cite-stopping" className="vp-citation-target"><strong>循环也需要停止条件</strong>：检查通过后返回结果，缺少信息或授权时等待用户，达到设定的轮数或时间上限时结束。这样即使模型反复尝试同一种无效操作，系统也有办法停下来。<Citation id="cite-stopping" /></p>
           <p>一次健康检查通过，也只证明预先选定的这项检查通过了，不能推出网站所有功能都正常。换成整理表格的任务，道理一样：文件保存了，还要看数据是否齐全、计算是否正确。Harness 能组织这些检查，检查覆盖哪些要求仍要由人和应用明确下来。</p>
           <p id="cite-failures" className="vp-citation-target">排查智能体失败时，可以顺着执行记录往回找：请求了不存在的工具，说明工具选择出了问题；路径和参数正确却读取超时，要查执行环节；一直重复读同一份日志，则要看是否缺少进展判断。Chip Huyen 在《AI Engineering》的公开书摘中，分别讨论了规划、工具执行和效率方面的失败，这种分法有助于找准需要改的部分。<Citation id="cite-failures" /></p>
           <p id="cite-harness-config" className="vp-citation-target"><strong>同一个模型接入不同的 Harness，表现也可能不同</strong>。工具是否可用、错误有没有传回来、哪些信息被保留，都会影响后续过程。评估时既要看任务有没有完成，也要看用了多少轮、花了多久。对简单任务，先把少量工具和一次检查接好，再根据实际失败补充机制。<Citation id="cite-harness-config" /></p>

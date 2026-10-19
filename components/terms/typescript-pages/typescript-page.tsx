@@ -5,14 +5,14 @@ import { RuntimeValidationLab, TypeAnnotationLab } from "./typescript-experiment
 
 export function TypeScriptTermPage() {
   return <Article slug="typescript" title="TypeScript" subtitle="写代码时，先看见类型不合的地方"  sources={sources} intro={<>购物车本来有 2 件，再加 3 件，结果却显示“23 件”。计算公式没变，传进去的 <code>2</code> 多了一对引号。<strong>TypeScript 能在运行前发现这类类型错配；数据真正进来时，仍要检查它是什么。</strong></>} sections={[
-    ["ts-two-section", "2 和“2”，差的可不只是引号"],
+    ["ts-two-section", "2 和“2”会怎样影响计算"],
     ["ts-check-section", "红色下划线为什么能提前出现"],
     ["ts-javascript-section", "标注擦掉后，运行的是 JavaScript"],
     ["ts-data-section", "接口回来的数据，得真的看一眼"],
     ["ts-boundaries-section", "类型对了，程序也可能算错"],
     ["ts-task-section", "让 AI 交付一份能核对的类型约定"],
   ]}>
-    <ArticleSection id="ts-two-section" title="2 和“2”，差的可不只是引号">
+    <ArticleSection id="ts-two-section" title="2 和“2”会怎样影响计算">
       <p>先看两个很普通的值。<code>2</code> 是数字，可以拿来计算；<code>"2"</code> 是字符串，也就是一段文字。它们在屏幕上都像一个“2”，代码对它们的处理却不同。</p>
       <p id="ts-addition" className="vp-citation-target">JavaScript 的 <code>+</code> 既能做数字加法，也能拼接文字。两个数字相加，<code>2 + 3</code> 得到 <code>5</code>；其中一边是字符串时，<code>"2" + 3</code> 会把另一边也转成文字，拼成 <code>"23"</code>。它没有报错，只是做了另一件事。<Cite id="ts-addition" sources={sources} /></p>
       <p>购物车想要的是加法。麻烦往往出在交接处：写计算的人以为收到数字，调用它的人却给了文字。如果能在交接前写清“这里必须是数字”，很多错配就不用等到用户点按钮才暴露。</p>
@@ -27,7 +27,7 @@ export function TypeScriptTermPage() {
     <ArticleSection id="ts-javascript-section" title="标注擦掉后，运行的是 JavaScript">
       <p id="ts-erasure" className="vp-citation-target">点击实验里的“看 JavaScript”，冒号和 <code>number</code> 标注会从代码中消失。TypeScript 的这些类型信息会在转换时擦除，最终执行的仍是 <ConceptTerm slug="javascript">JavaScript</ConceptTerm>。它不会在函数旁边留下一个自动校验每次输入的保安，也不会把 <code>"2"</code> 悄悄改成数字。<Cite id="ts-erasure" sources={sources} /></p>
       <p>所以实验里即使显示类型错误，你仍能运行那段对应的 JavaScript，并得到 <code>"23"</code>。这里把“检查代码”和“执行代码”分开，方便你看清两件事各自做了什么。</p>
-      <p id="ts-emit" className="vp-citation-target">真实项目会不会在发现类型错误后继续产出文件，取决于构建设置。TypeScript 的 <code>noEmitOnError</code> 设置为 <code>true</code> 时，会在报错时停止输出；它的默认值是 <code>false</code>。不要把“编辑器没有红线”与“构建允许发布”当成同一件事。<Cite id="ts-emit" sources={sources} /></p>
+      <p id="ts-emit" className="vp-citation-target">真实项目会不会在发现类型错误后继续产出文件，取决于构建设置。TypeScript 的 <code>noEmitOnError</code> 设置为 <code>true</code> 时，会在报错时停止输出；它的默认值是 <code>false</code>。构建是否允许发布由项目检查配置决定。<Cite id="ts-emit" sources={sources} /></p>
     </ArticleSection>
     <ArticleSection id="ts-data-section" title="接口回来的数据，得真的看一眼">
       <p>前一个实验的参数直接写在代码里，检查器看得见。接口返回什么、用户这次输入什么，往往要运行后才知道。对这些外部数据，先承认“还不知道它的类型”，比先宣布“它肯定是数字”更稳妥；代码中可以用 <code>unknown</code> 表示这个暂时未知的值。</p>
@@ -39,12 +39,12 @@ export function TypeScriptTermPage() {
     </ArticleSection>
     <ArticleSection id="ts-boundaries-section" title="类型对了，程序也可能算错">
       <p>数字 <code>-2</code> 也是 <code>number</code>，小数 <code>2.5</code> 也是。刚才的 <code>typeof</code> 检查会允许它们通过，可商品数量通常还得满足“正整数”。这类业务规则要另外写出来，不能只凭一个 <code>number</code> 判断。</p>
-      <p id="ts-any" className="vp-citation-target">还有一种常见的退路：把难处理的数据标成 <code>any</code>。这会放宽相关类型检查，错误也可能随之失去提醒。红线消失只说明检查器不再拦住这段用法，不能作为数据正确的证据。<Cite id="ts-any" sources={sources} /></p>
+      <p id="ts-any" className="vp-citation-target">还有一种常见的退路：把难处理的数据标成 <code>any</code>这会放宽相关类型检查，错误也可能随之失去提醒。红线消失说明检查器不再拦住这段用法，不能作为数据正确的证据。<Cite id="ts-any" sources={sources} /></p>
       <p>类型检查也不会替你确认服务器在线、库存足够、用户有权下单。它擅长核对代码里的类型关系；网络失败、实际数据和业务约束，需要对应的错误处理、校验和测试。</p>
     </ArticleSection>
     <ArticleSection id="ts-task-section" title="让 AI 交付一份能核对的类型约定">
       <p>可以这样交代任务：“购物车数量按数字计算；接口数据先作为未知值接收，确认是正整数后再使用。不要用 <code>as number</code> 或 <code>any</code> 掩盖类型错误。收到文字数量时显示明确错误。”</p>
-      <p>看它交付的代码时，找三处具体证据：函数接收什么类型，外部数据在哪里被检查，检查失败后程序做什么。再用数字 <code>2</code> 和文字 <code>"2"</code> 各试一次。你要核对的是数据怎么被使用，而不只是文件扩展名有没有变成 <code>.ts</code>。</p>
+      <p>看它交付的代码时，找三处具体证据：函数接收什么类型，外部数据在哪里被检查，检查失败后程序做什么。再用数字 <code>2</code> 和文字 <code>"2"</code> 各试一次。同时核对数据的使用方式与文件扩展名是否变成 <code>.ts</code>。</p>
     </ArticleSection>
   </Article>;
 }

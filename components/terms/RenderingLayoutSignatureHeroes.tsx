@@ -128,7 +128,7 @@ const breakpointCaptions = [
   "同一组内容在宽屏上还有余量，暂时没有理由写断点。",
   "按钮间距开始变薄，压力出现了，但还没有改变规则。",
   "导航文字和操作项第一次互相抢位置，这条线来自内容。",
-  "在碰撞前切到紧凑布局，断点改变规则而不是复制内容。",
+  "在碰撞前切到紧凑布局，断点改变规则。",
   "小屏保留必要操作；如果流体布局够用，就停在这里。",
 ];
 
@@ -141,7 +141,7 @@ export function BreakpointSignatureHero() {
     <div className={styles.breakpointSignature} data-step={step} data-layout={compact ? "compact" : "fluid"}>
       <div className={styles.pressureHeader}><span>可用宽度</span><strong>{width}px</strong><div className={styles.pressureMeter}><i style={{ width: `${Math.max(12, Math.min(100, width / 9.6))}%` }} /><b /></div><small>{step === 2 ? "内容失效线" : "还在观察"}</small></div>
       <div className={styles.pressureContent}><div className={styles.pressureNav}><span>产品</span><b>文档</b><b>示例</b><button type="button">开始使用</button></div><div className={styles.pressureBody}><strong>一段需要读完的标题</strong><span>真实内容决定什么时候需要换一条规则。</span></div></div>
-      <div className={styles.pressureProof} role="status"><Scales size={16} aria-hidden="true" /><strong>{compact ? "规则已切换" : step === 2 ? "碰撞证据" : "流体布局"}</strong><span>{step === 2 ? "不是 768px 这个设备名字" : compact ? "同一份内容，换成紧凑排列" : "继续缩窄，直到内容给出证据"}</span></div>
+      <div className={styles.pressureProof} role="status"><Scales size={16} aria-hidden="true" /><strong>{compact ? "规则已切换" : step === 2 ? "碰撞证据" : "流体布局"}</strong><span>{step === 2 ? "以可用宽度跨过 768px 为条件" : compact ? "同一份内容，换成紧凑排列" : "继续缩窄，直到内容给出证据"}</span></div>
     </div>
   </SignatureFrame>;
 }
@@ -179,7 +179,7 @@ const moduleCaptions = [
   "import 指向导出绑定，调用方读取的是同一个名字。",
   "settings 把 locale 改成 zh-CN，live binding 让调用方读到新值。",
   "如果先复制成普通变量，调用方仍保留 en-US 这张快照。",
-  "循环本身不是禁区；初始化未完成时读取绑定，才会进入 TDZ。",
+  "初始化未完成时读取绑定，才会进入 TDZ。",
 ];
 
 export function ModuleSignatureHero() {
@@ -230,7 +230,7 @@ const lazyCaptions = [
   "接近视口只是准备信号，rootMargin 给下载留下时间。",
   "目标进入观察窗口，请求开始；占位仍保留。",
   "资源换入原槽位，下面的内容没有被推走。",
-  "失败也要留下可理解的回退和重试入口，而不是一个空洞。",
+  "失败也要留下可理解的回退和重试入口。",
 ];
 
 export function LazyLoadingSignatureHero() {
@@ -296,7 +296,7 @@ export function CsrSignatureHero() {
         </div>
       </div>
       <div className={styles.csrIncoming} aria-hidden="true"><span data-kind="shell" data-arrived={step >= 0}><Browser size={13} /><b>壳</b></span><span data-kind="script" data-arrived={step >= 1}><Code size={13} /><b>JS</b></span><span data-kind="data" data-arrived={step >= 3}><Database size={13} /><b>{step === 2 ? "API?" : "数据"}</b></span></div>
-      <div className={styles.csrProof} role="status"><span className={styles.csrPulse} data-on={showContent} aria-hidden="true" /><strong>{showContent ? step === 4 ? "内容已接上事件" : "数据长进挂载点" : "先只有一个空位置"}</strong><span>{step === 1 ? "脚本还在浏览器里执行" : step === 2 ? "数据回来前，空位仍然是空位" : "CSR 不等于没有服务器"}</span></div>
+      <div className={styles.csrProof} role="status"><span className={styles.csrPulse} data-on={showContent} aria-hidden="true" /><strong>{showContent ? step === 4 ? "内容已接上事件" : "数据长进挂载点" : "先只有一个空位置"}</strong><span>{step === 1 ? "脚本还在浏览器里执行" : step === 2 ? "数据回来前，空位仍然是空位" : "浏览器向服务器请求数据"}</span></div>
     </div>
   </SignatureFrame>;
 }

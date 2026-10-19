@@ -51,7 +51,7 @@ export function IntegrationTestLesson() {
         <div className={styles.integrationLabLabel}>{final && !realDb ? <WarningCircle size={16} aria-hidden="true" /> : <CheckCircle size={16} aria-hidden="true" />}<span>状态证据</span></div>
         <h3>{!final ? "等待查询" : !realDb ? "证据不足" : paymentFails ? "回滚成立" : "提交成立"}</h3>
         <div className={styles.integrationLabValue}><span>response / rows</span><strong>{!final ? "—" : !realDb ? "mock / mock" : paymentFails ? "502 / 0" : "201 / 1"}</strong></div>
-        <small>{!realDb ? "替身的 0 行不能证明真实数据库没有写入" : paymentFails ? "错误响应和真实行数同时核对" : "响应与持久化状态一起通过"}</small>
+        <small>{!realDb ? "真实写入结果需检查实际数据库" : paymentFails ? "错误响应和真实行数同时核对" : "响应与持久化状态一起通过"}</small>
       </div>
     </div>
     <div className={styles.integrationLabMetrics}>
@@ -60,7 +60,7 @@ export function IntegrationTestLesson() {
       <div><span>测试结论</span><strong>{!final ? "未运行" : proven ? "可证明" : "范围不足"}</strong></div>
     </div>
     <p className={styles.integrationLabNote} data-danger={final && !realDb} role="status">
-      {!final ? <><LockSimple size={17} aria-hidden="true" /><span>先配置测试宿主，再让请求走过边界；集成测试的速度可以控制，真实协作的证据不能靠口头假设。</span></> : !realDb ? <><WarningCircle size={17} aria-hidden="true" /><span>Mock 仓储可以让服务测试很快，但它没有执行真实 SQL、schema 或事务。这个结果最多证明调用协议，不足以证明集成。</span></> : paymentFails ? <><CheckCircle size={17} aria-hidden="true" /><span>支付故障被控制在外部边界，服务和数据库仍然真实；502 与 0 行记录一起出现，回滚才有证据。</span></> : <><CheckCircle size={17} aria-hidden="true" /><span>真实数据库提交了 1 行，响应也返回成功。这个测试覆盖了组件协作，不需要把整条用户旅程搬进浏览器。</span></>}
+      {!final ? <><LockSimple size={17} aria-hidden="true" /><span>先配置测试宿主，再让请求走过边界；集成测试的速度可以控制，真实协作的证据不能靠口头假设。</span></> : !realDb ? <><WarningCircle size={17} aria-hidden="true" /><span>Mock 仓储可以让服务测试很快，但它没有执行真实 SQL、schema 或事务。</span></> : paymentFails ? <><CheckCircle size={17} aria-hidden="true" /><span>支付故障被控制在外部边界，服务和数据库仍然真实；502 与 0 行记录一起出现，回滚才有证据。</span></> : <><CheckCircle size={17} aria-hidden="true" /><span>真实数据库提交了 1 行，响应也返回成功。这个测试覆盖了组件协作，不需要把整条用户旅程搬进浏览器。</span></>}
     </p>
   </div>;
 }

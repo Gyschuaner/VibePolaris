@@ -31,7 +31,7 @@ type TokenVariant = 'original' | 'tampered' | 'expired';
 export function JwtLesson() {
   const [variant, setVariant] = useState<TokenVariant>('original');
   const [checked, setChecked] = useState(false);
-  const result = variant === 'original' ? '示意结果：签名与声明均通过，接收方才继续处理请求。' : variant === 'tampered' ? '载荷变了，原签名无法通过验证；“可读”不代表“可随意修改”。' : '签名仍可能有效，但 exp 已过；接收方拒绝这份过期令牌。';
+  const result = variant === 'original' ? '示意结果：签名与声明均通过，接收方才继续处理请求。' : variant === 'tampered' ? '载荷改变后，原签名验证失败。' : '签名仍可能有效，但 exp 已过；接收方拒绝这份过期令牌。';
   return <div className={s.lab} aria-label="签名 JWT 的载荷、签名和过期检查演示">
     <div className={s.tokenStrip} data-variant={variant}>
       <div><span>Header</span><code>{'{ "alg": "HS256" }'}</code></div><i aria-hidden="true">.</i><div><span>Payload · 可解码</span><code>{variant === 'tampered' ? '{ "sub": "管理员" }' : variant === 'expired' ? '{ "sub": "阿青", "exp": "已过期" }' : '{ "sub": "阿青", "exp": "有效" }'}</code></div><i aria-hidden="true">.</i><div><span>Signature</span><code>原始签名</code></div>

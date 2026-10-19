@@ -61,13 +61,13 @@ export function getAgentLoopDemoState(step: number, limit: AgentLoopLimit): Agen
         : currentStep === 0
           ? "先把失败回执钉在任务单上，循环从可检查的状态开始"
           : currentStep === 1
-            ? "动作已经发出；在工具回执回来前，不能把等待写成成功"
+            ? "动作已经发出"
             : currentStep === 2
               ? "500 回执给出缺失项，下一轮终于有了可以处理的证据"
               : currentStep === 3
                 ? "把 issue = config 写回任务单，下一轮知道要修哪里"
                 : currentStep === 4
-                  ? "配置已写入；还要再跑一次健康检查，写入本身不是通过证据"
+                  ? "配置已写入，还要再跑一次健康检查"
                   : "重新检查还没返回，闸门先保持关闭",
   };
 }

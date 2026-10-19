@@ -35,6 +35,6 @@ export function RerankingRackLab() {
     <div className={styles.excluded}><b>D · 银行延迟说明</b><span>未进入候选，没有重排分</span></div>
     <div className={styles.selectedText} aria-live="polite"><span>{selected.id} · 正文</span><p>{selected.text}</p></div>
     <output className={styles.returned} aria-live="polite">返回 {kept.map(doc => doc.id).join("、")}{missedAnswer ? "；其中没有退款到账时间的 B" : ""}</output>
-    <figcaption>资料与分数均为教学示例，未调用重排模型。分数用于当前排序，不代表答案正确概率；D 不会因为重排而进入候选。</figcaption>
+    <figcaption>资料与分数均为教学示例，未调用重排模型。分数用于当前排序，D 不会因为重排而进入候选。</figcaption>
   </figure>;
 }

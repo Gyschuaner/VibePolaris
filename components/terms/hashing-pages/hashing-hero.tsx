@@ -8,7 +8,7 @@ import styles from "./HashingConcept.module.css";
 const steps = [
   { label: "看输入", title: "同一个输入先得到同一个指纹", detail: "哈希把任意长度的内容压成固定长度摘要；这张指纹可以拿来核对。" },
   { label: "改一个字", title: "一个字符让摘要换一张脸", detail: "摘要不会和原文长得像，文件只动一个字符也会留下新的结果。" },
-  { label: "加随机盐", title: "相同密码不再共用一张影子", detail: "盐不是秘密，它让每个账号的保存值分开，不能拿一张表批量对照。" },
+  { label: "加随机盐", title: "相同密码不再共用一张影子", detail: "它让每个账号的保存值分开，不能拿一张表批量对照。" },
   { label: "放慢猜测", title: "密码 KDF 把每次猜测变贵", detail: "快速 SHA 适合做指纹，不适合守密码；Argon2id 会把内存和时间也算进成本。" },
   { label: "登录重算", title: "验证重算，不做解密", detail: "服务器取出盐和参数，对候选密码重新计算，再比较结果。" },
   { label: "检查文件", title: "指纹只回答文件有没有变", detail: "摘要对不上清单，就先停下安装；它没有告诉你原文是什么。" },
@@ -16,9 +16,9 @@ const steps = [
 
 const frames = [
   { input: "release.tar", inputNote: "原始输入 · 长度不限", engine: "SHA-256", engineNote: "固定 256 bit 输出", outputTitle: "文件指纹", output: "3a1c…9f", outputNote: "manifest 可保存这串摘要", lane: "完整性", progress: 28, tone: "plain" },
-  { input: "release.tar!", inputNote: "只改最后一个字符", engine: "SHA-256", engineNote: "同一函数 · 新输入", outputTitle: "完全不同的指纹", output: "c72b…14", outputNote: "不是相似，而是另一串摘要", lane: "变更可见", progress: 52, tone: "changed" },
+  { input: "release.tar!", inputNote: "只改最后一个字符", engine: "SHA-256", engineNote: "同一函数 · 新输入", outputTitle: "完全不同的指纹", output: "c72b…14", outputNote: "是另一串摘要", lane: "变更可见", progress: 52, tone: "changed" },
   { input: "password", inputNote: "用户 A / 用户 B", engine: "salt + KDF", engineNote: "每个账号一枚随机盐", outputTitle: "两份保存值", output: "salt A → 7e… · salt B → b1…", outputNote: "相同密码也不会共用摘要", lane: "盐分开", progress: 64, tone: "safe" },
-  { input: "候选密码 × 猜测", inputNote: "离线拿到密码表", engine: "SHA / Argon2id", engineNote: "快函数 vs memory-hard", outputTitle: "猜测成本", output: "快：批量跑 · 慢：要内存", outputNote: "成本要按服务性能调，不是越慢越好", lane: "攻击成本", progress: 78, tone: "warning" },
+  { input: "候选密码 × 猜测", inputNote: "离线拿到密码表", engine: "SHA / Argon2id", engineNote: "快函数 vs memory-hard", outputTitle: "猜测成本", output: "快：批量跑 · 慢：要内存", outputNote: "成本要按服务性能调", lane: "攻击成本", progress: 78, tone: "warning" },
   { input: "登录输入", inputNote: "候选密码 + 账号记录", engine: "salt + 参数 + KDF", engineNote: "按保存的版本重算", outputTitle: "比较结果", output: "match ✓ · 不解密", outputNote: "服务器只需要知道相等与否", lane: "验证", progress: 86, tone: "safe" },
   { input: "下载文件", inputNote: "对照发布清单", engine: "SHA-256", engineNote: "重新计算摘要", outputTitle: "digest ≠ manifest", output: "停止安装", outputNote: "文件已变，原文仍然不会从摘要里出现", lane: "边界", progress: 100, tone: "danger" },
 ] as const;

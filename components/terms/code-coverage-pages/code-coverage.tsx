@@ -57,17 +57,17 @@ export function CodeCoverageLesson() {
         <div className={styles.coverageLabLabel}><GridFour size={16} aria-hidden="true" /><span>空白 · 条件矩阵</span></div>
         <h3>{checked.length} / 4 组合已跑</h3>
         <div className={styles.coverageLabMatrix}>{cells.map(cell => <span key={cell.key} data-seen={checked.includes(cell.key)} data-bug={cell.key === "TF" && scene.step === 3}>{cell.key}<small>{checked.includes(cell.key) ? cell.key === "TF" && scene.step === 3 ? "allow ≠ deny" : cell.outcome : "未跑"}</small></span>)}</div>
-        <small>{scene.step === 3 ? "TF 暴露实现和期待的差异；现在需要一条行为断言，而不是再刷一遍同一行。" : "把复合条件展开，才看得见行覆盖背后的未执行组合。"}</small>
+        <small>{scene.step === 3 ? "TF 暴露实现和期待的差异；现在需要一条行为断言。" : "把复合条件展开，才看得见行覆盖背后的未执行组合。"}</small>
       </div>
       <div className={styles.coverageLabPanel} data-active={scene.step === 4} data-danger={weak} data-good={meaningful}>
         <div className={styles.coverageLabLabel}>{weak ? <WarningCircle size={16} aria-hidden="true" /> : meaningful ? <CheckCircle size={16} aria-hidden="true" /> : <ShieldWarning size={16} aria-hidden="true" />}<span>结论 · {standard === "percent" ? "数字" : "证据"}</span></div>
         <h3>{!final ? "等待判断" : standard === "percent" ? "四格跑完了" : "每格都有期待"}</h3>
         <div className={styles.coverageVerdict}>{verdict}</div>
-        <small>{!final ? "覆盖率先指出缺口；完成标准还没有落地。" : weak ? "100% 只说明计数器见过这些结构，不能说明输入输出符合需求。" : "每条路径都带着明确的 allow/deny 期待，覆盖率变成了选测试的地图。"}</small>
+        <small>{!final ? "覆盖率先指出缺口；完成标准还没有落地。" : weak ? "100% 说明计数器见过这些结构。" : "每条路径都带着明确的 allow/deny 期待，覆盖率变成了选测试的地图。"}</small>
       </div>
     </div>
     <div className={styles.coverageLabRail}><div data-on={scene.step >= 0}><Code size={15} aria-hidden="true" /><span>写条件</span></div><div data-on={scene.step >= 1}><ChartLine size={15} aria-hidden="true" /><span>数执行</span></div><div data-on={scene.step >= 2}><GridFour size={15} aria-hidden="true" /><span>找空白</span></div><div data-on={scene.step >= 3}><ShieldWarning size={15} aria-hidden="true" /><span>看风险</span></div><div data-on={scene.step >= 4} data-danger={weak}><CheckCircle size={15} aria-hidden="true" /><span>定行为</span></div></div>
     <div className={styles.coverageLabMetrics}><div><span>当前镜头</span><strong>{report.label}</strong></div><div><span>已跑组合</span><strong>{checked.length} / 4</strong></div><div><span>完成标准</span><strong>{standard === "percent" ? "数字到线" : "路径 + 断言"}</strong></div></div>
-    <p className={styles.coverageLabNote} data-danger={weak} role="status">{!final ? <><ArrowCounterClockwise size={17} aria-hidden="true" /><span>报告是地图，不是成绩单。先找没走过的路径，再决定哪一条风险值得写成测试。</span></> : weak ? <><WarningCircle size={17} aria-hidden="true" /><span>覆盖率已经满格，但结论仍然虚：把百分比换成每个路径的可观察期待。</span></> : <><CheckCircle size={17} aria-hidden="true" /><span>覆盖率告诉你测试走过哪里，断言告诉你那条路的结果是否值得信。</span></>}</p>
+    <p className={styles.coverageLabNote} data-danger={weak} role="status">{!final ? <><ArrowCounterClockwise size={17} aria-hidden="true" /><span>报告是地图。先找没走过的路径，再决定哪一条风险值得写成测试。</span></> : weak ? <><WarningCircle size={17} aria-hidden="true" /><span>覆盖率已经满格，但结论仍然虚：把百分比换成每个路径的可观察期待。</span></> : <><CheckCircle size={17} aria-hidden="true" /><span>覆盖率告诉你测试走过哪里，断言告诉你那条路的结果是否值得信。</span></>}</p>
   </div>;
 }

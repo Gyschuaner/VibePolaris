@@ -39,7 +39,7 @@ const frames = [
     cache: "保留 body · age 0s",
     age: "stale",
     origin: "304 Not Modified",
-    note: "过期不等于必须重传整份内容；缓存带着验证器询问，源站说没变，就能更新元数据后继续用原 body。",
+    note: "就能更新元数据后继续用原 body。",
     active: [0, 1, 2],
   },
   {
@@ -50,7 +50,7 @@ const frames = [
     cache: "shared cache · BLOCKED",
     age: "—",
     origin: "200 · user=7",
-    note: "用户资料可以被当前浏览器处理，但 no-store 要求不要留下存储副本；shared cache 不能把 user=7 给下一个人。",
+    note: "用户资料可以被当前浏览器处理，但 no-store 要求不要留下存储副本，user=7 的个性化结果保持在对应用户的处理范围内。",
     active: [0, 2],
   },
 ];
@@ -64,7 +64,7 @@ const scenarios = [
     origin: "不访问源站",
     result: "直接返回 v1",
     status: "ok",
-    note: "新鲜度窗口内，缓存可以复用之前的响应。max-age 管的是响应的新鲜时间，不是请求超时。",
+    note: "新鲜度窗口内，缓存可以复用之前的响应。max-age 管的是响应的新鲜时间。",
   },
   {
     label: "no-cache · 仍然会存",
@@ -84,7 +84,7 @@ const scenarios = [
     origin: "200 · user=7",
     result: "只给这次请求",
     status: "blocked",
-    note: "no-store 是存储闸门，不是‘把内容加密’；响应回来仍要能用，只是缓存不能把它保存下来。",
+    note: "no-store 是存储闸门，响应回来仍要能用。",
   },
   {
     label: "stale-while-revalidate",
@@ -94,7 +94,7 @@ const scenarios = [
     origin: "后台验证 v2",
     result: "先给 v1，再更新",
     status: "stale",
-    note: "在额外 30 秒窗口内，缓存可以先交付旧响应，同时在后台验证；这不是把 stale 永久当 fresh。",
+    note: "在额外 30 秒窗口内，缓存可以先交付旧响应。",
   },
   {
     label: "stale-if-error",
@@ -157,19 +157,19 @@ function CacheControlLab() {
 
 export function CacheControlTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={cacheControlSources} />;
-  return <ConceptArticle slug="cache-control" title="缓存控制" subtitle="Cache-Control · 写给缓存看的行为指令" sources={cacheControlSources} sections={[["cache-control-directives", "指令管的是缓存行为"], ["cache-control-freshness", "新鲜度是一扇时间门"], ["cache-control-validation", "过期后可以只验证"], ["cache-control-shared", "个人缓存和共享缓存分开"], ["cache-control-stale", "过期容错是额外授权"]]} intro={<>响应头里写着 <code>Cache-Control</code>，它不是内容说明，而是沿请求链传给缓存的行为指令。<strong>同一份响应，能不能存、什么时候直接复用、何时必须回源，都由这些指令和缓存状态一起决定。</strong><Cite id="cache-control-store" /></>}>
+  return <ConceptArticle slug="cache-control" title="缓存控制" subtitle="Cache-Control · 写给缓存看的行为指令" sources={cacheControlSources} sections={[["cache-control-directives", "指令管的是缓存行为"], ["cache-control-freshness", "新鲜度是一扇时间门"], ["cache-control-validation", "过期后可以只验证"], ["cache-control-shared", "个人缓存和共享缓存分开"], ["cache-control-stale", "过期容错是额外授权"]]} intro={<>响应头里写着 <code>Cache-Control</code>，它是沿请求链传给缓存的行为指令。<strong>同一份响应，能不能存、什么时候直接复用、何时必须回源，都由这些指令和缓存状态一起决定。</strong><Cite id="cache-control-store" /></>}>
     <ArticleSection id="cache-control-directives" title="指令管的是缓存行为">
-      <p id="cache-control-store" className="vp-citation-target"><code>Cache-Control</code> 列出缓存可以理解的 directives，例如 <code>max-age</code>、<code>no-cache</code>、<code>no-store</code>、<code>private</code> 和 <code>s-maxage</code>。它管的是存储和复用条件，不能把一张用户资料变成公开内容，也不能替源站决定业务权限。<Cite id="cache-control-store" /></p>
+      <p id="cache-control-store" className="vp-citation-target"><code>Cache-Control</code> 列出缓存可以理解的 directives，例如 <code>max-age</code>、<code>no-cache</code>、<code>no-store</code>、<code>private</code> 和 <code>s-maxage</code>它管的是存储和复用条件，也不能替源站决定业务权限。<Cite id="cache-control-store" /></p>
       <p id="cache-control-method" className="vp-citation-target">缓存先要看请求方法和目标 URI。GET 响应通常可以被缓存，POST 则要遵守资源自己的语义；即使 URL 一样，方法、请求字段或响应里的 <code>Vary</code> 也可能让两个请求不能共用同一份副本。<Cite id="cache-control-method" /></p>
       <CacheControlLab />
     </ArticleSection>
     <ArticleSection id="cache-control-freshness" title="新鲜度是一扇时间门">
-      <p id="cache-control-fresh" className="vp-citation-target"><code>max-age=60</code> 表示响应的 freshness lifetime 可以是 60 秒。缓存用响应年龄 <code>Age</code> 和这段时间比较：还新鲜就能直接答，过期后要验证或重新取回。它控制缓存的时间窗口，不是让服务器 60 秒后关闭。<Cite id="cache-control-fresh" /></p>
+      <p id="cache-control-fresh" className="vp-citation-target"><code>max-age=60</code> 表示响应的 freshness lifetime 可以是 60 秒。缓存用响应年龄 <code>Age</code> 和这段时间比较：还新鲜就能直接答，过期后要验证或重新取回。60 秒描述缓存的新鲜期限。<Cite id="cache-control-fresh" /></p>
       <p id="cache-control-key" className="vp-citation-target">缓存键至少要考虑请求方法和目标 URI；响应写了 <code>Vary: Accept-Language</code> 时，还要把被点名的请求字段纳入匹配。只看到“命中”两个字，无法证明这份响应适合当前用户和当前请求。<Cite id="cache-control-key" /></p>
     </ArticleSection>
     <ArticleSection id="cache-control-validation" title="过期后可以只验证">
-      <p id="cache-control-validate" className="vp-citation-target"><code>no-cache</code> 不是 <code>no-store</code>。前者允许缓存保存副本，但复用前必须向源站验证；缓存可以带着 <code>If-None-Match</code> 发送验证，源站返回 <code>304 Not Modified</code> 时，旧 body 仍能留下，只更新响应元数据。<Cite id="cache-control-validate" /></p>
-      <p id="cache-control-vary" className="vp-citation-target">验证解决的是“这份副本还代表当前资源吗”，不负责重新判断用户权限。<code>ETag</code> 是表示的验证器，<code>Vary</code> 是选择缓存副本的条件；二者都不能替代应用层的身份和授权检查。<Cite id="cache-control-vary" /></p>
+      <p id="cache-control-validate" className="vp-citation-target"><code>no-cache</code> 同步目标 <code>no-store</code>。前者允许缓存保存副本，但复用前必须向源站验证；缓存可以带着 <code>If-None-Match</code> 发送验证，源站返回 <code>304 Not Modified</code> 时，旧 body 仍能留下，只更新响应元数据。<Cite id="cache-control-validate" /></p>
+      <p id="cache-control-vary" className="vp-citation-target">验证解决的是“这份副本还代表当前资源吗”，不负责重新判断用户权限。<code>ETag</code> 是表示的验证器，<code>Vary</code> 是选择缓存副本的条件，应用层另外检查身份与授权。<Cite id="cache-control-vary" /></p>
     </ArticleSection>
     <ArticleSection id="cache-control-shared" title="个人缓存和共享缓存分开">
       <p id="cache-control-shared-detail" className="vp-citation-target">浏览器常有 private cache，CDN 或代理常是 shared cache。<code>private</code> 可以阻止共享缓存保存响应，<code>s-maxage</code> 则只给共享缓存另设新鲜时间；带 <code>Authorization</code> 的请求也有额外的共享复用限制。<Cite id="cache-control-shared-detail" /></p>
@@ -177,7 +177,7 @@ export function CacheControlTermPage() {
     </ArticleSection>
     <ArticleSection id="cache-control-stale" title="过期容错是额外授权">
       <p id="cache-control-stale-detail" className="vp-citation-target"><code>stale-while-revalidate=30</code> 允许缓存进入过期后的短窗口：先把旧响应交给客户端，同时在后台验证。窗口结束后，下一次请求仍要按正常流程处理；旧内容只是被明确授权多留一会儿。<Cite id="cache-control-stale" /></p>
-      <p id="cache-control-error" className="vp-citation-target"><code>stale-if-error=120</code> 针对的是回源遇到错误的情况，允许在额外窗口里返回旧成功响应。它改善的是故障时的可用性，也把旧内容继续暴露的风险交给了发布者；不要把它当成“缓存永远优先”。<Cite id="cache-control-error" /></p>
+      <p id="cache-control-error" className="vp-citation-target"><code>stale-if-error=120</code> 针对的是回源遇到错误的情况，允许在额外窗口里返回旧成功响应。它改善的是故障时的可用性。<Cite id="cache-control-error" /></p>
     </ArticleSection>
   </ConceptArticle>;
 }

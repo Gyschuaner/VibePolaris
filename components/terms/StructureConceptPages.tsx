@@ -29,18 +29,18 @@ export function DatabaseSchemaTermPage() {
       <p><code>NOT NULL</code> 是“这一列不允许 NULL”的规则。图中原有编号的 <code>PRIMARY KEY</code> 是主键规则，要求编号唯一且非空；本次要修改的是 available 列。下面先增加列，再给书目填值；只补好一条时就尝试设为 NOT NULL，看定义是否会改变。两条的填充值是固定示例，你也可以先填 #78。演示只在页面内模拟这次变更，不连接真实数据库；“恢复初始结构”会重置这个示例。</p>
       <SchemaLesson />
       <p id="schema-validation" className="vp-citation-target"><strong>设为 NOT NULL 前，现有记录也必须符合要求。</strong>只填好 #42，#78 仍是 NULL，数据库就会拒绝这次规则变更；已填的 #42 仍是 true，列定义也仍允许 NULL。两条都补齐后再提交，才能增加非空规则。以后写入或修改记录时，这一列也不能是 NULL。增加列、修改列的规则，改的是表定义；给一行填值，改的是这一行的数据。<Cite id="schema-validation" /></p>
-      <p id="schema-default" className="vp-citation-target">旧记录的新列并非总是 NULL。如果增加列时指定默认值 true，旧记录就会得到这个默认值；这只说明程序规定了一个填充值，并不说明馆员检查过它们。而在列已经增加之后，单独给它设置默认值，会影响以后省略这项值的新增记录，不会替你补齐现有的 NULL。<Cite id="schema-default" /></p>
+      <p id="schema-default" className="vp-citation-target">如果增加列时指定默认值 true，旧记录就会得到这个默认值。而在列已经增加之后，单独给它设置默认值，会影响以后省略这项值的新增记录，不会替你补齐现有的 NULL。<Cite id="schema-default" /></p>
       <ArticleAside title="把变更交给下一位开发者">
         <p>开发者通常会把这些变更写成可以按顺序执行的命令，称为迁移脚本，交代原来的结构、怎样增加列、怎样补旧数据。本例不能简单用“全部填 true”代替馆员检查。如果旧程序仍不填写 available，就需要安排新程序和非空规则何时启用。</p>
-        <p id="schema-migration-lock" className="vp-citation-target">教学里两行数据的变更很快，不代表真实系统也能那么快完成。以 PostgreSQL 为例，修改表结构时可能需要锁住表，让其他操作暂时等待。<Cite id="schema-migration-lock" />失败后会保留哪些修改，取决于数据库、事务和脚本怎样执行。页面的重置按钮不是数据库自动回退的承诺。需要实施时，再按具体数据库规划迁移和恢复方法。</p>
+        <p id="schema-migration-lock" className="vp-citation-target">教学里两行数据的变更很快。以 PostgreSQL 为例，修改表结构时可能需要锁住表，让其他操作暂时等待。<Cite id="schema-migration-lock" />失败后会保留哪些修改，取决于数据库、事务和脚本怎样执行。需要实施时，再按具体数据库规划迁移和恢复方法。</p>
       </ArticleAside>
     </ArticleSection>
     <ArticleSection id="contract" title="结构里也有数据规则" className={base.offset}>
       <Legacy slug="database-schema" names={["quiz-heading", "prompt-heading"]} />
-      <p id="schema-contract" className="vp-citation-target">类型只是结构的一部分，数据库检查的规则叫<strong>约束</strong>。比如把 <code>book_id</code> 声明为<ConceptTerm slug="primary-key">主键</ConceptTerm>，就要求每册书的编号唯一且非空；<ConceptTerm slug="foreign-key">外键</ConceptTerm>可以要求借阅中的书号对应已有书目；<ConceptTerm slug="unique-constraint">唯一约束</ConceptTerm>可以要求某一列或几列合起来的值不重复。这些规则需要明确声明，列名叫 book_id 并不会自动让它成为主键。<Cite id="schema-contract" /></p>
+      <p id="schema-contract" className="vp-citation-target">类型只是结构的一部分，数据库检查的规则叫<strong>约束</strong>。比如把 <code>book_id</code> 声明为<ConceptTerm slug="primary-key">主键</ConceptTerm>，就要求每册书的编号唯一且非空；<ConceptTerm slug="foreign-key">外键</ConceptTerm>可以要求借阅中的书号对应已有书目；<ConceptTerm slug="unique-constraint">唯一约束</ConceptTerm>可以要求某一列或几列合起来的值不重复。这些规则需要明确声明。<Cite id="schema-contract" /></p>
       <p>程序界面也能提醒“请填写可借状态”，但如果数据库没有相应规则，另一个写入入口仍可能把这一项留成 NULL。把 NOT NULL 写进表的定义后，数据库本身就会检查。下面的 SQL 命令用 <code>CREATE TABLE</code> 表示“创建表”：括号里逐列写出列名、类型和约束，<code>PRIMARY KEY</code> 声明主键。</p>
       <pre className={base.code}>{'CREATE TABLE books (\n  book_id integer PRIMARY KEY,\n  title text NOT NULL,\n  available boolean NOT NULL\n);'}</pre>
-      <p>这是我们想要的表定义，用来创建一张新表；修改已经存在的 books 表，要用修改表结构的命令，而不是重新执行这段建表语句。这里的 available 没有默认值，新增记录时就需要提供 true 或 false。它告诉数据库怎样接受数据，不能证明数据符合现实：把一册已经借出的书填成 true，类型和非空检查仍会通过。是否真的可借，还要检查实际借阅情况。</p>
+      <p>这是我们想要的表定义，用来创建一张新表；修改已经存在的 books 表，要用修改表结构的命令。这里的 available 没有默认值，新增记录时就需要提供 true 或 false。类型和非空检查仍会通过。是否真的可借，还要检查实际借阅情况。</p>
     </ArticleSection>
     <ArticleSection id="namespace" title="schema 的另一种用法">
       <p id="schema-namespace" className="vp-citation-target">在 PostgreSQL 里，schema 还指<strong>数据库内部给表等对象分组、区分名称的空间</strong>，也叫命名空间。一个数据库可以有 <code>library.books</code> 和 <code>archive.books</code> 两张不同的表：点号前是组名，点号后是表名，分别是图书室组和归档组中的 books。<code>CREATE SCHEMA archive</code> 创建的是名叫 archive 的组，没有替你定义 books 的列。<Cite id="schema-namespace" /></p>
@@ -69,9 +69,9 @@ export function JoinTermPage() {
     <ArticleSection id="pairs" title="一条书目可能配出多行">
       <Legacy slug="join" names={["scene-heading"]} />
       <p id="join-multiplicity" className="vp-citation-target"><code>INNER JOIN</code> 叫内连接，只把符合条件的一对行放进结果。#42 对上借阅 1 的林舟，也对上借阅 2 的陈禾，所以《山间来信》出现两行：每行对应一次不同的借阅。#78 没有借阅，借阅 3 的 #65 没有对应书目，它们都不进入这个结果。<Cite id="join-multiplicity" /></p>
-      <p id="join-cross" className="vp-citation-target"><code>CROSS JOIN</code> 叫交叉连接，把每条书目与每条借阅都组合一次，不要求编号相等。两条书目各配三条借阅，总共是 2 × 3 = 6 行。比如 #78 也会和“借了 #42 的林舟”放在一行；这个组合本身不能说明林舟借过 #78。选择哪种连接方式和配对规则，取决于你想查什么。<Cite id="join-cross" /></p>
+      <p id="join-cross" className="vp-citation-target"><code>CROSS JOIN</code> 叫交叉连接，把每条书目与每条借阅都组合一次，不要求编号相等。两条书目各配三条借阅，总共是 2 × 3 = 6 行。比如 #78 也会和“借了 #42 的林舟”放在一行，该行表示交叉组合，林舟实际借阅的书目编号仍为 #42。选择哪种连接方式和配对规则，取决于你想查什么。<Cite id="join-cross" /></p>
       <p>下方矩阵的每格是一种候选组合，勾和叉只表示两边的书号是否相同；选中 CROSS 时，不同编号的组合也会进入结果。按钮决定本次采用哪一种连接，下面显示相应 SQL 和结果。SQL 中的 <code>AS loan_book_id</code> 把借阅侧的书号列在结果中叫作 loan_book_id，方便与书目侧的 book_id 区分，并没有给原表的列改名。</p>
-      <p>另外两个 LEFT 按钮会保留一侧找不到配对的记录，用 <code>NULL</code> 填另一侧的结果列。NULL 表示这一项没有值，不是编号 0，也不是新增一条真实借阅。原表中的书目和借阅始终保留。这个有限模型展示配对与结果，不连接数据库，也不表示数据库实际必须逐格执行。</p>
+      <p>另外两个 LEFT 按钮会保留一侧找不到配对的记录，用 <code>NULL</code> 填另一侧的结果列。NULL 表示该项缺少值，编号 0 则是一个具体数值。原表中的书目和借阅始终保留。这个有限模型展示配对与结果，不连接数据库，也不表示数据库实际必须逐格执行。</p>
       <JoinLesson />
       <p>这里一行结果代表一对书目与借阅。若只显示书名，不显示读者或借阅编号，两行可能看起来完全一样，但两次配对仍是不同的借阅。想统计每册书被借过几次，需要把同一册书的借阅分组后计数；这种按组汇总的操作叫聚合。想每册书只显示一行，则先说明要选哪一次借阅，或者怎样汇总，不能随手删去“重复书名”就当作结果正确。</p>
     </ArticleSection>
@@ -110,7 +110,7 @@ export function UniqueConstraintTermPage() {
     </ArticleSection>
     <ArticleSection id="race" title="预查通过，写入仍可能冲突">
       <Legacy slug="unique-constraint" names={["scene-heading"]} />
-      <p>先让 A、B 分别检查空表，再任选一个先写入。先写的一方成功，另一份预查结果却还写着“未占用”——此时表已经变了，后写的一方若照这份旧结果去写，就会撞上冲突。真实应用即使紧贴写入前再查一次，这次查询和真正写入之间也可能挤进另一份写入，所以唯一性检查必须成为写入过程的一部分。这里说的事务，是把一组数据库操作当作一次提交的工作单元；提交前的变化可能还不对其他操作可见，回滚则放弃这组变化。演示用手动先后操作解释竞争，不是真正启动两个数据库事务。点击“重新比较”会清空本轮预查、结果和账本；演示里关掉 UNIQUE 开关或切换输入，同样会从空表重新比较。<code>NULLS NOT DISTINCT</code> 是下一节针对两个 NULL 的选项，输入相同邮箱时它保持不可用。</p>
+      <p>先让 A、B 分别检查空表，再任选一个先写入。先写的一方成功，另一份预查结果却还写着“未占用”——此时表已经变了，后写的一方若照这份旧结果去写，就会撞上冲突。真实应用即使紧贴写入前再查一次，这次查询和真正写入之间也可能挤进另一份写入，所以唯一性检查必须成为写入过程的一部分。这里说的事务，是把一组数据库操作当作一次提交的工作单元；提交前的变化可能还不对其他操作可见，回滚则放弃这组变化。演示用手动先后操作解释竞争。点击“重新比较”会清空本轮预查、结果和账本；演示里关掉 UNIQUE 开关或切换输入，同样会从空表重新比较。<code>NULLS NOT DISTINCT</code> 是下一节针对两个 NULL 的选项，输入相同邮箱时它保持不可用。</p>
       <UniqueLesson />
       <p id="unique-race" className="vp-citation-target"><strong>预查是过去某一时刻的观察，唯一性必须在写入时守住。</strong>PostgreSQL 把冲突检查纳入唯一索引的插入过程。遇到其他事务尚未提交的冲突行时，可能先等待其结束，再检查是否冲突；也就是说，“先查、后写”这两步做不到不可分割地绑在一起，演示里看似连贯的检查加写入，在真实数据库里并没有这样的保证。<Cite id="unique-race" /></p>
       <p>预查仍有用，可以提前提示用户。但应用也要处理最后的写入冲突，让用户换邮箱或确认已有账户；拒绝第二次新增不会自动修改第一条注册记录。PostgreSQL 的实际唯一索引检查可能等待另一事务提交或回滚，再重新判断是否冲突；本模型把每次成功写入视为已经提交，省略等待与回滚过程。</p>
@@ -118,7 +118,7 @@ export function UniqueConstraintTermPage() {
     <ArticleSection id="scope" title="明确唯一性的范围">
       <Legacy slug="unique-constraint" names={["quiz-heading"]} />
       <p id="unique-composite" className="vp-citation-target">如果一个邮箱可以分别加入不同组织，可以考虑 <code>UNIQUE (organization_id, email)</code>。检查的是整个组合：同一组织内不能重复，不同组织可以使用相同邮箱。它不要求每列单独唯一；约束的范围要对应你想阻止的那一种重复。<Cite id="unique-composite" /></p>
-      <p id="unique-index" className="vp-citation-target">在 PostgreSQL 中，声明唯一约束会自动建立相应的唯一 B-tree 索引。约束表达有效数据的规则，索引是执行它的一种机制；已有约束时，不需要为了同一项检查再手工创建一份相同的唯一索引。下面的部分唯一索引是另一种写法：它本身就对满足条件的行施加唯一检查，不是普通 UNIQUE 约束上的开关。<Cite id="unique-index" /></p>
+      <p id="unique-index" className="vp-citation-target">在 PostgreSQL 中，声明唯一约束会自动建立相应的唯一 B-tree 索引。约束表达有效数据的规则，索引是执行它的一种机制；已有约束时，不需要为了同一项检查再手工创建一份相同的唯一索引。下面的部分唯一索引是另一种写法：它本身就对满足条件的行施加唯一检查。<Cite id="unique-index" /></p>
       <ArticleAside title="只要求部分记录唯一">
         <p id="unique-partial" className="vp-citation-target">若保留注销账户的历史记录，却只要求有效账户邮箱唯一，PostgreSQL 可以用带条件的唯一部分索引来限定参与检查的行。条件要与业务定义一致，重新激活账户时也可能触发冲突。<Cite id="unique-partial" /></p>
         <pre className={base.code}>{'CREATE UNIQUE INDEX active_email_unique\nON registrations (email)\nWHERE active = true;'}</pre>
@@ -127,7 +127,7 @@ export function UniqueConstraintTermPage() {
     </ArticleSection>
     <ArticleSection id="null" title="空值的唯一性规则" className={base.offset}>
       <Legacy slug="unique-constraint" names={["prompt-heading"]} />
-      <p id="unique-null" className="vp-citation-target">PostgreSQL 的普通 UNIQUE 默认允许多个 <code>NULL</code>；加 <code>NULLS NOT DISTINCT</code> 则把 NULL 也当成可比较的值：表里可以存在一个 NULL，再写入第二个就会触发冲突。<code>NOT NULL</code> 才是禁止该列缺值的要求。<strong>不重复与不能为空是两项要求。</strong>NULL 也不是空字符串：空字符串是一个实际的文本值，两条相同空字符串会按普通值比较并触发 UNIQUE 冲突。其他数据库的 NULL 唯一性规则可能不同，不能把这个 PostgreSQL 默认行为当成所有实现的统一规则。<Cite id="unique-null" /></p>
+      <p id="unique-null" className="vp-citation-target">PostgreSQL 的普通 UNIQUE 默认允许多个 <code>NULL</code>；加 <code>NULLS NOT DISTINCT</code> 则把 NULL 也当成可比较的值：表里可以存在一个 NULL，再写入第二个就会触发冲突。<code>NOT NULL</code> 才是禁止该列缺值的要求。<strong>不重复与不能为空是两项要求。</strong>两条相同空字符串会按普通值比较并触发 UNIQUE 冲突。其他数据库的 NULL 唯一性规则可能不同。<Cite id="unique-null" /></p>
       <p>可以回到演示，把输入切到两个 NULL，分别用默认规则和 NULLS NOT DISTINCT 各跑一遍：同一对请求只改这一项规则，就能看到第二次写入的结果随之改变；换成两个不同的记录编号，则任何规则下都不会冲突。</p>
       <p>定义唯一性时，要确定单列还是列组合、适用范围、空值和比较规则。数据库仍需处理最后的写入冲突；单靠注册前预查无法守住这个约束。</p>
     </ArticleSection>

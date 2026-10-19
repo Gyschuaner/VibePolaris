@@ -5,17 +5,17 @@
     "aliases": ["语义标签", "网页结构", "semantic markup"],
     "question": "页面看起来一样，为什么还要区分 main、nav 和 div？",
     "definition": "语义化 HTML 按内容职责选择元素：nav 表示导航，main 表示主要内容，article 表示可独立阅读内容，button 表示可触发操作。浏览器据此构造文档和无障碍结构，辅助技术才能按区域和控件导航。",
-    "boundary": "语义元素表达结构与原生行为，不负责颜色、间距或动画；class 命名不会改变语义，ARIA 角色也不应替代已有的原生元素。",
+    "boundary": "语义元素表达结构与原生行为，颜色、间距和动画由样式控制；优先使用合适的原生元素，再按需补充 ARIA。",
     "demoType": "hierarchy", "demoTitle": "同一段内容的结构识别",
     "demoSteps": [{"label":"先看普通容器","value":"div × 6 → 普通容器","note":"页面能显示，但浏览器和辅助技术只知道这些是容器。"},{"label":"标出页面区域","value":"nav、main、article → 对应区域","note":"辅助技术能识别导航、正文和文章的结构边界。"},{"label":"换成原生按钮","value":"div → button · 可按 Enter/Space","note":"按钮语义和键盘行为随原生元素一起出现。"}],
     "quizQuestion": "提交表单的操作应优先使用什么元素？", "quizOptions": ["button", "div", "span"],
-    "correctText": "button 自带按钮语义和键盘行为。", "wrongText": "可点击不等于按钮；普通容器需要额外补齐语义和键盘行为。",
+    "correctText": "button 自带按钮语义和键盘行为。", "wrongText": "普通容器需要额外补齐语义和键盘行为。",
     "promptTitle": "检查页面的 HTML 语义", "prompt": "请检查下面的 HTML。指出只承担样式容器作用的 div，以及应改为 header、nav、main、section、article 或 button 的节点，并说明修改依据。不要改动页面视觉。",
     "relatedSlugs": ["html", "a11y", "dom", "focus-management"]
   },
   {
     "zh": "深度链接", "en": "Deep Link", "slug": "deep-link", "cat": "前端",
-    "say": "深度链接让一个地址直接打开应用里的具体内容，而不是只停在首页。",
+    "say": "深度链接让一个地址直接打开应用里的具体内容。",
     "aliases": ["Deep Link", "应用内链接", "页面直达"],
     "question": "用户点开活动链接，怎样直接进入应用里的订单详情？",
     "definition": "深度链接把 URI 或网页地址映射到应用内的具体页面。系统按已注册的域名和路径匹配规则选择处理者，应用再把路径参数交给目标页面。",
@@ -35,7 +35,7 @@
     "definition": "应用清单是平台读取的配置文件：Android 的 AndroidManifest.xml 描述组件、入口、权限和链接匹配；PWA 的 Web App Manifest 描述名称、图标、启动地址和显示方式。",
     "boundary": "清单只负责声明配置和入口；权限仍要按平台规则在运行时请求，用户也可以拒绝；它不负责业务错误处理或保证能力一定可用。",
     "demoType": "lifecycle", "demoTitle": "系统从声明到运行时检查",
-    "demoSteps": [{"label":"构建或安装","value":"平台读取组件与元数据","note":"无效声明可能阻止安装或让入口不可用。"},{"label":"启动或匹配","value":"系统找到入口、启动地址或链接规则","note":"声明决定候选入口，不代表业务页面一定成功。"},{"label":"调用受限能力","value":"清单声明 + 运行时授权","note":"两项都满足才可使用相机等受限能力。"}],
+    "demoSteps": [{"label":"构建或安装","value":"平台读取组件与元数据","note":"无效声明可能阻止安装或让入口不可用。"},{"label":"启动或匹配","value":"系统找到入口、启动地址或链接规则","note":"声明决定候选入口。"},{"label":"调用受限能力","value":"清单声明 + 运行时授权","note":"两项都满足才可使用相机等受限能力。"}],
     "quizQuestion": "在 AndroidManifest.xml 里声明相机权限后，应用能否直接使用相机？", "quizOptions": ["仍需按平台规则请求用户授权", "可以永久直接使用", "只需修改应用图标"],
     "correctText": "清单先声明需要什么，平台再按规则请求授权；用户拒绝时，运行时代码必须处理失败。", "wrongText": "清单不会替用户授权，也不会绕过平台的运行时权限检查。",
     "promptTitle": "检查应用清单配置", "prompt": "请检查下面的 AndroidManifest.xml 或 webmanifest：标出组件/入口、链接、名称图标和权限声明；分别说明哪些在构建或启动时读取，哪些仍需运行时授权。",
@@ -47,9 +47,9 @@
     "aliases": ["设备仿真", "Android Emulator", "虚拟设备"],
     "question": "没有每一种实体手机时，怎样先检查不同系统版本和屏幕尺寸？",
     "definition": "仿真器在主机上运行一个虚拟设备（例如 Android AVD，即 Android 虚拟设备），加载指定系统版本和硬件配置，并可注入位置、网络、旋转等测试条件。",
-    "boundary": "仿真器适合功能、兼容性和可重复异常检查；它不能替代真机对真实性能、功耗、触觉、摄像头和传感器差异的确认。",
+    "boundary": "仿真器适合功能、兼容性和可重复异常检查；真实性能、功耗、触觉、摄像头和传感器差异交给真机确认。",
     "demoType": "comparison", "demoTitle": "先覆盖条件，再确认真机",
-    "demoSteps": [{"label":"建立虚拟设备","value":"选择系统版本、屏幕和硬件配置","note":"同一配置可以重复运行。"},{"label":"注入测试条件","value":"限速、断网、定位或旋转","note":"适合复现功能与异常流程。"},{"label":"真机复核","value":"测性能、功耗、传感器与触觉","note":"虚拟结果不能替代真实硬件结论。"}],
+    "demoSteps": [{"label":"建立虚拟设备","value":"选择系统版本、屏幕和硬件配置","note":"同一配置可以重复运行。"},{"label":"注入测试条件","value":"限速、断网、定位或旋转","note":"适合复现功能与异常流程。"},{"label":"真机复核","value":"测性能、功耗、传感器与触觉","note":"真实硬件上的表现需要通过真机测量确认。"}],
     "quizQuestion": "哪项更需要在真机上确认？", "quizOptions": ["相机启动延迟和触觉反馈", "一段纯文本是否存在", "源文件是否能打开"],
     "correctText": "仿真器能覆盖很多配置和可注入条件，但真实性能、功耗与硬件反馈仍要真机确认。", "wrongText": "基础功能和可重复异常通常可以先在仿真器中检查。",
     "promptTitle": "制定移动端设备验证范围", "prompt": "请把下面测试项分为仿真器可完成、必须真机复核和两者都要覆盖三类；说明需要覆盖的系统版本、屏幕尺寸、网络条件和真实硬件指标。",
@@ -61,7 +61,7 @@
     "aliases": ["应用签名", "签名证书", "Code Signing"],
     "question": "系统为什么拒绝安装一个已经构建成功的应用包？",
     "definition": "代码签名用私钥对构建产物的摘要或签名数据进行签名；设备或平台用证书里的公钥验证来源和内容是否被改动。",
-    "boundary": "签名只回答“谁签了、包有没有被改”，不保证代码没有漏洞，也不等于加密；私钥保护和权限管理仍要单独做好。",
+    "boundary": "签名只回答“谁签了、包有没有被改”，私钥保护和权限管理仍要单独做好。",
     "demoType": "flow", "demoTitle": "应用包从摘要到设备验签",
     "demoSteps": [{"label":"生成构建产物","value":"得到待签名应用包","note":"内容和包标识在此阶段确定。"},{"label":"使用私钥签名","value":"私钥签名摘要并携带证书","note":"私钥保密，证书可用于验证。"},{"label":"设备验签","value":"重算摘要并校验发布者身份","note":"身份或内容不匹配时拒绝安装或更新。"}],
     "quizQuestion": "签名私钥应怎样管理？", "quizOptions": ["放在受控密钥系统并限制访问", "提交到公开仓库", "写进前端页面"],
@@ -88,8 +88,8 @@
     "say": "触觉反馈把操作的语义映射成可感知的短促触感，并与视觉或声音一起确认状态。",
     "aliases": ["Haptics","振动反馈","触感反馈"],
     "question": "保存成功时，设备怎样让用户感觉到结果？",
-    "definition": "应用先为选择、确认、警告或失败等事件选择对应的语义触感，平台再根据设备执行器和用户设置播放相应的强度、节奏或波形；它表达的是状态变化，不是随便震一下。",
-    "boundary": "触觉是补充通道，不能替代文字、视觉或声音；高频或长振动会干扰任务。设备、系统开关以及浏览器可见性或用户激活策略可能让请求降级或不播放，因此关键结果要保留可见回退。",
+    "definition": "应用先为选择、确认、警告或失败等事件选择对应的语义触感，平台再根据设备执行器和用户设置播放相应的强度、节奏或波形，它表达的是状态变化。",
+    "boundary": "触觉与文字、视觉或声音配合传达反馈，振动频率和时长应适度，以免干扰任务。设备、系统开关以及浏览器可见性或用户激活策略可能让请求降级或不播放，因此关键结果要保留可见回退。",
     "demoType": "comparison", "demoTitle": "同一操作怎样表达选择、确认与回退",
     "demoSteps": [{"label":"选择发生","value":"selection（选择）· 轻触","note":"值改变时给一次短反馈，并同步显示选中状态。"},{"label":"确认或警告","value":"confirm / warning（确认/警告）","note":"成功和失败使用有区别的短触感，同时保留成功、错误或警告文字。"},{"label":"设备不可用","value":"无触觉 · 文字与视觉回退","note":"关闭触觉或浏览器拒绝请求，关键结果仍可见。"}],
     "quizQuestion": "触觉反馈不可用时，关键结果应怎样呈现？", "quizOptions": ["仍用文字或视觉明确说明","取消所有结果提示","不断重复振动调用"],
@@ -102,7 +102,7 @@
     "say": "触控目标是可被点击或触摸的完整命中区域，通常比图标本身更大。",
     "aliases": ["点击区域","Touch Target","触摸热区"],
     "question": "图标看得见，为什么在手机上总是点不中？",
-    "definition": "命中测试看的是控件的可交互边界，不是图标的可见像素；用容器尺寸或内边距扩大热区，再用间距避免相邻热区重叠。",
+    "definition": "命中测试看的是控件的可交互边界，再用间距避免相邻热区重叠。",
     "boundary": "扩大热区不能让不同控件共享同一片可交互区域；dp 是 Android 的密度无关像素，pt 是 Apple 的点，CSS px 是网页 CSS 像素；这些数值不能直接互换，尺寸建议要结合目标平台与布局。",
     "demoType": "comparison", "demoTitle": "同一图标的可见尺寸与命中边界",
     "demoSteps": [{"label":"只有图标可点","value":"16×16 px（教学示例）","note":"小方框让指尖偏差直接变成漏点。"},{"label":"增加容器内边距","value":"48×48 dp（Android 示例）","note":"内边距扩大命中区，图标外观保持不变。"},{"label":"检查相邻间距","value":"保持间隔，热区不重叠","note":"目标可以变大，但边界不能互相覆盖。"}],
@@ -124,7 +124,7 @@
     ],
     "question": "断网时我刚写的笔记保存在哪里，恢复连接后怎样知道服务器是否真的收到？",
     "definition": "离线优先把本地数据源放在可继续工作的路径上：读取先看本地，编辑先持久化本地变更，再由同步队列上传，并处理版本冲突、失败和服务器确认。",
-    "boundary": "缓存页面或重试请求都不等于离线优先；本地显示已保存也不等于服务器已确认，扣款等必须由服务器裁决的操作不能只靠本地结果。",
+    "boundary": "扣款等必须由服务器裁决的操作不能只靠本地结果。",
     "demoType": "queue",
     "demoTitle": "一条笔记从断网编辑到冲突处理",
     "demoSteps": [
@@ -173,7 +173,7 @@
     ],
     "question": "窗口拖宽后，订单列表和详情怎样重新排列而不丢失当前订单？",
     "definition": "自适应布局根据应用窗口的可用空间、方向和折叠姿态调整导航、面板数量、控件位置与信息密度；它在布局模式变化时仍要保留当前任务和焦点关系。",
-  "boundary": "它不是按设备型号套三套页面，也不是把元素等比拉伸；Web 常用 CSS px，Android 窗口大小类别常用 dp，下面的 390/720/1000 只是本页教学示例，不是设备型号或通用断点。窗口变化还要保留当前任务；若接入键盘或辅助技术，也应把焦点映射回原控件。",
+  "boundary": "下面的 390/720/1000 只是本页教学示例。窗口变化还要保留当前任务；若接入键盘或辅助技术，也应把焦点映射回原控件。",
     "demoType": "state",
     "demoTitle": "窗口宽度改变页面结构但保留当前任务",
     "demoSteps": [
@@ -200,7 +200,7 @@
       "应用安装日期"
     ],
     "correctText": "布局要回应当前窗口和内容是否能够清楚呈现。",
-    "wrongText": "品牌和安装日期不能说明页面空间如何使用。",
+    "wrongText": "布局要回应当前窗口和内容是否能够清楚呈现。",
     "promptTitle": "规划三种窗口下的布局",
     "prompt": "请把下面页面按应用窗口的可用空间拆成窄、中、宽三种布局，说明导航、主内容和次要信息如何移动或隐藏，并覆盖窗口或折叠姿态继续变化时如何保留当前任务和阅读位置；如果接入键盘或辅助技术，还要说明焦点如何回到原控件。",
     "relatedSlugs": [
@@ -223,7 +223,7 @@
     ],
     "question": "全屏背景可以铺到边缘，底部按钮为什么还要向上留出动态距离？",
     "definition": "安全区域由系统或浏览器提供动态 inset（系统留出的安全边距）；背景可以铺满屏幕，关键文字和控件按当前值增加内边距，旋转或设备形态变化时重新读取。",
-    "boundary": "安全区域不是固定像素，也不是所有内容都不能铺到边缘；平台单位和接口不同，不能手写一组边距覆盖所有设备。",
+    "boundary": "不能手写一组边距覆盖所有设备。",
     "demoType": "state",
     "demoTitle": "背景铺满与控件避开危险边界",
     "demoSteps": [
@@ -272,7 +272,7 @@
     ],
     "question": "用户切到别的应用后，刚写的草稿为什么不能只等退出时再保存？",
     "definition": "运行环境会通知应用或页面进入可见、交互、后台和终止或重建等阶段；应用可在合适时机持久化状态、暂停资源，并在回来时从已保存数据尝试恢复。",
-    "boundary": "Android 进入后台后可能被系统回收进程，Web 隐藏标签页可能被冻结或被浏览器丢弃；两者都不保证最后退出回调，不能把重要保存只放在那里。",
+    "boundary": "Android 进入后台后可能被系统回收进程，Web 隐藏标签页可能被冻结或被浏览器丢弃。",
     "demoType": "lifecycle",
     "demoTitle": "草稿经历前后台切换与进程回收",
     "demoSteps": [
@@ -298,7 +298,7 @@
       "应该，终止回调一定执行",
       "只需截图保存"
     ],
-    "correctText": "系统终止进程或丢弃页面时，不保证提供完整收尾机会；重要状态要在更早的时机保存。",
+    "correctText": "重要状态要在更早的时机保存。",
     "wrongText": "把保存依赖于单一退出回调会产生数据丢失风险。",
     "promptTitle": "补全页面的生命周期处理",
     "prompt": "请检查下面页面在前台、后台和进程重启时的行为，补充草稿持久化、请求取消、订阅恢复和过期数据刷新，并分别标出 Android 回调或 Web 可见性事件能保证什么。",
@@ -363,7 +363,7 @@
     "aliases": ["Push", "远程通知", "消息推送"],
     "question": "订单状态改变后，消息怎样从业务服务器走到设备，并在点击时打开正确订单？",
     "definition": "应用通过 FCM/APNs SDK 取得本次安装的注册令牌并登记到业务服务器；服务器提交消息后由平台推送服务按系统策略投递，设备在权限和状态允许时展示或交给应用处理，点击后仍需核对服务器事实。",
-    "boundary": "注册令牌不是固定设备 ID，可能因重装、清理数据、平台刷新或长期不活跃而变化；推送不保证即时或必达，投递成功也不等于系统展示或用户点击，关键业务仍需打开应用后从服务器核对。",
+    "boundary": "可能因重装、清理数据、平台刷新或长期不活跃而变化，关键业务仍需打开应用后从服务器核对。",
     "demoType": "queue", "demoTitle": "一条订单通知从令牌到详情页",
     "demoSteps": [{"label":"登记设备","value":"应用上传当前令牌","note":"令牌会更新，需要维护有效状态。"},{"label":"服务器发送","value":"消息进入 FCM/APNs","note":"系统按设备状态与授权策略调度。"},{"label":"用户点击","value":"应用打开对应订单页","note":"先校验通知数据，再安全导航。"}],
     "quizQuestion": "推送令牌发生变化或发送返回无效后，应用/服务器应怎样处理？", "quizOptions": ["同步新令牌并删除无效映射", "继续永久使用旧令牌", "写入 CSS 文件"],
@@ -384,7 +384,7 @@
     ],
     "question": "订单规则想共用，但相机和权限又各不相同，代码应该怎样分边界？",
     "definition": "跨平台方案把能共享的业务规则、数据和部分界面放在共享核心；运行时或平台通道把统一接口接到各系统 API，适配器负责把“请求相机”等能力翻译成具体平台实现。",
-    "boundary": "共享代码不等于所有界面和行为相同；权限、通知、相机、文件系统、导航、生命周期和性能仍可能按平台实现与真机测试，共享比例取决于框架和功能。",
+    "boundary": "权限、通知、相机、文件系统、导航、生命周期和性能仍可能按平台实现与真机测试，共享比例取决于框架和功能。",
     "demoType": "hierarchy",
     "demoTitle": "共享规则与平台适配器怎样拼成两个应用",
     "demoSteps": [
@@ -433,8 +433,8 @@
       "H5 页面"
     ],
     "question": "活动页想快速复用网页，又需要调用原生分享功能，怎样连接两边？",
-  "definition": "WebView 由原生应用（宿主应用）创建，使用系统网页引擎加载本地或远程页面；消息桥是把网页消息转换为少量受控原生调用的接口，不是任意 RPC。宿主验证 origin（协议+域名+端口）、方法、版本和参数后，才调用分享等能力并返回结构化结果。",
-    "boundary": "WebView 不是普通系统浏览器，也不是原生页面。网页引擎和版本可能不同，网页登录状态与能力也不会自动一致；导航、Cookie/存储、下载、权限、生命周期、内存和消息桥安全都需要宿主明确处理，不可信页面不应获得任意原生方法。",
+  "definition": "使用系统网页引擎加载本地或远程页面，消息桥是把网页消息转换为少量受控原生调用的接口。宿主验证 origin（协议+域名+端口）、方法、版本和参数后，才调用分享等能力并返回结构化结果。",
+    "boundary": "网页引擎和版本可能不同，网页登录状态与能力也不会自动一致；导航、Cookie/存储、下载、权限、生命周期、内存和消息桥安全都需要宿主明确处理，不可信页面不应获得任意原生方法。",
     "demoType": "request",
     "demoTitle": "网页请求原生分享",
     "demoSteps": [
@@ -582,7 +582,7 @@
   ],
   "question": "开发者工具里能看到规则，为什么它却被划掉了？",
   "definition": "层叠是浏览器解决样式冲突的规则：它先比较声明来源和重要性，再比较层、选择器优先级、作用域距离，条件都相同时才看出现顺序。",
-  "boundary": "层叠处理的是同一属性的候选声明；继承用于把部分属性从父元素传给子元素，两者不是同一机制。",
+  "boundary": "层叠处理的是同一属性的候选声明，继承用于把部分属性从父元素传给子元素。",
   "demoType": "branch",
   "demoTitle": "浏览器选择最终颜色",
   "demoSteps": [
@@ -631,7 +631,7 @@
     ],
     "question": "为什么写得更长的选择器，还是赢不了一个 ID？",
     "definition": "CSS 优先级把选择器拆成 ID、类或属性/伪类、元素或伪元素三列；它只在来源、重要性和层等前置条件相同时参与决定。",
-    "boundary": "优先级不等于字符长度，也不能越过未命中的规则、层叠层级或 !important 的比较顺序。",
+    "boundary": "不能越过未命中的规则、层叠层级或 !important 的比较顺序。",
     "demoType": "comparison",
     "demoTitle": "选择器的三列怎样比较",
     "demoSteps": [
@@ -658,7 +658,7 @@
       ":is(#app, .panel) .card"
     ],
     "correctText": ":where() 参数不贡献优先级，外面的 .card 留下 0-1-0。",
-    "wrongText": "#app 进入 ID 列；:is() 会取最高参数，不能把它们当成 0-1-0。",
+    "wrongText": ":where() 参数不贡献优先级，外面的 .card 留下 0-1-0。",
     "promptTitle": "解释一条 CSS 覆盖",
     "prompt": "请把两条选择器拆成 ID-类-元素三列，先检查来源、重要性和层，再说明 :where() 或 :is() 怎样影响结果，并提出不堆叠 ID 的修复。",
     "relatedSlugs": [
@@ -746,7 +746,7 @@
       {
         "label": "处理空格与窄屏",
         "value": "row / dense / minmax",
-        "note": "dense 能回填洞，minmax 让窄屏减少列而不是压扁内容。"
+        "note": "dense 能回填洞，minmax 让窄屏减少列。"
       }
     ],
     "quizQuestion": "哪种情况最适合用 CSS Grid？",
@@ -778,7 +778,7 @@
   ],
   "question": "同一个 top，为什么有时挪自己，有时贴住窗口？",
   "definition": "CSS 定位通过 static、relative、absolute、fixed 和 sticky 选择定位方式，并由包含块和滚动边界决定偏移参照。",
-  "boundary": "position 不是布局系统的替代品；absolute 需要合适的 containing block，sticky 需要阈值与滚动空间。",
+  "boundary": "absolute 需要合适的 containing block，sticky 需要阈值与滚动空间。",
   "demoType": "state",
   "demoTitle": "同一张卡片的定位参照",
   "demoSteps": [
@@ -819,7 +819,7 @@
     "en": "Breakpoint",
     "slug": "breakpoint",
     "cat": "前端",
-    "say": "断点不是设备标签，而是内容第一次需要换规则的那条线。",
+    "say": "断点是内容第一次需要换规则的那条线。",
     "aliases": [
       "Breakpoint",
       "响应式断点",
@@ -834,7 +834,7 @@
       {
         "label": "让内容先承受宽度",
         "value": "1024 → 840px",
-        "note": "先观察间距与行长，设备名字还不是证据。"
+        "note": "先观察间距与行长。"
       },
       {
         "label": "记录第一次失效",
@@ -903,7 +903,7 @@
       "motion-speed"
     ],
     "correctText": "prefers-reduced-motion 是描述用户减少动态效果偏好的标准媒体特征。",
-    "wrongText": "另外两个名称不是标准媒体特征；媒体查询不会凭空猜一个动画速度。",
+    "wrongText": "媒体查询不会凭空猜一个动画速度。",
     "promptTitle": "逐个检查一组媒体规则",
     "prompt": "请先写基础样式，再分别为窄宽度、无 hover 能力和 prefers-reduced-motion 补充媒体规则；说明每条规则只改什么，以及三个条件同时命中时是否仍保持同一份 HTML 和键盘顺序。",
     "relatedSlugs": [
@@ -918,11 +918,11 @@
     "aliases": ["浏览器事件", "event", "交互事件"],
     "question": "用户点了按钮以后，JavaScript 从哪里收到这个动作？",
     "definition": "事件是浏览器生成并分发的对象，包含事件类型、目标和相关数据。代码通过监听器接收事件并执行处理函数。",
-    "boundary": "事件说明发生了什么，不保证业务操作一定成功；请求结果和页面状态需要另行处理。",
+    "boundary": "事件说明发生了什么，请求结果和页面状态需要另行处理。",
     "demoType": "flow", "demoTitle": "一次点击的处理过程",
     "demoSteps": [{"label":"用户点击","value":"浏览器创建 click 事件","note":"事件目标指向被点击元素。"},{"label":"监听器运行","value":"处理函数读取事件信息","note":"代码决定是否更新状态或发起请求。"},{"label":"页面反馈","value":"文字或样式发生变化","note":"用户看到处理结果。"}],
     "quizQuestion": "哪项最适合描述 event.target？", "quizOptions": ["最初触发事件的元素", "注册监听器的函数", "页面当前的 URL"],
-    "correctText": "target 指向事件最初发生的节点。", "wrongText": "它不是处理函数，也不表示页面地址。",
+    "correctText": "target 指向事件最初发生的节点。", "wrongText": "不表示页面地址。",
     "promptTitle": "梳理一个点击交互", "prompt": "请按事件产生、监听器执行、状态变化和界面更新检查下面的点击代码，指出哪一步没有发生，并给出可以在控制台验证的办法。",
     "relatedSlugs": ["javascript", "event-bubbling", "state"]
   },
@@ -932,7 +932,7 @@
     "aliases": ["冒泡", "事件传播", "bubbling"],
     "question": "为什么点击列表里的按钮，列表容器的点击处理也执行了？",
     "definition": "事件冒泡是 DOM 事件传播阶段之一。事件到达目标后，会按祖先关系向上经过父元素，除非被明确停止。",
-    "boundary": "冒泡不是重复触发多个事件，而是同一个事件经过多个节点；并非所有事件都冒泡。",
+    "boundary": "冒泡是同一个事件经过多个节点。",
     "demoType": "hierarchy", "demoTitle": "事件经过三层节点",
     "demoSteps": [{"label":"按钮","value":"click 从目标节点开始","note":"按钮处理器先读取目标。"},{"label":"列表项","value":"事件向父级传递","note":"父级监听器也可以处理。"},{"label":"列表容器","value":"通过委托识别被点击项","note":"一个监听器可管理多项内容。"}],
     "quizQuestion": "列表项很多且会动态增加时，哪种做法常用于统一处理点击？", "quizOptions": ["在父容器使用事件委托", "为 window 重复注册监听器", "关闭所有事件冒泡"],
@@ -948,7 +948,7 @@
     "definition": "Props 是组件调用者提供的数据。组件读取这些值产生界面，通常不在子组件内部直接修改它们。",
     "boundary": "Props 表示外部输入；组件自身随交互变化的数据通常使用 state 管理。",
     "demoType": "flow", "demoTitle": "父组件配置两个按钮",
-    "demoSteps": [{"label":"父组件传值","value":"label 与 variant","note":"两次调用使用不同参数。"},{"label":"子组件读取","value":"根据 props 生成内容和类名","note":"组件实现保持一份。"},{"label":"页面呈现","value":"得到主要按钮和次要按钮","note":"差异来自输入，而不是复制组件。"}],
+    "demoSteps": [{"label":"父组件传值","value":"label 与 variant","note":"两次调用使用不同参数。"},{"label":"子组件读取","value":"根据 props 生成内容和类名","note":"组件实现保持一份。"},{"label":"页面呈现","value":"得到主要按钮和次要按钮","note":"差异来自输入。"}],
     "quizQuestion": "子组件需要修改父组件的数据时，常见做法是什么？", "quizOptions": ["调用父组件通过 props 传入的回调", "直接改写 props 对象", "重新加载整个页面"],
     "correctText": "回调可以把操作交回数据拥有者处理。", "wrongText": "直接改写 props 会破坏单向数据关系。",
     "promptTitle": "整理组件的 Props", "prompt": "请检查下面重复的三个组件，把稳定结构保留在组件内部，把文字、样式变体和点击行为整理为清楚的 props，并说明哪些数据不应成为 props。",
@@ -979,7 +979,7 @@
     "demoSteps": [{"label":"建立订阅","value":"根据 userId 连接消息源","note":"组件开始接收当前用户消息。"},{"label":"依赖改变","value":"先清理旧订阅","note":"避免两个用户的消息混在一起。"},{"label":"重新同步","value":"用新 userId 建立订阅","note":"界面与外部系统保持一致。"}],
     "quizQuestion": "Effect 监听事件后，通常还应提供什么？", "quizOptions": ["移除监听器的清理函数", "第二次页面刷新", "更高的 CSS 优先级"],
     "correctText": "清理函数用于撤销前一次订阅或监听。", "wrongText": "刷新页面和 CSS 与订阅清理无关。",
-    "promptTitle": "检查 Effect 的依赖与清理", "prompt": "请检查下面 Effect：列出它读取的外部值，修正依赖数组，并补上取消请求或移除监听器的清理逻辑。不要把可直接计算的值留在 Effect 中。",
+    "promptTitle": "检查 Effect 的依赖与清理", "prompt": "请检查下面 Effect：列出它读取的外部值，修正依赖数组，并补上取消请求或移除监听器的清理逻辑。",
     "relatedSlugs": ["hook", "state", "browser-api"]
   },
   {
@@ -987,12 +987,12 @@
     "say": "浏览器 API 让网页调用网络、存储、剪贴板、定位和通知等浏览器能力。",
     "aliases": ["Web API", "浏览器接口", "Browser API"],
     "question": "JavaScript 为什么能读取地址栏、保存数据或复制文字？",
-    "definition": "浏览器 API 是宿主环境提供给网页的接口集合，例如 fetch、localStorage、Clipboard 和 Geolocation。它们不是 JavaScript 语言本身。",
+    "definition": "浏览器 API 是宿主环境提供给网页的接口集合，例如 fetch、localStorage、Clipboard 和 Geolocation。",
     "boundary": "不同 API 的兼容性、权限和安全上下文要求不同，不能仅凭函数存在就假定所有用户都可用。",
     "demoType": "request", "demoTitle": "复制文字前后的检查",
     "demoSteps": [{"label":"检查能力","value":"navigator.clipboard 是否可用","note":"避免在不支持环境直接报错。"},{"label":"请求操作","value":"writeText 写入剪贴板","note":"通常要求安全上下文和用户操作。"},{"label":"处理结果","value":"显示成功或失败信息","note":"权限拒绝也要有明确反馈。"}],
     "quizQuestion": "fetch 属于哪一类能力？", "quizOptions": ["浏览器提供的 Web API", "CSS 语法", "HTML 元素"],
-    "correctText": "fetch 由浏览器等运行环境提供，用于发起网络请求。", "wrongText": "它不是样式语法，也不是文档元素。",
+    "correctText": "fetch 由浏览器等运行环境提供，用于发起网络请求。", "wrongText": "fetch 由浏览器等运行环境提供，用于发起网络请求。",
     "promptTitle": "为浏览器能力补充兼容处理", "prompt": "请检查下面对浏览器 API 的调用，补充能力检测、权限失败和不支持环境的替代提示，并标出是否要求 HTTPS。",
     "relatedSlugs": ["javascript", "fetch-api", "local-storage", "websocket"]
   },
@@ -1016,7 +1016,7 @@
     "aliases": ["承诺对象", "异步结果", "Promise"],
     "question": "请求还没返回时，代码怎样保存并继续处理未来的结果？",
     "definition": "Promise 有 pending、fulfilled 和 rejected 三种状态。状态一旦确定便不会再次改变，then、catch 和 finally 用于注册后续处理。",
-    "boundary": "Promise 表示结果，不等于后台线程，也不会自动取消正在进行的工作。",
+    "boundary": "Promise 表示结果，也不会自动取消正在进行的工作。",
     "demoType": "state", "demoTitle": "异步结果的三种状态",
     "demoSteps": [{"label":"等待","value":"pending","note":"操作尚未给出最终结果。"},{"label":"成功","value":"fulfilled(value)","note":"then 可以读取完成值。"},{"label":"失败","value":"rejected(error)","note":"catch 处理失败原因。"}],
     "quizQuestion": "Promise 一旦 fulfilled 后还能变成 rejected 吗？", "quizOptions": ["不能，状态确定后不再改变", "可以随时改变", "只有页面刷新后可以"],
@@ -1044,9 +1044,9 @@
     "aliases": ["ES Module", "模块化", "import export"],
     "question": "项目文件越来越大，怎样拆开代码又不把变量都放到全局？",
     "definition": "JavaScript 模块拥有独立作用域，用 export 暴露接口，用 import 引用其他模块。浏览器和构建工具都能分析这种依赖。",
-    "boundary": "模块划分不能自动保证架构合理；循环依赖、过细拆分和不稳定接口仍需要设计。",
+    "boundary": "循环依赖、过细拆分和不稳定接口仍需要设计。",
     "demoType": "flow", "demoTitle": "模块依赖、绑定与循环边界",
-    "demoSteps": [{"label":"先连依赖图","value":"import/export → graph","note":"模块先被链接，再按依赖顺序初始化。"},{"label":"更新导出绑定","value":"live binding → 新值","note":"导入方读取导出方当前绑定，不是复制一份旧值。"},{"label":"遇到初始化回路","value":"a.js ↔ b.js → TDZ","note":"循环要追初始化顺序，过早读取才会报错。"}],
+    "demoSteps": [{"label":"先连依赖图","value":"import/export → graph","note":"模块先被链接，再按依赖顺序初始化。"},{"label":"更新导出绑定","value":"live binding → 新值","note":"导入方读取导出方当前绑定。"},{"label":"遇到初始化回路","value":"a.js ↔ b.js → TDZ","note":"循环要追初始化顺序，过早读取才会报错。"}],
     "quizQuestion": "模块中没有 export 的变量默认如何处理？", "quizOptions": ["只在当前模块作用域内可用", "自动成为 window 属性", "自动被所有文件共享"],
     "correctText": "模块有自己的作用域，未导出的声明不会成为公共接口。", "wrongText": "ES Module 不会把顶层声明自动挂到全局。",
     "promptTitle": "拆分一个过大的前端文件", "prompt": "请按数据请求、纯工具、界面组件和页面入口拆分下面文件。列出每个模块的公开接口，并检查是否形成循环依赖。",
@@ -1114,7 +1114,7 @@
     ],
     "question": "为什么图片还没进入视口，却已经占掉了网络和布局时间？",
     "definition": "懒加载根据可见性、距离或使用时机延后资源请求；资源到达前保留占位，之后处理 loading、ready、error 和回退。",
-    "boundary": "它优化的是资源获取时机，不是所有资源都该延后；首屏和关键操作需要按优先级正常加载。",
+    "boundary": "它优化的是资源获取时机，首屏和关键操作需要按优先级正常加载。",
     "demoType": "request",
     "demoTitle": "资源从视口外走到 ready",
     "demoSteps": [
@@ -1155,8 +1155,8 @@
     "say": "水合让浏览器接管服务器已经输出的 HTML，为它连接事件和客户端状态。",
     "aliases": ["Hydration", "客户端水合", "页面接管"],
     "question": "服务器已经返回了按钮，为什么 JavaScript 加载前点它没有反应？",
-    "definition": "水合是客户端框架在现有服务器 HTML 上恢复组件树、状态和事件处理的过程，通常复用已有 DOM 而不是重新创建全部节点。",
-    "boundary": "水合不是服务端渲染本身。服务器能输出 HTML，但交互通常仍要等相应客户端代码就绪。",
+    "definition": "水合是客户端框架在现有服务器 HTML 上恢复组件树、状态和事件处理的过程，通常复用已有 DOM 。",
+    "boundary": "服务器能输出 HTML，但交互通常仍要等相应客户端代码就绪。",
     "demoType": "state", "demoTitle": "页面从可见到可交互",
     "demoSteps": [
   {
@@ -1176,7 +1176,7 @@
   }
 ],
     "quizQuestion": "水合主要补上了什么？", "quizOptions": ["客户端状态与事件处理", "服务器的数据库表", "CSS 文件的颜色值"],
-    "correctText": "水合把客户端组件逻辑连接到已有 HTML。", "wrongText": "它不负责创建数据库，也不等于修改 CSS。",
+    "correctText": "水合把客户端组件逻辑连接到已有 HTML。", "wrongText": "它不负责创建数据库。",
     "promptTitle": "定位水合不一致", "prompt": "请比较下面服务端输出与客户端首次渲染，找出文本、时间、随机数或条件分支造成的不一致，并给出保持首屏结果一致的修改。",
     "relatedSlugs": ["ssr", "csr", "module"]
   },
@@ -1186,7 +1186,7 @@
     "aliases": ["CSR", "浏览器渲染", "单页应用渲染"],
     "question": "为什么页面先出现空壳，等脚本运行后才看到内容？",
     "definition": "客户端渲染把界面生成工作主要放在浏览器中。服务器通常返回基础 HTML 和脚本，脚本运行后读取数据并构建页面。",
-    "boundary": "CSR 不等于完全没有服务器；接口、静态资源和应用文件仍通常由服务器提供。",
+    "boundary": "接口、静态资源和应用文件仍通常由服务器提供。",
     "demoType": "flow", "demoTitle": "客户端首屏要走过的请求链",
     "demoSteps": [
   {
@@ -1216,7 +1216,7 @@
     "aliases": ["SSR", "服务器渲染", "动态服务端页面"],
     "question": "页面内容需要随登录用户变化，又希望浏览器先收到完整 HTML，怎么处理？",
     "definition": "服务端渲染在服务器接到请求后读取所需数据并生成 HTML。浏览器可先呈现内容，客户端代码随后负责水合和继续交互。",
-    "boundary": "SSR 会增加服务器请求阶段的计算和数据依赖，不代表所有页面都更快，也不自动解决客户端脚本体积。",
+    "boundary": "SSR 会增加服务器请求阶段的计算和数据依赖。",
     "demoType": "request", "demoTitle": "一次服务端页面请求",
     "demoSteps": [
   {
@@ -1232,7 +1232,7 @@
   {
     "label": "先呈现再接管",
     "value": "HTML → hydrate",
-    "note": "可见和可交互不是同一刻。"
+    "note": "页面先显示服务端内容，再完成客户端交互绑定。"
   }
 ],
     "quizQuestion": "SSR 的 HTML 通常在何时生成？", "quizOptions": ["服务器处理页面请求时", "代码提交到 Git 时", "用户关闭页面后"],
@@ -1313,7 +1313,7 @@
     ],
     "question": "登录后刷新页面，哪一条 Cookie 会跟着请求走？",
     "definition": "服务器通过 Set-Cookie 写入带属性的 Cookie，浏览器保存后按 Domain、Path、Secure、SameSite 等条件筛选；符合条件的名称和值进入后续请求的 Cookie 头。",
-    "boundary": "Cookie 容量小却会随匹配请求传输；HttpOnly 只限制脚本读取，Secure 只限制明文线路，SameSite 也不能替代会话轮换、授权和 CSRF 防护。",
+    "boundary": "Cookie 容量小，会随匹配请求传输；HttpOnly 限制脚本读取，Secure 限定安全连接，SameSite 控制跨站携带，会话轮换、授权和 CSRF 防护另行配置。",
     "demoType": "request",
     "demoTitle": "Cookie 罐怎样筛出一条请求头",
     "demoSteps": [
@@ -1367,7 +1367,7 @@
   {
     "label": "写入字符串",
     "value": "theme=dark",
-    "note": "值不是对象本身。"
+    "note": "对象经序列化后，以字符串形式保存。"
   },
   {
     "label": "发出变化通知",
@@ -1376,7 +1376,7 @@
   }
 ],
     "quizQuestion": "localStorage 的值以什么形式保存？", "quizOptions": ["字符串", "任意 JavaScript 对象且无需转换", "服务器数据库行"],
-    "correctText": "对象通常需要先序列化为字符串再存储。", "wrongText": "localStorage 不会直接保存对象，也不是服务器数据库。",
+    "correctText": "对象通常需要先序列化为字符串再存储。", "wrongText": "localStorage 不会直接保存对象。",
     "promptTitle": "为本地偏好补充可靠存储", "prompt": "请为下面主题设置加入 localStorage 保存与恢复，处理值不存在、JSON 解析失败和存储不可用，并避免保存账号敏感信息。",
     "relatedSlugs": ["cookie", "browser-api", "state"]
   },
@@ -1393,7 +1393,7 @@
     ],
     "question": "聊天页面怎样不用反复刷新，也能立即收到服务器的新消息？",
     "definition": "WebSocket 先通过 HTTP Upgrade 完成握手，进入 OPEN 后在同一连接上交换带边界的双向帧；断线重连、消息确认和遗漏恢复需要应用协议另行设计。",
-    "boundary": "连接开放不等于业务消息必达。WebSocket 不自动提供重连、退避、去重、顺序或权限模型，关闭后也不会替应用补回消息。",
+    "boundary": "WebSocket 不自动提供重连、退避、去重、顺序或权限模型，关闭后也不会替应用补回消息。",
     "demoType": "lifecycle",
     "demoTitle": "一条实时连接从握手到恢复",
     "demoSteps": [
@@ -1469,7 +1469,7 @@
       "请求一定没有到达服务器",
       "命令行也会被同一规则拦截"
     ],
-    "correctText": "CORS 主要是浏览器脚本读取闸门，不能据此断定服务器没有收到请求。",
+    "correctText": "CORS 主要是浏览器脚本读取闸门。",
     "wrongText": "网络到达、服务器处理和脚本可见是三个阶段，命令行也没有浏览器同源读取限制。",
     "promptTitle": "定位一次 CORS 失败",
     "prompt": "请记录页面 origin、目标 URL、方法、非简单请求头、凭据模式、预检请求/响应和正式响应许可头，判断失败发生在哪一阶段。",
@@ -1486,7 +1486,7 @@
     "aliases": ["键盘焦点", "Focus Management", "焦点顺序"],
     "question": "对话框打开后，为什么按 Tab 还会跑到后面的页面？",
     "definition": "焦点管理使用原生可聚焦元素、合理 DOM 顺序和必要的脚本控制，让键盘用户知道当前位置并完成操作。",
-    "boundary": "焦点管理不等于只画焦点圈；视觉提示、移动顺序、焦点陷阱和关闭后的焦点恢复都需要分别处理。",
+    "boundary": "视觉提示、移动顺序、焦点陷阱和关闭后的焦点恢复都需要分别处理。",
     "demoType": "flow", "demoTitle": "对话框中的焦点移动",
     "demoSteps": [{"label":"打开对话框","value":"焦点移到标题或首个控件","note":"键盘用户立即进入当前任务。"},{"label":"按 Tab","value":"焦点在对话框内顺序移动","note":"背景内容暂不参与。"},{"label":"关闭对话框","value":"焦点返回触发按钮","note":"用户继续原来的操作位置。"}],
     "quizQuestion": "对话框关闭后，焦点通常应回到哪里？", "quizOptions": ["打开对话框的触发控件", "页面顶部任意位置", "浏览器地址栏"],
@@ -1500,7 +1500,7 @@
     "aliases": ["Working Tree", "工作目录", "本地改动", "working tree"],
     "question": "文件已经保存，为什么 Git 仍然说它还没有进入提交？",
     "definition": "Git 工作区是当前提交被检出到文件系统后的文件树。它与 HEAD、index（暂存区）分别是三个可产生差异的状态位置，编辑、创建或删除文件首先改变工作区。",
-    "boundary": "工作区不是暂存区、提交历史或远程副本；git add 才会更新 index，commit 才会更新 HEAD，git restore 还可能丢弃指定层的差异。",
+    "boundary": "git add 才会更新 index，commit 才会更新 HEAD，git restore 还可能丢弃指定层的差异。",
     "demoType": "state", "demoTitle": "HEAD、index 与工作树的三层快照",
     "demoSteps": [{"label":"三层对齐","value":"HEAD、index、工作树都是 timeout = 10","note":"刚检出时 git status 没有差异。"},{"label":"编辑工作树","value":"工作树变为 timeout = 30","note":"保存只改变文件系统中的工作树，HEAD 和 index 仍为 10。"},{"label":"加入暂存区","value":"index 也变为 timeout = 30","note":"git add 更新提交候选，HEAD 仍保持旧提交。"}],
     "quizQuestion": "文件保存后但未执行 git add，它首先位于哪一层？", "quizOptions": ["工作区", "远程仓库", "发布版本"],
@@ -1514,11 +1514,11 @@
     "aliases": ["Index", "Stage", "暂存", "staged changes"],
     "question": "同一个文件改了两件事，只想先提交其中一件，怎么办？",
     "definition": "暂存区也叫 index，保存一棵下一次提交要读取的内容树。git add 可以按文件或 hunk 把工作区当前版本写入 index，工作区之后仍能继续变化。",
-    "boundary": "暂存不是备份、上传或永久历史；git diff --staged 只检查提交候选，reset 或重新 add 都可能改变 index。",
+    "boundary": "git diff --staged 只检查提交候选，reset 或重新 add 都可能改变 index。",
     "demoType": "flow", "demoTitle": "只提交修复，留下格式 hunk",
     "demoSteps": [{"label":"两个 hunk 都在工作区","value":"修复空值 + 格式调整","note":"同一文件里有两类尚未暂存的变化。"},{"label":"只暂存修复","value":"git add -p → index 只有空值修复","note":"staged diff 缩小为本次要提交的 hunk。"},{"label":"提交后留下另一块","value":"修复已提交，格式调整仍未暂存","note":"未选 hunk 没有丢失，下一次可以独立处理。"}],
     "quizQuestion": "查看下一次提交准备包含的具体差异应使用什么？", "quizOptions": ["git diff --staged", "git clone", "git tag"],
-    "correctText": "git diff --staged 比较 index 与 HEAD，展示提交候选的具体行。", "wrongText": "clone 和 tag 不用于检查暂存内容；只看文件名也不能证明 hunk 已正确选择。",
+    "correctText": "git diff --staged 比较 index 与 HEAD，展示提交候选的具体行。", "wrongText": "clone 和 tag 不用于检查暂存内容。",
     "promptTitle": "规划一组可审查的提交", "prompt": "请根据工作区 diff 把同一文件的改动按功能拆成提交组，说明哪些 hunk 应先用 git add -p 暂存，逐组检查 git diff --staged，并标记 reset 或重新 add 可能改变的候选内容。",
     "relatedSlugs": ["working-tree", "diff", "repo-commit", "checkout-switch"]
   },
@@ -1528,12 +1528,12 @@
     "aliases": ["代码差异", "git diff", "变更对比", "hunk"],
     "question": "提交前怎样确认自己没有顺手改到无关文件？",
     "definition": "Diff 是两个 Git 内容端点的比较结果。端点可以是工作区、index、HEAD、提交、分支或远程跟踪引用；命令先决定比较谁，再生成行级 hunk。",
-    "boundary": "Diff 只说明内容差别，不证明改动意图、业务正确性、测试通过或远程已同步；审查还需要上下文、提交说明和验证证据。",
+    "boundary": "审查还需要上下文、提交说明和验证证据。",
     "demoType": "comparison", "demoTitle": "切换端点，查看不同范围",
     "demoSteps": [{"label":"工作树对 index","value":"未暂存的 timeout 变化","note":"git diff 默认显示还没有 add 的修改。"},{"label":"index 对 HEAD","value":"提交候选的 enabled 变化","note":"git diff --staged 查看下一次提交具体包含什么。"},{"label":"比较两个分支","value":"feature 与 main 的按钮差异","note":"端点改变后范围改变，仍要结合测试判断意图。"}],
     "quizQuestion": "要确认下一次提交的具体内容，应重点查看什么？", "quizOptions": ["git diff --staged", "git remote -v", "git branch --list"],
-    "correctText": "staged diff 比较 index 与 HEAD，对应当前提交候选。", "wrongText": "远程和分支列表不会展示下一次提交的具体代码行，diff 也不能替代测试。",
-    "promptTitle": "审查一份代码差异", "prompt": "请先指出下面 diff 的两个端点，再按文件和 hunk 区分功能变化、格式变化和可能误改，说明缺少的测试与适合的提交拆分；不要把颜色当成正确性证明。",
+    "correctText": "staged diff 比较 index 与 HEAD，对应当前提交候选。", "wrongText": "先查看分支和远程，再用 diff 检查代码行，通过测试验证行为。",
+    "promptTitle": "审查一份代码差异", "prompt": "请先指出下面 diff 的两个端点，再按文件和 hunk 区分功能变化、格式变化和可能误改。",
     "relatedSlugs": ["working-tree", "staging-area", "repo-commit", "code-review"]
   },
   {
@@ -1542,7 +1542,7 @@
     "aliases": ["git switch", "git checkout", "git restore", "分支切换"],
     "question": "工作区还有未提交修改时，为什么 Git 不允许直接切到另一个分支？",
     "definition": "git switch 专门用于切换或创建分支；git checkout 还承担恢复路径的旧式多重含义。切换会更新 HEAD、index 和工作区，并在可能覆盖本地修改时停止。",
-    "boundary": "切换不会自动提交或备份未完成工作；stash 只是本地临时保存，强制丢弃选项也不能证明修改可以安全删除。",
+    "boundary": "切换不会自动提交或备份未完成工作，stash 只是本地临时保存。",
     "demoType": "branch", "demoTitle": "先保护未提交修改，再切换分支",
     "demoSteps": [{"label":"feature 干净","value":"HEAD → feature，theme.css 与提交一致","note":"此时可以尝试切到 dev。"},{"label":"修改阻止切换","value":"theme.css 未提交，dev 会覆盖同一文件","note":"Git 关闭闸门并列出覆盖风险。"},{"label":"stash 后切换","value":"HEAD → dev，改动留在本地 stash","note":"回到 feature 后仍要检查并应用保存内容。"}],
     "quizQuestion": "切换前最基本的检查是什么？", "quizOptions": ["查看 git status", "删除 .git 目录", "修改远程仓库名称"],
@@ -1556,12 +1556,12 @@
     "aliases": ["Remote", "远端", "远程地址", "remote-tracking branch"],
     "question": "我配置了两个远程，fetch 为什么只移动某个远程跟踪引用？",
     "definition": "remote 是远程仓库配置的名称、URL 与 refspec。fetch 获取匹配的远程引用，push 更新远端引用，pull 则在获取后继续集成当前分支。",
-    "boundary": "远程配置不等于实时连接；origin 只是常见名称，fetch 不会自动改变当前分支或工作区，pull 才可能继续合并或变基。",
+    "boundary": "origin 只是常见名称，fetch 不会自动改变当前分支或工作区，pull 才可能继续合并或变基。",
     "demoType": "flow", "demoTitle": "远程名称如何影响引用更新",
     "demoSteps": [{"label":"配置两个远程","value":"origin / upstream 都指向地址","note":"本地 main 与跟踪引用都在 A。"},{"label":"fetch upstream","value":"只有 upstream/main 记录到 B","note":"本地 main 和工作区仍在 A。"},{"label":"限制 refspec","value":"只取 upstream/release 的 C","note":"匹配范围改变，main 仍保持原位。"}],
     "quizQuestion": "origin 是什么？", "quizOptions": ["常见的远程仓库名称", "Git 强制规定的主分支", "每次提交的哈希"],
-    "correctText": "origin 通常由 clone 创建，但可以改名或存在多个 remote。", "wrongText": "它不是分支，也不是提交标识。",
-    "promptTitle": "检查本地与远程关联", "prompt": "请根据 git remote -v、git branch -vv 和 refspec 输出，说明每个远程名称指向哪里、哪些 remote-tracking 引用会被 fetch 更新，以及 push 或 pull 还会改变什么；不要把 origin 当作特殊中央服务器。",
+    "correctText": "origin 通常由 clone 创建，但可以改名或存在多个 remote。", "wrongText": "origin 通常由 clone 创建，但可以改名或存在多个 remote。",
+    "promptTitle": "检查本地与远程关联", "prompt": "说明每个远程名称指向哪里、哪些 remote-tracking 引用会被 fetch 更新，以及 push 或 pull 还会改变什么。",
     "relatedSlugs": ["clone", "fetch", "pull", "branch"]
   },
   {
@@ -1570,9 +1570,9 @@
     "aliases": ["git clone", "克隆仓库", "下载仓库", "浅克隆"],
     "question": "第一次参与项目时，怎样得到能提交、切分支并查看历史的本地仓库？",
     "definition": "git clone 获取远程对象和引用，建立新的本地 Git 仓库，记录远程地址并检出默认分支；depth 或 filter 参数会缩小历史或对象范围。",
-    "boundary": "clone 不等于下载 ZIP，也不等于安装依赖或配置运行环境；仓库到手后仍需按项目文档完成本地设置。",
+    "boundary": "仓库到手后仍需按项目文档完成本地设置。",
     "demoType": "lifecycle", "demoTitle": "克隆命令创建了什么",
-    "demoSteps": [{"label":"选择取得方式","value":"ZIP、完整 clone、depth=1 都出现文件","note":"文件相同不代表仓库能力相同。"},{"label":"取得仓库对象","value":"完整 clone 有 .git/origin，浅克隆历史有限","note":"ZIP 没有 Git 对象和远程跟踪。"},{"label":"检出默认分支","value":"文件进入工作区，项目环境仍待配置","note":"依赖和启动命令由 README 决定。"}],
+    "demoSteps": [{"label":"选择取得方式","value":"ZIP、完整 clone、depth=1 都出现文件","note":"克隆后的仓库能力还取决于取得的历史、引用与配置。"},{"label":"取得仓库对象","value":"完整 clone 有 .git/origin，浅克隆历史有限","note":"ZIP 没有 Git 对象和远程跟踪。"},{"label":"检出默认分支","value":"文件进入工作区，项目环境仍待配置","note":"依赖和启动命令由 README 决定。"}],
     "quizQuestion": "clone 完成后通常还需要做什么？", "quizOptions": ["按项目说明安装依赖和配置环境", "再次初始化同一目录", "删除 .git"],
     "correctText": "Git 只负责取得版本库，运行环境由项目自行定义。", "wrongText": "重复初始化或删除 .git 会破坏正常仓库状态。",
     "promptTitle": "整理仓库首次启动步骤", "prompt": "请根据下面 README、git clone 输出和仓库文件，区分完整 clone、浅克隆与 ZIP 各自取得了什么，再列出仍需执行的依赖安装、环境变量、数据库和启动步骤。不要编造缺失配置。",
@@ -1584,7 +1584,7 @@
     "aliases": ["git pull", "拉代码", "同步远程", "pull.rebase"],
     "question": "执行 pull 后为什么会出现合并提交、重放后的提交或冲突？",
     "definition": "git pull 通常等于 git fetch 加 merge，也可以配置为 fetch 加 rebase 或仅允许快进；最终行为受分支跟踪和 pull 策略影响。",
-    "boundary": "pull 不是只下载；它可能改变当前分支并进入冲突状态。如果只想查看远程变化，应先使用 fetch。",
+    "boundary": "它可能改变当前分支并进入冲突状态。如果只想查看远程变化，应先使用 fetch。",
     "demoType": "branch", "demoTitle": "拉取后的两种集成方式",
     "demoSteps": [{"label":"先 fetch","value":"origin/main 记录 D，本地 main 仍在 C","note":"远程对象已取得，当前分支还没有改变。"},{"label":"选择 merge","value":"C 与 D 产生合并节点 M","note":"保留两条历史，冲突要人工处理。"},{"label":"选择 rebase","value":"本地 C 重放为 C′","note":"提交哈希会变化，已共享历史要谨慎。"}],
     "quizQuestion": "只想先查看远程更新，不改变当前分支，应使用什么？", "quizOptions": ["git fetch", "git pull", "git reset --hard"],
@@ -1603,7 +1603,7 @@
     "demoSteps": [{"label":"fetch 前","value":"main 与 origin/main 都在 A","note":"远端 B1、B2 尚未进入本地状态记录。"},{"label":"执行 fetch","value":"origin/main 前进到 B2","note":"对象已取得，当前 main 和工作区保持 A。"},{"label":"比较差异","value":"main..origin/main 列出 B1、B2","note":"先看证据，再决定集成方式。"}],
     "quizQuestion": "fetch 会自动修改当前工作区文件吗？", "quizOptions": ["通常不会", "一定会覆盖全部文件", "只会删除未跟踪文件"],
     "correctText": "fetch 主要更新对象和远程跟踪引用。", "wrongText": "它不会按常规行为覆盖或删除工作区文件。",
-    "promptTitle": "比较本地与远程分支", "prompt": "请根据 fetch 后的提交图、git log main..origin/main 和 git diff main..origin/main，列出本地独有、远程独有和共同提交，并建议 merge、rebase 或暂不集成的依据；不要把 fetch 说成已经合并。",
+    "promptTitle": "比较本地与远程分支", "prompt": "列出本地独有、远程独有和共同提交。",
     "relatedSlugs": ["remote", "pull", "merge"]
   },
   {
@@ -1612,9 +1612,9 @@
     "aliases": ["git push", "推到远端", "上传提交"],
     "question": "本地提交正常，为什么 push 会被远程拒绝？",
     "definition": "git push 将本地对象传给远程，并尝试更新目标引用。非快进更新、权限限制和保护分支都可能使操作失败。",
-    "boundary": "push 不等于合并到主分支，也不保证测试通过；团队流程通常还需要拉取请求和持续集成。",
+    "boundary": "团队流程通常还需要拉取请求和持续集成。",
     "demoType": "branch", "demoTitle": "远程是否接受更新",
-    "demoSteps": [{"label":"本地先有提交","value":"工作区未提交行 + feature C","note":"push 只处理可达提交对象，未提交修改留在工作区。"},{"label":"经过远程闸门","value":"检查 refspec、快进与保护规则","note":"对象传输成功不代表引用已经接受更新。"},{"label":"给出真实结果","value":"远程 feature B→C 或保持 B","note":"接受后才进入拉取请求；拒绝时保留具体原因。"}],
+    "demoSteps": [{"label":"本地先有提交","value":"工作区未提交行 + feature C","note":"push 只处理可达提交对象，未提交修改留在工作区。"},{"label":"经过远程闸门","value":"检查 refspec、快进与保护规则","note":"对象传输完成后，服务器继续检查并接受或拒绝引用更新。"},{"label":"给出真实结果","value":"远程 feature B→C 或保持 B","note":"接受后才进入拉取请求；拒绝时保留具体原因。"}],
     "quizQuestion": "主分支禁止直接 push 时，通常应怎样提交改动？", "quizOptions": ["推送功能分支并创建拉取请求", "关闭所有保护规则", "强制覆盖远程主分支"],
     "correctText": "功能分支和评审流程保留权限与检查。", "wrongText": "绕过保护会增加覆盖和未经验证变更的风险。",
     "promptTitle": "诊断 push 被拒绝", "prompt": "请根据下面 push 输出区分非快进、权限不足、保护分支或认证失败，并给出不覆盖他人提交的下一步。",
@@ -1626,11 +1626,11 @@
     "aliases": ["git merge", "分支合并", "Merge"],
     "question": "功能分支完成后，怎样把它的提交带回开发分支？",
     "definition": "git merge 找到两个分支的共同祖先并组合后续变化。可以快进移动分支，也可以创建合并提交。",
-    "boundary": "合并成功只说明文本变化可以组合，不代表功能逻辑正确；仍需测试和评审。",
+    "boundary": "合并成功说明文本变化可以组合，仍需测试和评审。",
     "demoType": "branch", "demoTitle": "两条历史汇成一个结果",
-    "demoSteps": [{"label":"共同祖先","value":"dev 与 feature 从 A 分开","note":"合并先确定 base，不按时间覆盖两份文件。"},{"label":"三方比较","value":"分叉：base A + ours D + theirs F","note":"D/F 都在 A 之后前进，不能把这组输入直接说成快进。"},{"label":"写入结果","value":"切到 A/F 快进，或保留 D/F 创建 M","note":"无共同祖先、冲突或未提交工作区会让流程停下。"}],
+    "demoSteps": [{"label":"共同祖先","value":"dev 与 feature 从 A 分开","note":"合并先确定 base，不按时间覆盖两份文件。"},{"label":"三方比较","value":"分叉：base A + ours D + theirs F","note":"D/F 都在 A 之后前进，本例需要处理双方分支的改动。"},{"label":"写入结果","value":"切到 A/F 快进，或保留 D/F 创建 M","note":"无共同祖先、冲突或未提交工作区会让流程停下。"}],
     "quizQuestion": "快进合并发生在什么情况下？", "quizOptions": ["目标分支没有额外分叉提交", "两个分支完全无关", "工作区一定有未提交修改"],
-    "correctText": "目标分支可直接移动到功能分支头时无需合并提交。", "wrongText": "无关历史和未提交工作区不是快进条件。",
+    "correctText": "目标分支可直接移动到功能分支头时无需合并提交。", "wrongText": "目标分支可直接移动到功能分支头时无需合并提交。",
     "promptTitle": "阅读分支图并选择合并方式", "prompt": "请根据下面提交图判断能否快进、是否会产生合并提交，并列出合并后必须运行的回归测试。",
     "relatedSlugs": ["branch", "rebase", "merge-conflict"]
   },
@@ -1654,9 +1654,9 @@
     "aliases": ["冲突", "Merge Conflict", "代码冲突"],
     "question": "两个分支都修改同一段代码时，应该保留哪一边？",
     "definition": "当 merge、rebase 或 cherry-pick 遇到重叠且无法自动合并的变化，Git 会暂停操作并在文件中标记冲突区域。",
-    "boundary": "解决冲突不是简单删除标记或固定选择 ours/theirs；要理解两边意图并验证组合后的行为。",
+    "boundary": "要理解两边意图并验证组合后的行为。",
     "demoType": "branch", "demoTitle": "同一函数的两项修改",
-    "demoSteps": [{"label":"共同祖先","value":"base A + ours 校验 + theirs 返回结构","note":"先分清三方输入，不按时间覆盖文件。"},{"label":"冲突标记","value":"<<<<<<< ours … ======= … >>>>>>> theirs","note":"同一片区域重叠，Git 停下等待判断。"},{"label":"组合并验证","value":"组合结果 → git add → continue","note":"删除标记不等于行为正确，还要运行相关测试。"}],
+    "demoSteps": [{"label":"共同祖先","value":"base A + ours 校验 + theirs 返回结构","note":"先分清三方输入，不按时间覆盖文件。"},{"label":"冲突标记","value":"<<<<<<< ours … ======= … >>>>>>> theirs","note":"同一片区域重叠，Git 停下等待判断。"},{"label":"组合并验证","value":"组合结果 → git add → continue","note":"还要运行相关测试。"}],
     "quizQuestion": "冲突文件编辑完成后还应做什么？", "quizOptions": ["暂存文件并运行相关测试", "直接删除仓库", "忽略未解决标记"],
     "correctText": "暂存表示该冲突已处理，测试验证语义是否正确。", "wrongText": "残留标记会破坏代码，删除仓库也不能解决意图冲突。",
     "promptTitle": "分析并解决一处合并冲突", "prompt": "请分别说明下面冲突两边的改动目的，给出同时满足需求的最终代码，列出要运行的测试，并保留无法判断的业务问题供确认。",
@@ -1668,7 +1668,7 @@
     "aliases": ["git revert", "撤销提交", "反做提交"],
     "question": "错误提交已经推送并被团队使用，怎样安全撤销？",
     "definition": "git revert 计算目标提交的反向补丁并创建新提交。原提交仍在历史中，远程分支可以用正常 push 更新。",
-    "boundary": "revert 不能保证业务状态自动回到过去，数据库迁移、外部消息和数据写入可能需要单独回退。",
+    "boundary": "数据库迁移、外部消息和数据写入可能需要单独回退。",
     "demoType": "lifecycle", "demoTitle": "公开提交的安全撤销",
     "demoSteps": [{"label":"定位 B","value":"公共历史 A → B","note":"先用 git show 确认要抵消的补丁，工作区保持干净。"},{"label":"应用反向补丁","value":"B 的变化被抵消，历史仍 A → B","note":"文件结果可接近 A，但还没有新提交。"},{"label":"记录 C 并验证","value":"A → B → C","note":"B 仍在历史；push、测试和外部副作用要另行处理。"}],
     "quizQuestion": "撤销已共享提交时，通常优先使用什么？", "quizOptions": ["git revert", "git reset --hard 后强推", "删除远程仓库"],
@@ -1696,7 +1696,7 @@
     "aliases": ["PR", "Merge Request", "合并请求"],
     "question": "功能分支写完后，怎样让团队知道改了什么、如何验证？",
     "definition": "拉取请求是代码托管平台上的协作记录，关联源分支、目标分支、提交、差异、评审意见和检查结果。",
-    "boundary": "创建 PR 不代表可以合并；审批、测试、分支保护和发布条件仍需满足。",
+    "boundary": "审批、测试、分支保护和发布条件仍需满足。",
     "demoType": "lifecycle", "demoTitle": "改动从分支进入集成分支",
     "demoSteps": [{"label":"选择源与目标","value":"feature → main，创建 PR #18","note":"PR 先提出比较，不会直接修改 main。"},{"label":"评审并跑检查","value":"diff、评论和 CI 状态更新","note":"新提交推到 feature 后，同一 PR 重新计算。"},{"label":"满足门禁后合并","value":"main 接收 PR #18","note":"审批、检查和分支保护通过；部署仍要另行验证。"}],
     "quizQuestion": "一份可审查的 PR 至少应说明什么？", "quizOptions": ["改动目的、主要范围和验证证据", "开发者的桌面壁纸", "无关项目的提交列表"],
@@ -1706,16 +1706,16 @@
   },
   {
     "zh": "代码评审", "en": "Code Review", "slug": "code-review", "cat": "Git",
-    "say": "代码评审检查改动是否正确、易维护并得到充分验证，而不只是挑格式问题。",
+    "say": "代码评审检查改动的正确性、可维护性、验证情况和格式。",
     "aliases": ["Review", "代码审查", "PR 评审"],
     "question": "评审一份改动时，应该先看代码风格还是业务行为？",
     "definition": "代码评审由其他开发者结合需求、差异、上下文和测试证据判断变更，识别缺陷、设计问题和遗漏。",
-    "boundary": "评审不能替代自动测试和实际运行，也不应把个人偏好包装成必须修改的缺陷。",
+    "boundary": "评审结合自动测试与实际运行证据，提出修改时说明缺陷或维护依据。",
     "demoType": "flow", "demoTitle": "一条评审意见如何形成",
     "demoSteps": [{"label":"确认目标与场景","value":"空数组应返回空结果","note":"先读取需求和验收条件，不从个人格式偏好开始。"},{"label":"读 diff 与上下文","value":"items[0] 在空数组上触发 500","note":"“这里不好”没有证据；触发条件和影响可以复现。"},{"label":"提交可行动意见","value":"request changes + 回归测试","note":"写清输入、实际结果、预期结果和验证方式。"}],
     "quizQuestion": "哪条评审意见更有效？", "quizOptions": ["指出具体场景、影响和建议验证方式", "只写“这里不好”", "要求所有变量改成个人偏好的名字"],
     "correctText": "具体证据让问题可以复现和讨论。", "wrongText": "模糊判断或纯个人偏好缺少可执行依据。",
-    "promptTitle": "审查一份功能改动", "prompt": "请按正确性、边界条件、失败处理、权限、性能和测试覆盖审查下面 diff。每条问题给出文件位置、触发条件和影响；不要把风格偏好列为缺陷。",
+    "promptTitle": "审查一份功能改动", "prompt": "请按正确性、边界条件、失败处理、权限、性能和测试覆盖审查下面 diff。",
     "relatedSlugs": ["pull-request", "diff", "acceptance-criteria"]
   },
   {
@@ -1724,7 +1724,7 @@
     "aliases": ["CI", "自动化检查", "Continuous Integration"],
     "question": "本地测试通过，为什么合并后项目还是坏了？",
     "definition": "CI 由代码变更触发，在一致环境中安装依赖并运行构建、测试、静态检查等任务，把结果反馈到提交或拉取请求。",
-    "boundary": "CI 只能执行已配置的检查。绿色状态不代表所有风险都覆盖，也不能替代必要的浏览器和人工验证。",
+    "boundary": "CI 只能执行已配置的检查。还要完成必要的浏览器与人工验证。",
     "demoType": "flow", "demoTitle": "提交触发的检查顺序",
     "demoSteps": [{"label":"提交触发","value":"push → workflow run #42","note":"提交 F4 进入检查队列，当前还没有通过结论。"},{"label":"并行作业","value":"lint / unit test / build","note":"独立作业各自保留日志；失败项不能被其他绿灯覆盖。"},{"label":"汇总门禁","value":"failure 阻止合并；修复后重跑新提交","note":"required check 绑定最新提交，绿色只覆盖已声明的检查。"}],
     "quizQuestion": "CI 测试未覆盖一个场景时，绿色状态说明什么？", "quizOptions": ["已配置检查通过，但该场景仍未知", "所有功能一定正确", "代码已经自动上线"],
@@ -1742,7 +1742,7 @@
     "demoType": "flow", "demoTitle": "同一制品从构建进入生产",
     "demoSteps": [{"label":"构建一次","value":"artifact #42 · sha256:a9…","note":"提交 F5 只构建一次，测试和发布都引用这份制品。"},{"label":"经过 staging","value":"#42 · checks pass","note":"同一 artifact 进入 staging，不在环境之间重新打包。"},{"label":"批准生产","value":"production · deployed #42","note":"required reviewer 放行后继续；重新构建会变成需要重新验证的新版本。"}],
     "quizQuestion": "持续交付与持续部署的常见区别是什么？", "quizOptions": ["生产发布是否仍保留人工或显式批准", "是否使用 Git", "代码是否包含 CSS"],
-    "correctText": "持续交付保证随时可发布，生产触发可以保留控制。", "wrongText": "Git 和 CSS 不是两者的定义差异。",
+    "correctText": "持续交付保证随时可发布，生产触发可以保留控制。", "wrongText": "持续交付保证随时可发布，生产触发可以保留控制。",
     "promptTitle": "检查交付流水线的制品一致性", "prompt": "请审查下面从构建到生产的流程，确认各环境使用同一版本制品，补充审批、失败停止、回滚入口和部署记录。",
     "relatedSlugs": ["ci", "build-tool", "deploy"]
   },
@@ -1752,7 +1752,7 @@
     "aliases": ["Preview", "PR 预览", "临时环境"],
     "question": "设计和产品怎样在代码合并前直接体验页面改动？",
     "definition": "预览部署由分支变更触发，构建当前提交并部署到临时环境，通常把地址和状态回写到拉取请求。",
-    "boundary": "预览环境的数据、权限和第三方服务可能与生产不同，不能把预览通过直接等同于生产验证完成。",
+    "boundary": "预览环境的数据、权限和第三方服务可能与生产不同。",
     "demoType": "lifecycle", "demoTitle": "一个 PR 的临时页面",
     "demoSteps": [{"label":"PR 推进 F4","value":"PR #18 · F4 · queued","note":"流水线读取当前提交，production 仍停在 main 的 M9。"},{"label":"预览可访问","value":"preview-18.example.dev · F4 · sandbox","note":"PR 状态回写成功；预览使用隔离数据和连接。"},{"label":"推送 F5 后关闭 PR","value":"branch URL → F5 · F4 permalink → preview removed","note":"先记录新旧提交的对应关系，再回收临时环境；生产 M9 和外部副作用不会被自动撤销。"}],
     "quizQuestion": "预览部署最适合验证什么？", "quizOptions": ["当前分支的实际页面与交互", "生产数据库的全部真实操作", "尚未提交的本地文件"],
@@ -1766,7 +1766,7 @@
     "aliases": ["Rollback", "版本回退", "部署回滚"],
     "question": "新版本上线后核心页面报错，应该先继续修还是恢复旧版本？",
     "definition": "回滚是发布系统把应用、配置或流量切回先前可用版本的操作，通常依赖保留的制品、版本记录和兼容的数据变更。",
-    "boundary": "生产回滚切换已部署制品，不是 git revert 或 git reset；它不一定能撤销数据库写入、消息发送或外部调用，这些副作用需要单独方案。",
+    "boundary": "生产回滚切换已部署制品，它不一定能撤销数据库写入、消息发送或外部调用，这些副作用需要单独方案。",
     "demoType": "branch", "demoTitle": "发布失败后的处理分支",
     "demoSteps": [{"label":"确认故障","value":"production v42 · error rate 8.7%","note":"记录版本、时间和影响范围，并确认保留的 v41 可直接使用。"},{"label":"切回稳定制品","value":"route → v41 · existing artifact","note":"切换流量指针，不在故障现场重新构建旧版本。"},{"label":"验证与补偿","value":"health + smoke pass · v42 retained","note":"兼容读取转绿；数据库写入、消息和外部调用的副作用单独处理。"}],
     "quizQuestion": "可靠回滚的基础条件是什么？", "quizOptions": ["保留可识别的稳定制品和回滚步骤", "只记住开发者姓名", "每次发布覆盖旧文件"],
@@ -1780,11 +1780,11 @@
     "aliases": ["User Story", "用户需求故事", "故事卡"],
     "question": "“增加导出按钮”到底服务谁，又解决什么任务？",
     "definition": "用户故事从使用者角度描述一个可交付需求，明确角色、要完成的任务和希望得到的结果；验收标准再把结果写成可检查的完成条件。",
-    "boundary": "用户故事不是完整设计稿，也不能替代用户研究、业务规则或异常处理；它应保留与用户需要的证据链，并把可验证边界交给验收标准。",
+    "boundary": "结合用户研究、业务规则和异常处理编写故事，保留用户需要的证据，并用验收标准明确结果。",
     "demoType": "flow", "demoTitle": "从功能名补齐用户需要与结果",
     "demoSteps": [{"label":"只有功能名","value":"增加导出按钮","note":"没有角色、任务原因或完成证据，不能判断它解决谁的问题。"},{"label":"写成用户故事","value":"作为财务人员，我想按月下载账单，以便结算前核对金额","note":"角色、任务和目标连成一句可讨论的需求。"},{"label":"展开验收结果","value":"选月份 → 下载 CSV；无账单 → 显示空状态","note":"结果可以被检查；交互细节仍需单独设计。"}],
     "quizQuestion": "哪项是用户故事仍需补充的内容？", "quizOptions": ["可验证的验收标准", "一句宣传口号", "开发者个人偏好"],
-    "correctText": "验收标准把需求范围转为可检查结果。", "wrongText": "口号和个人偏好不能说明功能何时完成。",
+    "correctText": "验收标准把需求范围转为可检查结果。", "wrongText": "验收标准把需求范围转为可检查结果。",
     "promptTitle": "把功能想法整理为用户故事", "prompt": "请把下面功能想法整理为用户故事。明确用户角色、当前任务和预期结果，再列出正常流程、边界条件和失败处理的验收标准；未知信息集中标为待确认。",
     "relatedSlugs": ["acceptance-criteria", "target-user", "use-case"]
   },
@@ -1794,9 +1794,9 @@
     "aliases": ["Problem Statement", "问题定义", "产品问题"],
     "question": "“我们需要做一个智能搜索”是问题，还是已经选定的方案？",
     "definition": "问题陈述描述有证据的现状与目标差距，说明谁在什么场景遇到什么可观察的困难，以及困难带来的影响。",
-    "boundary": "问题陈述不应预设某个功能一定是答案，也不能把没有证据的痛点或市场判断当成事实；它为多个方案留下比较空间。",
+    "boundary": "问题陈述不应预设某个功能一定是答案。",
     "demoType": "comparison", "demoTitle": "从方案句改为可比较的问题",
-    "demoSteps": [{"label":"预设方案","value":"做一个智能搜索","note":"这句话已经选了答案，却没有说明谁遇到什么困难。"},{"label":"补充观察事实","value":"客服翻五页筛选历史订单 · 平均 2m40s","note":"用户、行为和时间成本可以被记录与复核。"},{"label":"形成问题","value":"高频查单被分页和筛选拖慢","note":"影响边界清楚，快捷筛选、批量导出或搜索都可以继续比较。"}],
+    "demoSteps": [{"label":"预设方案","value":"做一个智能搜索","note":"这句话已经选了答案。"},{"label":"补充观察事实","value":"客服翻五页筛选历史订单 · 平均 2m40s","note":"用户、行为和时间成本可以被记录与复核。"},{"label":"形成问题","value":"高频查单被分页和筛选拖慢","note":"影响边界清楚，快捷筛选、批量导出或搜索都可以继续比较。"}],
     "quizQuestion": "哪项更接近问题陈述？", "quizOptions": ["客服查历史订单平均要切换多个筛选条件", "必须增加 AI 搜索", "首页应该更高级"],
     "correctText": "它描述了具体用户行为和当前阻碍。", "wrongText": "另外两项是预设方案或无法验证的主观判断。",
     "promptTitle": "把方案要求还原为用户问题", "prompt": "请从下面需求中分离事实、推测和已提出的方案，重写为问题陈述。保留用户、场景、现状、影响和证据边界，不把建议功能写成既定结论。",
@@ -1807,12 +1807,12 @@
     "say": "目标用户是当前产品重点服务的人群，由共同任务、频率、权限和使用环境定义。",
     "aliases": ["Target User", "核心用户", "服务对象"],
     "question": "“所有人都能用”为什么仍不足以指导产品设计？",
-    "definition": "目标用户描述产品在当前范围内优先解决谁的问题，通常包含工作目标、使用频率、权限、能力条件和环境限制；这些条件来自研究证据，而不是想象。",
-    "boundary": "目标用户不是凭空编出的完整人物传记，也不应只用年龄、性别等人口属性代替实际任务差异；它也不等于永远排除其他用户。",
+    "definition": "目标用户描述产品在当前范围内优先解决谁的问题，通常包含工作目标、使用频率、权限、能力条件和环境限制；这些条件来自研究证据。",
+    "boundary": "目标用户根据实际任务、使用情境和证据划分；明确目标用户后，其他人仍可使用产品。",
     "demoType": "flow", "demoTitle": "从人口标签划分到任务分组并确定范围",
     "demoSteps": [{"label":"人口标签","value":"20–40 岁用户","note":"年龄把人放在一起，却看不见任务和成功标准。"},{"label":"任务分组","value":"财务专员批量导出 · 普通员工偶尔下载","note":"频率、权限和结果让两组需求产生可观察差异。"},{"label":"确定本期范围","value":"优先支持财务批量导出","note":"普通员工自助下载记录为下一阶段，当前字段和性能有了依据。"}],
     "quizQuestion": "定义目标用户时，什么信息更有指导价值？", "quizOptions": ["用户要完成的任务和使用条件", "一个好听的人群名称", "与产品无关的兴趣清单"],
-    "correctText": "任务和条件会直接影响功能与交互设计。", "wrongText": "标签和无关兴趣不能说明产品需要解决什么。",
+    "correctText": "任务和条件会直接影响功能与交互设计。", "wrongText": "任务和条件会直接影响功能与交互设计。",
     "promptTitle": "识别当前版本的目标用户", "prompt": "请根据下面访谈与使用数据，把用户按任务、频率、权限和环境分组，说明本版本优先服务哪组，并列出暂不覆盖的人群。为每个判断标出证据，不要补写没有证据的人物背景。",
     "relatedSlugs": ["user-story", "problem-statement", "scope"]
   },
@@ -1822,7 +1822,7 @@
     "aliases": ["Use Case", "用例", "使用情境"],
     "question": "“用户可以退款”需要覆盖哪些正常和异常情况？",
     "definition": "Use Case 说明参与者、前置条件、触发动作、主流程、替代流程和完成后状态，用来梳理系统行为与数据边界。",
-    "boundary": "使用场景不是逐像素界面说明，也不等于用户旅程中全部情绪和接触点；跨服务的前后步骤要在更大的旅程中另行说明。",
+    "boundary": "跨服务的前后步骤要在更大的旅程中另行说明。",
     "demoType": "flow", "demoTitle": "退款用例从条件走到分支结果",
     "demoSteps": [{"label":"参与者与条件","value":"购买者 · 已支付订单 · 36h（期限48h）","note":"从订单详情触发，36 小时只是当前示例时间，系统先确认状态与退款期限。"},{"label":"主成功路径","value":"请求支付方 → refund_pending","note":"支付方受理后订单改变为退款中。"},{"label":"替代路径","value":"超过48h拒绝；超时可重试，订单保持已支付","note":"每条分支都说明用户结果与数据是否改变。"}],
     "quizQuestion": "Use Case 的替代流程用于描述什么？", "quizOptions": ["主流程之外的有效分支和异常", "页面的品牌颜色", "团队成员的排班"],
@@ -1836,7 +1836,7 @@
     "aliases": ["AC", "完成条件", "Acceptance Criteria"],
     "question": "“登录功能已经做好”应由哪些具体结果判断？",
     "definition": "验收标准规定功能被接受前必须满足的行为、边界和限制，通常覆盖正常流程、错误输入、权限和关键回归；每条都应能由用户或外部系统观察。",
-    "boundary": "验收标准不是实现步骤，也不能用“体验良好”“运行正常”等无法核验的词代替结果；内部实现状态不能单独充当用户验收。",
+    "boundary": "不能用“体验良好”“运行正常”等无法核验的词代替结果，内部实现状态不能单独充当用户验收。",
     "demoType": "flow", "demoTitle": "模糊要求如何变成可观察结果",
     "demoSteps": [{"label":"模糊描述","value":"登录体验顺畅","note":"测试人员无法判断通过条件。"},{"label":"给定条件与动作","value":"Given 未登录 /settings · When 提交正确凭据","note":"起点和动作可以被不同角色复述与执行。"},{"label":"可观察结果","value":"成功回/settings；错误不跳转；无权限403","note":"正常、错误与权限结果都能检查，内部实现仍可替换。"}],
     "quizQuestion": "哪条更适合作为验收标准？", "quizOptions": ["未登录访问设置页时跳转登录页，并保留原目标", "页面看起来很专业", "代码写得足够优雅"],
@@ -1850,9 +1850,9 @@
     "aliases": ["Scope", "项目范围", "版本边界"],
     "question": "需求讨论为什么总会从一个导出按钮扩展到完整报表平台？",
     "definition": "范围通过目标、包含项、排除项和约束限定工作边界，帮助团队判断新增想法属于本期、后续还是另一个问题。",
-    "boundary": "范围不是永远不变，但变更需要说明影响并重新确认优先级、工期和验收条件。",
+    "boundary": "变更需要说明影响并重新确认优先级、工期和验收条件。",
     "demoType": "branch", "demoTitle": "新增想法如何归类",
-    "demoSteps": [{"label":"版本目标","value":"导出当前筛选结果为 CSV","note":"先确定一个可复述任务。"},{"label":"包含与排除","value":"本期：CSV + 当前筛选 + 手动下载；后续：图表 + 定时报表","note":"价值不同不等于本期都做。"},{"label":"依赖与变更","value":"字段权限与导出接口；新增图表会超出容量 → 评估后移到后续","note":"验收和排期随边界同步。"}],
+    "demoSteps": [{"label":"版本目标","value":"导出当前筛选结果为 CSV","note":"先确定一个可复述任务。"},{"label":"包含与排除","value":"本期：CSV + 当前筛选 + 手动下载；后续：图表 + 定时报表","note":"本期范围按目标、价值和可用资源确定。"},{"label":"依赖与变更","value":"字段权限与导出接口；新增图表会超出容量 → 评估后移到后续","note":"验收和排期随边界同步。"}],
     "quizQuestion": "发现一个有价值但不影响本期目标的想法时，通常怎么处理？", "quizOptions": ["记录为后续候选并保持本期范围", "立即加入当前版本", "不留记录直接忘掉"],
     "correctText": "保留想法，同时避免未经评估扩大当前交付。", "wrongText": "直接加入会打乱承诺，完全丢弃也损失信息。",
     "promptTitle": "整理版本范围与非范围", "prompt": "请根据下面目标和讨论记录，列出本期包含、明确排除、依赖条件和待确认项。对新增想法说明它是否影响当前验收，不要默认全部纳入。",
@@ -1864,7 +1864,7 @@
     "aliases": ["Product Roadmap", "产品路线图", "规划图"],
     "question": "路线图应该是一张固定功能日期表，还是会随证据调整的计划？",
     "definition": "路线图把产品目标、主题、阶段性结果和主要依赖放在时间或顺序框架中，用于协调方向和投入。",
-    "boundary": "路线图不是精确到每项任务的排期，也不应把远期想法写成已经承诺的发布日期。",
+    "boundary": "不应把远期想法写成已经承诺的发布日期。",
     "demoType": "lifecycle", "demoTitle": "目标如何进入路线图并调整",
     "demoSteps": [{"label":"产品目标","value":"降低首次配置失败率","note":"先说要为用户改变什么。"},{"label":"阶段价值","value":"先补诊断，再优化引导","note":"每段都有可验证结果。"},{"label":"依赖与复盘","value":"合规依赖加入后，远期改为区间","note":"路线图随证据和判断更新。"}],
     "quizQuestion": "路线图中的远期项目应怎样表达？", "quizOptions": ["注明方向、假设和不确定性", "写成绝对发布日期承诺", "完全省略目标"],
@@ -1878,11 +1878,11 @@
     "aliases": ["Priority", "需求优先级", "排序"],
     "question": "三个需求都说“很重要”，团队该怎样决定先后？",
     "definition": "优先级比较需求对当前目标的贡献、用户影响、依赖、风险和实施代价，形成明确的工作顺序。",
-    "boundary": "优先级不是永久标签，也不等于谁声音更大；信息和目标变化后应重新评估。",
+    "boundary": "优先级依据影响、紧迫性、成本和依赖调整；信息和目标变化后应重新评估。",
     "demoType": "comparison", "demoTitle": "三项工作如何排序",
     "demoSteps": [{"label":"当前目标","value":"降低首次配置失败率","note":"先确认保护哪个结果。"},{"label":"比较依据","value":"影响 · 时限 · 依赖 · 风险 · 工作量","note":"同一目标下比较取舍。"},{"label":"当前顺序","value":"故障 → 合规 → 微调","note":"证据变化后可以重排。"}],
     "quizQuestion": "哪项不应单独决定需求优先级？", "quizOptions": ["提出者的职位高低", "用户影响", "目标贡献"],
-    "correctText": "排序应基于问题和约束，而不是职位。", "wrongText": "用户影响和目标贡献是正常判断依据。",
+    "correctText": "排序应基于问题和约束。", "wrongText": "用户影响和目标贡献是正常判断依据。",
     "promptTitle": "给需求清单排序", "prompt": "请根据当前目标、用户影响、时间约束、依赖、风险和工作量给下面需求排序。每项写明依据和未确认信息，不用单一分数掩盖判断。",
     "relatedSlugs": ["scope", "roadmap", "iteration"]
   },
@@ -1892,7 +1892,7 @@
     "aliases": ["Iteration", "产品迭代", "版本迭代"],
     "question": "为什么不等所有功能一次做完，再让用户看到？",
     "definition": "迭代把较大的目标拆成连续可验证的增量，每轮有明确范围、结果和反馈，用于降低长时间闭门开发的风险。",
-    "boundary": "迭代不是反复改动却没有目标，也不能用“以后再优化”回避当前版本的基本质量。",
+    "boundary": "不能用“以后再优化”回避当前版本的基本质量。",
     "demoType": "lifecycle", "demoTitle": "一轮结果如何进入下一轮",
     "demoSteps": [{"label":"第一轮","value":"手动 CSV 导出和失败提示","note":"验证用户能否完成一次真实导出。"},{"label":"读取反馈","value":"5 次试用中 2 次字段缺失","note":"结果指出下一轮缺口。"},{"label":"第二轮","value":"补齐字段并暂缓定时","note":"先解决证据指出的问题，稳定后再扩展。"}],
     "quizQuestion": "一轮有效迭代结束时应得到什么？", "quizOptions": ["可验证结果和下一步依据", "更多未经整理的想法", "没有验收条件的代码"],
@@ -1934,7 +1934,7 @@
     "aliases": ["Usability Test", "易用性测试", "用户测试"],
     "question": "团队都觉得页面很清楚，怎样验证第一次使用的人也能完成任务？",
     "definition": "可用性测试为参与者提供任务场景，研究者观察行为、完成情况和问题，并避免在过程中教用户怎样操作。",
-    "boundary": "少量测试适合发现问题，不适合直接推断全体用户比例；偏好访谈也不能替代实际任务表现。",
+    "boundary": "少量测试适合发现具体问题；全体用户比例需要代表性样本，任务表现通过实际操作观察。",
     "demoType": "lifecycle", "demoTitle": "一次任务测试如何进行",
     "demoSteps": [{"label":"给出目标","value":"退回一件尺码不合适的商品","note":"不透露按钮位置和操作步骤。"},{"label":"观察过程","value":"参与者回看订单两次","note":"记录行为和原话，不现场纠正。"},{"label":"汇总证据","value":"完成但需要 1 次提示","note":"把成功、提示与困难一起写入下一轮。"}],
     "quizQuestion": "主持测试时，用户找不到入口应立即告诉他吗？", "quizOptions": ["先观察并按脚本决定是否提示", "立即指向正确按钮", "直接结束全部测试"],
@@ -1948,11 +1948,11 @@
     "aliases": ["Mockup", "高保真视觉稿", "界面视觉"],
     "question": "线框图结构已经确认，怎样讨论最终颜色和排版？",
     "definition": "Mockup 是静态或有限状态的高保真界面表现，通常建立在已确定的信息结构和交互方案上。",
-    "boundary": "视觉稿不等于可运行产品，也不能完整说明动画、响应式变化和异常状态。",
+    "boundary": "不能完整说明动画、响应式变化和异常状态。",
     "demoType": "comparison", "demoTitle": "同一页面的三种表达",
     "demoSteps": [{"label":"线框图","value":"灰阶结构和内容优先级","note":"适合先确认信息与布局。"},{"label":"视觉稿","value":"加入品牌颜色、字体和图像","note":"可以审查视觉层级和一致性。"},{"label":"状态与原型","value":"补齐加载、空、错并连接点击","note":"用于验证操作、返回和失败恢复。"}],
     "quizQuestion": "要验证按钮点击后的流程，仅靠静态视觉稿够吗？", "quizOptions": ["不够，还需要原型或可运行界面", "够，颜色能说明所有状态", "只需增加阴影"],
-    "correctText": "静态画面不能完整表达交互和状态变化。", "wrongText": "颜色和阴影不能替代操作流程。",
+    "correctText": "静态画面不能完整表达交互和状态变化。", "wrongText": "先确认操作流程，再用颜色和阴影表达状态与层次。",
     "promptTitle": "审查视觉稿的交付完整性", "prompt": "请检查下面视觉稿是否覆盖主要页面、加载、空、错误、禁用和窄屏状态，并把无法从静态图确定的交互列为原型或标注需求。",
     "relatedSlugs": ["wireframe", "prototype", "visual-hierarchy"]
   },
@@ -1969,7 +1969,7 @@
   ],
   "question": "站点地图怎样同时检查页面层级、导航入口和搜索发现，而不把它误当成用户流程？",
   "definition": "站点地图是对网站信息结构的一张可检视模型：它把页面按用户任务组成父子层级，标出哪些页面进入主导航、哪些页面只在子层可达，也能另列一份供爬虫读取的 URL 清单。它帮助作者发现孤立页、层级过深和命名重复，但不会替用户规定唯一的阅读顺序。",
-  "boundary": "这里的站点地图讨论页面之间的归属和入口，不是 XML sitemap 文件本身，也不是“点击首页→列表→详情”的操作流程。XML 清单解决抓取发现，导航解决人的进入路径；两者可能共享 URL，却回答不同问题。地图也不能证明页面内容有用、链接可访问或搜索一定收录。",
+  "boundary": "这里的站点地图讨论页面之间的归属和入口。XML 清单解决抓取发现，导航解决人的进入路径；两者可能共享 URL，却回答不同问题。",
   "demoType": "hierarchy",
   "demoTitle": "同一组页面怎样长出导航层级和抓取清单",
   "demoSteps": [
@@ -1991,7 +1991,7 @@
     {
       "label": "把孤立页放回语境",
       "value": "订单 / 优惠说明 · 入口已补",
-      "note": "优惠说明与订单优惠有关，于是进入订单分组；若找不到真实任务归属，就应删除或重新定义，而不是偷偷藏在地图里。"
+      "note": "优惠说明与订单优惠有关，于是进入订单分组；若找不到真实任务归属，就应删除或重新定义。"
     },
     {
       "label": "导航和 XML 各自验收",
@@ -2008,7 +2008,7 @@
   "correctText": "XML 清单和主导航解决不同的发现问题，仍需检查页面是否属于某个用户任务。",
   "wrongText": "把抓取清单、导航菜单和内容质量混为一谈，会看不见真正的孤立页。",
   "promptTitle": "审查一张站点地图",
-  "prompt": "请把页面按用户任务分组，标出每个页面的父级、主导航入口和 XML sitemap 状态；对孤立页、超过三层的路径和重复命名分别给出处理理由，不要把地图画成用户操作流程。",
+  "prompt": "对孤立页、超过三层的路径和重复命名分别给出处理理由。",
   "relatedSlugs": [
     "ia",
     "user-flow",
@@ -2027,8 +2027,8 @@
     "样式令牌"
   ],
   "question": "为什么语义令牌能让主题切换扩散到多个组件，而把颜色直接写在组件里会留下暗角？",
-  "definition": "设计令牌是带稳定名称的设计决策，例如 color.action、space.3 或 radius.card。组件引用语义令牌，语义令牌再指向某个主题下的基础值；换主题时改变的是映射关系，按钮、链接和其他消费端都会得到新的值。令牌因此保存了命名、引用和跨工具同步的关系，而不只是把一串十六进制颜色换成变量名。",
-  "boundary": "令牌不会替你决定层级、交互状态或对比度，也不能修复一个根本不该共用颜色的组件。若组件绕过语义名写死旧值，主题切换只会更新一半；若没有记录平台、状态和无障碍约束，令牌数量增加也可能让系统更难维护。统一命名不是统一审美。",
+  "definition": "设计令牌是带稳定名称的设计决策，例如 color.action、space.3 或 radius.card。组件引用语义令牌，语义令牌再指向某个主题下的基础值；换主题时改变的是映射关系，按钮、链接和其他消费端都会得到新的值。令牌保存命名、引用和跨工具同步关系，将颜色值与实际用途连接起来。",
+  "boundary": "令牌不会替你决定层级、交互状态或对比度，也不能修复一个根本不该共用颜色的组件。若组件绕过语义名写死旧值，主题切换只会更新一半；若没有记录平台、状态和无障碍约束，令牌数量增加也可能让系统更难维护。",
   "demoType": "comparison",
   "demoTitle": "同一语义令牌如何穿过主题映射和组件引用",
   "demoSteps": [
@@ -2040,7 +2040,7 @@
     {
       "label": "浅色主题解析",
       "value": "light · moss-900 · color.action → moss-900",
-      "note": "浅色主题把 color.action 映射到 moss-900，两个消费端同时得到同一套动作色；这一步改变的是映射，不是组件代码。"
+      "note": "浅色主题把 color.action 映射到 moss-900，这一步改变的是映射。"
     },
     {
       "label": "深色主题只换映射",
@@ -2053,7 +2053,7 @@
       "note": "如果链接偷偷写 #58634d，再切主题时按钮变亮、链接仍是旧色；引用图断开的地方，就是需要回收的维护债。"
     },
     {
-      "label": "验收状态而非只看色板",
+      "label": "验收状态",
       "value": "4 个状态均有值 · 修复后重新检查 · light/dark 可切换",
       "note": "最后同时检查默认、悬停、禁用和键盘焦点状态；令牌让值能同步，却不替代组件状态和对比度验收。"
     }
@@ -2086,8 +2086,8 @@
     "视觉优先级"
   ],
   "question": "怎样只改一个视觉变量，让注意力从平均分散收敛到标题、任务内容和主要操作？",
-  "definition": "视觉层级是读者在一组信息里形成注意顺序的结果。字号和字重提供尺度，位置和分组提供阅读路径，对比和留白标出主次；它们共同建立“先看标题、再理解任务、最后行动”的节奏。层级不是某个元素越大越重要，而是相对差异、语义结构和当前任务一起让重点容易被找到。",
-  "boundary": "把所有字都加粗、给每个标签都上高饱和色，只会让竞争更激烈。视觉层级不能替代正确的标题结构、清楚的文案或键盘顺序；在窄屏上也不能只靠缩小字号维持桌面布局，而要重新安排分组和操作顺序。注意力热图是观察线索，不是对每个读者的精确预测。",
+  "definition": "视觉层级是读者在一组信息里形成注意顺序的结果。字号和字重提供尺度，位置和分组提供阅读路径，对比和留白标出主次；它们共同建立“先看标题、再理解任务、最后行动”的节奏。层级是相对差异、语义结构和当前任务一起让重点容易被找到。",
+  "boundary": "把所有字都加粗、给每个标签都上高饱和色，只会让竞争更激烈。视觉层级要配合标题结构、清楚的文案和键盘顺序；窄屏上重新安排分组与操作顺序。注意力热图是观察线索。",
   "demoType": "comparison",
   "demoTitle": "同一张任务卡怎样从五个焦点收敛成一条阅读顺序",
   "demoSteps": [
@@ -2104,7 +2104,7 @@
     {
       "label": "拉开标题和说明",
       "value": "24 → 32px · 标题优先",
-      "note": "标题得到更大的尺度和留白，说明保留可读对比；热图先落在标题，再进入任务内容，而不是被颜色推着跳。"
+      "note": "标题得到更大的尺度和留白，说明保留可读对比；热图先落在标题，再进入任务内容。"
     },
     {
       "label": "让主要操作靠近决定点",
@@ -2124,7 +2124,7 @@
     "把辅助说明全部删除"
   ],
   "correctText": "层级来自相对关系；先撤掉非关键竞争，再把主要操作放回任务语境。",
-  "wrongText": "继续加重或随意删说明会损害理解，不能证明重点已经清楚。",
+  "wrongText": "继续加重或随意删说明会损害理解。",
   "promptTitle": "检查页面的视觉阅读顺序",
   "prompt": "请以用户当前任务为中心，标出第一眼、理解条件和主要操作三个层级；每轮只改一个变量（尺度、位置、对比或留白），分别在桌面和窄屏记录注意顺序、标题结构、键盘顺序和辅助信息是否仍可达。",
   "relatedSlugs": [
@@ -2138,7 +2138,7 @@
   "en": "Feedback",
   "slug": "feedback",
   "cat": "产品与设计",
-  "say": "点击保存后，用户需要看到的不是一颗漂亮星星，而是“已接收、处理中、已保存还是失败，我下一步能做什么”。",
+  "say": "点击保存后，用户需要看到的是“已接收、处理中、已保存还是失败，我下一步能做什么”。",
   "aliases": [
     "UI Feedback",
     "操作反馈",
@@ -2146,7 +2146,7 @@
   ],
   "question": "一次保存请求怎样把等待、成功、失败和重试都变成可判断的局部证据？",
   "definition": "反馈是系统把用户动作对应的状态变化呈现出来：动作被接收时确认触发，请求进行时告诉用户仍在工作，成功时显示结果已经落地，失败时保留能恢复的上下文并给出下一步。好的反馈贴着发生变化的对象出现，文字、禁用状态和数据更新各自承担不同证据，不靠一个短暂的 Toast 包办全部沟通。",
-  "boundary": "反馈不等于动效，也不等于每次都弹全局通知。状态消息不能替代表单错误、服务端拒绝或可操作的重试；成功提示也不能在数据尚未保存时提前出现。若结果已经在原位置清楚变化，额外通知可能只是噪声；若动作有副作用，还要说明是否可以撤销。",
+  "boundary": "状态消息与字段错误、服务端反馈和重试操作配合展示，数据保存成功后再提示成功。若结果已经在原位置清楚变化，额外通知可能只是噪声；若动作有副作用，还要说明是否可以撤销。",
   "demoType": "state",
   "demoTitle": "同一个保存按钮怎样把四种状态交代完整",
   "demoSteps": [
@@ -2173,17 +2173,17 @@
     {
       "label": "重试沿当前任务继续",
       "value": "retry #2 · 结果可验证 · 失败时仍可操作",
-      "note": "重试只重新发起请求，成功后回到已保存状态；如果服务端返回字段错误，错误应落到字段旁而不是只留一条消失的提示。"
+      "note": "重试只重新发起请求，成功后回到已保存状态；如果服务端返回字段错误，错误应落到字段旁。"
     }
   ],
   "quizQuestion": "保存请求失败时，哪种反馈最能帮助用户继续任务？",
   "quizOptions": [
     "保留输入、说明原因并提供可操作的重试",
     "只播放一段成功动画后清空表单",
-    "让按钮一直转圈但不说明发生了什么"
+    "让按钮持续转圈，状态区域始终空白"
   ],
   "correctText": "失败不应抹掉用户已经输入的内容，原因和恢复动作要在同一上下文里可见。",
-  "wrongText": "装饰动画和无限等待都不能证明数据是否已保存，也没有给出恢复路径。",
+  "wrongText": "没有给出恢复路径。",
   "promptTitle": "设计一次可恢复的保存反馈",
   "prompt": "请列出表单 dirty、请求 pending、成功、服务端校验失败、网络超时和重试六种状态；为每种状态指定按钮是否可用、原位消息、数据值和焦点位置，并说明哪些反馈必须可被读屏器读到。",
   "relatedSlugs": [
@@ -2198,15 +2198,15 @@
   "en": "Loading State",
   "slug": "loading-state",
   "cat": "产品与设计",
-  "say": "等待不是一个无限转圈：时间变长时，界面要告诉用户还缺什么、已经完成多少、是否该重试。",
+  "say": "界面要告诉用户还缺什么、已经完成多少、是否该重试。",
   "aliases": [
     "Loading",
     "加载中",
     "等待状态"
   ],
   "question": "同一个异步请求从很快变得很慢时，怎样逐步换成合适的等待、进度和失败状态？",
-  "definition": "加载状态是异步内容从发起到可用之间的临时界面模型。短操作可以直接完成，稍长的列表需要保留内容骨架，能估计总量时显示确定进度，超过合理等待则给出超时或重试出口。加载状态不是一个装饰 spinner，而是把未知的等待范围、已完成的工作和最终结果分开表达。",
-  "boundary": "骨架屏只能说明页面结构，不代表数据已经到达；进度条只有在系统知道工作总量时才应显示百分比；不确定指示器也不能无限掩盖网络失败。首次加载、增量加载、空结果和错误是不同状态，不能用同一段动画把它们混在一起。",
+  "definition": "加载状态是异步内容从发起到可用之间的临时界面模型。短操作可以直接完成，稍长的列表需要保留内容骨架，能估计总量时显示确定进度，超过合理等待则给出超时或重试出口。加载状态是把未知的等待范围、已完成的工作和最终结果分开表达。",
+  "boundary": "骨架屏展示页面结构，系统知道工作总量时显示百分比，网络失败时及时给出错误与恢复操作。首次加载、增量加载、空结果和错误是不同状态，不能用同一段动画把它们混在一起。",
   "demoType": "lifecycle",
   "demoTitle": "请求变慢时，等待界面怎样从直达切到重试",
   "demoSteps": [
@@ -2223,7 +2223,7 @@
     {
       "label": "总量已知再给进度",
       "value": "60% · 6/10 · 可估计",
-      "note": "上传文件时系统知道总字节数，确定进度显示已完成 6/10；这个数字来自工作量，不是凭感觉加速的动画。"
+      "note": "确定进度显示已完成 6/10，这个数字来自工作量。"
     },
     {
       "label": "卡住后给出口",
@@ -2257,7 +2257,7 @@
   "en": "Microinteraction",
   "slug": "microinteraction",
   "cat": "产品与设计",
-  "say": "收藏按钮的微小回弹不是装饰：它告诉用户按下被接收、数量变了、失败能撤回，而且不会把主任务拖走。",
+  "say": "不会把主任务拖走。",
   "aliases": [
     "Microinteraction",
     "微动效",
@@ -2265,7 +2265,7 @@
   ],
   "question": "一个局部按钮怎样把触发、规则、反馈、持久化和撤销做成一段可理解的小闭环？",
   "definition": "微交互是围绕单一任务发生的短状态变化：用户或系统触发动作，规则决定允许什么，局部反馈说明动作已被接收，持续状态记录结果，必要时还提供撤销。它可以有形变、颜色或触觉，但动效只是传达状态的手段；真正的对象是按钮、计数、请求结果和下一步操作之间的关系。",
-  "boundary": "没有状态含义的循环装饰不是微交互，持续闪烁也不能代替成功或失败。乐观更新必须有回滚规则，重复点击要处理幂等或禁用，键盘和减少动态模式要得到同样的结果。一个漂亮的图标变形不能证明服务器已经保存。",
+  "boundary": "及时用明确状态告知成功或失败。乐观更新必须有回滚规则，重复点击要处理幂等或禁用，键盘和减少动态模式要得到同样的结果。",
   "demoType": "state",
   "demoTitle": "收藏一次怎样经过按下、成功、撤销和回滚",
   "demoSteps": [
@@ -2287,12 +2287,12 @@
     {
       "label": "撤销窗口保持可逆",
       "value": "☆ · 12 · 已撤销",
-      "note": "再次点击或按撤销，规则把状态改回未收藏并把计数减一；撤销不是把过去抹掉，而是发起另一条明确动作。"
+      "note": "再次点击或按撤销，规则把状态改回未收藏并把计数减一；撤销是发起另一条明确动作。"
     },
     {
       "label": "失败回到可解释状态",
       "value": "☆ · rollback · 12 · failed · 未保存 · 重试",
-      "note": "网络失败时，乐观的 13 被回滚为 12，消息说明未保存并保留重试；用户看到的是事实与反馈一致，而不是一颗假星星。"
+      "note": "网络失败时，乐观的 13 被回滚为 12，消息说明未保存并保留重试；用户看到的是事实与反馈一致。"
     }
   ],
   "quizQuestion": "乐观把收藏数加一后请求失败，正确的微交互应该怎样收尾？",
@@ -2316,7 +2316,7 @@
   "en": "Reduced Motion",
   "slug": "reduced-motion",
   "cat": "产品与设计",
-  "say": "减少动态不是把页面变成无声的静止图，而是把大幅移动换成仍能说明状态的稳定变化。",
+  "say": "减少动态是把大幅移动换成仍能说明状态的稳定变化。",
   "aliases": [
     "Reduced Motion",
     "减少动画",
@@ -2324,7 +2324,7 @@
   ],
   "question": "同一次页面切换在完整动效和减少动态偏好下，怎样保持 URL、焦点和结果一致？",
   "definition": "prefers-reduced-motion 让页面知道用户希望减少非必要运动。完整模式可以用短距离移动、缩放和连续性提示空间关系；减少动态模式应取消大幅位移、视差和快速缩放，改用原位淡入、即时定位或颜色/文字变化。两种表现的终点必须相同：状态、URL、阅读顺序和键盘焦点不能因为少了动画而消失。",
-  "boundary": "减少动态不是把所有 duration 改成 0，也不是只把速度调慢；快速闪烁和大范围位移仍可能造成不适。需要保留的进度、成功、失败和焦点提示不能被一并删除；动画之外的布局跳动、自动播放和由交互触发的缩放也要一并审查。",
+  "boundary": "减少动态需要调整大范围位移、闪烁和持续运动，保留必要的状态反馈。需要保留的进度、成功、失败和焦点提示不能被一并删除；动画之外的布局跳动、自动播放和由交互触发的缩放也要一并审查。",
   "demoType": "comparison",
   "demoTitle": "同一页面切换在两种运动偏好下保持同一结果",
   "demoSteps": [
@@ -2346,7 +2346,7 @@
     {
       "label": "焦点和状态不丢",
       "value": "URL=/terms/css · focus=标题",
-      "note": "动画结束后，两种模式都有相同的 URL、标题和键盘焦点；减少动态不意味着把成功或导航反馈藏起来。"
+      "note": "两种模式都有相同的 URL、标题和键盘焦点。"
     },
     {
       "label": "复杂运动也有静态替代",
@@ -2383,7 +2383,7 @@
     ],
     "question": "为什么只改一个源文件，Docker 构建却还要重新安装依赖？",
     "definition": "Dockerfile 是按顺序执行的构建指令集合。构建器把 FROM、COPY、RUN 等指令及其输入组成层，并根据输入变化决定哪些层可以复用；多阶段构建还能把编译工具留在 build 阶段。",
-    "boundary": "Dockerfile 描述镜像怎样构建，不是运行中的容器，也不等于完整的部署配置。缓存命中、context 范围、运行时权限和秘密管理仍要分别检查。",
+    "boundary": "缓存命中、context 范围、运行时权限和秘密管理仍要分别检查。",
   "demoType": "lifecycle",
     "demoTitle": "一行输入变化，哪一层需要重建",
     "demoSteps": [
@@ -2432,7 +2432,7 @@
     ],
     "question": "点击控制台改了三台服务器，怎样让下一次变更仍然可复盘？",
     "definition": "Infrastructure as Code 用配置描述网络、实例、权限和服务等基础设施的目标状态。工具把配置与当前 state 和提供商现实比较，先生成 plan，再由人或流水线批准 apply。",
-    "boundary": "IaC 管理的是基础设施的声明、比较和执行记录，不自动替代权限、秘密、备份、监控或事故处理；state 也不是可以公开提交的普通日志。",
+    "boundary": "IaC 管理的是基础设施的声明、比较和执行记录，不自动替代权限、秘密、备份、监控或事故处理。",
   "demoType": "lifecycle",
     "demoTitle": "从一行副本数到可审查变更",
     "demoSteps": [
@@ -2459,7 +2459,7 @@
       "state 会替你批准每一次变更"
     ],
     "correctText": "plan 是某个时间点的预览；执行前仍要确认环境、账号、输入和删除影响。",
-    "wrongText": "plan 不会自动批准或删除资源，state 也只是记录映射，不能代替操作人的判断。",
+    "wrongText": "plan 展示拟执行动作，state 记录资源映射；操作人据此审查并批准执行。",
     "promptTitle": "审查一份基础设施变更",
     "prompt": "请从下面 IaC 配置生成一份审查清单：列出资源、依赖、将新增/修改/删除的对象、state 存储和锁定方式、执行账号、秘密来源、回滚与漂移处理。把必须人工确认的边界单独写出。",
     "relatedSlugs": [
@@ -2488,7 +2488,7 @@
       {
         "label": "先查边缘",
         "value": "GET /app.js → edge lookup",
-        "note": "请求先查缓存键，不代表一定命中。"
+        "note": "请求先查缓存键。"
       },
       {
         "label": "区分命中与回源",
@@ -2530,7 +2530,7 @@
     ],
     "question": "按钮只挪了 8px，怎样让提交前的检查把它找出来？",
     "definition": "视觉回归测试在受控环境中渲染页面，保存或读取 baseline，再将候选截图与参照比较，输出差异图和门禁结果。它补充功能、可访问性和端到端测试，不替代这些测试。",
-    "boundary": "截图只观察渲染结果，不能证明接口、键盘流程、权限或数据逻辑正确；浏览器、字体、DPR、动画和随机数据不稳定时，差异会先反映环境问题。",
+    "boundary": "差异会先反映环境问题。",
     "demoType": "comparison",
     "demoTitle": "从同一条路径到可审查的 diff",
     "demoSteps": [
@@ -2557,7 +2557,7 @@
       "更新 baseline 会自动测试键盘流程"
     ],
     "correctText": "先确认差异的原因和意图，才能避免把真实回归保存成新的参照。",
-    "wrongText": "baseline 只是参照画面，不会自动修复实现，也不能替代功能和可访问性测试。",
+    "wrongText": "baseline 提供视觉参照，改动后还需验证功能与可访问性。",
     "promptTitle": "设计一套可解释的视觉回归门禁",
     "prompt": "请为下面页面定义 baseline、候选路径、视口与 DPR、字体和动画等待、差异阈值、窄屏/减少动态矩阵、review 责任和基线更新规则。列出哪些变化必须阻断，哪些变化需要说明后批准。",
     "relatedSlugs": [
@@ -2579,7 +2579,7 @@
     ],
     "question": "搜索框里每敲一个字都要发请求吗？",
     "definition": "防抖把一连串快速到来的事件视为一次变化：每次新事件都会重新计时，只有在指定等待窗口内没有新事件时，才把最后一次状态交给回调。",
-    "boundary": "防抖会延迟响应并丢掉中间事件；它不限制已经发出的请求数量，也不保证异步结果按顺序返回。需要固定频率执行时，应比较节流等策略。",
+    "boundary": "防抖会延迟响应并丢掉中间事件，它不限制已经发出的请求数量。需要固定频率执行时，应比较节流等策略。",
     "demoType": "state",
     "demoTitle": "输入停止后才发出一次搜索",
     "demoSteps": [
@@ -2628,7 +2628,7 @@
     ],
     "question": "为什么点一下收藏，星星马上亮了？",
     "definition": "乐观更新先在本地界面应用用户动作，再把变化发送给服务器；服务器确认后保留结果，失败时撤销本地变化并告诉用户原因。",
-    "boundary": "它不是忽略服务器，也不是把失败藏起来。需要保存旧状态、处理并发冲突和重复提交；高风险动作应谨慎使用。",
+    "boundary": "需要保存旧状态、处理并发冲突和重复提交；高风险动作应谨慎使用。",
     "demoType": "state",
     "demoTitle": "收藏按钮先亮，再等服务器确认",
     "demoSteps": [
@@ -2655,7 +2655,7 @@
       "把所有后续点击永久禁用"
     ],
     "correctText": "乐观更新必须准备可解释的回滚或冲突处理。",
-    "wrongText": "即时反馈不能替代服务端确认。",
+    "wrongText": "即时反馈展示当前进度，服务端回执确认最终结果。",
     "promptTitle": "设计一次乐观更新",
     "prompt": "请列出本地先改的状态、旧值、请求幂等键、成功确认、失败回滚、并发冲突和用户提示。",
     "relatedSlugs": [

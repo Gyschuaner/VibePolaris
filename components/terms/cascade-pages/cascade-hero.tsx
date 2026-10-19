@@ -37,6 +37,6 @@ export function CascadeHero() {
       </div>
     </div>
     <div className={styles.heroNote} role="status"><ShieldCheck size={17} aria-hidden="true" /><span><strong>{current.label}</strong> · {current.note}</span></div>
-    <figcaption>颜色不是被“最具体”的选择器抢走的；声明要先过来源、层和重要性，留下来的候选才会继续比优先级与顺序。</figcaption>
+    <figcaption>声明要先过来源、层和重要性，留下来的候选才会继续比优先级与顺序。</figcaption>
   </figure>;
 }

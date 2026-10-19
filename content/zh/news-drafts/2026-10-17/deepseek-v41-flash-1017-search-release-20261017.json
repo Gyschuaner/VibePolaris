@@ -24,13 +24,13 @@
     {
       "id": "benchmark-results",
       "title": "编程和智能体成绩有提升，优势仍随任务而变",
-      "body": "[官方模型卡](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)列出了与上一版 V4.1 Flash 的比较。以下四项均为 DeepSeek 公布的成绩：\n\n| 评测 | 上一版 | 1017 版 | 提升（百分点） |\n| --- | ---: | ---: | ---: |\n| Terminal-Bench 4.0 | 31.2 | 42.3 | 11.1 |\n| DeepSWE v1.1 | 74.2 | 77.0 | 2.8 |\n| ProgramBench | 20.3 | 29.1 | 8.8 |\n| Automation-Bench v1.0.6 | 54.8 | 60.5 | 5.7 |\n\n这些成绩覆盖终端操作、编程与自动化任务。Terminal-Bench 4.0 使用 Claude Code 框架，DeepSWE v1.1 使用 Mini-SWE-V2；成绩反映模型与相应工具框架共同工作的表现。\n\n[PC Watch 的报道](https://pc.watch.impress.co.jp/docs/news/2149045.html)突出 DeepSWE 的 77.0 高于同表 Claude Opus 5 的 74.0。但同一张官方表中，Opus 5 的 Terminal-Bench 4.0 为 51.8、ProgramBench 为 37.0，仍高于 1017 版的 42.3 和 29.1。不同项目各有取舍，这些厂商发布的分数也不等于独立机构对所有当前旗舰的统一排名。",
+      "body": "[官方模型卡](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)列出了与上一版 V4.1 Flash 的比较。以下四项均为 DeepSeek 公布的成绩：\n\n| 评测 | 上一版 | 1017 版 | 提升（百分点） |\n| --- | ---: | ---: | ---: |\n| Terminal-Bench 4.0 | 31.2 | 42.3 | 11.1 |\n| DeepSWE v1.1 | 74.2 | 77.0 | 2.8 |\n| ProgramBench | 20.3 | 29.1 | 8.8 |\n| Automation-Bench v1.0.6 | 54.8 | 60.5 | 5.7 |\n\n这些成绩覆盖终端操作、编程与自动化任务。Terminal-Bench 4.0 使用 Claude Code 框架，DeepSWE v1.1 使用 Mini-SWE-V2；成绩反映模型与相应工具框架共同工作的表现。\n\n[PC Watch 的报道](https://pc.watch.impress.co.jp/docs/news/2149045.html)突出 DeepSWE 的 77.0 高于同表 Claude Opus 5 的 74.0。但同一张官方表中，Opus 5 的 Terminal-Bench 4.0 为 51.8、ProgramBench 为 37.0，仍高于 1017 版的 42.3 和 29.1。不同项目各有取舍。",
       "kind": "comparison"
     },
     {
       "id": "cost-per-task",
       "title": "模型没有降价，单次任务为什么可能更省",
-      "body": "模型账单取决于输入、输出的 Token 用量与各自单价。Token 是模型处理文字的计量单位；单价相同时，完成同一任务若使用更少 Token，费用就可能下降。DeepSeek 称，新版同时缩短了任务运行时间与输出长度。\n\n[The Decoder 的报道](https://the-decoder.com/deepseek-v4-1-flash-1017-beats-larger-rivals-in-agentic-tasks-while-once-again-massively-cutting-per-task-costs/)着重讨论了这条效率变化。官方给出的 DeepSWE 性能与费用图，把不同思考档位的通过率和平均任务成本放在一起比较；它说明的是相应评测条件下的结果，没有承诺每个真实项目都会按固定比例省钱。\n\n配图横轴以人民币计价，采用对数刻度。脚注明确：公开对手的部分数据来自 **9 月 22 日**榜单，OpenAI 模型点另取其官方图表，美元费用按 **10 月 16 日**汇率折算。费用图与上方成绩表的对手集合、数据来源也不同，不能合并理解成一次覆盖所有模型的同日重测。",
+      "body": "模型账单取决于输入、输出的 Token 用量与各自单价。Token 是模型处理文字的计量单位；单价相同时，完成同一任务若使用更少 Token，费用就可能下降。DeepSeek 称，新版同时缩短了任务运行时间与输出长度。\n\n[The Decoder 的报道](https://the-decoder.com/deepseek-v4-1-flash-1017-beats-larger-rivals-in-agentic-tasks-while-once-again-massively-cutting-per-task-costs/)着重讨论了这条效率变化。官方 DeepSWE 性能与费用图比较各思考档位的通过率和平均任务成本，实际项目成本需结合任务与配置测量。\n\n配图横轴以人民币计价，采用对数刻度。脚注明确：公开对手的部分数据来自 **9 月 22 日**榜单，OpenAI 模型点另取其官方图表，美元费用按 **10 月 16 日**汇率折算。费用图与上方成绩表的对手集合、数据来源也不同，不能合并理解成一次覆盖所有模型的同日重测。",
       "kind": "technical"
     },
     {
@@ -42,7 +42,7 @@
     {
       "id": "billing-boundary",
       "title": "11 月 1 日收费，具体指哪部分调用",
-      "body": "[官方公告](https://api-docs.deepseek.com/zh-cn/news/news261017/)特别说明：在 **DeepSeek Harness、Claude Code 或 Codex 中使用 DeepSeek API** 时，经服务端工具调用访问的 Search／Fetch 目前尚未收费，这部分调用将从 **北京时间 2026 年 11 月 1 日 00:00** 起按次计费。\n\n这个时间点针对上述服务端工具调用，并不表示所有直接请求 Search／Fetch 的调用都能免费到月底，也不意味着使用这些编程工具的任何模型都会自动获得 DeepSeek 搜索。接入方需要分清自己调用的是哪家模型、哪个搜索接口，以及由谁执行工具。",
+      "body": "[官方公告](https://api-docs.deepseek.com/zh-cn/news/news261017/)特别说明：在 **DeepSeek Harness、Claude Code 或 Codex 中使用 DeepSeek API** 时，经服务端工具调用访问的 Search／Fetch 目前尚未收费，这部分调用将从 **北京时间 2026 年 11 月 1 日 00:00** 起按次计费。\n\n接入方需要分清自己调用的是哪家模型、哪个搜索接口，以及由谁执行工具。",
       "kind": "boundary"
     },
     {

@@ -37,7 +37,7 @@ export function BreakpointHero() {
           <div className={styles.breakpointGaugeLabels}><span>360</span><span>680 · 失效线</span><span>1024</span></div>
         </div>
         <div className={styles.breakpointGaugeReadout}><span>{current.layout === "collision" ? "内容状态" : current.layout === "compact" || current.layout === "stack" ? "规则状态" : "观察状态"}</span><strong>{current.layout === "collision" ? "挤在一起" : current.layout === "compact" || current.layout === "stack" ? "已切换" : "还能呼吸"}</strong><code>{current.layout === "collision" ? "content-fails" : current.width === 680 ? "switch-here" : current.layout === "full" ? "keep-fluid" : "rule-active"}</code></div>
-        <small>黑色刻度是建议的切换点，不是某个品牌设备的固定宽度。真正的证据来自内容是否仍能读、点和操作。</small>
+        <small>黑色刻度是建议的切换点。真正的证据来自内容是否仍能读、点和操作。</small>
       </div>
       <div className={styles.breakpointArrow} aria-hidden="true"><ArrowRight size={20} /><span>规则</span></div>
       <div className={styles.breakpointPanel} data-active={scene.step >= 3}>

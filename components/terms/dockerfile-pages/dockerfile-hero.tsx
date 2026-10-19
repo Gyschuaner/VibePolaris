@@ -27,19 +27,19 @@ export function DockerfileHero() {
         <div className={styles.dockerfileLabel}><FileCode size={17} aria-hidden="true" /><span>Dockerfile 指令</span></div>
         <h3>{current.command}</h3>
         <div className={styles.dockerfileLines}><div className={styles.dockerfileLine} data-active={scene.step >= 0}><span>01</span><code>FROM node:22</code><strong>{scene.step >= 0 ? "base" : "—"}</strong></div><div className={styles.dockerfileLine} data-active={scene.step >= 1}><span>02</span><code>COPY package*.json ./</code><strong>{scene.step >= 1 ? "manifest" : "—"}</strong></div><div className={styles.dockerfileLine} data-active={scene.step >= 2}><span>03</span><code>RUN npm ci</code><strong>{scene.step >= 2 ? "deps" : "—"}</strong></div><div className={styles.dockerfileLine} data-active={scene.step >= 3}><span>04</span><code>COPY . .</code><strong>{scene.step >= 3 ? "source" : "—"}</strong></div></div>
-        <small>顺序不只是可读性：每个指令的输入会影响它和后续层能否复用。</small>
+        <small>指令顺序同时影响可读性，以及当前层和后续层的缓存复用。</small>
       </div>
       <div className={styles.dockerfileArrow} aria-hidden="true"><ArrowRight size={21} /><span>构建</span></div>
       <div className={styles.dockerfilePanel} data-active={scene.step >= 1}>
         <div className={styles.dockerfileLabel}><Package size={17} aria-hidden="true" /><span>镜像层与产物</span></div>
         <h3>{current.result}</h3>
         <div className={styles.dockerfileLayers} style={style}>{current.layers.map((layer, index) => <div key={layer} className={styles.dockerfileLayer} data-active={index <= current.active}><i /><code>{layer}</code><span>{index < current.active ? "cache" : index === current.active ? "write" : "wait"}</span></div>)}</div>
-        <small>{scene.step === 4 ? "build 阶段的工具不必进入 runtime；复制产物后可以丢掉前面的重量。" : scene.step === 5 ? "context 先过滤，构建器才收到更少的文件和更小的输入。" : "下一层会继承前面状态；命中缓存时可以直接复用，而不是重新执行。"}</small>
+        <small>{scene.step === 4 ? "build 阶段的工具不必进入 runtime；复制产物后可以丢掉前面的重量。" : scene.step === 5 ? "context 先过滤，构建器才收到更少的文件和更小的输入。" : "下一层会继承前面状态；命中缓存时可以直接复用。"}</small>
       </div>
     </div>
     <div className={styles.dockerfileNote} role="status"><ResultIcon size={17} aria-hidden="true" /><span>{current.note}</span></div>
     <div className={styles.dockerfileMetrics}><div><span>当前指令</span><strong>{current.stage}</strong></div><div><span>层策略</span><strong>{scene.step === 3 ? "后层重建" : scene.step === 4 ? "runtime 精简" : scene.step === 5 ? "context 过滤" : "逐层缓存"}</strong></div><div><span>结果</span><strong>{current.result}</strong></div></div>
     <div className={styles.dockerfileResult}><Cube size={19} aria-hidden="true" /><span><strong>{current.label}</strong> · {current.note}</span></div>
-    <figcaption>Dockerfile 不是一张“启动命令清单”：它把输入、顺序、缓存和运行时边界写成一条可复用的构建轨迹。</figcaption>
+    <figcaption>Dockerfile 将输入、指令顺序、缓存与运行时边界写成可复用的构建步骤。</figcaption>
   </figure>;
 }

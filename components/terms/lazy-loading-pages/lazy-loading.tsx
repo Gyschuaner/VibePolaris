@@ -29,7 +29,7 @@ export function LazyLoadingLesson() {
         <div className={styles.lazyLoadingLabel}><Eye size={16} aria-hidden="true" /><span>观察条件</span></div>
         <h3>{isFar ? "1200px 外" : isNear ? "300px 内" : "已相交"}</h3>
         <div className={styles.lazyLoadingLabRows}><div className={styles.lazyLoadingLabRow} data-active={!isLoading && !isReady && !isError}><code>intersection</code><strong>{isFar ? "false" : isNear ? "near" : "true"}</strong></div><div className={styles.lazyLoadingLabRow} data-active={isNear}><code>rootMargin</code><strong>{isNear ? "准备" : "—"}</strong></div><div className={styles.lazyLoadingLabRow} data-active={isLoading || isReady || isError}><code>trigger</code><strong>{isLoading || isReady || isError ? "load" : "wait"}</strong></div></div>
-        <small>观察器负责发现“靠近或相交”，并不替你完成图片请求后的状态处理。</small>
+        <small>观察器负责发现“靠近或相交”。</small>
       </div>
       <div className={styles.lazyLoadingLabArrow} aria-hidden="true"><SpinnerGap size={22} /></div>
       <div className={styles.lazyLoadingLabPanel} data-active={isLoading || isReady || isError}>

@@ -16,7 +16,7 @@ export function RagTermPage({ term, related }: BespokeTermPageProps) {
   const [selected, setSelected] = useState("A");
   const [audited, setAudited] = useState(false);
   const active = evidence.find((item) => item.id === selected)!;
-  const answer = useMemo(() => [evidence[0].supports, evidence[1].supports, "但当前证据没有说明 Pro 会员是否能绕过定制商品限制。"], []);
+  const answer = useMemo(() => [evidence[0].supports, evidence[1].supports, "当前证据确认了普通商品的退款条件，Pro 会员的定制商品规则仍待补充。"], []);
 
   return (
     <main className="bespoke-term-page rag-term-page">
@@ -40,7 +40,7 @@ export function RagTermPage({ term, related }: BespokeTermPageProps) {
           <div className="rag-answer-panel">
             <div className="rag-panel-kicker"><span>03</span><strong>生成答案</strong><em>{audited ? "已核验" : "待核验"}</em></div>
             <div className="rag-answer-card"><p>{query || "请先输入问题。"}</p>{answer.map((sentence, index) => <div className={index === 2 ? "is-missing" : "is-supported"} key={sentence}>{index === 2 ? <WarningCircle size={18} weight="fill" /> : <CheckCircle size={18} weight="fill" />}<span>{sentence}<small>{index === 2 ? "缺少直接证据" : `来源 ${index === 0 ? "A" : "B"}`}</small></span></div>)}</div>
-            <div className="rag-coverage"><div><span>证据覆盖</span><strong>{audited ? "2 / 3" : "—"}</strong></div><i><b style={{ width: audited ? "66.666%" : "0%" }} /></i><p>{audited ? "这不是让模型猜，而是明确告诉你哪一句还没有依据。" : "点击核对，逐句检查答案是否有来源。"}</p></div>
+            <div className="rag-coverage"><div><span>证据覆盖</span><strong>{audited ? "2 / 3" : "—"}</strong></div><i><b style={{ width: audited ? "66.666%" : "0%" }} /></i><p>{audited ? "这是明确告诉你哪一句还没有依据。" : "点击核对，逐句检查答案是否有来源。"}</p></div>
           </div>
         </section>
         <TermLabLearning related={related} sources={[

@@ -10,8 +10,8 @@ import styles from "./transport-http-pages.module.css";
 
 const frames = [
   { label: "200 到达", status: "200 OK", encoding: "gzip", type: "application/json", bytes: "压缩字节", result: "等待解码", note: "响应头先说明这串字节怎样处理；body 还没有变成可以直接读取的对象。" },
-  { label: "先解码", status: "200 OK", encoding: "identity", type: "application/json", bytes: "{\"count\":2}", result: "得到表示字节", note: "Content-Encoding 描述表示怎样被编码；先还原字节，再谈它是不是 JSON。" },
-  { label: "再解析", status: "200 OK", encoding: "identity", type: "application/json", bytes: "{\"count\":2}", result: "对象 count=2", note: "Content-Type 给解析方向，但声明正确也不代表实际字节一定合法。" },
+  { label: "先解码", status: "200 OK", encoding: "identity", type: "application/json", bytes: "{\"count\":2}", result: "得到表示字节", note: "Content-Encoding 描述表示怎样被编码，先还原字节。" },
+  { label: "再解析", status: "200 OK", encoding: "identity", type: "application/json", bytes: "{\"count\":2}", result: "对象 count=2", note: "Content-Type 指定解析方向，解析器继续检查实际字节的格式。" },
   { label: "204 空体", status: "204 No Content", encoding: "—", type: "—", bytes: "0 bytes", result: "没有可解析内容", note: "204 的成功结果就是没有 message body；把空体硬喂给 JSON 解析器会得到错误。" },
   { label: "HEAD / 304", status: "HEAD 200 / 304", encoding: "—", type: "见头部", bytes: "0 bytes", result: "只读元数据", note: "HEAD 和 304 可以带字段帮助客户端判断，却不把响应体交给这次读取。" },
   { label: "声明错了", status: "200 OK", encoding: "identity", type: "application/json", bytes: "{\"count\":}", result: "解析失败", note: "选择 JSON 解析器只是开始；坏字节仍应停在解析边界，并把错误交给调用方。" },
@@ -66,23 +66,23 @@ function ResponseBodyLab() {
 
 export function ResponseBodyTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={responseBodySources} />;
-  return <ConceptArticle slug="response-body" title="响应体" subtitle="Response Body · headers 说明规则，body 承载表示" sources={responseBodySources} sections={[["body-message-section", "body 到底承载了什么"], ["body-decode-section", "先还原字节，再选择解析器"], ["body-no-content-section", "没有 body 也是协议结果"], ["body-boundary-section", "解析成功不等于业务成功"]]} intro={<>HTTP 响应里的 status 和 headers 先交代上下文，响应体才承载这次返回的表示。它可能是一段压缩字节、一份 JSON、一个 HTML 文档，也可能因为 HEAD、204 或 304 而根本没有可读取的 body；读取前要先看协议给出的边界。</>}>
+  return <ConceptArticle slug="response-body" title="响应体" subtitle="Response Body · headers 说明规则，body 承载表示" sources={responseBodySources} sections={[["body-message-section", "body 到底承载了什么"], ["body-decode-section", "先还原字节，再选择解析器"], ["body-no-content-section", "没有 body 也是协议结果"], ["body-boundary-section", "解析完成后检查业务结果"]]} intro={<>HTTP 响应里的 status 和 headers 先交代上下文，响应体才承载这次返回的表示。它可能是一段压缩字节、一份 JSON、一个 HTML 文档，也可能因为 HEAD、204 或 304 而根本没有可读取的 body；读取前要先看协议给出的边界。</>}>
     <ArticleSection id="body-message-section" title="body 到底承载了什么">
-      <p id="body-message" className="vp-citation-target">HTTP message 把状态行、字段和可选的 message body 分开。body 是服务器交付的表示字节，不是“200 的另一种写法”；状态和字段可以已经告诉客户端如何解释、缓存或处理它。<Cite id="body-message" /></p>
+      <p id="body-message" className="vp-citation-target">HTTP message 把状态行、字段和可选的 message body 分开。body 承载服务器交付的表示字节，200 则表示请求成功，状态和字段可以已经告诉客户端如何解释、缓存或处理它。<Cite id="body-message" /></p>
       <p id="body-representation" className="vp-citation-target">同一个资源可以用 JSON、HTML、图片或其他媒体类型表示。响应体的字节只是载荷，Content-Type、Content-Encoding 和状态码共同决定接收端应怎样读取它。<Cite id="body-representation" /></p>
       <ResponseBodyLab />
     </ArticleSection>
     <ArticleSection id="body-decode-section" title="先还原字节，再选择解析器">
       <p id="body-decode" className="vp-citation-target">Content-Encoding 描述表示在传输前使用了什么编码，例如 gzip。客户端应先按编码还原表示，再把还原后的字节交给 JSON、HTML 或文本解析器；把压缩字节直接当 JSON 读，失败的原因就已经错位了。<Cite id="body-decode" /></p>
-      <p id="body-parse" className="vp-citation-target">调用 response.json() 会读取 body 并按 JSON 语法解析；它不是“把任意响应变成对象”的魔法。Content-Type 写成 JSON 也不能修复缺逗号、缺值或截断的字节，解析错误要回到调用方处理。<Cite id="body-parse" /></p>
+      <p id="body-parse" className="vp-citation-target">调用 response.json() 会读取 body 并按 JSON 语法解析。Content-Type 写成 JSON 也不能修复缺逗号、缺值或截断的字节，解析错误要回到调用方处理。<Cite id="body-parse" /></p>
     </ArticleSection>
     <ArticleSection id="body-no-content-section" title="没有 body 也是协议结果">
-      <p id="body-method" className="vp-citation-target">HEAD 请求沿用 GET 的响应字段，却不返回这次响应的 message body；客户端可以用 Content-Length、ETag 等元数据判断下一步，而不是等待一段不存在的内容。<Cite id="body-method" /></p>
-      <p id="body-no-content" className="vp-citation-target">204 No Content 和 304 Not Modified 也表达了“这次没有响应体”的语义。它们不是服务器忘了填 body；调用方如果无条件调用 json()，得到的往往是空体解析错误。<Cite id="body-no-content" /></p>
+      <p id="body-method" className="vp-citation-target">HEAD 请求沿用 GET 的响应字段，却不返回这次响应的 message body；客户端可以用 Content-Length、ETag 等元数据判断下一步。<Cite id="body-method" /></p>
+      <p id="body-no-content" className="vp-citation-target">204 No Content 和 304 Not Modified 也表达了“这次没有响应体”的语义。得到的往往是空体解析错误。<Cite id="body-no-content" /></p>
       <p id="body-empty" className="vp-citation-target">遇到空体时，先按状态码决定是否有内容，再决定是否解析。把“没有内容”与“内容损坏”分开记录，排查时才不会把协议分支误报成 JSON 服务故障。<Cite id="body-empty" /></p>
     </ArticleSection>
-    <ArticleSection id="body-boundary-section" title="解析成功不等于业务成功">
-      <p>body 被成功解析，只说明字节符合所选格式；字段是否齐全、权限是否允许、金额是否可信，仍是应用层自己的判断。响应体也可能包含错误说明或部分结果，不能只因状态码是 200 就跳过业务校验。</p>
+    <ArticleSection id="body-boundary-section" title="解析完成后检查业务结果">
+      <p>body 被成功解析，说明字节符合所选格式；字段是否齐全、权限是否允许、金额是否可信，仍是应用层自己的判断。响应体也可能包含错误说明或部分结果，不能只因状态码是 200 就跳过业务校验。</p>
       <p>排查一条异常响应时，按顺序记录 method、status、Content-Encoding、Content-Type、实际 body 长度和解析错误。先确认有没有 body，再确认有没有正确解码，最后才判断 JSON 或 HTML 内容本身。</p>
     </ArticleSection>
   </ConceptArticle>;

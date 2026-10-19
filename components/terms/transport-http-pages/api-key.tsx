@@ -9,11 +9,11 @@ import { apiKeySources } from "@/lib/transport-http-sources";
 import styles from "./transport-http-pages.module.css";
 
 const frames = [
-  { label: "签发限制", key: "K1", placement: "server vault", action: "weather.read", result: "project-7 · active", note: "先把 key 绑定到调用项目和最小用途；它是凭证，不是把最终用户身份凭空变出来。" },
+  { label: "签发限制", key: "K1", placement: "server vault", action: "weather.read", result: "project-7 · active", note: "先把 key 绑定到调用项目和最小用途，它是凭证。" },
   { label: "受控请求头", key: "K1", placement: "X-API-Key", action: "GET /weather", result: "200 · quota -1", note: "受控服务把 key 放进请求头，API 识别项目并计量用量；日志不应记录完整秘密。" },
   { label: "塞进 URL", key: "K1", placement: "?key=K1", action: "GET /weather", result: "日志 / URL 泄露", note: "查询参数可能进入访问日志、历史记录或 Referer；同一个 key 的泄露面立刻变大。" },
   { label: "编进前端", key: "K1", placement: "bundle.js", action: "任何人可下载", result: "长期秘密公开", note: "公开浏览器由用户控制，源码里的长期 key 不能对用户保密。" },
-  { label: "轮换新值", key: "K2", placement: "server vault", action: "K1 → K2", result: "新请求继续 200", note: "轮换不是改一个字符串就结束：新旧重叠窗口、撤销时点和失败回滚都要有记录。" },
+  { label: "轮换新值", key: "K2", placement: "server vault", action: "K1 → K2", result: "新请求继续 200", note: "轮换需要记录新旧密钥的重叠窗口、撤销时点与失败回滚方案。" },
   { label: "旧值撤销", key: "K1", placement: "revoked", action: "GET /weather", result: "401 · invalid key", note: "服务端撤销旧值后，泄露的 key 才真正失去继续调用的能力。" },
 ];
 
@@ -57,7 +57,7 @@ function ApiKeyLab() {
 
 export function ApiKeyTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={apiKeySources} />;
-  return <ConceptArticle slug="api-key" title="API 密钥" subtitle="API Key · 识别调用方、计量用量，但不是最终用户授权" sources={apiKeySources} sections={[["key-role-section", "一串 key 先证明了什么"], ["key-storage-section", "为什么要把它藏在服务端"], ["key-restriction-section", "限制范围和计量能解决什么"], ["key-lifecycle-section", "轮换以后旧值去哪了"]]} intro={<>API 密钥是一串会随请求提交的凭证。服务可以用它识别项目、计量调用或套用配额，但拿到 key 的人通常就能以这个调用方继续请求；它和“当前到底是哪位用户”是两件事。</>}>
+  return <ConceptArticle slug="api-key" title="API 密钥" subtitle="API Key · 识别调用方并计量用量" sources={apiKeySources} sections={[["key-role-section", "一串 key 先证明了什么"], ["key-storage-section", "为什么要把它藏在服务端"], ["key-restriction-section", "限制范围和计量能解决什么"], ["key-lifecycle-section", "轮换以后旧值去哪了"]]} intro={<>API 密钥是一串会随请求提交的凭证。服务可以用它识别项目、计量调用或套用配额，但拿到 key 的人通常就能以这个调用方继续请求；它和“当前到底是哪位用户”是两件事。</>}>
     <ArticleSection id="key-role-section" title="一串 key 先证明了什么">
       <p id="key-role" className="vp-citation-target">API key 常用于识别项目、应用或调用方，让服务做计量、配额和基础访问判断。它通常是 bearer 凭证，能拿到值的人可能直接复用；服务不能只凭 key 推断最终用户的对象权限。<Cite id="key-role" /></p>
       <p id="key-bearer" className="vp-citation-target">把 key 放进受控请求头，比把它拼进 URL 更容易控制日志和转发范围。无论位置如何，key 都要按秘密或敏感凭证管理，避免在错误、调试输出和示例代码里原样出现。<Cite id="key-bearer" /></p>
@@ -68,8 +68,8 @@ export function ApiKeyTermPage() {
       <p id="key-query" className="vp-citation-target">查询参数容易进入访问日志、浏览器历史、监控和 Referer，除非供应商明确要求，否则不应把长期 API key 放进 URL。请求头也要配合日志脱敏和最小权限，不能因为不在地址栏就当成绝对安全。<Cite id="key-query" /></p>
     </ArticleSection>
     <ArticleSection id="key-restriction-section" title="限制范围和计量能解决什么">
-      <p id="key-restrict" className="vp-citation-target">给 key 绑定 API、来源、项目或环境限制，可以缩小误用范围；限制越贴近实际调用，泄露后的影响面越小。限制不能把公开 key 变回秘密，也不能替代用户级授权。<Cite id="key-restrict" /></p>
-      <p id="key-meter" className="vp-citation-target">使用计划可以把 key 与配额、速率或用量统计关联起来。计量帮助发现异常和控制成本，却不等于判断某个用户能否读取某条订单。<Cite id="key-meter" /><Cite id="key-quota" /></p>
+      <p id="key-restrict" className="vp-citation-target">给 key 绑定 API、来源、项目或环境限制，可以缩小误用范围；限制越贴近实际调用，泄露后的影响面越小。用户级授权另外检查。<Cite id="key-restrict" /></p>
+      <p id="key-meter" className="vp-citation-target">使用计划可以把 key 与配额、速率或用量统计关联起来。<Cite id="key-meter" /><Cite id="key-quota" /></p>
       <p id="key-boundary" className="vp-citation-target">API key 解决的是调用方凭证和服务入口问题；对象级授权还要结合登录身份、资源归属和操作权限。把一个高权限 key 放进前端，只会让所有浏览器用户共享同一把万能钥匙。<Cite id="key-boundary" /></p>
     </ArticleSection>
     <ArticleSection id="key-lifecycle-section" title="轮换以后旧值去哪了">

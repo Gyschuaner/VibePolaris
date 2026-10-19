@@ -93,23 +93,23 @@ export function SsgSsrTermPage(_props: BespokeTermPageProps) {
     <ArticleSection id="ssg-ssr-definition-section" title="先把一张网页想成一份做好的 HTML">
       <p>假设你在做一个活动网站，页面需要写出名称、日期和票价。数据库里只有数据，浏览器要收到一份带这些内容的 HTML，才能显示标题、段落和按钮。“生成页面”就是把数据填进页面结构，得到这份可交付的内容。</p>
       <p id="ssg-ssr-definition" className="vp-citation-target"><strong>SSG 是 Static Site Generation，静态站点生成；SSR 是 Server-side Rendering，服务端渲染。</strong>这里比较的是 HTML 的生成时机：SSG 先生成并保留可复用的结果，典型时机是构建发布；SSR 在请求到达后生成结果。两者的初始 HTML 都可由服务器交给浏览器。<Cite id="ssg-ssr-definition" sources={ssgSsrSources} /></p>
-      <p>“静态”说的是已经生成的那份结果可以原样交付，不是页面不能有按钮；“服务端”说的是生成发生在服务器，不是所有按钮点击也必须在那里执行。</p>
+      <p>“静态”说的是已经生成的那份结果可以原样交付，“服务端”说的是生成发生在服务器。</p>
     </ArticleSection>
     <ArticleSection id="ssg-ssr-time-section" title="同一张票，两个生成时机">
       <p id="ssg-ssr-static" className="vp-citation-target">早上 9 点构建时，票价是 80 元。SSG 把“票价 80 元”写进 HTML 并存下来。10 点有人来访问，服务可以直接交付这份副本，不必为了这个访客再把模板与数据拼一遍。公开说明、文章、帮助页常适合这种共享结果。<Cite id="ssg-ssr-static" sources={ssgSsrSources} /></p>
-      <p id="ssg-ssr-request" className="vp-citation-target">SSR 把生成时机放到请求到达之后。若 10 点数据源的票价已改为 100 元，这次生成的 HTML 可以写入 100 元。需要登录身份、请求参数或实时查询结果的页面，也可以在这个阶段读取相应信息。这里假定数据读取成功且没有额外缓存，不能把 SSR 理解成“永远保证最新”。<Cite id="ssg-ssr-request" sources={ssgSsrSources} /></p>
+      <p id="ssg-ssr-request" className="vp-citation-target">SSR 把生成时机放到请求到达之后。若 10 点数据源的票价已改为 100 元，这次生成的 HTML 可以写入 100 元。需要登录身份、请求参数或实时查询结果的页面，也可以在这个阶段读取相应信息。这里假定数据读取成功且没有额外缓存。<Cite id="ssg-ssr-request" sources={ssgSsrSources} /></p>
       <p>把数据源票价改成 100，再点“再次访问”。看两张收据：SSG 仍交付旧副本，SSR 才重新读取。然后“重新生成”静态副本，再访问一次。这个教学实验把生成压成即时操作，保留的是生成时机与结果复用的差别。</p>
       <GenerationLab />
-      <p>注意，“数据变了”“HTML 副本更新了”“访客拿到新 HTML 了”是三件事。改数据库并不会自动改写已生成文件；生成了新副本，也要到下一次交付时才会进入访客手里。</p>
+      <p>注意，“数据变了”“HTML 副本更新了”“访客拿到新 HTML 了”是三件事。要到下一次交付时才会进入访客手里。</p>
     </ArticleSection>
     <ArticleSection id="ssg-ssr-update-section" title="静态页怎样更新，失败时留下什么">
-      <p id="ssg-ssr-update" className="vp-citation-target">最直接的办法是重新构建发布。某些框架也允许只更新部分静态页，例如 Next.js 的增量静态再生成（ISR）：按时间或事件触发重新生成，让后续请求使用新结果。具体触发与生效时机取决于实现；定时到期不等于所有人立刻拿到新页面。<Cite id="ssg-ssr-update" sources={ssgSsrSources} /></p>
+      <p id="ssg-ssr-update" className="vp-citation-target">最直接的办法是重新构建发布。某些框架也允许只更新部分静态页，例如 Next.js 的增量静态再生成（ISR）：按时间或事件触发重新生成，让后续请求使用新结果。<Cite id="ssg-ssr-update" sources={ssgSsrSources} /></p>
       <p id="ssg-ssr-failure" className="vp-citation-target">如果读取数据失败，新结果还不存在。在 Next.js 所描述的后台再生成机制中，失败时可继续保留上次成功生成的页面，并在后续请求重试。对请求时生成的页面，应用也要决定显示错误、降级内容还是重试。演示里关闭数据源，旧静态副本还在，SSR 这次不会凭空产生新票价。<Cite id="ssg-ssr-failure" sources={ssgSsrSources} /></p>
-      <ArticleAside title="“有旧副本”也是一种取舍"><p>活动介绍晚一点更新，也许还能接受；售罄状态、付款金额或账户余额却不能随意拿旧值代替。旧页面保证可读，与交易是否允许继续，是两项不同的业务判断。</p></ArticleAside>
+      <ArticleAside title="“有旧副本”也是一种取舍"><p>活动介绍可按可接受时效更新，售罄状态、付款金额与余额需按各自业务要求读取及时数据。旧页面保证可读，与交易是否允许继续，是两项不同的业务判断。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="ssg-ssr-hydration-section" title="能看见页面，为什么还点不动">
       <p id="ssg-ssr-hydration" className="vp-citation-target">一份 HTML 可以先显示内容。如果页面使用 React 等客户端框架，浏览器还需要下载并运行脚本，把组件逻辑接到已有 HTML 上，这常叫“水合”。所以“初始内容已经出现”和“交互已经就绪”有不同的时刻。客户端最初的结果应与服务端 HTML 对得上，否则可能出现水合错误。<Cite id="ssg-ssr-hydration" sources={ssgSsrSources} /></p>
-      <p>SSG 或 SSR 都可以带客户端交互，也都可以只交付普通文档。不要把“预先生成”“请求时生成”“浏览器接上交互”捆成一个选择题：它们分别回答什么时候做内容、哪里做内容、谁处理之后的操作。</p>
+      <p>SSG 或 SSR 都可以带客户端交互，也都可以只交付普通文档。</p>
     </ArticleSection>
     <ArticleSection id="ssg-ssr-choice-section" title="选时机之前，先分清内容给谁看">
       <p id="ssg-ssr-cache" className="vp-citation-target">缓存是另一个维度：保存一份响应，之后按规则复用。请求时生成的结果也可能被缓存；预先生成的结果也要定义何时过期。尤其是个人内容，不能因为用了 SSR 就假定不会被共享。缓存键、共享范围和响应头需要一起设计，避免把一个人的页面交给另一个人。<Cite id="ssg-ssr-cache" sources={ssgSsrSources} /></p>

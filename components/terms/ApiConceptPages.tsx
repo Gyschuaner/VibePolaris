@@ -17,7 +17,7 @@ export function ApiTermPage() {
     <ArticleSection id="contract" title="程序之间的约定">
       <Legacy slug="api" names={["question", "definition"]} />
       <p>这里有两个程序：读书会网页是调用方，图书服务是提供方。网页向服务发出“给我编号 42 的书”这样的请求，服务查找后把书的信息交回来，网页再用书名画出书签。若把书名预先写死在网页里，也能显示这张书签；书库里的书名后来变了，网页却不会从服务取得新值。</p>
-      <p id="api-scope" className="vp-citation-target"><strong>API 是软件向其他代码开放功能时，供调用方使用的操作和规则。</strong>它告诉调用方可以做什么、怎样给出信息，以及会得到什么；提供方负责在内部完成工作。代码库提供的函数、浏览器内置的操作、网络服务的请求方式，都可以是 API 的一部分。本页先看图书服务的 HTTP API，API 本身不是某个网址。<Cite id="api-scope" /></p>
+      <p id="api-scope" className="vp-citation-target"><strong>API 是软件向其他代码开放功能时，供调用方使用的操作和规则。</strong>它告诉调用方可以做什么、怎样给出信息，以及会得到什么；提供方负责在内部完成工作。代码库提供的函数、浏览器内置的操作、网络服务的请求方式，都可以是 API 的一部分。本页先看图书服务的 HTTP API。<Cite id="api-scope" /></p>
       <p>在本例的约定中，网页用 <code>GET /books/42</code> 读取这本书。GET 是这次的读取操作，<code>/books/42</code> 是图书服务中的位置；服务返回 <code>{'{"id":42,"title":"星空手记"}'}</code>。这里 <code>id</code> 是数字编号，<code>title</code> 是书名文字；这种带字段名的文本写法叫 <ConceptTerm slug="json">JSON</ConceptTerm>。网页用 <code>title</code> 显示书名，用 <code>id</code> 标明是哪本书，再画出书签；它无须知道服务内部把书名放在哪张表、哪个字段里。</p>
       <p id="api-contract" className="vp-citation-target">真正对接时，还要约定输入有哪些限制、书不存在或无权读取时会返回什么，以及调用前是否需要登录或凭证。OpenAPI 可以把 HTTP 操作、输入、响应和安全要求写成可供工具读取的描述；<strong>文档说明了预期，服务仍要实际实现这些行为。</strong><Cite id="api-contract" /></p>
       <p id="api-browser" className="vp-citation-target">浏览器提供的音频处理能力也有 API。例如网页代码调用浏览器开放的音频操作，调整一段声音的音量；这里调用的是浏览器自带的功能，不需要图书服务的网址。它与前面的 HTTP API 形式不同，共同点是调用方按提供方开放的操作和规则使用能力。<Cite id="api-browser" /></p>
@@ -26,7 +26,7 @@ export function ApiTermPage() {
       <Legacy slug="api" names={["scene-heading"]} />
       <p>下面只检查这份约定中的输出字段。网页要求整数 <code>id</code> 和非空文字 <code>title</code>。服务内部先用结构 A 保存 <code>id</code> 和 <code>title</code>；切到结构 B 后，内部字段改成 <code>book_id</code> 和 <code>display_name</code>，书仍是编号 42 的《星空手记》。</p>
       <ApiContractLesson />
-      <p id="api-mapping" className="vp-citation-target">勾着“按约定映射”时，服务把 B 的 <code>book_id</code>、<code>display_name</code> 分别整理成对外的 <code>id</code>、<code>title</code>。网页仍收到编号 42 和“星空手记”，可以生成同一张书签。关闭映射再交给调用方，B 的内部字段直接出现在外部数据里，网页找不到约定的 <code>id</code>、<code>title</code>，书签就不能生成。A 的字段原本与对外约定相同，关闭映射仍能通过本例检查；这不代表所有内部结构都能直接公开。Microsoft 的 Web API 设计建议也强调不要让外部数据直接照搬内部存储。<Cite id="api-mapping" /></p>
+      <p id="api-mapping" className="vp-citation-target">勾着“按约定映射”时，服务把 B 的 <code>book_id</code>、<code>display_name</code> 分别整理成对外的 <code>id</code>、<code>title</code>。网页仍收到编号 42 和“星空手记”，可以生成同一张书签。关闭映射再交给调用方，B 的内部字段直接出现在外部数据里，网页找不到约定的 <code>id</code>、<code>title</code>，书签就不能生成。关闭映射仍能通过本例检查。Microsoft 的 Web API 设计建议也强调不要让外部数据直接照搬内部存储。<Cite id="api-mapping" /></p>
       <p>实验只在浏览器内转换教学数据，没有访问真实书库或发送网络请求。它检查的是字段约定：即使内容能写成格式正确的 JSON，也不能单凭这一点断定网页会读到需要的字段。</p>
     </ArticleSection>
     <ArticleSection id="compatibility" title="调用方的依赖" className={base.offset}>
@@ -53,18 +53,18 @@ export function EndpointTermPage() {
     </ArticleSection>
     <ArticleSection id="routing" title="找到对应的处理程序">
       <Legacy slug="endpoint" names={["scene-heading"]} />
-      <p id="endpoint-router" className="vp-citation-target">服务端需要把收到的方法和路径对应到处理程序，也就是负责这类请求的一段代码。以 FastAPI 这个编写服务的框架为例，开发者可以指定哪段代码处理某条路径的 GET 请求。本页用一张只有三行的教学路由表表示这种对应关系：<code>GET /books</code> 对应 <code>listBooks</code>，<code>POST /books</code> 对应 <code>createBook</code>，<code>GET /books/42</code> 对应 <code>getBook</code>。这些英文名字只是本例处理程序的标签，不是 HTTP 内置命令。<Cite id="endpoint-router" /></p>
+      <p id="endpoint-router" className="vp-citation-target">服务端需要把收到的方法和路径对应到处理程序，也就是负责这类请求的一段代码。以 FastAPI 这个编写服务的框架为例，开发者可以指定哪段代码处理某条路径的 GET 请求。本页用一张只有三行的教学路由表表示这种对应关系：<code>GET /books</code> 对应 <code>listBooks</code>，<code>POST /books</code> 对应 <code>createBook</code>，<code>GET /books/42</code> 对应 <code>getBook</code>这些英文名字只是本例处理程序的标签。<Cite id="endpoint-router" /></p>
       <p>选一个方法和路径，再点“查找处理程序”，看这份表是否列出了对应的处理程序。你也能换服务基址，看完整地址怎样变化。实验只在浏览器内查这张表，不向示例地址发送网络请求。</p>
       <EndpointLesson />
       <p id="endpoint-environment" className="vp-citation-target">把基址从 <code>https://api.example.com</code> 换成 <code>https://test.example.com</code>，同一条 <code>/books</code> 路径就组成另一个完整地址。OpenAPI 可以为开发、测试和正式环境分别描述服务网址；本实验仍使用同一张教学路由表，所以匹配到的处理程序名称不会随基址变化。真实环境不一定有相同的数据、路由或权限，不能只凭这次本地匹配推断远端可用。<Cite id="endpoint-environment" /></p>
-      <p><strong>找到 <code>createBook</code>，并不表示已经创建了一本书。</strong>这次匹配只说明所选方法和路径对应哪个处理程序。服务还需要按自身规则核对输入、身份和权限，业务操作成功后才会有“新书已加入”的结果；本页没有执行这些步骤。</p>
+      <p><strong>找到 <code>createBook</code>，资源创建需要提交对应的创建请求。</strong>这次匹配说明所选方法和路径对应哪个处理程序。服务还需要按自身规则核对输入、身份和权限，业务操作成功后才会有“新书已加入”的结果；本页没有执行这些步骤。</p>
     </ArticleSection>
     <ArticleSection id="boundary" title="匹配之后还有检查" className={base.offset}>
       <Legacy slug="endpoint" names={["quiz-heading", "prompt-heading"]} />
       <p id="endpoint-method" className="vp-citation-target">在这张表里，<code>/authors</code> 完全没有声明；<code>/books</code> 已声明，却没有 <code>DELETE</code> 操作。演示分别提示“路径不存在”和“该路径未声明此方法”，并未生成真实 HTTP 响应。真实 HTTP 的 405 表示服务认识这次用的方法，但所请求的目标不支持它；响应还必须用 <code>Allow</code> 列出当前支持的方法。404 表示这次没找到可访问的目标，也可能是服务不愿透露它存在。例如无权查看某本书时，服务可以选择用 404 隐藏它。不能仅凭 404 推断服务内部一定没有那本书。<Cite id="endpoint-method" /></p>
       <div className={s.boundaryNote}><strong>位置与方法 → 输入、身份和权限 → 业务结果</strong><p>排查失败时，按这条链逐步看请求停在哪一步。</p></div>
-      <p>换到笔记服务也能这样判断：<code>GET /notes</code> 可以表示读笔记列表，<code>POST /notes</code> 可以表示提交新笔记；即使路径一样，也要分别确认两种方法是否开放。把网址改到测试环境，只是换了请求目标，不能证明测试环境已有同一批笔记。</p>
-      <ArticleAside title="可访问不等于有权限"><p>端点是调用位置，不是通行证。可用的地址不一定公开，公开的地址也不一定允许匿名调用；是否需要登录、能否读取或新增，仍要看 <ConceptTerm slug="api">API</ConceptTerm> 的权限约定和服务的实际检查。</p></ArticleAside>
+      <p>换到笔记服务也能这样判断：<code>GET /notes</code> 可以表示读笔记列表，<code>POST /notes</code> 可以表示提交新笔记；即使路径一样，也要分别确认两种方法是否开放。只是换了请求目标。</p>
+      <ArticleAside title="服务端逐项检查访问权限"><p>端点是调用位置。可用的地址不一定公开，公开的地址也不一定允许匿名调用；是否需要登录、能否读取或新增，仍要看 <ConceptTerm slug="api">API</ConceptTerm> 的权限约定和服务的实际检查。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }
@@ -77,28 +77,28 @@ export function RestTermPage() {
     <ArticleSection id="resource" title="资源与表示">
       <Legacy slug="rest" names={["question", "definition"]} />
       <p>先分清两处：预约服务保存着 42 号预约，网页只拿到上次读取的内容。服务端当前状态和网页已经收到的副本，可能暂时不同。服务端变为“已过期”时，网页上的副本不会凭空同步。</p>
-      <p id="rest-resource" className="vp-citation-target"><strong>REST 是一套架构风格，讲的是网络应用中客户端（比如这个网页）和服务端怎样交互。</strong>在本例中，<code>/reservations/42</code> 是预约的标识，预约是<strong>资源</strong>；服务返回的 JSON（一种常见的数据格式）可以描述它当时的状态，这份返回内容是资源的<strong>表示</strong>。同一个资源后来仍可用原标识找到，但新读到的表示可能不同。资源不等于某一份 JSON，也不要求等于数据库里的一行。<Cite id="rest-resource" /></p>
-      <p>开发者也可以事先把“确认”按钮和请求地址写在网页里，预约照样能用；只是网页得提前知道后面每一步的地址，服务改动流程时网页也得跟着改。本例采用另一种做法：网页先读取预约，从收到的内容取得当前可用的选择。无论哪种做法，旧页面上的按钮都不能保证服务现在会接受确认。</p>
+      <p id="rest-resource" className="vp-citation-target"><strong>REST 是一套架构风格，讲的是网络应用中客户端（比如这个网页）和服务端怎样交互。</strong>在本例中，<code>/reservations/42</code> 是预约的标识，预约是<strong>资源</strong>；服务返回的 JSON（一种常见的数据格式）可以描述它当时的状态，这份返回内容是资源的<strong>表示</strong>同一个资源后来仍可用原标识找到，但新读到的表示可能不同。不要求等于数据库里的一行。<Cite id="rest-resource" /></p>
+      <p>开发者也可以事先把“确认”按钮和请求地址写在网页里，预约照样能用；只是网页得提前知道后面每一步的地址，服务改动流程时网页也得跟着改。本例采用另一种做法：网页先读取预约，从收到的内容取得当前可用的选择。</p>
     </ArticleSection>
     <ArticleSection id="actions" title="表示带来的后续选择">
       <Legacy slug="rest" names={["scene-heading"]} />
-      <p id="rest-controls" className="vp-citation-target">表示除了描述状态，还可以提供通往下一步的链接或操作。客户端先知道怎样读这种表示、每个动作是什么意思（比如哪个是确认、哪个是取消），再沿服务给出的目标继续，而不是猜后续地址。REST 把这种由返回内容引导下一步的方式称为<strong>超媒体驱动</strong>。待确认时收到的那份表示给出“确认”和“取消”；过期后的新表示不再给这两个选择。网页显示出按钮，是因为收到的表示给了它相应的操作目标；按钮本身不保证操作成功。<Cite id="rest-controls" /></p>
-      <p>先点“获取最新表示”，看网页收到什么、能选什么。也可以先让服务端预约过期，再试网页手里的旧“确认”。演示中的 <code>actions</code> 是动作列表，<code>rel</code> 说明动作含义；确认动作的 <code>method</code> 是 <code>PATCH</code>，<code>body</code> 写着希望改成“已确认”。这些字段和方法都是本例的约定，不是 REST 规定所有预约服务都要这样写。这里仅演示资源、表示和后续选择的一部分机制。</p>
+      <p id="rest-controls" className="vp-citation-target">表示除了描述状态，还可以提供通往下一步的链接或操作。客户端先知道怎样读这种表示、每个动作是什么意思（比如哪个是确认、哪个是取消），再沿服务给出的目标继续。REST 把这种由返回内容引导下一步的方式称为<strong>超媒体驱动</strong>待确认时收到的那份表示给出“确认”和“取消”；过期后的新表示不再给这两个选择。是因为收到的表示给了它相应的操作目标。<Cite id="rest-controls" /></p>
+      <p>先点“获取最新表示”，看网页收到什么、能选什么。也可以先让服务端预约过期，再试网页手里的旧“确认”。演示中的 <code>actions</code> 是动作列表，<code>rel</code> 说明动作含义；确认动作的 <code>method</code> 是 <code>PATCH</code>，<code>body</code> 写着希望改成“已确认”。这些字段和方法都是本例的约定。这里仅演示资源、表示和后续选择的一部分机制。</p>
       <RestLesson />
-      <p id="rest-conflict" className="vp-citation-target">过期操作先只改变服务端预约，网页保留旧表示，所以“确认”按钮还在。旧确认送到服务后，服务按当前状态拒绝。画面里的 200 和 409 是 HTTP 响应状态码，说的是这次请求的结果，不是预约的状态：本例用 200 标出成功，用 409 表示旧确认与当前预约状态冲突。拒绝时服务返回“已过期”的新表示，网页收到后才撤下旧选择。409 是本例对这种冲突的处理，不是 REST 对过期预约规定的唯一响应。确认或取消成功时，网页也以新返回的表示更新自己。<Cite id="rest-conflict" /></p>
-      <ArticleAside title="按返回链接继续操作"><p id="rest-links-example" className="vp-citation-target">GitHub API 的使用建议要求直接使用响应里提供的 URL，不手动拆解或猜测未来地址；分页也通过 Link 中的关系继续。这是一个具体平台的使用约定，能帮助理解“沿返回链接前进”，不意味着仅做到这一点就满足全部 REST 约束。<Cite id="rest-links-example" /></p></ArticleAside>
+      <p id="rest-conflict" className="vp-citation-target">过期操作先只改变服务端预约，网页保留旧表示，所以“确认”按钮还在。旧确认送到服务后，服务按当前状态拒绝。画面里的 200 和 409 是 HTTP 响应状态码，用于说明本次请求的处理结果：本例用 200 标出成功，用 409 表示旧确认与当前预约状态冲突。拒绝时服务返回“已过期”的新表示，网页收到后才撤下旧选择。409 是本例对这种冲突的处理。确认或取消成功时，网页也以新返回的表示更新自己。<Cite id="rest-conflict" /></p>
+      <ArticleAside title="按返回链接继续操作"><p id="rest-links-example" className="vp-citation-target">GitHub API 的使用建议要求直接使用响应里提供的 URL，不手动拆解或猜测未来地址；分页也通过 Link 中的关系继续。这是一个具体平台的使用约定，能帮助理解“沿返回链接前进”。<Cite id="rest-links-example" /></p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="stateless" title="无状态与持久数据" className={base.offset}>
       <Legacy slug="rest" names={["quiz-heading"]} />
-      <p id="rest-stateless" className="vp-citation-target"><strong>无状态不等于服务不保存预约。</strong>服务可以持久保存预约的当前状态。无状态限制的是请求之间的会话依赖：处理这一次请求所需的信息要随请求给出，不能要求服务暗中记得这个网页前几步点过什么。比如本例的确认动作带着目标（<code>href</code>）、方法（<code>method</code>）和要改成的状态（<code>body</code>）；服务仍会查看预约现在是否还允许确认。登录也不例外：每次请求需带上身份凭据，服务可据此查询账号资料。<Cite id="rest-stateless" /></p>
-      <p id="rest-safe" className="vp-citation-target">如果用 HTTP，方法本身的含义也要遵守。GET 用来读预约；比如网页上有个“打开详情”按钮，点它不应该把预约取消掉。这里说的<strong>安全方法</strong>，是客户端没有请求改变目标资源，并不保证服务内部一个字节都不变；写入访问日志这类附带行为可以发生。<Cite id="rest-safe" /></p>
+      <p id="rest-stateless" className="vp-citation-target"><strong>每次请求都携带处理所需的信息。</strong>服务可以持久保存预约的当前状态。无状态限制的是请求之间的会话依赖：处理这一次请求所需的信息要随请求给出，不能要求服务暗中记得这个网页前几步点过什么。比如本例的确认动作带着目标（<code>href</code>）、方法（<code>method</code>）和要改成的状态（<code>body</code>）；服务仍会查看预约现在是否还允许确认。登录也不例外：每次请求需带上身份凭据，服务可据此查询账号资料。<Cite id="rest-stateless" /></p>
+      <p id="rest-safe" className="vp-citation-target">如果用 HTTP，方法本身的含义也要遵守。GET 用来读预约；比如网页上有个“打开详情”按钮，点它不应该把预约取消掉。这里说的<strong>安全方法</strong>是客户端没有请求改变目标资源，写入访问日志这类附带行为可以发生。<Cite id="rest-safe" /></p>
     </ArticleSection>
     <ArticleSection id="constraints" title="一组共同工作的约束">
       <Legacy slug="rest" names={["prompt-heading"]} />
       <div id="rest-constraints" className="vp-citation-target"><p>上面的预约实验只展示了资源标识、表示引导下一步和请求独立性。Fielding 提出的 REST 还要求几项约束共同工作。<strong>把 URL 写成名词、返回 JSON、使用几个 HTTP 方法，都不能单独证明一个服务符合 REST。</strong><Cite id="rest-constraints" /></p>
         <dl className={s.constraints}><div><dt>客户端与服务端分离</dt><dd>界面与数据服务分别演进。</dd></div><div><dt>无状态</dt><dd>请求提供解释本次交互所需的信息。</dd></div><div><dt>缓存</dt><dd>明确哪些响应可以复用。</dd></div><div><dt>统一接口</dt><dd>用标识找到资源，通过表示操作它；消息附有理解和处理它所需的信息，返回内容引导下一步。</dd></div><div><dt>分层系统</dt><dd>组件通过相邻层的接口协作。</dd></div><div><dt>按需代码 · 可选</dt><dd>允许下载代码扩展客户端能力。</dd></div></dl>
       </div>
-      <p>换成借书续借也是同一个判断：网页上次读到“可续借”和续借目标，不能保证书在点击时仍可续。网页用收到的续借目标发起请求；服务按当前状态作答，网页再按答复更新。工程文档常把资源型 HTTP API 也叫“REST API”。看到这个名称时，还要看它实际采用了哪些约束。</p>
+      <p>换成借书续借也是同一个判断：网页上次读到“可续借”和续借目标。网页用收到的续借目标发起请求；服务按当前状态作答，网页再按答复更新。工程文档常把资源型 HTTP API 也叫“REST API”。看到这个名称时，还要看它实际采用了哪些约束。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
@@ -115,17 +115,17 @@ export function PaginationTermPage() {
     </ArticleSection>
     <ArticleSection id="pages" title="位置与边界">
       <Legacy slug="pagination" names={["scene-heading"]} />
-      <p>开始时服务端有 9 到 1 号书，每次给三条。网页先拿到 9、8、7；接着服务端在队首插入 10，当前顺序变成 10、9、8、7、6……网页已经收到的第一批仍是 9、8、7。下一次请求面对的是<strong>已经变化的列表</strong>，而不是事先切好、永远不变的第二页。下面用同一份当前列表，分别试两种继续方式。</p>
+      <p>开始时服务端有 9 到 1 号书，每次给三条。网页先拿到 9、8、7；接着服务端在队首插入 10，当前顺序变成 10、9、8、7、6……网页已经收到的第一批仍是 9、8、7。下一次请求面对的是<strong>已经变化的列表</strong>下面用同一份当前列表，分别试两种继续方式。</p>
       <PaginationLesson />
       <div className={s.comparison}><div><h3>Offset：跳过几条</h3><p id="pagination-offset" className="vp-citation-target">网页记着“已经取了三条”，于是下次让服务端跳过<strong>当前列表</strong>的前三条，再取三条。现在前三条是 10、9、8；第四条是旧批的 7，结果便是 7、6、5，7 重复了。PostgreSQL 里写成 <code>LIMIT 3 OFFSET 3</code> 时，<code>OFFSET</code> 就是先跳过三条。<Cite id="pagination-offset" /></p></div><div><h3>Cursor：从哪里继续</h3><p id="pagination-cursor" className="vp-citation-target">另一边记住上批末尾的 7，下次从“7 之后”继续。本例编号倒序且不变，所以取编号小于 7 的前三条，得到 6、5、4；队首插入 10 不会改变这个边界。<strong>游标是继续位置的标记</strong>，不一定直接写成编号：Stripe v1 用现有对象 ID 作 <code>starting_after</code>，GitHub GraphQL 则返回 <code>endCursor</code>，下次请求时把它放进 <code>after</code> 参数。调用方按各自接口约定传回即可，不必猜测标记内部怎样编码。<Cite id="pagination-cursor" /></p></div></div>
     </ArticleSection>
     <ArticleSection id="continuation" title="读到哪里，何时停止" className={base.offset}>
       <Legacy slug="pagination" names={["quiz-heading", "prompt-heading"]} />
-      <p><strong>不重复旧记录，不等于看到了整份最新列表。</strong>新书 10 在边界 7 前面，沿着 7 往后读不会遇到它；重新从第一批读才会看到。若改按“最近修改时间”排序，一本书被修改后可能移到队首，旧边界不再代表同一位置；前面靠“编号不变”得出的结论，到这里不能直接套用。要得到某一时刻完整而一致的结果，得由服务端固定那一时刻的列表，或让后续请求都读取同一版本；光是换成游标做不到。</p>
+      <p><strong>不重复旧记录。</strong>新书 10 在边界 7 前面，沿着 7 往后读不会遇到它；重新从第一批读才会看到。若改按“最近修改时间”排序，一本书被修改后可能移到队首，旧边界不再代表同一位置；前面靠“编号不变”得出的结论，到这里不能直接套用。要得到某一时刻完整而一致的结果，得由服务端固定那一时刻的列表，或让后续请求都读取同一版本；光是换成游标做不到。</p>
       <p id="pagination-end" className="vp-citation-target">何时停，也要看具体接口的约定。假如一共六条、每批三条，第二批刚好装满，却已经是最后一批；不能靠“装满”判断还有下一页。Stripe v1 的 <code>has_more</code> 为 <code>false</code> 表示已到末尾；GitHub GraphQL 的 <code>hasNextPage</code> 为 <code>false</code> 也表示不再向后取。字段名不一样，含义要各自查文档确认。<Cite id="pagination-end" /></p>
-      <p id="pagination-next-link" className="vp-citation-target">还有接口直接告诉你下一页去哪里：GitHub REST 的响应可以带 <code>Link</code>，其中 <code>rel="next"</code> 对应下一页 URL；没有下一页时，响应里就不会出现这条链接。客户端沿返回的链接继续，不用自己拼地址。它是 GitHub REST 的做法，不是每个分页接口都必须有的字段。<Cite id="pagination-next-link" /></p>
+      <p id="pagination-next-link" className="vp-citation-target">还有接口直接告诉你下一页去哪里：GitHub REST 的响应可以带 <code>Link</code>，其中 <code>rel="next"</code> 对应下一页 URL；没有下一页时，响应里就不会出现这条链接。客户端沿返回的链接继续，不用自己拼地址。它是 GitHub REST 的做法。<Cite id="pagination-next-link" /></p>
       <p>换成按新到旧排列的聊天消息也是一样：先读 9、8、7，再来一条 10，按当前列表跳过三条会重见 7；从旧消息 7 往后读不会重见 7，也不会碰到刚来的 10。想看新消息就刷新列表开头；想核对某一时刻的完整消息，则先看服务端是否支持后续请求都读取同一版本。</p>
-      <ArticleAside title="一次少返回，不代表查询一定便宜"><p id="pagination-cost" className="vp-citation-target">PostgreSQL 仍需在服务端找到 <code>OFFSET</code> 跳过的记录，才能知道从哪里开始返回；跳过很多条时，这一步可能变慢。分页限制了单次返回的数量，却不能单凭“每页三条”判断查询代价；具体还要看排序、过滤和 <ConceptTerm slug="index">索引</ConceptTerm>。<Cite id="pagination-cost" /></p></ArticleAside>
+      <ArticleAside title="限制返回量后检查查询成本"><p id="pagination-cost" className="vp-citation-target">PostgreSQL 仍需在服务端找到 <code>OFFSET</code> 跳过的记录，才能知道从哪里开始返回；跳过很多条时，这一步可能变慢。分页限制了单次返回的数量，却不能单凭“每页三条”判断查询代价；具体还要看排序、过滤和 <ConceptTerm slug="index">索引</ConceptTerm>。<Cite id="pagination-cost" /></p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }
@@ -139,7 +139,7 @@ export function RateLimitingTermPage() {
       <Legacy slug="rate-limiting" names={["question", "definition"]} />
       <p><strong>限流按事先定好的规则，限制一段时间内接受的请求量。</strong>一次请求是应用向接口发起的一次调用。比如你点一次“生成”，应用可能先查资料，再请求 AI 接口；这已经是两次不同的调用，是否共用额度还得看服务的规则。限制请求进入的节奏，可以避免大量调用同时压到服务上，也能控制成本，减少调用方之间争抢额度。服务也可以排队或增加容量来应对突发；本页只看超额后直接拒绝的做法。</p>
       <p id="rate-bucket" className="vp-citation-target">令牌桶是限流的一种实现：桶有最大容量，按固定速率补充。在下面的实验里，每放行一次请求就消耗一枚令牌。桶里提前存下的额度允许短时连续请求；桶空时，新来的请求会被拒绝，过一段时间又有新额度。AWS API Gateway 用令牌桶配置持续速率和突发容量，令牌在这里代表一次请求的通行额度。<Cite id="rate-bucket" /></p>
-      <p>桶里的“令牌”只是这套计数方法的名字，既不是登录用的 API 密钥，也不是 AI 模型计算文字量时说的 token。后一种 token 会在真实 AI 服务的另一类限额中出现。</p>
+      <p>桶里的“令牌”只是这套计数方法的名字。后一种 token 会在真实 AI 服务的另一类限额中出现。</p>
     </ArticleSection>
     <ArticleSection id="buckets" title="额度共享的范围">
       <Legacy slug="rate-limiting" names={["scene-heading"]} />
@@ -150,11 +150,11 @@ export function RateLimitingTermPage() {
     </ArticleSection>
     <ArticleSection id="rejection" title="被拒绝之后" className={base.offset}>
       <Legacy slug="rate-limiting" names={["quiz-heading", "prompt-heading"]} />
-      <p id="rate-response" className="vp-citation-target">HTTP 的 429 表示一段时间内请求过多。响应可以带 <code>Retry-After</code> 提示何时再试，但不一定带；定义 429 的 HTTP 规范也没有规定必须按什么身份或算法计数。实验里的 <code>429 · Retry-After: 1</code> 是本站模拟的响应，只出现在被拒的请求上，不代表所有服务都会这样返回。<Cite id="rate-response" /></p>
-      <p id="rate-retry-wait" className="vp-citation-target"><code>Retry-After: 1</code> 里的数字表示收到响应后建议等待 1 秒；它也可以是一个日期。即使等足时间，也可能有别的请求先用掉新额度，或碰到另一层限额。等满提示时间可以再试，仍不能保证下一次通过。<Cite id="rate-retry-wait" /></p>
+      <p id="rate-response" className="vp-citation-target">HTTP 的 429 表示一段时间内请求过多。响应可以带 <code>Retry-After</code> 提示何时再试，但不一定带；定义 429 的 HTTP 规范也没有规定必须按什么身份或算法计数。实验里的 <code>429 · Retry-After: 1</code> 是本站模拟的响应，只出现在被拒的请求上。<Cite id="rate-response" /></p>
+      <p id="rate-retry-wait" className="vp-citation-target"><code>Retry-After: 1</code> 里的数字表示收到响应后建议等待 1 秒；它也可以是一个日期。即使等足时间，也可能有别的请求先用掉新额度，或碰到另一层限额。等满提示时间可以再试。<Cite id="rate-retry-wait" /></p>
       <p id="rate-ai" className="vp-citation-target">换到真实 AI 接口，限额还可能同时按请求次数和模型消耗的 token 量计算。OpenAI API 文档分别列出每分钟请求数（RPM）和每分钟 token 数（TPM）等指标，限额涉及组织、项目和具体模型；文档还提醒，失败请求也会计入每分钟额度。本站实验中被拒的请求不扣模拟桶令牌，那是另一套简化规则。哪怕你只发了一次，或页面上的模拟桶还剩一枚，也不能断定真实项目还有额度。<Cite id="rate-ai" /></p>
-      <p><strong>通过限流检查，不等于业务执行成功。</strong>后面的操作仍可能因为无权访问、输入错误或服务故障失败。收到 429 时先看响应里有没有等待提示，再查接口文档中的限额与重试规则，不要立即反复重发；对会修改数据的操作，还要先判断重复请求是否安全。</p>
-      <ArticleAside title="令牌桶的保证边界"><p id="rate-limits" className="vp-citation-target">这个本地实验按固定规则计数。真实网关可能跨多个节点协调；AWS 明确说，它的节流与配额是尽力而为的目标，不是绝对的请求上限。限流还不能代替权限检查、整体容量规划或完整的反滥用防护。<Cite id="rate-limits" /></p></ArticleAside>
+      <p><strong>通过限流检查。</strong>后面的操作仍可能因为无权访问、输入错误或服务故障失败。收到 429 时先看响应里有没有等待提示，再查接口文档中的限额与重试规则，不要立即反复重发；对会修改数据的操作，还要先判断重复请求是否安全。</p>
+      <ArticleAside title="令牌桶的保证边界"><p id="rate-limits" className="vp-citation-target">这个本地实验按固定规则计数。真实网关可能跨多个节点协调，它的节流与配额是尽力而为的目标。限流控制请求量，权限、容量和反滥用措施分别配置。<Cite id="rate-limits" /></p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }

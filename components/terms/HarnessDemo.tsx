@@ -84,6 +84,6 @@ export function HarnessDemo() {
         <button title="重来" aria-label="重来" onClick={() => dispatch({ type: "reset" })}><ArrowCounterClockwise size={18} /></button>
       </div>
     </div>
-    <details className={styles.trace}><summary>执行记录 · 本地模拟</summary><ol>{connected ? frames.slice(1, frame + 1).map((item, index) => <li key={item.phase}><code>{String(index + 1).padStart(2, "0")}</code>{item.label}</li>) : <li>{frame ? "未配置读取工具，未生成文件。" : "尚未运行。"}</li>}</ol><p>固定样例演示；验收检查来源覆盖，不代表对总结语义的完整验证。</p></details>
+    <details className={styles.trace}><summary>执行记录 · 本地模拟</summary><ol>{connected ? frames.slice(1, frame + 1).map((item, index) => <li key={item.phase}><code>{String(index + 1).padStart(2, "0")}</code>{item.label}</li>) : <li>{frame ? "未配置读取工具，未生成文件。" : "尚未运行。"}</li>}</ol><p>验收检查来源覆盖。</p></details>
   </section>;
 }

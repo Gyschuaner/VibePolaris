@@ -68,8 +68,8 @@ function DiffLesson() {
   const views = [{ left: "工作树", right: "index", line: "- timeout = 10  + timeout = 30" }, { left: "index", right: "HEAD", line: "- enabled = false  + enabled = true" }, { left: "feature", right: "main", line: "- 按钮无响应  + 按钮有反馈" }];
   const view = views[scene.step];
   return <div className={styles.lab} ref={scene.ref} role="region" aria-label="Git diff 端点比较演示">
-    <Caption scene={scene} labels={labels} titles={["未暂存的变化", "下一次提交的变化", "两个分支之间的变化"]} copy={["git diff 默认比较工作树与 index。", "git diff --staged 比较 index 与 HEAD，正是提交候选。", "给出两个分支后，diff 只说明内容差别，还要结合测试判断意图。"]} />
-    <div className={styles.gitDiff} aria-live="polite"><div><span>{view.left}</span><ArrowRight size={18} /><span>{view.right}</span></div><code>{view.line}</code><small>同一行的颜色只说明端点不同，不说明哪一边正确。</small></div>
+    <Caption scene={scene} labels={labels} titles={["未暂存的变化", "下一次提交的变化", "两个分支之间的变化"]} copy={["git diff 默认比较工作树与 index。", "git diff --staged 比较 index 与 HEAD，正是提交候选。", "给出两个分支后，diff 说明内容差别，还要结合测试判断意图。"]} />
+    <div className={styles.gitDiff} aria-live="polite"><div><span>{view.left}</span><ArrowRight size={18} /><span>{view.right}</span></div><code>{view.line}</code><small>同一行的颜色标出两端差异，改动是否正确需要结合目标判断。</small></div>
   </div>;
 }
 
@@ -117,7 +117,7 @@ function CloneLesson() {
   const inspected = scene.step >= 1;
   const checkedOut = scene.step === 2;
   return <div className={styles.lab} ref={scene.ref} role="region" aria-label="Git clone 建立本地仓库演示">
-    <Caption scene={scene} labels={labels} titles={["三种方式都能出现文件", ".git 保留仓库能力，depth=1 限制历史", "检出分支后仍要配置项目"]} copy={["ZIP、完整 clone 和 depth=1 都从同一远程开始，先不要把文件相同当成仓库相同。", "完整 clone 和 depth=1 都有 .git 与 origin；前者保留完整历史，后者只保留有限历史，ZIP 没有 Git 对象。", "默认分支进入工作区；依赖、环境变量和启动命令仍由 README 决定。"]} />
+    <Caption scene={scene} labels={labels} titles={["三种方式都能出现文件", ".git 保留仓库能力，depth=1 限制历史", "检出分支后仍要配置项目"]} copy={["ZIP、完整 clone 和 depth=1 都从同一远程开始。", "完整 clone 和 depth=1 都有 .git 与 origin；前者保留完整历史，后者只保留有限历史，ZIP 没有 Git 对象。", "默认分支进入工作区；依赖、环境变量和启动命令仍由 README 决定。"]} />
     <div className={styles.cloneBoard} aria-live="polite">
       <div data-active={false}><Stack size={22} aria-hidden="true" /><strong>Download ZIP</strong><code>文件：有</code><span>{inspected ? ".git：无 · origin：无" : "只看到文件"}</span></div>
       <div data-active={inspected}><GitCommit size={22} aria-hidden="true" /><strong>git clone</strong><code>.git · origin · full history</code><span>{checkedOut ? "main 已检出" : inspected ? "对象与引用已取得" : "等待取得"}</span></div>

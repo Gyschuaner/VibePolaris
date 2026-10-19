@@ -27,8 +27,8 @@ export function CiTermPage() {
 
     <ArticleSection id="ci-evidence" title="作业的日志和状态说明了什么">
       <p id="ci-jobs" className="vp-citation-target">每个 job 都在自己的 runner 或容器中执行步骤；同一个检查要先取得代码、准备运行时，再运行项目实际使用的命令。Node.js 指南用 <code>npm ci</code>、<code>npm run build</code> 和 <code>npm test</code> 说明了“本地怎么检查，CI 就执行同一套命令”的关系。<Cite id="ci-jobs" sources={ciSources} /><Cite id="ci-build" sources={ciSources} /></p>
-      <p id="ci-logs" className="vp-citation-target">检查失败时，先读对应 job 的日志和退出位置：日志告诉你在哪一步失败、使用了哪些输入，状态告诉你这一项是否成功。日志是调查证据，不是“红了所以一定是代码”的结论；依赖安装、环境变量和服务也可能是失败原因。<Cite id="ci-logs" sources={ciSources} /></p>
-      <p>如果把浏览器测试从工作流里删掉，lint、单元测试和构建仍可能全绿；这只说明剩下的三项通过，不能把缺失的交互覆盖当成通过。检查列表本身也应随需求变化维护。</p>
+      <p id="ci-logs" className="vp-citation-target">检查失败时，先读对应 job 的日志和退出位置：日志告诉你在哪一步失败、使用了哪些输入，状态告诉你这一项是否成功。日志是调查证据，依赖安装、环境变量和服务也可能是失败原因。<Cite id="ci-logs" sources={ciSources} /></p>
+      <p>lint、单元测试和构建仍可能全绿。检查列表本身也应随需求变化维护。</p>
     </ArticleSection>
 
     <ArticleSection id="ci-gate" title="绿色结论能把范围保证到哪里">

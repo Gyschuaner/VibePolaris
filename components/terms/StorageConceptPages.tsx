@@ -21,7 +21,7 @@ export function DatabaseTermPage() {
       <p id="database-query" className="vp-citation-target">查询是向数据库提出条件，取回符合条件的记录。比如“只看可借”，#42 已借出后就不会出现在新结果里，但记录并没有被删掉；查全部书目时仍能找到它。<Cite id="database-query" /></p>
       <p>本演示已经显示的上次查询结果不会自动改写，需要再查一次。真实应用若想让结果随记录变化，还得另外实现自动更新。</p>
       <p id="database-service" className="vp-citation-target">在 PostgreSQL 的客户端与服务端结构中，数据库服务管理数据文件，处理多个客户端的请求。网页通常先把操作交给网站自己的服务程序（也叫后端），再由它访问数据库。这个图书室例子假定两位读者都通过同一服务读写同一份书目，所以一人保存成功，另一人重新查询就能看到新状态；如果各自打开的是本机的一份书目副本，就不能这样共享。<Cite id="database-service" /></p>
-      <p>不用数据库，也能把书目写进普通文件，离开页面后再打开；只是应用得自己处理记录的组织、查找和修改。数据库把这些常见工作做成可复用的能力，还能按事先定义的规则检查写入。它不是“数据能留下”的唯一办法。</p>
+      <p>不用数据库，也能把书目写进普通文件，离开页面后再打开；只是应用得自己处理记录的组织、查找和修改。数据库把这些常见工作做成可复用的能力，还能按事先定义的规则检查写入。</p>
     </ArticleSection>
     <ArticleSection id="catalogue" title="保存一次，再查一次">
       <Legacy slug="database" names={["scene-heading"]} />
@@ -53,16 +53,16 @@ export function IndexTermPage() {
     >
     <ArticleSection id="lookup" title="给记录多一条查找路径">
       <Legacy slug="index" names={["question", "definition"]} />
-      <p id="index-purpose" className="vp-citation-target"><strong>索引是数据库额外维护的查找结构，用来更快地定位特定查询需要的数据。</strong>没有合适的索引时，数据库可能逐行扫描；有索引时，可以沿着另一条路径找到候选记录。是否走索引，要看查询条件和预计花费的工作量，并非建了就一定用。<Cite id="index-purpose" /></p>
-      <p id="index-directory" className="vp-citation-target">这份演示目录按编号排列，只记编号和原书目位置：#64 对应位置 5。先在目录中定位 #64，再去书目的第 5 条读“设计札记”。SQLite 官方文档里的普通索引查找也分两步：先按查询值取得指向原记录的标识，再据此读取表中的其他字段；这里的标识不是演示中的“第 5 条”序号。<strong>只有索引本身有序，原表不会因为建了索引就跟着重排。</strong>演示里的目录不记书名，所以定位之后还要回原书目读；如果某个索引连书名也存了，而查询只需要编号和书名，就可能直接从索引取结果。这种情况叫覆盖索引。<Cite id="index-directory" /></p>
-      <p id="index-order" className="vp-citation-target">同一份书目、同一个查询条件下，走哪条路都该找到同一批记录；但目录有序，不代表查询结果自动按编号显示。要指定返回顺序，查询还需要写明排序条件。<Cite id="index-order" /></p>
+      <p id="index-purpose" className="vp-citation-target"><strong>索引是数据库额外维护的查找结构，用来更快地定位特定查询需要的数据。</strong>没有合适的索引时，数据库可能逐行扫描；有索引时，可以沿着另一条路径找到候选记录。是否走索引，要看查询条件和预计花费的工作量。<Cite id="index-purpose" /></p>
+      <p id="index-directory" className="vp-citation-target">这份演示目录按编号排列，只记编号和原书目位置：#64 对应位置 5。先在目录中定位 #64，再去书目的第 5 条读“设计札记”。SQLite 官方文档里的普通索引查找也分两步：先按查询值取得指向原记录的标识，再据此读取表中的其他字段，真实索引用其记录标识定位原表，本例用“第 5 条”帮助说明查找过程。<strong>只有索引本身有序，原表不会因为建了索引就跟着重排。</strong>演示里的目录不记书名，所以定位之后还要回原书目读；如果某个索引连书名也存了，而查询只需要编号和书名，就可能直接从索引取结果。这种情况叫覆盖索引。<Cite id="index-directory" /></p>
+      <p id="index-order" className="vp-citation-target">走哪条路都该找到同一批记录，但目录有序。要指定返回顺序，查询还需要写明排序条件。<Cite id="index-order" /></p>
     </ArticleSection>
     <ArticleSection id="search" title="先定位，再读记录">
       <Legacy slug="index" names={["scene-heading"]} />
-      <p>这九本书各有唯一编号，查找期间书目不变，找到一本便可以停。先查 #64，再查不存在的 #65；也试试书目第一条 #42。目录从小到大排列，拿中间的 #42 与目标 #64 比：42 更小，它和左边的编号便都不可能是 64；剩下只需查右边。每次按大小缩小候选范围，这里叫二分查找。演示把索引简化成有序数组，比较次数只针对这个小模型，不是真实的 B-tree 索引或性能测试。</p>
+      <p>这九本书各有唯一编号，查找期间书目不变，找到一本便可以停。先查 #64，再查不存在的 #65；也试试书目第一条 #42。目录从小到大排列，拿中间的 #42 与目标 #64 比：42 更小，它和左边的编号便都不可能是 64；剩下只需查右边。每次按大小缩小候选范围，这里叫二分查找。演示把索引简化成有序数组。</p>
       <IndexLesson />
-      <p>查 #64 时，顺序扫描要检查到第 5 条；目录先比较 #42，再比较 #64，随后按原书目位置读取书名。换成 #42，顺序扫描第一条就能找到。<strong>少量样本不能证明某种方案永远更快。</strong>查 #65 时，两种路径都必须在范围耗尽后明确返回“未找到”。</p>
-      <p id="index-types" className="vp-citation-target">真实索引有不同结构。PostgreSQL 默认的 B-tree 是多层树状结构，不是演示里平铺的九个数；它可帮助查“编号等于 64”，也可帮助查“编号在 60 到 80 之间”。Hash 索引只支持前一种等值比较。演示里的逐次排除只是解释有序查找，不能当成所有索引的工作方式。<Cite id="index-types" /></p>
+      <p>查 #64 时，顺序扫描要检查到第 5 条；目录先比较 #42，再比较 #64，随后按原书目位置读取书名。换成 #42，顺序扫描第一条就能找到。<strong>性能比较需要匹配查询、数据量和运行条件。</strong>查 #65 时，两种路径都必须在范围耗尽后明确返回“未找到”。</p>
+      <p id="index-types" className="vp-citation-target">真实索引有不同结构。PostgreSQL 默认的 B-tree 是多层树状结构，它可帮助查“编号等于 64”，也可帮助查“编号在 60 到 80 之间”。Hash 索引只支持前一种等值比较。演示里的逐次排除只是解释有序查找，不能当成所有索引的工作方式。<Cite id="index-types" /></p>
     </ArticleSection>
     <ArticleSection id="tradeoff" title="读得更快，也要多维护" className={base.offset}>
       <Legacy slug="index" names={["quiz-heading"]} />
@@ -96,18 +96,18 @@ export function TransactionTermPage() {
       <p>样例从可借 2 本、借阅 0 条开始。先走通一次借书，再让第二步失败；最后关掉“两步放在同一事务”开关，看第一步会不会先对外生效。演示有“本次事务内”和“新查询可见”两组读数；每点一次按钮推进一步，不执行真实 SQL。</p>
       <TransactionLesson />
       <p>同一事务里，“可借 1 本、借阅 0 条”只是中间状态。写入借阅记录成功后，提交才把“可借 1 本、借阅 1 条”一起留下；失败后回滚，则仍是“2 本、0 条”。分开提交时，第一步已经留下“1 本、0 条”，不能用后来失败的事务把它顺带撤回。</p>
-      <p id="transaction-autocommit" className="vp-citation-target">“分开提交”也不是完全没有事务。在 PostgreSQL 中，即使没有先写 BEGIN（开始事务），成功执行的单条语句也会作为一笔事务提交。网站程序使用的数据库客户端库（连接数据库并发送操作的代码）也可能自动开启和提交事务。这里比较的是<strong>两步共用一笔事务，还是各自提交</strong>，不能只看页面上点了几次按钮。<Cite id="transaction-autocommit" /></p>
+      <p id="transaction-autocommit" className="vp-citation-target">在 PostgreSQL 中，即使没有先写 BEGIN（开始事务），成功执行的单条语句也会作为一笔事务提交。网站程序使用的数据库客户端库（连接数据库并发送操作的代码）也可能自动开启和提交事务。这里比较的是<strong>两步共用一笔事务，还是各自提交</strong>，不能只看页面上点了几次按钮。<Cite id="transaction-autocommit" /></p>
     </ArticleSection>
     <ArticleSection id="visibility" title="并发事务的可见性" className={base.offset}>
       <Legacy slug="transaction" names={["quiz-heading"]} />
       <p id="transaction-visible" className="vp-citation-target">演示的下层表示“此时另一个客户端发起新查询能看到什么”。以 PostgreSQL 默认的 Read Committed 为例，一次普通查询开始执行时，会看到此前已经提交的数据，不会读到其他事务尚未提交的修改；事务内部也能读到自己的修改。更强的隔离级别可能继续使用较早的快照，因此不能说所有读者会在提交瞬间自动看到新值。<Cite id="transaction-visible" /></p>
-      <p>原子性回答“一组改动是否整体生效”，隔离性回答“并发操作怎样相互影响”。两个人同时借最后一本书，还要用合适的更新条件、约束与并发控制来处理；单纯包上 BEGIN 和 COMMIT 并不能证明业务正确。</p>
-      <p id="transaction-engines" className="vp-citation-target">具体行为还取决于数据库。SQLite 允许多个读事务，但同时只允许一个写事务；写入或提交可能遇到忙碌错误。出错后会不会自动回滚整笔事务，还取决于错误类型和发生阶段。应用需要根据驱动返回的真实结果结束或重试事务，不能把“执行过提交语句”当作“提交已成功”。<Cite id="transaction-engines" /></p>
+      <p>原子性回答“一组改动是否整体生效”，隔离性回答“并发操作怎样相互影响”。还要用合适的更新条件、约束与并发控制来处理。</p>
+      <p id="transaction-engines" className="vp-citation-target">具体行为还取决于数据库。SQLite 允许多个读事务，但同时只允许一个写事务；写入或提交可能遇到忙碌错误。出错后会不会自动回滚整笔事务，还取决于错误类型和发生阶段。应用需要根据驱动返回的真实结果结束或重试事务。<Cite id="transaction-engines" /></p>
     </ArticleSection>
     <ArticleSection id="recovery" title="提交之后与事务之外">
       <Legacy slug="transaction" names={["prompt-heading"]} />
-      <p id="transaction-recovery" className="vp-citation-target">已提交数据的故障恢复需要存储机制支持。PostgreSQL 使用预写日志 WAL：描述改动的日志先写入持久存储，数据页可以稍后写入；崩溃恢复时，再按日志重放必要改动。因此提交不等于每个数据页都已经逐一写回，持久性还取决于具体配置和存储条件。<Cite id="transaction-recovery" /></p>
-      <p id="transaction-boundary" className="vp-citation-target">回滚也不是“撤销程序刚才做过的一切”。如果用 PostgreSQL 的序列给借阅记录自动编号，事务中领走的编号不会因回滚而退回，下一条记录可能跳号；这不表示失败的借阅记录已经保存。<Cite id="transaction-boundary" /></p>
+      <p id="transaction-recovery" className="vp-citation-target">已提交数据的故障恢复需要存储机制支持。PostgreSQL 使用预写日志 WAL：描述改动的日志先写入持久存储，数据页可以稍后写入；崩溃恢复时，再按日志重放必要改动。<Cite id="transaction-recovery" /></p>
+      <p id="transaction-boundary" className="vp-citation-target">如果用 PostgreSQL 的序列给借阅记录自动编号，事务中领走的编号不会因回滚而退回，下一条记录可能跳号；这不表示失败的借阅记录已经保存。<Cite id="transaction-boundary" /></p>
       <p id="transaction-external" className="vp-citation-target">已经发出的邮件、另一个系统完成的操作，不在这组数据库写入的回滚范围内。若借书成功后还要发通知，可以先在同一事务里保存“待发送通知”，确认提交后再由另一个程序发送；已经发出去的通知仍收不回来，重复发送也要单独处理。<Cite id="transaction-external" /></p>
       <p>一次借书提交后，如果客户端没有等到响应又重发请求，还需要 <ConceptTerm slug="idempotency">幂等性</ConceptTerm>避免重复借出。事务让一次借书内部的两次写入一起生效；幂等让同一次借书请求重发时不再多借一本。一个请求可能同时需要两者。</p>
     </ArticleSection>

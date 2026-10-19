@@ -2,7 +2,7 @@
   "slug": "salesforce-aws-enterprise-ai-20260915",
   "title": "AWS 与 Salesforce 扩大企业 AI 协作：MCP、零拷贝数据和 A2A 语音一起接入日常工具",
   "summary": "AWS 与 Salesforce 于 2026-09-15 公布一组企业 AI 集成：Salesforce 上下文进入 Amazon Quick，AWS agent 进入 Slack，Agentforce 可选 Bedrock 模型，zero copy 扩展到更多 AWS 数据服务，Agentforce Voice 与 Amazon Connect 的 A2A 互通仍分阶段提供。",
-  "body": "AWS 与 Salesforce 在 2026-09-15 宣布扩大企业 AI 合作，把 CRM 的数据和动作带进员工已经在用的工具。公告同时覆盖 Amazon Quick、Slack、Amazon Bedrock、Data 360 零拷贝和语音代理互通，核心问题是企业能否跨云使用上下文，而不必先把所有数据搬到同一个地方。\n\n第一条路径是 Amazon Quick 与 Salesforce headless architecture 的连接。销售人员可以在 Quick 里询问商机、服务案件和客户摘要，Salesforce 称这套能力基于 MCP，减少定制集成。第二条路径把 AWS frontier agents 放进 Slack，先从 DevOps Agent 开始，随后扩展到 Security、FinOps 和 Partner Central agent，让团队在原有频道里调查事件或查看安全发现。\n\n第三条路径是模型选择。Agentforce 客户可以在 Salesforce 的代理工作流中使用 Bedrock 提供的模型，包括 Anthropic 和 NVIDIA；OpenAI 模型已经在 Bedrock 普遍提供，Salesforce 说将很快接入 Agentforce。这个变化把“哪个模型负责哪一步”从供应商绑定里拿出来，但选择更多也意味着评测、日志和成本管理更复杂。\n\n数据层的变化叫 zero copy：Salesforce 说 Data 360 可以直接访问 AWS Glue 管理的 Iceberg 表、S3 Iceberg、Aurora、RDS 和 SageMaker Lakehouse，不迁移、不复制原始数据，还继续沿用双方已经配置的安全和治理。语音层则规划让 Agentforce Voice 和 Amazon Connect Customer 通过 A2A 在 WebSocket 上双向传输音频，部分能力仍标为 2026 年秋季。\n\n因此，这不是“一次集成就让企业数据自动互通”。Quick、Slack、Bedrock 和语音的可用时间不同，数据目录、MCP 服务器、零保留、合规证明和跨账号授权都要逐项核实。公告给出的 DXC、GoodRx 等客户反馈是早期使用者口径，不能替代对错误路由、泄露和回滚的独立验证。",
+  "body": "AWS 与 Salesforce 在 2026-09-15 宣布扩大企业 AI 合作，把 CRM 的数据和动作带进员工已经在用的工具。公告同时覆盖 Amazon Quick、Slack、Amazon Bedrock、Data 360 零拷贝和语音代理互通，核心问题是企业能否跨云使用上下文，而不必先把所有数据搬到同一个地方。\n\n第一条路径是 Amazon Quick 与 Salesforce headless architecture 的连接。销售人员可以在 Quick 里询问商机、服务案件和客户摘要，Salesforce 称这套能力基于 MCP，减少定制集成。第二条路径把 AWS frontier agents 放进 Slack，先从 DevOps Agent 开始，随后扩展到 Security、FinOps 和 Partner Central agent，让团队在原有频道里调查事件或查看安全发现。\n\n第三条路径是模型选择。Agentforce 客户可以在 Salesforce 的代理工作流中使用 Bedrock 提供的模型，包括 Anthropic 和 NVIDIA；OpenAI 模型已经在 Bedrock 普遍提供，Salesforce 说将很快接入 Agentforce。这个变化把“哪个模型负责哪一步”从供应商绑定里拿出来，但选择更多也意味着评测、日志和成本管理更复杂。\n\n数据层的变化叫 zero copy：Salesforce 说 Data 360 可以直接访问 AWS Glue 管理的 Iceberg 表、S3 Iceberg、Aurora、RDS 和 SageMaker Lakehouse，不迁移、不复制原始数据，还继续沿用双方已经配置的安全和治理。语音层则规划让 Agentforce Voice 和 Amazon Connect Customer 通过 A2A 在 WebSocket 上双向传输音频，部分能力仍标为 2026 年秋季。\n\nQuick、Slack、Bedrock 和语音的可用时间不同，数据目录、MCP 服务器、零保留、合规证明和跨账号授权都要逐项核实。DXC、GoodRx 等客户提供早期使用反馈；错误路由、泄露与回滚表现可通过独立验证评估。",
   "publishedAt": "2026-09-15",
   "eventDate": "2026-09-15",
   "isExample": false,
@@ -28,7 +28,7 @@
     },
     {
       "id": "zero-copy",
-      "title": "零拷贝是不搬数据，不是没有权限检查",
+      "title": "零拷贝访问中的数据与权限",
       "body": "Data 360 扩展到 Iceberg、Aurora、RDS 等 AWS 数据服务，目标是在数据留在原处时提供受控访问。目录、网络、身份和行级权限仍决定代理看到什么。",
       "kind": "technical"
     },

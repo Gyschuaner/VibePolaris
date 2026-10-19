@@ -39,7 +39,7 @@ const captions: Record<ContextRetrievalMode, { labels: string[]; titles: string[
   "agent-loop": {
     labels: ["读取状态", "执行一步", "判断停止"],
     titles: ["循环从当前状态开始", "结果必须回到状态", "完成或达到上限才停"],
-    copy: ["任务还有 2 个检查项，允许最多 3 轮工具调用。", "测试指出 disabled 状态仍错误，下一步改动只针对这个结果。", "修复后测试通过，循环停止；没有通过时不能把计划写成完成。"],
+    copy: ["任务还有 2 个检查项，允许最多 3 轮工具调用。", "测试指出 disabled 状态仍错误，下一步改动只针对这个结果。", "修复后测试通过，循环停止；检查失败时继续保留待处理状态。"],
   },
   "agent-memory": {
     labels: ["取得同意", "取回记录", "纠正或删除"],
@@ -53,7 +53,7 @@ const captions: Record<ContextRetrievalMode, { labels: string[]; titles: string[
   },
   "execution-sandbox": {
     labels: ["进入隔离环境", "拦截访问", "到时销毁"],
-    titles: ["先声明可访问范围", "每个越界动作都有独立结果", "限制不是安全保证"],
+    titles: ["先声明可访问范围", "每个越界动作都有独立结果", "按具体规则控制执行范围"],
     copy: ["脚本只得到临时目录、无外网和 2 秒 CPU 预算。", "读项目文件与网络请求被拒；标准输出仍可收集。", "时间到后进程终止、临时目录销毁；内核或配置漏洞仍需另外防护。"],
   },
   embedding: {
@@ -73,7 +73,7 @@ const captions: Record<ContextRetrievalMode, { labels: string[]; titles: string[
   },
   chunking: {
     labels: ["展开文档", "切分规则", "检查命中"],
-    titles: ["长文先被切成可索引单元", "长度和重叠改变上下文", "命中不等于完整理解"],
+    titles: ["长文先被切成可索引单元", "长度和重叠改变上下文", "核对命中的资料是否支持回答"],
     copy: ["一篇 2400 字政策文档先保留标题、段落和页码。", "从 800 字无重叠切换到 500 字并重叠 100 字，块数和边界随之变化。", "查询命中包含定义的第 4 块；仍要核对相邻条件是否被切走。"],
   },
   reranking: {
@@ -138,7 +138,7 @@ export function ContextRetrievalLesson({ mode }: { mode: ContextRetrievalMode })
         <button type="button" aria-pressed={history === "long"} onClick={() => { setHistory("long"); scene.seek(2); }}>长历史 · 15k</button>
       </div>
       <div className={styles.contract}><div><FileText size={25} /><h3>输入</h3><p>系统 2k + 历史 {used - 2}k</p></div><ArrowRight size={20} /><div><Memory size={25} /><h3>窗口 16k</h3><p>{used}k 已占用 · 输出预留 2k</p></div><ArrowRight size={20} /><div>{history === "long" && scene.step === 2 ? <Warning size={25} /> : <CheckCircle size={25} />}<h3>{history === "long" && scene.step === 2 ? "裁剪最早消息" : "可生成"}</h3><p>{history === "long" && scene.step === 2 ? "先处理输入，不能假装全部可见" : "输出区仍有预算"}</p></div></div>
-      <p className={styles.inputExample}><strong>可观察证据</strong>{history === "long" && scene.step === 2 ? "长历史挤占输入预算；裁剪或压缩发生后，模型看到的内容已经不同。" : "窗口是一次请求的总预算，不是长期记忆，也不保证每个位置同样容易利用。"}</p>
+      <p className={styles.inputExample}><strong>可观察证据</strong>{history === "long" && scene.step === 2 ? "长历史挤占输入预算；裁剪或压缩发生后，模型看到的内容已经不同。" : "窗口是一次请求的总预算。"}</p>
     </div>;
   }
 
@@ -148,8 +148,8 @@ export function ContextRetrievalLesson({ mode }: { mode: ContextRetrievalMode })
     return <div className={styles.lab} ref={scene.ref} role="region" aria-label="智能体循环演示">
       {controls}
       <label className={styles.inputExample}>最多轮数 <select value={turnLimit} onChange={(event) => { setTurnLimit(Number(event.target.value) as 2 | 3); scene.seek(2); }}><option value={2}>2 轮</option><option value={3}>3 轮</option></select></label>
-      <div className={styles.contract}><div><MagnifyingGlass size={25} /><h3>当前状态</h3><p>待修复清单 {done ? "2/2" : "1/2"}</p></div><ArrowRight size={20} /><div><Database size={25} /><h3>工具结果</h3><p>测试 {calls ? "失败 → 修复 → 通过" : "尚未运行"}</p></div><ArrowRight size={20} /><div>{done ? <CheckCircle size={25} /> : <Warning size={25} />}<h3>{done ? "停止" : turnLimit === 2 && scene.step === 2 ? "达到上限" : "继续"}</h3><p>{done ? "条件满足" : turnLimit === 2 && scene.step === 2 ? "不能写成完成" : "状态仍未收敛"}</p></div></div>
-      <p className={styles.inputExample}><strong>可观察证据</strong>每轮必须把结果写回当前状态；没有停止条件的重复调用不等于完成任务。</p>
+      <div className={styles.contract}><div><MagnifyingGlass size={25} /><h3>当前状态</h3><p>待修复清单 {done ? "2/2" : "1/2"}</p></div><ArrowRight size={20} /><div><Database size={25} /><h3>工具结果</h3><p>测试 {calls ? "失败 → 修复 → 通过" : "尚未运行"}</p></div><ArrowRight size={20} /><div>{done ? <CheckCircle size={25} /> : <Warning size={25} />}<h3>{done ? "停止" : turnLimit === 2 && scene.step === 2 ? "达到上限" : "继续"}</h3><p>{done ? "条件满足" : turnLimit === 2 && scene.step === 2 ? "按执行状态描述进度" : "状态仍未收敛"}</p></div></div>
+      <p className={styles.inputExample}><strong>可观察证据</strong>每轮将结果写回当前状态，并按任务结果与停止条件决定下一步。</p>
     </div>;
   }
 
@@ -172,7 +172,7 @@ export function ContextRetrievalLesson({ mode }: { mode: ContextRetrievalMode })
       {controls}
       <div className={styles.choices} role="group" aria-label="推进任务状态"><button type="button" aria-pressed={workingPhase === "five"} onClick={() => { setWorkingPhase("five"); scene.seek(0); }}>5 个候选</button><button type="button" aria-pressed={workingPhase === "two"} onClick={() => { setWorkingPhase("two"); scene.seek(2); }}>筛到 2 个</button></div>
       <div className={styles.contract}><div><FileText size={25} /><h3>当前目标</h3><p>预算 ≤ 500 · 需要有货</p></div><ArrowRight size={20} /><div><Database size={25} /><h3>工作状态</h3><p>{delivered ? "临时状态已清理" : `候选 ${count} · 调用 ${calls}`}</p></div><ArrowRight size={20} /><div>{delivered ? <CheckCircle size={25} /> : <LockSimple size={25} />}<h3>{delivered ? "交付" : "进行中"}</h3><p>{delivered ? "结果保留 2 个" : "结果会改写下一步"}</p></div></div>
-      <p className={styles.inputExample}><strong>可观察证据</strong>工作记忆是本轮任务的可变状态；它和跨会话偏好、最终交付物不是同一层。</p>
+      <p className={styles.inputExample}><strong>可观察证据</strong>工作记忆是本轮任务的可变状态。</p>
     </div>;
   }
 
@@ -212,7 +212,7 @@ export function ContextRetrievalLesson({ mode }: { mode: ContextRetrievalMode })
       {controls}
       <label className={styles.inputExample}>返回候选数量 <select value={topK} onChange={(event) => { setTopK(Number(event.target.value) as 1 | 3); scene.seek(1); }}><option value={1}>top-1</option><option value={3}>top-3</option></select></label>
       <div className={styles.contract}><div><MagnifyingGlass size={25} /><h3>查询</h3><p>退款多久到账</p></div><ArrowRight size={20} /><div><Database size={25} /><h3>候选</h3><p>{result}</p></div><ArrowRight size={20} /><div><LockSimple size={25} /><h3>停止</h3><p>只交付原文，不生成结论</p></div></div>
-      <p className={styles.inputExample}><strong>可观察证据</strong>top-k 只改变带回的候选数量；检索和生成回答是两个阶段，不能把候选命中写成事实成立。</p>
+      <p className={styles.inputExample}><strong>可观察证据</strong>检索和生成回答是两个阶段。</p>
     </div>;
   }
 
@@ -232,6 +232,6 @@ export function ContextRetrievalLesson({ mode }: { mode: ContextRetrievalMode })
     {controls}
     <div className={styles.choices} role="group" aria-label="切换排序依据"><button type="button" aria-pressed={rankBasis === "first"} onClick={() => { setRankBasis("first"); scene.seek(1); }}>召回分</button><button type="button" aria-pressed={rankBasis === "rerank"} onClick={() => { setRankBasis("rerank"); scene.seek(1); }}>重排分</button></div>
     <div className={styles.contract}><div><MagnifyingGlass size={25} /><h3>初次候选</h3><p>A · B · C 已进入范围</p></div><ArrowRight size={20} /><div><Funnel size={25} /><h3>当前顺序</h3><p>{order}</p></div><ArrowRight size={20} /><div>{rankBasis === "rerank" && scene.step === 2 ? <CheckCircle size={25} /> : <LockSimple size={25} />}<h3>{rankBasis === "rerank" && scene.step === 2 ? "截取 B、A" : "等待重排"}</h3><p>漏召回的 D 不会出现</p></div></div>
-    <p className={styles.inputExample}><strong>可观察证据</strong>重排序只重新安排已有候选；它不能扫描全库，也不能把漏掉的资料补回。</p>
+    <p className={styles.inputExample}><strong>可观察证据</strong>重排序只重新安排已有候选，它不能扫描全库。</p>
   </div>;
 }

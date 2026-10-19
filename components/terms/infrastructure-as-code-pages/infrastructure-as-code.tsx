@@ -36,7 +36,7 @@ export function InfrastructureAsCodeLesson() {
         <div className={styles.infrastructureAsCodeLabel}><Cloud size={16} aria-hidden="true" /><span>真实资源与记录</span></div>
         <h3>{isState ? "state · srv-42" : isApply ? "云端资源已更新" : isDrift ? "现实与 state 不同" : "等待执行"}</h3>
         <div className={styles.infrastructureAsCodeLabRows}><div className={styles.infrastructureAsCodeLabRow} data-active={isApply}><code>provider</code><strong>{isApply ? "created" : "—"}</strong></div><div className={styles.infrastructureAsCodeLabRow} data-active={isState}><code>mapping</code><strong>{isState ? "web.app → srv-42" : "未记录"}</strong></div><div className={styles.infrastructureAsCodeLabRow} data-active={isDrift}><code>next</code><strong>{isDrift ? "review before apply" : "—"}</strong></div></div>
-        <small>远端资源、state 和配置各有职责；不要把一次 apply 的成功当成永远没有漂移。</small>
+        <small>远端资源、state 和配置各有职责。</small>
       </div>
     </div>
     <div className={styles.infrastructureAsCodeLabMetrics}><div><span>声明</span><strong>{isDrift ? "3 replicas" : "web.app"}</strong></div><div><span>计划</span><strong>{isPlan || isDrift ? "有差异" : "未生成"}</strong></div><div><span>操作边界</span><strong>{isApply ? "已执行" : isDrift ? "待审查" : "未改变"}</strong></div></div>
