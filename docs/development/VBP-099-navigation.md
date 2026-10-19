@@ -36,7 +36,7 @@ SiteHeader 统一按路径识别栏目：首页、词条、教程归属星图，
 
 首次部署尝试 `/opt/vibepolaris/releases/20261019T085605Z-a9de70c8` 被错误的预检条件拦下，未备份或切换现网。画布通过 Suspense 等待客户端导航参数，静态 HTML 不包含导航标记；原检查错误要求该标记。BUG-6B7FE19D 修正为检查画布 HTTP 与关于页服务端导航，同时保存失败信息；重试前核对镜像 revision 与文件清单标签，复用同一份镜像重新预检并通过。没有重建产品代码。
 
-实际生产检查记录在计划 `b7cb75f1-a991-4f83-b121-1d647d3733ca`，截图为 `production-about.png`，状态与部署事实分别为 `production-checks.json`、`production-deployment.json`。
+实际生产计划 `b7cb75f1-a991-4f83-b121-1d647d3733ca` 已执行通过并完成，BUG-6B7FE19D 复验关闭。DP 生产批次为 `production-20261019-vbp099-a9de70c8`。截图为 `production-about.png`，状态与部署事实分别为 `production-checks.json`、`production-deployment.json`。
 
 ## 备份与回滚
 
