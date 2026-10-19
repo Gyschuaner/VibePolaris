@@ -1,13 +1,19 @@
 import { z } from "zod";
 
 const point = { x: z.number(), y: z.number() };
+const nodeMetadata = z.object({
+  kind: z.enum(["note", "link", "image", "todo"]).optional(),
+  title: z.string().max(140).optional(), summary: z.string().max(600).optional(),
+});
 const nodeSchema = z.object({
   id: z.string().min(1), markdown: z.string(), fileName: z.string(), ...point,
+  ...nodeMetadata.shape,
   createdAt: z.iso.datetime({ offset: true }), updatedAt: z.iso.datetime({ offset: true }),
 });
 const edgeSchema = z.object({ id: z.string().min(1), from: z.string(), to: z.string() });
+// Older clients must reject version 2 rather than silently discard its node metadata on save.
 const canvasSchema = z.object({
-  version: z.literal(1), revision: z.number().int().nonnegative(),
+  version: z.union([z.literal(1), z.literal(2)]).transform(() => 2 as const), revision: z.number().int().nonnegative(),
   nodes: z.array(nodeSchema), edges: z.array(edgeSchema),
   view: z.object({ ...point, scale: z.number().min(.3).max(2) }),
 }).refine(value => {
@@ -19,11 +25,13 @@ const canvasSchema = z.object({
 });
 
 export type CanvasNode = z.infer<typeof nodeSchema>;
+export type NodeKind = NonNullable<CanvasNode["kind"]>;
+export const nodeKinds = { note: "笔记", link: "链接", image: "图片", todo: "待办" } as const;
 export type CanvasEdge = z.infer<typeof edgeSchema>;
 export type CanvasData = z.infer<typeof canvasSchema>;
 export type CanvasView = CanvasData["view"];
 
-export const emptyCanvas = (): CanvasData => ({ version: 1, revision: 0, nodes: [], edges: [], view: { x: 0, y: 0, scale: 1 } });
+export const emptyCanvas = (): CanvasData => ({ version: 2, revision: 0, nodes: [], edges: [], view: { x: 0, y: 0, scale: 1 } });
 export const parseCanvas = (value: unknown): CanvasData => canvasSchema.parse(value);
 
 function plain(text: string) {
@@ -32,23 +40,72 @@ function plain(text: string) {
     .replace(/([*_~`])\1*([^\n]*?)\1+/g, "$2").replace(/\s+/g, " ").trim();
 }
 
-export function nodePreview(node: Pick<CanvasNode, "markdown" | "fileName">) {
+export function nodePreview(node: Pick<CanvasNode, "markdown" | "fileName" | "kind" | "title" | "summary">) {
   const text = node.markdown.replace(/^\uFEFF/, "").replace(/^---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)/, "")
     .replace(/^[ \t]*(```|~~~)[\s\S]*?(?:\1|$)/gm, "");
   const heading = text.match(/^[ \t]{0,3}#{1,6}[ \t]+(.+?)[ \t]*#*[ \t]*$/m);
   const lines = text.split(/\r?\n/).filter(line => line.trim());
   const first = lines.find(line => !/^\s*(?:---+|===+)\s*$/.test(line)) || "";
-  const title = plain(heading?.[1] || node.fileName.replace(/\.(?:md|markdown)$/i, "") || first) || "未命名笔记";
+  const title = node.title?.trim() || plain(heading?.[1] || node.fileName.replace(/\.(?:md|markdown)$/i, "") || (node.kind && node.kind !== "note" ? "" : first)) || `未命名${nodeKinds[node.kind ?? "note"]}`;
   const body = text.split(/\r?\n[ \t]*\r?\n/).map(block => block.split(/\r?\n/)
     .filter(line => !/^[ \t]{0,3}#{1,6}[ \t]+/.test(line) && !/^\s*(?:---+|===+)\s*$/.test(line)).map(plain).filter(Boolean).join(" "))
     .find(block => block && block !== title) || "";
-  return { title: Array.from(title).slice(0, 70).join(""), summary: Array.from(body === title ? "" : body).slice(0, 180).join("") };
+  return { title: Array.from(title).slice(0, 70).join(""), summary: node.summary ?? (node.kind && node.kind !== "note" ? "" : Array.from(body === title ? "" : body).slice(0, 180).join("")) };
 }
 
-export function availablePosition(nodes: Pick<CanvasNode, "x" | "y">[], start: { x: number; y: number }, columns = 3) {
+export function exportNodeMarkdown(node: CanvasNode) {
+  const { kind, title, summary } = node;
+  if (!kind && title === undefined && summary === undefined) return node.markdown;
+  const metadata = JSON.stringify({ kind, title, summary }).replace(/</g, "\\u003c").replace(/>/g, "\\u003e");
+  return `<!-- vibepolaris-node ${metadata} -->\n${node.markdown}`;
+}
+
+export function importNodeMarkdown(markdown: string): Pick<CanvasNode, "markdown" | "kind" | "title" | "summary"> {
+  const header = markdown.match(/^<!-- vibepolaris-node (.+) -->\r?\n/);
+  if (header) {
+    try { return { ...nodeMetadata.parse(JSON.parse(header[1])), markdown: markdown.slice(header[0].length) }; }
+    catch { throw new Error("节点元数据无法读取，原有画布未改动。请检查文件开头的 vibepolaris-node 信息。"); }
+  }
+  return { markdown };
+}
+
+export function nodeResource(node: Pick<CanvasNode, "kind" | "markdown">) {
+  const line = node.markdown.split(/\r?\n/, 1)[0];
+  return node.kind === "image" ? line.match(/^!\[[^\]]*\]\(<(.*)>\)$/)?.[1] ?? line.match(/^!\[[^\]]*\]\((.*)\)$/)?.[1] ?? "" : line;
+}
+
+export function withNodeResource(node: Pick<CanvasNode, "kind" | "markdown">, url: string) {
+  const lines = node.markdown.split(/\r?\n/);
+  if (node.kind !== "image" || /^!\[/.test(lines[0])) lines.shift();
+  return [node.kind === "image" ? `![图片](<${url.replace(/[<>\r\n]/g, "")}>)` : url, ...lines].join("\n");
+}
+
+export function safeNodeUrl(value: string, image = false): string | undefined {
+  if (/\s/.test(value) || !value) return;
+  if (image && /^data:image\/(?:png|jpeg|gif|webp|avif);base64,[A-Za-z0-9+/]+=*$/.test(value)) return value;
+  if (/^\/(?!\/)/.test(value)) return value;
+  try { const url = new URL(value); if (url.protocol === "https:" || url.protocol === "http:") return url.href; } catch { /* A partially typed address stays editable. */ }
+}
+
+export function nodeTasks(markdown: string) {
+  let fence = "";
+  return markdown.split(/\r?\n/).flatMap((line, index) => {
+    const delimiter = line.match(/^ {0,3}(`{3,}|~{3,})/);
+    if (delimiter) { if (!fence) fence = delimiter[1]; else if (delimiter[1][0] === fence[0] && delimiter[1].length >= fence.length) fence = ""; return []; }
+    if (fence) return [];
+    const task = line.match(/^\s*[-*+] \[([ xX])\] ?(.*)$/);
+    return task ? [{ line: index, checked: task[1].toLowerCase() === "x", text: task[2] }] : [];
+  });
+}
+
+export function editNodeTask(markdown: string, line: number, checked: boolean | null) {
+  return markdown.split(/\r?\n/).flatMap((text, index) => index !== line ? [text] : checked === null ? [] : [text.replace(/^(\s*[-*+] \[)[ xX](\])/, `$1${checked ? "x" : " "}$2`)]).join("\n");
+}
+
+export function availablePosition(nodes: Pick<CanvasNode, "x" | "y" | "kind">[], start: { x: number; y: number }, columns = 3, height = 150) {
   for (let index = 0; ; index++) {
-    const point = { x: start.x + (index % columns) * 330, y: start.y + Math.floor(index / columns) * 170 };
-    if (!nodes.some(node => point.x < node.x + 320 && point.x + 320 > node.x && point.y < node.y + 150 && point.y + 150 > node.y)) return point;
+    const point = { x: start.x + (index % columns) * 330, y: start.y + Math.floor(index / columns) * (height + 20) };
+    if (!nodes.some(node => point.x < node.x + 320 && point.x + 320 > node.x && point.y < node.y + (node.kind === "image" ? 260 : 150) && point.y + height > node.y)) return point;
   }
 }
 
