@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 const directory = path.dirname(fileURLToPath(import.meta.url));
 const read = name => readFile(path.join(directory, name), "utf8");
 const variants = [
-  { key:"a", file:"a-expand.html", label:"A · 卡片展开", duration:340, description:"简述卡片从原位展开，成为完整的阅读页面。" },
+  { key:"a", file:"a-expand.html", label:"A · 卡片展开", duration:540, description:"简述卡片从原位展开，成为完整的阅读页面。" },
   { key:"b", file:"b-focus.html", label:"B · 聚焦推近", duration:380, description:"视线向当前节点推近，再进入安静的阅读页面。" },
   { key:"c", file:"c-sheet.html", label:"C · 纸张铺开", duration:360, description:"全文像一张纸从下方铺开，画布轻轻退到后面。" }
 ];

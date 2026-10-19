@@ -10,6 +10,7 @@ import { MarkdownDocument } from "./MarkdownDocument";
 import { MarkdownEditor } from "./MarkdownEditor";
 import { NodeCard } from "./NodeCard";
 import { useCanvas } from "./useCanvas";
+import { useCanvasMotion } from "./useCanvasMotion";
 import styles from "./CanvasWorkspace.module.css";
 
 type Point = { x: number; y: number };
@@ -35,10 +36,12 @@ export function CanvasWorkspace() {
   const [previewHeight, setPreviewHeight] = useState(265);
   const surface = useRef<HTMLElement>(null), input = useRef<HTMLInputElement>(null), info = useRef<HTMLDialogElement>(null);
   const previewRef = useRef<HTMLElement>(null);
+  const documentRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null), menuAnchor = useRef<HTMLElement | null>(null);
   const gesture = useRef<Gesture | null>(null), skipClick = useRef(false);
   const active = data.nodes.find(node => node.id === documentId), picked = data.nodes.find(node => node.id === selected);
   const current = documentId ? active : picked;
+  const navigate = useCanvasMotion(documentId, active && nodePreview(active).title, previewRef, documentRef);
   const edge = data.edges.find(item => item.id === selectedEdge);
   const nodeIds = data.nodes.map(node => node.id).join("\0");
   const labels = useMemo(() => data.nodes.map(node => ({ x: node.x + 24, y: node.y, ...(labelSizes[node.id] ?? { width: 275, height: 82 }) })), [data.nodes, labelSizes]);
@@ -114,9 +117,13 @@ export function CanvasWorkspace() {
   function worldPoint(point: Point) { return { x: (point.x - data.view.x) / data.view.scale, y: (point.y - data.view.y) / data.view.scale }; }
   function openNote(node: CanvasNode, edit = false) {
     void flush(); setSelected(node.id); setConnecting(null);
-    router.push(`/canvas?note=${encodeURIComponent(node.id)}${edit ? "&edit=1" : ""}`, { scroll: false });
+    navigate(node.id, () => router.push(`/canvas?note=${encodeURIComponent(node.id)}${edit ? "&edit=1" : ""}`, { scroll: false }));
   }
-  function returnToCanvas() { void flush(); router.push("/canvas", { scroll: false }); }
+  function returnToCanvas(animate = true) {
+    void flush();
+    if (active && animate) setSelected(active.id);
+    navigate(null, () => router.push("/canvas", { scroll: false }), !!active && animate);
+  }
   function toggleEditing() {
     if (!active) return;
     void flush(); router.replace(`/canvas?note=${encodeURIComponent(active.id)}${editing ? "" : "&edit=1"}`, { scroll: false });
@@ -204,7 +211,7 @@ export function CanvasWorkspace() {
     update(value => ({ ...value, nodes: value.nodes.filter(item => item.id !== node.id), edges: value.edges.filter(item => item.from !== node.id && item.to !== node.id) }), true);
     setSelected(null); info.current?.close();
     setToast({ message: "节点已删除", undo: { nodes: [node], edges: related } });
-    if (documentId) returnToCanvas();
+    if (documentId) returnToCanvas(false);
   }
   function removeEdge(item: CanvasEdge) {
     update(value => ({ ...value, edges: value.edges.filter(current => current.id !== item.id) }), true);
@@ -288,18 +295,18 @@ export function CanvasWorkspace() {
   }}>
     {!documentId && <SiteHeader wide active="canvas" />}
     {error && <div className={styles.error} role="alert"><span>{error}</span>{isConflict() || !ready ? <button onClick={() => { if (!hasPending() || window.confirm("重新载入会放弃当前未保存的修改。请确认需要的 Markdown 已经导出。")) void reload(true); }}>重新载入</button> : <button onClick={() => void flush()}>重试保存</button>}</div>}
-    {documentId ? <>
-      <header className={styles.documentBar}>
-        <button className={styles.back} onClick={returnToCanvas}><ArrowLeft size={18} /><span>返回画布</span></button>
+    {documentId ? <div ref={documentRef} className={styles.documentPage} data-canvas-paper>
+      <header className={styles.documentBar} data-canvas-bar>
+        <button className={styles.back} onClick={() => returnToCanvas()}><ArrowLeft size={18} /><span>返回画布</span></button>
         <span className={styles.fileName}>{active ? markdownFileName(active) : "Markdown"}</span>
         <div className={styles.documentActions}>{active && <>{editing && <span className={styles.saveStatus} role="status">{status === "saved" ? "已保存" : status === "saving" ? "保存中…" : "未保存"}</span>}<button className={styles.mode} onClick={toggleEditing}>{editing ? "阅读" : "编辑"}</button>{actions(active)}</>}</div>
       </header>
-      {!ready ? <p className={styles.loading}>正在读取本地笔记…</p> : !active ? <div className={styles.missing}><h1>这份笔记不在当前浏览器</h1><p>返回画布查看已有内容，或导入一份 Markdown。</p><button onClick={returnToCanvas}>返回画布</button></div> : editing ?
+      {!ready ? <p className={styles.loading}>正在读取本地笔记…</p> : !active ? <div className={styles.missing}><h1>这份笔记不在当前浏览器</h1><p>返回画布查看已有内容，或导入一份 Markdown。</p><button onClick={() => returnToCanvas()}>返回画布</button></div> : editing ?
         <MarkdownEditor key={active.id} markdown={active.markdown}
           onChange={markdown => changeNode(active, { markdown })}
           onSave={() => void flush()} />
-        : <main className={styles.readingPage}><article className={styles.markdown}>{active.markdown.trim() ? <MarkdownDocument markdown={active.markdown} /> : <p className={styles.blankNote}>还没有正文。<button onClick={toggleEditing}>开始编辑</button></p>}</article></main>}
-    </> : <>
+        : <main className={styles.readingPage} data-canvas-content><article className={styles.markdown}>{active.markdown.trim() ? <MarkdownDocument markdown={active.markdown} /> : <p className={styles.blankNote}>还没有正文。<button onClick={toggleEditing}>开始编辑</button></p>}</article></main>}
+    </div> : <>
       <header className={styles.toolbar}><h1>我的画布</h1><div><button className={styles.import} disabled={!ready || importing} onClick={() => input.current?.click()}><UploadSimple size={16} />{importing ? "导入中…" : "导入 .md"}</button><button className={styles.primary} disabled={!ready} aria-haspopup="menu" aria-expanded={contextMenu?.kind === "create"} onClick={event => { menuAnchor.current = event.currentTarget; const bounds = event.currentTarget.getBoundingClientRect(); setContextMenu({ kind: "create", x: bounds.right - 200, y: bounds.bottom + 8 }); }}><Plus size={17} />新建节点</button></div></header>
       <main ref={surface} className={`${styles.surface} ${connecting ? styles.connecting : ""}`} tabIndex={0} aria-label="自由画布" aria-description="拖动节点或空白处移动。点按节点圆点后选择另一节点，或拖动圆点创建连线。" onPointerDown={beginPan} onPointerMove={movePointer} onPointerUp={finishPointer}
         onPointerCancel={() => { gesture.current = null; setConnecting(null); void flush(); }}
@@ -343,7 +350,7 @@ export function CanvasWorkspace() {
         </div>
         {!ready && !error && <p className={styles.empty}>正在读取本地画布…</p>}
         {ready && !data.nodes.length && <p className={styles.empty}>右键新建节点，或双击写下一点什么。</p>}
-        {picked && !connecting && <section ref={previewRef} className={styles.preview} style={previewPosition || undefined} data-canvas-ui aria-label="节点简述">
+        {picked && !connecting && <section ref={previewRef} className={styles.preview} style={previewPosition || undefined} data-canvas-ui data-canvas-paper aria-label="节点简述">
           <NodeCard key={picked.id} node={picked} actions={actions(picked)} onChange={patch => changeNode(picked, patch)} onSave={() => void flush()} onOpen={() => openNote(picked)} onClose={() => { void flush(); setSelected(null); }} onMessage={message => setToast({ message })} />
         </section>}
         {connecting && <div className={styles.linkHint} data-canvas-ui>选择另一个节点<button onClick={() => setConnecting(null)} aria-label="取消连线"><X size={16} /></button></div>}

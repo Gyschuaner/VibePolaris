@@ -33,10 +33,10 @@ export function NodeCard({ node, actions, onChange, onSave, onOpen, onClose, onM
     finally { setUploading(false); }
   }
 
-  return <>
+  return <div data-canvas-card-content>
     <div className={styles.kindLabel}>{nodeKinds[kind]}</div>
     <header>
-      <input className={styles.titleInput} aria-label="节点标题" placeholder={`未命名${nodeKinds[kind]}`} maxLength={140}
+      <input className={styles.titleInput} data-canvas-title aria-label="节点标题" placeholder={`未命名${nodeKinds[kind]}`} maxLength={140}
         value={node.title ?? preview.title} onChange={event => onChange({ title: event.target.value })}
         onBlur={onSave} onKeyDown={event => { if (event.key === "Enter") { event.preventDefault(); event.currentTarget.blur(); } }} />
       <div>{actions}<button className={styles.icon} aria-label="关闭简述" onClick={onClose}><X size={18} /></button></div>
@@ -65,8 +65,8 @@ export function NodeCard({ node, actions, onChange, onSave, onOpen, onClose, onM
     </div>}
     <footer>
       {kind === "link" && url ? <a className={styles.open} href={url} target="_blank" rel="noopener noreferrer">打开链接<ArrowUpRight size={16} /></a>
-        : <button className={styles.open} onClick={onOpen}>{kind === "note" ? "打开全文" : "打开 Markdown"}<ArrowUpRight size={16} /></button>}
+        : <button className={styles.open} data-open-document onClick={onOpen}>{kind === "note" ? "打开全文" : "打开 Markdown"}<ArrowUpRight size={16} /></button>}
       <time dateTime={node.updatedAt} title={`创建：${new Date(node.createdAt).toLocaleString("zh-CN")}\n修改：${new Date(node.updatedAt).toLocaleString("zh-CN")}`}>{new Date(node.updatedAt).toLocaleDateString("zh-CN", { month: "long", day: "numeric" })}更新</time>
     </footer>
-  </>;
+  </div>;
 }
