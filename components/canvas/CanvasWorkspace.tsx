@@ -302,7 +302,7 @@ export function CanvasWorkspace() {
         <div className={styles.documentActions}>{active && <>{editing && <span className={styles.saveStatus} role="status">{status === "saved" ? "已保存" : status === "saving" ? "保存中…" : "未保存"}</span>}<button className={styles.mode} onClick={toggleEditing}>{editing ? "阅读" : "编辑"}</button>{actions(active)}</>}</div>
       </header>
       {!ready ? <p className={styles.loading}>正在读取本地笔记…</p> : !active ? <div className={styles.missing}><h1>这份笔记不在当前浏览器</h1><p>返回画布查看已有内容，或导入一份 Markdown。</p><button onClick={() => returnToCanvas()}>返回画布</button></div> : editing ?
-        <MarkdownEditor key={active.id} markdown={active.markdown}
+        <MarkdownEditor key={active.id} markdown={active.markdown} title={nodePreview(active).title}
           onChange={markdown => changeNode(active, { markdown })}
           onSave={() => void flush()} />
         : <main className={styles.readingPage} data-canvas-content><article className={styles.markdown}>{active.markdown.trim() ? <MarkdownDocument markdown={active.markdown} /> : <p className={styles.blankNote}>还没有正文。<button onClick={toggleEditing}>开始编辑</button></p>}</article></main>}
