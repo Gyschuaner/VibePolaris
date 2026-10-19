@@ -18,7 +18,7 @@ export function MarkdownEditor({ markdown, onChange, onSave }: { markdown: strin
     const offset = stacked ? event.clientY - rect.top : event.clientX - rect.left;
     setSplit(Math.max(25, Math.min(75, (offset - 6.5) / extent * 100)));
   }
-  return <main ref={container} className={styles.editorPage} style={{ "--editor-split": split, "--preview-split": 100 - split } as CSSProperties}>
+  return <main ref={container} className={styles.editorPage} data-canvas-content style={{ "--editor-split": split, "--preview-split": 100 - split } as CSSProperties}>
     <section id="markdown-source" className={styles.sourcePane} aria-label="Markdown 编辑">
       <div className={styles.paneLabel}>Markdown</div>
       <textarea className={styles.editor} autoFocus aria-label="Markdown 正文" placeholder="直接写下想法，支持 Markdown…" spellCheck={false} value={markdown}
