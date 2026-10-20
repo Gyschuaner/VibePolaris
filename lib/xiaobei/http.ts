@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { BROWSER_COOKIE, SESSION_COOKIE, digest, getStore, XiaobeiError, type HistoryIdentity } from "./store.ts";
+import { ACCOUNT_COOKIE, getAccountStore } from "../account/store.ts";
 
 export const privateHeaders = { "Cache-Control": "no-store", "X-Robots-Tag": "noindex, nofollow", "Vary": "Cookie" };
 export function browserToken(request: NextRequest) {
@@ -7,6 +8,11 @@ export function browserToken(request: NextRequest) {
   return token && /^[\w-]{43}$/.test(token) ? token : undefined;
 }
 export function historyIdentity(request: NextRequest): HistoryIdentity {
+  const accountToken = request.cookies.get(ACCOUNT_COOKIE)?.value;
+  if (accountToken) {
+    const account = getAccountStore().identity(accountToken);
+    return { ...getStore().identity(accountToken), browser: `account:${account.id}` };
+  }
   const identity = getStore().identity(request.cookies.get(SESSION_COOKIE)?.value);
   const browser = browserToken(request);
   if (!browser) throw new XiaobeiError("请刷新页面后再打开小北。", 401);
@@ -26,7 +32,7 @@ export function sameOrigin(request: Request) {
   const origin = request.headers.get("origin");
   if (!origin || origin !== siteOrigin(request) || request.headers.get("sec-fetch-site") === "cross-site") throw new XiaobeiError("请求来源无效，请在本站重试。", 403);
 }
-export async function readBody(request: Request) {
+export async function readBody(request: Request, maximum = 2_000_000) {
   if (!request.headers.get("content-type")?.startsWith("application/json")) throw new XiaobeiError("请求格式错误。", 415);
   const reader = request.body?.getReader();
   if (!reader) throw new XiaobeiError("请求内容为空。");
@@ -37,7 +43,7 @@ export async function readBody(request: Request) {
     while (true) {
       const next = await reader.read(); if (next.done) break;
       size += next.value.byteLength;
-      if (size > 2_000_000) throw new XiaobeiError("本次消息过长，请减少内容。", 413);
+      if (size > maximum) throw new XiaobeiError("本次内容过大，请减少内容。", 413);
       body += decoder.decode(next.value, { stream: true });
     }
     return JSON.parse(body + decoder.decode());

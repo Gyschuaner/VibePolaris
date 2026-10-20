@@ -2,11 +2,13 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent
 import { completionContext } from "@/lib/canvas-completion";
 import canvas from "./CanvasWorkspace.module.css";
 import styles from "./CompletingTextarea.module.css";
+import { ownerHeaders, useAccount } from "@/components/account/AccountProvider";
 
 type Props = { markdown: string; title: string; onChange: (value: string) => void; onSave: () => void };
 type Undo = { before: string; after: string; cursor: number; end: number };
 
 export function CompletingTextarea({ markdown, title, onChange, onSave }: Props) {
+  const { account, openAccount } = useAccount();
   const helpId = useId();
   const field = useRef<HTMLTextAreaElement>(null), mirror = useRef<HTMLDivElement>(null), marker = useRef<HTMLSpanElement>(null), floating = useRef<HTMLDivElement>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined), request = useRef<AbortController | null>(null), composing = useRef(false);
@@ -73,7 +75,7 @@ export function CompletingTextarea({ markdown, title, onChange, onSave }: Props)
     const original = el.value, at = el.selectionStart, controller = new AbortController();
     clear(); request.current = controller; setBusy(true); setCursor(at);
     try {
-      const policyResponse = await fetch("/api/xiaobei/completion", { signal: controller.signal, cache: "no-store" });
+      const policyResponse = await fetch("/api/xiaobei/completion", { signal: controller.signal, cache: "no-store", headers: ownerHeaders(account?.id) });
       const policy = await policyResponse.json();
       controller.signal.throwIfAborted();
       if (!policyResponse.ok) throw new Error(policy.error || "小北暂时不可用，请稍后再试。");
@@ -83,7 +85,7 @@ export function CompletingTextarea({ markdown, title, onChange, onSave }: Props)
       try { acknowledged ||= localStorage.getItem(consentKey) === "1"; } catch { /* A disabled store still allows this explicit confirmation. */ }
       if (!acknowledged) { setDisclosure(mode); return; }
       try { localStorage.setItem(consentKey, "1"); } catch { /* Repeat the disclosure next time if browser storage is disabled. */ }
-      const response = await fetch("/api/xiaobei/completion", { method: "POST", signal: controller.signal, headers: { "Content-Type": "application/json" },
+      const response = await fetch("/api/xiaobei/completion", { method: "POST", signal: controller.signal, headers: { "Content-Type": "application/json", ...ownerHeaders(account?.id) },
         body: JSON.stringify({ requestId: crypto.randomUUID(), ...completionContext(original, at, title), acceptCharging: mode }) });
       const data = await response.json();
       controller.signal.throwIfAborted();
@@ -127,7 +129,7 @@ export function CompletingTextarea({ markdown, title, onChange, onSave }: Props)
   const control = suggestion ? <><span className={styles.ghost} aria-hidden="true">{suggestion}</span><button type="button" tabIndex={-1} className={styles.hint} onPointerDown={event => event.preventDefault()} onClick={accept} aria-label="接受小北补全">Tab 接受</button></>
     : hint ? <button type="button" tabIndex={-1} className={styles.hint} onPointerDown={event => event.preventDefault()} onClick={() => void generate()}>按 {shortcut} 补全</button> : null;
   const popup = disclosure !== null ? <div role="dialog" aria-label="使用小北补全"><p>补全会将这份笔记的标题和相关前文发送给小北。</p>{disclosure && <p>按小北现有 Token 单价扣分，放弃建议也按实际生成用量结算。</p>}<div className={styles.actions}><button type="button" onClick={() => void generate(disclosure)}>继续补全</button><button type="button" onClick={clear}>取消</button></div></div>
-    : error ? <div role="alert"><p>{error}</p><div className={styles.actions}>{unauthorized ? <a href="/xiaobei/activate" target="_blank" rel="noopener noreferrer">激活小北 ↗</a> : <button type="button" onClick={() => void generate()}>重试</button>}<button type="button" onClick={clear}>关闭</button></div></div>
+    : error ? <div role="alert"><p>{error}</p><div className={styles.actions}>{unauthorized ? account ? <button type="button" onClick={openAccount}>绑定小北</button> : <a href="/xiaobei/activate" target="_blank" rel="noopener noreferrer">激活小北 ↗</a> : <button type="button" onClick={() => void generate()}>重试</button>}<button type="button" onClick={clear}>关闭</button></div></div>
     : busy ? <span role="status">小北正在补全…</span> : !inline ? control : null;
 
   return <div className={styles.body} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) clear(); }}>

@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { errorResponse, privateHeaders, readBody, sameOrigin } from "@/lib/xiaobei/http";
-import { getStore, SESSION_COOKIE, XiaobeiError, type XiaobeiStore } from "@/lib/xiaobei/store";
+import { getStore, XiaobeiError, type XiaobeiStore } from "@/lib/xiaobei/store";
 import { callModel, modelConfig, type Message } from "@/lib/xiaobei/model";
 import { COMPLETION_PREFIX_LIMIT, shortCompletion } from "@/lib/canvas-completion";
+import { assistantIdentity } from "@/lib/account/http";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -12,7 +13,7 @@ const bodySchema = z.object({ requestId: z.uuid(), title: z.string().max(160), o
 
 export async function GET(request: NextRequest) {
   try {
-    getStore().identity(request.cookies.get(SESSION_COOKIE)?.value);
+    assistantIdentity(request);
     return NextResponse.json({ active: true, charging: chargeEnabled() }, { headers: privateHeaders });
   } catch (error) {
     if (error instanceof XiaobeiError && error.status === 401) return NextResponse.json({ active: false }, { headers: privateHeaders });
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest) {
   try {
     sameOrigin(request);
     store = getStore();
-    const identity = store.identity(request.cookies.get(SESSION_COOKIE)?.value);
+    const identity = assistantIdentity(request);
     const parsed = bodySchema.safeParse(await readBody(request));
     if (!parsed.success || !parsed.data.prefix.trim()) throw new XiaobeiError("请在正文中输入一些内容后再补全。");
     const charging = chargeEnabled();

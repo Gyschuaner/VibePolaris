@@ -7,13 +7,14 @@ import { applyEvent, finishActivities, CONTEXT_WARNING, type AgentEvent } from "
 import type { ChatMessage, ContextUsage, ConversationDetail, ConversationSummary } from "@/lib/xiaobei/history";
 import { Transcript, ContextMeter } from "./Transcript";
 import { XiaobeiStar } from "./XiaobeiStar";
+import { ownerHeaders, useAccount } from "@/components/account/AccountProvider";
 
 const HISTORY_REQUEST_TIMEOUT = 12_000;
-async function readHistory<T>(query = ""): Promise<T> {
+async function readHistory<T>(query = "", owner?: string): Promise<T> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), HISTORY_REQUEST_TIMEOUT);
   try {
-    const response = await fetch(`/api/xiaobei/conversations${query}`, { cache: "no-store", signal: controller.signal });
+    const response = await fetch(`/api/xiaobei/conversations${query}`, { cache: "no-store", signal: controller.signal, headers: ownerHeaders(owner) });
     const data = await response.json();
     if (!response.ok) throw Object.assign(new Error(data.error || "暂时无法加载对话。"), { status: response.status });
     return data;
@@ -30,6 +31,11 @@ function historyTime(timestamp: number) {
 }
 
 export function Xiaobei({ termNames, newsNames }: { termNames: Record<string, string>; newsNames: Record<string, string> }) {
+  const { account } = useAccount();
+  return <XiaobeiSession key={account?.id || "guest"} termNames={termNames} newsNames={newsNames} />;
+}
+function XiaobeiSession({ termNames, newsNames }: { termNames: Record<string, string>; newsNames: Record<string, string> }) {
+  const { account } = useAccount();
   const pathname = usePathname();
   const [active, setActive] = useState(false);
   const [credits, setCredits] = useState(100);
@@ -49,7 +55,6 @@ export function Xiaobei({ termNames, newsNames }: { termNames: Record<string, st
   const [loading, setLoading] = useState(false);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [remoteRunning, setRemoteRunning] = useState(false);
-  const [pageTitle, setPageTitle] = useState("");
   const dialog = useRef<HTMLDialogElement>(null);
   const log = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLTextAreaElement>(null);
@@ -71,7 +76,7 @@ export function Xiaobei({ termNames, newsNames }: { termNames: Record<string, st
     const sequence = ++historySequence.current, owner = scopeRef.current;
     setHistoryLoading(true);
     try {
-      const data = await readHistory<{ items: ConversationSummary[]; nextOffset: number | null }>(`?offset=${offset}`);
+      const data = await readHistory<{ items: ConversationSummary[]; nextOffset: number | null }>(`?offset=${offset}`, account?.id);
       if (sequence === historySequence.current && owner === scopeRef.current) {
         setHistory(items => offset ? [...items, ...data.items.filter(item => !items.some(old => old.id === item.id))] : data.items);
         setNextOffset(data.nextOffset);
@@ -86,7 +91,7 @@ export function Xiaobei({ termNames, newsNames }: { termNames: Record<string, st
     const sequence = ++viewSequence.current, owner = scopeRef.current;
     if (switchView) setLoading(true);
     try {
-      const data = await readHistory<ConversationDetail>(`?id=${encodeURIComponent(id)}`);
+      const data = await readHistory<ConversationDetail>(`?id=${encodeURIComponent(id)}`, account?.id);
       if (sequence !== viewSequence.current || owner !== scopeRef.current) return;
       conversation.current = id; continuing.current = true;
       setSelected(id); setTitle(data.title); setMessages(data.messages); setContext(data.context); setRemoteRunning(data.running); setError("");
@@ -167,9 +172,6 @@ export function Xiaobei({ termNames, newsNames }: { termNames: Record<string, st
     }, 1500);
     return () => { disposed = true; clearInterval(timer); };
   }, [open, remoteRunning, selected, busy]); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    setPageTitle(document.querySelector("h1")?.textContent || (pathname === "/" ? "概念星图" : "当前页面"));
-  }, [pathname]);
   useEffect(() => { if (shouldScroll.current && log.current) log.current.scrollTop = log.current.scrollHeight; }, [messages, status]);
 
   async function send() {
@@ -179,7 +181,7 @@ export function Xiaobei({ termNames, newsNames }: { termNames: Record<string, st
     const id = conversation.current, owner = scopeRef.current, wasContinuing = continuing.current, run = crypto.randomUUID();
     const isCurrent = () => scopeRef.current === owner && conversation.current === id;
     const currentPage = `${window.location.pathname}${window.location.search}`;
-    const currentTitle = document.querySelector("h1")?.textContent || pageTitle;
+    const currentTitle = document.querySelector("h1")?.textContent || (pathname === "/" ? "概念星图" : "当前页面");
     setSelected(id); setTitle(old => old || Array.from(text).slice(0, 40).join(""));
     setMessages(prev => [...prev, { id: `${run}-user`, role: "user", text, page: currentTitle, blocks: [] }, { id: `${run}-assistant`, role: "assistant", text: "", blocks: [] }]);
     setDraft(""); setError(""); setBusy(true); setStatus("正在理解问题"); shouldScroll.current = true;
@@ -188,7 +190,7 @@ export function Xiaobei({ termNames, newsNames }: { termNames: Record<string, st
     let failed = false;
     let accepted = false;
     try {
-      const response = await fetch("/api/xiaobei/chat", { method: "POST", headers: { "Content-Type": "application/json" }, signal: controller.signal,
+      const response = await fetch("/api/xiaobei/chat", { method: "POST", headers: { "Content-Type": "application/json", ...ownerHeaders(account?.id) }, signal: controller.signal,
         body: JSON.stringify({ requestId: run, conversationId: id, continuing: wasContinuing, message: text, page: currentPage }),
       });
       if (!response.ok) { const data = await response.json(); if (response.status === 401) setActive(false); throw new Error(data.error || "小北暂时不可用。"); }
@@ -278,7 +280,7 @@ export function Xiaobei({ termNames, newsNames }: { termNames: Record<string, st
             <textarea ref={input} value={draft} rows={2} placeholder="问问这个词，或说说哪里没懂…" aria-label="给小北的问题" disabled={!active} onChange={event => setDraft(event.target.value)} onKeyDown={event => { if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); void send(); } }} />
             {busy ? <button type="button" className="xb-send" aria-label="停止生成" title="停止生成" onClick={() => request.current?.abort()}><Square size={16} weight="fill" /></button> : <button type="submit" className="xb-send" disabled={!draft.trim() || !active || locked} aria-label="发送问题" title="发送问题"><ArrowUp size={20} weight="bold" /></button>}
           </form>
-          <div className="xb-footnote"><span title="每码每日 100 积分，北京时间零点恢复">今日剩余 {credits.toFixed(3)} 积分</span><ContextMeter value={context} /></div>
+          <div className="xb-footnote"><span title={account ? "账号共用每日额度，北京时间零点恢复" : "每码每日 100 积分，北京时间零点恢复"}>今日剩余 {credits.toFixed(3)} 积分</span><ContextMeter value={context} /></div>
         </footer>
         </>}
       </div>
