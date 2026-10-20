@@ -32,7 +32,19 @@
 
 实现提交 `94e9eff0`，经 [PR498](https://github.com/Gyschuaner/VibePolaris/pull/498) 合入dev，集成提交 `3286a407711fa0569a46c325f410ad7534187103`。两者运行源码完全一致，已在 `http://localhost:3101` 运行优化构建，Build ID `YiNxMLW_rT-f-7S0wpFOW`。IAB复查同步开关、账号云内容和小北入口，Chrome复查另一账号只有自己的云列表及游客原件。当前没有单独的远端dev部署；本次本机dev集成已在DP记录为部署 `9341e650-bd43-4190-b42d-3f45fc30209a`。
 
-验收计划2项必测均通过，研发任务完成，需求为 `ready_for_release`，`BUG-86AA3DED`已关闭。Git技术记录的DP索引 `bbe42771-c6b9-4082-b26e-3b424d734fe3` 已关联VBP-101；未另建正式飞书方案。截图位于 `../design/VBP-101-account-sync/evidence/`，仅含合成内容和合成账号，`dev-sync-choice.png` 展示关闭自动同步后的实际界面。临时邀请码 `61c9459b-f7b6-4143-bcd8-b4b4b9c71e7e` 已通过原CLI禁用并重新查询确认。正式生产尚未部署，未变更main或生产数据。
+dev验收计划2项必测均通过，研发任务完成，`BUG-86AA3DED`已关闭。Git技术记录的DP索引 `bbe42771-c6b9-4082-b26e-3b424d734fe3` 已关联VBP-101；未另建正式飞书方案。截图位于 `../design/VBP-101-account-sync/evidence/`，仅含合成内容和合成账号，`dev-sync-choice.png` 展示关闭自动同步后的实际界面。临时邀请码 `61c9459b-f7b6-4143-bcd8-b4b4b9c71e7e` 已通过原CLI禁用并重新查询确认，私有代码文件已删除。
+
+## 生产发布（2026-10-20）
+
+沿用用户“检查没问题直接上线”的授权，从生产main选择已在dev集成的 `94e9eff0`、`3858a9d8` 建立 `release/VBP-101-account-sync`，经 [PR500](https://github.com/Gyschuaner/VibePolaris/pull/500) 合入main，发布提交 `bae940a8b7b92c5a68409d3968d06579eec74d23`。不包含dev中其他尚未发布的页面改动。发布分支重新通过1185页优化构建；main合并树与构建树一致，依赖、Dockerfile和公开资源与原生产一致，复用原Linux运行依赖。
+
+北京时间12:29:27发布成功，Build ID `SGPfl3P1gqPp-PsiXCP_f`，镜像 `vibepolaris:bae940a8b7b92c5a68409d3968d06579eec74d23`，目录 `/opt/vibepolaris/releases/20261020T042433Z-bae940a8`。9661个构建文件经清单校验，隔离Node22容器完成真实注册、云画布创建读取、账号围栏及未绑定小北策略验证。切换后容器healthy，首页、画布、新闻、关于、账号会话及补全策略正常，未授权画布和历史请求401，原 `vibepolaris_xiaobei_data` 持久卷保留。DP生产部署记录 `dccd8a84-b471-4601-a413-1b0a5e0f41dc`；完整事实在 `../design/VBP-101-account-sync/evidence/production-release.json`。
+
+SQLite在线备份 `/opt/vibepolaris/backups/20261020T042433Z-from-0abfc0a3`，quick_check为ok，SHA256 `fbc2060770f512b1a1590f4d8101770f242cf961127b7756d39e17f2a018044e`。回滚执行 `/opt/vibepolaris/releases/20261020T042433Z-bae940a8/rollback.sh`，返回原 `0abfc0a3` 镜像与发布目录并保留当前持久卷。脚本已生成，本次未实际执行回滚。发布任务日志位于 `/opt/vibepolaris/deploy-jobs/VBP-101-20261020T042433Z/worker.log`，SSH断开不影响任务及结果保存。
+
+正式HTTPS的12项账号安全检查通过。Chrome在独立合成账号中新建云画布，未上传游客内容；完成邀请码绑定、自动同步开关、全文双栏编辑、一次真实小北补全、Tab接受和刷新恢复。小北入口显示账号共用额度，未混入原游客历史。真实用量149输入、0缓存、26输出，原价计量2270百万分之一积分，charge、reserved、cost均0，额度仍为100，无聊天会话新增。证据为 `production-editor.png`、`production-sync-choice.png`、`production-billing.json`；生产限定计划 `b9ffe617-1d10-431e-beb5-49c747c60ef5` 的必测项通过。
+
+合成节点经可撤销菜单删除并同步，云画布节点数0、版本6；账号退出后活跃会话数0。临时邀请码 `327593d6-17fb-429e-a373-516019a8ff32` 已通过原CLI禁用并复查，容器及本机私有代码文件已删除。保留空合成画布及计量记录供审计；游客原件和原小北授权保留，未操作用户已有生产笔记。清理事实见 `production-cleanup.json`。
 
 ## 部署与回退
 
