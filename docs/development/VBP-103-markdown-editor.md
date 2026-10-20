@@ -25,4 +25,18 @@ Mermaid 延迟加载并在停顿350毫秒后绘图，严格模式、HTML标签�
 - 真实 IAB 使用独立端口 `http://127.0.0.1:3103`、临时数据库与合成笔记，验证 Command+B、I、反引号，空选区输入、撤销重做、颜色/灰色（计算色值 rgb(119,119,119)）、Tab与Escape移焦、实时预览与阅读、刷新保存、Mermaid错误恢复；390px宽工具栏可完整操作，无控制台error。未使用用户笔记。
 - [编辑预览截图](VBP-103-markdown-editor/dev-editor.png)、[窄屏截图](VBP-103-markdown-editor/dev-mobile.png)。
 
-当前机器不存在规定的 `D:/Obsidian/gysnote`；研发和发布记录保存在Git并关联DP。此记录尚未声称生产发布，部署事实在发布完成后补充。
+当前机器不存在规定的 `D:/Obsidian/gysnote`；研发和发布记录保存在Git并关联DP。
+
+## dev 集成与生产发布
+
+- 功能提交 `f269b5fad0fa018ddc3744729e44d5c5bc5033e9` 经 [PR 511](https://github.com/Gyschuaner/VibePolaris/pull/511) 合入 dev：`554bf0ea4ac2f2f3f9a71119b9bf16901d9fe7dd`。合并树与已验源代码一致，重载本机优化构建完成 dev 交互集成。
+- 生产候选提交 `7460da801f87c99a89d28403630c146fec9d0105` 经 [PR 512](https://github.com/Gyschuaner/VibePolaris/pull/512) 合入 main：`3def738db77b3c1fa10134d5aefde833dca98922`。候选构建与 main Git 树一致，构建ID为 `WM7BF4Db-Q-ySqeQpCgSa`。
+- 2026-10-20 08:35:38 UTC 发布到 [正式画布](https://vibe.chuansgu.top/canvas)，镜像 `vibepolaris:3def738db77b3c1fa10134d5aefde833dca98922`，目录 `/opt/vibepolaris/releases/20261020T082432Z-3def738d`。采用独立 Node 22 Alpine 运行镜像，按新锁文件安装 Linux 依赖；没有复用旧 node_modules。
+- 新镜像先在隔离数据库完成启动、账号和匿名权限检查。随后对真实供应商发出3次合成补全请求：灰色正文29字、JavaScript31字符、Mermaid21字符；均不重复格式或围栏，JavaScript通过语法编译，余额不变且会话退出。旧请求不带fence仍正常。
+- 隔离脚本首次覆盖 Cookie、随后原样环境文件保留引号，分别导致401和500；两次均在切换前停止。修正脚本 Cookie jar，并以当前生产容器实际加载的配置值创建私有测试环境文件后通过。未修改应用镜像或输出密钥。
+- 生产真实浏览器使用独立合成账号，确认 Command+B、灰色 rgb(119,119,119)、高亮、删除线、代码高亮，以及真实模型补出的 Mermaid 在预览和全文阅读均正确显示；控制台无error。已退出测试账号，游客原画布保留。[线上编辑截图](VBP-103-markdown-editor/production-editor.png)。
+- `/`、`/canvas`、`/settings`、头像资源、`/news`、`/about` 均200；匿名私有对话和云端画布接口401，会话/补全状态接口200。容器healthy，沿用 `vibepolaris_xiaobei_data`，补全扣费开关 `false`。
+
+备份位于 `/opt/vibepolaris/backups/20261020T082432Z-from-364b103d`，包括 SQLite 在线备份（quick_check=ok）、发布配置及私有环境文件。回滚执行新发布目录下的 `rollback.sh`，恢复前版 `364b103d24197d7d5193ee31575273d804326fd3` 镜像与 current 链接，保留当前持久卷，不用旧库覆盖用户新写内容。
+
+打包期间清理本次已复制进镜像的临时产物，并在镜像完成后清理无用构建缓存，保留运行镜像、回滚镜像、数据卷和备份；发布后剩余约2.6GiB。后续打包应排除 `.next/cache` 并预留镜像导出与解包空间，避免临时磁盘峰值。部署、模型和清理事实见 [生产证据](VBP-103-markdown-editor/production-evidence.json)。
