@@ -37,6 +37,7 @@ export const parseCanvas = (value: unknown): CanvasData => canvasSchema.parse(va
 function plain(text: string) {
   return text.replace(/!?(?:\[([^\]]*)\])\([^)]*\)/g, "$1").replace(/<[^>]*>/g, "")
     .replace(/^\s{0,3}(?:#{1,6}\s+|>\s*|[-*+]\s+|\d+[.)]\s+|\[[ xX]\]\s*)/gm, "")
+    .replace(/==([^\n]+?)==/g, "$1")
     .replace(/([*_~`])\1*([^\n]*?)\1+/g, "$2").replace(/\s+/g, " ").trim();
 }
 
