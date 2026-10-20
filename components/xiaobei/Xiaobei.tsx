@@ -268,7 +268,7 @@ function XiaobeiSession({ termNames, newsNames }: { termNames: Record<string, st
           {error && <p className="xb-error" role="alert">{error}</p>}
         </section> : <>
         <div className="xb-log" ref={log} aria-label="对话记录" onScroll={() => { const el = log.current; if (el) shouldScroll.current = el.scrollHeight - el.scrollTop - el.clientHeight < 80; }}>
-          {!messages.length && !loading && <div className="xb-welcome"><XiaobeiStar /><h3>哪一个概念，<br />还差一点就懂了？</h3><p>从当前词条开始聊，也可以把两个概念放在一起比较。</p><div className="xb-suggestions">{["用一个例子解释当前词条", "Agent 和 Harness 有什么区别？"].map(text => <button key={text} onClick={() => { setDraft(text); input.current?.focus(); }}>{text}<ArrowUp size={15} /></button>)}</div></div>}
+          {!messages.length && !loading && <div className="xb-welcome"><XiaobeiStar /><h3>现在想了解什么？</h3><p>可以问当前页面怎么用，也可以聊聊概念和它们的联系。</p><div className="xb-suggestions">{[pathname.startsWith("/terms/") ? "用一个例子解释当前词条" : "这个页面可以做什么？", "Agent 和 Harness 有什么区别？"].map(text => <button key={text} onClick={() => { setDraft(text); input.current?.focus(); }}>{text}<ArrowUp size={15} /></button>)}</div></div>}
           {messages.map(message => <article className={`xb-message xb-${message.role}`} key={message.id}>{message.role === "user" ? <><span className="xb-message-page">{message.page}</span><p>{message.text}</p></> : <>{(message.blocks.length > 0 || message.error) && <span className="xb-speaker">小北</span>}<Transcript blocks={message.blocks} termNames={termNames} newsNames={newsNames} close={() => setOpen(false)} />{message.error && <p className="xb-error">{message.error}</p>}</>}</article>)}
           <div role="status" aria-live="polite" className="xb-status">{loading ? "正在恢复对话…" : remoteRunning && !busy ? "这段对话仍在回答，正在同步已保存内容…" : busy && status ? <><i />{status}</> : null}</div>
           {error && <p className="xb-error" role="alert">{error}</p>}
@@ -277,7 +277,7 @@ function XiaobeiSession({ termNames, newsNames }: { termNames: Record<string, st
         <footer className="xb-compose">
           {context && context.tokens >= CONTEXT_WARNING && <p className="xb-warning">上下文已达 175K，可继续对话；接近 256K 时建议开启新对话。</p>}
           <form onSubmit={event => { event.preventDefault(); void send(); }}>
-            <textarea ref={input} value={draft} rows={2} placeholder="问问这个词，或说说哪里没懂…" aria-label="给小北的问题" disabled={!active} onChange={event => setDraft(event.target.value)} onKeyDown={event => { if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); void send(); } }} />
+            <textarea ref={input} value={draft} rows={2} placeholder="问问当前页面，或说说哪里没懂…" aria-label="给小北的问题" disabled={!active} onChange={event => setDraft(event.target.value)} onKeyDown={event => { if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); void send(); } }} />
             {busy ? <button type="button" className="xb-send" aria-label="停止生成" title="停止生成" onClick={() => request.current?.abort()}><Square size={16} weight="fill" /></button> : <button type="submit" className="xb-send" disabled={!draft.trim() || !active || locked} aria-label="发送问题" title="发送问题"><ArrowUp size={20} weight="bold" /></button>}
           </form>
           <div className="xb-footnote"><span title={account ? "账号共用每日额度，北京时间零点恢复" : "每码每日 100 积分，北京时间零点恢复"}>今日剩余 {credits.toFixed(3)} 积分</span><ContextMeter value={context} /></div>
