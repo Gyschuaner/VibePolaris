@@ -22,6 +22,14 @@ Mermaid strict 安全设置、SVG 图片隔离、350ms 输入防抖保持一致�
 
 ## 发布
 
-待实际生产部署后补充提交、备份、健康检查与回滚记录。
+2026-10-20 实际发布完成，PR515 进入 dev，PR516 选择性合并 main；生产提交 `ad03d3003f0a200c606544332ccbc9530725f6c9`，BUILD_ID `ToOqwu5d0P23u_Eb6lPrh`。
+
+- 独立容器无网络、无凭据、无生产数据挂载启动检查通过；正式容器 healthy。
+- 正式站根页、画布、设置、账号会话接口返回 200，未登录画布接口 401。
+- 真实生产浏览器使用隔离 QA 账号，连续正文输入与图前新增段落三次均保留同一 SVG；无绘图占位或控制台错误。验证后退出账号，原访客画布未改动。
+- 发布前在线 SQLite 备份 `/opt/vibepolaris/backups/20261020T090039Z-from-3def738d`，quick_check=ok；积分扣费仍关闭，持久卷保持不变。
+- 回滚：在服务器执行 `sudo /opt/vibepolaris/releases/20261020T090039Z-ad03d300/rollback.sh`，回到 `3def738d` 镜像，保留最新持久化数据，不恢复旧数据库。
+- 当前版本 `ad03d300` 与上个已验证版本 `3def738d` 镜像保留；更早且未被容器引用的4个 VibePolaris 镜像已清理。清理释放约18.7 GB；本次部署后可用约17 GB。其他项目镜像与所有数据卷未动。
+- [生产截图](BUG-92799E7A-mermaid-stability/production-editor.png)、[发布事实](BUG-92799E7A-mermaid-stability/production-evidence.json)。
 
 本机不存在项目规则指定的 `D:/Obsidian/gysnote` 库，研发记录保留在 Git 与 DP。
