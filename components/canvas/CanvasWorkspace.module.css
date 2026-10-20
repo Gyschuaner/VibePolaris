@@ -19,8 +19,9 @@
 .edgeHit { stroke: transparent; stroke-width: 16; fill: none; pointer-events: stroke; cursor: pointer; vector-effect: non-scaling-stroke; }
 .selectedEdge .edgeLine, .connections g:hover .edgeLine, .connections g:focus-visible .edgeLine { stroke: var(--accent); stroke-width: 2; }
 .draftLine { stroke: var(--accent); stroke-width: 1.4; stroke-dasharray: 5 5; fill: none; vector-effect: non-scaling-stroke; }
-.node { position: absolute; display: flex; align-items: flex-start; width: max-content; max-width: 310px; pointer-events: auto; }
-.port { display: grid; place-items: center; flex: 0 0 24px; width: 24px; height: 34px; padding: 0; color: var(--accent-text) !important; cursor: crosshair !important; }
+.node { position: absolute; width: max-content; max-width: 275px; pointer-events: auto; }
+.port { position: absolute; display: grid; place-items: center; width: 28px; height: 28px; padding: 0; transform: translate(-50%, -50%); color: var(--accent-text) !important; cursor: crosshair !important; opacity: 0; pointer-events: none; transition: opacity .15s; }
+.node:hover .port, .node:focus-within .port, .activeNode .port, .connecting .port, .port.connectedPort { opacity: 1; pointer-events: auto; }
 .port svg { transition: transform .15s; }
 .port:hover svg, .port:focus-visible svg { transform: scale(1.7); }
 .note { max-width: 275px; padding: 3px 9px 7px !important; text-align: left; cursor: grab !important; border-radius: 16px; background: var(--bg) !important; }
@@ -81,7 +82,12 @@
 .zoom button:nth-child(2) { min-width: 53px; }
 .linkHint { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); background: var(--surface); border: 1px solid var(--hairline); border-radius: 6px; padding: 6px 9px 6px 14px; display: flex; gap: 16px; align-items: center; color: var(--muted); font-size: 13px; white-space: nowrap; }
 .linkHint button { display: grid; place-items: center; padding: 4px; }
-.removeEdge { position: absolute; z-index: 4; display: flex; align-items: center; gap: 6px; transform: translate(-50%, -50%); background: var(--surface) !important; border: 1px solid var(--hairline) !important; border-radius: 6px; padding: 7px 10px; font-size: 12px !important; white-space: nowrap; }
+.edgeToolbar { position: absolute; z-index: 6; display: flex; align-items: center; gap: 2px; padding: 5px; border: 1px solid var(--hairline); border-radius: 8px; background: var(--surface); box-shadow: 0 4px 18px color-mix(in srgb, var(--ink) 7%, transparent); cursor: default; }
+.edgeToolbar button { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border-radius: 5px; color: var(--muted); }
+.edgeToolbar button:hover, .edgeToolbar button[aria-pressed="true"] { background: var(--tint); color: var(--accent-text); }
+.edgeSeparator { width: 1px; height: 19px; margin: 0 4px; background: var(--hairline); }
+.edgeArrow { fill: color-mix(in srgb, var(--accent) 42%, var(--hairline)); }
+.selectedArrow { fill: var(--accent); }
 .documentBar { display: flex; align-items: center; height: 65px; flex: none; padding: 0 32px; gap: 24px; border-bottom: 1px solid var(--hairline); }
 .back { display: inline-flex; gap: 8px; align-items: center; color: var(--accent-text) !important; padding: 6px 0; font-size: 14px !important; white-space: nowrap; }
 .fileName { color: var(--muted); font-size: 13px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; max-width: min(50vw, 450px); }
@@ -176,4 +182,4 @@
   .zoom { left: 18px; bottom: 20px; }.preview { padding: 17px; }.preview h2 { font-size: 19px; }
   .preview > p { font-size: 14px; }.preview time { font-size: 10px; }.toast { bottom: 75px; font-size: 12px; }
 }
-@media (prefers-reduced-motion: reduce) { .port svg { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .port, .port svg { transition: none; } }
