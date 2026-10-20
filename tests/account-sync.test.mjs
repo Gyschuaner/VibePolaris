@@ -10,6 +10,27 @@ import { mergeCanvas, sameCanvas } from "../lib/canvas-sync.ts";
 const password = "synthetic-test-password-101";
 const node = (id = randomUUID(), markdown = "测试正文") => ({ id, markdown, fileName: "", kind: "note", title: "测试节点", summary: "摘要", x: 10, y: 20, createdAt: "2026-10-20T00:00:00Z", updatedAt: "2026-10-20T00:00:00Z" });
 
+test("头像跨会话保存、账号隔离、恢复默认与上传校验", async () => {
+  const store = new XiaobeiStore(":memory:"), accounts = new AccountStore(store);
+  const avatar = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAABMElEQVR4nO3SMREAIBDAsPeHA2zg/0AGQzNk79DZZ1265ncABsAAGAADYAAMgAEwAAbAABgAA2AADIABMAAGwAAYAANgAAyAATAABsAAGAADYAAMgAEwAAbAABgAA2AADIABMAAGwAAYIM4AcQaIM0CcAeIMEGeAOAPEGSDOAHEGiDNAnAHiDBBngDgDxBkgzgBxBogzQJwB4gwQZ4A4A8QZIM4AcQaIM0CcAeIMEGeAOAPEGSDOAHEGiDNAnAHiDBBngDgDxBkgzgBxBogzQJwB4gwQZ4A4A8QZIM4AcQaIM0CcAeIMEGeAOAPEGSDOAHEGiDNAnAHiDBBngDgDxBkgzgBxBogzQJwB4gwQZ4A4A8QZIM4AcQaIM0CcAeIMEGeAOAPEGSDOAHEGiDNA3ANtq8fMOqoH/wAAAABJRU5ErkJggg==";
+  try {
+    const first = await accounts.authenticate("avatar_owner", password, true), second = await accounts.authenticate("avatar_owner", password, false), other = await accounts.authenticate("avatar_other", password, true);
+    const owner = accounts.identity(first.token);
+    assert.equal(accounts.profile(owner).avatar, null);
+    accounts.setAvatar(owner, avatar);
+    assert.equal(accounts.profile(accounts.identity(second.token)).avatar, avatar);
+    assert.equal(accounts.profile(accounts.identity(other.token)).avatar, null);
+    assert.throws(() => accounts.setAvatar(owner, "data:image/svg+xml;base64,PHN2Zy8+"), /有效/);
+    assert.throws(() => accounts.setAvatar(owner, "data:image/png;base64," + "A".repeat(132_000)), /有效/);
+    assert.throws(() => accounts.setAvatar(owner, "data:image/png;base64,iVBORw0KGgo="), /无法识别/);
+    assert.equal(accounts.profile(owner).avatar, avatar);
+    accounts.setAvatar(owner, null);
+    assert.equal(accounts.profile(accounts.identity(second.token)).avatar, null);
+    accounts.logout(owner);
+    assert.throws(() => accounts.setAvatar(owner, avatar), error => error.status === 401);
+  } finally { store.close(); }
+});
+
 test("账号会话、云端隔离、迁移重试与旧版本覆盖保护", async () => {
   const store = new XiaobeiStore(":memory:"), accounts = new AccountStore(store), cloud = new CloudCanvasStore(accounts);
   try {
