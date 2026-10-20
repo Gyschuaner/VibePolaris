@@ -32,7 +32,17 @@ BUG-2470593E：共享按钮重置覆盖了提示颜色，导致继承镜像透�
 
 PR492已合入dev `195ee84e8e721d209392295775dbc8fce496d8c5`，Git树与已构建功能提交一致。本机独立数据库重启后，真实浏览器通过新建、全文编辑、停顿提示、Esc与清理，控制台无error，证据 `../design/VBP-100-canvas-completion/evidence/dev-hint.png`。
 
-首轮生产PR493提交 `f6399040ba07c8c807db22625781167b0934b4ce` 于2026-10-19 10:52 UTC上线，服务健康且扣费false。SQLite在线备份 `/opt/vibepolaris/backups/20261019T104731Z-from-a9de70c8`，quick_check为ok；回滚脚本 `/opt/vibepolaris/releases/20261019T104731Z-f6399040/rollback.sh`。真实模型冒烟发现BUG-0F1F7D8A：前文“今天我想试着”，模型候选重复同一开头。已放弃该候选，原文未变；证据 `../design/VBP-100-canvas-completion/evidence/production-repetition.png`。服务端现在先移除至少4个非纯空白Unicode码点的精确首尾重叠，再限制长度；短词与Markdown换行保留，新增实际复现及边界断言通过。待修复集成和第二轮生产冒烟完成后补充最终发布结果。
+首轮生产PR493提交 `f6399040ba07c8c807db22625781167b0934b4ce` 于2026-10-19 10:52 UTC上线，服务健康且扣费false。SQLite在线备份 `/opt/vibepolaris/backups/20261019T104731Z-from-a9de70c8`，quick_check为ok；回滚脚本 `/opt/vibepolaris/releases/20261019T104731Z-f6399040/rollback.sh`。真实模型冒烟发现BUG-0F1F7D8A：前文“今天我想试着”，模型候选重复同一开头。已放弃该候选，原文未变；证据 `../design/VBP-100-canvas-completion/evidence/production-repetition.png`。该次真实用量167输入/22输出，原价计量2330百万分之一积分，charge/reserved/cost均为0。
+
+服务端现在先移除至少4个码点、且去除首尾空白后仍至少4个码点的精确首尾重叠，再限制长度；短词与Markdown换行保留。捕获的实际复现、英文、Unicode和空白边界断言通过，补全专项4项、受影响ESLint及1185页构建通过。PR494已合入dev `2f6a850401ce96a6dab8b323d1edca98db105a19`，本机真实模型返回正常续写，接受前原文不变，Tab接受及撤销可用，节点已清理；证据 `../design/VBP-100-canvas-completion/evidence/dev-overlap-fixed.png`。
+
+PR495将修复合入main `0abfc0a35c25084813650108fa23cfe4bcd4cf75`。生产构建通过，Build ID为 `oIKoOQjqEIIfe6DFPQ9la`，9625个构建文件的清单SHA256为 `6d33625d4f420948c4e2f67057b9327883c05a9780a157fafeffaa551f32b07f`。330089007字节的归档及部署脚本已上传；随后SSH执行通道断开，没有收到部署结果，未将第二轮发布记为成功。
+
+2026-10-19 19:24（北京时间），通过腾讯云现有自动化助手执行只读诊断：`current`仍指向首轮 `20261019T104731Z-f6399040`，运行镜像仍为 `f6399040...`，容器为unhealthy；第二轮发布目录不存在。主机为2核4GB，负载26.77/32.70/27.62，Swap 2047MiB全部占用，IO pressure的60秒some/full为97.92%/82.92%，可用内存403MiB；系统盘尚有6.4GiB。SSH服务active，用户同时观察到正式站短暂恢复后再次超时。现有证据指向主机资源与磁盘等待压力，具体负载来源继续核查；不将短暂HTTP200视为恢复，也不将尚未运行的新修复归为故障原因。最终上线、健康检查、生产真实补全回归及测试邀请码清理仍待完成，原在线数据库备份与保留持久卷的回滚脚本可用。
+
+只读诊断的脱敏事实保存在 `../design/VBP-100-canvas-completion/evidence/production-availability.json`。进一步逐进程采样未取得结果，云助手记录为71秒响应超时，不能据此指认某个容器。2026-10-20上午复查，SSH、正式站HTTPS与DP CLI仍发生握手超时，腾讯云控制台会话也已过期，需要恢复管理通道后继续处理。DP的可用性Bug、发布阻塞状态及第二轮生产测试结果尚未回写；VBP-100不能视为已完成发布，限定回归计划 `27ee36f2-2dc4-4bad-80b6-55385e55deb6` 的生产步骤尚未执行。
+
+本地测试邀请码 `97be7037-7d1d-422b-91c1-e8aafc7a3dcd` 已经CLI禁用并重新查询确认。生产测试邀请码 `5fc81894-3d48-48b5-8a02-7b83d70c9283` 的期限为2026-10-19 11:30 UTC，已经到期，但仍待连通后显式禁用并清理唯一合成节点 `5f607846-e130-4949-b15d-84e648023d00`。两者在本机的私有代码副本均已删除；原账本保留真实用量与扣分为0的证据。
 
 未实测系统中文组字、真机键盘及其他浏览器；组字与按键重复已有事件分支保护。
 
