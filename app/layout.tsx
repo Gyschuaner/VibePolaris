@@ -4,6 +4,7 @@ import { RouteMeteorProvider } from "@/components/RouteMeteorProvider";
 import { NotesProvider } from "@/components/notes/NotesProvider";
 import { PointerFeedback } from "@/components/PointerFeedback";
 import { Xiaobei } from "@/components/xiaobei/Xiaobei";
+import { AccountProvider } from "@/components/account/AccountProvider";
 import { newsArticles, publishedTerms } from "@/lib/content";
 import { deriveCustomPaletteTokens, fieldLightness } from "@/lib/custom-palette";
 
@@ -78,7 +79,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
       </head>
-      <body><NotesProvider><RouteMeteorProvider>{children}<Xiaobei termNames={Object.fromEntries(publishedTerms.map(term => [`/terms/${term.slug}`, term.zh]))} newsNames={Object.fromEntries(newsArticles.map(article => [`/news/${article.slug}`, article.title]))} /></RouteMeteorProvider><PointerFeedback /></NotesProvider></body>
+      <body><AccountProvider><NotesProvider><RouteMeteorProvider>{children}<Xiaobei termNames={Object.fromEntries(publishedTerms.map(term => [`/terms/${term.slug}`, term.zh]))} newsNames={Object.fromEntries(newsArticles.map(article => [`/news/${article.slug}`, article.title]))} /></RouteMeteorProvider><PointerFeedback /></NotesProvider></AccountProvider></body>
     </html>
   );
 }

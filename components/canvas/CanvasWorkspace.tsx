@@ -12,6 +12,8 @@ import { NodeCard } from "./NodeCard";
 import { useCanvas } from "./useCanvas";
 import { useCanvasMotion } from "./useCanvasMotion";
 import styles from "./CanvasWorkspace.module.css";
+import { useAccount } from "@/components/account/AccountProvider";
+import { CanvasSyncBar, useCanvasSession, type CanvasSession } from "./CanvasSession";
 
 type Point = { x: number; y: number };
 type Gesture = { pointerId: number; start: Point; moved: boolean } & (
@@ -24,8 +26,21 @@ const kindIcons = { note: NotePencil, link: LinkSimple, image: ImageSquare, todo
 type ContextMenu = { x: number; y: number } & ({ kind: "create"; at?: Point } | { kind: "node"; id: string });
 
 export function CanvasWorkspace() {
+  const { account, ready } = useAccount();
+  if (!ready) return <div className={styles.workspace}><SiteHeader wide /><p className={styles.loading}>正在读取画布…</p></div>;
+  return <AccountCanvasWorkspace key={account?.id || "guest"} />;
+}
+function AccountCanvasWorkspace() {
+  const session = useCanvasSession();
+  return <CanvasBoard key={session.storageKey} session={session} />;
+}
+function CanvasBoard({ session }: { session: CanvasSession }) {
   const router = useRouter(), search = useSearchParams();
-  const { data, ready, status, error, update, flush, reload, hasPending, isConflict } = useCanvas();
+  const { data, ready, status, error, update, flush, reload, hasPending, isConflict, sync, cloudStatus } = useCanvas({ storageKey: session.storageKey, owner: session.owner, remoteId: session.selected === "local" ? undefined : session.selected, autoSync: session.autoSync, onFork: value => {
+    void session.accept(value, session.autoSync, true);
+    session.setNotice("检测到同时修改，已将你的版本保存为冲突副本；原画布保留云端版本。当前打开的是你的副本。");
+  } });
+  async function saveBeforeSwitch() { await flush(); if (hasPending()) throw new Error("当前草稿尚未保存，请先导出或重试保存。"); }
   const documentId = search.get("note"), editing = search.get("edit") === "1";
   const [selected, setSelected] = useState<string | null>(null), [selectedEdge, setSelectedEdge] = useState<string | null>(null);
   const [connecting, setConnecting] = useState<{ from: string; point: Point } | null>(null);
@@ -115,18 +130,25 @@ export function CanvasWorkspace() {
     return { x: clientX - (bounds?.left ?? 0), y: clientY - (bounds?.top ?? 0) };
   }
   function worldPoint(point: Point) { return { x: (point.x - data.view.x) / data.view.scale, y: (point.y - data.view.y) / data.view.scale }; }
+  function noteUrl(id?: string, edit = false) {
+    const query = new URLSearchParams();
+    if (session.selected !== "local") query.set("canvas", session.selected);
+    if (id) query.set("note", id);
+    if (edit) query.set("edit", "1");
+    return `/canvas${query.size ? `?${query}` : ""}`;
+  }
   function openNote(node: CanvasNode, edit = false) {
     void flush(); setSelected(node.id); setConnecting(null);
-    navigate(node.id, () => router.push(`/canvas?note=${encodeURIComponent(node.id)}${edit ? "&edit=1" : ""}`, { scroll: false }));
+    navigate(node.id, () => router.push(noteUrl(node.id, edit), { scroll: false }));
   }
   function returnToCanvas(animate = true) {
     void flush();
     if (active && animate) setSelected(active.id);
-    navigate(null, () => router.push("/canvas", { scroll: false }), !!active && animate);
+    navigate(null, () => router.push(noteUrl(), { scroll: false }), !!active && animate);
   }
   function toggleEditing() {
     if (!active) return;
-    void flush(); router.replace(`/canvas?note=${encodeURIComponent(active.id)}${editing ? "" : "&edit=1"}`, { scroll: false });
+    void flush(); router.replace(noteUrl(active.id, !editing), { scroll: false });
   }
   function createNode(kind: NodeKind = "note", at?: Point) {
     if (!ready) return;
@@ -299,15 +321,16 @@ export function CanvasWorkspace() {
       <header className={styles.documentBar} data-canvas-bar>
         <button className={styles.back} onClick={() => returnToCanvas()}><ArrowLeft size={18} /><span>返回画布</span></button>
         <span className={styles.fileName}>{active ? markdownFileName(active) : "Markdown"}</span>
-        <div className={styles.documentActions}>{active && <>{editing && <span className={styles.saveStatus} role="status">{status === "saved" ? "已保存" : status === "saving" ? "保存中…" : "未保存"}</span>}<button className={styles.mode} onClick={toggleEditing}>{editing ? "阅读" : "编辑"}</button>{actions(active)}</>}</div>
+        <div className={styles.documentActions}>{active && <>{editing && <span className={styles.saveStatus} role="status">{status === "saved" ? session.selected === "local" ? "已保存在此浏览器" : cloudStatus : status === "saving" ? "保存中…" : "未保存"}</span>}<button className={styles.mode} onClick={toggleEditing}>{editing ? "阅读" : "编辑"}</button>{actions(active)}</>}</div>
       </header>
-      {!ready ? <p className={styles.loading}>正在读取本地笔记…</p> : !active ? <div className={styles.missing}><h1>这份笔记不在当前浏览器</h1><p>返回画布查看已有内容，或导入一份 Markdown。</p><button onClick={() => returnToCanvas()}>返回画布</button></div> : editing ?
+      {!ready ? <p className={styles.loading}>正在读取笔记…</p> : !active ? <div className={styles.missing}><h1>当前画布没有这份笔记</h1><p>返回画布切换查看，或导入一份 Markdown。</p><button onClick={() => returnToCanvas()}>返回画布</button></div> : editing ?
         <MarkdownEditor key={active.id} markdown={active.markdown} title={nodePreview(active).title}
           onChange={markdown => changeNode(active, { markdown })}
           onSave={() => void flush()} />
         : <main className={styles.readingPage} data-canvas-content><article className={styles.markdown}>{active.markdown.trim() ? <MarkdownDocument markdown={active.markdown} /> : <p className={styles.blankNote}>还没有正文。<button onClick={toggleEditing}>开始编辑</button></p>}</article></main>}
     </div> : <>
       <header className={styles.toolbar}><h1>我的画布</h1><div><button className={styles.import} disabled={!ready || importing} onClick={() => input.current?.click()}><UploadSimple size={16} />{importing ? "导入中…" : "导入 .md"}</button><button className={styles.primary} disabled={!ready} aria-haspopup="menu" aria-expanded={contextMenu?.kind === "create"} onClick={event => { menuAnchor.current = event.currentTarget; const bounds = event.currentTarget.getBoundingClientRect(); setContextMenu({ kind: "create", x: bounds.right - 200, y: bounds.bottom + 8 }); }}><Plus size={17} />新建节点</button></div></header>
+      <CanvasSyncBar session={session} ready={ready} status={status} flush={saveBeforeSwitch} sync={sync} cloudStatus={cloudStatus} />
       <main ref={surface} className={`${styles.surface} ${connecting ? styles.connecting : ""}`} tabIndex={0} aria-label="自由画布" aria-description="拖动节点或空白处移动。点按节点圆点后选择另一节点，或拖动圆点创建连线。" onPointerDown={beginPan} onPointerMove={movePointer} onPointerUp={finishPointer}
         onPointerCancel={() => { gesture.current = null; setConnecting(null); void flush(); }}
         onContextMenu={showContext}

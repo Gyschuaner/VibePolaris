@@ -9,6 +9,7 @@ import { BrandMark } from "@/components/BrandMark";
 import { ThemeStudio } from "@/components/ThemeStudio";
 import { NavIndicator } from "@/components/NavIndicator";
 import { navigationSection } from "@/lib/site-navigation";
+import { AccountButton } from "@/components/account/AccountProvider";
 
 export function SiteHeader({ wide = false, termSlug }: { wide?: boolean; termSlug?: string }) {
   const section = navigationSection(usePathname());
@@ -37,6 +38,7 @@ export function SiteHeader({ wide = false, termSlug }: { wide?: boolean; termSlu
           <Link className="nav-canvas-mobile" href="/canvas" aria-label="知识画布" aria-current={current("canvas")} data-nav-active={active === "canvas"}><Graph size={23} /></Link>
           <NotesButton compact />
           <ThemeStudio />
+          <AccountButton />
         </div>
       </div>
     </nav>
