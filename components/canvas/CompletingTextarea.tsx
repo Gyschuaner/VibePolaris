@@ -1,5 +1,7 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
 import { completionContext } from "@/lib/canvas-completion";
+import { formatMarkdown, markdownShortcut, type MarkdownEdit, type MarkdownFormat } from "@/lib/markdown-editing";
+import { Code, CodeBlock, FlowArrow, Highlighter, LinkSimple, Palette, TextBolderIcon, TextItalic, TextStrikethrough } from "@phosphor-icons/react";
 import canvas from "./CanvasWorkspace.module.css";
 import styles from "./CompletingTextarea.module.css";
 import { ownerHeaders, useAccount } from "@/components/account/AccountProvider";
@@ -13,6 +15,7 @@ export function CompletingTextarea({ markdown, title, onChange, onSave }: Props)
   const field = useRef<HTMLTextAreaElement>(null), mirror = useRef<HTMLDivElement>(null), marker = useRef<HTMLSpanElement>(null), floating = useRef<HTMLDivElement>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined), request = useRef<AbortController | null>(null), composing = useRef(false);
   const selection = useRef({ start: 0, end: 0 }), undo = useRef<Undo | null>(null);
+  const tabMovesFocus = useRef(false);
   const [cursor, setCursor] = useState(0), [hint, setHint] = useState(false), [busy, setBusy] = useState(false), [suggestion, setSuggestion] = useState("");
   const [error, setError] = useState(""), [unauthorized, setUnauthorized] = useState(false), [disclosure, setDisclosure] = useState<boolean | null>(null);
   const [shortcut, setShortcut] = useState("Ctrl Enter");
@@ -104,20 +107,40 @@ export function CompletingTextarea({ markdown, title, onChange, onSave }: Props)
     selection.current = { start: at, end: at }; setCursor(at);
     requestAnimationFrame(() => { field.current?.focus(); field.current?.setSelectionRange(at, at); });
   }
+  function applyEdit(edit: MarkdownEdit) {
+    const el = field.current;
+    if (!el || composing.current) return;
+    const before = el.value, after = before.slice(0, edit.from) + edit.text + before.slice(edit.to), at = el.selectionStart;
+    clear(); el.focus(); el.setSelectionRange(edit.from, edit.to);
+    // insertText keeps formatting and completions in the browser's native undo history.
+    document.execCommand("insertText", false, edit.text);
+    if (el.value !== after) undo.current = { before, after, cursor: at, end: edit.end };
+    onChange(after); selection.current = { start: edit.start, end: edit.end }; setCursor(edit.start);
+    requestAnimationFrame(() => { el.setSelectionRange(edit.start, edit.end); position(); arm(); });
+  }
+  function format(kind: MarkdownFormat, color?: string) {
+    const el = field.current;
+    if (el) applyEdit(formatMarkdown(el.value, el.selectionStart, el.selectionEnd, kind, color));
+  }
   function accept() {
     const el = field.current!;
     if (!suggestion || el.selectionStart !== cursor || el.selectionEnd !== cursor) return;
-    const before = el.value, after = before.slice(0, cursor) + suggestion + before.slice(cursor), end = cursor + suggestion.length;
-    undo.current = { before, after, cursor, end }; clear(); restore(after, end);
+    const end = cursor + suggestion.length;
+    applyEdit({ from: cursor, to: cursor, text: suggestion, start: end, end });
   }
   function keyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
     if (event.nativeEvent.isComposing || composing.current || event.keyCode === 229) return;
+    if (event.key === "Tab" && tabMovesFocus.current) { tabMovesFocus.current = false; return; }
+    tabMovesFocus.current = event.key === "Escape";
     const command = event.metaKey || event.ctrlKey, key = event.key.toLowerCase();
     if (command && key === "s") { event.preventDefault(); onSave(); return; }
     if (command && event.key === "Enter") { event.preventDefault(); if (!event.repeat) void generate(disclosure === null ? undefined : disclosure); return; }
     if (event.key === "Escape" && (hint || suggestion || busy || error || disclosure !== null)) { event.preventDefault(); event.stopPropagation(); clear(); return; }
     if (event.key === "Tab" && !event.shiftKey && suggestion) { event.preventDefault(); accept(); return; }
-    // Programmatic inserts are absent from native textarea history: keep one completion undo/redo.
+    const action = command && !event.altKey ? markdownShortcut(key, event.shiftKey) : null;
+    if (action) { event.preventDefault(); if (!event.repeat) format(action); return; }
+    if (event.key === "Tab" && !command && !event.altKey) { event.preventDefault(); format(event.shiftKey ? "outdent" : "indent"); return; }
+    // Keep a fallback undo/redo for browsers without insertText support.
     const entry = undo.current;
     if (entry && command && (key === "z" || key === "y")) {
       const redo = event.shiftKey || key === "y";
@@ -132,14 +155,24 @@ export function CompletingTextarea({ markdown, title, onChange, onSave }: Props)
     : error ? <div role="alert"><p>{error}</p><div className={styles.actions}>{unauthorized ? account ? <button type="button" onClick={openAccount}>绑定小北</button> : <a href="/xiaobei/activate" target="_blank" rel="noopener noreferrer">激活小北 ↗</a> : <button type="button" onClick={() => void generate()}>重试</button>}<button type="button" onClick={clear}>关闭</button></div></div>
     : busy ? <span role="status">小北正在补全…</span> : !inline ? control : null;
 
-  return <div className={styles.body} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) clear(); }}>
-    <textarea ref={field} className={`${canvas.editor} ${styles.textarea}`} autoFocus aria-label="Markdown 正文" aria-describedby={helpId} aria-keyshortcuts="Meta+Enter Control+Enter" placeholder="直接写下想法，支持 Markdown…" spellCheck={false} value={markdown}
+  const tools = [
+    ["bold", TextBolderIcon, "加粗", "B"], ["italic", TextItalic, "斜体", "I"], ["highlight", Highlighter, "高亮", "Shift H"],
+    ["strike", TextStrikethrough, "删除线", "Shift X"], ["link", LinkSimple, "插入链接", "K"], ["code", Code, "行内代码", "`"],
+    ["codeblock", CodeBlock, "代码块", "Shift `"], ["mermaid", FlowArrow, "Mermaid 图表", ""],
+  ] as const;
+  return <><div className={styles.toolbar} role="toolbar" aria-label="Markdown 格式">
+    {tools.map(([kind, Icon, label, hotkey]) => <button key={kind} type="button" aria-label={label} title={`${label}${hotkey ? `（⌘ / Ctrl ${hotkey}）` : ""}`} onPointerDown={event => event.preventDefault()} onClick={() => format(kind)}><Icon size={18} /></button>)}
+    <label className={styles.color} title="文字颜色"><Palette size={18} /><select aria-label="文字颜色" value="" onChange={event => { if (event.target.value) format("color", event.target.value); }}>
+      <option value="" disabled>文字颜色</option><option value="#a33a32">红色</option><option value="#996719">橙色</option><option value="#457045">绿色</option><option value="#356da1">蓝色</option><option value="#8053a3">紫色</option><option value="#777777">灰色</option><option value="inherit">默认颜色</option>
+    </select></label>
+  </div><div className={styles.body} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) clear(); }}>
+    <textarea ref={field} className={`${canvas.editor} ${styles.textarea}`} autoFocus aria-label="Markdown 正文" aria-describedby={helpId} aria-keyshortcuts="Meta+B Control+B Meta+I Control+I Meta+K Control+K Meta+Enter Control+Enter" placeholder="直接写下想法，支持 Markdown…" spellCheck={false} value={markdown}
       onChange={event => { undo.current = null; onChange(event.target.value); selection.current = { start: event.target.selectionStart, end: event.target.selectionEnd }; setCursor(event.target.selectionStart); clear(); arm(); }}
       onSelect={event => select(event.currentTarget)} onFocus={event => { select(event.currentTarget); arm(); }} onBlur={onSave} onScroll={() => { clear(); position(); arm(); }} onKeyDown={keyDown}
       onCompositionStart={() => { composing.current = true; clear(); }} onCompositionEnd={() => { composing.current = false; arm(); }} />
     <div ref={mirror} className={`${canvas.editor} ${styles.mirror}`}><span aria-hidden="true">{markdown.slice(0, cursor)}</span><span ref={marker} aria-hidden="true">{"\u200b"}</span>{inline && control}<span aria-hidden="true">{markdown.slice(cursor)}</span></div>
     {popup && <div ref={floating} className={`${styles.floating} ${!inline && !error && disclosure === null && !busy ? styles.candidate : ""}`} onPointerDown={event => event.preventDefault()}>{popup}</div>}
-    <span id={helpId} className={styles.srOnly}>停顿后可按 Command 或 Control 加 Enter 请求小北补全，Tab 接受，Escape 放弃。</span>
+    <span id={helpId} className={styles.srOnly}>Command 或 Control 加 B 加粗，I 斜体，K 链接，Shift H 高亮，Shift X 删除线，反引号行内代码，Shift 加反引号代码块。Tab 缩进，Shift Tab 取消缩进；Escape 后按 Tab 可离开编辑区。停顿后可按 Command 或 Control 加 Enter 请求小北补全，有建议时 Tab 接受，Escape 放弃。</span>
     <span className={styles.srOnly} role="status" aria-live="polite">{suggestion ? `小北建议：${suggestion}。Tab 接受，Escape 放弃。` : hint ? `可按 ${shortcut} 请求小北补全` : ""}</span>
-  </div>;
+  </div></>;
 }
