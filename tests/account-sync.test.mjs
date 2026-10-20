@@ -7,7 +7,7 @@ import { XiaobeiStore, digest } from "../lib/xiaobei/store.ts";
 import { emptyCanvas } from "../lib/canvas.ts";
 import { mergeCanvas, sameCanvas } from "../lib/canvas-sync.ts";
 
-const password = "synthetic-test-password-101";
+const password = "test-6";
 const node = (id = randomUUID(), markdown = "测试正文") => ({ id, markdown, fileName: "", kind: "note", title: "测试节点", summary: "摘要", x: 10, y: 20, createdAt: "2026-10-20T00:00:00Z", updatedAt: "2026-10-20T00:00:00Z" });
 
 test("头像跨会话保存、账号隔离、恢复默认与上传校验", async () => {
@@ -34,6 +34,7 @@ test("头像跨会话保存、账号隔离、恢复默认与上传校验", async
 test("账号会话、云端隔离、迁移重试与旧版本覆盖保护", async () => {
   const store = new XiaobeiStore(":memory:"), accounts = new AccountStore(store), cloud = new CloudCanvasStore(accounts);
   try {
+    await assert.rejects(accounts.authenticate("short_password", "12345", true), /密码需为6–128位/);
     const login = await accounts.authenticate("Owner_A", password, true), other = await accounts.authenticate("owner_b", password, true);
     assert.equal(login.account.username, "owner_a");
     await assert.rejects(accounts.authenticate("owner_a", "incorrect-password-101", false), /不正确/);
