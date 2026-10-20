@@ -13,7 +13,7 @@ async function passwordHash(password: string, salt: string) {
 }
 export const normalizeUsername = (value: string) => value.normalize("NFKC").trim().toLowerCase();
 export function validCredentials(username: string, password: string) {
-  return /^[\p{L}\p{N}_-]{3,32}$/u.test(username) && password.length >= 15 && password.length <= 128;
+  return /^[\p{L}\p{N}_-]{3,32}$/u.test(username) && password.length >= 6 && password.length <= 128;
 }
 
 export class AccountStore {
@@ -39,7 +39,7 @@ export class AccountStore {
   }
   async authenticate(username: string, password: string, register: boolean) {
     username = normalizeUsername(username);
-    if (!validCredentials(username, password)) throw new XiaobeiError("用户名需为3–32位文字、数字、下划线或短横线，密码需为15–128位。");
+    if (!validCredentials(username, password)) throw new XiaobeiError("用户名需为3–32位文字、数字、下划线或短横线，密码需为6–128位。");
     this.limit("credentials", 100, 600_000);
     this.limit(`login:${username}`, 10, 600_000);
     if (register) this.limit("registration", 20, 3_600_000);

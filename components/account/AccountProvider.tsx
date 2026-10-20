@@ -114,8 +114,8 @@ export function AccountProvider({ children }: { children: ReactNode }) {
           <p className={styles.muted}>不登录也能使用画布，内容保存在当前浏览器。登录后可开启多端同步。</p>
           <form onSubmit={authenticate}>
             <label htmlFor="account-username">用户名</label><input id="account-username" value={username} onChange={event => setUsername(event.target.value)} autoComplete="username" autoCapitalize="none" spellCheck={false} minLength={3} maxLength={32} required disabled={busy} />
-            <label htmlFor="account-password">密码</label><input id="account-password" type="password" value={password} onChange={event => setPassword(event.target.value)} autoComplete={register ? "new-password" : "current-password"} minLength={15} maxLength={128} required disabled={busy} />
-            {register && <p className={styles.fine}>密码至少15位。请用密码管理器保存，当前不支持邮箱找回。</p>}
+            <label htmlFor="account-password">密码</label><input id="account-password" type="password" value={password} onChange={event => setPassword(event.target.value)} autoComplete={register ? "new-password" : "current-password"} minLength={6} maxLength={128} required disabled={busy} />
+            {register && <p className={styles.fine}>密码至少6位。请用密码管理器保存，当前不支持邮箱找回。</p>}
             <button className={styles.primary} disabled={busy}>{busy ? "请稍等…" : register ? "创建并登录" : "登录"}</button>
           </form>
           <button className={styles.switch} disabled={busy} onClick={() => { setRegister(!register); setPassword(""); setError(""); }}>{register ? "已有账号，去登录" : "还没有账号，创建一个"}</button>
