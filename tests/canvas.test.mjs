@@ -8,6 +8,7 @@ const note = (id, markdown) => ({ id, markdown, fileName: "", x: 20, y: -40, cre
 test("自由 Markdown 可无标题；标题、简述与安全导出文件名不改变正文", () => {
   const input = note("one", "# 一个网站点子\n\n把 **灵感** 放在一起。\n\n[参考](/terms/css)");
   assert.deepEqual(nodePreview(input), { title: "一个网站点子", summary: "把 灵感 放在一起。" });
+  assert.equal(nodePreview({ ...input, markdown: '# 标题\n\n==重点==与<span style="color: #777777">灰色文字</span>' }).summary, "重点与灰色文字");
   assert.equal(nodePreview(note("two", "有些东西，先留下就好。")).title, "有些东西，先留下就好。");
   assert.equal(nodePreview({ markdown: "", fileName: "读书随记.md" }).title, "读书随记");
   assert.equal(nodePreview(note("empty", "")).title, "未命名笔记");

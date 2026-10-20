@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import test from "node:test";
-import { completionContext, shortCompletion } from "../lib/canvas-completion.ts";
+import { completionContext, completionFence, shortCompletion } from "../lib/canvas-completion.ts";
 import { DAILY_CREDITS, XiaobeiStore, digest, usageCost } from "../lib/xiaobei/store.ts";
 import { callModel } from "../lib/xiaobei/model.ts";
 
@@ -14,6 +14,11 @@ test("补全只取光标前文并限制上下文和Unicode输出", () => {
   const context = completionContext(markdown, before.length, "笔记标题");
   assert.equal(context.title, "笔记标题"); assert.equal(context.prefix.length, 6000);
   assert.equal(context.outline, "# 标题\n## 当前小节"); assert.ok(!context.prefix.includes("不能发送"));
+  assert.equal(completionFence("```mermaid\nflowchart LR\n A-->B"), "```mermaid");
+  assert.equal(completionFence("````md\n```js\n片段\n```\n````\n正文"), "");
+  assert.equal(completionFence("~~~python\npass\n~~~"), "");
+  const longBlock = "```mermaid\nflowchart LR\n" + "  A --> B\n".repeat(800);
+  assert.equal(completionContext(longBlock, longBlock.length, "图表").fence, "```mermaid");
   assert.equal(shortCompletion("\n- 保留列表\r\n"), "\n- 保留列表");
   assert.equal(Array.from(shortCompletion("🌱".repeat(101))).length, 100);
   assert.equal(shortCompletion("这".repeat(25) + "。" + "下".repeat(100)), "这".repeat(25) + "。");
