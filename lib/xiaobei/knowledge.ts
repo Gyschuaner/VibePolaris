@@ -1,14 +1,16 @@
 import "server-only";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { getNewsArticle, getPublishedTerm, newsArticles, publishedTerms } from "@/lib/content";
+import { getNewsArticle, getPublishedTerm, newsArticles, publishedTerms, taxonomy } from "@/lib/content";
 import { XiaobeiError } from "./store.ts";
 import { retrievalChunk } from "./retrieval.ts";
+import { describePage } from "./page-context.ts";
 
 export const platformGuide = `VibePolaris（Vibe指北）是技术概念词典与概念星图。首页可搜索、按分类探索和打开词条。
-词条支持关联阅读及互动演示，HTML/CSS/JavaScript词条可进入对应教程。导航“我的笔记”按钮打开抽屉，管理当前浏览器本地笔记（没有独立的笔记网址），选中文字可划线或批注；笔记不会上传，不跨设备同步。
-主题入口可调整背景及主题色。新闻星历只包含已发布并经过人工确认的站内新闻，草稿和外部实时内容不在小北的知识范围内。小北是内部邀请码激活的全站悬浮星星，每码每天100积分，每日北京时间零点恢复。
-小北右上角可以新建对话或打开历史，切回旧对话可继续聊。历史按邀请码与当前浏览器隔离，刷新后可恢复；换浏览器或清除网站Cookie不能找回原历史，同码不同使用者不共享对话。`;
+词条支持关联阅读及互动演示，HTML/CSS/JavaScript词条可进入对应教程。导航“我的笔记”按钮打开抽屉，管理当前浏览器的划线、批注和随手记（没有独立的笔记网址）；这些阅读笔记不会上传或跨设备同步。
+“知识画布”与阅读笔记分开，可摆放和连接节点、导入导出Markdown、打开文档阅读或编辑。游客画布留在本浏览器；登录后可选择保存到账号，账号画布支持手动及自动同步。设置页管理头像和当前浏览器的自动同步偏好。小北不能读取这些私人内容或核查其保存状态。
+主题入口可调整背景及主题色。新闻星历只包含已发布并经过人工确认的站内新闻，草稿和外部实时内容不在小北的知识范围内。小北是全站悬浮星星，需要有效邀请码授权，可直接激活或绑定账号使用；每码每天100积分，每日北京时间零点恢复。
+小北右上角可以新建对话或打开历史，切回旧对话可继续聊。绑定账号后历史随账号恢复；未绑定时按邀请码与当前浏览器隔离，换浏览器或清除Cookie不能找回。共享邀请码不代表可以读取其他浏览器的历史。`;
 export const toolDefinitions = [
   { type: "function", function: { name: "search_terms", description: "搜索已发布的技术词条，返回摘要及可读取的slug。可换用词名、同义词或短关键词。", parameters: { type: "object", properties: { query: { type: "string" } }, required: ["query"], additionalProperties: false } } },
   { type: "function", function: { name: "read_term", description: "读取已发布词条的实际正文。每次返回约8K token以内，按字符offset分页；truncated时用nextOffset继续。", parameters: { type: "object", properties: { slug: { type: "string" }, offset: { type: "integer", minimum: 0 } }, required: ["slug"], additionalProperties: false } } },
@@ -16,14 +18,7 @@ export const toolDefinitions = [
   { type: "function", function: { name: "read_news", description: "读取已发布站内新闻的正文、来源、日期和关联词条。每次返回约8K token以内，按字符offset分页；truncated时用nextOffset继续。", parameters: { type: "object", properties: { slug: { type: "string" }, offset: { type: "integer", minimum: 0 } }, required: ["slug"], additionalProperties: false } } },
 ];
 export function pageContext(path: string) {
-  const url = new URL(path, "http://local");
-  const term = getPublishedTerm(url.pathname.split("/terms/")[1] || url.searchParams.get("term") || "");
-  if (term) return { path: `/terms/${term.slug}`, title: term.zh, summary: term.definition };
-  const news = url.pathname.startsWith("/news/") ? getNewsArticle(url.pathname.slice("/news/".length).split("/")[0]) : undefined;
-  if (news) return { path: `/news/${news.slug}`, title: news.title, summary: news.summary };
-  if (url.pathname === "/news") return { path: "/news", title: "新闻星历", summary: "已发布新闻及其关联概念" };
-  const pages: Record<string, string> = { "/": "概念星图", "/about": "关于", "/guides/css": "CSS 教程", "/guides/html": "HTML 教程", "/guides/javascript": "JavaScript 教程" };
-  return { path: pages[url.pathname] ? url.pathname : "/", title: pages[url.pathname] || "概念星图" };
+  return describePage(path, { terms: publishedTerms, news: newsArticles, categories: taxonomy });
 }
 export function searchTerms(query: string) {
   const words = query.toLowerCase().trim().split(/\s+/).filter(Boolean);
