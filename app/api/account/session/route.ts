@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
       const guest = getStore().identity(request.cookies.get(SESSION_COOKIE)?.value), browser = browserToken(request);
       canBindCurrent = !!browser && (!grant || (guest.invite === grant.id && !!store.store.db.prepare("SELECT 1 FROM conversations WHERE invite=? AND browser=? LIMIT 1").get(guest.invite, digest(browser))));
     } catch { /* No guest grant. */ }
-    return NextResponse.json({ account: { id: identity.id, username: identity.username }, xiaobei: { bound: !!grant, active: !!grant && !grant.disabled && (grant.expires === null || grant.expires > Date.now()), canBindCurrent } }, { headers: privateHeaders });
+    return NextResponse.json({ account: store.profile(identity), xiaobei: { bound: !!grant, active: !!grant && !grant.disabled && (grant.expires === null || grant.expires > Date.now()), canBindCurrent } }, { headers: privateHeaders });
   } catch (error) { return errorResponse(error); }
 }
 export async function POST(request: NextRequest) {

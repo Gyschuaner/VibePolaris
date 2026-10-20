@@ -2,7 +2,7 @@ import { randomBytes, randomUUID, scrypt, timingSafeEqual } from "node:crypto";
 import { digest, getStore, SESSION_SECONDS, XiaobeiError, type XiaobeiStore } from "../xiaobei/store.ts";
 
 export const ACCOUNT_COOKIE = "vp-account";
-export type Account = { id: string; username: string };
+export type Account = { id: string; username: string; avatar?: string | null };
 export type AccountIdentity = Account & { session: string };
 let hashing = 0;
 async function passwordHash(password: string, salt: string) {
@@ -26,6 +26,7 @@ export class AccountStore {
       CREATE INDEX IF NOT EXISTS account_sessions_owner ON account_sessions(account);
       CREATE TABLE IF NOT EXISTS account_invites(account TEXT PRIMARY KEY REFERENCES accounts(id), invite TEXT UNIQUE NOT NULL REFERENCES invites(id));
       CREATE TABLE IF NOT EXISTS account_attempts(key TEXT PRIMARY KEY, count INTEGER NOT NULL, until INTEGER NOT NULL);
+      CREATE TABLE IF NOT EXISTS account_profiles(account TEXT PRIMARY KEY REFERENCES accounts(id), avatar TEXT);
     `);
   }
   limit(key: string, maximum: number, period: number, now = Date.now()) {
@@ -83,6 +84,20 @@ export class AccountStore {
       this.store.db.prepare("DELETE FROM account_sessions WHERE hash=? AND account=?").run(identity.session, identity.id);
       this.store.db.prepare("DELETE FROM sessions WHERE hash=?").run(identity.session);
     });
+  }
+  profile(identity: AccountIdentity): Account {
+    const row = this.store.db.prepare("SELECT avatar FROM account_profiles WHERE account=?").get(identity.id) as { avatar: string | null } | undefined;
+    return { id: identity.id, username: identity.username, avatar: row?.avatar ?? null };
+  }
+  setAvatar(identity: AccountIdentity, avatar: string | null) {
+    if (!this.store.db.prepare("SELECT 1 FROM account_sessions WHERE hash=? AND account=? AND expires>?").get(identity.session, identity.id, Date.now())) throw new XiaobeiError("请重新登录。", 401);
+    if (avatar !== null) {
+      if (avatar.length > 132_000 || !/^data:image\/png;base64,[A-Za-z0-9+/]+={0,2}$/.test(avatar)) throw new XiaobeiError("请上传有效的头像图片。");
+      const png = Buffer.from(avatar.slice(22), "base64");
+      if (png.length < 45 || png.length > 96 * 1024 || png.subarray(0, 8).toString("hex") !== "89504e470d0a1a0a" || png.toString("ascii", 12, 16) !== "IHDR" || png.readUInt32BE(16) !== 128 || png.readUInt32BE(20) !== 128 || png.toString("hex", png.length - 12) !== "0000000049454e44ae426082") throw new XiaobeiError("头像图片无法识别，请重新选择。");
+    }
+    this.store.db.prepare("INSERT INTO account_profiles VALUES(?,?) ON CONFLICT(account) DO UPDATE SET avatar=excluded.avatar").run(identity.id, avatar);
+    return this.profile(identity);
   }
   grant(account: string) {
     return this.store.db.prepare("SELECT i.id,i.disabled,i.expires FROM account_invites a JOIN invites i ON i.id=a.invite WHERE a.account=?").get(account) as { id: string; disabled: number; expires: number | null } | undefined;

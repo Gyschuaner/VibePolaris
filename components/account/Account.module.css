@@ -1,6 +1,14 @@
-.entry { display: inline-flex; align-items: center; gap: 6px; min-width: 44px; min-height: 44px; padding: 4px; border: 0; background: none; color: var(--ink); font: inherit; font-size: 13px; cursor: pointer; }
-.entry span { max-width: 88px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.dialog { padding: 0; width: min(440px, calc(100vw - 32px)); max-height: calc(100dvh - 40px); border: 1px solid var(--line); border-radius: 14px; background: var(--bg); color: var(--ink); box-shadow: 0 20px 70px #0002; }
+.entry { display: inline-grid; place-items: center; width: 44px; height: 44px; padding: 4px; border: 0; border-radius: 50%; background: none; color: var(--ink); cursor: pointer; }
+.entry:hover { color: var(--accent-text); }
+.avatar { display: inline-flex; flex: none; border-radius: 50%; overflow: hidden; background: color-mix(in srgb, var(--accent) 14%, var(--surface)); color: var(--accent-text); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 8%, transparent); }
+.avatar img { display: block; width: 100%; height: 100%; object-fit: cover; }.avatar svg { width: 70%; height: 70%; margin: auto; }
+.person { display: block; width: 34px; height: 34px; background: currentColor; mask: url("/_next/image?url=%2Fimages%2Fui%2Flogin-wave-v1.png&w=96&q=75") center / contain no-repeat; }
+.accountMenu { position: relative; display: flex; }
+.dropdown { position: absolute; top: 100%; right: -4px; min-width: 124px; padding: 8px; border: 1px solid var(--hairline); border-radius: 12px; background: var(--surface); box-shadow: 0 8px 28px color-mix(in srgb, var(--ink) 9%, transparent); animation: menuIn .15s ease-out; }
+.dropdown a { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 7px; color: var(--ink); font-size: 14px; text-decoration: none; }.dropdown a:hover, .dropdown a:focus-visible { background: color-mix(in srgb, var(--accent) 8%, transparent); color: var(--accent-text); }
+.dropdown p { max-width: 220px; font-size: 12px; line-height: 1.6; }
+@keyframes menuIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+.dialog { padding: 0; width: min(440px, calc(100vw - 32px)); max-height: calc(100dvh - 40px); border: 1px solid var(--hairline); border-radius: 14px; background: var(--bg); color: var(--ink); box-shadow: 0 20px 70px #0002; }
 .dialog::backdrop { background: #0005; backdrop-filter: blur(3px); }
 .panel { padding: 28px; }
 .panel header { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 24px; }
@@ -9,10 +17,11 @@
 .panel button, .panel input { font: inherit; }.panel button { cursor: pointer; }.panel button:disabled { opacity: .5; cursor: default; }
 .panel button:focus-visible, .panel input:focus-visible, .entry:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .panel form { display: flex; flex-direction: column; gap: 10px; }.panel label { font-size: 13px; margin-top: 6px; }
-.panel input { width: 100%; box-sizing: border-box; padding: 11px 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); }
+.panel input { width: 100%; box-sizing: border-box; padding: 11px 12px; border: 1px solid var(--hairline); border-radius: 6px; background: var(--bg); color: var(--ink); }
 .panel .primary { margin-top: 12px; padding: 11px 18px; border: 0; border-radius: 6px; background: var(--accent); color: var(--accent-ink); font-size: 14px; }
 .icon { display: grid; place-items: center; width: 36px; height: 36px; border: 0; color: inherit; background: none; }.muted, .fine { color: var(--muted); }
 .panel .fine { font-size: 12px; }.switch, .logout { display: block; padding: 12px 0; margin-top: 12px; border: 0; background: none; color: var(--accent-text); font-size: 13px; }
-.username { font-weight: 650; }.binding { border-top: 1px solid var(--line); padding-top: 22px; margin-top: 22px; }.binding p { color: var(--muted); }
+.username { font-weight: 650; }.binding { border-top: 1px solid var(--hairline); padding-top: 22px; margin-top: 22px; }.binding p { color: var(--muted); }
 .error { color: var(--ink); border-left: 2px solid var(--accent); padding-left: 10px; }.message { color: var(--accent-text); }
-@media(max-width: 640px) { .entry span { display: none; }.panel { padding: 22px; } }
+@media(max-width: 640px) { .panel { padding: 22px; } }
+@media(prefers-reduced-motion: reduce) { .dropdown { animation: none; } }
