@@ -12,7 +12,7 @@ import styles from "./CanvasSession.module.css";
 
 export type CanvasSession = ReturnType<typeof useCanvasSession>;
 export function useCanvasSession() {
-  const { account, openAccount } = useAccount();
+  const { account, openAccount, autoSync, setAutoSync: setSync } = useAccount();
   const router = useRouter(), search = useSearchParams();
   const preference = `vp-canvas-account:${account?.id}`;
   const requested = search.get("canvas"), fromUrl = account && requested && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(requested) ? requested : null;
@@ -23,7 +23,6 @@ export function useCanvasSession() {
     previousUrl.current = fromUrl;
     queueMicrotask(() => setSelected(fromUrl || "local"));
   }, [fromUrl]);
-  const [autoSync, setAutoSync] = useState(() => { try { return !!account && localStorage.getItem(`${preference}:sync`) === "1"; } catch { return false; } });
   const [items, setItems] = useState<CanvasSummary[]>([]), [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const alive = useRef(true);
@@ -50,10 +49,6 @@ export function useCanvasSession() {
     if (id === "local") query.delete("canvas"); else query.set("canvas", id);
     if (!preserveNote) { query.delete("note"); query.delete("edit"); }
     router.replace(`/canvas${query.size ? `?${query}` : ""}`, { scroll: false });
-  }
-  function setSync(enabled: boolean) {
-    setAutoSync(enabled);
-    try { localStorage.setItem(`${preference}:sync`, enabled ? "1" : "0"); } catch { /* The switch still applies to this visit. */ }
   }
   async function accept(value: CloudCanvas, enable = autoSync, prepared = false) {
     if (!owner || !alive.current) return;
@@ -94,7 +89,6 @@ export function CanvasSyncBar({ session, ready, status, flush, sync, cloudStatus
         </select>
         <button className={styles.new} aria-label="新建账号画布" title="新建账号画布" onClick={() => open("new")}><Plus size={17} /></button>
         {remote ? <>
-          <label className={styles.toggle}><input type="checkbox" role="switch" checked={session.autoSync} onChange={event => session.setSync(event.target.checked)} />自动同步到云端</label>
           <span role="status">{status === "saving" ? "保存中…" : cloudStatus}</span>
           <button disabled={!ready || status === "saving" || cloudStatus === "同步中…"} onClick={() => void sync()}>立即同步</button>
         </> : <><span role="status">{status === "saving" ? "保存中…" : "仅保存在此浏览器"}</span><button disabled={!ready} onClick={() => open("import")}><Cloud size={16} />开启云端同步</button></>}

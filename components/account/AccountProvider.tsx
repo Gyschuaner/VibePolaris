@@ -1,16 +1,19 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
-import { UserCircle, X } from "@phosphor-icons/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { GearSix, X } from "@phosphor-icons/react";
 import type { Account } from "@/lib/account/store";
+import { AccountAvatar, WavingPerson } from "./AccountAvatar";
 import styles from "./Account.module.css";
 
 type Session = { account: Account | null; xiaobei?: { bound: boolean; active: boolean; canBindCurrent: boolean } };
-type AccountContext = Session & { ready: boolean; openAccount: () => void; refresh: () => Promise<void> };
+type AccountContext = Session & { ready: boolean; autoSync: boolean; setAutoSync: (enabled: boolean) => void; logout: () => Promise<void>; saveAvatar: (avatar: string | null) => Promise<void>; openAccount: () => void; refresh: () => Promise<void> };
 const Context = createContext<AccountContext | null>(null);
 export const useAccount = () => useContext(Context)!;
 export const ownerHeaders = (id?: string) => ({ "X-VP-Account": id ?? "guest" });
-async function settleDrafts() {
+export async function settleDrafts() {
   const waits: Promise<unknown>[] = [];
   window.dispatchEvent(new CustomEvent("vp-account-before-change", { detail: waits }));
   await Promise.all(waits);
@@ -22,6 +25,23 @@ export function AccountProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState(""), [message, setMessage] = useState("");
   const [username, setUsername] = useState(""), [password, setPassword] = useState(""), [code, setCode] = useState("");
   const dialog = useRef<HTMLDialogElement>(null), channel = useRef<BroadcastChannel | null>(null), sequence = useRef(0);
+  const [syncPreference, setSyncPreference] = useState<{ owner: string; enabled: boolean } | null>(null);
+  const owner = session.account?.id;
+  useEffect(() => {
+    if (!owner) return;
+    const key = `vp-canvas-account:${owner}:sync`;
+    const read = () => { try { setSyncPreference({ owner, enabled: localStorage.getItem(key) === "1" }); } catch { setSyncPreference({ owner, enabled: false }); } };
+    queueMicrotask(read);
+    const storage = (event: StorageEvent) => { if (event.key === key || event.key === null) read(); };
+    window.addEventListener("storage", storage);
+    return () => window.removeEventListener("storage", storage);
+  }, [owner]);
+  function setAutoSync(enabled: boolean) {
+    if (!owner) return;
+    try { localStorage.setItem(`vp-canvas-account:${owner}:sync`, enabled ? "1" : "0"); }
+    catch { throw new Error("无法保存同步设置，请检查浏览器存储权限。"); }
+    setSyncPreference({ owner, enabled });
+  }
   const refresh = useCallback(async () => {
     const at = ++sequence.current;
     try {
@@ -50,7 +70,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
       await settleDrafts();
       const response = await fetch("/api/account/session", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password, register }) });
       const body = await response.json(); if (!response.ok) throw new Error(body.error || "登录失败，请重试。");
-      setPassword(""); await changed(); setMessage("已登录。你可以在画布里选择是否开启云端同步。");
+      setPassword(""); await changed(); setOpen(false);
     } catch (cause) { setError(cause instanceof Error ? cause.message : "连接失败，请重试。"); }
     finally { setBusy(false); }
   }
@@ -64,29 +84,32 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     } catch (cause) { setError(cause instanceof Error ? cause.message : "绑定失败，请重试。"); }
     finally { setBusy(false); }
   }
-  return <Context.Provider value={{ ...session, ready, refresh, openAccount: () => { setError(""); setMessage(""); setOpen(true); } }}>
+  async function logout() {
+    await settleDrafts();
+    const response = await fetch("/api/account/session", { method: "DELETE" });
+    if (!response.ok) throw new Error("退出失败，请重试。");
+    await changed(); setOpen(false);
+  }
+  async function saveAvatar(avatar: string | null) {
+    if (!owner) throw new Error("请先登录。");
+    const response = await fetch("/api/account/profile", { method: "PATCH", headers: { ...ownerHeaders(owner), "Content-Type": "application/json" }, body: JSON.stringify({ avatar }) });
+    const body = await response.json();
+    if (!response.ok) throw new Error(body.error || "头像保存失败，请重试。");
+    setSession(current => current.account?.id === owner ? { ...current, account: body.account } : current);
+    channel.current?.postMessage("changed");
+  }
+  return <Context.Provider value={{ ...session, ready, refresh, autoSync: !!owner && syncPreference?.owner === owner && syncPreference.enabled, setAutoSync, logout, saveAvatar, openAccount: () => { setError(""); setMessage(""); setOpen(true); } }}>
     {children}
     <dialog ref={dialog} className={styles.dialog} aria-labelledby="account-title" onCancel={() => setOpen(false)} onClose={() => { setOpen(false); setPassword(""); setCode(""); }} onClick={event => { if (event.target === event.currentTarget && !busy) setOpen(false); }}>
       <div className={styles.panel}>
-        <header><h2 id="account-title">{session.account ? "我的账号" : register ? "创建账号" : "登录"}</h2><button type="button" className={styles.icon} aria-label="关闭账号窗口" onClick={() => setOpen(false)}><X size={22} /></button></header>
+        <header><h2 id="account-title">{session.account ? "小北" : register ? "创建账号" : "欢迎回来"}</h2><button type="button" className={styles.icon} aria-label="关闭账号窗口" onClick={() => setOpen(false)}><X size={22} /></button></header>
         {session.account ? <>
           <p className={styles.username}>{session.account.username}</p>
-          <p className={styles.muted}>画布可选择自动同步到云端，游客内容由你决定是否保存到账号。</p>
-          <section className={styles.binding}><h3>小北</h3>{session.xiaobei?.active ? <><p>已绑定账号，全站可用。积分在此账号的设备之间共用。</p>{session.xiaobei.canBindCurrent && <button className={styles.primary} disabled={busy} onClick={() => void bind(true)}>保存此浏览器的旧对话到账号</button>}</> : session.xiaobei?.bound ? <p>绑定的邀请码已失效，请联系邀请人。</p> : <>
+          <section className={styles.binding}>{session.xiaobei?.active ? <><p>已绑定账号，全站可用。积分在此账号的设备之间共用。</p>{session.xiaobei.canBindCurrent && <button className={styles.primary} disabled={busy} onClick={() => void bind(true)}>保存此浏览器的旧对话到账号</button>}</> : session.xiaobei?.bound ? <p>绑定的邀请码已失效，请联系邀请人。</p> : <>
             <p>一个邀请码绑定一个账号，之后以账号登录小北。当前浏览器已有的对话一并转入，其他浏览器的历史保持隔离。</p>
             {session.xiaobei?.canBindCurrent && <button type="button" className={styles.primary} disabled={busy} onClick={() => void bind(true)}>绑定当前浏览器的小北</button>}
             <form onSubmit={event => { event.preventDefault(); void bind(); }}><label htmlFor="account-invite">邀请码</label><input id="account-invite" type="password" autoComplete="off" value={code} onChange={event => setCode(event.target.value)} maxLength={100} required /><button className={styles.primary} disabled={busy || !code.trim()}>绑定小北</button></form>
           </>}</section>
-          <button type="button" className={styles.logout} disabled={busy} onClick={async () => {
-            setBusy(true); setError("");
-            try {
-              await settleDrafts();
-              const response = await fetch("/api/account/session", { method: "DELETE" });
-              if (!response.ok) throw new Error("退出失败，请重试。");
-              await changed(); setOpen(false);
-            } catch (cause) { setError(cause instanceof Error ? cause.message : "退出失败。"); }
-            finally { setBusy(false); }
-          }}>退出登录</button><p className={styles.fine}>未同步修改保留在此浏览器的账号缓存中，下次登录可继续。</p>
         </> : <>
           <p className={styles.muted}>不登录也能使用画布，内容保存在当前浏览器。登录后可开启多端同步。</p>
           <form onSubmit={authenticate}>
@@ -104,5 +127,16 @@ export function AccountProvider({ children }: { children: ReactNode }) {
 }
 export function AccountButton() {
   const { account, openAccount } = useAccount();
-  return <button className={styles.entry} type="button" title={account?.username || "登录账号"} aria-label={account ? `账号：${account.username}` : "登录账号"} onClick={openAccount}><UserCircle size={25} /><span>{account?.username || "登录"}</span></button>;
+  const [expanded, setExpanded] = useState(false), [error, setError] = useState("");
+  const root = useRef<HTMLDivElement>(null), router = useRouter();
+  useEffect(() => {
+    const close = (event: PointerEvent) => { if (!root.current?.contains(event.target as Node)) setExpanded(false); };
+    document.addEventListener("pointerdown", close);
+    return () => document.removeEventListener("pointerdown", close);
+  }, []);
+  if (!account) return <button className={styles.entry} type="button" title="登录" aria-label="登录账号" onClick={openAccount}><WavingPerson /></button>;
+  return <div ref={root} className={styles.accountMenu} onPointerEnter={event => { if (event.pointerType === "mouse") setExpanded(true); }} onPointerLeave={() => { if (!root.current?.contains(document.activeElement)) setExpanded(false); }} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setExpanded(false); }} onKeyDown={event => { if (event.key === "Escape") { root.current?.querySelector("button")?.focus(); setExpanded(false); } }}>
+    <button className={styles.entry} type="button" aria-label={`账号：${account.username}`} aria-expanded={expanded} aria-controls="account-dropdown" onClick={() => setExpanded(true)} onFocus={event => { if (event.currentTarget.matches(":focus-visible")) setExpanded(true); }}><AccountAvatar avatar={account.avatar} /></button>
+    {expanded && <div className={styles.dropdown} id="account-dropdown"><Link href="/settings" onClick={async event => { event.preventDefault(); try { await settleDrafts(); setExpanded(false); setError(""); router.push("/settings"); } catch (cause) { setError(cause instanceof Error ? cause.message : "请先保存草稿。"); } }}><GearSix size={18} />设置</Link>{error && <p role="alert">{error}</p>}</div>}
+  </div>;
 }
