@@ -41,7 +41,8 @@ test("账号会话、云端隔离、迁移重试与旧版本覆盖保护", async
     const a = accounts.identity(login.token), b = accounts.identity(other.token);
     assert.notEqual(store.db.prepare("SELECT password FROM accounts WHERE id=?").get(a.id).password, password);
     assert.equal(store.db.prepare("SELECT 1 FROM account_sessions WHERE hash=?").get(login.token), undefined);
-    const data = { ...emptyCanvas(), nodes: [node()] };
+    const data = { ...emptyCanvas(), nodes: [node(), node()] };
+    data.edges = [{ id: randomUUID(), from: data.nodes[0].id, to: data.nodes[1].id, fromPort: "right", toPort: "top", direction: "both", dashed: true }];
     const first = cloud.create(a, "browser-a:1", "画布A", data);
     assert.equal(cloud.create(a, "browser-a:1", "重试", data).id, first.id);
     const second = cloud.create(a, "browser-b:1", "画布B", data);
@@ -51,7 +52,8 @@ test("账号会话、云端隔离、迁移重试与旧版本覆盖保护", async
     assert.throws(() => cloud.write(b, first.id, 1, data), error => error.status === 404);
     const own = cloud.create(b, "browser-a:1", "不同账号", data);
     assert.notEqual(own.id, first.id);
-    const updated = cloud.write(a, first.id, 1, { ...first.data, nodes: [] });
+    assert.deepEqual(cloud.read(a, first.id).data.edges, data.edges);
+    const updated = cloud.write(a, first.id, 1, { ...first.data, nodes: [], edges: [] });
     assert.equal(updated.data.revision, 2);
     assert.throws(() => cloud.write(a, first.id, 1, first.data), error => error.status === 409);
     assert.equal(cloud.read(a, first.id).data.nodes.length, 0);
@@ -110,4 +112,15 @@ test("三方合并保留独立编辑、节点删除与连线；同处修改保�
   assert.equal(sameCanvas(base, { ...base, revision: 100, view: { x: 200, y: 0, scale: 2 } }), true);
   const move = { ...base, nodes: [{ ...a, x: 90, y: 60 }, b] }, text = { ...base, nodes: [{ ...a, markdown: "文字" }, b] };
   const both = mergeCanvas(base, move, text); assert.equal(both.nodes[0].x, 90); assert.equal(both.nodes[0].markdown, "文字");
+});
+
+
+test("连线独立样式修改可合并，同一方向冲突保护副本", () => {
+  const a = node(), b = node();
+  const edge = { id: randomUUID(), from: a.id, to: b.id, fromPort: "right", toPort: "left", direction: "none", dashed: false };
+  const base = { ...emptyCanvas(), nodes: [a, b], edges: [edge] };
+  const local = { ...base, edges: [{ ...edge, direction: "end" }] };
+  const remote = { ...base, edges: [{ ...edge, dashed: true, toPort: "top" }] };
+  assert.deepEqual(mergeCanvas(base, local, remote).edges[0], { ...edge, direction: "end", dashed: true, toPort: "top" });
+  assert.equal(mergeCanvas(base, local, { ...remote, edges: [{ ...remote.edges[0], direction: "start" }] }), null);
 });

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { availablePosition, connectNodes, editNodeTask, emptyCanvas, exportNodeMarkdown, importNodeMarkdown, markdownFileName, moveView, nodePreview, nodeResource, nodeTasks, parseCanvas, safeNodeUrl, withNodeResource } from "../lib/canvas.ts";
-import { connectionPath } from "../lib/canvas-routing.ts";
+import { connectionPath, edgeAnchors, portAnchor } from "../lib/canvas-routing.ts";
 
 const note = (id, markdown) => ({ id, markdown, fileName: "", x: 20, y: -40, createdAt: "2026-10-19T02:00:00.000Z", updatedAt: "2026-10-19T02:00:00.000Z" });
 
@@ -26,7 +26,7 @@ test("新建和导入避开已有节点，窄画布逐行放置", () => {
 test("旧画布兼容；节点显示信息和四种内容可随 Markdown 往返且不改正文", () => {
   const original = note("old", "# 原正文标题\r\n\r\n正文 **保留**。\r\n");
   assert.deepEqual(parseCanvas({ ...emptyCanvas(), nodes: [original] }).nodes[0], original);
-  assert.equal(parseCanvas({ ...emptyCanvas(), version: 1 }).version, 2);
+  assert.equal(parseCanvas({ ...emptyCanvas(), version: 1 }).version, 3);
   assert.equal(exportNodeMarkdown(original), original.markdown);
   for (const kind of ["note", "link", "image", "todo"]) {
     const node = { ...original, kind, title: "画布标题 --> <script>", summary: "手动摘要\n第二行" };
@@ -109,4 +109,34 @@ test("连线保留端点，绕开自身及途经节点文字，反向、竖向�
   }
   assert.match(connectionPath({ x: 0, y: 0 }, { x: 300, y: 100 }, []), / C /);
   assert.ok(!/NaN|Infinity/.test(connectionPath({ x: 0, y: 0 }, { x: 0, y: 0 }, [{ x: 0, y: 0, width: 100, height: 100 }])));
+});
+
+
+test("四边连接点随边界定位，平滑连线保持端点并避开文字", () => {
+  const a = { x: 0, y: 0, width: 160, height: 70 }, b = { x: 420, y: 220, width: 170, height: 80 };
+  assert.deepEqual(portAnchor(a, "left"), { x: -14, y: 35, side: "left" });
+  assert.deepEqual(portAnchor(a, "bottom"), { x: 80, y: 84, side: "bottom" });
+  const auto = edgeAnchors(a, { ...b, y: 0 });
+  assert.equal(auto.fromPort, "right"); assert.equal(auto.toPort, "left");
+  for (const side of ["top", "right", "bottom", "left"]) {
+    const ends = edgeAnchors(a, b, { fromPort: side, toPort: side });
+    assert.equal(ends.fromPort, side); assert.equal(ends.toPort, side);
+    const path = connectionPath(ends.from, ends.to, [a, b]);
+    const points = samplePath(path);
+    assert.deepEqual(points[0], { x: ends.from.x, y: ends.from.y });
+    assert.deepEqual(points.at(-1), { x: ends.to.x, y: ends.to.y });
+    assert.match(path, /[CQ]/);
+    for (const point of points) for (const label of [a, b]) assert.ok(!(point.x > label.x - 4 && point.x < label.x + label.width + 4 && point.y > label.y - 4 && point.y < label.y + label.height + 4));
+  }
+});
+
+test("连线端口与样式持久化，反向重接保留原箭头和线型", () => {
+  const data = { ...emptyCanvas(), nodes: [note("a", "A"), note("b", "B")] };
+  const linked = connectNodes(data, "a", "b", { fromPort: "right", toPort: "left" });
+  linked.edges[0] = { ...linked.edges[0], direction: "both", dashed: true };
+  assert.deepEqual(parseCanvas(JSON.parse(JSON.stringify(linked))), linked);
+  const changed = connectNodes(linked, "b", "a", { fromPort: "top", toPort: "bottom" });
+  assert.equal(changed.edges.length, 1);
+  assert.deepEqual(changed.edges[0], { ...linked.edges[0], fromPort: "bottom", toPort: "top" });
+  assert.throws(() => parseCanvas({ ...linked, edges: [{ ...linked.edges[0], direction: "invalid" }] }));
 });
