@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, CheckSquare, Circle, Copy, DotsThree, DownloadSimple, ImageSquare, Info, LinkSimple, Minus, NotePencil, Plus, Trash, UploadSimple, X } from "@phosphor-icons/react";
 import { SiteHeader } from "@/components/SiteHeader";
-import { availablePosition, connectNodes, exportNodeMarkdown, importNodeMarkdown, markdownFileName, moveView, nodeKinds, nodePreview, nodeResource, nodeTasks, safeNodeUrl, type CanvasEdge, type CanvasNode, type CanvasView, type NodeKind } from "@/lib/canvas";
-import { connectionPath } from "@/lib/canvas-routing";
+import { availablePosition, canvasPorts, connectNodes, exportNodeMarkdown, importNodeMarkdown, markdownFileName, moveView, nodeKinds, nodePreview, nodeResource, nodeTasks, safeNodeUrl, type CanvasEdge, type CanvasNode, type CanvasPort, type CanvasView, type NodeKind } from "@/lib/canvas";
+import { connectionPath, edgeAnchors, portAnchor, type CanvasAnchor } from "@/lib/canvas-routing";
+import { EdgeToolbar } from "./EdgeToolbar";
 import { MarkdownDocument } from "./MarkdownDocument";
 import { MarkdownEditor } from "./MarkdownEditor";
 import { NodeCard } from "./NodeCard";
@@ -17,10 +18,10 @@ import { CanvasSyncBar, useCanvasSession, type CanvasSession } from "./CanvasSes
 
 type Point = { x: number; y: number };
 type Gesture = { pointerId: number; start: Point; moved: boolean } & (
-  { kind: "pan"; view: CanvasView } | { kind: "node"; node: CanvasNode; scale: number } | { kind: "link"; from: string }
+  { kind: "pan"; view: CanvasView } | { kind: "node"; node: CanvasNode; scale: number } | { kind: "link"; from: string; fromPort: CanvasPort }
 );
 type Removed = { nodes: CanvasNode[]; edges: CanvasEdge[] };
-const anchor = (node: CanvasNode): Point => ({ x: node.x + 12, y: node.y + 17 });
+const portNames = { top: "上", right: "右", bottom: "下", left: "左" };
 const fullDate = (value: string) => new Date(value).toLocaleString("zh-CN", { hourCycle: "h23" });
 const kindIcons = { note: NotePencil, link: LinkSimple, image: ImageSquare, todo: CheckSquare };
 type ContextMenu = { x: number; y: number } & ({ kind: "create"; at?: Point } | { kind: "node"; id: string });
@@ -43,7 +44,9 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
   async function saveBeforeSwitch() { await flush(); if (hasPending()) throw new Error("当前草稿尚未保存，请先导出或重试保存。"); }
   const documentId = search.get("note"), editing = search.get("edit") === "1";
   const [selected, setSelected] = useState<string | null>(null), [selectedEdge, setSelectedEdge] = useState<string | null>(null);
-  const [connecting, setConnecting] = useState<{ from: string; point: Point } | null>(null);
+  const [connecting, setConnecting] = useState<{ from: string; fromPort: CanvasPort; point: CanvasAnchor } | null>(null);
+  const [edgeMenuAt, setEdgeMenuAt] = useState<Point>({ x: 0, y: 0 });
+  const markerId = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const [size, setSize] = useState({ width: 0, height: 0 }), [importing, setImporting] = useState(false);
   const [labelSizes, setLabelSizes] = useState<Record<string, { width: number; height: number }>>({});
   const [toast, setToast] = useState<{ message: string; undo?: Removed } | null>(null);
@@ -59,11 +62,22 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
   const navigate = useCanvasMotion(documentId, active && nodePreview(active).title, previewRef, documentRef);
   const edge = data.edges.find(item => item.id === selectedEdge);
   const nodeIds = data.nodes.map(node => node.id).join("\0");
-  const labels = useMemo(() => data.nodes.map(node => ({ x: node.x + 24, y: node.y, ...(labelSizes[node.id] ?? { width: 275, height: 82 }) })), [data.nodes, labelSizes]);
-  const paths = useMemo(() => new Map(data.edges.map(item => {
-    const from = data.nodes.find(node => node.id === item.from), to = data.nodes.find(node => node.id === item.to);
-    return [item.id, from && to ? connectionPath(anchor(from), anchor(to), labels) : ""];
-  })), [data.edges, data.nodes, labels]);
+  const bounds = useMemo(() => new Map(data.nodes.map(node => [node.id, { x: node.x + 24, y: node.y, ...(labelSizes[node.id] ?? { width: 275, height: 82 }) }])), [data.nodes, labelSizes]);
+  const labels = useMemo(() => [...bounds.values()], [bounds]);
+  const paths = useMemo(() => new Map(data.edges.flatMap(item => {
+    const from = bounds.get(item.from), to = bounds.get(item.to);
+    if (!from || !to) return [];
+    const ends = edgeAnchors(from, to, item);
+    return [[item.id, { ...ends, path: connectionPath(ends.from, ends.to, labels) }]];
+  })), [data.edges, bounds, labels]);
+  const connectedPorts = useMemo(() => {
+    const ports = new Set<string>();
+    for (const item of data.edges) {
+      const ends = paths.get(item.id);
+      if (ends) { ports.add(`${item.from}:${ends.fromPort}`); ports.add(`${item.to}:${ends.toPort}`); }
+    }
+    return ports;
+  }, [data.edges, paths]);
 
   useLayoutEffect(() => {
     if (!surface.current || documentId) return;
@@ -103,7 +117,7 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
     const close = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
       if (contextMenu) { setContextMenu(null); (menuAnchor.current ?? surface.current)?.focus({ preventScroll: true }); return; }
-      if (!documentId) { setConnecting(null); setSelected(null); setSelectedEdge(null); }
+      if (!documentId) { setConnecting(null); setSelected(null); setSelectedEdge(null); surface.current?.focus({ preventScroll: true }); }
     };
     window.addEventListener("keydown", close);
     return () => window.removeEventListener("keydown", close);
@@ -170,35 +184,54 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
     if (id) { setSelected(id); setContextMenu({ kind: "node", id, x, y }); }
     else { setSelected(null); setContextMenu({ kind: "create", at: worldPoint(localPoint(x, y)), x, y }); }
   }
-  function linkNodes(from: string, to: string) {
-    update(value => connectNodes(value, from, to), true);
+  function linkNodes(from: string, to: string, fromPort: CanvasPort, toPort?: CanvasPort) {
+    const a = bounds.get(from), b = bounds.get(to);
+    if (!a || !b) return;
+    const ports = edgeAnchors(a, b, { fromPort, toPort });
+    update(value => connectNodes(value, from, to, { fromPort: ports.fromPort, toPort: ports.toPort }), true);
     setConnecting(null); setSelectedEdge(null);
   }
   function selectNode(node: CanvasNode) {
     if (skipClick.current) { skipClick.current = false; return; }
-    if (connecting) { if (connecting.from !== node.id) linkNodes(connecting.from, node.id); return; }
+    if (connecting) { if (connecting.from !== node.id) linkNodes(connecting.from, node.id, connecting.fromPort); return; }
     setSelected(node.id); setSelectedEdge(null);
   }
   function beginNode(event: ReactPointerEvent, node: CanvasNode) {
     if (event.button !== 0 || connecting) return;
     event.stopPropagation(); event.currentTarget.setPointerCapture(event.pointerId);
+    setSelectedEdge(null);
     gesture.current = { kind: "node", node, scale: data.view.scale, pointerId: event.pointerId, start: { x: event.clientX, y: event.clientY }, moved: false };
   }
-  function beginLink(event: ReactPointerEvent, node: CanvasNode) {
+  function beginLink(event: ReactPointerEvent, node: CanvasNode, side: CanvasPort) {
     if (event.button !== 0) return;
-    event.stopPropagation(); event.preventDefault(); event.currentTarget.setPointerCapture(event.pointerId);
-    gesture.current = { kind: "link", from: node.id, pointerId: event.pointerId, start: { x: event.clientX, y: event.clientY }, moved: false };
-    setSelected(null); setSelectedEdge(null); setConnecting({ from: node.id, point: anchor(node) });
+    event.stopPropagation(); event.preventDefault();
+    if (connecting && connecting.from !== node.id) { linkNodes(connecting.from, node.id, connecting.fromPort, side); return; }
+    event.currentTarget.setPointerCapture(event.pointerId);
+    gesture.current = { kind: "link", from: node.id, fromPort: side, pointerId: event.pointerId, start: { x: event.clientX, y: event.clientY }, moved: false };
+    setSelected(null); setSelectedEdge(null); setConnecting({ from: node.id, fromPort: side, point: portAnchor(bounds.get(node.id)!, side) });
+  }
+  function chooseEdge(item: CanvasEdge, target: SVGGElement, point?: Point) {
+    if (!point) {
+      const path = target.querySelector("path");
+      if (path) { const at = path.getPointAtLength(path.getTotalLength() / 2); point = { x: data.view.x + at.x * data.view.scale, y: data.view.y + at.y * data.view.scale }; }
+    }
+    setEdgeMenuAt(point ?? { x: size.width / 2, y: size.height / 2 });
+    setContextMenu(null); setConnecting(null); setSelected(null); setSelectedEdge(item.id);
   }
   function beginPan(event: ReactPointerEvent) {
     if (event.button !== 0 || !ready || (event.target as Element).closest("button, a, [data-canvas-edge], [data-canvas-ui]")) return;
-    setContextMenu(null);
+    setContextMenu(null); setSelectedEdge(null);
     event.currentTarget.setPointerCapture(event.pointerId);
     gesture.current = { kind: "pan", pointerId: event.pointerId, view: data.view, start: { x: event.clientX, y: event.clientY }, moved: false };
   }
   function movePointer(event: ReactPointerEvent) {
     const moving = gesture.current;
-    if (connecting && (!moving || moving.kind === "link")) setConnecting({ from: connecting.from, point: worldPoint(localPoint(event.clientX, event.clientY)) });
+    if (connecting && (!moving || moving.kind === "link")) {
+      const element = document.elementFromPoint(event.clientX, event.clientY)?.closest<HTMLElement>("[data-canvas-port]");
+      const id = element?.closest<HTMLElement>("[data-canvas-node]")?.dataset.canvasNode, side = element?.dataset.canvasPort as CanvasPort | undefined;
+      const target = id && id !== connecting.from ? bounds.get(id) : undefined;
+      setConnecting({ ...connecting, point: target && side ? portAnchor(target, side) : worldPoint(localPoint(event.clientX, event.clientY)) });
+    }
     if (!moving || moving.pointerId !== event.pointerId) return;
     const dx = event.clientX - moving.start.x, dy = event.clientY - moving.start.y;
     if (Math.hypot(dx, dy) > 4) moving.moved = true;
@@ -211,8 +244,10 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
     if (!moving || moving.pointerId !== event.pointerId) return;
     gesture.current = null;
     if (moving.kind === "link" && moving.moved) {
-      const target = document.elementFromPoint(event.clientX, event.clientY)?.closest<HTMLElement>("[data-canvas-node]")?.dataset.canvasNode;
-      if (target && target !== moving.from) linkNodes(moving.from, target); else setConnecting(null);
+      const element = document.elementFromPoint(event.clientX, event.clientY);
+      const target = element?.closest<HTMLElement>("[data-canvas-node]")?.dataset.canvasNode;
+      const side = element?.closest<HTMLElement>("[data-canvas-port]")?.dataset.canvasPort as CanvasPort | undefined;
+      if (target && target !== moving.from) linkNodes(moving.from, target, moving.fromPort, side); else setConnecting(null);
     }
     if (moving.kind === "node") skipClick.current = moving.moved;
     if (moving.kind === "pan" && !moving.moved) { setSelected(null); setSelectedEdge(null); setConnecting(null); }
@@ -295,7 +330,7 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
         {!documentId && <button role="menuitem" onClick={event => { close(event); setSelected(node.id); requestAnimationFrame(() => surface.current?.querySelector<HTMLInputElement>("input[aria-label='节点标题']")?.focus()); }}><NotePencil size={17} />编辑标题与摘要</button>}
         <button role="menuitem" onClick={event => { close(event); void copyNote(node); }}><Copy size={17} />复制 Markdown</button>
         <button role="menuitem" onClick={event => { close(event); exportNote(node); }}><DownloadSimple size={17} />导出 .md</button>
-        {!documentId && <button role="menuitem" onClick={event => { close(event); setConnecting({ from: node.id, point: anchor(node) }); setSelected(null); }}><LinkSimple size={17} />连接节点</button>}
+        {!documentId && <button role="menuitem" onClick={event => { close(event); setConnecting({ from: node.id, fromPort: "right", point: portAnchor(bounds.get(node.id)!, "right") }); setSelected(null); }}><LinkSimple size={17} />连接节点</button>}
         <button role="menuitem" onClick={event => { close(event); info.current?.showModal(); }}><Info size={17} />节点信息</button>
         <button role="menuitem" onClick={event => { close(event); removeNode(node); }}><Trash size={17} />删除节点</button>
     </>;
@@ -304,12 +339,22 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
     return <button className={styles.icon} aria-label="节点操作" aria-haspopup="menu" data-canvas-ui onClick={event => { menuAnchor.current = event.currentTarget; const bounds = event.currentTarget.getBoundingClientRect(); setContextMenu({ kind: "node", id: node.id, x: bounds.right - 210, y: bounds.bottom + 6 }); }}><DotsThree size={23} /></button>;
   }
 
-  const previewPosition = picked && {
-    left: Math.max(12, Math.min(size.width - Math.min(320, size.width - 24) - 12, data.view.x + picked.x * data.view.scale + 22)),
-    top: Math.max(12, Math.min(size.height - previewHeight - 12, data.view.y + picked.y * data.view.scale + 48)),
-  };
+  const previewPosition = picked && (() => {
+    const box = bounds.get(picked.id)!, scale = data.view.scale;
+    const left = data.view.x + box.x * scale, top = data.view.y + box.y * scale;
+    const right = left + box.width * scale, bottom = top + box.height * scale;
+    const width = Math.min(320, size.width - 24), gap = 28 * scale + 8;
+    const clampX = (x: number) => Math.max(12, Math.min(size.width - width - 12, x));
+    const clampY = (y: number) => Math.max(12, Math.min(size.height - previewHeight - 12, y));
+    // Keep the card outside the four port hit areas whenever the viewport has room.
+    const positions = [
+      { left: clampX(left), top: bottom + gap }, { left: clampX(left), top: top - gap - previewHeight },
+      { left: right + gap, top: clampY(top) }, { left: left - gap - width, top: clampY(top) },
+    ];
+    return positions.find(at => at.left >= 12 && at.top >= 12 && at.left + width <= size.width - 12 && at.top + previewHeight <= size.height - 12)
+      ?? { left: clampX(left), top: clampY(bottom + gap) };
+  })();
   const source = connecting && data.nodes.find(node => node.id === connecting.from);
-  const edgeFrom = edge && data.nodes.find(node => node.id === edge.from), edgeTo = edge && data.nodes.find(node => node.id === edge.to);
 
   return <div className={styles.workspace} data-pointer-native onPointerDownCapture={event => {
     event.currentTarget.querySelectorAll("details[open]").forEach(item => { if (!item.contains(event.target as Node)) item.removeAttribute("open"); });
@@ -331,13 +376,13 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
     </div> : <>
       <header className={styles.toolbar}><h1>我的画布</h1><div><button className={styles.import} disabled={!ready || importing} onClick={() => input.current?.click()}><UploadSimple size={16} />{importing ? "导入中…" : "导入 .md"}</button><button className={styles.primary} disabled={!ready} aria-haspopup="menu" aria-expanded={contextMenu?.kind === "create"} onClick={event => { menuAnchor.current = event.currentTarget; const bounds = event.currentTarget.getBoundingClientRect(); setContextMenu({ kind: "create", x: bounds.right - 200, y: bounds.bottom + 8 }); }}><Plus size={17} />新建节点</button></div></header>
       <CanvasSyncBar session={session} ready={ready} status={status} flush={saveBeforeSwitch} sync={sync} cloudStatus={cloudStatus} />
-      <main ref={surface} className={`${styles.surface} ${connecting ? styles.connecting : ""}`} tabIndex={0} aria-label="自由画布" aria-description="拖动节点或空白处移动。点按节点圆点后选择另一节点，或拖动圆点创建连线。" onPointerDown={beginPan} onPointerMove={movePointer} onPointerUp={finishPointer}
+      <main ref={surface} className={`${styles.surface} ${connecting ? styles.connecting : ""}`} tabIndex={0} aria-label="自由画布" aria-description="拖动节点或空白处移动。悬停或选中节点显示四边连接点，拖动或点按连接点连线；点击连线设置箭头和虚线。" onPointerDown={beginPan} onPointerMove={movePointer} onPointerUp={finishPointer}
         onPointerCancel={() => { gesture.current = null; setConnecting(null); void flush(); }}
         onContextMenu={showContext}
         onDoubleClick={event => { if (!(event.target as Element).closest("button, a, [data-canvas-ui], [data-canvas-node], [data-canvas-edge]")) createNode("note", worldPoint(localPoint(event.clientX, event.clientY))); }}
         onWheel={event => {
           if (gesture.current || (event.target as Element).closest("[data-canvas-ui]")) return;
-          setContextMenu(null);
+          setContextMenu(null); setSelectedEdge(null);
           if (event.ctrlKey || event.metaKey) zoom(data.view.scale * Math.exp(-event.deltaY * .008), localPoint(event.clientX, event.clientY));
           else update(value => ({ ...value, view: { ...value.view, x: value.view.x - event.deltaX, y: value.view.y - event.deltaY } }));
         }}
@@ -348,22 +393,36 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
           if (event.key === "Home") { event.preventDefault(); fit(); }
         }}>
         <div className={styles.world} style={{ transform: `translate(${data.view.x}px, ${data.view.y}px) scale(${data.view.scale})` }}>
-          <svg className={styles.connections} aria-label="节点连线"><g>
-            {data.edges.map(item => {
-              const from = data.nodes.find(node => node.id === item.from), to = data.nodes.find(node => node.id === item.to);
-              if (!from || !to) return null;
-              const path = paths.get(item.id);
-              return <g key={item.id} data-canvas-edge={item.id} className={item.id === selectedEdge ? styles.selectedEdge : ""} role="button" tabIndex={0} aria-label={`${nodePreview(from).title}与${nodePreview(to).title}的连线`} onClick={event => { event.stopPropagation(); setSelected(null); setSelectedEdge(item.id); }} onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setSelectedEdge(item.id); setSelected(null); } if (event.key === "Delete" || event.key === "Backspace") { event.preventDefault(); removeEdge(item); } }}><path d={path} className={styles.edgeLine} /><path d={path} className={styles.edgeHit} /></g>;
+          <svg className={styles.connections} aria-label="节点连线">
+            <defs>{[false, true].map(active => <marker key={String(active)} id={`${markerId}-arrow-${active}`} viewBox="0 0 10 10" refX="14" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9 Z" className={active ? styles.selectedArrow : styles.edgeArrow} /></marker>)}</defs>
+            <g>{data.edges.map(item => {
+              const from = data.nodes.find(node => node.id === item.from), to = data.nodes.find(node => node.id === item.to), geometry = paths.get(item.id);
+              if (!from || !to || !geometry) return null;
+              const arrow = `url(#${markerId}-arrow-${item.id === selectedEdge})`;
+              return <g key={item.id} data-canvas-edge={item.id} className={item.id === selectedEdge ? styles.selectedEdge : ""} role="button" tabIndex={0} aria-label={`${nodePreview(from).title}与${nodePreview(to).title}的连线`} aria-pressed={item.id === selectedEdge}
+                onClick={event => { event.stopPropagation(); chooseEdge(item, event.currentTarget, localPoint(event.clientX, event.clientY)); }}
+                onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); chooseEdge(item, event.currentTarget); } if (event.key === "Delete" || event.key === "Backspace") { event.preventDefault(); removeEdge(item); } }}>
+                <path d={geometry.path} className={styles.edgeLine} strokeDasharray={item.dashed ? "6 5" : undefined} markerStart={item.direction === "start" || item.direction === "both" ? arrow : undefined} markerEnd={item.direction === "end" || item.direction === "both" ? arrow : undefined} />
+                <path d={geometry.path} className={styles.edgeHit} />
+              </g>;
             })}
-            {source && connecting && <path d={connectionPath(anchor(source), connecting.point, labels)} className={styles.draftLine} />}
-          </g></svg>
+            {source && connecting && <path d={connectionPath(portAnchor(bounds.get(source.id)!, connecting.fromPort), connecting.point, labels)} className={styles.draftLine} />}
+            </g>
+          </svg>
           {data.nodes.map(node => {
             const preview = nodePreview(node);
             const kind = node.kind ?? "note", KindIcon = kindIcons[kind];
             const image = kind === "image" ? safeNodeUrl(nodeResource(node), true) : undefined;
             const tasks = kind === "todo" ? nodeTasks(node.markdown) : [];
-            return <div key={node.id} className={styles.node} style={{ left: node.x, top: node.y }} data-canvas-node={node.id}>
-              <button className={styles.port} aria-label={`从${preview.title}开始连线`} title="拖动连线，或点按后选择另一节点" onPointerDown={event => beginLink(event, node)} onClick={event => { if (event.detail === 0) { setSelected(null); setConnecting({ from: node.id, point: anchor(node) }); } }}><Circle size={8} weight="fill" /></button>
+            return <div key={node.id} className={`${styles.node} ${selected === node.id ? styles.activeNode : ""}`} style={{ left: node.x + 24, top: node.y }} data-canvas-node={node.id}>
+              {canvasPorts.map(side => {
+                const point = portAnchor(bounds.get(node.id)!, side), connected = connectedPorts.has(`${node.id}:${side}`);
+                return <button key={side} data-canvas-port={side} className={`${styles.port} ${connected ? styles.connectedPort : ""}`} style={{ left: point.x - node.x - 24, top: point.y - node.y }} aria-label={`从${preview.title}的${portNames[side]}侧连接`} title="拖动连线，或点按后选择另一节点的连接点" onPointerDown={event => beginLink(event, node, side)} onClick={event => {
+                  if (event.detail !== 0) return;
+                  if (connecting && connecting.from !== node.id) linkNodes(connecting.from, node.id, connecting.fromPort, side);
+                  else { setSelected(null); setSelectedEdge(null); setConnecting({ from: node.id, fromPort: side, point }); }
+                }}><Circle size={8} weight={connected ? "fill" : "regular"} /></button>;
+              })}
               <button data-canvas-label={node.id} className={`${styles.note} ${selected === node.id ? styles.selected : ""} ${!node.fileName && node.markdown.trim() === preview.title ? styles.fragment : ""}`} onPointerDown={event => beginNode(event, node)} onClick={() => selectNode(node)} aria-pressed={selected === node.id} onKeyDown={event => {
                 const moves: Record<string, Point> = { ArrowLeft: { x: -1, y: 0 }, ArrowRight: { x: 1, y: 0 }, ArrowUp: { x: 0, y: -1 }, ArrowDown: { x: 0, y: 1 } };
                 if (moves[event.key]) { event.preventDefault(); const offset = moves[event.key], step = event.shiftKey ? 50 : 10; update(value => ({ ...value, nodes: value.nodes.map(item => item.id === node.id ? { ...item, x: item.x + offset.x * step, y: item.y + offset.y * step } : item) })); }
@@ -377,7 +436,7 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
           <NodeCard key={picked.id} node={picked} actions={actions(picked)} onChange={patch => changeNode(picked, patch)} onSave={() => void flush()} onOpen={() => openNote(picked)} onClose={() => { void flush(); setSelected(null); }} onMessage={message => setToast({ message })} />
         </section>}
         {connecting && <div className={styles.linkHint} data-canvas-ui>选择另一个节点<button onClick={() => setConnecting(null)} aria-label="取消连线"><X size={16} /></button></div>}
-        {edge && edgeFrom && edgeTo && <button className={styles.removeEdge} data-canvas-ui style={{ left: data.view.x + (edgeFrom.x + edgeTo.x) / 2 * data.view.scale, top: data.view.y + ((edgeFrom.y + edgeTo.y) / 2 + 17) * data.view.scale }} onClick={() => removeEdge(edge)}><Trash size={15} />删除连线</button>}
+        {edge && <EdgeToolbar key={edge.id} edge={edge} at={edgeMenuAt} size={size} onChange={patch => update(value => ({ ...value, edges: value.edges.map(item => item.id === edge.id ? { ...item, ...patch } : item) }), true)} onRemove={() => removeEdge(edge)} onClose={() => { setSelectedEdge(null); surface.current?.focus({ preventScroll: true }); }} />}
         <div className={styles.zoom} data-canvas-ui><button aria-label="缩小画布" disabled={!ready || data.view.scale <= .3} onClick={() => zoom(data.view.scale / 1.2)}><Minus size={16} /></button><button aria-label="显示全部节点" title="显示全部节点" disabled={!ready} onClick={fit}>{Math.round(data.view.scale * 100)}%</button><button aria-label="放大画布" disabled={!ready || data.view.scale >= 2} onClick={() => zoom(data.view.scale * 1.2)}><Plus size={16} /></button></div>
       </main>
     </>}

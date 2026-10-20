@@ -10,10 +10,15 @@ const nodeSchema = z.object({
   ...nodeMetadata.shape,
   createdAt: z.iso.datetime({ offset: true }), updatedAt: z.iso.datetime({ offset: true }),
 });
-const edgeSchema = z.object({ id: z.string().min(1), from: z.string(), to: z.string() });
-// Older clients must reject version 2 rather than silently discard its node metadata on save.
+export const canvasPorts = ["top", "right", "bottom", "left"] as const;
+const edgeSchema = z.object({
+  id: z.string().min(1), from: z.string(), to: z.string(),
+  fromPort: z.enum(canvasPorts).optional(), toPort: z.enum(canvasPorts).optional(),
+  direction: z.enum(["none", "start", "end", "both"]).optional(), dashed: z.boolean().optional(),
+});
+// Older clients must reject version 3 rather than discard connection ports/styles on save.
 const canvasSchema = z.object({
-  version: z.union([z.literal(1), z.literal(2)]).transform(() => 2 as const), revision: z.number().int().nonnegative(),
+  version: z.union([z.literal(1), z.literal(2), z.literal(3)]).transform(() => 3 as const), revision: z.number().int().nonnegative(),
   nodes: z.array(nodeSchema), edges: z.array(edgeSchema),
   view: z.object({ ...point, scale: z.number().min(.3).max(2) }),
 }).refine(value => {
@@ -28,10 +33,11 @@ export type CanvasNode = z.infer<typeof nodeSchema>;
 export type NodeKind = NonNullable<CanvasNode["kind"]>;
 export const nodeKinds = { note: "笔记", link: "链接", image: "图片", todo: "待办" } as const;
 export type CanvasEdge = z.infer<typeof edgeSchema>;
+export type CanvasPort = typeof canvasPorts[number];
 export type CanvasData = z.infer<typeof canvasSchema>;
 export type CanvasView = CanvasData["view"];
 
-export const emptyCanvas = (): CanvasData => ({ version: 2, revision: 0, nodes: [], edges: [], view: { x: 0, y: 0, scale: 1 } });
+export const emptyCanvas = (): CanvasData => ({ version: 3, revision: 0, nodes: [], edges: [], view: { x: 0, y: 0, scale: 1 } });
 export const parseCanvas = (value: unknown): CanvasData => canvasSchema.parse(value);
 
 function plain(text: string) {
@@ -115,10 +121,15 @@ export function markdownFileName(node: Pick<CanvasNode, "markdown" | "fileName">
   return `${Array.from(name || "未命名笔记").slice(0, 100).join("")}.md`;
 }
 
-export function connectNodes(data: CanvasData, from: string, to: string): CanvasData {
-  if (from === to || !data.nodes.some(node => node.id === from) || !data.nodes.some(node => node.id === to)
-    || data.edges.some(edge => (edge.from === from && edge.to === to) || (edge.from === to && edge.to === from))) return data;
-  return { ...data, edges: [...data.edges, { id: crypto.randomUUID(), from, to }] };
+export function connectNodes(data: CanvasData, from: string, to: string, ports: Pick<CanvasEdge, "fromPort" | "toPort"> = {}): CanvasData {
+  if (from === to || !data.nodes.some(node => node.id === from) || !data.nodes.some(node => node.id === to)) return data;
+  const existing = data.edges.find(edge => (edge.from === from && edge.to === to) || (edge.from === to && edge.to === from));
+  if (existing) {
+    const patch = Object.fromEntries(Object.entries(existing.from === from ? ports : { fromPort: ports.toPort, toPort: ports.fromPort }).filter(([, value]) => value !== undefined));
+    if (Object.entries(patch).every(([key, value]) => existing[key as "fromPort" | "toPort"] === value)) return data;
+    return { ...data, edges: data.edges.map(edge => edge.id === existing.id ? { ...edge, ...patch } : edge) };
+  }
+  return { ...data, edges: [...data.edges, { id: crypto.randomUUID(), from, to, ...ports }] };
 }
 
 export function moveView(view: CanvasView, scale: number, x: number, y: number): CanvasView {

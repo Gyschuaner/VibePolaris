@@ -1,9 +1,33 @@
+import { canvasPorts, type CanvasEdge, type CanvasPort } from "./canvas.ts";
+
 type Point = { x: number; y: number };
+export type CanvasAnchor = Point & { side?: CanvasPort };
 export type CanvasLabelBounds = Point & { width: number; height: number };
 type Box = { left: number; top: number; right: number; bottom: number };
-const middle = (a: Point, b: Point): Point => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
+const normals: Record<CanvasPort, Point> = { top: { x: 0, y: -1 }, right: { x: 1, y: 0 }, bottom: { x: 0, y: 1 }, left: { x: -1, y: 0 } };
+const offset = (point: Point, normal: Point, amount: number): Point => ({ x: point.x + normal.x * amount, y: point.y + normal.y * amount });
+const lerp = (a: Point, b: Point, t: number): Point => ({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t });
+const middle = (a: Point, b: Point): Point => lerp(a, b, .5);
 const distance = (a: Point, b: Point) => Math.hypot(a.x - b.x, a.y - b.y);
 const inside = (point: Point, box: Box) => point.x > box.left && point.x < box.right && point.y > box.top && point.y < box.bottom;
+
+export function portAnchor(bounds: CanvasLabelBounds, side: CanvasPort): CanvasAnchor {
+  const center = { x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2 };
+  const amount = (side === "left" || side === "right" ? bounds.width : bounds.height) / 2 + 14;
+  return { ...offset(center, normals[side], amount), side };
+}
+
+export function edgeAnchors(from: CanvasLabelBounds, to: CanvasLabelBounds, edge: Pick<CanvasEdge, "fromPort" | "toPort"> = {}) {
+  let best: { from: CanvasAnchor; to: CanvasAnchor; fromPort: CanvasPort; toPort: CanvasPort } | undefined, score = Infinity;
+  for (const fromPort of edge.fromPort ? [edge.fromPort] : canvasPorts) for (const toPort of edge.toPort ? [edge.toPort] : canvasPorts) {
+    const a = portAnchor(from, fromPort), b = portAnchor(to, toPort), length = distance(a, b);
+    const direction = { x: (b.x - a.x) / (length || 1), y: (b.y - a.y) / (length || 1) };
+    const facing = direction.x * normals[fromPort].x + direction.y * normals[fromPort].y - direction.x * normals[toPort].x - direction.y * normals[toPort].y;
+    const cost = length + (2 - facing) * 45;
+    if (cost < score) { score = cost; best = { from: a, to: b, fromPort, toPort }; }
+  }
+  return best!;
+}
 
 function intersectsSegment(a: Point, b: Point, box: Box) {
   let enter = 0, exit = 1;
@@ -26,35 +50,51 @@ function intersectsCurve(points: Point[], box: Box, depth = 0): boolean {
   return intersectsCurve([points[0], a, d, f], box, depth + 1) || intersectsCurve([f, e, c, points[3]], box, depth + 1);
 }
 
-function roundedPath(points: Point[]) {
+function roundedPath(route: Point[], obstacles: Box[]) {
+  const points = route.filter((point, index) => index === 0 || distance(point, route[index - 1]) > 1e-8);
   let path = `M ${points[0].x} ${points[0].y}`;
   for (let index = 1; index < points.length - 1; index++) {
     const before = points[index - 1], point = points[index], after = points[index + 1];
-    const radius = Math.min(8, distance(before, point) / 2, distance(point, after) / 2);
-    const toward = (other: Point) => {
+    let radius = Math.min(56, distance(before, point) / 2, distance(point, after) / 2);
+    const toward = (other: Point): Point => {
       const ratio = radius / distance(point, other);
       return { x: point.x + (other.x - point.x) * ratio, y: point.y + (other.y - point.y) * ratio };
     };
-    const start = toward(before), end = toward(after);
+    let start = toward(before), end = toward(after);
+    // A larger turn stays soft, but may never cut through a label's reserved space.
+    while (radius > 1 && obstacles.some(box => intersectsCurve([start, lerp(start, point, 2 / 3), lerp(end, point, 2 / 3), end], box))) {
+      radius /= 2; start = toward(before); end = toward(after);
+    }
+    if (radius <= 1) { path += ` L ${point.x} ${point.y}`; continue; }
     path += ` L ${start.x} ${start.y} Q ${point.x} ${point.y}, ${end.x} ${end.y}`;
   }
   const last = points[points.length - 1];
   return `${path} L ${last.x} ${last.y}`;
 }
 
-export function connectionPath(from: Point, to: Point, labels: CanvasLabelBounds[]) {
+export function connectionPath(from: CanvasAnchor, to: CanvasAnchor, labels: CanvasLabelBounds[]) {
   const boxes = labels.map(label => ({ left: label.x - 10, top: label.y - 10, right: label.x + label.width + 10, bottom: label.y + label.height + 10 }));
-  const bend = Math.max(50, Math.abs(to.x - from.x) * .45) * (to.x >= from.x ? 1 : -1);
-  const controls = [from, { x: from.x + bend, y: from.y }, { x: to.x - bend, y: to.y }, to];
+  const fromNormal = normals[from.side ?? (to.x >= from.x ? "right" : "left")], toNormal = normals[to.side ?? (to.x >= from.x ? "left" : "right")];
+  const bend = Math.max(40, Math.min(180, distance(from, to) * .45));
+  const controls = [from, offset(from, fromNormal, bend), offset(to, toNormal, bend), to];
   const curve = `M ${from.x} ${from.y} C ${controls[1].x} ${controls[1].y}, ${controls[2].x} ${controls[2].y}, ${to.x} ${to.y}`;
   if (!boxes.some(box => intersectsCurve(controls, box))) return curve;
 
   // shortcut: overlapping labels can cover a port; route around all other labels until they are moved apart.
   const obstacles = boxes.filter(box => !inside(from, box) && !inside(to, box));
+  function lead(point: Point, normal: Point) {
+    for (let amount = Math.min(48, distance(from, to) / 3); amount >= 4; amount /= 2) {
+      const next = offset(point, normal, amount);
+      if (!obstacles.some(box => intersectsSegment(point, next, box) || inside(next, box))) return next;
+    }
+    return point;
+  }
+  const first = lead(from, fromNormal), last = lead(to, toNormal);
   const corners = obstacles.flatMap(box => [
-    { x: box.left, y: box.top }, { x: box.right, y: box.top }, { x: box.right, y: box.bottom }, { x: box.left, y: box.bottom },
-  ]).filter(point => distance(point, from) > 1e-8 && distance(point, to) > 1e-8 && !obstacles.some(box => inside(point, box)));
-  const points = [from, to, ...new Map(corners.map(point => [`${point.x},${point.y}`, point])).values()];
+    { x: box.left - 26, y: box.top - 26 }, { x: box.right + 26, y: box.top - 26 },
+    { x: box.right + 26, y: box.bottom + 26 }, { x: box.left - 26, y: box.bottom + 26 },
+  ]).filter(point => !obstacles.some(box => inside(point, box)));
+  const points = [first, last, ...new Map(corners.map(point => [`${point.x},${point.y}`, point])).values()];
   const costs = points.map(() => Infinity), previous = points.map(() => -1), visited = new Set<number>();
   costs[0] = 0;
   while (visited.size < points.length) {
@@ -64,7 +104,7 @@ export function connectionPath(from: Point, to: Point, labels: CanvasLabelBounds
     if (current === 1) {
       const route: Point[] = [];
       for (let index = 1; index >= 0; index = previous[index]) route.unshift(points[index]);
-      return roundedPath(route);
+      return roundedPath([from, ...route, to], obstacles);
     }
     visited.add(current);
     for (let index = 0; index < points.length; index++) {

@@ -36,7 +36,14 @@ export function mergeCanvas(base: CanvasData, local: CanvasData, remote: CanvasD
     return value as CanvasNode;
   });
   const ids = new Set(nodes.map(node => node.id)), pairs = new Set<string>();
-  const edges = entities(base.edges, local.edges, remote.edges).filter(edge => {
+  const edges = entities(base.edges, local.edges, remote.edges, (b, l, r) => {
+    const value = { ...r };
+    for (const key of ["from", "to", "fromPort", "toPort", "direction", "dashed"] as const) {
+      const next = choose(b[key], l[key], r[key]);
+      if (next === undefined) delete value[key]; else Object.assign(value, { [key]: next });
+    }
+    return value;
+  }).filter(edge => {
     const pair = [edge.from, edge.to].sort().join("\0");
     if (!ids.has(edge.from) || !ids.has(edge.to) || pairs.has(pair)) return false;
     pairs.add(pair); return true;
