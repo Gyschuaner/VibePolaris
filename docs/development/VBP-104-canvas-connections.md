@@ -28,7 +28,14 @@ DP：VBP-104；验收发现并修复 BUG-EF4BADDC。前序 Markdown 已上线，
 
 ## 发布与回滚
 
-待完成 dev 集成与生产发布后补充事实。发布时保留持久数据卷并在线备份 SQLite，小北补全扣费继续关闭。
+PR517 已合并 dev（`ae54e39a2650b350ecb9484be3d20fd7a8cb2ab3`），与实测构建源码树一致；PR518 选择性合并 main。实际生产应用提交 `e2852a53be9fc9fd0aac111e17beefd2928d141b`，BUILD_ID `FpRd96kopa6R0W30AkII3`，发布于 `2026-10-20T09:24:30.751085+00:00`。
+
+- 无网络、凭据或生产卷的独立容器启动通过，正式服务 healthy；根页、画布、设置和账号会话200，匿名云画布401。
+- 隔离QA账号真实浏览器创建下侧→上侧连线，设置双向箭头与虚线，点击立即同步并刷新仍保留。独立认证HTTP读取云端：格式3、修订2，端口bottom/top、direction=both、dashed=true，确认并非仅命中浏览器缓存。
+- 生产控制台无错误。测试完成后退出QA账号，原访客画布未改动。
+- 在线SQLite备份 `/opt/vibepolaris/backups/20261020T092031Z-from-ad03d300`，quick_check=ok；持久卷 `vibepolaris_xiaobei_data` 不变，扣费开关false。
+- 代码回滚脚本：`sudo /opt/vibepolaris/releases/20261020T092031Z-e2852a53/rollback.sh`，回到已验证的 `ad03d300` 镜像并保留最新数据。注意下面的格式3兼容限制，优先向前修复，不恢复旧数据库。
+- [生产截图](VBP-104-canvas-connections/production-connections.png)、[发布事实](VBP-104-canvas-connections/production-evidence.json)、[独立云端回读](VBP-104-canvas-connections/production-cloud.json)。
 
 格式3数据与旧版客户端不兼容；若回滚至旧版应用，已升级画布暂时不可读取，但不会被空数据覆盖。应优先向前修复；不得为了回退代码恢复旧数据库并丢弃上线后用户编辑。
 
