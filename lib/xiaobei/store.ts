@@ -75,6 +75,8 @@ export class XiaobeiStore {
     });
     const invite = this.db.prepare("SELECT id,expires,disabled FROM invites WHERE hash=?").get(digest(code)) as { id: string; expires: number | null; disabled: number } | undefined;
     if (!invite || invite.disabled || (invite.expires !== null && invite.expires <= now)) throw new XiaobeiError("邀请码无效或已失效，请联系邀请人。", 401);
+    if (this.db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='account_invites'").get()
+      && this.db.prepare("SELECT 1 FROM account_invites WHERE invite=?").get(invite.id)) throw new XiaobeiError("这个邀请码已绑定账号，请登录对应账号使用小北。", 409);
     const token = randomBytes(32).toString("base64url");
     const expires = Math.min(now + SESSION_SECONDS * 1000, invite.expires ?? Infinity);
     this.db.prepare("DELETE FROM sessions WHERE expires<=?").run(now);

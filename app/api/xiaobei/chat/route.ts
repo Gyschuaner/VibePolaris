@@ -7,12 +7,14 @@ import { modelConfig, type AgentEvent } from "@/lib/xiaobei/model";
 import { applyEvent, finishActivities } from "@/lib/xiaobei/events";
 import { pairInterruptedTools, type ConversationState } from "@/lib/xiaobei/history";
 import { pageContext } from "@/lib/xiaobei/knowledge";
+import { assistantIdentity } from "@/lib/account/http";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   try {
     sameOrigin(request);
+    assistantIdentity(request);
     const store = getStore(); const identity = historyIdentity(request);
     const parsed = z.object({ requestId: z.uuid(), conversationId: z.uuid(), continuing: z.boolean(), message: z.string().trim().min(1), page: z.string().max(1000).startsWith("/") }).strict().safeParse(await readBody(request));
     if (!parsed.success) throw new XiaobeiError("请求内容不完整，请重新提问。");

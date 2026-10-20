@@ -3,16 +3,20 @@ import { randomBytes } from "node:crypto";
 import { z } from "zod";
 import { browserToken, setBrowserCookie, errorResponse, privateHeaders, readBody, sameOrigin, siteOrigin } from "@/lib/xiaobei/http";
 import { digest, getStore, SESSION_COOKIE, XiaobeiError } from "@/lib/xiaobei/store";
+import { ACCOUNT_COOKIE, getAccountStore } from "@/lib/account/store";
+import { accountIdentity } from "@/lib/account/http";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export async function GET(request: NextRequest) {
   try {
-    const token = request.cookies.get(SESSION_COOKIE)?.value;
+    const accountToken = request.cookies.get(ACCOUNT_COOKIE)?.value;
+    const account = accountToken ? getAccountStore().identity(accountToken) : undefined;
+    const token = accountToken || request.cookies.get(SESSION_COOKIE)?.value;
     if (!token) return NextResponse.json({ active: false }, { headers: privateHeaders });
     const store = getStore(); const identity = store.identity(token);
     const browser = browserToken(request) || randomBytes(32).toString("base64url");
-    const response = NextResponse.json({ active: true, credits: store.balance(identity.invite) / 1e6, historyScope: digest(`${identity.invite}:${digest(browser)}`) }, { headers: privateHeaders });
+    const response = NextResponse.json({ active: true, credits: store.balance(identity.invite) / 1e6, historyScope: digest(`${identity.invite}:${account ? `account:${account.id}` : digest(browser)}`) }, { headers: privateHeaders });
     setBrowserCookie(request, response, browser);
     return response;
   } catch (error) {
@@ -28,6 +32,11 @@ export async function POST(request: NextRequest) {
     const store = getStore();
     // A global internal-site gate needs no client-controlled IP/proxy trust configuration.
     const session = store.activate(parsed.data.code, digest("activation"));
+    if (request.cookies.get(ACCOUNT_COOKIE)?.value) {
+      try { getAccountStore().bind(accountIdentity(request, true), store.identity(session.token).invite); }
+      finally { store.db.prepare("DELETE FROM sessions WHERE hash=?").run(digest(session.token)); }
+      return NextResponse.json({ active: true }, { headers: privateHeaders });
+    }
     const response = NextResponse.json({ active: true }, { headers: privateHeaders });
     response.cookies.set(SESSION_COOKIE, session.token, { httpOnly: true, sameSite: "strict", secure: siteOrigin(request).startsWith("https:"), path: "/", expires: new Date(session.expires) });
     setBrowserCookie(request, response, browserToken(request) || randomBytes(32).toString("base64url"));
