@@ -20,11 +20,11 @@ export function MarkdownEditor({ markdown, title, onChange, onSave }: { markdown
     setSplit(Math.max(25, Math.min(75, (offset - 6.5) / extent * 100)));
   }
   return <main ref={container} className={styles.editorPage} data-canvas-content style={{ "--editor-split": split, "--preview-split": 100 - split } as CSSProperties}>
-    <section id="markdown-source" className={styles.sourcePane} aria-label="Markdown 编辑">
+    <section id="markdown-source" className={styles.sourcePane} aria-label="Markdown 编辑" data-pointer-native>
       <div className={styles.paneLabel}>Markdown</div>
       <CompletingTextarea markdown={markdown} title={title} onChange={onChange} onSave={onSave} />
     </section>
-    <div className={styles.splitter} role="separator" tabIndex={0} aria-label="调整编辑与预览比例" aria-orientation={stacked ? "horizontal" : "vertical"} aria-controls="markdown-source markdown-preview" aria-valuemin={25} aria-valuemax={75} aria-valuenow={Math.round(split)} aria-valuetext={`Markdown ${Math.round(split)}%，预览 ${Math.round(100 - split)}%`}
+    <div className={styles.splitter} data-pointer-native role="separator" tabIndex={0} aria-label="调整编辑与预览比例" aria-orientation={stacked ? "horizontal" : "vertical"} aria-controls="markdown-source markdown-preview" aria-valuemin={25} aria-valuemax={75} aria-valuenow={Math.round(split)} aria-valuetext={`Markdown ${Math.round(split)}%，预览 ${Math.round(100 - split)}%`}
       onPointerDown={event => { if (event.button !== 0) return; event.preventDefault(); event.currentTarget.focus(); event.currentTarget.setPointerCapture(event.pointerId); dragging.current = event.pointerId; }}
       onPointerMove={resize} onPointerUp={() => { dragging.current = null; }} onPointerCancel={() => { dragging.current = null; }} onLostPointerCapture={() => { dragging.current = null; }}
       onDoubleClick={() => setSplit(50)} onKeyDown={event => {

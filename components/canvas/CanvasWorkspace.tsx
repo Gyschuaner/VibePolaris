@@ -7,7 +7,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { availablePosition, canvasPorts, connectNodes, exportNodeMarkdown, importNodeMarkdown, markdownFileName, moveView, nodeKinds, nodePreview, nodeResource, nodeTasks, safeNodeUrl, type CanvasEdge, type CanvasNode, type CanvasPort, type CanvasView, type NodeKind } from "@/lib/canvas";
 import { connectionPath, edgeAnchors, portAnchor, type CanvasAnchor } from "@/lib/canvas-routing";
 import { EdgeToolbar } from "./EdgeToolbar";
-import { MarkdownDocument } from "./MarkdownDocument";
+import { MarkdownReader } from "./MarkdownReader";
 import { MarkdownEditor } from "./MarkdownEditor";
 import { NodeCard } from "./NodeCard";
 import { useCanvasAi } from "./useCanvasAi";
@@ -186,9 +186,9 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
     update(value => ({ ...value, nodes: value.nodes.map(item => item.id === node.id && item.ai ? { ...item, ai: { ...item.ai, status: "accepted" as const }, updatedAt: new Date().toISOString() } : item), edges: value.edges.map(edge => edge.to === node.id && edge.from === node.ai?.sourceId ? { ...edge, dashed: false } : edge) }), true);
   }
   function aiControls(node: CanvasNode, document = false) {
-    return <CanvasAiControls key={`${node.id}:${document ? variant : "card"}`} node={node} ai={ai} variant={document ? variant : "draft"}
+    return <CanvasAiControls key={`${node.id}:ai:${document ? variant : "card"}`} node={node} ai={ai} pendingCount={data.nodes.filter(item => item.ai?.sourceId === node.id && item.ai.status === "pending").length} variant={document ? variant : "draft"}
       onVariant={document ? showVariant : undefined} onChange={patch => changeNode(node, patch)} onAccept={() => acceptNode(node)} onReject={() => removeNode(node)}
-      onOpenArticle={() => openNote(node, false, "article")} onCanvas={document ? () => returnToCanvas() : undefined} />;
+      onOpenArticle={() => openNote(node, false, "article")} onEditArticle={() => openNote(node, true, "article")} onCanvas={document ? () => returnToCanvas() : undefined} />;
   }
   const fittedExpansion = useRef(0);
   const fitExpansion = useEffectEvent(() => fit());
@@ -394,7 +394,7 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
   })();
   const source = connecting && data.nodes.find(node => node.id === connecting.from);
 
-  return <div className={styles.workspace} data-pointer-native onPointerDownCapture={event => {
+  return <div className={styles.workspace} data-pointer-native={!documentId ? "" : undefined} onPointerDownCapture={event => {
     event.currentTarget.querySelectorAll("details[open]").forEach(item => { if (!item.contains(event.target as Node)) item.removeAttribute("open"); });
     if (contextMenu && !menuRef.current?.contains(event.target as Node)) setContextMenu(null);
   }}>
@@ -404,7 +404,7 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
       <header className={styles.documentBar} data-canvas-bar>
         <button className={styles.back} onClick={() => returnToCanvas()}><ArrowLeft size={18} /><span>返回画布</span></button>
         <span className={styles.fileName}>{active ? markdownFileName(active) : "Markdown"}</span>
-        <div className={styles.documentActions}>{active && <>{editing && <span className={styles.saveStatus} role="status">{status === "saved" ? session.selected === "local" ? "已保存在此浏览器" : cloudStatus : status === "saving" ? "保存中…" : "未保存"}</span>}<button className={styles.mode} disabled={!!generatingArticle || (variant === "article" && !currentArticle)} onClick={toggleEditing}>{editing ? "阅读" : "编辑"}</button>{actions(active)}</>}</div>
+        <div className={styles.documentActions}>{active && <>{editing && <span className={styles.saveStatus} role="status">{status === "saved" ? session.selected === "local" ? "已保存在此浏览器" : cloudStatus : status === "saving" ? "保存中…" : "未保存"}</span>}<button className={styles.mode} disabled={!!generatingArticle || (variant === "article" && !currentArticle)} onClick={toggleEditing}>{editing ? "阅读" : "编辑"}{variant === "article" ? "文章" : ""}</button>{actions(active)}</>}</div>
       </header>
       {active && !opening && aiControls(active, true)}
       {!ready ? <p className={styles.loading}>正在读取笔记…</p> : !active ? <div className={styles.missing}><h1>当前画布没有这份笔记</h1><p>返回画布切换查看，或导入一份 Markdown。</p><button onClick={() => returnToCanvas()}>返回画布</button></div> : opening ?
@@ -413,7 +413,7 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
         <MarkdownEditor key={`${active.id}:${variant}`} markdown={documentMarkdown} title={nodePreview(active).title}
           onChange={changeDocument}
           onSave={() => void flush()} />
-        : <main className={styles.readingPage} data-canvas-content><article className={styles.markdown}>{documentMarkdown.trim() ? <MarkdownDocument markdown={documentMarkdown} /> : <p className={styles.blankNote}>{variant === "article" ? generatingArticle ? "正在整理，文章会逐步显示在这里…" : "还没有整理文章。" : <>还没有正文。<button onClick={toggleEditing}>开始编辑</button></>}</p>}</article></main>}
+        : <MarkdownReader key={`${active.id}:${variant}`} markdown={documentMarkdown} empty={<p className={styles.blankNote}>{variant === "article" ? generatingArticle ? "正在整理，文章会逐步显示在这里…" : "还没有整理文章。" : <>还没有正文。<button onClick={toggleEditing}>开始编辑</button></>}</p>} />}
     </div> : <>
       <header className={styles.toolbar}><h1>我的画布</h1><div><button className={styles.import} disabled={!ready || importing} onClick={() => input.current?.click()}><UploadSimple size={16} />{importing ? "导入中…" : "导入 .md"}</button><button className={styles.primary} disabled={!ready} aria-haspopup="menu" aria-expanded={contextMenu?.kind === "create"} onClick={event => { menuAnchor.current = event.currentTarget; const bounds = event.currentTarget.getBoundingClientRect(); setContextMenu({ kind: "create", x: bounds.right - 200, y: bounds.bottom + 8 }); }}><Plus size={17} />新建节点</button></div></header>
       <CanvasSyncBar session={session} ready={ready} status={status} flush={saveBeforeSwitch} sync={sync} cloudStatus={cloudStatus} />
