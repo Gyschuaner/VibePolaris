@@ -20,4 +20,13 @@
 
 ## 发布
 
-待dev集成与生产发布后补全实际提交、备份、回滚及冒烟结果。当前生产02584f991f84469bb6b09da35f0b7cd7b0df9276健康，发布前磁盘9.6GiB可用。
+- 功能提交 `e83f4dc782aa604ce380612fb3fcccd0cb636f6b`；[PR545](https://github.com/Gyschuaner/VibePolaris/pull/545) 合入 dev `d7d01445bb9633a88bb3e2f6e2df34d4c0a480dd`。本机优化构建与dev同树，合并后真实浏览器重载回归通过；本项目未配置远端dev。
+- [PR546](https://github.com/Gyschuaner/VibePolaris/pull/546) 选择性发布本轮代码；main独立构建1186页通过，正式运行提交 `f7e15e33dc848a6737711d0f09ff4686dcd48ef6`，build `_iNRsL9-jb1ySZLUSd8w-`。
+- 上线时间 `2026-10-21T08:34:03.961108+00:00`（北京时间16:34）。发布目录 `/opt/vibepolaris/releases/20261021T082647Z-f7e15e33`；镜像 `sha256:91b9dd6cbbed3898dda360c9774f00f451848c1dd72d23aa2f02bdd339bdf1a5`。独立无网络容器启动通过；正式容器healthy，首页/画布/设置/session均200，匿名私有画布401；原数据卷保留，补全扣费false，整理/扩展免费策略不变。
+- 在线备份 `/opt/vibepolaris/backups/20261021T082647Z-from-02584f99`；SQLite quick_check=ok，SHA256 `1764295db8e5607f497fdd1040324b2cfcf0b82978f114f04e7bb41918f2107b`。
+- 回滚：`sudo /opt/vibepolaris/releases/20261021T082647Z-f7e15e33/rollback.sh`。恢复上一版本02584f991f84469bb6b09da35f0b7cd7b0df9276，继续使用当前数据卷；本轮无格式变更，不恢复旧数据库。保留当前/上一稳定版镜像及备份。
+- 生产合成账号真实浏览器：旧生成节点打开后h1仍为“状态码”，来源引用保留；编辑预览h1一致，原Markdown逐字不变。一次真实小北扩展生成“响应体与 Content-Type”“重定向：3xx 之后去了哪”“缓存头：什么时候可以不再问服务器”3个候选，未重复既有状态码/幂等性。新候选标题可读，确认按钮保留；控制台0error。
+- 手动同步后云端revision2；原草稿、文章、旧生成笔记均未改写，积分余额未变。临时邀请码8018981c-b444-44a8-bd97-45f55db21c75已禁用（另设45分钟到期），API和浏览器测试会话已退出；本地测试凭据、隔离数据库和临时构建包已清理。用户画布未改动。
+- 本轮未扩大到全站回归；连接上下文仅包含一跳与限长节选。生产真实模型验证为一次合成记录冒烟，不作通用质量评估。
+- DP已重新查询：VBP-111 released，研发任务done，BUG-BF878CE3 closed；dev计划307311ca-1d39-49fe-a52c-0a1e989a5a18、生产计划14cf34e3-a2c5-4794-94e9-d40e002a18f6均completed且各1/1通过。dev部署eb77561c-3b4e-4160-a54f-5065dff849a4，生产部署0c8d96e7-3970-4508-97d8-471f9c2e8315；文档索引c1d7161b-fe02-44ec-9a75-3decd1dcf933。
+- 发布与清理完成后磁盘可用9.7GiB，正式容器仍healthy。
