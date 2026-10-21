@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, type RefObject } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import "./canvas-motion.css";
 
 export function useCanvasMotion(documentId: string | null, title: string | undefined, preview: RefObject<HTMLElement | null>, page: RefObject<HTMLElement | null>) {
   const motion = useRef<ViewTransition | null>(null);
   const pending = useRef<{ target: string | null; resolve: () => void } | null>(null);
+  const [openingId, setOpeningId] = useState<string | null>(null);
 
   function markHeading() {
     const heading = page.current?.querySelector<HTMLElement>("article h1");
@@ -36,11 +37,13 @@ export function useCanvasMotion(documentId: string | null, title: string | undef
     };
   }, []);
 
-  return function navigate(target: string | null, update: () => void, animate = true) {
+  function navigate(target: string | null, update: () => void, animate = true) {
     motion.current?.skipTransition();
     pending.current?.resolve();
     const source = documentId ? page.current : preview.current;
-    if (!animate || !source || !document.startViewTransition || matchMedia("(prefers-reduced-motion: reduce)").matches) { update(); return; }
+    if (!animate || !source || !document.startViewTransition || matchMedia("(prefers-reduced-motion: reduce)").matches) { setOpeningId(null); update(); return; }
+    // Snapshot a lightweight page first; Markdown parsing must not delay or interrupt the expansion.
+    setOpeningId(target);
     markHeading();
     const root = document.documentElement;
     root.dataset.canvasTransition = target ? "open" : "close";
@@ -61,10 +64,13 @@ export function useCanvasMotion(documentId: string | null, title: string | undef
     void transition.finished.catch(() => {}).finally(() => {
       if (motion.current !== transition) return;
       motion.current = null;
+      setOpeningId(null);
       delete root.dataset.canvasTransition;
       if (pending.current || page.current?.querySelector("textarea")) return;
       const destination = target ? page.current?.querySelector<HTMLElement>("button") : preview.current?.querySelector<HTMLElement>("[data-open-document]");
       destination?.focus({ preventScroll: true });
     });
-  };
+  }
+
+  return { navigate, opening: openingId !== null && openingId === documentId };
 }
