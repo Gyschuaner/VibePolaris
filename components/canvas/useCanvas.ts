@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { emptyCanvas, type CanvasData } from "@/lib/canvas";
 import { CanvasConflict, forkCloudCache, readCanvas, readCloudCache, writeCanvas, writeCloudCache } from "@/lib/canvas-storage";
-import { cloudRequest } from "@/lib/canvas-cloud";
+import { cloudPollInterval, cloudRequest } from "@/lib/canvas-cloud";
 import { mergeCanvas, sameCanvas } from "@/lib/canvas-sync";
 import type { CloudCanvas } from "@/lib/account/canvas-store";
 
@@ -17,7 +17,6 @@ export function useCanvas(options: { storageKey?: string; owner?: string; remote
   const reading = useRef(false);
   const [cloudStatus, setCloudStatus] = useState("自动同步已关闭");
   const optionsRef = useRef(options); optionsRef.current = options;
-  const syncRef = useRef<() => Promise<void>>(async () => {});
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const channel = useRef<BroadcastChannel | null>(null);
 
@@ -65,9 +64,10 @@ export function useCanvas(options: { storageKey?: string; owner?: string; remote
     finally { reading.current = false; }
   }, [key, owner, remoteId]);
 
-  const sync = useCallback(async () => {
+  const sync = useCallback(async (silent = false) => {
     if (!owner || !remoteId || !base.current || !loaded.current || syncing.current || conflict.current || disposed.current) return;
-    syncing.current = true; setCloudStatus("同步中…");
+    syncing.current = true;
+    if (!silent || !sameCanvas(latest.current, base.current)) setCloudStatus("同步中…");
     try {
       await flush();
       if (pending.current || disposed.current) { if (!disposed.current) setCloudStatus("本地草稿尚未保存，请先重试保存"); return; }
@@ -143,12 +143,11 @@ export function useCanvas(options: { storageKey?: string; owner?: string; remote
       }
     } finally { syncing.current = false; }
   }, [key, owner, remoteId, flush]);
-  syncRef.current = sync;
 
   useEffect(() => {
     disposed.current = false;
     void reload();
-    const refresh = () => { void reload().then(() => { if (optionsRef.current.autoSync) void syncRef.current(); }); };
+    const refresh = () => { void reload(); };
     try { channel.current = new BroadcastChannel(`vibepolaris-canvas-changes:${key}`); channel.current.onmessage = refresh; } catch { /* Focus also refreshes a clean canvas. */ }
     const beforeUnload = (event: BeforeUnloadEvent) => { if (pending.current || saving.current) { event.preventDefault(); event.returnValue = ""; } };
     const hide = () => { if (document.hidden) void flush(); };
@@ -170,14 +169,22 @@ export function useCanvas(options: { storageKey?: string; owner?: string; remote
 
   useEffect(() => {
     if (!remoteId || !ready) return;
-    if (!options.autoSync) { setCloudStatus(base.current && !sameCanvas(data, base.current) ? "自动同步已关闭 · 有本地修改" : "自动同步已关闭"); return; }
-    setCloudStatus(base.current && !sameCanvas(data, base.current) ? "已保存在本地，待同步" : "已同步");
-    const delay = setTimeout(() => void sync(), 1000);
-    const poll = setInterval(() => { if (!document.hidden) void sync(); }, 8000);
-    const online = () => { void sync(); };
+    const dirty = base.current && !sameCanvas(latest.current, base.current);
+    if (!options.autoSync) { setCloudStatus(dirty ? "自动同步已关闭 · 有本地修改" : "自动同步已关闭"); return; }
+    if (!dirty) return;
+    setCloudStatus("已保存在本地，待同步");
+    const delay = setTimeout(() => void sync(), 3000);
+    return () => clearTimeout(delay);
+  }, [remoteId, ready, options.autoSync, data.nodes, data.edges, sync]);
+
+  useEffect(() => {
+    if (!remoteId || !ready || !options.autoSync) return;
+    void sync(true);
+    const poll = setInterval(() => { if (!document.hidden) void sync(true); }, cloudPollInterval);
+    const online = () => { void sync(true); };
     window.addEventListener("online", online);
-    return () => { clearTimeout(delay); clearInterval(poll); window.removeEventListener("online", online); };
-  }, [remoteId, ready, options.autoSync, data, sync]);
+    return () => { clearInterval(poll); window.removeEventListener("online", online); };
+  }, [remoteId, ready, options.autoSync, sync]);
 
   const update = useCallback((change: (value: CanvasData) => CanvasData, immediate = false) => {
     if (!loaded.current) return;
