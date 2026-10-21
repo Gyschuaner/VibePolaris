@@ -23,6 +23,14 @@
 
 ## 集成和发布
 
-尚未集成、发布；完成后补充实际提交、环境、备份及回滚事实。仓库未配置远端 dev 服务，dev 验收将如实记录为本机 dev 优化构建。
+- 功能提交 `6873fc6784d3e06fecf1743f10f36ec2c205abad`；[PR529](https://github.com/Gyschuaner/VibePolaris/pull/529) 合入 dev `95e9ab570c10d02f58848132c0fc436ac7b5fe2a`，Git tree 与已验收构建一致。
+- dev 为本机优化构建 3103（验收代理 3105），没有远端 dev 服务；集成后再次双击记录 ready 79328ms、finished 79884ms、正文 79940ms，无控制台错误。dev 部署记录 `908f6fde-cfbc-47de-b371-fc0110ee339a`。
+- [PR530](https://github.com/Gyschuaner/VibePolaris/pull/530) 仅选择本轮已集成修改进入 main，不携带 dev 未发布词条。生产候选重新 `npm run build` 通过；main 提交 `615394466f07cb92af51e82985557d0e30f40839`，构建 `kpQ3twpH2jDP5J-pCBYEJ`，发布于 2026-10-21 10:05:04 CST。
+- 使用当前不可变 Linux 镜像作为依赖基础，只替换已校验的 `.next`；支持文件和锁文件保持一致，独立无网络容器启动验证通过后切换生产。
+- 生产 release：`/opt/vibepolaris/releases/20261021T020112Z-61539446`；容器 healthy，站点 `/`、`/canvas`、`/settings`、会话接口 200；匿名私有画布接口 401。数据卷 `vibepolaris_xiaobei_data` 保留，小北补全扣费仍关闭。
+- 在线 SQLite 备份 `/opt/vibepolaris/backups/20261021T020112Z-from-93e8decf`，`quick_check=ok`，SHA256 `61d6d228b63a69fec83917694605d854fa909a993d08e2eb1e54cce362573b0c`。
+- 回滚：`sudo /opt/vibepolaris/releases/20261021T020112Z-61539446/rollback.sh`，恢复镜像 `vibepolaris:93e8decf30f47618caadae5f8725f81c3c27a595`，继续挂载当前数据卷；本轮没有数据库格式迁移。不要为回滚代码覆盖用户后续新增数据。
+- 生产使用既有合成测试账户的新画布做冒烟。发布前摘要选中时 display:none / 0px；发布后选中仍显示摘要。双击先出现轻量外壳，随后正文及 Mermaid 显示；原全文入口、返回及编辑器可用，测试账户退出后恢复访客画布。截图与记录见本目录证据。
+- DP 专项计划 `1e442831-2743-4cab-b183-8b06deff9b54` completed，1/1 passed；两个 Bug 已关闭。未执行整站回归，未声称远端 dev 或跨浏览器全覆盖。
 
 当前机器不存在规则指定的 `D:/Obsidian/gysnote`，跳过该库记录；本次与代码相关的研发记录保留于本文件及 DP。
