@@ -14,10 +14,17 @@ npm run build 已通过，构建ID `-t212D68MWKK7-sAOC9Fx`。使用独立SQLite�
 
 实际浏览器确认3.00秒后发起云请求、本地约450ms保存、连续输入只写入最后一版。30分钟测试时钟调用页面真实登记为1800000ms的定时器，条件GET返回304时保持“已同步”，无“同步中…”闪烁。普通focus及超过8秒闲置不发画布请求，online触发补同步。
 
-关闭自动同步后23秒无云画布请求，手动同步成功且仍显示关闭状态。[浏览器证据](VBP-106-sync-cadence/dev-browser.json)、[截图](VBP-106-sync-cadence/dev-canvas.png)。dev集成和生产结果将在实际完成后补充。测试计划 `e78b6bab-46c6-4813-b869-8e9d6cbba47c`，用例 `c1be49e4-9887-4426-a672-c3628e272958`。
+关闭自动同步后23秒无云画布请求，手动同步成功且仍显示关闭状态。[浏览器证据](VBP-106-sync-cadence/dev-browser.json)、[截图](VBP-106-sync-cadence/dev-canvas.png)。控制台无错误。PR525合dev `65f9299c3b627de68f9d467375eecc167d8e5aa3`，文件树与上述候选一致，同一优化构建刷新复核笔记与关闭同步状态通过；这是本机dev集成预览，未部署远端dev。测试计划 `e78b6bab-46c6-4813-b869-8e9d6cbba47c`，用例 `c1be49e4-9887-4426-a672-c3628e272958`。
 
 ## 发布
 
-沿用本对话已授权的完成后上线流程。仅发布VBP-106已验证改动；保留当前生产持久卷并在线备份SQLite，回滚代码时保留最新用户数据。实际版本与部署事实完成后补充。
+沿用本对话已授权的完成后上线流程。仅发布VBP-106已验证改动；保留当前生产持久卷并在线备份SQLite，回滚代码时保留最新用户数据。实际运行提交 `93e8decf30f47618caadae5f8725f81c3c27a595`，经PR526选择性合main；生产候选重新构建通过，BUILD_ID `4RN-qP4CKOik3girxKchp`，主分支合并树与候选完全一致。发布记录后续提交只改文档，不改变生产运行版本。
+
+- 发布于 `2026-10-21T01:45:32.996122+00:00`，目录 `/opt/vibepolaris/releases/20261021T014154Z-93e8decf`，镜像 `vibepolaris:93e8decf30f47618caadae5f8725f81c3c27a595`，容器healthy。
+- 隔离容器启动、产物哈希、正式首页/画布/设置/账号会话200、匿名云画布401通过；原持久卷与补全扣费关闭状态保留。
+- 生产QA云画布编辑后自动同步，刷新保留；独立HTTPS登录会话回读同一标题与摘要，确认并非仅本地缓存。控制台无错误，退出QA后保留原游客画布。
+- SQLite在线备份 `/opt/vibepolaris/backups/20261021T014154Z-from-f7250408`，quick_check=ok，SHA256 `7c06e6cb1c2661d9aa6437e5b3dc1c7c9325ff01f3ff9eecd411896c5edf80cd`。
+- 回滚执行 `sudo /opt/vibepolaris/releases/20261021T014154Z-93e8decf/rollback.sh`，恢复 `vibepolaris:f72504080085d613e1d5af50c4acf638e73d5045` 及原发布链接，保留最新用户数据；本次未实际执行回滚。当前与回滚版本均支持画布格式3。
+- [部署事实](VBP-106-sync-cadence/production-evidence.json)、[独立云端回读](VBP-106-sync-cadence/production-cloud.json)、[生产截图](VBP-106-sync-cadence/production-canvas.png)。
 
 本机不存在指定的 D:/Obsidian/gysnote，记录保留在Git与DP。DP Agent专用登录此前不可用，按Skill降级使用DP CLI；本轮没有新增正式飞书文档。
