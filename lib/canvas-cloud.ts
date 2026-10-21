@@ -1,6 +1,8 @@
 import type { CanvasData } from "./canvas";
 import type { CloudCanvas } from "./account/canvas-store";
 
+export const cloudPollInterval = 30 * 60 * 1000;
+
 export async function cloudRequest(owner: string, options: { id?: string; method?: "POST" | "PUT"; body?: unknown; base?: CanvasData } = {}): Promise<CloudCanvas | null> {
   const response = await fetch(`/api/account/canvases${options.id ? `?id=${encodeURIComponent(options.id)}` : ""}`, {
     method: options.method || "GET", cache: "no-store", signal: AbortSignal.timeout(30_000),
