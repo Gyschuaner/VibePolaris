@@ -14,6 +14,7 @@ export function AccountSettings() {
     <Link className={styles.back} href="/canvas"><ArrowLeft size={17} />返回画布</Link>
     <h1>设置</h1>
     {!ready ? <p className={styles.muted} role="status">正在读取账号…</p> : account ? <SettingsForm key={account.id} /> : <div className={styles.guest}><p>登录后，管理你的头像和云端同步。</p><button className={styles.primary} onClick={openAccount}>登录账号</button></div>}
+    {ready && !account && <AiSettings />}
   </main>;
 }
 
@@ -54,10 +55,34 @@ function SettingsForm() {
       <Link className={styles.canvasLink} href="/canvas">前往画布 <ArrowUpRight size={15} /></Link>
       <p className={styles.fine}>此浏览器的游客画布，由你在画布中选择是否保存到账号。</p>
     </section>
+    <AiSettings />
     <section className={styles.section} aria-label="退出账号">
       <button className={styles.logout} disabled={busy} onClick={async () => { setBusy(true); setError(""); try { await logout(); router.replace("/canvas"); } catch (cause) { setError(cause instanceof Error ? cause.message : "退出失败，请重试。"); setBusy(false); } }}><SignOut size={20} />退出登录<ArrowUpRight size={17} /></button>
       <p className={styles.fine}>未同步的修改会保留，下次在此浏览器登录后可继续。</p>
     </section>
     <div className={styles.feedback} aria-live="polite">{error ? <p role="alert">{error}</p> : message && <p role="status">{message}</p>}</div>
   </>;
+}
+
+function AiSettings() {
+  const { account, aiReady, aiPreferences, setAiFeature, refresh, xiaobei, openAccount } = useAccount();
+  const [busy, setBusy] = useState(false), [error, setError] = useState("");
+  const options = [
+    ["completion", "智能补全", "编辑时停顿显示快捷键提示，主动触发一小段续写。"],
+    ["organize", "整理成文", "将草稿整理为学习文章，原稿独立保留。"],
+    ["expand", "扩展节点", "从草稿或文章延伸相关节点，由你接受或舍弃。"],
+  ] as const;
+  return <section className={styles.section} aria-labelledby="ai-heading">
+    <div className={styles.sectionTitle}><h2 id="ai-heading">小北</h2></div>
+    <p className={styles.fine}>{account ? "开关随账号同步。" : "开关保存在此浏览器。"}整理和扩展不扣积分；点击使用时，会将所选正文发送给小北。</p>
+    {!aiReady ? <button onClick={() => void refresh()}>重新读取设置</button> : options.map(([feature, title, description]) => <div className={styles.row} key={feature}>
+      <div><h3 id={`ai-${feature}`}>{title}</h3><p>{description}</p></div>
+      <button className={styles.toggle} role="switch" aria-checked={aiPreferences[feature]} aria-labelledby={`ai-${feature}`} disabled={busy} onClick={async () => {
+        setBusy(true); setError(""); try { await setAiFeature(feature, !aiPreferences[feature]); } catch (cause) { setError(cause instanceof Error ? cause.message : "设置保存失败。"); } finally { setBusy(false); }
+      }}><span /></button>
+    </div>)}
+    {account && !xiaobei?.active && <button className={styles.canvasLink} onClick={openAccount}>绑定小北邀请码</button>}
+    {!account && <Link className={styles.canvasLink} href="/xiaobei/activate">激活小北 <ArrowUpRight size={15} /></Link>}
+    {error && <p role="alert">{error}</p>}
+  </section>;
 }

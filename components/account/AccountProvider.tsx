@@ -7,9 +7,10 @@ import { GearSix, X } from "@phosphor-icons/react";
 import type { Account } from "@/lib/account/store";
 import { AccountAvatar, WavingPerson } from "./AccountAvatar";
 import styles from "./Account.module.css";
+import { aiPreferencesSchema, defaultAiPreferences, type AiPreferences } from "@/lib/canvas-ai";
 
 type Session = { account: Account | null; xiaobei?: { bound: boolean; active: boolean; canBindCurrent: boolean } };
-type AccountContext = Session & { ready: boolean; autoSync: boolean; setAutoSync: (enabled: boolean) => void; logout: () => Promise<void>; saveAvatar: (avatar: string | null) => Promise<void>; openAccount: () => void; refresh: () => Promise<void> };
+type AccountContext = Session & { aiPreferences: AiPreferences; aiReady: boolean; setAiFeature: (feature: keyof AiPreferences, enabled: boolean) => Promise<void>; ready: boolean; autoSync: boolean; setAutoSync: (enabled: boolean) => void; logout: () => Promise<void>; saveAvatar: (avatar: string | null) => Promise<void>; openAccount: () => void; refresh: () => Promise<void> };
 const Context = createContext<AccountContext | null>(null);
 export const useAccount = () => useContext(Context)!;
 export const ownerHeaders = (id?: string) => ({ "X-VP-Account": id ?? "guest" });
@@ -27,6 +28,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
   const dialog = useRef<HTMLDialogElement>(null), channel = useRef<BroadcastChannel | null>(null), sequence = useRef(0);
   const [syncPreference, setSyncPreference] = useState<{ owner: string; enabled: boolean } | null>(null);
   const owner = session.account?.id;
+  const [aiState, setAiState] = useState<{ owner: string; value: AiPreferences } | null>(null);
   useEffect(() => {
     if (!owner) return;
     const key = `vp-canvas-account:${owner}:sync`;
@@ -49,6 +51,11 @@ export function AccountProvider({ children }: { children: ReactNode }) {
       if (!response.ok) throw new Error("Session unavailable");
       const next = await response.json() as Session;
       if (at === sequence.current) { setSession(next); setReady(true); }
+      const preferences = await fetch("/api/xiaobei/preferences", { cache: "no-store", headers: ownerHeaders(next.account?.id), signal: AbortSignal.timeout(15_000) });
+      if (preferences.ok) {
+        const value = aiPreferencesSchema.parse(await preferences.json());
+        if (at === sequence.current) setAiState({ owner: next.account?.id ?? "guest", value });
+      }
     } catch { if (at === sequence.current) setReady(true); }
   }, []);
   useEffect(() => {
@@ -98,7 +105,15 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     setSession(current => current.account?.id === owner ? { ...current, account: body.account } : current);
     channel.current?.postMessage("changed");
   }
-  return <Context.Provider value={{ ...session, ready, refresh, autoSync: !!owner && syncPreference?.owner === owner && syncPreference.enabled, setAutoSync, logout, saveAvatar, openAccount: () => { setError(""); setMessage(""); setOpen(true); } }}>
+  async function setAiFeature(feature: keyof AiPreferences, enabled: boolean) {
+    const response = await fetch("/api/xiaobei/preferences", { method: "PATCH", headers: { ...ownerHeaders(owner), "Content-Type": "application/json" }, body: JSON.stringify({ feature, enabled }) });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || "设置保存失败，请重试。");
+    setAiState({ owner: owner ?? "guest", value: aiPreferencesSchema.parse(result) });
+    channel.current?.postMessage("changed");
+  }
+  const aiReady = aiState?.owner === (owner ?? "guest");
+  return <Context.Provider value={{ ...session, ready, refresh, aiReady, aiPreferences: aiReady ? aiState.value : { ...defaultAiPreferences, completion: false }, setAiFeature, autoSync: !!owner && syncPreference?.owner === owner && syncPreference.enabled, setAutoSync, logout, saveAvatar, openAccount: () => { setError(""); setMessage(""); setOpen(true); } }}>
     {children}
     <dialog ref={dialog} className={styles.dialog} aria-labelledby="account-title" onCancel={() => setOpen(false)} onClose={() => { setOpen(false); setPassword(""); setCode(""); }} onClick={event => { if (event.target === event.currentTarget && !busy) setOpen(false); }}>
       <div className={styles.panel}>

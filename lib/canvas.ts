@@ -1,13 +1,17 @@
 import { z } from "zod";
 
 const point = { x: z.number(), y: z.number() };
+const articleSchema = z.object({ markdown: z.string(), sourceHash: z.string(), generatedAt: z.iso.datetime({ offset: true }), complete: z.boolean() });
+const provenanceSchema = z.object({ sourceId: z.string(), sourceVariant: z.enum(["draft", "article"]), generatedAt: z.iso.datetime({ offset: true }), status: z.enum(["pending", "accepted"]) });
 const nodeMetadata = z.object({
   kind: z.enum(["note", "link", "image", "todo"]).optional(),
   title: z.string().max(140).optional(), summary: z.string().max(600).optional(),
+  ai: provenanceSchema.optional(),
 });
 const nodeSchema = z.object({
   id: z.string().min(1), markdown: z.string(), fileName: z.string(), ...point,
   ...nodeMetadata.shape,
+  article: articleSchema.optional(), articleProposal: articleSchema.optional(),
   createdAt: z.iso.datetime({ offset: true }), updatedAt: z.iso.datetime({ offset: true }),
 });
 export const canvasPorts = ["top", "right", "bottom", "left"] as const;
@@ -16,9 +20,9 @@ const edgeSchema = z.object({
   fromPort: z.enum(canvasPorts).optional(), toPort: z.enum(canvasPorts).optional(),
   direction: z.enum(["none", "start", "end", "both"]).optional(), dashed: z.boolean().optional(),
 });
-// Older clients must reject version 3 rather than discard connection ports/styles on save.
+// Older clients must reject this version rather than discard articles or AI provenance.
 const canvasSchema = z.object({
-  version: z.union([z.literal(1), z.literal(2), z.literal(3)]).transform(() => 3 as const), revision: z.number().int().nonnegative(),
+  version: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]).transform(() => 4 as const), revision: z.number().int().nonnegative(),
   nodes: z.array(nodeSchema), edges: z.array(edgeSchema),
   view: z.object({ ...point, scale: z.number().min(.3).max(2) }),
 }).refine(value => {
@@ -37,7 +41,7 @@ export type CanvasPort = typeof canvasPorts[number];
 export type CanvasData = z.infer<typeof canvasSchema>;
 export type CanvasView = CanvasData["view"];
 
-export const emptyCanvas = (): CanvasData => ({ version: 3, revision: 0, nodes: [], edges: [], view: { x: 0, y: 0, scale: 1 } });
+export const emptyCanvas = (): CanvasData => ({ version: 4, revision: 0, nodes: [], edges: [], view: { x: 0, y: 0, scale: 1 } });
 export const parseCanvas = (value: unknown): CanvasData => canvasSchema.parse(value);
 
 function plain(text: string) {
@@ -61,9 +65,9 @@ export function nodePreview(node: Pick<CanvasNode, "markdown" | "fileName" | "ki
 }
 
 export function exportNodeMarkdown(node: CanvasNode) {
-  const { kind, title, summary } = node;
-  if (!kind && title === undefined && summary === undefined) return node.markdown;
-  const metadata = JSON.stringify({ kind, title, summary }).replace(/</g, "\\u003c").replace(/>/g, "\\u003e");
+  const { kind, title, summary, ai } = node;
+  if (!kind && title === undefined && summary === undefined && !ai) return node.markdown;
+  const metadata = JSON.stringify({ kind, title, summary, ai: ai && { ...ai, status: "accepted" } }).replace(/</g, "\\u003c").replace(/>/g, "\\u003e");
   return `<!-- vibepolaris-node ${metadata} -->\n${node.markdown}`;
 }
 
