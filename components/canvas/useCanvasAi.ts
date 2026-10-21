@@ -77,7 +77,7 @@ export function useCanvasAi(data: CanvasData, update: (change: (value: CanvasDat
         let count = 0, exists = false;
         update(value => { exists = value.nodes.some(item => item.id === node.id); const next = addSuggestions(value, node.id, variant, suggestions!); count = next.nodes.length - value.nodes.length; return next; }, true);
         if (!exists) throw new Error("来源节点已删除，本次没有添加新节点。");
-        report({ running: false, message: count ? `已生成 ${count} 个候选节点，等待你的选择。` : "建议与已有节点重复，没有重复添加。" });
+        report({ running: false, message: count ? "" : "建议与已有节点重复，没有重复添加。" });
         if (count) setExpanded(value => value + 1);
       }
     } catch (cause) {

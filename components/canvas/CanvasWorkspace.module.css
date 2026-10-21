@@ -95,6 +95,22 @@
 .mode { font-size: 14px !important; color: var(--accent-text) !important; padding: 8px 0; white-space: nowrap; }
 .readingPage, .editorPage { flex: 1; min-height: 0; }
 .readingPage { overflow: auto; }
+.reader { display: flex; flex: 1; min-height: 0; overflow: hidden; }
+.readingContent { flex: 1; min-width: 0; overflow: auto; }
+.readingDirectory { order: 1; flex: 0 0 240px; min-width: 0; padding: 62px 28px 32px 0; display: flex; flex-direction: column; }
+.directoryLabel { color: var(--faint); font-size: 12px; padding: 0 0 16px 25px; }
+.readingToc:global(.vp-toc) { position: relative; top: auto; display: grid; align-content: start; gap: 6px; padding: 0 0 0 20px; margin: 0; border: 0; max-height: 100%; background: none; backdrop-filter: none; overflow: auto; }
+.readingToc:global(.vp-toc) a { display: block; padding: 8px 5px 8px calc(5px + var(--toc-depth, 0) * 10px); font-size: 14px; line-height: 1.65; white-space: normal; overflow-wrap: anywhere; text-decoration: none; }
+.readingToc :global(.vp-toc-marker) { position: absolute; left: 4px; top: 0; width: 14px; height: 16px; opacity: 0; pointer-events: none; transition: transform .36s cubic-bezier(.22,.7,.25,1), opacity .2s; }
+@media (max-width: 900px) {
+  .reader { flex-direction: column; }
+  .readingDirectory { order: 0; flex: none; padding: 0 24px; border-bottom: 1px solid var(--hairline); }
+  .directoryLabel { display: none; }
+  .readingToc:global(.vp-toc) { display: flex; gap: 22px; padding: 4px 0; }
+  .readingToc:global(.vp-toc) a { padding: 8px 0; font-size: 12px; white-space: nowrap; }
+  .readingToc :global(.vp-toc-marker) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .readingToc :global(.vp-toc-marker) { transition: none; } }
 .markdown { max-width: 804px; margin: 0 auto; padding: 65px 32px 120px; font-size: 17px; line-height: 1.95; overflow-wrap: anywhere; user-select: text; }
 .markdown h1 { font-size: 38px; font-weight: 650; line-height: 1.4; letter-spacing: -.035em; margin: 0 0 30px; }
 .markdown h2 { font-size: 25px; font-weight: 600; line-height: 1.5; margin: 42px 0 16px; letter-spacing: -.02em; }
