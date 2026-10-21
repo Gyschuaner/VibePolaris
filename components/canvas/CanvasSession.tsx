@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Cloud, Plus, X } from "@phosphor-icons/react";
 import { ownerHeaders, useAccount } from "@/components/account/AccountProvider";
 import { emptyCanvas } from "@/lib/canvas";
-import { cloudRequest } from "@/lib/canvas-cloud";
+import { cloudPollInterval, cloudRequest } from "@/lib/canvas-cloud";
 import { guestCanvasSource, readCanvas, readCloudCache, writeCloudCache } from "@/lib/canvas-storage";
 import type { CanvasSummary, CloudCanvas } from "@/lib/account/canvas-store";
 import styles from "./CanvasSession.module.css";
@@ -38,9 +38,11 @@ export function useCanvasSession() {
   }
   useEffect(() => {
     alive.current = true; queueMicrotask(() => { void refresh(); });
-    const focus = () => { void refresh(); };
-    window.addEventListener("focus", focus);
-    return () => { alive.current = false; window.removeEventListener("focus", focus); };
+    if (!owner) return () => { alive.current = false; };
+    const poll = setInterval(() => { if (!document.hidden) void refresh(); }, cloudPollInterval);
+    const online = () => { void refresh(); };
+    window.addEventListener("online", online);
+    return () => { alive.current = false; clearInterval(poll); window.removeEventListener("online", online); };
   }, [owner]); // eslint-disable-line react-hooks/exhaustive-deps
   function choose(id: string, preserveNote = false) {
     setSelected(id); setError("");
