@@ -3,7 +3,7 @@ import { MarkdownDocument } from "./MarkdownDocument";
 import { CompletingTextarea } from "./CompletingTextarea";
 import styles from "./CanvasWorkspace.module.css";
 
-export function MarkdownEditor({ markdown, title, onChange, onSave }: { markdown: string; title: string; onChange: (value: string) => void; onSave: () => void }) {
+export function MarkdownEditor({ markdown, title, fallbackTitle, onChange, onSave }: { markdown: string; title: string; fallbackTitle?: string; onChange: (value: string) => void; onSave: () => void }) {
   const container = useRef<HTMLElement>(null), dragging = useRef<number | null>(null);
   const [split, setSplit] = useState(50), [stacked, setStacked] = useState(false);
   useEffect(() => {
@@ -34,7 +34,7 @@ export function MarkdownEditor({ markdown, title, onChange, onSave }: { markdown
       }}><span /></div>
     <section id="markdown-preview" className={styles.previewPane} aria-label="Markdown 实时预览">
       <div className={styles.paneLabel}>预览</div>
-      <div className={styles.previewScroll}><article className={styles.markdown}>{markdown.trim() ? <MarkdownDocument markdown={markdown} /> : <p className={styles.blankNote}>写下内容后，会在这里显示。</p>}</article></div>
+      <div className={styles.previewScroll}><article className={styles.markdown}>{markdown.trim() ? <MarkdownDocument markdown={markdown} fallbackTitle={fallbackTitle} /> : <>{fallbackTitle && <h1>{fallbackTitle}</h1>}<p className={styles.blankNote}>写下内容后，会在这里显示。</p></>}</article></div>
     </section>
   </main>;
 }
