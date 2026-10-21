@@ -10,7 +10,7 @@ type Props = { markdown: string; title: string; onChange: (value: string) => voi
 type Undo = { before: string; after: string; cursor: number; end: number };
 
 export function CompletingTextarea({ markdown, title, onChange, onSave }: Props) {
-  const { account, openAccount } = useAccount();
+  const { account, openAccount, aiPreferences } = useAccount();
   const helpId = useId();
   const field = useRef<HTMLTextAreaElement>(null), mirror = useRef<HTMLDivElement>(null), marker = useRef<HTMLSpanElement>(null), floating = useRef<HTMLDivElement>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined), request = useRef<AbortController | null>(null), composing = useRef(false);
@@ -42,6 +42,7 @@ export function CompletingTextarea({ markdown, title, onChange, onSave }: Props)
   }
   function arm() {
     clearTimeout(timer.current);
+    if (!aiPreferences.completion) return;
     timer.current = setTimeout(() => {
       const el = field.current;
       if (el && document.activeElement === el && !composing.current && el.selectionStart === el.selectionEnd && el.value.slice(0, el.selectionStart).trim() && !request.current && position()) setHint(true);
@@ -73,7 +74,7 @@ export function CompletingTextarea({ markdown, title, onChange, onSave }: Props)
 
   async function generate(confirmedMode?: boolean) {
     const el = field.current;
-    if (!el || composing.current || request.current || el.selectionStart !== el.selectionEnd || !el.value.slice(0, el.selectionStart).trim()) return;
+    if (!aiPreferences.completion || !el || composing.current || request.current || el.selectionStart !== el.selectionEnd || !el.value.slice(0, el.selectionStart).trim()) return;
     el.focus();
     const original = el.value, at = el.selectionStart, controller = new AbortController();
     clear(); request.current = controller; setBusy(true); setCursor(at);
@@ -147,6 +148,8 @@ export function CompletingTextarea({ markdown, title, onChange, onSave }: Props)
       if ((!redo && markdown === entry.after) || (redo && markdown === entry.before)) { event.preventDefault(); clear(); restore(redo ? entry.after : entry.before, redo ? entry.end : entry.cursor); }
     }
   }
+
+  useEffect(() => { if (!aiPreferences.completion) { request.current?.abort(); queueMicrotask(clear); } }, [aiPreferences.completion]);
 
   const inline = cursor === markdown.length && !nearBottom;
   const control = suggestion ? <><span className={styles.ghost} aria-hidden="true">{suggestion}</span><button type="button" tabIndex={-1} className={styles.hint} onPointerDown={event => event.preventDefault()} onClick={accept} aria-label="接受小北补全">Tab 接受</button></>
