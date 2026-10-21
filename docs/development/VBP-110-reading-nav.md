@@ -23,4 +23,15 @@ DP：VBP-110，任务 f52d0555-ee16-4f47-a9a8-4a7cf27df088。用户已授权实�
 
 ## 发布准备
 
-生产原运行提交3bec8041健康；磁盘仅余2.1G。清理1小时以上、Docker确认未使用的构建缓存约3.996GB，恢复5.6G可用；未移除运行/回滚镜像、数据卷或备份。生产部署事实在完成后追加。
+生产原运行提交3bec8041健康；磁盘仅余2.1G。清理1小时以上、Docker确认未使用的构建缓存约3.996GB，恢复5.6G可用；未移除运行/回滚镜像、数据卷或备份。生产事实见下。
+
+## 集成与正式发布
+
+- 功能提交 `6bbbde1026a79aad5d79c4e776713a20c2cfddb8`，[PR541](https://github.com/Gyschuaner/VibePolaris/pull/541) 合入 dev `5c5e77fdc65a928aeca82e96e95a3daa4612f120`。本机优化构建3106与dev同树，合并后实际重载文章目录/编辑入口通过；无远端dev。
+- [PR542](https://github.com/Gyschuaner/VibePolaris/pull/542) 将本轮代码选择性合入main，独立生产构建1186页通过；运行提交 `02584f991f84469bb6b09da35f0b7cd7b0df9276`，build `1JXMlEQPobHczAz1zy1Cy`。
+- 上线时间 `2026-10-21T07:18:07.285653+00:00`（北京时间15:18）。release `/opt/vibepolaris/releases/20261021T071236Z-02584f99`；Docker独立无网络启动检查通过，正式容器healthy，首页/画布/设置/session接口200，匿名私有画布401，原数据卷保留，补全扣费开关保持false。
+- 在线备份 `/opt/vibepolaris/backups/20261021T071236Z-from-3bec8041`；SQLite quick_check=ok，SHA256 `86f121ac3862b132f8a22cbb1c869707131cb1bd48fa6c81f399d25f6084691d`。
+- 回滚：`sudo /opt/vibepolaris/releases/20261021T071236Z-02584f99/rollback.sh`。恢复 `3bec8041c75fce53d78668fd33a0161ee09549dd` 并保留当前数据卷；本轮无格式变化，两版都支持v4画布，不需要恢复旧数据库。
+- 生产合成账号真实浏览器：目录跳转及当前章节、卡片编辑文章、正文加粗渲染、草稿逐字不变、版本栏唯一、连续舍弃2个候选后等待提示消失。手动同步后API核对云端revision2，文章改动保存，待处理候选0。控制台0error。未调用模型；测试账号已退出，用户游客画布未修改。
+- 新版本通过冒烟后删除7个无容器引用的旧 VibePolaris 镜像，保留当前02584f99及上一稳定版3bec8041、所有数据卷与备份。磁盘可用从约2.0GB升至9.1GB。历史旧发布的回滚命令已被本次回滚方案取代，使用上述当前回滚入口。
+- DP：VBP-110 released；任务done；BUG-4A53B709/BUG-6CBF0D56 closed。dev计划52622b59-d39e-47fb-bf21-24d7cc26c8be与生产计划82666167-3a2d-4dc9-85cb-2b45c09858f0均completed（各1/1通过）。dev部署9f9937be-daf7-403d-87a6-ba4faf87f517，生产部署2765f0e2-04de-4e35-9e74-0fffb2e7cb63；文档索引4e812554-a368-458e-b6bd-55b21d21313e。已重新查询最终状态。
