@@ -29,4 +29,13 @@ DP：VBP-109（9171a76b-fb25-4a8d-9ae6-eb3c0769c27e），任务 ebedb96f-45c8-49
 
 ## 集成与生产
 
-待完成后补充真实提交、发布、备份、回滚和生产冒烟记录。没有远端 dev 配置，dev 集成验证使用本机优化构建。
+- 功能提交 `6f7d7d4001cea027b68ed491e1f4a76029ba41d5`，[PR537](https://github.com/Gyschuaner/VibePolaris/pull/537) 合入dev `47042935b4fe336810691b51de017a5988c61ef0`。同树本机优化构建3106，合并后真实浏览器重载正常；没有远端dev服务。dev部署 `4df611a5-d421-4161-8cf3-1a87f3c31aa7`，专项计划 `41d8cbfd-20a8-4e49-8040-c51b90b9cbf0` 1/1通过。
+- [PR538](https://github.com/Gyschuaner/VibePolaris/pull/538) 选择本轮已集成改动进入main。生产候选 `eb9762b3f5e2b8191b28e26cba15a1f8d68e9f4f` 重新构建通过（1186页），运行提交 `3bec8041c75fce53d78668fd33a0161ee09549dd`，构建 `XW7fxmj8eKnFJWkkf0nPb`。
+- 发布时间 `2026-10-21T04:09:25.838056+00:00`（UTC）。release `/opt/vibepolaris/releases/20261021T040404Z-3bec8041`。容器healthy；首页、画布、设置、账号session接口200，匿名私有画布401；数据卷保留，补全扣费关闭。
+- 在线SQLite备份 `/opt/vibepolaris/backups/20261021T040404Z-from-43a7f8c5`，quick_check=ok，SHA256 `ba02b0e2c7525639e05033d5124e5b8d6d30fc1de451ac5ece7606b0b4aa51e3`。
+- 回滚：`sudo /opt/vibepolaris/releases/20261021T040404Z-3bec8041/rollback.sh`，恢复镜像 `vibepolaris:43a7f8c5eaa27f4e2cbc77803e1c31486f4ebb54` 并使用当前数据卷。旧镜像无法读v4画布，数据仍保留，需要向前修复；不可覆盖发布后数据。
+- 清理5个已完成发布的VBP-098至101临时构建目录及旧tar，保留运行/回滚镜像和备份。运行镜像从固定Node22底座重新组装，复用已校验Linux依赖/public，携带新版store及CLI支持文件，避免叠加历次构建层。新镜像报告599,480,159字节，发布后磁盘可用6.8G。无网络独立启动和文件hash校验通过。
+- 正式站使用新合成账号，真实小北生成246字文章、5个候选（概念笔记与站内链接），重复问句合并为正文，保留后续学习；接受1个节点。云端revision4确认原稿未改、文章完整、来源和接受状态持久化。控制台0error。实测两次生成Token记录完整，预占和扣费均0。图片候选用本机固定响应验证，真实模型本次没有提供图片。
+- 本机临时服务/数据库已清理，正式站验收账号已退出，短期邀请码禁用并删除临时凭据。合成验收画布保留于隔离测试账号中，不涉及用户画布。
+- 文档索引 `323d8637-e9d6-46dd-ae27-e22db7f07ea4`。DP协作Agent因独立登录过期未执行写操作，本轮记录改用已登录DP CLI完成；未扩大权限或重试登录。
+- DP最终状态：VBP-109 released，研发任务done；生产测试计划 `1979cc89-b3e0-4bfd-acae-a8e1cd2ace67` completed（1/1 passed），生产部署记录 `0c1155f2-a07c-4132-b343-27add515e75a` released，已重新查询确认。

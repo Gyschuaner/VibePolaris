@@ -1,0 +1,11 @@
+FROM vibepolaris:43a7f8c5eaa27f4e2cbc77803e1c31486f4ebb54 AS previous
+FROM node@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402
+WORKDIR /app
+ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1
+COPY --from=previous /app/node_modules ./node_modules
+COPY --from=previous /app/public ./public
+COPY --from=previous /app/package.json /app/package-lock.json ./
+COPY .next ./.next
+COPY runtime/ ./
+EXPOSE 3000
+CMD ["npm", "run", "start", "--", "-H", "0.0.0.0"]
