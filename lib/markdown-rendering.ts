@@ -1,6 +1,14 @@
 import { defaultSchema } from "rehype-sanitize";
 import type { Root, Element } from "hast";
 
+export function rehypeFallbackTitle(title?: string) {
+  return (tree: Root) => {
+    if (title && !tree.children.some(node => node.type === "element" && node.tagName === "h1")) {
+      tree.children.unshift({ type: "element", tagName: "h1", properties: {}, children: [{ type: "text", value: title }] });
+    }
+  };
+}
+
 // Allow only a text color through HTML; arbitrary CSS never reaches the renderer.
 export function safeTextColor(style: unknown): string | undefined {
   if (typeof style !== "string") return;

@@ -1,14 +1,14 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
 import { publishedTerms } from "@/lib/content";
-import { EXPAND_PROMPT, ORGANIZE_PROMPT, resolveSuggestions, sourceResources, type CanvasAiFeature } from "../canvas-ai.ts";
+import { EXPAND_PROMPT, ORGANIZE_PROMPT, expansionContextSchema, resolveSuggestions, sourceResources, type CanvasAiFeature } from "../canvas-ai.ts";
 import { assistantIdentity } from "../account/http.ts";
 import { errorResponse, privateHeaders, readBody, sameOrigin } from "./http.ts";
 import { getStore, XiaobeiError } from "./store.ts";
 import { callModel, modelConfig } from "./model.ts";
 import { requireFeature } from "./preferences.ts";
 
-const inputSchema = z.object({ requestId: z.uuid(), title: z.string().max(160), markdown: z.string().trim().min(1).max(200_000), existing: z.array(z.string().max(140)).max(2000).default([]) }).strict();
+const inputSchema = z.object({ requestId: z.uuid(), title: z.string().max(160), markdown: z.string().trim().min(1).max(200_000), existing: z.array(z.string().max(140)).max(2000).default([]), context: expansionContextSchema.optional() }).strict();
 
 export async function generateCanvas(request: NextRequest, feature: CanvasAiFeature) {
   try {
@@ -18,7 +18,7 @@ export async function generateCanvas(request: NextRequest, feature: CanvasAiFeat
     const parsed = inputSchema.safeParse(await readBody(request, 1_500_000));
     if (!parsed.success) throw new XiaobeiError("请选择有正文的笔记；每次最多整理 20 万字。");
     modelConfig();
-    const { requestId, title, markdown, existing } = parsed.data;
+    const { requestId, title, markdown, existing, context } = parsed.data;
     const resources = sourceResources(markdown);
     if (feature === "expand") {
       const text = `${title} ${markdown}`.toLowerCase();
@@ -42,7 +42,7 @@ export async function generateCanvas(request: NextRequest, feature: CanvasAiFeat
           send({ type: "stage", text: feature === "organize" ? "正在梳理草稿…" : "正在寻找可延伸的主题…" });
           const result = await callModel({ store, identity, run: requestId, signal, canvas: policy, json: feature === "expand",
             messages: [{ role: "system", content: feature === "organize" ? ORGANIZE_PROMPT : EXPAND_PROMPT },
-              { role: "user", content: JSON.stringify({ title, markdown, ...(feature === "expand" ? { resources, existing } : {}) }) }],
+              { role: "user", content: JSON.stringify({ title, markdown, ...(feature === "expand" ? { resources, existing, context } : {}) }) }],
             onDelta(text) { characters += text.length; send(feature === "organize" ? { type: "delta", text } : { type: "progress", characters }); },
           });
           store.checkIdentity(identity); requireFeature(request, feature);

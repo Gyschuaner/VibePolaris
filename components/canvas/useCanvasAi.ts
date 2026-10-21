@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ownerHeaders, useAccount } from "@/components/account/AccountProvider";
-import { addSuggestions, sourceHash, type CanvasAiFeature, type DocumentVariant, type NodeSuggestion } from "@/lib/canvas-ai";
+import { addSuggestions, expansionContext, sourceHash, type CanvasAiFeature, type DocumentVariant, type NodeSuggestion } from "@/lib/canvas-ai";
 import { nodePreview, type CanvasData, type CanvasNode } from "@/lib/canvas";
 
 export type AiProgress = { nodeId: string; running: boolean; characters: number; message: string; error?: boolean };
@@ -39,7 +39,8 @@ export function useCanvasAi(data: CanvasData, update: (change: (value: CanvasDat
       hash = await sourceHash(markdown); controller.signal.throwIfAborted();
       const response = await fetch(`/api/xiaobei/canvas/${feature}`, { method: "POST", signal: controller.signal,
         headers: { "Content-Type": "application/json", ...ownerHeaders(account?.id) },
-        body: JSON.stringify({ requestId: crypto.randomUUID(), title: nodePreview(node).title, markdown, existing: feature === "expand" ? data.nodes.map(item => nodePreview(item).title) : [] }),
+        body: JSON.stringify({ requestId: crypto.randomUUID(), title: nodePreview(node).title, markdown,
+          ...(feature === "expand" ? { existing: data.nodes.map(item => nodePreview(item).title), context: expansionContext(data, node.id, variant) } : {}) }),
       });
       if (!response.ok) { const body = await response.json(); throw new Error(body.error || "小北暂时不可用。"); }
       if (!response.body) throw new Error("没有收到生成内容，请重试。");
