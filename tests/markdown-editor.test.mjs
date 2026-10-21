@@ -9,12 +9,24 @@ import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeHighlight from "rehype-highlight";
 import { formatMarkdown, markdownShortcut } from "../lib/markdown-editing.ts";
-import { markdownSchema, rehypeTextColors, safeTextColor } from "../lib/markdown-rendering.ts";
+import { markdownSchema, rehypeFallbackTitle, rehypeTextColors, safeTextColor } from "../lib/markdown-rendering.ts";
 
 function apply(value, start, end, format) {
   const edit = formatMarkdown(value, start, end, format);
   return { value: value.slice(0, edit.from) + edit.text + value.slice(edit.to), start: edit.start, end: edit.end };
 }
+
+test("生成笔记的来源标记不会替代标题，已有 Markdown/HTML 标题不重复", async () => {
+  const processor = unified().use(remarkParse).use(remarkRehype, { allowDangerousHtml: true }).use(rehypeRaw).use(rehypeSanitize, markdownSchema).use(rehypeFallbackTitle, "状态码 <示例>");
+  for (const markdown of ["> 小北生成\n\n正文", "> 小北生成\n\n```md\n# 代码中的标题\n```", "# 原文标题\n\n> 小北生成", "原文标题\n===\n\n> 小北生成", "<h1>原文标题</h1>\n\n> 小北生成"]) {
+    const tree = await processor.run(processor.parse(markdown));
+    const headings = tree.children.filter(node => node.tagName === "h1");
+    assert.equal(headings.length, 1);
+    assert.equal(headings[0].children[0].value, markdown.startsWith(">") ? "状态码 <示例>" : "原文标题");
+    assert.ok(tree.children.some(node => node.tagName === "blockquote"));
+  }
+  const unchanged = { type: "root", children: [] }; rehypeFallbackTitle()(unchanged); assert.deepEqual(unchanged.children, []);
+});
 
 test("format commands preserve selection, toggle wrappers, and insert safe block boundaries", () => {
   assert.deepEqual(apply("想法", 0, 2, "bold"), { value: "**想法**", start: 2, end: 4 });

@@ -5,7 +5,7 @@ import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeHighlight from "rehype-highlight";
 import { safeNodeUrl } from "@/lib/canvas";
-import { markdownSchema, rehypeTextColors, safeTextColor } from "@/lib/markdown-rendering";
+import { markdownSchema, rehypeFallbackTitle, rehypeTextColors, safeTextColor } from "@/lib/markdown-rendering";
 import { MermaidDiagram } from "./MermaidDiagram";
 import styles from "./CanvasWorkspace.module.css";
 
@@ -23,6 +23,6 @@ const components: Components = {
     },
 };
 
-export function MarkdownDocument({ markdown }: { markdown: string }) {
-  return <Markdown remarkPlugins={[remarkGfm, remarkMark]} rehypePlugins={[rehypeRaw, rehypeTextColors, [rehypeSanitize, markdownSchema], [rehypeHighlight, { detect: false, ignoreMissing: true, plainText: ["mermaid"] }]]} urlTransform={(url, key) => key === "src" && url.startsWith("data:") ? safeNodeUrl(url, true) : defaultUrlTransform(url)} components={components}>{markdown}</Markdown>;
+export function MarkdownDocument({ markdown, fallbackTitle }: { markdown: string; fallbackTitle?: string }) {
+  return <Markdown remarkPlugins={[remarkGfm, remarkMark]} rehypePlugins={[rehypeRaw, rehypeTextColors, [rehypeSanitize, markdownSchema], [rehypeFallbackTitle, fallbackTitle], [rehypeHighlight, { detect: false, ignoreMissing: true, plainText: ["mermaid"] }]]} urlTransform={(url, key) => key === "src" && url.startsWith("data:") ? safeNodeUrl(url, true) : defaultUrlTransform(url)} components={components}>{markdown}</Markdown>;
 }

@@ -1,12 +1,32 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { randomUUID } from "node:crypto";
-import { addSuggestions, resolveSuggestions, sourceHash, sourceResources } from "../lib/canvas-ai.ts";
+import { addSuggestions, expansionContext, expansionContextSchema, resolveSuggestions, sourceHash, sourceResources } from "../lib/canvas-ai.ts";
 import { emptyCanvas, parseCanvas, exportNodeMarkdown, importNodeMarkdown } from "../lib/canvas.ts";
 import { mergeCanvas } from "../lib/canvas-sync.ts";
 import { XiaobeiStore, digest, DAILY_CREDITS } from "../lib/xiaobei/store.ts";
 
 const node = { id: "source", kind: "note", markdown: "# HTTP\n原始问题", fileName: "", x: 0, y: 0, createdAt: "2026-10-21T00:00:00Z", updatedAt: "2026-10-21T00:00:00Z" };
+test("扩展只带一跳邻居，正确解释双端箭头，并限制正文与候选上下文", () => {
+  const directions = [undefined, "none", "start", "end", "both"];
+  const edges = directions.flatMap((direction, index) => [false, true].map(reverse => ({ id: `${index}-${reverse}`, from: reverse ? `${index}-${reverse}` : "source", to: reverse ? "source" : `${index}-${reverse}`, direction, dashed: true })));
+  const neighbors = edges.map((edge, index) => ({ ...node, id: edge.id, title: `邻居${index}`, summary: "已连接的内容", markdown: "草稿节选", ...(index === 0 ? { article: { markdown: "已确认文章", complete: true } } : {}), ...(index === 1 ? { articleProposal: { markdown: "待采用文章", complete: true } } : {}) }));
+  const graph = { ...emptyCanvas(), nodes: [node, ...neighbors, { ...node, id: "unrelated", markdown: "不能发送的无关正文" }], edges: [...edges, { id: "second-hop", from: neighbors[0].id, to: "unrelated" }] };
+  const context = expansionContext(graph, "source", "article");
+  assert.equal(context.sourceVariant, "article"); assert.equal(context.neighbors.length, 10);
+  assert.deepEqual(context.neighbors.map(item => item.relation), ["undirected", "undirected", "undirected", "undirected", "incoming", "outgoing", "outgoing", "incoming", "both", "both"]);
+  assert.equal(context.neighbors[0].excerpt, "已确认文章"); assert.equal(context.neighbors[0].contentVariant, "article");
+  assert.equal(context.neighbors[1].excerpt, "草稿节选"); assert.equal(context.neighbors[1].contentVariant, "draft");
+  assert.ok(context.neighbors.every(item => item.dashed && !item.pending));
+  assert.ok(!JSON.stringify(context).includes("不能发送"));
+  const many = Array.from({ length: 30 }, (_, i) => ({ ...node, id: `large-${i}`, markdown: `![图片](data:image/png;base64,${"A".repeat(5000)})\n${"正文".repeat(800)}`, ...(i === 0 ? { ai: { status: "pending" } } : {}) }));
+  const bounded = expansionContext({ ...emptyCanvas(), nodes: [node, ...many], edges: many.map(item => ({ id: item.id, from: "source", to: item.id })) }, "source", "draft");
+  assert.equal(bounded.neighbors.length, 24); assert.equal(bounded.omitted, 6);
+  assert.ok(bounded.neighbors.every(item => !item.pending && item.excerpt.length === 800 && !item.excerpt.includes("base64")));
+  assert.equal(expansionContext({ ...emptyCanvas(), nodes: [node, many[0]], edges: [{ from: "source", to: many[0].id }] }, "source", "draft").neighbors[0].pending, true);
+  assert.throws(() => expansionContextSchema.parse({ ...bounded, neighbors: [...bounded.neighbors, bounded.neighbors[0]] }));
+  assert.deepEqual(expansionContext(graph, "missing", "draft").neighbors, []);
+});
 test("文章与原稿独立迁移、合并；并发编辑文章保留冲突处理", async () => {
   const base = parseCanvas({ ...emptyCanvas(), version: 3, nodes: [node] });
   const article = { markdown: "# 学习文章", sourceHash: await sourceHash(node.markdown), generatedAt: node.updatedAt, complete: true };

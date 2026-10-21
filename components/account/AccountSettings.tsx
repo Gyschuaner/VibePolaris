@@ -70,11 +70,11 @@ function AiSettings() {
   const options = [
     ["completion", "智能补全", "编辑时停顿显示快捷键提示，主动触发一小段续写。"],
     ["organize", "整理成文", "将草稿整理为学习文章，原稿独立保留。"],
-    ["expand", "扩展节点", "从草稿或文章延伸相关节点，由你接受或舍弃。"],
+    ["expand", "扩展节点", "结合当前正文与相连节点的摘要、正文节选和连线生成建议，由你接受或舍弃。"],
   ] as const;
   return <section className={styles.section} aria-labelledby="ai-heading">
     <div className={styles.sectionTitle}><h2 id="ai-heading">小北</h2></div>
-    <p className={styles.fine}>{account ? "开关随账号同步。" : "开关保存在此浏览器。"}整理和扩展不扣积分；点击使用时，会将所选正文发送给小北。</p>
+    <p className={styles.fine}>{account ? "开关随账号同步。" : "开关保存在此浏览器。"}整理和扩展不扣积分；点击使用时，会将所选正文发送给小北。扩展还会附上相连节点的上下文。</p>
     {!aiReady ? <button onClick={() => void refresh()}>重新读取设置</button> : options.map(([feature, title, description]) => <div className={styles.row} key={feature}>
       <div><h3 id={`ai-${feature}`}>{title}</h3><p>{description}</p></div>
       <button className={styles.toggle} role="switch" aria-checked={aiPreferences[feature]} aria-labelledby={`ai-${feature}`} disabled={busy} onClick={async () => {
