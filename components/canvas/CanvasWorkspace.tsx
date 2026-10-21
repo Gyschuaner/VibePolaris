@@ -59,7 +59,7 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
   const gesture = useRef<Gesture | null>(null), skipClick = useRef(false);
   const active = data.nodes.find(node => node.id === documentId), picked = data.nodes.find(node => node.id === selected);
   const current = documentId ? active : picked;
-  const navigate = useCanvasMotion(documentId, active && nodePreview(active).title, previewRef, documentRef);
+  const { navigate, opening } = useCanvasMotion(documentId, active && nodePreview(active).title, previewRef, documentRef);
   const edge = data.edges.find(item => item.id === selectedEdge);
   const nodeIds = data.nodes.map(node => node.id).join("\0");
   const bounds = useMemo(() => new Map(data.nodes.map(node => [node.id, { x: node.x + 24, y: node.y, ...(labelSizes[node.id] ?? { width: 275, height: 82 }) }])), [data.nodes, labelSizes]);
@@ -368,7 +368,9 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
         <span className={styles.fileName}>{active ? markdownFileName(active) : "Markdown"}</span>
         <div className={styles.documentActions}>{active && <>{editing && <span className={styles.saveStatus} role="status">{status === "saved" ? session.selected === "local" ? "已保存在此浏览器" : cloudStatus : status === "saving" ? "保存中…" : "未保存"}</span>}<button className={styles.mode} onClick={toggleEditing}>{editing ? "阅读" : "编辑"}</button>{actions(active)}</>}</div>
       </header>
-      {!ready ? <p className={styles.loading}>正在读取笔记…</p> : !active ? <div className={styles.missing}><h1>当前画布没有这份笔记</h1><p>返回画布切换查看，或导入一份 Markdown。</p><button onClick={() => returnToCanvas()}>返回画布</button></div> : editing ?
+      {!ready ? <p className={styles.loading}>正在读取笔记…</p> : !active ? <div className={styles.missing}><h1>当前画布没有这份笔记</h1><p>返回画布切换查看，或导入一份 Markdown。</p><button onClick={() => returnToCanvas()}>返回画布</button></div> : opening ?
+        <main className={styles.readingPage} data-canvas-content aria-busy="true"><article className={styles.markdown}><h1>{nodePreview(active).title}</h1><p className={styles.diagramStatus} role="status">正在读取正文…</p></article></main>
+        : editing ?
         <MarkdownEditor key={active.id} markdown={active.markdown} title={nodePreview(active).title}
           onChange={markdown => changeNode(active, { markdown })}
           onSave={() => void flush()} />
@@ -423,7 +425,7 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
                   else { setSelected(null); setSelectedEdge(null); setConnecting({ from: node.id, fromPort: side, point }); }
                 }}><Circle size={8} weight={connected ? "fill" : "regular"} /></button>;
               })}
-              <button data-canvas-label={node.id} className={`${styles.note} ${selected === node.id ? styles.selected : ""} ${!node.fileName && node.markdown.trim() === preview.title ? styles.fragment : ""}`} onPointerDown={event => beginNode(event, node)} onClick={() => selectNode(node)} aria-pressed={selected === node.id} onKeyDown={event => {
+              <button data-canvas-label={node.id} className={`${styles.note} ${selected === node.id ? styles.selected : ""} ${!node.fileName && node.markdown.trim() === preview.title ? styles.fragment : ""}`} onPointerDown={event => beginNode(event, node)} onClick={() => selectNode(node)} onDoubleClick={event => { event.stopPropagation(); if (!connecting) openNote(node); }} aria-pressed={selected === node.id} onKeyDown={event => {
                 const moves: Record<string, Point> = { ArrowLeft: { x: -1, y: 0 }, ArrowRight: { x: 1, y: 0 }, ArrowUp: { x: 0, y: -1 }, ArrowDown: { x: 0, y: 1 } };
                 if (moves[event.key]) { event.preventDefault(); const offset = moves[event.key], step = event.shiftKey ? 50 : 10; update(value => ({ ...value, nodes: value.nodes.map(item => item.id === node.id ? { ...item, x: item.x + offset.x * step, y: item.y + offset.y * step } : item) })); }
               }}><strong>{kind !== "note" && <KindIcon className={styles.nodeKindIcon} size={16} aria-label={nodeKinds[kind]} />}{preview.title}</strong>{preview.summary && <span>{preview.summary}</span>}{image && selected !== node.id && <img className={styles.nodeImage} src={image} alt="" draggable={false} />}{kind === "todo" && tasks.length > 0 && selected !== node.id && <span>{tasks.filter(task => task.checked).length} / {tasks.length} 已完成</span>}</button>
