@@ -1,7 +1,7 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
 import { completionContext } from "@/lib/canvas-completion";
 import { formatMarkdown, markdownShortcut, type MarkdownEdit, type MarkdownFormat } from "@/lib/markdown-editing";
-import { Code, CodeBlock, FlowArrow, Highlighter, LinkSimple, Palette, TextBolderIcon, TextItalic, TextStrikethrough } from "@phosphor-icons/react";
+import { Code, CodeBlock, FlowArrow, Highlighter, LinkSimple, Palette, Table, TextBolderIcon, TextItalic, TextStrikethrough } from "@phosphor-icons/react";
 import canvas from "./CanvasWorkspace.module.css";
 import styles from "./CompletingTextarea.module.css";
 import { ownerHeaders, useAccount } from "@/components/account/AccountProvider";
@@ -158,7 +158,7 @@ export function CompletingTextarea({ markdown, title, onChange, onSave }: Props)
   const tools = [
     ["bold", TextBolderIcon, "加粗", "B"], ["italic", TextItalic, "斜体", "I"], ["highlight", Highlighter, "高亮", "Shift H"],
     ["strike", TextStrikethrough, "删除线", "Shift X"], ["link", LinkSimple, "插入链接", "K"], ["code", Code, "行内代码", "`"],
-    ["codeblock", CodeBlock, "代码块", "Shift `"], ["mermaid", FlowArrow, "Mermaid 图表", ""],
+    ["codeblock", CodeBlock, "代码块", "Shift `"], ["table", Table, "插入表格", ""], ["mermaid", FlowArrow, "Mermaid 图表", ""],
   ] as const;
   return <><div className={styles.toolbar} role="toolbar" aria-label="Markdown 格式">
     {tools.map(([kind, Icon, label, hotkey]) => <button key={kind} type="button" aria-label={label} title={`${label}${hotkey ? `（⌘ / Ctrl ${hotkey}）` : ""}`} onPointerDown={event => event.preventDefault()} onClick={() => format(kind)}><Icon size={18} /></button>)}
