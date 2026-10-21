@@ -29,6 +29,10 @@ test("format commands preserve selection, toggle wrappers, and insert safe block
   assert.deepEqual(apply("想法", 0, 2, "link"), { value: "[想法](https://)", start: 5, end: 13 });
   assert.equal(apply("前后", 1, 1, "codeblock").value, "前\n```\n\n```\n后");
   assert.match(apply("", 0, 0, "mermaid").value, /^```mermaid\nflowchart LR/);
+  const table = apply("前文\n后文", 0, 3, "table");
+  assert.match(table.value, /^前文\n\n\| 列 1 \| 列 2 \| 列 3 \|\n\| --- \| --- \| --- \|\n[\s\S]+\n\n后文$/);
+  assert.equal(table.value.slice(table.start, table.end), "列 1");
+  assert.ok(apply("", 0, 0, "table").value.startsWith("| 列 1 |"));
   const indented = apply("一\n二\n三", 0, 4, "indent");
   assert.equal(indented.value, "  一\n  二\n三");
   assert.equal(apply(indented.value, indented.start, indented.end, "outdent").value, "一\n二\n三");
@@ -39,7 +43,7 @@ test("format commands preserve selection, toggle wrappers, and insert safe block
 });
 
 test("rendering supports Obsidian highlights, safe color, GFM and code without executing note HTML", async () => {
-  const source = '==高亮 **加粗**== ~~删除~~ `==原样==` \\==转义==\n\n<span style="color: #8053a3">紫色</span> <span style="color:red;position:fixed">无样式</span><script>alert(1)</script><img src="javascript:alert(1)" onerror="alert(1)">\n\n```js\nconst answer = 42;\n```\n\n```mermaid\nflowchart LR\n A --> B\n```';
+  const source = '==高亮 **加粗**== ~~删除~~ `==原样==` \\==转义==\n\n<span style="color: #8053a3">紫色</span> <span style="color:red;position:fixed">无样式</span><script>alert(1)</script><img src="javascript:alert(1)" onerror="alert(1)">\n\n```js\nconst answer = 42;\n```\n\n```mermaid\nflowchart LR\n A --> B\n```\n\n| 功能 | 状态 | 说明 |\n| :--- | :---: | ---: |\n| **表格** | 已支持 | 一\\|二 |';
   const processor = unified().use(remarkParse).use(remarkGfm).use(remarkMark).use(remarkRehype, { allowDangerousHtml: true }).use(rehypeRaw).use(rehypeTextColors).use(rehypeSanitize, markdownSchema).use(rehypeHighlight, { detect: false, ignoreMissing: true, plainText: ["mermaid"] });
   const tree = await processor.run(processor.parse(source));
   const nodes = [];
@@ -50,6 +54,12 @@ test("rendering supports Obsidian highlights, safe color, GFM and code without e
   assert.ok(nodes.some(node => node.properties?.style === "color: #8053a3"));
   assert.ok(nodes.some(node => node.properties?.className?.includes("hljs-keyword")));
   assert.ok(nodes.some(node => node.properties?.className?.includes("language-mermaid")));
+  assert.equal(nodes.filter(node => node.tagName === "table").length, 1);
+  assert.equal(nodes.filter(node => node.tagName === "th").length, 3);
+  assert.equal(nodes.filter(node => node.tagName === "td").length, 3);
+  assert.ok(nodes.some(node => node.tagName === "td" && node.properties.align === "center"));
+  assert.ok(nodes.some(node => node.tagName === "td" && node.properties.align === "right"));
+  assert.ok(nodes.some(node => node.type === "text" && node.value === "一|二"));
   assert.ok(!nodes.some(node => node.tagName === "script" || node.properties?.onError || String(node.properties?.src).startsWith("javascript:") || String(node.properties?.style).includes("position")));
   assert.equal(safeTextColor("color: red; background: url(https://invalid.example)"), undefined);
   assert.equal(safeTextColor("color: expression(alert(1))"), undefined);

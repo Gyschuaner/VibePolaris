@@ -39,7 +39,8 @@ export async function callModel(options: {
   const config = modelConfig();
   signal.throwIfAborted();
   const input = options.projectedTokens ?? estimateTokens({ messages, tools: options.tools });
-  const wantedOutput = Math.min(CONTEXT_WINDOW - input, options.completion ? 384 : CONTEXT_WINDOW);
+  // Leave room for a short completion to finish its sentence or Markdown syntax.
+  const wantedOutput = Math.min(CONTEXT_WINDOW - input, options.completion ? 1024 : CONTEXT_WINDOW);
   if (wantedOutput < 256) throw new XiaobeiError("本次上下文已接近 256K，无法容纳回答。会话已保留，可减少内容或新建对话。", 413);
   // Reserve in token units. Treating UTF-8 bytes as tokens made pending
   // balances look roughly three times smaller for Chinese input; the final

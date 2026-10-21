@@ -1,4 +1,4 @@
-export type MarkdownFormat = "bold" | "italic" | "strike" | "highlight" | "code" | "link" | "codeblock" | "mermaid" | "color" | "indent" | "outdent";
+export type MarkdownFormat = "bold" | "italic" | "strike" | "highlight" | "code" | "link" | "codeblock" | "mermaid" | "table" | "color" | "indent" | "outdent";
 export type MarkdownEdit = { from: number; to: number; text: string; start: number; end: number };
 
 export function formatMarkdown(value: string, start: number, end: number, format: MarkdownFormat, color = "#a33a32"): MarkdownEdit {
@@ -31,6 +31,14 @@ export function formatMarkdown(value: string, start: number, end: number, format
     const label = selected || "链接文字", text = `[${label}](https://)`;
     const at = start + (selected ? label.length + 3 : 1);
     return replace(start, end, text, at, at + (selected ? 8 : label.length));
+  }
+  if (format === "table") {
+    // Insert after the selection so an existing paragraph is never discarded.
+    const before = end === 0 || value.slice(0, end).endsWith("\n\n") ? "" : value[end - 1] === "\n" ? "\n" : "\n\n";
+    const after = end === value.length || value.slice(end).startsWith("\n\n") ? "" : value[end] === "\n" ? "\n" : "\n\n";
+    const table = "| 列 1 | 列 2 | 列 3 |\n| --- | --- | --- |\n| 内容 | 内容 | 内容 |\n| 内容 | 内容 | 内容 |";
+    const at = end + before.length + 2;
+    return replace(end, end, before + table + after, at, at + 3);
   }
   if (format === "codeblock" || format === "mermaid") {
     const fence = "`".repeat(Math.max(2, ...(selected.match(/`+/g) ?? []).map(run => run.length)) + 1);

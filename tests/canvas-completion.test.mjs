@@ -9,7 +9,7 @@ import { completionContext, completionFence, shortCompletion } from "../lib/canv
 import { DAILY_CREDITS, XiaobeiStore, digest, usageCost } from "../lib/xiaobei/store.ts";
 import { callModel } from "../lib/xiaobei/model.ts";
 
-test("补全只取光标前文并限制上下文和Unicode输出", () => {
+test("补全只取光标前文并限制上下文，保留完整输出和Unicode", () => {
   const before = "# 标题\n## 当前小节\n" + "前文".repeat(4000), markdown = before + "不能发送的后文";
   const context = completionContext(markdown, before.length, "笔记标题");
   assert.equal(context.title, "笔记标题"); assert.equal(context.prefix.length, 6000);
@@ -20,13 +20,15 @@ test("补全只取光标前文并限制上下文和Unicode输出", () => {
   const longBlock = "```mermaid\nflowchart LR\n" + "  A --> B\n".repeat(800);
   assert.equal(completionContext(longBlock, longBlock.length, "图表").fence, "```mermaid");
   assert.equal(shortCompletion("\n- 保留列表\r\n"), "\n- 保留列表");
-  assert.equal(Array.from(shortCompletion("🌱".repeat(101))).length, 100);
-  assert.equal(shortCompletion("这".repeat(25) + "。" + "下".repeat(100)), "这".repeat(25) + "。");
+  assert.equal(Array.from(shortCompletion("🌱".repeat(101))).length, 101);
+  const complete = "先把问题拆成可以观察的一小步，记录自己已经知道的事实和仍然不确定的地方。".repeat(3) + "**把最后这句话说完整，再继续下一步。**";
+  assert.ok(Array.from(complete).length > 100);
+  assert.equal(shortCompletion(complete), complete);
   assert.equal(shortCompletion("今天我想试着把那些零散的念头固定下来。", "前文。\n\n今天我想试着"), "把那些零散的念头固定下来。");
   assert.equal(shortCompletion("I want to keep writing.", "Today I want to"), " keep writing.");
   assert.equal(shortCompletion("哈哈接着写", "哈哈"), "哈哈接着写");
   assert.equal(shortCompletion("\n- 保留列表", "前文\n\n\n\n"), "\n- 保留列表");
-  assert.equal(shortCompletion("🌱🌱🌱🌱" + "新".repeat(101), "前文🌱🌱🌱🌱"), "新".repeat(100));
+  assert.equal(shortCompletion("🌱🌱🌱🌱" + "新".repeat(101), "前文🌱🌱🌱🌱"), "新".repeat(101));
 });
 
 test("免费请求不预占或扣分，余额零仍计量；收费沿用原价且策略按请求固定", () => {
@@ -80,7 +82,7 @@ test("补全复用百炼传输与计量，关闭思考、短输出预算，未�
     let missing = false;
     globalThis.fetch = async (_url, options) => {
       const body = JSON.parse(options.body);
-      assert.equal(body.enable_thinking, false); assert.ok(!("reasoning_effort" in body)); assert.equal(body.max_tokens, 384); assert.ok(!body.tools);
+      assert.equal(body.enable_thinking, false); assert.ok(!("reasoning_effort" in body)); assert.equal(body.max_tokens, 1024); assert.ok(!body.tools);
       const data = [{ choices: [{ delta: { content: "接着写下这句话，让想法慢慢变得清楚。" }, finish_reason: "stop" }] }];
       if (!missing) data.push({ choices: [], usage: { prompt_tokens: 500, completion_tokens: 30 } });
       return new Response(data.map(x => `data: ${JSON.stringify(x)}\n\n`).join("") + "data: [DONE]\n\n");
