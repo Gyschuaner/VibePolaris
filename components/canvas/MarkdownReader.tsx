@@ -3,7 +3,7 @@ import { HarnessV4Toc, type TocItem } from "@/components/terms/HarnessV4Toc";
 import { MarkdownDocument } from "./MarkdownDocument";
 import styles from "./CanvasWorkspace.module.css";
 
-export function MarkdownReader({ markdown, empty }: { markdown: string; empty: ReactNode }) {
+export function MarkdownReader({ markdown, fallbackTitle, empty }: { markdown: string; fallbackTitle?: string; empty: ReactNode }) {
   const content = useRef<HTMLDivElement>(null);
   const prefix = useId();
   const [items, setItems] = useState<TocItem[]>([]);
@@ -21,7 +21,7 @@ export function MarkdownReader({ markdown, empty }: { markdown: string; empty: R
     });
     const frame = requestAnimationFrame(() => setItems(previous => JSON.stringify(previous) === JSON.stringify(next) ? previous : next));
     return () => cancelAnimationFrame(frame);
-  }, [markdown, prefix]);
+  }, [markdown, fallbackTitle, prefix]);
 
   return <main className={styles.reader} data-canvas-content>
     {items.length > 0 && <aside className={styles.readingDirectory} aria-label="正文目录">
@@ -29,7 +29,7 @@ export function MarkdownReader({ markdown, empty }: { markdown: string; empty: R
       <HarnessV4Toc items={items} scrollRoot={content} className={styles.readingToc} />
     </aside>}
     <div ref={content} className={styles.readingContent}>
-      <article className={styles.markdown}>{markdown.trim() ? <MarkdownDocument markdown={markdown} /> : empty}</article>
+      <article className={styles.markdown}>{markdown.trim() ? <MarkdownDocument markdown={markdown} fallbackTitle={fallbackTitle} /> : <>{fallbackTitle && <h1>{fallbackTitle}</h1>}{empty}</>}</article>
     </div>
   </main>;
 }

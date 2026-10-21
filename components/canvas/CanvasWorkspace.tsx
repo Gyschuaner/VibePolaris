@@ -66,6 +66,7 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
   const current = documentId ? active : picked;
   const currentArticle = active?.articleProposal ?? active?.article;
   const documentMarkdown = variant === "article" ? currentArticle?.markdown ?? "" : active?.markdown ?? "";
+  const fallbackTitle = variant === "draft" && active?.ai ? nodePreview(active).title : undefined;
   const generatingArticle = variant === "article" && ai.progress.organize?.nodeId === active?.id && ai.progress.organize?.running;
   const { navigate, opening } = useCanvasMotion(documentId, active && nodePreview(active).title, previewRef, documentRef);
   const edge = data.edges.find(item => item.id === selectedEdge);
@@ -410,10 +411,10 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
       {!ready ? <p className={styles.loading}>正在读取笔记…</p> : !active ? <div className={styles.missing}><h1>当前画布没有这份笔记</h1><p>返回画布切换查看，或导入一份 Markdown。</p><button onClick={() => returnToCanvas()}>返回画布</button></div> : opening ?
         <main className={styles.readingPage} data-canvas-content aria-busy="true"><article className={styles.markdown}><h1>{nodePreview(active).title}</h1><p className={styles.diagramStatus} role="status">正在读取正文…</p></article></main>
         : editing && !generatingArticle ?
-        <MarkdownEditor key={`${active.id}:${variant}`} markdown={documentMarkdown} title={nodePreview(active).title}
+        <MarkdownEditor key={`${active.id}:${variant}`} markdown={documentMarkdown} title={nodePreview(active).title} fallbackTitle={fallbackTitle}
           onChange={changeDocument}
           onSave={() => void flush()} />
-        : <MarkdownReader key={`${active.id}:${variant}`} markdown={documentMarkdown} empty={<p className={styles.blankNote}>{variant === "article" ? generatingArticle ? "正在整理，文章会逐步显示在这里…" : "还没有整理文章。" : <>还没有正文。<button onClick={toggleEditing}>开始编辑</button></>}</p>} />}
+        : <MarkdownReader key={`${active.id}:${variant}`} markdown={documentMarkdown} fallbackTitle={fallbackTitle} empty={<p className={styles.blankNote}>{variant === "article" ? generatingArticle ? "正在整理，文章会逐步显示在这里…" : "还没有整理文章。" : <>还没有正文。<button onClick={toggleEditing}>开始编辑</button></>}</p>} />}
     </div> : <>
       <header className={styles.toolbar}><h1>我的画布</h1><div><button className={styles.import} disabled={!ready || importing} onClick={() => input.current?.click()}><UploadSimple size={16} />{importing ? "导入中…" : "导入 .md"}</button><button className={styles.primary} disabled={!ready} aria-haspopup="menu" aria-expanded={contextMenu?.kind === "create"} onClick={event => { menuAnchor.current = event.currentTarget; const bounds = event.currentTarget.getBoundingClientRect(); setContextMenu({ kind: "create", x: bounds.right - 200, y: bounds.bottom + 8 }); }}><Plus size={17} />新建节点</button></div></header>
       <CanvasSyncBar session={session} ready={ready} status={status} flush={saveBeforeSwitch} sync={sync} cloudStatus={cloudStatus} />
