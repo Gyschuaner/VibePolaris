@@ -5,6 +5,7 @@ import { getStore, XiaobeiError, type XiaobeiStore } from "@/lib/xiaobei/store";
 import { callModel, modelConfig, type Message } from "@/lib/xiaobei/model";
 import { COMPLETION_PREFIX_LIMIT, COMPLETION_SYSTEM_PROMPT, completionFence, shortCompletion } from "@/lib/canvas-completion";
 import { assistantIdentity } from "@/lib/account/http";
+import { requireFeature } from "@/lib/xiaobei/preferences";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -14,6 +15,7 @@ const bodySchema = z.object({ requestId: z.uuid(), title: z.string().max(160), o
 export async function GET(request: NextRequest) {
   try {
     assistantIdentity(request);
+    requireFeature(request, "completion");
     return NextResponse.json({ active: true, charging: chargeEnabled() }, { headers: privateHeaders });
   } catch (error) {
     if (error instanceof XiaobeiError && error.status === 401) return NextResponse.json({ active: false }, { headers: privateHeaders });
@@ -29,13 +31,14 @@ export async function POST(request: NextRequest) {
     sameOrigin(request);
     store = getStore();
     const identity = assistantIdentity(request);
+    requireFeature(request, "completion");
     const parsed = bodySchema.safeParse(await readBody(request));
     if (!parsed.success || !parsed.data.prefix.trim()) throw new XiaobeiError("请在正文中输入一些内容后再补全。");
     const charging = chargeEnabled();
     if (charging && !parsed.data.acceptCharging) throw new XiaobeiError("补全计费设置已调整，请重新确认后再试。", 409);
     modelConfig();
     const { requestId, title, outline, prefix, fence } = parsed.data;
-    store.startRun(identity, requestId, Date.now(), 2000); running = requestId;
+    store.startRun(identity, requestId, Date.now(), 2000, "canvas_completion"); running = requestId;
     const messages: Message[] = [
       { role: "system", content: COMPLETION_SYSTEM_PROMPT },
       { role: "user", content: JSON.stringify({ title, outline, prefix, fence: fence ?? completionFence(prefix) }) },

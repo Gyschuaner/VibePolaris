@@ -17,7 +17,7 @@ export type Identity = { session: string; invite: string };
 export type HistoryIdentity = Identity & { browser: string };
 type ConversationRow = { id: string; title: string; updated: number; active_run: string | null; data: string; running: number };
 export type Usage = { input: number; cached: number; output: number };
-export type UsagePolicy = { feature: "chat" | "canvas_completion"; charge: boolean };
+export type UsagePolicy = { feature: "chat" | "canvas_completion" | "canvas_organize" | "canvas_expand"; charge: boolean };
 export const digest = (value: string) => createHash("sha256").update(value).digest("hex");
 export const dayKey = (now = Date.now()) => new Intl.DateTimeFormat("en-CA", {
   timeZone: "Asia/Shanghai", year: "numeric", month: "2-digit", day: "2-digit",
@@ -40,6 +40,8 @@ export class XiaobeiStore {
       CREATE TABLE IF NOT EXISTS sessions (hash TEXT PRIMARY KEY, invite TEXT NOT NULL REFERENCES invites(id), expires INTEGER NOT NULL);
       CREATE TABLE IF NOT EXISTS runs (id TEXT PRIMARY KEY, invite TEXT NOT NULL REFERENCES invites(id), session TEXT NOT NULL, lease INTEGER NOT NULL, done INTEGER NOT NULL DEFAULT 0);
       CREATE INDEX IF NOT EXISTS active_runs ON runs(invite, done, lease);
+      CREATE TABLE IF NOT EXISTS run_features (run TEXT PRIMARY KEY REFERENCES runs(id), feature TEXT NOT NULL);
+      CREATE TABLE IF NOT EXISTS ai_preferences (owner TEXT PRIMARY KEY, data TEXT NOT NULL);
       CREATE TABLE IF NOT EXISTS usage (id TEXT PRIMARY KEY, invite TEXT NOT NULL REFERENCES invites(id), day TEXT NOT NULL, reserved INTEGER NOT NULL, cost INTEGER, input INTEGER, cached INTEGER, output INTEGER);
       CREATE INDEX IF NOT EXISTS daily_usage ON usage(invite, day);
       CREATE TABLE IF NOT EXISTS activation_attempts (key TEXT PRIMARY KEY, count INTEGER NOT NULL, until INTEGER NOT NULL);
@@ -101,16 +103,17 @@ export class XiaobeiStore {
     const row = this.db.prepare("SELECT COALESCE(SUM(COALESCE(cost,reserved)),0) AS used FROM usage WHERE invite=? AND day=?").get(invite, day) as { used: number };
     return Math.max(0, DAILY_CREDITS - row.used);
   }
-  startRun(identity: Identity, id: string, now = Date.now(), cooldown = 0) {
+  startRun(identity: Identity, id: string, now = Date.now(), cooldown = 0, feature: UsagePolicy["feature"] = "chat") {
     this.transaction(() => {
       this.checkIdentity(identity, now);
       if (this.db.prepare("SELECT 1 FROM runs WHERE id=?").get(id)) throw new XiaobeiError("该请求已处理，请勿重复发送。", 409);
-      if (this.db.prepare("SELECT 1 FROM runs WHERE invite=? AND done=0 AND lease>?").get(identity.invite, now)) throw new XiaobeiError("这个邀请码已有问题正在回答，请稍后再试。", 409);
+      if (this.db.prepare("SELECT 1 FROM runs r LEFT JOIN run_features f ON f.run=r.id WHERE r.invite=? AND r.done=0 AND r.lease>? AND COALESCE(f.feature,'chat')=?").get(identity.invite, now, feature)) throw new XiaobeiError("这个功能已有请求正在回答，请稍后再试。", 409);
       if (cooldown) {
         if (this.db.prepare("SELECT 1 FROM completion_cooldowns WHERE invite=? AND until>?").get(identity.invite, now)) throw new XiaobeiError("补全请求较快，请稍等两秒再试。", 429);
         this.db.prepare("INSERT INTO completion_cooldowns VALUES(?,?) ON CONFLICT(invite) DO UPDATE SET until=excluded.until").run(identity.invite, now + cooldown);
       }
       this.db.prepare("INSERT INTO runs(id,invite,session,lease,done) VALUES(?,?,?,?,0)").run(id, identity.invite, identity.session, now + 120_000);
+      this.db.prepare("INSERT INTO run_features VALUES(?,?)").run(id, feature);
     });
   }
   renewRun(id: string, now = Date.now()) {

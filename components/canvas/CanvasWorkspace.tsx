@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useEffectEvent, useId, useLayoutEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, CheckSquare, Circle, Copy, DotsThree, DownloadSimple, ImageSquare, Info, LinkSimple, Minus, NotePencil, Plus, Trash, UploadSimple, X } from "@phosphor-icons/react";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -10,6 +10,9 @@ import { EdgeToolbar } from "./EdgeToolbar";
 import { MarkdownDocument } from "./MarkdownDocument";
 import { MarkdownEditor } from "./MarkdownEditor";
 import { NodeCard } from "./NodeCard";
+import { useCanvasAi } from "./useCanvasAi";
+import { CanvasAiControls } from "./CanvasAiControls";
+import type { DocumentVariant } from "@/lib/canvas-ai";
 import { useCanvas } from "./useCanvas";
 import { useCanvasMotion } from "./useCanvasMotion";
 import styles from "./CanvasWorkspace.module.css";
@@ -43,6 +46,8 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
   } });
   async function saveBeforeSwitch() { await flush(); if (hasPending()) throw new Error("当前草稿尚未保存，请先导出或重试保存。"); }
   const documentId = search.get("note"), editing = search.get("edit") === "1";
+  const variant: DocumentVariant = search.get("version") === "article" ? "article" : "draft";
+  const ai = useCanvasAi(data, update, flush);
   const [selected, setSelected] = useState<string | null>(null), [selectedEdge, setSelectedEdge] = useState<string | null>(null);
   const [connecting, setConnecting] = useState<{ from: string; fromPort: CanvasPort; point: CanvasAnchor } | null>(null);
   const [edgeMenuAt, setEdgeMenuAt] = useState<Point>({ x: 0, y: 0 });
@@ -59,6 +64,9 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
   const gesture = useRef<Gesture | null>(null), skipClick = useRef(false);
   const active = data.nodes.find(node => node.id === documentId), picked = data.nodes.find(node => node.id === selected);
   const current = documentId ? active : picked;
+  const currentArticle = active?.articleProposal ?? active?.article;
+  const documentMarkdown = variant === "article" ? currentArticle?.markdown ?? "" : active?.markdown ?? "";
+  const generatingArticle = variant === "article" && ai.progress.organize?.nodeId === active?.id && ai.progress.organize?.running;
   const { navigate, opening } = useCanvasMotion(documentId, active && nodePreview(active).title, previewRef, documentRef);
   const edge = data.edges.find(item => item.id === selectedEdge);
   const nodeIds = data.nodes.map(node => node.id).join("\0");
@@ -144,16 +152,18 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
     return { x: clientX - (bounds?.left ?? 0), y: clientY - (bounds?.top ?? 0) };
   }
   function worldPoint(point: Point) { return { x: (point.x - data.view.x) / data.view.scale, y: (point.y - data.view.y) / data.view.scale }; }
-  function noteUrl(id?: string, edit = false) {
+  function noteUrl(id?: string, edit = false, version: DocumentVariant = "draft") {
     const query = new URLSearchParams();
     if (session.selected !== "local") query.set("canvas", session.selected);
     if (id) query.set("note", id);
     if (edit) query.set("edit", "1");
+    if (id && version === "article") query.set("version", "article");
     return `/canvas${query.size ? `?${query}` : ""}`;
   }
-  function openNote(node: CanvasNode, edit = false) {
+  function openNote(node: CanvasNode, edit = false, version: DocumentVariant = "draft") {
     void flush(); setSelected(node.id); setConnecting(null);
-    navigate(node.id, () => router.push(noteUrl(node.id, edit), { scroll: false }));
+    if (documentId === node.id) router.replace(noteUrl(node.id, edit, version), { scroll: false });
+    else navigate(node.id, () => router.push(noteUrl(node.id, edit, version), { scroll: false }));
   }
   function returnToCanvas(animate = true) {
     void flush();
@@ -162,8 +172,31 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
   }
   function toggleEditing() {
     if (!active) return;
-    void flush(); router.replace(noteUrl(active.id, !editing), { scroll: false });
+    void flush(); router.replace(noteUrl(active.id, !editing, variant), { scroll: false });
   }
+  function showVariant(version: DocumentVariant) {
+    if (active) { void flush(); router.replace(noteUrl(active.id, editing, version), { scroll: false }); }
+  }
+  function changeDocument(markdown: string) {
+    if (!active) return;
+    if (variant === "article" && currentArticle) changeNode(active, { [active.articleProposal ? "articleProposal" : "article"]: { ...currentArticle, markdown } });
+    else if (variant === "draft") changeNode(active, { markdown });
+  }
+  function acceptNode(node: CanvasNode) {
+    update(value => ({ ...value, nodes: value.nodes.map(item => item.id === node.id && item.ai ? { ...item, ai: { ...item.ai, status: "accepted" as const }, updatedAt: new Date().toISOString() } : item), edges: value.edges.map(edge => edge.to === node.id && edge.from === node.ai?.sourceId ? { ...edge, dashed: false } : edge) }), true);
+  }
+  function aiControls(node: CanvasNode, document = false) {
+    return <CanvasAiControls key={`${node.id}:${document ? variant : "card"}`} node={node} ai={ai} variant={document ? variant : "draft"}
+      onVariant={document ? showVariant : undefined} onChange={patch => changeNode(node, patch)} onAccept={() => acceptNode(node)} onReject={() => removeNode(node)}
+      onOpenArticle={() => openNote(node, false, "article")} onCanvas={document ? () => returnToCanvas() : undefined} />;
+  }
+  const fittedExpansion = useRef(0);
+  const fitExpansion = useEffectEvent(() => fit());
+  useEffect(() => {
+    if (ai.expanded !== fittedExpansion.current && !documentId && size.width > 0 && size.height > 0) {
+      fittedExpansion.current = ai.expanded; fitExpansion();
+    }
+  }, [ai.expanded, documentId, size.width, size.height]);
   function createNode(kind: NodeKind = "note", at?: Point) {
     if (!ready) return;
     const point = at ?? availablePosition(data.nodes, worldPoint({ x: size.width * .45, y: size.height * .4 }), 3, kind === "image" ? 260 : 150);
@@ -267,7 +300,7 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
     const related = data.edges.filter(item => item.from === node.id || item.to === node.id);
     update(value => ({ ...value, nodes: value.nodes.filter(item => item.id !== node.id), edges: value.edges.filter(item => item.from !== node.id && item.to !== node.id) }), true);
     setSelected(null); info.current?.close();
-    setToast({ message: "节点已删除", undo: { nodes: [node], edges: related } });
+    setToast({ message: node.ai?.status === "pending" ? "已舍弃候选节点" : "节点已删除", undo: { nodes: [node], edges: related } });
     if (documentId) returnToCanvas(false);
   }
   function removeEdge(item: CanvasEdge) {
@@ -284,13 +317,18 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
     }, true);
     setToast({ message: "已恢复" });
   }
+  function exportedNode(node: CanvasNode) {
+    return node.id === documentId && variant === "article" ? { ...node, markdown: documentMarkdown } : node;
+  }
   function exportNote(node: CanvasNode) {
+    node = exportedNode(node);
     const url = URL.createObjectURL(new Blob([exportNodeMarkdown(node)], { type: "text/markdown;charset=utf-8" }));
     const link = document.createElement("a"); link.href = url; link.download = markdownFileName(node);
     document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
     setToast({ message: "已导出 .md" });
   }
   async function copyNote(node: CanvasNode) {
+    node = exportedNode(node);
     try {
       try { await navigator.clipboard.writeText(exportNodeMarkdown(node)); }
       catch {
@@ -366,15 +404,16 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
       <header className={styles.documentBar} data-canvas-bar>
         <button className={styles.back} onClick={() => returnToCanvas()}><ArrowLeft size={18} /><span>返回画布</span></button>
         <span className={styles.fileName}>{active ? markdownFileName(active) : "Markdown"}</span>
-        <div className={styles.documentActions}>{active && <>{editing && <span className={styles.saveStatus} role="status">{status === "saved" ? session.selected === "local" ? "已保存在此浏览器" : cloudStatus : status === "saving" ? "保存中…" : "未保存"}</span>}<button className={styles.mode} onClick={toggleEditing}>{editing ? "阅读" : "编辑"}</button>{actions(active)}</>}</div>
+        <div className={styles.documentActions}>{active && <>{editing && <span className={styles.saveStatus} role="status">{status === "saved" ? session.selected === "local" ? "已保存在此浏览器" : cloudStatus : status === "saving" ? "保存中…" : "未保存"}</span>}<button className={styles.mode} disabled={!!generatingArticle || (variant === "article" && !currentArticle)} onClick={toggleEditing}>{editing ? "阅读" : "编辑"}</button>{actions(active)}</>}</div>
       </header>
+      {active && !opening && aiControls(active, true)}
       {!ready ? <p className={styles.loading}>正在读取笔记…</p> : !active ? <div className={styles.missing}><h1>当前画布没有这份笔记</h1><p>返回画布切换查看，或导入一份 Markdown。</p><button onClick={() => returnToCanvas()}>返回画布</button></div> : opening ?
         <main className={styles.readingPage} data-canvas-content aria-busy="true"><article className={styles.markdown}><h1>{nodePreview(active).title}</h1><p className={styles.diagramStatus} role="status">正在读取正文…</p></article></main>
-        : editing ?
-        <MarkdownEditor key={active.id} markdown={active.markdown} title={nodePreview(active).title}
-          onChange={markdown => changeNode(active, { markdown })}
+        : editing && !generatingArticle ?
+        <MarkdownEditor key={`${active.id}:${variant}`} markdown={documentMarkdown} title={nodePreview(active).title}
+          onChange={changeDocument}
           onSave={() => void flush()} />
-        : <main className={styles.readingPage} data-canvas-content><article className={styles.markdown}>{active.markdown.trim() ? <MarkdownDocument markdown={active.markdown} /> : <p className={styles.blankNote}>还没有正文。<button onClick={toggleEditing}>开始编辑</button></p>}</article></main>}
+        : <main className={styles.readingPage} data-canvas-content><article className={styles.markdown}>{documentMarkdown.trim() ? <MarkdownDocument markdown={documentMarkdown} /> : <p className={styles.blankNote}>{variant === "article" ? generatingArticle ? "正在整理，文章会逐步显示在这里…" : "还没有整理文章。" : <>还没有正文。<button onClick={toggleEditing}>开始编辑</button></>}</p>}</article></main>}
     </div> : <>
       <header className={styles.toolbar}><h1>我的画布</h1><div><button className={styles.import} disabled={!ready || importing} onClick={() => input.current?.click()}><UploadSimple size={16} />{importing ? "导入中…" : "导入 .md"}</button><button className={styles.primary} disabled={!ready} aria-haspopup="menu" aria-expanded={contextMenu?.kind === "create"} onClick={event => { menuAnchor.current = event.currentTarget; const bounds = event.currentTarget.getBoundingClientRect(); setContextMenu({ kind: "create", x: bounds.right - 200, y: bounds.bottom + 8 }); }}><Plus size={17} />新建节点</button></div></header>
       <CanvasSyncBar session={session} ready={ready} status={status} flush={saveBeforeSwitch} sync={sync} cloudStatus={cloudStatus} />
@@ -416,7 +455,7 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
             const kind = node.kind ?? "note", KindIcon = kindIcons[kind];
             const image = kind === "image" ? safeNodeUrl(nodeResource(node), true) : undefined;
             const tasks = kind === "todo" ? nodeTasks(node.markdown) : [];
-            return <div key={node.id} className={`${styles.node} ${selected === node.id ? styles.activeNode : ""}`} style={{ left: node.x + 24, top: node.y }} data-canvas-node={node.id}>
+            return <div key={node.id} className={`${styles.node} ${node.ai?.status === "pending" ? styles.pendingNode : ""} ${selected === node.id ? styles.activeNode : ""}`} style={{ left: node.x + 24, top: node.y }} data-canvas-node={node.id}>
               {canvasPorts.map(side => {
                 const point = portAnchor(bounds.get(node.id)!, side), connected = connectedPorts.has(`${node.id}:${side}`);
                 return <button key={side} data-canvas-port={side} className={`${styles.port} ${connected ? styles.connectedPort : ""}`} style={{ left: point.x - node.x - 24, top: point.y - node.y }} aria-label={`从${preview.title}的${portNames[side]}侧连接`} title="拖动连线，或点按后选择另一节点的连接点" onPointerDown={event => beginLink(event, node, side)} onClick={event => {
@@ -428,7 +467,7 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
               <button data-canvas-label={node.id} className={`${styles.note} ${selected === node.id ? styles.selected : ""} ${!node.fileName && node.markdown.trim() === preview.title ? styles.fragment : ""}`} onPointerDown={event => beginNode(event, node)} onClick={() => selectNode(node)} onDoubleClick={event => { event.stopPropagation(); if (!connecting) openNote(node); }} aria-pressed={selected === node.id} onKeyDown={event => {
                 const moves: Record<string, Point> = { ArrowLeft: { x: -1, y: 0 }, ArrowRight: { x: 1, y: 0 }, ArrowUp: { x: 0, y: -1 }, ArrowDown: { x: 0, y: 1 } };
                 if (moves[event.key]) { event.preventDefault(); const offset = moves[event.key], step = event.shiftKey ? 50 : 10; update(value => ({ ...value, nodes: value.nodes.map(item => item.id === node.id ? { ...item, x: item.x + offset.x * step, y: item.y + offset.y * step } : item) })); }
-              }}><strong>{kind !== "note" && <KindIcon className={styles.nodeKindIcon} size={16} aria-label={nodeKinds[kind]} />}{preview.title}</strong>{preview.summary && <span>{preview.summary}</span>}{image && selected !== node.id && <img className={styles.nodeImage} src={image} alt="" draggable={false} />}{kind === "todo" && tasks.length > 0 && selected !== node.id && <span>{tasks.filter(task => task.checked).length} / {tasks.length} 已完成</span>}</button>
+              }}><strong>{kind !== "note" && <KindIcon className={styles.nodeKindIcon} size={16} aria-label={nodeKinds[kind]} />}{preview.title}</strong>{node.ai && <small className={styles.aiOrigin}>小北生成{node.ai.status === "pending" ? " · 待接受" : ""}</small>}{preview.summary && <span>{preview.summary}</span>}{image && selected !== node.id && <img className={styles.nodeImage} src={image} alt="" draggable={false} />}{kind === "todo" && tasks.length > 0 && selected !== node.id && <span>{tasks.filter(task => task.checked).length} / {tasks.length} 已完成</span>}</button>
             </div>;
           })}
         </div>
@@ -436,6 +475,7 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
         {ready && !data.nodes.length && <p className={styles.empty}>右键新建节点，或双击写下一点什么。</p>}
         {picked && !connecting && <section ref={previewRef} className={styles.preview} style={previewPosition || undefined} data-canvas-ui data-canvas-paper aria-label="节点简述">
           <NodeCard key={picked.id} node={picked} actions={actions(picked)} onChange={patch => changeNode(picked, patch)} onSave={() => void flush()} onOpen={() => openNote(picked)} onClose={() => { void flush(); setSelected(null); }} onMessage={message => setToast({ message })} />
+          {aiControls(picked)}
         </section>}
         {connecting && <div className={styles.linkHint} data-canvas-ui>选择另一个节点<button onClick={() => setConnecting(null)} aria-label="取消连线"><X size={16} /></button></div>}
         {edge && <EdgeToolbar key={edge.id} edge={edge} at={edgeMenuAt} size={size} onChange={patch => update(value => ({ ...value, edges: value.edges.map(item => item.id === edge.id ? { ...item, ...patch } : item) }), true)} onRemove={() => removeEdge(edge)} onClose={() => { setSelectedEdge(null); surface.current?.focus({ preventScroll: true }); }} />}

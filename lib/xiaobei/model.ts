@@ -1,4 +1,4 @@
-import { XiaobeiError, type Identity, type Usage, type XiaobeiStore } from "./store.ts";
+import { XiaobeiError, type Identity, type Usage, type UsagePolicy, type XiaobeiStore } from "./store.ts";
 import { CONTEXT_WINDOW } from "./events.ts";
 export { CONTEXT_WINDOW, CONTEXT_WARNING, type AgentEvent } from "./events.ts";
 
@@ -34,20 +34,22 @@ export async function callModel(options: {
   tools?: unknown[]; json?: boolean; projectedTokens?: number; onDelta?: (text: string) => void;
   onReasoning?: (text: string) => void; onToolCall?: () => void;
   completion?: { charge: boolean };
+  canvas?: { feature: "canvas_organize" | "canvas_expand"; charge: boolean };
 }) {
   const { store, identity, run, messages, signal } = options;
   const config = modelConfig();
   signal.throwIfAborted();
   const input = options.projectedTokens ?? estimateTokens({ messages, tools: options.tools });
   // Leave room for a short completion to finish its sentence or Markdown syntax.
-  const wantedOutput = Math.min(CONTEXT_WINDOW - input, options.completion ? 1024 : CONTEXT_WINDOW);
+  const wantedOutput = Math.min(CONTEXT_WINDOW - input, options.completion ? 1024 : options.canvas ? 16384 : CONTEXT_WINDOW);
   if (wantedOutput < 256) throw new XiaobeiError("本次上下文已接近 256K，无法容纳回答。会话已保留，可减少内容或新建对话。", 413);
   // Reserve in token units. Treating UTF-8 bytes as tokens made pending
   // balances look roughly three times smaller for Chinese input; the final
   // settlement already uses the provider's token usage.
   const serializedBytes = Buffer.byteLength(JSON.stringify({ messages, tools: options.tools }), "utf8");
   const inputBound = Math.max(input, Math.ceil(serializedBytes / 3)) + messages.length * 32 + 1024;
-  const reservation = store.reserve(identity, run, inputBound, wantedOutput, Date.now(), options.completion ? { feature: "canvas_completion", charge: options.completion.charge } : undefined);
+  const policy: UsagePolicy | undefined = options.canvas ?? (options.completion ? { feature: "canvas_completion", charge: options.completion.charge } : undefined);
+  const reservation = store.reserve(identity, run, inputBound, wantedOutput, Date.now(), policy);
   let dispatched = false;
   let usage: Usage | null = null;
   let complete = false;
@@ -62,7 +64,7 @@ export async function callModel(options: {
     dispatched = true;
     const response = await fetch(config.url, {
       method: "POST", signal: combined, headers: { "Content-Type": "application/json", Authorization: `Bearer ${config.key}` },
-      body: JSON.stringify({ model: config.model, messages, stream: true, stream_options: { include_usage: true }, enable_thinking: !options.completion, ...(!options.completion ? { reasoning_effort: "high" } : {}), max_tokens: reservation.maxOutput,
+      body: JSON.stringify({ model: config.model, messages, stream: true, stream_options: { include_usage: true }, enable_thinking: !options.completion && !options.canvas, ...(!options.completion && !options.canvas ? { reasoning_effort: "high" } : {}), max_tokens: reservation.maxOutput,
         ...(options.tools ? { tools: options.tools } : {}), ...(options.json ? { response_format: { type: "json_object" } } : {}) }),
     });
     if (!response.ok || !response.body) {
