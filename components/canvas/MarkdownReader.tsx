@@ -3,7 +3,7 @@ import { HarnessV4Toc, type TocItem } from "@/components/terms/HarnessV4Toc";
 import { MarkdownDocument } from "./MarkdownDocument";
 import styles from "./CanvasWorkspace.module.css";
 
-export function MarkdownReader({ markdown, fallbackTitle, empty }: { markdown: string; fallbackTitle?: string; empty: ReactNode }) {
+export function MarkdownReader({ markdown, fallbackTitle, empty, onScroll }: { markdown: string; fallbackTitle?: string; empty: ReactNode; onScroll?: (top: number) => void }) {
   const content = useRef<HTMLDivElement>(null);
   const prefix = useId();
   const [items, setItems] = useState<TocItem[]>([]);
@@ -28,7 +28,7 @@ export function MarkdownReader({ markdown, fallbackTitle, empty }: { markdown: s
       <span className={styles.directoryLabel}>目录</span>
       <HarnessV4Toc items={items} scrollRoot={content} className={styles.readingToc} />
     </aside>}
-    <div ref={content} className={styles.readingContent}>
+    <div ref={content} className={styles.readingContent} onScroll={event => onScroll?.(event.currentTarget.scrollTop)}>
       <article className={styles.markdown}>{markdown.trim() ? <MarkdownDocument markdown={markdown} fallbackTitle={fallbackTitle} /> : <>{fallbackTitle && <h1>{fallbackTitle}</h1>}{empty}</>}</article>
     </div>
   </main>;
