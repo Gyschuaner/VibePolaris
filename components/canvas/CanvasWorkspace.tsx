@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useEffectEvent, useId, useLayoutEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useEffectEvent, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, CaretDown, CheckSquare, Circle, Copy, DotsThree, DownloadSimple, ImageSquare, Info, LinkSimple, Minus, NotePencil, Plus, Trash, UploadSimple, X } from "@phosphor-icons/react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { availablePosition, canvasPorts, connectNodes, exportNodeMarkdown, importNodeMarkdown, markdownFileName, moveView, nodeKinds, nodePreview, nodeResource, nodeTasks, safeNodeUrl, type CanvasEdge, type CanvasNode, type CanvasPort, type CanvasView, type NodeKind } from "@/lib/canvas";
 import { connectionPath, edgeAnchors, portAnchor, type CanvasAnchor } from "@/lib/canvas-routing";
+import { CanvasPinch } from "@/lib/canvas-pinch";
 import { EdgeToolbar } from "./EdgeToolbar";
 import { MarkdownReader } from "./MarkdownReader";
 import { MarkdownEditor } from "./MarkdownEditor";
@@ -64,6 +65,7 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
   const documentRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null), menuAnchor = useRef<HTMLElement | null>(null);
   const gesture = useRef<Gesture | null>(null), skipClick = useRef(false);
+  const pinch = useRef(new CanvasPinch()), suppressTouchClick = useRef(false);
   const active = data.nodes.find(node => node.id === documentId), picked = data.nodes.find(node => node.id === selected);
   const current = documentId ? active : picked;
   const currentArticle = active?.articleProposal ?? active?.article;
@@ -121,6 +123,15 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
     element.addEventListener("wheel", preventPageZoom, { passive: false });
     return () => element.removeEventListener("wheel", preventPageZoom);
   }, [documentId]);
+  useEffect(() => {
+    const cancel = () => {
+      if (!gesture.current && !pinch.current.points.size) return;
+      gesture.current = null; pinch.current.reset(); suppressTouchClick.current = true;
+      setConnecting(null); void flush();
+    };
+    window.addEventListener("blur", cancel);
+    return () => { window.removeEventListener("blur", cancel); cancel(); };
+  }, [documentId, flush]);
   useEffect(() => {
     if (!toast || toast.undo) return;
     const timer = setTimeout(() => setToast(null), 4000);
@@ -207,7 +218,7 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
     const point = at ?? availablePosition(data.nodes, worldPoint({ x: size.width * .45, y: size.height * .4 }), 3, kind === "image" ? 260 : 150);
     const now = new Date().toISOString();
     const node: CanvasNode = { id: crypto.randomUUID(), kind, markdown: "", fileName: "", x: point.x, y: point.y, createdAt: now, updatedAt: now };
-    update(value => ({ ...value, nodes: [...value.nodes, node] }), true);
+    update(value => ({ ...value, nodes: [...value.nodes, node], view: !at && size.width < 768 ? { ...value.view, x: size.width / 2 - (node.x + 24 + 137.5) * value.view.scale, y: size.height * .22 - node.y * value.view.scale } : value.view }), true);
     setContextMenu(null); setConnecting(null); setSelectedEdge(null); setSelected(node.id);
   }
   function changeNode(node: CanvasNode, patch: Partial<CanvasNode>) {
@@ -232,11 +243,13 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
   function selectNode(node: CanvasNode) {
     if (skipClick.current) { skipClick.current = false; return; }
     if (connecting) { if (connecting.from !== node.id) linkNodes(connecting.from, node.id, connecting.fromPort); return; }
+    if (size.width < 768) update(value => ({ ...value, view: { ...value.view, x: size.width / 2 - (node.x + 24 + (bounds.get(node.id)?.width ?? 275) / 2) * value.view.scale, y: size.height * .2 - node.y * value.view.scale } }));
     setSelected(node.id); setSelectedEdge(null);
   }
   function beginNode(event: ReactPointerEvent, node: CanvasNode) {
     if (event.button !== 0 || connecting) return;
-    event.stopPropagation(); event.currentTarget.setPointerCapture(event.pointerId);
+    event.stopPropagation();
+    if (event.pointerType !== "touch") event.currentTarget.setPointerCapture(event.pointerId);
     setSelectedEdge(null);
     gesture.current = { kind: "node", node, scale: data.view.scale, pointerId: event.pointerId, start: { x: event.clientX, y: event.clientY }, moved: false };
   }
@@ -244,7 +257,7 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
     if (event.button !== 0) return;
     event.stopPropagation(); event.preventDefault();
     if (connecting && connecting.from !== node.id) { linkNodes(connecting.from, node.id, connecting.fromPort, side); return; }
-    event.currentTarget.setPointerCapture(event.pointerId);
+    if (event.pointerType !== "touch") event.currentTarget.setPointerCapture(event.pointerId);
     gesture.current = { kind: "link", from: node.id, fromPort: side, pointerId: event.pointerId, start: { x: event.clientX, y: event.clientY }, moved: false };
     setSelected(null); setSelectedEdge(null); setConnecting({ from: node.id, fromPort: side, point: portAnchor(bounds.get(node.id)!, side) });
   }
@@ -262,7 +275,25 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
     event.currentTarget.setPointerCapture(event.pointerId);
     gesture.current = { kind: "pan", pointerId: event.pointerId, view: data.view, start: { x: event.clientX, y: event.clientY }, moved: false };
   }
+  function trackTouch(event: ReactPointerEvent) {
+    if (!pinch.current.points.size) suppressTouchClick.current = false;
+    if (event.pointerType !== "touch" || !ready || (event.target as Element).closest("[data-canvas-ui]")) return;
+    const claimed = pinch.current.down(event.pointerId, localPoint(event.clientX, event.clientY), data.view);
+    // Preserve the single-finger click target; the second finger belongs to the surface.
+    const target = claimed ? event.currentTarget : (event.target as Element).closest<HTMLElement | SVGElement>("button, [data-canvas-edge]") ?? event.currentTarget;
+    target.setPointerCapture(event.pointerId);
+    if (claimed) {
+      event.preventDefault(); event.stopPropagation();
+      gesture.current = null; suppressTouchClick.current = true;
+      setConnecting(null); setSelected(null); setSelectedEdge(null); setContextMenu(null);
+    }
+  }
   function movePointer(event: ReactPointerEvent) {
+    const view = pinch.current.move(event.pointerId, localPoint(event.clientX, event.clientY));
+    if (pinch.current.active) {
+      if (view) update(value => ({ ...value, view }));
+      return;
+    }
     const moving = gesture.current;
     if (connecting && (!moving || moving.kind === "link")) {
       const element = document.elementFromPoint(event.clientX, event.clientY)?.closest<HTMLElement>("[data-canvas-port]");
@@ -278,9 +309,18 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
     if (moving.kind === "node") update(value => ({ ...value, nodes: value.nodes.map(node => node.id === moving.node.id ? { ...node, x: moving.node.x + dx / moving.scale, y: moving.node.y + dy / moving.scale } : node) }));
   }
   function finishPointer(event: ReactPointerEvent) {
+    if (pinch.current.up(event.pointerId, data.view)) {
+      gesture.current = null;
+      if (!pinch.current.active) void flush();
+      return;
+    }
     const moving = gesture.current;
     if (!moving || moving.pointerId !== event.pointerId) return;
     gesture.current = null;
+    if (event.type !== "pointerup") {
+      skipClick.current = true; suppressTouchClick.current = true;
+      setConnecting(null); void flush(); return;
+    }
     if (moving.kind === "link" && moving.moved) {
       const element = document.elementFromPoint(event.clientX, event.clientY);
       const target = element?.closest<HTMLElement>("[data-canvas-node]")?.dataset.canvasNode;
@@ -425,12 +465,13 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
     </div> : <>
       <header className={styles.toolbar}><h1>我的画布</h1><div><button className={styles.import} disabled={!ready || importing} onClick={() => input.current?.click()}><UploadSimple size={16} />{importing ? "导入中…" : "导入 .md"}</button><button className={styles.primary} disabled={!ready} aria-haspopup="menu" aria-expanded={contextMenu?.kind === "create"} onClick={event => { menuAnchor.current = event.currentTarget; const bounds = event.currentTarget.getBoundingClientRect(); setContextMenu({ kind: "create", x: bounds.right - 200, y: bounds.bottom + 8 }); }}><Plus size={17} />新建节点</button></div></header>
       <CanvasSyncBar session={session} ready={ready} status={status} flush={saveBeforeSwitch} sync={sync} cloudStatus={cloudStatus} />
-      <main ref={surface} className={`${styles.surface} ${connecting ? styles.connecting : ""}`} tabIndex={0} aria-label="自由画布" aria-description="拖动节点或空白处移动。悬停或选中节点显示四边连接点，拖动或点按连接点连线；点击连线设置箭头和虚线。" onPointerDown={beginPan} onPointerMove={movePointer} onPointerUp={finishPointer}
-        onPointerCancel={() => { gesture.current = null; setConnecting(null); void flush(); }}
+      <main ref={surface} className={`${styles.surface} ${connecting ? styles.connecting : ""}`} tabIndex={0} aria-label="自由画布" aria-description="单指拖动节点或空白处移动，双指缩放和移动画布。选中节点显示四边连接点，拖动或点按连接点连线；点击连线设置箭头和虚线。" onPointerDownCapture={trackTouch} onPointerDown={beginPan} onPointerMove={movePointer} onPointerUp={finishPointer}
+        onPointerCancel={finishPointer} onLostPointerCapture={finishPointer}
+        onClickCapture={event => { if (event.detail && suppressTouchClick.current) { event.preventDefault(); event.stopPropagation(); } }}
         onContextMenu={showContext}
         onDoubleClick={event => { if (!(event.target as Element).closest("button, a, [data-canvas-ui], [data-canvas-node], [data-canvas-edge]")) createNode("note", worldPoint(localPoint(event.clientX, event.clientY))); }}
         onWheel={event => {
-          if (gesture.current || (event.target as Element).closest("[data-canvas-ui]")) return;
+          if (gesture.current || pinch.current.active || (event.target as Element).closest("[data-canvas-ui]")) return;
           setContextMenu(null); setSelectedEdge(null);
           if (event.ctrlKey || event.metaKey) zoom(data.view.scale * Math.exp(-event.deltaY * .008), localPoint(event.clientX, event.clientY));
           else update(value => ({ ...value, view: { ...value.view, x: value.view.x - event.deltaX, y: value.view.y - event.deltaY } }));
@@ -441,7 +482,8 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
           if (delta[event.key]) { event.preventDefault(); const offset = delta[event.key]; update(value => ({ ...value, view: { ...value.view, x: value.view.x + offset.x, y: value.view.y + offset.y } })); }
           if (event.key === "Home") { event.preventDefault(); fit(); }
         }}>
-        <div className={styles.world} style={{ transform: `translate(${data.view.x}px, ${data.view.y}px) scale(${data.view.scale})` }}>
+        <div className={styles.gesturePlane} aria-hidden="true" />
+        <div className={styles.world} style={{ transform: `translate(${data.view.x}px, ${data.view.y}px) scale(${data.view.scale})`, "--canvas-scale": data.view.scale } as CSSProperties}>
           <svg className={styles.connections} aria-label="节点连线">
             <defs>{[false, true].map(active => <marker key={String(active)} id={`${markerId}-arrow-${active}`} viewBox="0 0 10 10" refX="14" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9 Z" className={active ? styles.selectedArrow : styles.edgeArrow} /></marker>)}</defs>
             <g>{data.edges.map(item => {
@@ -480,7 +522,7 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
           })}
         </div>
         {!ready && !error && <p className={styles.empty}>正在读取本地画布…</p>}
-        {ready && !data.nodes.length && <p className={styles.empty}>右键新建节点，或双击写下一点什么。</p>}
+        {ready && !data.nodes.length && <p className={styles.empty}>点「新建节点」，写下一点什么。</p>}
         {picked && !connecting && <section ref={previewRef} className={styles.preview} style={previewPosition || undefined} data-canvas-ui data-canvas-paper aria-label="节点简述">
           <NodeCard key={picked.id} node={picked} actions={actions(picked)} onChange={patch => changeNode(picked, patch)} onSave={() => void flush()} onOpen={() => openNote(picked)} onClose={() => { void flush(); setSelected(null); }} onMessage={message => setToast({ message })} />
           {aiControls(picked)}

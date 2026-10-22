@@ -1039,7 +1039,7 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
   .news-atlas-timeline-copy small { font-size: 10px; }
 }
 
-/* 手机上的时间线是横向日期选择器，画布和详情各自占满一行，避免三列被压成缩略图。 */
+/* 手机上列表与星图切换，详情通过独立面板打开。 */
 @media (max-width: 700px) {
   .news-atlas-page { width: min(100% - 28px, 560px); }
   .news-atlas-heading { min-height: 92px; padding-bottom: 18px; }
@@ -2245,7 +2245,7 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
 
 /* ---------- 跨路由流星：星图概念 → 术语详情 ---------- */
 .route-page {
-  min-height: 100svh;
+  min-height: calc(100svh - var(--mobile-navigation-space, 0px));
 }
 .route-page main {
   opacity: 1;
@@ -5199,3 +5199,47 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
  body:has(.mobile-tabs) .xb-trigger{bottom:calc(82px + env(safe-area-inset-bottom))}
 }
 @media print{.mobile-tabs{display:none!important}body:has(.nav[data-mobile-tabs=true]){padding-bottom:0}}
+
+.news-atlas-view-tabs { display: none; }
+.news-atlas-sheet { position: fixed; inset: 0; width: min(560px, calc(100vw - 32px)); max-width: none; max-height: min(780px, calc(100dvh - 32px)); padding: 0; margin: auto; border: 1px solid var(--hairline); border-radius: 14px; background: var(--surface); color: var(--ink); overflow: hidden; }
+.news-atlas-sheet::backdrop { background: color-mix(in srgb, var(--ink) 28%, transparent); }
+.news-atlas-sheet-panel { display: flex; flex-direction: column; max-height: min(780px, calc(100dvh - 32px)); }
+.news-atlas-sheet header { display: flex; flex: none; justify-content: space-between; align-items: center; gap: 16px; padding: 8px 12px 8px 24px; border-bottom: 1px solid var(--hairline); color: var(--muted); font-size: 13px; }
+.news-atlas-sheet header button { display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 6px; background: none; color: var(--ink); cursor: pointer; }
+.news-atlas-sheet header button:hover { background: var(--tint); }
+.news-atlas-sheet button:focus-visible, .news-atlas-sheet a:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.news-atlas-sheet-scroll { min-height: 0; padding: 24px; overflow: auto; overscroll-behavior: contain; }
+.news-atlas-sheet h2 { margin: 20px 0 16px; font-size: clamp(24px, 5vw, 32px); font-weight: 650; line-height: 1.4; letter-spacing: -.025em; }
+.news-atlas-sheet-scroll > p { font-size: 16px; line-height: 1.85; color: var(--muted); }
+.news-atlas-sheet .news-atlas-related { margin-top: 24px; }
+.news-atlas-sheet .news-atlas-related a { min-height: 44px; }
+.news-atlas-sheet footer { flex: none; padding: 12px 24px max(12px, env(safe-area-inset-bottom)); border-top: 1px solid var(--hairline); }
+.news-atlas-sheet .news-atlas-read { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; margin: 0; padding: 8px 18px; border: 0; border-radius: 8px; color: var(--accent-ink); background: var(--accent); }
+@media (max-width: 1100px) {
+  .news-atlas-page { width: calc(100% - 40px); }
+  .news-atlas-layout, .news-atlas-layout.has-detail, .news-atlas-layout.has-selection { grid-template-columns: minmax(260px, 35%) minmax(0, 1fr); }
+  .news-atlas-dates { padding-right: 20px; }
+  .news-atlas-timeline-item { min-height: 60px; }
+  .news-atlas-timeline-copy strong { display: -webkit-box; font-size: 14px; line-height: 1.6; -webkit-line-clamp: 3; }
+  .news-atlas-range-button, .news-atlas-range-custom input { min-height: 44px; font-size: 13px; }
+  .news-atlas-graph-controls button { width: 44px; height: 44px; }
+  .news-atlas-graph-controls label { min-height: 44px; }
+}
+@media (max-width: 767px) {
+  .news-atlas-page { width: calc(100% - 32px); }
+  .news-atlas-heading h1 { max-width: none; font-size: clamp(32px, 9vw, 44px); }
+  .news-atlas-view-tabs { display: flex; gap: 4px; margin: 6px 0 10px; padding: 3px; border-radius: 9px; background: color-mix(in srgb, var(--hairline) 55%, var(--bg)); }
+  .news-atlas-view-tabs button { flex: 1; min-height: 44px; border: 0; border-radius: 7px; background: none; color: var(--muted); font: inherit; font-size: 14px; cursor: pointer; }
+  .news-atlas-view-tabs button[aria-pressed=true] { color: var(--accent-text); background: var(--surface); }
+  .news-atlas-view-tabs button:focus-visible { outline: 2px solid var(--accent); }
+  .news-atlas-layout, .news-atlas-layout.has-detail, .news-atlas-layout.has-selection { display: flex; flex-direction: column; min-height: 0; }
+  .news-atlas-dates { width: 100%; height: auto; padding: 16px 0 24px; overflow: visible; border: 0; }
+  .news-atlas-layout[data-mobile-view=list] .news-atlas-map, .news-atlas-layout[data-mobile-view=graph] .news-atlas-dates { display: none; }
+  .news-atlas-timeline-copy strong { font-size: 15px; }
+  .news-atlas-timeline-item { padding: 10px 8px; }
+  .news-atlas-map { width: 100%; height: max(320px, calc(100svh - 380px - var(--mobile-navigation-space, 0px))); min-height: 320px; }
+  .news-atlas-sheet { inset: auto 0 0; width: 100%; max-height: calc(100dvh - 16px); margin: 0; border-radius: 16px 16px 0 0; }
+  .news-atlas-sheet-panel { max-height: calc(100dvh - 16px); }
+  .news-atlas-sheet-scroll { padding: 20px; }
+  .news-atlas-sheet footer { padding-inline: 20px; }
+}
