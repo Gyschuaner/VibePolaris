@@ -10,10 +10,11 @@
 .toolbar > div { display: flex; align-items: center; gap: 24px; }
 .toolbar .import { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 14px; padding: 9px 0; }
 .toolbar .primary { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 9px 15px; border-radius: 6px; background: var(--accent); color: var(--accent-ink); font-size: 14px; }
-.surface { flex: 1; min-height: 0; position: relative; overflow: clip; touch-action: none; user-select: none; cursor: grab; }
+.surface { flex: 1; min-height: 0; position: relative; overflow: clip; touch-action: pan-y; user-select: none; cursor: grab; }
+.gesturePlane { position: absolute; inset: 0; touch-action: none; }
 .surface:active { cursor: grabbing; }
 .surface.connecting { cursor: crosshair; }
-.world { position: absolute; inset: 0; transform-origin: 0 0; pointer-events: none; }
+.world { position: absolute; inset: 0; transform-origin: 0 0; pointer-events: none; touch-action: none; }
 .connections { position: absolute; width: 1px; height: 1px; overflow: visible; pointer-events: none; }
 .edgeLine { stroke: color-mix(in srgb, var(--accent) 42%, var(--hairline)); stroke-width: 1.2; fill: none; vector-effect: non-scaling-stroke; }
 .edgeHit { stroke: transparent; stroke-width: 16; fill: none; pointer-events: stroke; cursor: pointer; vector-effect: non-scaling-stroke; }
@@ -234,3 +235,24 @@
  .documentPage{padding-bottom:env(safe-area-inset-bottom)}
 }
 @media(min-width:768px) and (max-width:1100px){.documentPage[data-reading=false] .saveStatus{display:block;max-width:170px;white-space:normal;text-align:right}}
+
+.preview { touch-action: pan-y; overscroll-behavior: contain; }
+@media (pointer: coarse), (max-width: 1100px) {
+  .toolbar button, .open, .menuItems button, .uploadImage { min-height: 44px; }
+  .icon, .menu summary, .edgeToolbar button, .linkHint button, .addTask button { min-width: 44px; min-height: 44px; }
+  .zoom button { min-width: 44px; height: 44px; }
+  .edgeToolbar { max-width: calc(100% - 16px); flex-wrap: wrap; }
+  .port { width: max(28px, calc(44px / var(--canvas-scale))); height: max(28px, calc(44px / var(--canvas-scale))); }
+  .port svg { width: calc(8px / var(--canvas-scale)); height: calc(8px / var(--canvas-scale)); }
+  .note { position: relative; min-height: 44px; }
+  .summaryInput, .resource > input, .addTask > input { font-size: 16px !important; }
+}
+@media (max-width: 767px) {
+  .preview { left: 12px !important; top: auto !important; bottom: 12px; width: calc(100% - 24px); max-height: min(58%, 410px); padding: 16px; }
+  .surface:has(.preview) .zoom { bottom: auto; top: 12px; }
+  .toolbar { padding: 12px 16px; gap: 8px; flex-wrap: wrap; }
+  .toolbar h1 { font-size: 22px; }
+  .toolbar > div { gap: 12px; }
+  .zoom { left: 12px; bottom: 12px; }
+  .toast { bottom: calc(12px + var(--mobile-navigation-space, 0px)); }
+}
