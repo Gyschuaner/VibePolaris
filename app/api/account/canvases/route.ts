@@ -36,7 +36,7 @@ export async function PUT(request: NextRequest) {
     const identity = accountIdentity(request, true);
     const parsed = z.object({ id: z.uuid(), expected: z.number().int().positive(), data: z.unknown() }).strict().safeParse(await readBody(request, 26 * 1024 * 1024));
     if (!parsed.success) throw new XiaobeiError("同步信息不完整。");
-    if ((parsed.data.data as { version?: number } | null)?.version !== 4) throw new XiaobeiError("画布已升级，请刷新页面后再同步。当前本地内容已保留。", 428);
+    if ((parsed.data.data as { version?: number } | null)?.version !== 5) throw new XiaobeiError("画布已升级，请刷新页面后再同步。当前本地内容已保留。", 428);
     let data; try { data = parseCanvas(parsed.data.data); } catch { throw new XiaobeiError("画布格式无法识别，原数据未改动。"); }
     return NextResponse.json(new CloudCanvasStore(getAccountStore()).write(identity, parsed.data.id, parsed.data.expected, data), { headers: privateHeaders });
   } catch (error) { return errorResponse(error); }

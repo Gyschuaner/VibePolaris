@@ -16,6 +16,7 @@ import type { DocumentVariant } from "@/lib/canvas-ai";
 import { useCanvas } from "./useCanvas";
 import { useCanvasMotion } from "./useCanvasMotion";
 import { useReadingToolbar } from "./useReadingToolbar";
+import { CanvasNotesProvider } from "./CanvasNotesProvider";
 import styles from "./CanvasWorkspace.module.css";
 import { useAccount } from "@/components/account/AccountProvider";
 import { CanvasSyncBar, useCanvasSession, type CanvasSession } from "./CanvasSession";
@@ -418,7 +419,9 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
         <MarkdownEditor key={`${active.id}:${variant}`} markdown={documentMarkdown} title={nodePreview(active).title} fallbackTitle={fallbackTitle}
           onChange={changeDocument}
           onSave={() => void flush()} />
-        : <MarkdownReader key={`${active.id}:${variant}`} markdown={documentMarkdown} fallbackTitle={fallbackTitle} onScroll={readingToolbar.onScroll} empty={<p className={styles.blankNote}>{variant === "article" ? generatingArticle ? "正在整理，文章会逐步显示在这里…" : "还没有整理文章。" : <>还没有正文。<button onClick={toggleEditing}>开始编辑</button></>}</p>} />}
+        : <CanvasNotesProvider key={`${active.id}:${variant}`} data={data} nodeId={active.id} variant={variant} source={{ path: noteUrl(active.id, false, variant), title: `${nodePreview(active).title} · ${variant === "article" ? "文章" : "草稿"}` }} storageKey={session.storageKey} update={update} flush={flush} hasPending={hasPending} description={session.selected === "local" ? "批注随这张画布保存在此浏览器。" : `批注随这张画布保存。${session.autoSync ? "已开启云端同步。" : "自动同步已关闭，可在画布手动同步。"}`}>
+          <MarkdownReader markdown={documentMarkdown} fallbackTitle={fallbackTitle} onScroll={readingToolbar.onScroll} source={generatingArticle ? undefined : { path: noteUrl(active.id, false, variant), title: `${nodePreview(active).title} · ${variant === "article" ? "文章" : "草稿"}` }} empty={<p className={styles.blankNote}>{variant === "article" ? generatingArticle ? "正在整理，文章会逐步显示在这里…" : "还没有整理文章。" : <>还没有正文。<button onClick={toggleEditing}>开始编辑</button></>}</p>} />
+        </CanvasNotesProvider>}
     </div> : <>
       <header className={styles.toolbar}><h1>我的画布</h1><div><button className={styles.import} disabled={!ready || importing} onClick={() => input.current?.click()}><UploadSimple size={16} />{importing ? "导入中…" : "导入 .md"}</button><button className={styles.primary} disabled={!ready} aria-haspopup="menu" aria-expanded={contextMenu?.kind === "create"} onClick={event => { menuAnchor.current = event.currentTarget; const bounds = event.currentTarget.getBoundingClientRect(); setContextMenu({ kind: "create", x: bounds.right - 200, y: bounds.bottom + 8 }); }}><Plus size={17} />新建节点</button></div></header>
       <CanvasSyncBar session={session} ready={ready} status={status} flush={saveBeforeSwitch} sync={sync} cloudStatus={cloudStatus} />
