@@ -12,15 +12,15 @@ export function useReadingToolbar(key: string, enabled: boolean, locked: boolean
     if (position.current.key !== key) position.current = { key, top: 0 };
     const focused = document.activeElement;
     const interacting = bar.current?.querySelector(":popover-open") || (focused && bar.current?.contains(focused) && focused.matches(":focus-visible"));
-    if (!enabled || locked || interacting || top < 56) {
+    if (!enabled || locked || interacting) {
       position.current.top = top;
       show();
       return;
     }
-    // Accumulate small wheel/touch movements without toggling on scroll jitter.
+    // Scrolling only hides the toolbar; revealing it is an explicit action.
     const delta = top - position.current.top;
     if (Math.abs(delta) < 16) return;
-    setState(previous => previous.hidden === (delta > 0) ? previous : { key, hidden: delta > 0 });
+    if (delta > 0 && top >= 56) setState(previous => previous.hidden ? previous : { key, hidden: true });
     position.current.top = top;
   }
   return { bar, hidden, show, onScroll };
