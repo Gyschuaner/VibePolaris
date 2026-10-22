@@ -149,10 +149,16 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
   useLayoutEffect(() => {
     const menu = menuRef.current;
     if (!contextMenu || !menu) return;
-    const bounds = menu.getBoundingClientRect();
-    menu.style.left = `${Math.max(8, Math.min(contextMenu.x, window.innerWidth - bounds.width - 8))}px`;
-    menu.style.top = `${Math.max(8, Math.min(contextMenu.y, window.innerHeight - bounds.height - 8))}px`;
+    const place = () => {
+      const bounds = menu.getBoundingClientRect();
+      const navigation = document.querySelector(".mobile-tabs")?.getBoundingClientRect();
+      const bottom = navigation?.height ? Math.min(window.innerHeight, navigation.top) : window.innerHeight;
+      menu.style.left = `${Math.max(8, Math.min(contextMenu.x, window.innerWidth - bounds.width - 8))}px`;
+      menu.style.top = `${Math.max(8, Math.min(contextMenu.y, bottom - bounds.height - 8))}px`;
+    };
+    place(); window.addEventListener("resize", place);
     menu.querySelector<HTMLButtonElement>("button")?.focus({ preventScroll: true });
+    return () => window.removeEventListener("resize", place);
   }, [contextMenu]);
   useLayoutEffect(() => {
     const element = previewRef.current;
