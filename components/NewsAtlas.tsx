@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent } from "react";
-import { ArrowUpRight, CaretRight, CornersOut, Minus, Plus } from "@phosphor-icons/react";
+import { createPortal } from "react-dom";
+import { ArrowUpRight, CaretRight, CornersOut, Minus, Plus, X } from "@phosphor-icons/react";
 import { createGraphSimulation, graphNeighbors, nudgeGraph, type GraphEdge, type GraphNode } from "@/lib/term-graph";
+import { newsPositionKey, readNewsPosition } from "@/lib/news-navigation";
 
 type RelatedTerm = { slug: string; zh: string; en: string };
 
@@ -155,12 +157,18 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
   const [hovered, setHovered] = useState("");
   const [showLines, setShowLines] = useState(true);
   const [detailOpen, setDetailOpen] = useState(false);
+  const [compact, setCompact] = useState(false);
+  const [mobileView, setMobileView] = useState<"list" | "graph">("list");
   const [view, setView] = useState<View>({ x: 0, y: 0, scale: .72 });
   const [ready, setReady] = useState(false);
   const [reframing, setReframing] = useState(false);
   const canvas = useRef<HTMLDivElement>(null);
   const detail = useRef<HTMLElement>(null);
   const detailToggle = useRef<HTMLButtonElement>(null);
+  const timeline = useRef<HTMLElement>(null);
+  const sheet = useRef<HTMLDialogElement>(null);
+  const detailOpener = useRef<HTMLElement | null>(null);
+  const returnPosition = useRef<ReturnType<typeof readNewsPosition>>(null);
   const nodeElements = useRef(new Map<string, HTMLButtonElement | HTMLAnchorElement>());
   const lineElements = useRef(new Map<string, { element: SVGLineElement; source: string; target: string }>());
   const size = useRef({ width: 1000, height: 740 });
@@ -198,10 +206,45 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
   }, [articleBySlug, selectedSlug]);
 
   useEffect(() => {
-    if (!selectedSlug || !detailOpen || !ready || !window.matchMedia("(max-width: 700px)").matches) return;
-    const frameId = window.requestAnimationFrame(() => detail.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
-    return () => window.cancelAnimationFrame(frameId);
-  }, [detailOpen, ready, selectedSlug]);
+    const media = matchMedia("(max-width: 1100px)"), sync = () => setCompact(media.matches);
+    sync(); media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, []);
+
+  useLayoutEffect(() => {
+    try {
+      const saved = readNewsPosition(sessionStorage.getItem(newsPositionKey));
+      sessionStorage.removeItem(newsPositionKey);
+      if (!saved) return;
+      returnPosition.current = saved;
+      setRangePreset(saved.rangePreset); setCustomStart(saved.customStart); setCustomEnd(saved.customEnd);
+      setMobileView(saved.mobileView); setSelectedSlug(saved.selectedSlug);
+    } catch { /* Reading still works when browser storage is unavailable. */ }
+  }, []);
+
+  useLayoutEffect(() => {
+    const saved = returnPosition.current;
+    if (!saved || rangePreset !== saved.rangePreset || customStart !== saved.customStart || customEnd !== saved.customEnd || mobileView !== saved.mobileView) return;
+    if (timeline.current) timeline.current.scrollTop = saved.list;
+    window.scrollTo({ top: saved.page, behavior: "instant" });
+    returnPosition.current = null;
+  }, [rangePreset, customStart, customEnd, mobileView]);
+
+  useEffect(() => {
+    const dialog = sheet.current;
+    if (!compact || !detailOpen || !selected || !dialog) return;
+    const overflow = document.body.style.overflow;
+    dialog.showModal(); document.body.style.overflow = "hidden";
+    return () => {
+      dialog.close(); document.body.style.overflow = overflow;
+      detailOpener.current?.focus({ preventScroll: true });
+    };
+  }, [compact, detailOpen, selected]);
+
+  function rememberPosition() {
+    try { sessionStorage.setItem(newsPositionKey, JSON.stringify({ rangePreset, customStart, customEnd, mobileView, selectedSlug, page: window.scrollY, list: timeline.current?.scrollTop ?? 0 })); }
+    catch { /* Navigation does not depend on storage. */ }
+  }
 
   const paintPositions = useCallback(() => {
     const moving = simulation.current?.nodes();
@@ -310,6 +353,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
     const observer = new ResizeObserver(([entry]) => {
       const previous = size.current;
       const next = { width: entry.contentRect.width, height: entry.contentRect.height };
+      if (!next.width || !next.height) return;
       size.current = next;
       if (!element.dataset.ready) {
         element.dataset.ready = "true";
@@ -367,11 +411,12 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
     if (!reducedMotion.current && !document.hidden) engine.restart();
   }
 
-  function selectArticle(slug: string) {
+  function selectArticle(slug: string, opener?: HTMLElement) {
     if (selectedSlug === slug && detailOpen) {
       clearSelection();
       return;
     }
+    detailOpener.current = opener ?? document.activeElement as HTMLElement | null;
     setSelectedSlug(slug);
     setDetailOpen(true);
     setHovered("");
@@ -448,7 +493,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
     releaseNode();
     const clicked = event.type === "pointerup" && pointers.current.size === 1 && !dragged.current;
     const slug = gesture.current?.slug;
-    if (clicked && slug?.startsWith("news:")) selectArticle(slug.slice(5));
+    if (clicked && slug?.startsWith("news:")) selectArticle(slug.slice(5), nodeElements.current.get(slug));
     pointers.current.delete(event.pointerId);
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
     if (!pointers.current.size) {
@@ -458,6 +503,17 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
   }
 
   if (!orderedArticles.length) return null;
+
+  const summary = selected && <>
+          <div className="news-atlas-detail-meta"><time dateTime={selected.eventDate}>事件 {longDateFormatter.format(utcDate(selected.eventDate))}</time><span>来源发布 {longDateFormatter.format(utcDate(selected.publishedAt))}</span><span>来源 {selected.source.name}</span>{selected.isExample && <span className="news-atlas-example">示例内容</span>}</div>
+          <h2 id="news-selected-title">{selected.title}</h2>
+          <p>{selected.summary}</p>
+          <div className="news-atlas-related">
+            <h3>关联词条</h3>
+            {selected.related.map(term => <Link key={term.slug} href={`/terms/${term.slug}`} onClick={rememberPosition}>{term.zh}<span>{term.en}</span></Link>)}
+          </div>
+  </>;
+  const readLink = selected && <Link className="news-atlas-read" href={`/news/${selected.slug}`} onClick={rememberPosition}>阅读文章 <ArrowUpRight size={19} aria-hidden="true" /></Link>;
 
   return (
     <section className="news-atlas" aria-label="世界最近发生了什么">
@@ -483,8 +539,12 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
         </div>
       </div>
 
-      <div className={`news-atlas-layout${selected ? " has-detail" : ""}${detailOpen ? " has-selection" : ""}`}>
-        <nav className="news-atlas-dates" aria-label="新闻时间线">
+      <div className="news-atlas-view-tabs" role="group" aria-label="新闻浏览方式">
+        <button type="button" aria-pressed={mobileView === "list"} onClick={() => setMobileView("list")}>新闻列表</button>
+        <button type="button" aria-pressed={mobileView === "graph"} onClick={() => setMobileView("graph")}>关联星图</button>
+      </div>
+      <div data-mobile-view={mobileView} className={`news-atlas-layout${selected ? " has-detail" : ""}${detailOpen ? " has-selection" : ""}`}>
+        <nav ref={timeline} className="news-atlas-dates" aria-label="新闻时间线">
           <div className="news-atlas-timeline-head">
             <div><span>时间线</span><strong>最近进展</strong></div>
             <small>{timelineArticles.length} 篇</small>
@@ -501,7 +561,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
                 <div className="news-atlas-day-list">
                   {group.articles.map(article => {
                     const isSelected = detailOpen && article.slug === selectedSlug;
-                    return <button className={`news-atlas-timeline-item${isSelected ? " is-selected" : ""}`} key={article.slug} type="button" aria-pressed={isSelected} onClick={() => selectArticle(article.slug)}>
+                    return <button className={`news-atlas-timeline-item${isSelected ? " is-selected" : ""}`} key={article.slug} type="button" aria-pressed={isSelected} onClick={event => selectArticle(article.slug, event.currentTarget)}>
                       <span className="news-atlas-timeline-marker" aria-hidden="true"><i /></span>
                       <span className="news-atlas-timeline-copy"><strong>{article.title}</strong></span>
                     </button>;
@@ -567,7 +627,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
           </div>
         </div>
 
-        {selected && <aside ref={detail} className={`news-atlas-detail${detailOpen ? " is-open" : ""}`} data-open={detailOpen} aria-label={`${selected.title}详情`} onKeyDown={event => {
+        {selected && !compact && <aside ref={detail} className={`news-atlas-detail${detailOpen ? " is-open" : ""}`} data-open={detailOpen} aria-label={`${selected.title}详情`} onKeyDown={event => {
           if (event.key === "Escape" && detailOpen) {
             event.preventDefault();
             clearSelection();
@@ -578,19 +638,19 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
           <div className="news-atlas-detail-body" id="news-atlas-detail-content" aria-live="polite" aria-hidden={!detailOpen} inert={!detailOpen}>
           <div className="news-atlas-detail-content">
           <div className="news-atlas-detail-copy">
-          <div className="news-atlas-detail-meta"><time dateTime={selected.eventDate}>事件 {longDateFormatter.format(utcDate(selected.eventDate))}</time><span>来源发布 {longDateFormatter.format(utcDate(selected.publishedAt))}</span><span>来源 {selected.source.name}</span>{selected.isExample && <span className="news-atlas-example">示例内容</span>}</div>
-          <h2>{selected.title}</h2>
-          <p>{selected.summary}</p>
-          <div className="news-atlas-related">
-            <h3>关联词条</h3>
-            {selected.related.map(term => <Link key={term.slug} href={`/terms/${term.slug}`}>{term.zh}<span>{term.en}</span></Link>)}
-          </div>
-          <Link className="news-atlas-read" href={`/news/${selected.slug}`}>阅读文章 <ArrowUpRight size={19} aria-hidden="true" /></Link>
+          {summary}{readLink}
           </div>
           </div>
           </div>
         </aside>}
       </div>
+      {compact && selected && detailOpen && createPortal(<dialog ref={sheet} className="news-atlas-sheet" aria-labelledby="news-selected-title" onCancel={() => setDetailOpen(false)} onClick={event => { if (event.target === event.currentTarget) setDetailOpen(false); }}>
+        <div className="news-atlas-sheet-panel">
+          <header><span>新闻详情</span><button type="button" aria-label="关闭新闻详情" onClick={() => setDetailOpen(false)}><X size={21} /></button></header>
+          <div className="news-atlas-sheet-scroll">{summary}</div>
+          <footer>{readLink}</footer>
+        </div>
+      </dialog>, document.body)}
     </section>
   );
 }
