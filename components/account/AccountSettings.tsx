@@ -19,7 +19,7 @@ export function AccountSettings() {
 }
 
 function SettingsForm() {
-  const { account, autoSync, setAutoSync, saveAvatar, logout } = useAccount();
+  const { account, autoSync, setAutoSync, notesAutoSync, setNotesAutoSync, saveAvatar, logout } = useAccount();
   const [busy, setBusy] = useState(false), [error, setError] = useState(""), [message, setMessage] = useState("");
   const file = useRef<HTMLInputElement>(null), router = useRouter();
   async function updateAvatar(selected: File | null) {
@@ -51,9 +51,10 @@ function SettingsForm() {
     </section>
     <section className={styles.section} aria-labelledby="sync-heading">
       <div className={styles.sectionTitle}><Cloud size={20} /><h2 id="sync-heading">云端同步</h2></div>
-      <div className={styles.row}><div><h3 id="auto-sync-label">自动同步到云端</h3><p id="auto-sync-description">在此浏览器自动同步账号画布。关闭后，修改仍保存在本地。</p></div><button className={styles.toggle} type="button" role="switch" aria-checked={autoSync} aria-labelledby="auto-sync-label" aria-describedby="auto-sync-description" onClick={() => { setError(""); try { setAutoSync(!autoSync); setMessage(!autoSync ? "自动同步已开启" : "自动同步已关闭"); } catch (cause) { setError(cause instanceof Error ? cause.message : "设置保存失败。"); } }}><span /></button></div>
+      <div className={styles.row}><div><h3 id="auto-sync-label">画布自动同步到云端</h3><p id="auto-sync-description">在此浏览器自动同步账号画布及其正文批注。关闭后，修改仍保存在本地。</p></div><button className={styles.toggle} type="button" role="switch" aria-checked={autoSync} aria-labelledby="auto-sync-label" aria-describedby="auto-sync-description" onClick={() => { setError(""); try { setAutoSync(!autoSync); setMessage(!autoSync ? "画布自动同步已开启" : "画布自动同步已关闭"); } catch (cause) { setError(cause instanceof Error ? cause.message : "设置保存失败。"); } }}><span /></button></div>
+      <div className={styles.row}><div><h3 id="notes-sync-label">笔记自动同步到云端</h3><p id="notes-sync-description">同步当前账号的划线、批注和随手记。关闭后，仍可在“我的笔记”中手动同步。</p></div><button className={styles.toggle} type="button" role="switch" aria-checked={notesAutoSync} aria-labelledby="notes-sync-label" aria-describedby="notes-sync-description" onClick={() => { setError(""); try { setNotesAutoSync(!notesAutoSync); setMessage(!notesAutoSync ? "笔记自动同步已开启" : "笔记自动同步已关闭"); } catch (cause) { setError(cause instanceof Error ? cause.message : "设置保存失败。"); } }}><span /></button></div>
       <Link className={styles.canvasLink} href="/canvas">前往画布 <ArrowUpRight size={15} /></Link>
-      <p className={styles.fine}>此浏览器的游客画布，由你在画布中选择是否保存到账号。</p>
+      <p className={styles.fine}>游客内容由你选择是否保存到账号：画布在画布页保存，本地笔记在“我的笔记”中合并。</p>
     </section>
     <AiSettings />
     <section className={styles.section} aria-label="退出账号">

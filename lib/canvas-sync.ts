@@ -26,7 +26,7 @@ export function mergeCanvas(base: CanvasData, local: CanvasData, remote: CanvasD
   }
   const nodes = entities(base.nodes, local.nodes, remote.nodes, (b, l, r) => {
     const value = { ...r };
-    for (const key of ["markdown", "fileName", "kind", "title", "summary", "createdAt", "article", "articleProposal", "ai"] as const) {
+    for (const key of ["markdown", "fileName", "kind", "title", "summary", "createdAt", "article", "articleProposal", "ai", "annotations"] as const) {
       const next = choose(b[key], l[key], r[key]);
       if (next === undefined) delete value[key]; else Object.assign(value, { [key]: next });
     }
