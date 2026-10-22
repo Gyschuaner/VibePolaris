@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { GearSix, Sparkle } from "@phosphor-icons/react";
+import { useEffect, useId, useState } from "react";
+import { GearSix, Sparkle, X } from "@phosphor-icons/react";
 import { useAccount } from "@/components/account/AccountProvider";
 import { sourceHash, type DocumentVariant } from "@/lib/canvas-ai";
 import type { CanvasNode } from "@/lib/canvas";
@@ -12,18 +12,18 @@ export function CanvasAiControls({ node, ai, pendingCount, variant = "draft", on
   pendingCount: number; onChange: (patch: Partial<CanvasNode>) => void; onOpenArticle: () => void; onEditArticle: () => void; onCanvas?: () => void; onAccept: () => void; onReject: () => void;
 }) {
   const { aiPreferences } = useAccount();
+  const menuId = useId();
+  const [menuOpen, setMenuOpen] = useState(false);
   const [expansionSource, setExpansionSource] = useState<DocumentVariant>(variant), [hash, setHash] = useState("");
   useEffect(() => { let disposed = false; void sourceHash(node.markdown).then(value => { if (!disposed) setHash(value); }); return () => { disposed = true; }; }, [node.markdown]);
   const article = node.articleProposal ?? node.article, changed = !!(node.article && hash && hash !== node.article.sourceHash);
   const organizing = ai.progress.organize?.nodeId === node.id && ai.progress.organize.running;
   const expanding = ai.progress.expand?.nodeId === node.id && ai.progress.expand.running;
   const pending = node.ai?.status === "pending";
-  return <div className={`${styles.controls} ${onVariant ? styles.document : ""}`} data-canvas-ui>
+  const failed = [ai.progress.organize, ai.progress.expand].some(progress => progress?.nodeId === node.id && progress.error);
+  const cue = organizing ? "整理中" : expanding ? "扩展中" : failed ? "未完成" : pending ? "待接受" : node.articleProposal ? "待采用" : pendingCount > 0 ? `${pendingCount} 待选` : "";
+  const controls = <>
     <div className={styles.row}>
-      {onVariant && (aiPreferences.organize || article) && <div className={styles.tabs} role="group" aria-label="笔记版本">
-        <button aria-pressed={variant === "draft"} onClick={() => onVariant("draft")}>草稿</button>
-        <button aria-pressed={variant === "article"} disabled={!article && !organizing} onClick={() => onVariant("article")}>文章</button>
-      </div>}
       {node.ai && <span className={styles.provenance}>小北生成{pending ? " · 待接受" : ""}</span>}
       {pending ? <><button onClick={onAccept}>接受节点</button><button onClick={onReject}>不接受</button></> : <>
         {aiPreferences.organize && <button disabled={!node.markdown.trim() || !!node.articleProposal || !!ai.progress.organize?.running} onClick={() => { void ai.start("organize", node); onOpenArticle(); }}><Sparkle size={15} />{node.article ? "重新整理" : "整理成文"}</button>}
@@ -44,5 +44,19 @@ export function CanvasAiControls({ node, ai, pendingCount, variant = "draft", on
       <span>{progress.message}{progress.running && progress.characters > 0 ? ` ${progress.characters} 字符` : ""}</span>
       {progress.running && <button onClick={() => ai.cancel(feature)}>停止</button>}
     </div>; })}
+  </>;
+  if (!onVariant) return <div className={styles.controls} data-canvas-ui>{controls}</div>;
+  return <div className={`${styles.controls} ${styles.document}`} data-canvas-ui>
+    {(aiPreferences.organize || article) && <div className={styles.tabs} role="group" aria-label="笔记版本">
+      <button aria-pressed={variant === "draft"} onClick={() => onVariant("draft")}>草稿</button>
+      <button aria-pressed={variant === "article"} disabled={!article && !organizing} onClick={() => onVariant("article")}>文章</button>
+    </div>}
+    <button className={styles.trigger} popoverTarget={menuId} aria-haspopup="dialog" aria-expanded={menuOpen} aria-label="小北工具">
+      <Sparkle size={16} /><span>小北</span>{cue && <span className={styles.cue} role="status">{cue}</span>}
+    </button>
+    <div id={menuId} popover="auto" role="dialog" aria-label="小北工具" className={styles.menu} onToggle={event => setMenuOpen(event.newState === "open")}>
+      <div className={styles.menuHeading}><strong>小北</strong><button popoverTarget={menuId} popoverTargetAction="hide" aria-label="关闭小北工具"><X size={17} /></button></div>
+      {controls}
+    </div>
   </div>;
 }

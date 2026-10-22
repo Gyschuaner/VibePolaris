@@ -77,7 +77,8 @@ export function HarnessV4Toc({ items = defaultItems, scrollRoot, className = "" 
             const root = scrollRoot?.current, section = document.getElementById(id);
             if (!root || !section || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
             event.preventDefault();
-            root.scrollTo({ top: root.scrollTop + section.getBoundingClientRect().top - root.getBoundingClientRect().top - 24, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
+            const offset = Number.parseFloat(getComputedStyle(root).scrollPaddingTop) || 24;
+            root.scrollTo({ top: root.scrollTop + section.getBoundingClientRect().top - root.getBoundingClientRect().top - offset, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
             section.focus({ preventScroll: true });
           }}>
           {label}
