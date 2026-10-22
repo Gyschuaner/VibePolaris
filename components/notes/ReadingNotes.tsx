@@ -221,24 +221,30 @@ export function ReadingNotes({ path, title, layout = "concept", scrollRoot, chil
     <style>{`::highlight(vp-reading-notes){background:color-mix(in srgb,var(--accent) 23%,var(--bg));color:var(--ink)}::highlight(vp-reading-active){background:color-mix(in srgb,var(--accent) 34%,var(--bg));color:var(--ink)}`}</style>
     {children}{layout === "standalone" && <ArticleNotesRail/>}
     <svg className={styles.connectors} data-note-links data-note-ui aria-hidden="true">{notes.map(note=><g key={note.id} data-connector-id={note.id} data-active={selected === note.id}><path/><circle r="2"/><circle r="2"/></g>)}</svg>
-    <button data-note-ui className={styles.mobileToggle} onClick={()=>{setPanel(true);setTab("notes");}} aria-keyshortcuts="Alt+N"><NotePencil size={20}/>{layout === "canvas" ? "目录与笔记" : "笔记"}{notes.length ? ` ${notes.length}` : ""}</button>
+    <button data-note-ui className={styles.mobileToggle} onClick={()=>setPanel(true)} aria-haspopup="dialog" aria-expanded={panel}><NotePencil size={20}/>目录与笔记{notes.length ? ` ${notes.length}` : ""}</button>
     {selection && <div className={styles.selection} data-note-ui data-selection-toolbar role="toolbar" aria-label="选中文字操作" style={{left:Math.max(12,Math.min(window.innerWidth-230,selection.rect.right-220)),top:Math.max(78,selection.rect.top-58)}} onPointerDown={event=>event.preventDefault()}><button disabled={!store.ready} onClick={()=>add(selection.anchor,false)}><Highlighter size={18}/>划线</button><button disabled={!store.ready} onClick={()=>add(selection.anchor)} title="写笔记（Alt+N）"><NotePencil size={18}/>写笔记</button></div>}
   </div></ReaderContext.Provider>;
 }
 
 export function ArticleNotesRail({ children }: { children?: ReactNode }) {
   const reader = useContext(ReaderContext), store = useNotes();
-  const railId = useId();
+  const railId = useId(), sheet = useRef<HTMLDialogElement>(null);
   const [mobile, setMobile] = useState(false);
   useEffect(() => {
     const media = matchMedia(desktop), update = () => setMobile(!media.matches);
     update(); media.addEventListener("change", update);
     return () => media.removeEventListener("change", update);
   }, []);
+  useEffect(() => {
+    const dialog = sheet.current;
+    if (!mobile || !dialog) return;
+    if (reader?.panel && !dialog.open) dialog.showModal();
+    else if (!reader?.panel && dialog.open) dialog.close();
+  }, [mobile, reader?.panel]);
   if (!reader) return children;
   const {canvas, notes, selected, missing, tab, panel, setTab, setPanel, collapsed, setCollapsed, readerMode, setReaderMode, goTo, quickNote} = reader;
   const toggleLabel = collapsed ? "展开阅读侧栏" : "收起阅读侧栏";
-  const rail = <aside id={railId} data-note-ui data-reader-layout={canvas ? "canvas" : undefined} className={`${styles.rail} ${panel && (canvas || tab === "notes") ? styles.panelOpen : ""}`} aria-label="阅读侧栏">
+  const rail = <aside id={railId} data-note-ui data-reader-layout={canvas ? "canvas" : undefined} className={`${styles.rail} ${mobile ? styles.panelOpen : ""}`} aria-label="阅读侧栏">
     <div className={styles.railHead}>
       <div role="tablist" aria-label="阅读侧栏">
         {children && <button role="tab" aria-selected={tab === "toc"} onClick={()=>setTab("toc")}>目录</button>}
@@ -249,19 +255,22 @@ export function ArticleNotesRail({ children }: { children?: ReactNode }) {
           <button type="button" aria-pressed={readerMode === "reading"} onClick={() => setReaderMode("reading")}><BookOpen size={15}/>阅读</button>
           <button type="button" aria-pressed={readerMode === "notes"} onClick={() => setReaderMode("notes")}><NotePencil size={15}/>笔记</button>
         </div>
-        <button className={styles.quickNote} onClick={quickNote} disabled={!store.ready}><NotePencil size={17}/>记一条</button>
-        {canvas && <button onClick={() => store.open()} aria-label="本文全部笔记">全部</button>}
+        <button className={styles.quickNote} onClick={() => { if (mobile) { sheet.current?.close(); setPanel(false); } quickNote(); }} disabled={!store.ready}><NotePencil size={17}/>记一条</button>
+        {canvas && <button onClick={() => { if (mobile) { sheet.current?.close(); setPanel(false); } store.open(); }} aria-label="本文全部笔记">全部</button>}
       </div>
       <button className={styles.railToggle} aria-label={toggleLabel} title={toggleLabel} aria-expanded={!collapsed} aria-controls={railId} onClick={()=>setCollapsed(!collapsed)}>{collapsed ? <CaretLeft size={18}/> : <CaretRight size={18}/>}</button>
-      <button className={styles.closePanel} aria-label="收起笔记" onClick={()=>setPanel(false)}><X size={21}/></button>
+      <button className={styles.closePanel} aria-label="关闭目录与笔记" onClick={()=>setPanel(false)}><X size={21}/></button>
     </div>
     {store.storageError && <p className={styles.error}>本地存储暂不可用。<button onClick={store.reload}>重试</button></p>}
-    {tab === "toc" && children ? <div className={styles.directory}>{children}</div> : <><div data-note-canvas className={styles.canvas} role="tabpanel" aria-label="批注">{notes.map(note=><section className={`${styles.note} ${selected === note.id ? styles.active : ""}`} data-note-id={note.id} key={note.id} hidden={missing.includes(note.id)}>
+    {tab === "toc" && children ? <div className={styles.directory} onClick={event => {
+      if (!mobile || !(event.target as Element).closest("a[href]")) return;
+      sheet.current?.close(); setPanel(false);
+    }}>{children}</div> : <><div data-note-canvas className={styles.canvas} role="tabpanel" aria-label="批注">{notes.map(note=><section className={`${styles.note} ${selected === note.id ? styles.active : ""}`} data-note-id={note.id} key={note.id} hidden={missing.includes(note.id)}>
       <div className={styles.noteHead}><div className={styles.noteActions}><button onClick={()=>goTo(note)} aria-label="回到这条笔记的原文" title="回到原文"><ArrowSquareOut size={17}/></button><button onClick={()=>store.remove(note)} aria-label="删除这条笔记" title="删除笔记"><Trash size={17}/></button></div></div>
       {selected === note.id ? <NoteEditor note={note} autoFocus/> : <button className={styles.noteText} onClick={()=>goTo(note)}><span data-note-body>{note.body || note.anchor!.exact}</span></button>}
       <footer><NoteTime value={note.updatedAt}/></footer>
     </section>)}{!notes.length && <p className={styles.empty}>{store.ready ? "选中一句话，留下你的想法。" : "正在读取本地笔记…"}</p>}</div>{missing.length>0&&<button className={styles.missing} onClick={()=>store.open(missing[0])}>有 {missing.length} 条原文位置已变化，查看保留的摘录</button>}</>}
   </aside>;
   // Keep the mobile sheet outside article animations that create fixed-position containing blocks.
-  return mobile && panel && (canvas || tab === "notes") ? createPortal(rail, document.body) : rail;
+  return mobile ? createPortal(<dialog ref={sheet} className={styles.readingSheet} aria-label="目录与笔记" onCancel={() => setPanel(false)} onClose={() => setPanel(false)} onClick={event => { if (event.target === event.currentTarget) setPanel(false); }}>{rail}</dialog>, document.body) : rail;
 }
