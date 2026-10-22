@@ -10,7 +10,7 @@ import styles from "./Account.module.css";
 import { aiPreferencesSchema, defaultAiPreferences, type AiPreferences } from "@/lib/canvas-ai";
 
 type Session = { account: Account | null; xiaobei?: { bound: boolean; active: boolean; canBindCurrent: boolean } };
-type AccountContext = Session & { aiPreferences: AiPreferences; aiReady: boolean; setAiFeature: (feature: keyof AiPreferences, enabled: boolean) => Promise<void>; ready: boolean; autoSync: boolean; setAutoSync: (enabled: boolean) => void; logout: () => Promise<void>; saveAvatar: (avatar: string | null) => Promise<void>; openAccount: () => void; refresh: () => Promise<void> };
+type AccountContext = Session & { aiPreferences: AiPreferences; aiReady: boolean; setAiFeature: (feature: keyof AiPreferences, enabled: boolean) => Promise<void>; ready: boolean; autoSync: boolean; setAutoSync: (enabled: boolean) => void; notesAutoSync: boolean; setNotesAutoSync: (enabled: boolean) => void; logout: () => Promise<void>; saveAvatar: (avatar: string | null) => Promise<void>; openAccount: () => void; refresh: () => Promise<void> };
 const Context = createContext<AccountContext | null>(null);
 export const useAccount = () => useContext(Context)!;
 export const ownerHeaders = (id?: string) => ({ "X-VP-Account": id ?? "guest" });
@@ -27,14 +27,20 @@ export function AccountProvider({ children }: { children: ReactNode }) {
   const [username, setUsername] = useState(""), [password, setPassword] = useState(""), [code, setCode] = useState("");
   const dialog = useRef<HTMLDialogElement>(null), channel = useRef<BroadcastChannel | null>(null), sequence = useRef(0);
   const [syncPreference, setSyncPreference] = useState<{ owner: string; enabled: boolean } | null>(null);
+  const [notesSyncPreference, setNotesSyncPreference] = useState<{ owner: string; enabled: boolean } | null>(null);
   const owner = session.account?.id;
   const [aiState, setAiState] = useState<{ owner: string; value: AiPreferences } | null>(null);
   useEffect(() => {
     if (!owner) return;
-    const key = `vp-canvas-account:${owner}:sync`;
-    const read = () => { try { setSyncPreference({ owner, enabled: localStorage.getItem(key) === "1" }); } catch { setSyncPreference({ owner, enabled: false }); } };
+    const key = `vp-canvas-account:${owner}:sync`, notesKey = `vp-reading-notes-account:${owner}:sync`;
+    const read = () => {
+      try {
+        setSyncPreference({ owner, enabled: localStorage.getItem(key) === "1" });
+        setNotesSyncPreference({ owner, enabled: localStorage.getItem(notesKey) === "1" });
+      } catch { setSyncPreference({ owner, enabled: false }); setNotesSyncPreference({ owner, enabled: false }); }
+    };
     queueMicrotask(read);
-    const storage = (event: StorageEvent) => { if (event.key === key || event.key === null) read(); };
+    const storage = (event: StorageEvent) => { if (event.key === key || event.key === notesKey || event.key === null) read(); };
     window.addEventListener("storage", storage);
     return () => window.removeEventListener("storage", storage);
   }, [owner]);
@@ -43,6 +49,12 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     try { localStorage.setItem(`vp-canvas-account:${owner}:sync`, enabled ? "1" : "0"); }
     catch { throw new Error("无法保存同步设置，请检查浏览器存储权限。"); }
     setSyncPreference({ owner, enabled });
+  }
+  function setNotesAutoSync(enabled: boolean) {
+    if (!owner) return;
+    try { localStorage.setItem(`vp-reading-notes-account:${owner}:sync`, enabled ? "1" : "0"); }
+    catch { throw new Error("无法保存同步设置，请检查浏览器存储权限。"); }
+    setNotesSyncPreference({ owner, enabled });
   }
   const refresh = useCallback(async () => {
     const at = ++sequence.current;
@@ -113,7 +125,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     channel.current?.postMessage("changed");
   }
   const aiReady = aiState?.owner === (owner ?? "guest");
-  return <Context.Provider value={{ ...session, ready, refresh, aiReady, aiPreferences: aiReady ? aiState.value : { ...defaultAiPreferences, completion: false }, setAiFeature, autoSync: !!owner && syncPreference?.owner === owner && syncPreference.enabled, setAutoSync, logout, saveAvatar, openAccount: () => { setError(""); setMessage(""); setOpen(true); } }}>
+  return <Context.Provider value={{ ...session, ready, refresh, aiReady, aiPreferences: aiReady ? aiState.value : { ...defaultAiPreferences, completion: false }, setAiFeature, autoSync: !!owner && syncPreference?.owner === owner && syncPreference.enabled, setAutoSync, notesAutoSync: !!owner && notesSyncPreference?.owner === owner && notesSyncPreference.enabled, setNotesAutoSync, logout, saveAvatar, openAccount: () => { setError(""); setMessage(""); setOpen(true); } }}>
     {children}
     <dialog ref={dialog} className={styles.dialog} aria-labelledby="account-title" onCancel={() => setOpen(false)} onClose={() => { setOpen(false); setPassword(""); setCode(""); }} onClick={event => { if (event.target === event.currentTarget && !busy) setOpen(false); }}>
       <div className={styles.panel}>

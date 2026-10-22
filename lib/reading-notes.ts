@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-const sourceSchema = z.object({ path: z.string().regex(/^\/(terms|guides)\/[a-z0-9-]+$/), title: z.string().min(1).max(200) });
+const sourceSchema = z.object({ path: z.string().max(500).regex(/^(?:\/(terms|guides)\/[a-z0-9-]+|\/canvas\?(?:canvas=[a-zA-Z0-9-]+&)?note=[a-zA-Z0-9-]+(?:&version=article)?)$/), title: z.string().min(1).max(200) });
 const anchorSchema = z.object({ block: z.string().min(1).max(300), exact: z.string().min(1).max(5000), start: z.number().int().min(0), prefix: z.string().max(48), suffix: z.string().max(48) });
-const noteSchema = z.object({ id: z.string().min(1).max(200), source: sourceSchema.nullable(), body: z.string().max(20000), anchor: anchorSchema.nullable(), createdAt: z.iso.datetime({ offset: true }), updatedAt: z.iso.datetime({ offset: true }) }).refine(note => !note.anchor || !!note.source);
+export const noteSchema = z.object({ id: z.string().min(1).max(200), source: sourceSchema.nullable(), body: z.string().max(20000), anchor: anchorSchema.nullable(), createdAt: z.iso.datetime({ offset: true }), updatedAt: z.iso.datetime({ offset: true }) }).refine(note => !note.anchor || !!note.source);
 export type NoteSource = z.infer<typeof sourceSchema>;
 export type NoteAnchor = z.infer<typeof anchorSchema>;
 export type ReadingNote = z.infer<typeof noteSchema>;

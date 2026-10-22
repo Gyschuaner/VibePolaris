@@ -26,7 +26,7 @@ test("新建和导入避开已有节点，窄画布逐行放置", () => {
 test("旧画布兼容；节点显示信息和四种内容可随 Markdown 往返且不改正文", () => {
   const original = note("old", "# 原正文标题\r\n\r\n正文 **保留**。\r\n");
   assert.deepEqual(parseCanvas({ ...emptyCanvas(), nodes: [original] }).nodes[0], original);
-  assert.equal(parseCanvas({ ...emptyCanvas(), version: 1 }).version, 4);
+  assert.equal(parseCanvas({ ...emptyCanvas(), version: 1 }).version, 5);
   assert.equal(exportNodeMarkdown(original), original.markdown);
   for (const kind of ["note", "link", "image", "todo"]) {
     const node = { ...original, kind, title: "画布标题 --> <script>", summary: "手动摘要\n第二行" };

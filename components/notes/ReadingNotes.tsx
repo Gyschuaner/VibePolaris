@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from "react";
 import { createPortal } from "react-dom";
 import { ArrowSquareOut, BookOpen, CaretLeft, CaretRight, Highlighter, NotePencil, Trash, X } from "@phosphor-icons/react";
 import type { NoteAnchor, NoteSource, ReadingNote } from "@/lib/reading-notes";
@@ -9,6 +9,7 @@ import { NoteEditor, NoteTime, useNotes } from "./NotesProvider";
 import styles from "./ReadingNotes.module.css";
 
 type ReaderContextValue = {
+  canvas: boolean;
   notes: ReadingNote[]; selected: string | null; missing: string[]; tab: "toc" | "notes"; panel: boolean;
   setTab: (tab: "toc" | "notes") => void; setPanel: (open: boolean) => void;
   collapsed: boolean; setCollapsed: (collapsed: boolean) => void;
@@ -20,7 +21,7 @@ const desktop = "(min-width: 1101px)";
 const collapsedPreference = "vp-reading-sidebar-collapsed";
 const modePreference = "vp-reading-mode";
 
-export function ReadingNotes({ path, title, layout = "concept", children }: { path: string; title: string; layout?: "concept" | "course" | "standalone"; children: ReactNode }) {
+export function ReadingNotes({ path, title, layout = "concept", scrollRoot, children }: { path: string; title: string; layout?: "concept" | "course" | "standalone" | "canvas"; scrollRoot?: RefObject<HTMLElement | null>; children: ReactNode }) {
   const store = useNotes(), root = useRef<HTMLDivElement>(null);
   const source: NoteSource = useMemo(() => ({ path, title }), [path, title]);
   const notes = useMemo(() => store.notes.filter(note => note.source?.path === path && note.anchor), [store.notes, path]);
@@ -61,9 +62,10 @@ export function ReadingNotes({ path, title, layout = "concept", children }: { pa
     activate(note);
     requestAnimationFrame(() => {
       const rect = range.getBoundingClientRect();
-      window.scrollTo({ top: window.scrollY + rect.top - window.innerHeight * .34, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
+      const scroller = scrollRoot?.current;
+      (scroller ?? window).scrollTo({ top: scroller ? scroller.scrollTop + rect.top - scroller.getBoundingClientRect().top - scroller.clientHeight * .34 : window.scrollY + rect.top - window.innerHeight * .34, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
     });
-  }, [activate, store.open, store.notify]);
+  }, [activate, store.open, store.notify, scrollRoot]);
   const quickNote = useCallback(() => { setReaderMode("notes"); const note = store.add(source); if (note) store.open(note.id); }, [setReaderMode, store.add, store.open, source]);
   const add = useCallback((anchor: NoteAnchor, write = true) => {
     const note = store.add(source, anchor);
@@ -127,7 +129,7 @@ export function ReadingNotes({ path, title, layout = "concept", children }: { pa
     document.addEventListener("pointerup", finishSelection, true);
     document.addEventListener("pointercancel", cancelSelection, true);
     window.addEventListener("blur", cancelSelection);
-    window.addEventListener("scroll", hide, { passive: true }); window.addEventListener("resize", hide); window.addEventListener("keydown", keydown);
+    window.addEventListener("scroll", hide, { passive: true, capture: true }); window.addEventListener("resize", hide); window.addEventListener("keydown", keydown);
     return () => {
       clearTimeout(timer);
       document.removeEventListener("selectionchange", read);
@@ -135,7 +137,7 @@ export function ReadingNotes({ path, title, layout = "concept", children }: { pa
       document.removeEventListener("pointerup", finishSelection, true);
       document.removeEventListener("pointercancel", cancelSelection, true);
       window.removeEventListener("blur", cancelSelection);
-      window.removeEventListener("scroll", hide); window.removeEventListener("resize", hide); window.removeEventListener("keydown", keydown);
+      window.removeEventListener("scroll", hide, true); window.removeEventListener("resize", hide); window.removeEventListener("keydown", keydown);
     };
   }, [add, quickNote, readerMode, store.notify]);
 
@@ -215,11 +217,11 @@ export function ReadingNotes({ path, title, layout = "concept", children }: { pa
     const found = notes.find(note => { const range=rangeForAnchor(root.current!,note.anchor!);return range && [...range.getClientRects()].some(rect=>event.clientX>=rect.left&&event.clientX<=rect.right&&event.clientY>=rect.top&&event.clientY<=rect.bottom); });
     if (found) activate(found);
   }
-  return <ReaderContext.Provider value={{notes,selected,missing,tab,panel,setTab,setPanel,collapsed,setCollapsed,readerMode,setReaderMode,activate,goTo,quickNote}}><div ref={root} className={`${styles.scope} ${layout === "standalone" ? styles.standalone : ""}`} data-reader-layout={layout} data-reader-mode={readerMode} data-rail-collapsed={collapsed} onClick={clickHighlight}>
+  return <ReaderContext.Provider value={{canvas:layout === "canvas",notes,selected,missing,tab,panel,setTab,setPanel,collapsed,setCollapsed,readerMode,setReaderMode,activate,goTo,quickNote}}><div ref={root} className={`${styles.scope} ${layout === "standalone" ? styles.standalone : ""}`} data-reader-layout={layout} data-reader-mode={readerMode} data-rail-collapsed={collapsed} onClick={clickHighlight}>
     <style>{`::highlight(vp-reading-notes){background:color-mix(in srgb,var(--accent) 23%,var(--bg));color:var(--ink)}::highlight(vp-reading-active){background:color-mix(in srgb,var(--accent) 34%,var(--bg));color:var(--ink)}`}</style>
     {children}{layout === "standalone" && <ArticleNotesRail/>}
     <svg className={styles.connectors} data-note-links data-note-ui aria-hidden="true">{notes.map(note=><g key={note.id} data-connector-id={note.id} data-active={selected === note.id}><path/><circle r="2"/><circle r="2"/></g>)}</svg>
-    <button data-note-ui className={styles.mobileToggle} onClick={()=>{setPanel(true);setTab("notes");}} aria-keyshortcuts="Alt+N"><NotePencil size={20}/>笔记{notes.length ? ` ${notes.length}` : ""}</button>
+    <button data-note-ui className={styles.mobileToggle} onClick={()=>{setPanel(true);setTab("notes");}} aria-keyshortcuts="Alt+N"><NotePencil size={20}/>{layout === "canvas" ? "目录与笔记" : "笔记"}{notes.length ? ` ${notes.length}` : ""}</button>
     {selection && <div className={styles.selection} data-note-ui data-selection-toolbar role="toolbar" aria-label="选中文字操作" style={{left:Math.max(12,Math.min(window.innerWidth-230,selection.rect.right-220)),top:Math.max(78,selection.rect.top-58)}} onPointerDown={event=>event.preventDefault()}><button disabled={!store.ready} onClick={()=>add(selection.anchor,false)}><Highlighter size={18}/>划线</button><button disabled={!store.ready} onClick={()=>add(selection.anchor)} title="写笔记（Alt+N）"><NotePencil size={18}/>写笔记</button></div>}
   </div></ReaderContext.Provider>;
 }
@@ -234,9 +236,9 @@ export function ArticleNotesRail({ children }: { children?: ReactNode }) {
     return () => media.removeEventListener("change", update);
   }, []);
   if (!reader) return children;
-  const {notes, selected, missing, tab, panel, setTab, setPanel, collapsed, setCollapsed, readerMode, setReaderMode, goTo, quickNote} = reader;
+  const {canvas, notes, selected, missing, tab, panel, setTab, setPanel, collapsed, setCollapsed, readerMode, setReaderMode, goTo, quickNote} = reader;
   const toggleLabel = collapsed ? "展开阅读侧栏" : "收起阅读侧栏";
-  const rail = <aside id={railId} data-note-ui className={`${styles.rail} ${panel && tab === "notes" ? styles.panelOpen : ""}`} aria-label="阅读侧栏">
+  const rail = <aside id={railId} data-note-ui data-reader-layout={canvas ? "canvas" : undefined} className={`${styles.rail} ${panel && (canvas || tab === "notes") ? styles.panelOpen : ""}`} aria-label="阅读侧栏">
     <div className={styles.railHead}>
       <div role="tablist" aria-label="阅读侧栏">
         {children && <button role="tab" aria-selected={tab === "toc"} onClick={()=>setTab("toc")}>目录</button>}
@@ -248,6 +250,7 @@ export function ArticleNotesRail({ children }: { children?: ReactNode }) {
           <button type="button" aria-pressed={readerMode === "notes"} onClick={() => setReaderMode("notes")}><NotePencil size={15}/>笔记</button>
         </div>
         <button className={styles.quickNote} onClick={quickNote} disabled={!store.ready}><NotePencil size={17}/>记一条</button>
+        {canvas && <button onClick={() => store.open()} aria-label="本文全部笔记">全部</button>}
       </div>
       <button className={styles.railToggle} aria-label={toggleLabel} title={toggleLabel} aria-expanded={!collapsed} aria-controls={railId} onClick={()=>setCollapsed(!collapsed)}>{collapsed ? <CaretLeft size={18}/> : <CaretRight size={18}/>}</button>
       <button className={styles.closePanel} aria-label="收起笔记" onClick={()=>setPanel(false)}><X size={21}/></button>
@@ -260,5 +263,5 @@ export function ArticleNotesRail({ children }: { children?: ReactNode }) {
     </section>)}{!notes.length && <p className={styles.empty}>{store.ready ? "选中一句话，留下你的想法。" : "正在读取本地笔记…"}</p>}</div>{missing.length>0&&<button className={styles.missing} onClick={()=>store.open(missing[0])}>有 {missing.length} 条原文位置已变化，查看保留的摘录</button>}</>}
   </aside>;
   // Keep the mobile sheet outside article animations that create fixed-position containing blocks.
-  return mobile && panel && tab === "notes" ? createPortal(rail, document.body) : rail;
+  return mobile && panel && (canvas || tab === "notes") ? createPortal(rail, document.body) : rail;
 }
