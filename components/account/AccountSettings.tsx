@@ -69,7 +69,7 @@ function AiSettings() {
   const { account, aiReady, aiPreferences, setAiFeature, refresh, xiaobei, openAccount } = useAccount();
   const [busy, setBusy] = useState(false), [error, setError] = useState("");
   const options = [
-    ["completion", "智能补全", "编辑时停顿显示快捷键提示，主动触发一小段续写。"],
+    ["completion", "智能补全", "通过快捷键或手机、平板上的补全按钮，主动触发一小段续写。"],
     ["organize", "整理成文", "将草稿整理为学习文章，原稿独立保留。"],
     ["expand", "扩展节点", "结合当前正文与相连节点的摘要、正文节选和连线生成建议，由你接受或舍弃。"],
   ] as const;

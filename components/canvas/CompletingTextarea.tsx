@@ -1,7 +1,7 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
 import { completionContext } from "@/lib/canvas-completion";
 import { formatMarkdown, markdownShortcut, type MarkdownEdit, type MarkdownFormat } from "@/lib/markdown-editing";
-import { Code, CodeBlock, FlowArrow, Highlighter, LinkSimple, Palette, Table, TextBolderIcon, TextItalic, TextStrikethrough } from "@phosphor-icons/react";
+import { Check, Code, CodeBlock, FlowArrow, Highlighter, LinkSimple, Palette, Sparkle, Table, TextBolderIcon, TextItalic, TextStrikethrough, X } from "@phosphor-icons/react";
 import canvas from "./CanvasWorkspace.module.css";
 import styles from "./CompletingTextarea.module.css";
 import { ownerHeaders, useAccount } from "@/components/account/AccountProvider";
@@ -152,6 +152,7 @@ export function CompletingTextarea({ markdown, title, onChange, onSave }: Props)
   useEffect(() => { if (!aiPreferences.completion) { request.current?.abort(); queueMicrotask(clear); } }, [aiPreferences.completion]);
 
   const inline = cursor === markdown.length && !nearBottom;
+  const canComplete = !!markdown.slice(0, cursor).trim() && selection.current.start === selection.current.end;
   const control = suggestion ? <><span className={styles.ghost} aria-hidden="true">{suggestion}</span><button type="button" tabIndex={-1} className={styles.hint} onPointerDown={event => event.preventDefault()} onClick={accept} aria-label="接受小北补全">Tab 接受</button></>
     : hint ? <button type="button" tabIndex={-1} className={styles.hint} onPointerDown={event => event.preventDefault()} onClick={() => void generate()}>按 {shortcut} 补全</button> : null;
   const popup = disclosure !== null ? <div role="dialog" aria-label="使用小北补全"><p>补全会将这份笔记的标题和相关前文发送给小北。</p>{disclosure && <p>按小北现有 Token 单价扣分，放弃建议也按实际生成用量结算。</p>}<div className={styles.actions}><button type="button" onClick={() => void generate(disclosure)}>继续补全</button><button type="button" onClick={clear}>取消</button></div></div>
@@ -163,12 +164,19 @@ export function CompletingTextarea({ markdown, title, onChange, onSave }: Props)
     ["strike", TextStrikethrough, "删除线", "Shift X"], ["link", LinkSimple, "插入链接", "K"], ["code", Code, "行内代码", "`"],
     ["codeblock", CodeBlock, "代码块", "Shift `"], ["table", Table, "插入表格", ""], ["mermaid", FlowArrow, "Mermaid 图表", ""],
   ] as const;
-  return <><div className={styles.toolbar} role="toolbar" aria-label="Markdown 格式">
+  return <div className={styles.completingEditor} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) clear(); }}><div className={styles.toolbar} role="toolbar" aria-label="Markdown 格式">
+    <div className={styles.formatTools}>
     {tools.map(([kind, Icon, label, hotkey]) => <button key={kind} type="button" aria-label={label} title={`${label}${hotkey ? `（⌘ / Ctrl ${hotkey}）` : ""}`} onPointerDown={event => event.preventDefault()} onClick={() => format(kind)}><Icon size={18} /></button>)}
     <label className={styles.color} title="文字颜色"><Palette size={18} /><select aria-label="文字颜色" value="" onChange={event => { if (event.target.value) format("color", event.target.value); }}>
       <option value="" disabled>文字颜色</option><option value="#a33a32">红色</option><option value="#996719">橙色</option><option value="#457045">绿色</option><option value="#356da1">蓝色</option><option value="#8053a3">紫色</option><option value="#777777">灰色</option><option value="inherit">默认颜色</option>
     </select></label>
-  </div><div className={styles.body} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) clear(); }}>
+    </div>
+    {aiPreferences.completion && <div className={styles.touchCompletion} role="group" aria-label="小北补全" onPointerDown={event => event.preventDefault()}>
+      {suggestion ? <button type="button" onClick={accept} aria-label="接受小北补全"><Check size={17} />接受</button>
+        : <button type="button" onClick={() => void generate()} disabled={busy || disclosure !== null || !canComplete} aria-busy={busy}><Sparkle size={17} />{busy ? "补全中…" : "小北补全"}</button>}
+      {(suggestion || busy) && <button type="button" onClick={clear} aria-label={busy ? "取消补全" : "放弃补全"} title={busy ? "取消补全" : "放弃补全"}><X size={17} /></button>}
+    </div>}
+  </div><div className={styles.body}>
     <textarea ref={field} className={`${canvas.editor} ${styles.textarea}`} autoFocus aria-label="Markdown 正文" aria-describedby={helpId} aria-keyshortcuts="Meta+B Control+B Meta+I Control+I Meta+K Control+K Meta+Enter Control+Enter" placeholder="直接写下想法，支持 Markdown…" spellCheck={false} value={markdown}
       onChange={event => { undo.current = null; onChange(event.target.value); selection.current = { start: event.target.selectionStart, end: event.target.selectionEnd }; setCursor(event.target.selectionStart); clear(); arm(); }}
       onSelect={event => select(event.currentTarget)} onFocus={event => { select(event.currentTarget); arm(); }} onBlur={onSave} onScroll={() => { clear(); position(); arm(); }} onKeyDown={keyDown}
@@ -177,5 +185,5 @@ export function CompletingTextarea({ markdown, title, onChange, onSave }: Props)
     {popup && <div ref={floating} className={`${styles.floating} ${!inline && !error && disclosure === null && !busy ? styles.candidate : ""}`} onPointerDown={event => event.preventDefault()}>{popup}</div>}
     <span id={helpId} className={styles.srOnly}>Command 或 Control 加 B 加粗，I 斜体，K 链接，Shift H 高亮，Shift X 删除线，反引号行内代码，Shift 加反引号代码块。Tab 缩进，Shift Tab 取消缩进；Escape 后按 Tab 可离开编辑区。停顿后可按 Command 或 Control 加 Enter 请求小北补全，有建议时 Tab 接受，Escape 放弃。</span>
     <span className={styles.srOnly} role="status" aria-live="polite">{suggestion ? `小北建议：${suggestion}。Tab 接受，Escape 放弃。` : hint ? `可按 ${shortcut} 请求小北补全` : ""}</span>
-  </div></>;
+  </div></div>;
 }
