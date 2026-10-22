@@ -34,4 +34,3 @@
 ![线上笔记同步](VBP-114-reading-notes-sync/production-notes.png)
 
 ![线上画布批注](VBP-114-reading-notes-sync/production-canvas.png)
-
