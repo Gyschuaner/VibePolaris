@@ -2,7 +2,7 @@
 
 import { useEffect, useEffectEvent, useId, useLayoutEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, CheckSquare, Circle, Copy, DotsThree, DownloadSimple, ImageSquare, Info, LinkSimple, Minus, NotePencil, Plus, Trash, UploadSimple, X } from "@phosphor-icons/react";
+import { ArrowLeft, CaretDown, CheckSquare, Circle, Copy, DotsThree, DownloadSimple, ImageSquare, Info, LinkSimple, Minus, NotePencil, Plus, Trash, UploadSimple, X } from "@phosphor-icons/react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { availablePosition, canvasPorts, connectNodes, exportNodeMarkdown, importNodeMarkdown, markdownFileName, moveView, nodeKinds, nodePreview, nodeResource, nodeTasks, safeNodeUrl, type CanvasEdge, type CanvasNode, type CanvasPort, type CanvasView, type NodeKind } from "@/lib/canvas";
 import { connectionPath, edgeAnchors, portAnchor, type CanvasAnchor } from "@/lib/canvas-routing";
@@ -15,6 +15,7 @@ import { CanvasAiControls } from "./CanvasAiControls";
 import type { DocumentVariant } from "@/lib/canvas-ai";
 import { useCanvas } from "./useCanvas";
 import { useCanvasMotion } from "./useCanvasMotion";
+import { useReadingToolbar } from "./useReadingToolbar";
 import styles from "./CanvasWorkspace.module.css";
 import { useAccount } from "@/components/account/AccountProvider";
 import { CanvasSyncBar, useCanvasSession, type CanvasSession } from "./CanvasSession";
@@ -69,6 +70,8 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
   const fallbackTitle = variant === "draft" && active?.ai ? nodePreview(active).title : undefined;
   const generatingArticle = variant === "article" && ai.progress.organize?.nodeId === active?.id && ai.progress.organize?.running;
   const { navigate, opening } = useCanvasMotion(documentId, active && nodePreview(active).title, previewRef, documentRef);
+  const readingToolbar = useReadingToolbar(`${documentId}:${variant}`, !!documentId && !editing && !opening,
+    !!contextMenu || [ai.progress.organize, ai.progress.expand].some(progress => progress?.nodeId === documentId && progress.running));
   const edge = data.edges.find(item => item.id === selectedEdge);
   const nodeIds = data.nodes.map(node => node.id).join("\0");
   const bounds = useMemo(() => new Map(data.nodes.map(node => [node.id, { x: node.x + 24, y: node.y, ...(labelSizes[node.id] ?? { width: 275, height: 82 }) }])), [data.nodes, labelSizes]);
@@ -401,20 +404,21 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
   }}>
     {!documentId && <SiteHeader wide />}
     {error && <div className={styles.error} role="alert"><span>{error}</span>{isConflict() || !ready ? <button onClick={() => { if (!hasPending() || window.confirm("重新载入会放弃当前未保存的修改。请确认需要的 Markdown 已经导出。")) void reload(true); }}>重新载入</button> : <button onClick={() => void flush()}>重试保存</button>}</div>}
-    {documentId ? <div ref={documentRef} className={styles.documentPage} data-canvas-paper>
-      <header className={styles.documentBar} data-canvas-bar>
-        <button className={styles.back} onClick={() => returnToCanvas()}><ArrowLeft size={18} /><span>返回画布</span></button>
+    {documentId ? <div ref={documentRef} className={styles.documentPage} data-canvas-paper data-reading={!editing || !!generatingArticle} data-toolbar-hidden={readingToolbar.hidden}>
+      {readingToolbar.hidden && <div className={styles.toolbarReveal} onPointerEnter={readingToolbar.show}><button onClick={() => { readingToolbar.show(); readingToolbar.bar.current?.querySelector("button")?.focus(); }} aria-label="显示阅读工具栏"><CaretDown size={14} /></button></div>}
+      <header ref={readingToolbar.bar} className={styles.documentBar} data-canvas-bar onFocusCapture={readingToolbar.show}>
+        <button className={styles.back} aria-label="返回画布" onClick={() => returnToCanvas()}><ArrowLeft size={18} /><span>返回画布</span></button>
         <span className={styles.fileName}>{active ? markdownFileName(active) : "Markdown"}</span>
+        {active && !opening && aiControls(active, true)}
         <div className={styles.documentActions}>{active && <>{editing && <span className={styles.saveStatus} role="status">{status === "saved" ? session.selected === "local" ? "已保存在此浏览器" : cloudStatus : status === "saving" ? "保存中…" : "未保存"}</span>}<button className={styles.mode} disabled={!!generatingArticle || (variant === "article" && !currentArticle)} onClick={toggleEditing}>{editing ? "阅读" : "编辑"}{variant === "article" ? "文章" : ""}</button>{actions(active)}</>}</div>
       </header>
-      {active && !opening && aiControls(active, true)}
       {!ready ? <p className={styles.loading}>正在读取笔记…</p> : !active ? <div className={styles.missing}><h1>当前画布没有这份笔记</h1><p>返回画布切换查看，或导入一份 Markdown。</p><button onClick={() => returnToCanvas()}>返回画布</button></div> : opening ?
         <main className={styles.readingPage} data-canvas-content aria-busy="true"><article className={styles.markdown}><h1>{nodePreview(active).title}</h1><p className={styles.diagramStatus} role="status">正在读取正文…</p></article></main>
         : editing && !generatingArticle ?
         <MarkdownEditor key={`${active.id}:${variant}`} markdown={documentMarkdown} title={nodePreview(active).title} fallbackTitle={fallbackTitle}
           onChange={changeDocument}
           onSave={() => void flush()} />
-        : <MarkdownReader key={`${active.id}:${variant}`} markdown={documentMarkdown} fallbackTitle={fallbackTitle} empty={<p className={styles.blankNote}>{variant === "article" ? generatingArticle ? "正在整理，文章会逐步显示在这里…" : "还没有整理文章。" : <>还没有正文。<button onClick={toggleEditing}>开始编辑</button></>}</p>} />}
+        : <MarkdownReader key={`${active.id}:${variant}`} markdown={documentMarkdown} fallbackTitle={fallbackTitle} onScroll={readingToolbar.onScroll} empty={<p className={styles.blankNote}>{variant === "article" ? generatingArticle ? "正在整理，文章会逐步显示在这里…" : "还没有整理文章。" : <>还没有正文。<button onClick={toggleEditing}>开始编辑</button></>}</p>} />}
     </div> : <>
       <header className={styles.toolbar}><h1>我的画布</h1><div><button className={styles.import} disabled={!ready || importing} onClick={() => input.current?.click()}><UploadSimple size={16} />{importing ? "导入中…" : "导入 .md"}</button><button className={styles.primary} disabled={!ready} aria-haspopup="menu" aria-expanded={contextMenu?.kind === "create"} onClick={event => { menuAnchor.current = event.currentTarget; const bounds = event.currentTarget.getBoundingClientRect(); setContextMenu({ kind: "create", x: bounds.right - 200, y: bounds.bottom + 8 }); }}><Plus size={17} />新建节点</button></div></header>
       <CanvasSyncBar session={session} ready={ready} status={status} flush={saveBeforeSwitch} sync={sync} cloudStatus={cloudStatus} />
