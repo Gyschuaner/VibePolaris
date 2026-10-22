@@ -1,5 +1,5 @@
 .workspace { height: 100dvh; min-height: 360px; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); color: var(--ink); }
-.documentPage { flex: 1; min-height: 0; display: flex; flex-direction: column; background: var(--bg); }
+.documentPage { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; background: var(--bg); }
 .workspace button, .workspace textarea, .workspace input { font: inherit; }
 .workspace button { cursor: pointer; }
 .workspace button:disabled { opacity: .45; cursor: default; }
@@ -87,30 +87,41 @@
 .edgeSeparator { width: 1px; height: 19px; margin: 0 4px; background: var(--hairline); }
 .edgeArrow { fill: color-mix(in srgb, var(--accent) 42%, var(--hairline)); }
 .selectedArrow { fill: var(--accent); }
-.documentBar { display: flex; align-items: center; height: 65px; flex: none; padding: 0 32px; gap: 24px; border-bottom: 1px solid var(--hairline); }
+.documentBar { display: flex; align-items: center; height: 56px; flex: none; padding: 0 28px; gap: 24px; border-bottom: 1px solid var(--hairline); background: var(--bg); z-index: 8; transition: transform .2s ease; }
+.documentPage[data-reading=true] .documentBar { position: absolute; inset: 0 0 auto; }
+.documentPage[data-toolbar-hidden=true] .documentBar { transform: translateY(-100%); }
+.documentBar:has(:focus-visible) { transform: none !important; }
+.toolbarReveal { position: absolute; inset: 0 0 auto; height: 8px; z-index: 9; text-align: center; }
+.toolbarReveal button { display: inline-flex; justify-content: center; align-items: center; width: 48px; height: 18px; vertical-align: top; border: 1px solid var(--hairline); border-top: 0; border-radius: 0 0 7px 7px; background: var(--bg); color: var(--muted); }
 .back { display: inline-flex; gap: 8px; align-items: center; color: var(--accent-text) !important; padding: 6px 0; font-size: 14px !important; white-space: nowrap; }
-.fileName { color: var(--muted); font-size: 13px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; max-width: min(50vw, 450px); }
-.documentActions { display: flex; gap: 22px; align-items: center; margin-left: auto; }
+.fileName { color: var(--muted); font-size: 13px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; min-width: 0; }
+.documentActions { display: flex; gap: 20px; align-items: center; margin-left: auto; flex: none; }
 .saveStatus { font-size: 12px; color: var(--faint); white-space: nowrap; }
 .mode { font-size: 14px !important; color: var(--accent-text) !important; padding: 8px 0; white-space: nowrap; }
 .readingPage, .editorPage { flex: 1; min-height: 0; }
 .readingPage { overflow: auto; }
 .reader { display: flex; flex: 1; min-height: 0; overflow: hidden; }
-.readingContent { flex: 1; min-width: 0; overflow: auto; }
-.readingDirectory { order: 1; flex: 0 0 240px; min-width: 0; padding: 62px 28px 32px 0; display: flex; flex-direction: column; }
+.readingContent { flex: 1; min-width: 0; overflow: auto; scroll-padding-top: 80px; }
+.readingContent > .markdown, .readingPage > .markdown { padding-top: 88px; }
+.readingDirectory { order: 1; flex: 0 0 240px; min-width: 0; padding: 88px 28px 32px 0; display: flex; flex-direction: column; }
 .directoryLabel { color: var(--faint); font-size: 12px; padding: 0 0 16px 25px; }
 .readingToc:global(.vp-toc) { position: relative; top: auto; display: grid; align-content: start; gap: 6px; padding: 0 0 0 20px; margin: 0; border: 0; max-height: 100%; background: none; backdrop-filter: none; overflow: auto; }
 .readingToc:global(.vp-toc) a { display: block; padding: 8px 5px 8px calc(5px + var(--toc-depth, 0) * 10px); font-size: 14px; line-height: 1.65; white-space: normal; overflow-wrap: anywhere; text-decoration: none; }
 .readingToc :global(.vp-toc-marker) { position: absolute; left: 4px; top: 0; width: 14px; height: 16px; opacity: 0; pointer-events: none; transition: transform .36s cubic-bezier(.22,.7,.25,1), opacity .2s; }
 @media (max-width: 900px) {
   .reader { flex-direction: column; }
-  .readingDirectory { order: 0; flex: none; padding: 0 24px; border-bottom: 1px solid var(--hairline); }
+  .readingDirectory { position: absolute; inset: 56px 0 auto; z-index: 7; order: 0; flex: none; padding: 0 24px; border-bottom: 1px solid var(--hairline); background: var(--bg); transition: transform .2s ease, opacity .2s; }
+  .documentPage[data-toolbar-hidden=true] .readingDirectory { transform: translateY(-110px); opacity: 0; pointer-events: none; }
+  .reader:has(.readingDirectory) .readingContent { scroll-padding-top: 120px; }
+  .reader:has(.readingDirectory) .markdown { padding-top: 132px; }
   .directoryLabel { display: none; }
   .readingToc:global(.vp-toc) { display: flex; gap: 22px; padding: 4px 0; }
   .readingToc:global(.vp-toc) a { padding: 8px 0; font-size: 12px; white-space: nowrap; }
   .readingToc :global(.vp-toc-marker) { display: none; }
 }
-@media (prefers-reduced-motion: reduce) { .readingToc :global(.vp-toc-marker) { transition: none; } }
+@media (max-width: 1100px) { .saveStatus { display: none; } }
+@media (max-width: 760px) { .fileName { display: none; } }
+@media (prefers-reduced-motion: reduce) { .documentBar, .readingDirectory, .readingToc :global(.vp-toc-marker) { transition: none; } }
 .markdown { max-width: 804px; margin: 0 auto; padding: 65px 32px 120px; font-size: 17px; line-height: 1.95; overflow-wrap: anywhere; user-select: text; }
 .markdown h1 { font-size: 38px; font-weight: 650; line-height: 1.4; letter-spacing: -.035em; margin: 0 0 30px; }
 .markdown h2 { font-size: 25px; font-weight: 600; line-height: 1.5; margin: 42px 0 16px; letter-spacing: -.02em; }
@@ -187,8 +198,8 @@
   .toolbar h1 { font-size: 23px; }.toolbar > div { gap: 15px; }
   .toolbar .import { font-size: 12px; gap: 4px; }.toolbar .import svg { display: none; }
   .toolbar .primary { padding: 8px 10px; font-size: 12px; }
-  .documentBar { padding: 0 17px; height: 59px; gap: 14px; }.back { font-size: 12px !important; gap: 5px; }.back svg { width: 15px; }
-  .documentActions { gap: 14px; }.fileName { max-width: 33vw; font-size: 11px; }.saveStatus { display: none; }
+  .documentBar { padding: 0 16px; gap: 14px; }.back { padding: 8px 0; }.back svg { width: 18px; }.back span { display: none; }
+  .documentActions { gap: 14px; }.saveStatus { display: none; }
   .markdown { padding: 38px 23px 90px; font-size: 16px; }.markdown h1 { font-size: 30px; }.markdown h2 { font-size: 22px; margin-top: 32px; }
   .editorPage { flex-direction: column; }
   .paneLabel { padding: 12px 23px 6px; }
