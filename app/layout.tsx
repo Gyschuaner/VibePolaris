@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 
 import { RouteMeteorProvider } from "@/components/RouteMeteorProvider";
-import { NotesProvider } from "@/components/notes/NotesProvider";
+import { AccountNotesProvider } from "@/components/notes/AccountNotesProvider";
 import { PointerFeedback } from "@/components/PointerFeedback";
 import { Xiaobei } from "@/components/xiaobei/Xiaobei";
 import { AccountProvider } from "@/components/account/AccountProvider";
@@ -79,7 +79,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
       </head>
-      <body><AccountProvider><NotesProvider><RouteMeteorProvider>{children}<Xiaobei termNames={Object.fromEntries(publishedTerms.map(term => [`/terms/${term.slug}`, term.zh]))} newsNames={Object.fromEntries(newsArticles.map(article => [`/news/${article.slug}`, article.title]))} /></RouteMeteorProvider><PointerFeedback /></NotesProvider></AccountProvider></body>
+      <body><AccountProvider><AccountNotesProvider><RouteMeteorProvider>{children}<Xiaobei termNames={Object.fromEntries(publishedTerms.map(term => [`/terms/${term.slug}`, term.zh]))} newsNames={Object.fromEntries(newsArticles.map(article => [`/news/${article.slug}`, article.title]))} /></RouteMeteorProvider><PointerFeedback /></AccountNotesProvider></AccountProvider></body>
     </html>
   );
 }

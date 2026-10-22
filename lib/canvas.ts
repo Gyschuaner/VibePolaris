@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { noteSchema } from "./reading-notes.ts";
 
 const point = { x: z.number(), y: z.number() };
 const articleSchema = z.object({ markdown: z.string(), sourceHash: z.string(), generatedAt: z.iso.datetime({ offset: true }), complete: z.boolean() });
@@ -12,6 +13,7 @@ const nodeSchema = z.object({
   id: z.string().min(1), markdown: z.string(), fileName: z.string(), ...point,
   ...nodeMetadata.shape,
   article: articleSchema.optional(), articleProposal: articleSchema.optional(),
+  annotations: z.object({ draft: z.array(noteSchema).max(1000).optional(), article: z.array(noteSchema).max(1000).optional() }).optional(),
   createdAt: z.iso.datetime({ offset: true }), updatedAt: z.iso.datetime({ offset: true }),
 });
 export const canvasPorts = ["top", "right", "bottom", "left"] as const;
@@ -20,9 +22,9 @@ const edgeSchema = z.object({
   fromPort: z.enum(canvasPorts).optional(), toPort: z.enum(canvasPorts).optional(),
   direction: z.enum(["none", "start", "end", "both"]).optional(), dashed: z.boolean().optional(),
 });
-// Older clients must reject this version rather than discard articles or AI provenance.
+// Older clients must reject this version rather than discard reading annotations.
 const canvasSchema = z.object({
-  version: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]).transform(() => 4 as const), revision: z.number().int().nonnegative(),
+  version: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(5)]).transform(() => 5 as const), revision: z.number().int().nonnegative(),
   nodes: z.array(nodeSchema), edges: z.array(edgeSchema),
   view: z.object({ ...point, scale: z.number().min(.3).max(2) }),
 }).refine(value => {
@@ -41,7 +43,7 @@ export type CanvasPort = typeof canvasPorts[number];
 export type CanvasData = z.infer<typeof canvasSchema>;
 export type CanvasView = CanvasData["view"];
 
-export const emptyCanvas = (): CanvasData => ({ version: 4, revision: 0, nodes: [], edges: [], view: { x: 0, y: 0, scale: 1 } });
+export const emptyCanvas = (): CanvasData => ({ version: 5, revision: 0, nodes: [], edges: [], view: { x: 0, y: 0, scale: 1 } });
 export const parseCanvas = (value: unknown): CanvasData => canvasSchema.parse(value);
 
 function plain(text: string) {
