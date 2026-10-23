@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { GearSix, X } from "@phosphor-icons/react";
+import { GearSix, UserCircle, X } from "@phosphor-icons/react";
 import type { Account } from "@/lib/account/store";
 import { AccountAvatar, WavingPerson } from "./AccountAvatar";
 import styles from "./Account.module.css";
@@ -153,7 +153,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
   </Context.Provider>;
 }
 export function AccountButton() {
-  const { account, openAccount } = useAccount();
+  const { account } = useAccount();
   const [expanded, setExpanded] = useState(false), [error, setError] = useState("");
   const root = useRef<HTMLDivElement>(null), router = useRouter();
   useEffect(() => {
@@ -161,9 +161,14 @@ export function AccountButton() {
     document.addEventListener("pointerdown", close);
     return () => document.removeEventListener("pointerdown", close);
   }, []);
-  if (!account) return <button className={styles.entry} type="button" title="登录" aria-label="登录账号" onClick={openAccount}><WavingPerson /></button>;
+  async function navigate(event: React.MouseEvent<HTMLAnchorElement>, href: string) {
+    event.preventDefault();
+    try { await settleDrafts(); setExpanded(false); setError(""); router.push(href); }
+    catch (cause) { setError(cause instanceof Error ? cause.message : "请先保存草稿。"); }
+  }
+  if (!account) return <Link className={styles.entry} href="/me" title="我的主页" aria-label="我的主页"><WavingPerson /></Link>;
   return <div ref={root} className={styles.accountMenu} onPointerEnter={event => { if (event.pointerType === "mouse") setExpanded(true); }} onPointerLeave={() => { if (!root.current?.contains(document.activeElement)) setExpanded(false); }} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setExpanded(false); }} onKeyDown={event => { if (event.key === "Escape") { root.current?.querySelector("button")?.focus(); setExpanded(false); } }}>
     <button className={styles.entry} type="button" aria-label={`账号：${account.username}`} aria-expanded={expanded} aria-controls="account-dropdown" onClick={() => setExpanded(true)} onFocus={event => { if (event.currentTarget.matches(":focus-visible")) setExpanded(true); }}><AccountAvatar avatar={account.avatar} /></button>
-    {expanded && <div className={styles.dropdown} id="account-dropdown"><Link href="/settings" onClick={async event => { event.preventDefault(); try { await settleDrafts(); setExpanded(false); setError(""); router.push("/settings"); } catch (cause) { setError(cause instanceof Error ? cause.message : "请先保存草稿。"); } }}><GearSix size={18} />设置</Link>{error && <p role="alert">{error}</p>}</div>}
+    {expanded && <div className={styles.dropdown} id="account-dropdown"><Link href="/me" onClick={event => void navigate(event, "/me")}><UserCircle size={18} />我的主页</Link><Link href="/settings" onClick={event => void navigate(event, "/settings")}><GearSix size={18} />设置</Link>{error && <p role="alert">{error}</p>}</div>}
   </div>;
 }
