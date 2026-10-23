@@ -9,12 +9,36 @@ import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeHighlight from "rehype-highlight";
 import { formatMarkdown, markdownShortcut } from "../lib/markdown-editing.ts";
+import { insertMarkdownImages, markdownImageRanges, readMarkdownImages } from "../lib/markdown-images.ts";
 import { markdownSchema, rehypeFallbackTitle, rehypeTextColors, safeTextColor } from "../lib/markdown-rendering.ts";
 
 function apply(value, start, end, format) {
   const edit = formatMarkdown(value, start, end, format);
   return { value: value.slice(0, edit.from) + edit.text + value.slice(edit.to), start: edit.start, end: edit.end };
 }
+
+test("image insertion preserves surrounding prose, order, escaped names and the Markdown size limit", async () => {
+  const source = "data:image/png;base64,iVBORw0KGgo=";
+  const edit = insertMarkdownImages("前文后文", 2, [{ name: "图[1]\\示例.png", source }, { name: "第二张.png", source }]);
+  const result = "前文后文".slice(0, edit.from) + edit.text + "前文后文".slice(edit.to);
+  assert.match(result, /^前文\n\n!\[图\\\[1\\\]\\\\示例\]/);
+  assert.ok(result.endsWith("\n\n后文"));
+  assert.equal(result.slice(edit.end), "后文");
+  const processor = unified().use(remarkParse).use(remarkRehype).use(rehypeSanitize, markdownSchema);
+  const tree = await processor.run(processor.parse(result));
+  const images = tree.children.flatMap(node => node.children ?? []).filter(node => node.tagName === "img");
+  assert.deepEqual(images.map(image => image.properties.alt), ["图[1]\\示例", "第二张"]);
+  assert.ok(images.every(image => image.properties.src === source));
+  const ranges = markdownImageRanges(result);
+  assert.deepEqual(ranges.map(image => image.alt), ["图[1]\\示例", "第二张"]);
+  assert.ok(ranges.every(image => result.slice(image.from, image.to).startsWith("![")));
+  assert.equal(markdownImageRanges('`![code](https://example.com/a.png)`\n\n```md\n![code](https://example.com/b.png)\n```\n\n![unsafe](javascript:alert)\n\n![ref][pic]\n\n[pic]: https://example.com/c.png').length, 1);
+  assert.equal(insertMarkdownImages("", 0, [{ name: "image.png", source }]).from, 0);
+  assert.throws(() => insertMarkdownImages("字".repeat(4 * 1024 * 1024), 0, [{ name: "image.png", source }]), /10 MB/);
+  await assert.rejects(readMarkdownImages([{ type: "image/svg+xml", size: 10 }]), /5 MB/);
+  await assert.rejects(readMarkdownImages([{ type: "image/png", size: 6 * 1024 * 1024 }]), /5 MB/);
+  await assert.rejects(readMarkdownImages(Array(2).fill({ type: "image/png", size: 5 * 1024 * 1024 })), /10 MB/);
+});
 
 test("生成笔记的来源标记不会替代标题，已有 Markdown/HTML 标题不重复", async () => {
   const processor = unified().use(remarkParse).use(remarkRehype, { allowDangerousHtml: true }).use(rehypeRaw).use(rehypeSanitize, markdownSchema).use(rehypeFallbackTitle, "状态码 <示例>");

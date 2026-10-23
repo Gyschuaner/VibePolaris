@@ -1,20 +1,22 @@
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import { MarkdownDocument } from "./MarkdownDocument";
 import { CompletingTextarea } from "./CompletingTextarea";
+import type { MarkdownField } from "./MarkdownSource";
 import styles from "./CanvasWorkspace.module.css";
 
 export function MarkdownEditor({ markdown, title, fallbackTitle, onChange, onSave }: { markdown: string; title: string; fallbackTitle?: string; onChange: (value: string) => void; onSave: () => void }) {
   const container = useRef<HTMLElement>(null), dragging = useRef<number | null>(null);
   const [split, setSplit] = useState(50), [minimum, setMinimum] = useState(25);
   const [view, setView] = useState<"edit" | "preview">("edit");
+  const editor = useRef<MarkdownField>(null);
   const selection = useRef({ start: 0, end: 0, scroll: 0 });
   function switchView(next: "edit" | "preview") {
-    const field = container.current?.querySelector("textarea");
-    if (view === "edit" && field) selection.current = { start: field.selectionStart, end: field.selectionEnd, scroll: field.scrollTop };
+    const field = editor.current;
+    if (view === "edit" && field) selection.current = { start: field.selectionStart, end: field.selectionEnd, scroll: field.scrollDOM.scrollTop };
     setView(next);
     if (next === "edit") requestAnimationFrame(() => {
-      field?.focus({ preventScroll: true }); field?.setSelectionRange(selection.current.start, selection.current.end);
-      if (field) field.scrollTop = selection.current.scroll;
+      field?.focus(); field?.setSelectionRange(selection.current.start, selection.current.end);
+      if (field) field.scrollDOM.scrollTop = selection.current.scroll;
     });
   }
   useEffect(() => {
@@ -48,7 +50,7 @@ export function MarkdownEditor({ markdown, title, fallbackTitle, onChange, onSav
     <div className={styles.editorPanes}>
     <section id="markdown-source" className={styles.sourcePane} aria-label="Markdown 编辑" data-pointer-native>
       <div className={styles.paneLabel}>Markdown</div>
-      <CompletingTextarea markdown={markdown} title={title} onChange={onChange} onSave={onSave} />
+      <CompletingTextarea editorRef={editor} markdown={markdown} title={title} onChange={onChange} onSave={onSave} />
     </section>
     <div className={styles.splitter} data-pointer-native role="separator" tabIndex={0} aria-label="调整编辑与预览比例" aria-orientation="vertical" aria-controls="markdown-source markdown-preview" aria-valuemin={minimum} aria-valuemax={100 - minimum} aria-valuenow={Math.round(split)} aria-valuetext={`Markdown ${Math.round(split)}%，预览 ${Math.round(100 - split)}%`}
       onPointerDown={event => { if (event.button !== 0) return; event.preventDefault(); event.currentTarget.focus(); event.currentTarget.setPointerCapture(event.pointerId); dragging.current = event.pointerId; }}

@@ -5,15 +5,30 @@
 .toolbar button, .color { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 29px; height: 29px; border-radius: 4px; color: var(--muted); }
 .toolbar button:hover, .color:hover { background: var(--tint); color: var(--accent-text); }
 .toolbar button:focus-visible, .color:focus-within { outline: 2px solid var(--accent); outline-offset: -2px; }
+.toolbar .imageButton { color: var(--accent-text); }
+.toolbar button:disabled { opacity: .5; cursor: default; }
+.imageMessage { display: flex; align-items: center; gap: 8px; padding: 0 24px 8px; color: var(--muted); font-size: 13px; }
+.imageMessage button { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; min-height: 32px; }
+.imageDrop { position: absolute; inset: 8px; z-index: 4; display: grid; place-items: center; border: 1px dashed var(--accent); border-radius: 6px; background: color-mix(in srgb, var(--surface) 94%, transparent); color: var(--accent-text); pointer-events: none; }
 .color { position: relative; cursor: pointer; }
 .color select { position: absolute; inset: 0; width: 100%; opacity: 0; cursor: pointer; }
 .color option { background: var(--surface); color: var(--ink); }
 .touchCompletion { display: none; flex: none; align-items: center; margin-left: auto; padding-left: 6px; border-left: 1px solid var(--hairline); }
 .touchCompletion button { width: auto; min-width: 44px; height: 44px; gap: 5px; padding: 0 9px; white-space: nowrap; color: var(--accent-text); font-size: 13px; touch-action: manipulation; }
 .touchCompletion button:disabled { color: var(--faint); background: none; cursor: default; }
-.textarea { position: relative; height: 100%; white-space: pre-wrap; }
-.body .textarea, .body .mirror { padding-bottom: 160px; }
-.mirror { position: absolute; inset: 0; height: 100%; margin: 0; overflow: hidden; white-space: pre-wrap; color: transparent; pointer-events: none; user-select: none; }
+.source { height: 100%; min-height: 0; }
+.source :global(.cm-editor) { height: 100%; background: transparent; color: var(--ink); }
+.source :global(.cm-focused) { outline: none; }
+.source :global(.cm-scroller) { overflow: auto; font-family: ui-monospace, SFMono-Regular, "PingFang SC", monospace; font-size: 16px; line-height: 1.9; }
+.source :global(.cm-content) { padding: 22px 28px 160px; overflow-wrap: anywhere; caret-color: var(--accent); }
+.source :global(.cm-line) { padding: 0 4px; }
+.source :global(.cm-cursor) { border-left-color: var(--accent); }
+.source :global(.cm-placeholder) { color: var(--faint); }
+.sourceImage { display: inline-block; position: relative; max-width: 100%; vertical-align: middle; border-radius: 5px; overflow: hidden; line-height: 0; }
+.sourceImage img { display: block; max-width: 100%; max-height: 420px; height: auto; object-fit: contain; border-radius: 5px; }
+.imageActions { display: flex; gap: 4px; position: absolute; top: 6px; right: 6px; opacity: 0; }
+.sourceImage:hover .imageActions, .sourceImage:focus-within .imageActions { opacity: 1; }
+.imageActions button { min-height: 32px; padding: 0 8px; border: 1px solid var(--hairline); border-radius: 5px; background: var(--surface); color: var(--ink); font-family: inherit; font-size: 12px; line-height: 1.5; }
 .ghost { color: var(--muted); opacity: .72; }
 .body .hint { display: inline; margin-left: 9px; padding: 0; color: var(--faint); font-size: 12px !important; line-height: inherit; white-space: nowrap; pointer-events: auto; cursor: pointer; animation: appear .2s ease-out; }
 .body .hint:hover, .body .hint:focus-visible { color: var(--accent-text); }
@@ -24,11 +39,10 @@
 .actions { display: flex; gap: 15px; align-items: center; }
 .actions button:first-child, .actions a { color: var(--accent-text); }
 .actions button, .actions a { font-size: 12px; }
-.candidate { white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, "PingFang SC", monospace; font-size: 15px; }
 .srOnly { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 @keyframes appear { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .hint { animation: none; } }
-@media (max-width: 600px) { .toolbar { padding: 0 16px 4px; } }
+@media (max-width: 600px) { .toolbar { padding: 0 16px 4px; } .source :global(.cm-content) { padding: 14px 18px 160px; } }
 @media (max-width: 1024px), (any-pointer: coarse) {
   .touchCompletion { display: flex; }
   .body .hint { display: none; }
@@ -40,4 +54,6 @@
  .toolbar{padding-inline:12px;gap:4px}
  .actions button,.actions a{display:inline-flex;align-items:center;min-height:44px;padding-inline:8px}
  .floating{max-height:calc(100% - 16px);overflow:auto}
+ .imageActions{opacity:1}
+ .imageActions button{min-height:44px}
 }
