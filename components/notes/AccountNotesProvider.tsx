@@ -10,6 +10,7 @@ import { sameValue } from "@/lib/canvas-sync";
 import { cloudPollInterval } from "@/lib/canvas-cloud";
 import { NotesProvider, type NotesStorage } from "./NotesProvider";
 import styles from "./ReadingNotes.module.css";
+import { siteModules } from "@/lib/site-modules";
 
 async function requestNotes(owner: string, base: NotesSnapshot, notes?: ReadingNote[]) {
   const response = await fetch("/api/account/notes", {
@@ -25,6 +26,7 @@ async function requestNotes(owner: string, base: NotesSnapshot, notes?: ReadingN
 
 export function AccountNotesProvider({ children }: { children: ReactNode }) {
   const { account, ready, openAccount } = useAccount();
+  if (!siteModules.notes) return <NotesProvider enabled={false}>{children}</NotesProvider>;
   if (!account) return <NotesProvider enabled={ready} syncControls={<div className={styles.syncControls}><button onClick={openAccount}>登录并选择云端同步</button></div>}>{children}</NotesProvider>;
   return <AccountNotebook key={account.id} owner={account.id}>{children}</AccountNotebook>;
 }

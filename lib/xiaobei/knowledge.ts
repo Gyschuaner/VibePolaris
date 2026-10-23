@@ -5,11 +5,12 @@ import { getNewsArticle, getPublishedTerm, newsArticles, publishedTerms, taxonom
 import { XiaobeiError } from "./store.ts";
 import { retrievalChunk } from "./retrieval.ts";
 import { describePage } from "./page-context.ts";
+import { siteModules } from "../site-modules.ts";
 
 export const platformGuide = `VibePolaris（Vibe指北）是技术概念词典与概念星图。首页可搜索、按分类探索和打开词条。
-词条支持关联阅读及互动演示，HTML/CSS/JavaScript词条可进入对应教程。导航“我的笔记”按钮打开抽屉，管理划线、批注和随手记（没有独立的笔记网址）。未登录时保存在此浏览器；登录后笔记按账号隔离，可手动同步或开启自动云同步。原来的本地笔记由用户点击合并到账号，原件保留，重复内容跳过，同时修改的不同版本均保留。
+词条支持关联阅读及互动演示，HTML/CSS/JavaScript词条可进入对应教程。${siteModules.notes ? "点击头像进入“我的主页”（/me），再点击“我的笔记”打开抽屉，管理划线、批注和随手记。未登录时保存在此浏览器；登录后笔记按账号隔离，可手动同步或开启自动云同步。原来的本地笔记由用户点击合并到账号，原件保留，重复内容跳过，同时修改的不同版本均保留。" : "我的笔记暂未开放。"}
 “知识画布”可摆放和连接节点、导入导出Markdown、打开文档阅读或编辑。阅读时可切换笔记模式，划线、写旁注；草稿与文章的批注分别保存，跟随所属画布同步。游客画布留在本浏览器；登录后可选择保存到账号，账号画布支持手动及自动同步。设置页管理头像、画布和笔记各自的自动同步开关，以及三个独立的小北开关：智能补全、整理成文、扩展节点。整理和扩展由用户点击触发，不扣积分；整理保留草稿并生成独立文章，扩展的候选节点由用户接受或舍弃。画布功能只会把用户所选的正文发送给对应模型请求；当前聊天不能自行读取私人画布或核查其保存状态。
-主题入口可调整背景及主题色。新闻星历只包含已发布并经过人工确认的站内新闻，草稿和外部实时内容不在小北的知识范围内。小北是全站悬浮星星，需要有效邀请码授权，可直接激活或绑定账号使用；每码每天100积分，每日北京时间零点恢复。
+主题入口可调整背景及主题色。${siteModules.news ? "新闻星历只包含已发布并经过人工确认的站内新闻，草稿和外部实时内容不在小北的知识范围内。" : "新闻栏目暂未开放，不提供新闻内容与新闻链接。"}小北是全站悬浮星星，需要有效邀请码授权，可直接激活或绑定账号使用；每码每天100积分，每日北京时间零点恢复。
 小北右上角可以新建对话或打开历史，切回旧对话可继续聊。绑定账号后历史随账号恢复；未绑定时按邀请码与当前浏览器隔离，换浏览器或清除Cookie不能找回。共享邀请码不代表可以读取其他浏览器的历史。`;
 export const toolDefinitions = [
   { type: "function", function: { name: "search_terms", description: "搜索已发布的技术词条，返回摘要及可读取的slug。可换用词名、同义词或短关键词。", parameters: { type: "object", properties: { query: { type: "string" } }, required: ["query"], additionalProperties: false } } },
@@ -31,6 +32,7 @@ export function searchTerms(query: string) {
 }
 
 export function searchNews(query: string) {
+  if (!siteModules.news) return [];
   const normalized = query.toLowerCase().trim();
   const words = normalized.split(/\s+/).filter(Boolean);
   if (!normalized) return [];
@@ -59,6 +61,7 @@ export function searchNews(query: string) {
 }
 
 export function readNews(slug: string, offset = 0) {
+  if (!siteModules.news) return { error: "新闻栏目暂未开放。" };
   const article = getNewsArticle(slug);
   if (!article) return { error: "找不到已发布的新闻，请先搜索。" };
   const text = article.body;

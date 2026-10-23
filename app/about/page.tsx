@@ -3,6 +3,8 @@ import Link from "next/link";
 
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { redirect } from "next/navigation";
+import { siteHome, siteModules } from "@/lib/site-modules";
 
 export const metadata: Metadata = {
   title: "关于",
@@ -10,6 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
+  if (!siteModules.about) redirect(siteHome());
   return (
     <>
       <SiteHeader />
