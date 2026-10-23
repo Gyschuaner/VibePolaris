@@ -21,3 +21,21 @@ BUG-2B73E90F：CodeMirror 的滚动处理器还接收布局合成事件，导致
 拖放处理通过浏览器测试页的 File／DataTransfer／drop 事件验证，编辑器和预览显示 dropped 图片，正文保留。浏览器工具的跨 iframe 鼠标拖动返回目标不可用，因此未声称完成 Finder 拖文件的实机验证。未做手机／平板真机软键盘和系统截图剪贴板验证；最小复核是在设备上粘贴截图或选相册图片，确认原位显示，再撤销、切换阅读并刷新。
 
 本机指定的 Obsidian `D:/Obsidian/gysnote` 不存在，跳过。DP 专用 Agent 登录失效，使用同一官方 CLI 记录需求、任务、测试与发布。无飞书 CLI，本次维护代码相关的版本化记录及 DP 索引。
+
+## 集成与发布
+
+dev PR [#575](https://github.com/Gyschuaner/VibePolaris/pull/575) 合并为 `835337ad871ec88e4a6e734e50c4236f2a026be2`。同树优化构建在 3107 部署并通过定向浏览器验收：四张图片完整、补全接受与撤销正常，另一个浏览器存储域从账号云端读取四张图片。
+
+生产候选从 main 单独切出，未包含其他 dev 功能。候选 `b15301828bf05b47cd9e44e8ad095f2afc50f2ab` 构建通过；PR [#576](https://github.com/Gyschuaner/VibePolaris/pull/576) 合并的 `1efe6a8f5d5b43a76b9c187f6046b895c24a5b5a` 与候选同树。2026-10-23 03:19:33 UTC 切换生产，BUILD_ID 为 `ZnjB_fK5zauN38RxroRJC`。
+
+发布以不可变 `ad8cd024` 镜像提供原 Linux 依赖，锁文件已有依赖保持不变，只补入新增的 12 个纯 JavaScript 包。校验归档、文件清单、依赖和隔离启动后，在线备份 SQLite 并通过 quick_check，沿用 `vibepolaris_xiaobei_data` 卷，补全扣费继续关闭。主站、新闻、画布、设置与会话接口返回 200；未登录的私有画布及笔记接口返回 401。
+
+构建导出阶段曾耗尽剩余磁盘。回收本次已复制完毕的构建输入，并确认无任何容器引用后，删除旧镜像 `3bec8041`、`02584f99`，最终可用空间 3.4 GB；当前镜像、回滚镜像、数据卷和其他服务均保留。后续同类发布前至少预留 6 GB，不能只按解压包三倍估算。
+
+正式站合成账号上传和粘贴两张 PNG，编辑内、预览、阅读和阅读刷新均显示完整，重新编辑保留图片；独立 API 确认云端正文含两张内嵌图片及原文。截图见下。测试会话已退出，游客画布未更改。正式站隐藏页视口工具未能从 1280 改成 390，因此未将这次操作计作窄屏通过，窄屏结论沿用本地／dev 的证据。
+
+![生产编辑区与预览直接显示图片](VBP-118-markdown-images/production-editor.png)
+
+发布目录 `/opt/vibepolaris/releases/20261023T031349Z-1efe6a8f`；备份 `/opt/vibepolaris/backups/20261023T031349Z-from-ad8cd024`。运行发布目录内的 `rollback.sh` 可回滚至 `ad8cd024490fb6f071a912bd34989569ada7a891`，保留当前数据卷，不覆盖发布后新增内容。数据库快照仅用于单独的数据恢复。
+
+DP VBP-118 为 released，研发任务完成，BUG-2B73E90F 已关闭。dev 计划 `7b3d5980-e623-4580-81d4-f55750eabca9` 和生产桌面计划 `13e83da6-10f7-48eb-8260-a013a13de1fb` 均已完成，用例通过。实际构建、部署与校验事实保存在同目录 `release-checks.json`。
