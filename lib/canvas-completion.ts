@@ -19,7 +19,7 @@ export function completionFence(markdown: string) {
   return active;
 }
 export function completionContext(markdown: string, cursor: number, title: string) {
-  const before = markdown.slice(0, cursor);
+  const before = markdown.slice(0, cursor).replace(/data:image\/[^\s)>"']+/g, "[内嵌图片]");
   const outline = before.match(/^#{1,6} .+$/gm)?.join("\n") || "";
   return { title: title.slice(0, 160), outline: outline.slice(-1500), prefix: before.slice(-COMPLETION_PREFIX_LIMIT), fence: completionFence(before) };
 }
