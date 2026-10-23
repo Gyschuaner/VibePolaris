@@ -1,0 +1,54 @@
+{
+  "browser": "Google Chrome, Playwright",
+  "base": "http://localhost:3118",
+  "checks": [
+    "Desktop navigation has graph and canvas only; avatar opens personal home; guest note survives reload.",
+    "Settings returns to home; closed news, news detail and about redirect to /; sitemap omits closed sections.",
+    "Synthetic account home and avatar menu work; account notes and original guest notes remain isolated through logout.",
+    "390px graph/canvas/home navigation and notes work; menu has no closed sections; no horizontal overflow; tab targets are at least 44px."
+  ],
+  "screenshots": [
+    "desktop-home.png",
+    "mobile-home.png"
+  ],
+  "redirects": {
+    "/news": {
+      "status": 307,
+      "location": "/"
+    },
+    "/news/deepseek-v41-flash-1017-search-release-20261017": {
+      "status": 307,
+      "location": "/"
+    },
+    "/about": {
+      "status": 307,
+      "location": "/"
+    }
+  },
+  "mobile": {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "dimensions": {
+      "viewport": 390,
+      "scroll": 390
+    },
+    "tabs": [
+      {
+        "width": 122,
+        "height": 53
+      },
+      {
+        "width": 122,
+        "height": 53
+      },
+      {
+        "width": 122,
+        "height": 53
+      }
+    ]
+  },
+  "pageErrors": [],
+  "status": "passed"
+}

@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
-import { ArrowSquareOut, DownloadSimple, MagnifyingGlass, NotePencil, Plus, Trash, UploadSimple, X } from "@phosphor-icons/react";
+import { ArrowSquareOut, DownloadSimple, MagnifyingGlass, Plus, Trash, UploadSimple, X } from "@phosphor-icons/react";
+import { siteModules } from "@/lib/site-modules";
 import { parseNotesBackup, type NoteAnchor, type NoteSource, type ReadingNote } from "@/lib/reading-notes";
 import { deleteNote, importNotes, readNotes, writeNote } from "@/lib/reading-notes-storage";
 import styles from "./ReadingNotes.module.css";
@@ -40,16 +41,12 @@ export function NoteEditor({ note, autoFocus = false }: { note: ReadingNote; aut
   useEffect(() => { if (autoFocus) editor.current?.focus({ preventScroll: true }); }, [autoFocus]);
   return <><textarea ref={editor} className={styles.editor} data-note-body aria-label="笔记内容" placeholder="写下你的理解…" value={note.body} maxLength={20000} rows={2} onChange={event => update(note, event.target.value)} onBlur={() => flush(note.id)} />{statuses[note.id] === "error" && <p className={styles.error} role="alert">未保存<button onClick={() => retry(note.id)}>重试</button></p>}</>;
 }
-export function NotesButton({ compact = false }: { compact?: boolean }) {
-  const { open, isOpen } = useNotes();
-  return <button className={compact ? styles.mobileNav : styles.navButton} onClick={() => open()} aria-label="我的笔记" aria-haspopup="dialog" aria-expanded={isOpen} aria-controls="notes-library" data-nav-active={isOpen}>{compact ? <NotePencil size={22} /> : "我的笔记"}</button>;
-}
-
 export function NotesProvider({ children, storage = browserStorage, revision, id = "notes-library", title = "我的笔记", description = "仅保存在此浏览器，不上传服务器。", syncControls, enabled = true }: {
   children: ReactNode; storage?: NotesStorage; revision?: number; id?: string; title?: string; description?: string; syncControls?: ReactNode; enabled?: boolean;
 }) {
   const [notes, setNotes] = useState<ReadingNote[]>([]), [ready, setReady] = useState(false), [storageError, setStorageError] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const libraryEnabled = id !== "notes-library" || siteModules.notes;
   const [statuses, setStatuses] = useState<Record<string, SaveStatus>>({}), [editing, setEditing] = useState<string | null>(null), [query, setQuery] = useState("");
   const [message, setMessage] = useState(""), [deleted, setDeleted] = useState<ReadingNote | null>(null), [backupStatus, setBackupStatus] = useState(""), [importing, setImporting] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null), input = useRef<HTMLInputElement>(null);
@@ -105,7 +102,7 @@ export function NotesProvider({ children, storage = browserStorage, revision, id
   }, [ready, notify, save]);
   const flush = useCallback((id: string) => { const note = pending.current.get(id); if (note) void save(note); }, [save]);
   const retry = useCallback((id: string) => { const note = latest.current.get(id); if (note) void save(note); }, [save]);
-  const open = useCallback((id?: string) => { setEditing(id ?? null); setQuery(""); setBackupStatus(""); if (!dialog.current?.open) dialog.current?.showModal(); setIsOpen(true); }, []);
+  const open = useCallback((id?: string) => { if (!libraryEnabled) return; setEditing(id ?? null); setQuery(""); setBackupStatus(""); if (!dialog.current?.open) dialog.current?.showModal(); setIsOpen(true); }, [libraryEnabled]);
   const remove = useCallback(async (note: ReadingNote) => {
     clearTimeout(timers.current.get(note.id));
     try {
@@ -141,7 +138,7 @@ export function NotesProvider({ children, storage = browserStorage, revision, id
   return <NotesContext.Provider value={{ notes, ready, storageError, statuses, add, update, flush, remove, retry, reload, open, isOpen, notify }}>
     {children}
     {(deleted || message) && <div className={styles.toast} data-note-ui>{feedback}</div>}
-    <dialog ref={dialog} id={id} className={styles.library} data-note-ui aria-labelledby={`${id}-title`} onClose={() => setIsOpen(false)}>
+    {libraryEnabled && <dialog ref={dialog} id={id} className={styles.library} data-note-ui aria-labelledby={`${id}-title`} onClose={() => setIsOpen(false)}>
       <header><h2 id={`${id}-title`}>{title}</h2><button aria-label="关闭我的笔记" onClick={() => dialog.current?.close()}><X size={24}/></button></header>
       <p className={styles.privacy}>{description}</p>
       {syncControls}
@@ -149,6 +146,6 @@ export function NotesProvider({ children, storage = browserStorage, revision, id
       <div className={styles.libraryTools}><label className={styles.search}><MagnifyingGlass size={20}/><input aria-label="搜索笔记和原文" placeholder="搜索笔记、原文或文章" value={query} onChange={event => {setQuery(event.target.value);setEditing(null);}}/></label><button disabled={!ready} onClick={() => {const note=add(null);if(note)open(note.id);}}><Plus size={18}/>新建</button><button disabled={!ready} onClick={exportBackup}><DownloadSimple size={18}/>导出备份</button><button disabled={!ready || importing} onClick={() => input.current?.click()}><UploadSimple size={18}/>{importing ? "导入中…" : "导入"}</button><input ref={input} hidden type="file" accept=".json,application/json" onChange={importBackup}/></div>
       {active ? <div className={styles.libraryEditor} key={active.id}><button className={styles.back} onClick={() => setEditing(null)}>返回全部笔记</button><NoteEditor note={active} autoFocus/>{active.anchor && <blockquote>{active.anchor.exact}</blockquote>}<footer>{active.source && <Link href={`${active.source.path}${active.anchor ? `#note-${encodeURIComponent(active.id)}` : ""}`} onClick={event => {dialog.current?.close();if(active.anchor && active.source?.path === `${location.pathname}${location.search}`){event.preventDefault();history.pushState(null,"",`#note-${encodeURIComponent(active.id)}`);window.dispatchEvent(new HashChangeEvent("hashchange"));}}}>查看原文 · {active.source.title}<ArrowSquareOut size={16}/></Link>}<button aria-label="删除这条笔记" onClick={() => remove(active)}><Trash size={18}/></button><NoteTime value={active.updatedAt}/></footer></div> : <div className={styles.libraryList}>{filtered.length ? filtered.map(note => <div key={note.id} className={styles.libraryItem}><button onClick={() => open(note.id)}><p>{note.body || (note.anchor ? "划线摘录" : "空白随手记")}</p>{note.anchor && <blockquote>{note.anchor.exact}</blockquote>}<small>{note.source?.title ?? "随手记"} · {new Date(note.updatedAt).toLocaleDateString("zh-CN")}</small></button><button aria-label={`删除笔记：${note.body.slice(0,18) || "划线摘录"}`} onClick={() => remove(note)}><Trash size={18}/></button></div>) : <p className={styles.empty}>{query ? "没有找到匹配的笔记。" : ready ? "选中正文中的一句话，或直接记一条。" : "正在读取本地笔记…"}</p>}</div>}
       {feedback}{storage === browserStorage && <p className={styles.backupHint}>清除浏览器的网站数据会删除笔记。换浏览器前，请先导出备份。</p>}<p className={styles.backupHint} role="status">{backupStatus}</p>
-    </dialog>
+    </dialog>}
   </NotesContext.Provider>;
 }
