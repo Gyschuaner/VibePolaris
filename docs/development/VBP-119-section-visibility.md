@@ -1,6 +1,6 @@
 # VBP-119 板块开关与个人主页
 
-2026-10-23，负责人顾毅盛。用户要求五个板块有独立开关，当前先隐藏新闻、关于，并将我的笔记放到用户主页。本次范围为实现和 dev 集成，未授权生产发布。
+2026-10-23，负责人顾毅盛。用户要求五个板块有独立开关，当前先隐藏新闻、关于，并将我的笔记放到用户主页。完成 dev 集成后，用户进一步明确授权直接上线，新闻和关于保持隐藏。
 
 ## 配置与入口
 
@@ -43,8 +43,28 @@
 
 ## 集成与运行
 
-从 `origin/dev` 的 `8fd49ad0` 创建 `feat/VBP-119-section-visibility`。优化构建预览在 `http://localhost:3118/me`；使用独立的本机测试数据库，不接入生产持久卷。Git 合并及本机 dev 部署的精确提交以 DP 部署记录为准。
+从 `origin/dev` 的 `8fd49ad0` 创建 `feat/VBP-119-section-visibility`。PR [#579](https://github.com/Gyschuaner/VibePolaris/pull/579) 合入 dev 为 `bda2eb3ec93ebcb022e66c9ef5dc929517ea44df`，同树优化构建在 `http://localhost:3118/me` 完成 dev 集成验证；使用独立的本机测试数据库，不接入生产持久卷。
 
-无数据迁移，回退 VBP-119 代码并重新构建即可恢复原入口；不需要恢复笔记数据。未部署远端 dev 或生产，未合并 main。
+无数据迁移，回退 VBP-119 代码并重新构建即可恢复原入口；不需要恢复笔记数据。dev 集成使用本机服务，未部署远端 dev。
 
 DP 专用 Agent 登录失效，已通过同一官方 CLI 完成业务记录。指定 Obsidian 库 `D:/Obsidian/gysnote` 在本机不存在，跳过。此次只维护与代码紧密相关的版本化研发记录及 DP 索引，没有新建飞书正式方案。
+
+## 生产发布
+
+用户授权后，从 main 的 `d4371f88` 单独挑入 VBP-119；候选 `43461404bf3564f55c8bdfc1fbe965b51c89aad1` 的 `npm run build` 通过。生产 PR [#580](https://github.com/Gyschuaner/VibePolaris/pull/580) 合并为 `f79775932065894e7cfc0d49110bb24cacb18511`，与候选同树，Build ID 为 `jOrlyU0AyDtjMPglLLb1q`。未把 dev 的其他差异带入生产。
+
+2026-10-23 13:12:48 UTC（北京时间 21:12:48）切换生产。五个开关保持本记录上表取值，新闻、关于关闭。沿用上一版不可变镜像的 Linux 依赖，只替换经过校验的优化构建；依赖锁、静态资源、部署配置及运维辅助代码与上一版一致。归档校验、9,209 个文件的清单校验和无生产数据挂载的隔离启动均通过。发布前回收一天以上未使用的构建缓存，释放约 3.9 GB，达到至少 6 GB 的空间要求；当前镜像、回滚镜像和数据卷均保留，发布后可用空间约 5 GB。
+
+SQLite 在线备份并通过 `quick_check`，沿用 `vibepolaris_xiaobei_data` 数据卷，无数据库迁移，补全扣费继续关闭。健康状态为 healthy，首页、画布、个人主页、设置和会话接口返回 200；未登录的私有画布接口返回 401。
+
+正式站 Google Chrome 桌面和 390×844 浏览器验证通过：头像进入主页、游客笔记新建与刷新、设置返回、合成账号笔记保存及退出后恢复游客记录；手机星图／画布／我的跳转、笔记打开与更多菜单均正常。底部入口各 122×53px，页面及滚动宽度均为 390px，无页面错误。新闻列表、既有新闻详情与关于均返回 307 到 `/`，导航、更多菜单及 sitemap 均不包含关闭板块。仅操作独立测试浏览器与合成账号，未访问用户已有笔记，测试会话已退出，未调用收费模型。
+
+生产定向用例 `fc5cad74-33d6-4378-a430-d0f414ae6d59`，计划 `d5b02125-d4db-4934-88cc-48b7c2bb508a`。实际证据：[生产浏览器结果](VBP-119-section-visibility/production-browser.json)、[生产发布事实](VBP-119-section-visibility/release-checks.json)。
+
+![生产桌面个人主页](VBP-119-section-visibility/production-desktop-home.png)
+
+![生产手机个人主页](VBP-119-section-visibility/production-mobile-home.png)
+
+发布目录 `/opt/vibepolaris/releases/20261023T130942Z-f7977593`；备份 `/opt/vibepolaris/backups/20261023T130942Z-from-1efe6a8f`。执行发布目录内的 `rollback.sh` 可恢复上一版 `vibepolaris:1efe6a8f5d5b43a76b9c187f6046b895c24a5b5a`，并保留当前持久卷及发布后新增记录。数据库快照只用于单独的数据恢复，不在应用回滚时覆盖线上数据库。
+
+DP VBP-119 已为 `released`，研发与生产发布任务均完成；生产计划已完成且 1/1 通过。生产部署批次 `vbp119-production-f7977593`，精确提交、备份和入口见 DP 部署记录。
