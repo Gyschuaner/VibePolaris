@@ -1,0 +1,90 @@
+/*
+MIT License
+
+Copyright (c) 2021 CSS Loaders
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Source: https://github.com/vineethtrv/css-loader/blob/e9078959e48c39b97613f333c14aac1c3d765c1f/src/loaders/skeleton/skeleton01.module.css
+VibePolaris: namespaced selectors/keyframes, playback scale, reduced-motion support.
+*/
+.vp-motion-loaders-skeleton01 {
+  --color-1: #fff;
+  --color-2: rgba(255, 255, 255, 0.5);
+  --color-3: #ddd;
+  --size: 1px;
+
+  width: calc(320 * var(--size));
+  height: calc(150 * var(--size));
+  margin: auto;
+  display: block;
+  position: relative;
+  background: var(--color-1);
+  box-sizing: border-box;
+}
+.vp-motion-loaders-skeleton01::after {
+  content: '';
+  width: calc(100% - calc(30 * var(--size)));
+  height: calc(100% - calc(30 * var(--size)));
+  top: calc(15 * var(--size));
+  left: calc(15 * var(--size));
+  position: absolute;
+  background-image:
+    linear-gradient(100deg, transparent, var(--color-2) 50%, transparent 80%),
+    linear-gradient(var(--color-3) calc(56 * var(--size)), transparent 0),
+    linear-gradient(var(--color-3) calc(24 * var(--size)), transparent 0),
+    linear-gradient(var(--color-3) calc(18 * var(--size)), transparent 0),
+    linear-gradient(var(--color-3) calc(66 * var(--size)), transparent 0);
+  background-repeat: no-repeat;
+  background-size:
+    calc(75 * var(--size)) calc(130 * var(--size)),
+    calc(55 * var(--size)) calc(56 * var(--size)),
+    calc(160 * var(--size)) calc(30 * var(--size)),
+    calc(260 * var(--size)) calc(20 * var(--size)),
+    calc(290 * var(--size)) calc(56 * var(--size));
+  background-position:
+    0% 0,
+    0 0,
+    calc(70 * var(--size)) calc(5 * var(--size)),
+    calc(70 * var(--size)) calc(38 * var(--size)),
+    0 calc(66 * var(--size));
+  box-sizing: border-box;
+  animation: vp-motion-loaders-skeleton01-animloader calc(1s * var(--motion-scale, 1)) linear infinite;
+}
+
+@keyframes vp-motion-loaders-skeleton01-animloader {
+  0% {
+    background-position:
+      0% 0,
+      0 0,
+      calc(70 * var(--size)) calc(5 * var(--size)),
+      calc(70 * var(--size)) calc(38 * var(--size)),
+      0 calc(66 * var(--size));
+  }
+  100% {
+    background-position:
+      150% 0,
+      0 0,
+      calc(70 * var(--size)) calc(5 * var(--size)),
+      calc(70 * var(--size)) calc(38 * var(--size)),
+      0 calc(66 * var(--size));
+  }
+}
+
+@media(prefers-reduced-motion:reduce){.vp-motion-loaders-skeleton01:not([data-motion-opt-in=true]),.vp-motion-loaders-skeleton01:not([data-motion-opt-in=true])::before,.vp-motion-loaders-skeleton01:not([data-motion-opt-in=true])::after{animation:none!important}}

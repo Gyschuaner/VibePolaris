@@ -1,6 +1,6 @@
 # VBP-120 组件库
 
-用户确认采用页面 1 作为陈列首页，进入组件或素材后使用精简详情。负责人顾毅盛；本次范围为实现、定向验收与 dev 集成。
+用户确认采用页面 1 作为陈列首页，进入组件或素材后使用精简详情。负责人顾毅盛；完成实现、定向验收与 dev 集成后，用户明确授权生产发布，已于 2026-10-23 上线。
 
 ## 路由与内容
 
@@ -29,3 +29,13 @@ DP 用例 `bb354285-b334-41ca-8bba-db22bd6245a7`，计划 `a9c2375f-8457-446b-b4
 没有新增依赖或数据结构。回退本需求的合并提交并重新构建即可恢复旧入口；也可先关闭 `library` 开关后重新构建以隐藏板块。无需恢复业务数据。
 
 本机 node_modules 最初使用跨工作树符号链接导致 Turbopack 构建失败，已改为本地副本，最终构建成功；没有修改依赖清单。DP 专用 Agent 不可用时使用相同官方 CLI 完成记录。指定的 Obsidian 库 `D:/Obsidian/gysnote` 在本机不存在，跳过；本次只维护与代码关联的研发记录及 DP 文档索引，不另建飞书方案。
+
+## 生产发布（2026-10-23）
+
+生产地址：https://vibe.chuansgu.top/library 。dev 的 PR #583 已集成；发布分支 `feat/VBP-120-component-library-production` 仅选取本需求两个提交，通过 [PR #584](https://github.com/Gyschuaner/VibePolaris/pull/584) 合并 main，避免带入 dev 中无关历史差异。生产提交 `c4cc3730428404eb7f52b88c430989aa9dd8cbbb`，Build ID `acEUMF8pwbEgpMnKg0jWM`，DP 部署批次 `vbp120-production-c4cc3730`。上述 dev 阶段“未合并 main”仅描述当时状态。
+
+上线前归档旧容器和配置，并对持久 SQLite 执行在线备份，`quick_check=ok`。备份目录 `/opt/vibepolaris/backups/20261023T140554Z-from-f7977593`，权限受限；发布目录 `/opt/vibepolaris/releases/20261023T140554Z-c4cc3730`。镜像切换保留数据卷 `vibepolaris_xiaobei_data`，补全收费开关保持关闭。服务器仅清理未使用的 Docker 构建缓存以腾出空间，保留生产、回退镜像和用户数据。
+
+容器健康检查正常；首页、库首页、详情、PNG/SVG、画布、个人主页、设置和账号会话均返回 200；未登录画布接口返回预期的 401。真实线上浏览器验证六项内容、组件筛选和导航搜索、详情切换及复制、返回保留筛选；控制台 warn/error 为空。生产用例 `918b1c3f-99cd-4f9f-9093-6c13129e05ed`，计划 `051532ad-8539-434f-8409-f0a7f16310a8`，1/1 通过；需求状态 released。证据见 [发布回执](VBP-120-component-library/production-release.json) 和 [线上详情](VBP-120-component-library/production-detail.png)。
+
+回退执行发布目录内的 `rollback.sh`，恢复上一镜像 `vibepolaris:f79775932065894e7cfc0d49110bb24cacb18511` 和 current 链接，随后检查健康与入口。没有数据库结构变更，不用旧备份覆盖发布后新增的用户数据。
