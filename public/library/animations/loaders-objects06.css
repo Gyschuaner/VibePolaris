@@ -1,0 +1,70 @@
+/*
+MIT License
+
+Copyright (c) 2021 CSS Loaders
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Source: https://github.com/vineethtrv/css-loader/blob/e9078959e48c39b97613f333c14aac1c3d765c1f/src/loaders/objects/objects06.module.css
+VibePolaris: namespaced selectors/keyframes, playback scale, reduced-motion support.
+*/
+.vp-motion-loaders-objects06 {
+  --color-1: #ffd700;
+  --color-2: #daa520;
+  --color-3: rgba(0, 0, 0, 0.1);
+  --size: 1px;
+
+  transform: translateZ(calc(1 * var(--size)));
+}
+.vp-motion-loaders-objects06:after {
+  content: '$';
+  display: inline-block;
+  width: calc(48 * var(--size));
+  height: calc(48 * var(--size));
+  border-radius: 50%;
+  text-align: center;
+  line-height: calc(40 * var(--size));
+  font-size: calc(32 * var(--size));
+  font-weight: bold;
+  background: var(--color-1);
+  color: var(--color-2);
+  border: calc(4 * var(--size)) double;
+  box-sizing: border-box;
+  box-shadow: calc(2 * var(--size)) calc(2 * var(--size)) calc(2 * var(--size))
+    calc(1 * var(--size)) var(--color-3);
+  animation: vp-motion-loaders-objects06-coin-flip calc(4s * var(--motion-scale, 1)) cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+@keyframes vp-motion-loaders-objects06-coin-flip {
+  0%,
+  100% {
+    animation-timing-function: cubic-bezier(0.5, 0, 1, 0.5);
+  }
+  0% {
+    transform: rotateY(0deg);
+  }
+  50% {
+    transform: rotateY(1800deg);
+    animation-timing-function: cubic-bezier(0, 0.5, 0.5, 1);
+  }
+  100% {
+    transform: rotateY(3600deg);
+  }
+}
+
+@media(prefers-reduced-motion:reduce){.vp-motion-loaders-objects06:not([data-motion-opt-in=true]),.vp-motion-loaders-objects06:not([data-motion-opt-in=true])::before,.vp-motion-loaders-objects06:not([data-motion-opt-in=true])::after{animation:none!important}}

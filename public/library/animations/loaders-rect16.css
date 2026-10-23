@@ -1,0 +1,110 @@
+/*
+MIT License
+
+Copyright (c) 2021 CSS Loaders
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Source: https://github.com/vineethtrv/css-loader/blob/e9078959e48c39b97613f333c14aac1c3d765c1f/src/loaders/rect/rect16.module.css
+VibePolaris: namespaced selectors/keyframes, playback scale, reduced-motion support.
+*/
+.vp-motion-loaders-rect16 {
+  --color-1: rgba(255, 255, 255, 0.85);
+  --color-2: rgba(0, 0, 0, 0.15);
+  --color-3: rgba(255, 255, 255, 0);
+  --size: 1px;
+
+  width: calc(48 * var(--size));
+  height: calc(48 * var(--size));
+  display: inline-block;
+  position: relative;
+}
+.vp-motion-loaders-rect16::before {
+  content: '';
+  box-sizing: border-box;
+  width: calc(24 * var(--size));
+  height: calc(24 * var(--size));
+  position: absolute;
+  left: 0;
+  top: calc(-24 * var(--size));
+  animation: vp-motion-loaders-rect16-animloader1 calc(2s * var(--motion-scale, 1)) linear infinite alternate;
+}
+.vp-motion-loaders-rect16::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(24 * var(--size));
+  height: calc(24 * var(--size));
+  background: var(--color-1);
+  box-shadow: 0 0 calc(10 * var(--size)) var(--color-2);
+  box-sizing: border-box;
+  animation: vp-motion-loaders-rect16-animloader2 calc(2s * var(--motion-scale, 1)) linear infinite alternate;
+}
+
+@keyframes vp-motion-loaders-rect16-animloader1 {
+  0%,
+  32% {
+    box-shadow:
+      0 calc(24 * var(--size)) white,
+      calc(24 * var(--size)) calc(24 * var(--size)) var(--color-3),
+      calc(24 * var(--size)) calc(48 * var(--size)) var(--color-3),
+      0 calc(48 * var(--size)) var(--color-3);
+  }
+  33%,
+  65% {
+    box-shadow:
+      0 calc(24 * var(--size)) white,
+      calc(24 * var(--size)) calc(24 * var(--size)) white,
+      calc(24 * var(--size)) calc(48 * var(--size)) var(--color-3),
+      0 calc(48 * var(--size)) var(--color-3);
+  }
+  66%,
+  99% {
+    box-shadow:
+      0 calc(24 * var(--size)) white,
+      calc(24 * var(--size)) calc(24 * var(--size)) white,
+      calc(24 * var(--size)) calc(48 * var(--size)) white,
+      0 calc(48 * var(--size)) var(--color-3);
+  }
+  100% {
+    box-shadow:
+      0 calc(24 * var(--size)) white,
+      calc(24 * var(--size)) calc(24 * var(--size)) white,
+      calc(24 * var(--size)) calc(48 * var(--size)) white,
+      0 calc(48 * var(--size)) white;
+  }
+}
+
+@keyframes vp-motion-loaders-rect16-animloader2 {
+  0% {
+    transform: translate(0, 0) rotateX(0) rotateY(0);
+  }
+  33% {
+    transform: translate(100%, 0) rotateX(0) rotateY(180deg);
+  }
+  66% {
+    transform: translate(100%, 100%) rotateX(-180deg) rotateY(180deg);
+  }
+  100% {
+    transform: translate(0, 100%) rotateX(-180deg) rotateY(360deg);
+  }
+}
+
+@media(prefers-reduced-motion:reduce){.vp-motion-loaders-rect16:not([data-motion-opt-in=true]),.vp-motion-loaders-rect16:not([data-motion-opt-in=true])::before,.vp-motion-loaders-rect16:not([data-motion-opt-in=true])::after{animation:none!important}}

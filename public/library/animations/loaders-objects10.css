@@ -1,0 +1,86 @@
+/*
+MIT License
+
+Copyright (c) 2021 CSS Loaders
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Source: https://github.com/vineethtrv/css-loader/blob/e9078959e48c39b97613f333c14aac1c3d765c1f/src/loaders/objects/objects10.module.css
+VibePolaris: namespaced selectors/keyframes, playback scale, reduced-motion support.
+*/
+.vp-motion-loaders-objects10 {
+  --color-1: #0000;
+  --color-2: #fff;
+  --color-3: #ff3d00;
+  --size: 1px;
+
+  width: calc(86 * var(--size));
+  height: calc(50 * var(--size));
+  border-radius: calc(50 * var(--size));
+  background:
+    radial-gradient(
+        farthest-side,
+        var(--color-1) calc(100% - calc(10 * var(--size))),
+        var(--color-2) calc(100% - calc(10 * var(--size))) 100%,
+        var(--color-1)
+      )
+      left,
+    radial-gradient(
+        farthest-side,
+        var(--color-1) calc(100% - calc(10 * var(--size))),
+        var(--color-2) calc(100% - calc(10 * var(--size))) 100%,
+        var(--color-1)
+      )
+      right;
+  background-size: calc(50% + calc(5 * var(--size))) 100%;
+  background-repeat: no-repeat;
+  position: relative;
+  animation: vp-motion-loaders-objects10-flipX calc(1s * var(--motion-scale, 1)) infinite linear;
+}
+.vp-motion-loaders-objects10:before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: calc(10 * var(--size));
+  height: calc(10 * var(--size));
+  border-radius: 50%;
+  background: var(--color-3);
+  transform-origin: calc(-14 * var(--size)) 50%;
+  animation: vp-motion-loaders-objects10-rotate calc(0.5s * var(--motion-scale, 1)) infinite linear;
+}
+
+@keyframes vp-motion-loaders-objects10-flipX {
+  0%,
+  49.99% {
+    transform: scaleX(1);
+  }
+  50%,
+  100% {
+    transform: scaleX(-1);
+  }
+}
+
+@keyframes vp-motion-loaders-objects10-rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@media(prefers-reduced-motion:reduce){.vp-motion-loaders-objects10:not([data-motion-opt-in=true]),.vp-motion-loaders-objects10:not([data-motion-opt-in=true])::before,.vp-motion-loaders-objects10:not([data-motion-opt-in=true])::after{animation:none!important}}
