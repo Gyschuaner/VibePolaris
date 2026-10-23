@@ -37,6 +37,23 @@ DP 用例 `85423cc0-c814-45ac-86c4-6cdff2565fe2`，计划 `6475f47f-a3fb-499e-92
 
 ## 集成与回退
 
-分支 `feat/VBP-121-animation-library` 从 dev 创建，经 PR 集成 dev。本机优化构建服务 `http://127.0.0.1:3119/library?category=animation`，使用独立 `/private/tmp/vbp121-preview.sqlite`，环境记录为 `dev-local`；不是远端 dev 服务。此次 300 动画扩充尚未发布生产，已上线的 VBP-120 六项基础库记录见 [VBP-120](VBP-120-component-library.md)。
+分支 `feat/VBP-121-animation-library` 从 dev 创建，经 PR #585 集成 dev，提交 `ba91922a82a30cf104da5d3f9579e5853cef5540`。本机优化构建服务 `http://127.0.0.1:3119/library?category=animation`，使用独立 `/private/tmp/vbp121-preview.sqlite`，环境记录为 `dev-local`；不是远端 dev 服务。完成 dev 验收后，用户于 2026-10-23 明确授权将这 300 个动画发布到生产，结果如下。
 
 回退本需求合并提交并重建即可恢复六项基础库，不涉及用户数据恢复。指定的 Obsidian 库 `D:/Obsidian/gysnote` 在本机不存在，跳过；保留本研发记录与 DP 文档索引。
+
+## 生产发布（2026-10-23）
+
+生产入口：[300 个动画](https://vibe.chuansgu.top/library?category=animation)。北京时间 22:49 完成部署，总目录 306 项，保留原 6 项。发布分支 `feat/VBP-121-animation-production` 从 main 建立，只选取 dev 中本需求及相关发布记录，通过 [PR #586](https://github.com/Gyschuaner/VibePolaris/pull/586) 合入 main。生产提交 `ee74c1bccf2f687ce286bb95ddcfa6bcad90661d`，Build ID `VpShB4aq7UXWcw6fr_MrP`；构建候选与最终合并树一致。
+
+产物 SHA256 清单校验和无网络、无生产数据挂载的容器启动通过。新镜像沿用上一生产镜像的 Linux 依赖，替换 `.next` 和库资源；依赖、服务配置和运行支持文件逐项核对未变。上线前执行 SQLite 在线备份，`quick_check=ok`，保留数据卷 `vibepolaris_xiaobei_data`，补全收费开关仍为 false。
+
+- 发布目录：`/opt/vibepolaris/releases/20261023T144610Z-ee74c1bc`。
+- 备份目录：`/opt/vibepolaris/backups/20261023T144610Z-from-c4cc3730`，包含旧 Compose、受限环境配置及在线数据库备份，文件权限 600。
+- 上一镜像：`vibepolaris:c4cc3730428404eb7f52b88c430989aa9dd8cbbb`。
+- 回退：运行发布目录内 `rollback.sh`，恢复上一镜像和 current 链接，检查健康；保留最新数据卷，不用旧备份覆盖上线后新增的数据。
+
+生产容器 healthy，镜像、Build ID 与发布一致。首页、库首页、原滑动导航、三个来源的动画详情、CSS、许可证、PNG/SVG、画布、个人主页、设置和账号会话均 200；未登录账号画布接口为预期 401。
+
+真实线上浏览器确认 300 动画、每页 24 条/13 页，第二页进入详情后返回仍为第二页；圆环类型搜索 circle03 得到 1 项。圆环实际运行，暂停状态为 paused，2 倍速将 1s 改为 0.5s，重播恢复运行；HTML 复制成功，源码包含 MIT 和当前速度。390px 目录与详情无横向溢出，控制台 warn/error 为空。没有扩大全站回归或逐项目视审查，后台/系统减少动态分支沿用前述限制。
+
+证据：[发布回执](VBP-121-animation-library/production-release.json)、[生产构建](VBP-121-animation-library/production-build.txt)、[浏览器验证](VBP-121-animation-library/production-browser.json)、[线上目录](VBP-121-animation-library/production-gallery.png)、[手机详情](VBP-121-animation-library/production-detail-mobile.png)。DP 生产计划 `3cac0ef1-e943-4c2d-9cfa-0a7be6f9641f`，用例 `00b361f6-c107-4ae3-a35a-82bbec010a33`；部署批次 `vbp121-production-ee74c1bc`，最终状态以 DP 为准。
