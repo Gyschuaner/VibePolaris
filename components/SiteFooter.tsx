@@ -16,6 +16,7 @@ export function SiteFooter({ home = false }: { home?: boolean }) {
         </div>
         <div className="fright">
           <div className="fnav">
+            {siteModules.library && <Link href="/library">组件库</Link>}
             {siteModules.graph && <Link href="/">星图</Link>}{siteModules.canvas && <Link href="/canvas">知识画布</Link>}{siteModules.news && <Link href="/news">新闻</Link>}{siteModules.about && <Link href="/about">关于</Link>}
           </div>
           © {new Date().getFullYear()} VibePolaris · 静态内容，不在浏览器调用模型

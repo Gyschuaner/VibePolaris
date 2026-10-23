@@ -1,3 +1,6 @@
+import { libraryItems } from "../library.ts";
+import { siteModules } from "../site-modules.ts";
+
 type PageCatalog = {
   terms: readonly { slug: string; zh: string; definition: string }[];
   news: readonly { slug: string; title: string; summary: string }[];
@@ -16,6 +19,10 @@ const pages: Record<string, { kind: string; title: string; summary: string; feat
   "/settings": {
     kind: "settings", title: "设置", summary: "登录后管理账号头像和此浏览器的画布、笔记同步偏好。",
     features: ["上传或恢复默认头像", "开启或关闭此浏览器的账号画布自动同步；关闭后修改仍保存在本地", "返回画布或退出账号；游客画布需自行选择保存到账号"],
+  },
+  "/library": {
+    kind: "library", title: "组件库", summary: "浏览可预览、可取用的前端组件、样式和素材。",
+    features: ["按组件、样式、素材筛选或搜索", "点击条目打开独立详情；操作预览、复制代码或下载素材", "返回组件库保留搜索和分类"],
   },
   "/news": {
     kind: "news-index", title: "新闻星历", summary: "按时间线和新闻星图浏览已发布进展。",
@@ -45,6 +52,10 @@ export function describePage(path: string, catalog: PageCatalog) {
   if (!path.startsWith("/") || url.origin !== "http://local" || /[\\\r\n]/.test(path)) return unknown;
   const pathname = url.pathname.replace(/\/$/, "") || "/";
   const base = { ...unknown, path: pathname };
+  if (siteModules.library && pathname.startsWith("/library/")) {
+    const item = libraryItems.find(item => item.slug === pathname.slice("/library/".length));
+    if (item) return { ...base, kind: "library-item", title: item.name, summary: item.description, features: item.category === "asset" ? ["预览当前素材、查看格式与来源并下载文件", "复制给AI的描述；返回组件库继续浏览"] : ["操作当前条目的预览与参数，切换桌面和手机宽度", "查看并复制随参数更新的代码、复制给AI的描述", "返回组件库继续浏览"] };
+  }
   const termRef = (slug: string) => {
     const term = catalog.terms.find(item => item.slug === slug);
     return term ? { slug: term.slug, title: term.zh, summary: term.definition, url: `/terms/${term.slug}` } : undefined;
