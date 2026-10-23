@@ -4,11 +4,15 @@ import { useState, type CSSProperties } from "react";
 import { House, MagnifyingGlass, Bell, GearSix, Folder, FileText, Image as ImageIcon, Heart, User, ChatCircle, PaperPlaneTilt, CalendarBlank, CaretDown } from "@phosphor-icons/react/dist/ssr";
 import { defaultSampleOptions, sampleStyles, type SampleOptions } from "@/lib/library-source";
 import styles from "./Library.module.css";
+import { libraryAnimation } from "@/lib/library-animations";
+import { AnimationPreview } from "./AnimationPreview";
 
 const icons = [House, MagnifyingGlass, Bell, GearSix, Folder, FileText, ImageIcon, Heart, User, ChatCircle, PaperPlaneTilt, CalendarBlank];
 
-export function LibraryPreview({ slug, decorative = false, options = defaultSampleOptions }: { slug: string; decorative?: boolean; options?: SampleOptions }) {
+export function LibraryPreview({ slug, decorative = false, options = defaultSampleOptions, active = false, animationCss, replay, paused, speed, manual }: { slug: string; decorative?: boolean; options?: SampleOptions; active?: boolean; animationCss?: string; replay?: number; paused?: boolean; speed?: number; manual?: boolean }) {
   const [selected, setSelected] = useState(1);
+  const animation = libraryAnimation(slug);
+  if (animation) return <AnimationPreview item={animation} decorative={decorative} active={!decorative || active} css={animationCss} replay={replay} paused={paused} speed={speed} manual={manual} />;
   const Card = decorative ? "div" : "details";
   const Summary = decorative ? "div" : "summary";
   const variables = { "--radius": `${options.radius}px`, "--speed": `${options.speed}ms`, "--angle": `${options.angle}deg`, "--depth": `${options.depth}px`, "--selected": selected } as CSSProperties;

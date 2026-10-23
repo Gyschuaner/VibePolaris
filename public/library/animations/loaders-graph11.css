@@ -1,0 +1,78 @@
+/*
+MIT License
+
+Copyright (c) 2021 CSS Loaders
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Source: https://github.com/vineethtrv/css-loader/blob/e9078959e48c39b97613f333c14aac1c3d765c1f/src/loaders/graph/graph11.module.css
+VibePolaris: namespaced selectors/keyframes, playback scale, reduced-motion support.
+*/
+.vp-motion-loaders-graph11 {
+  --color-1: #0000;
+  --color-2: #000;
+  --color-3: #fff;
+  --color-4: #0005;
+  --size: 1px;
+
+  width: calc(120 * var(--size));
+  height: calc(80 * var(--size));
+  position: relative;
+  transform: rotate(-90deg);
+  background: linear-gradient(174deg, var(--color-1) 49%, var(--color-2) 50%, var(--color-1) 51%);
+}
+.vp-motion-loaders-graph11:after,
+.vp-motion-loaders-graph11:before {
+  content: '';
+  border-radius: 100%;
+  width: calc(35 * var(--size));
+  height: calc(35 * var(--size));
+  display: block;
+  position: absolute;
+  border: calc(4 * var(--size)) dashed var(--color-3);
+  bottom: calc(49 * var(--size));
+  transform: rotate(0deg);
+  box-sizing: border-box;
+  animation: vp-motion-loaders-graph11-tape calc(4s * var(--motion-scale, 1)) linear infinite;
+}
+.vp-motion-loaders-graph11:before {
+  right: calc(-14 * var(--size));
+  box-shadow:
+    0 0 0 calc(4 * var(--size)) var(--color-3),
+    0 0 0 calc(34 * var(--size)) var(--color-2),
+    0 0 calc(5 * var(--size)) calc(34 * var(--size)) var(--color-4);
+}
+.vp-motion-loaders-graph11:after {
+  left: calc(-13 * var(--size));
+  box-shadow:
+    0 0 0 calc(4 * var(--size)) var(--color-3),
+    0 0 0 calc(65 * var(--size)) var(--color-2),
+    0 0 calc(5 * var(--size)) calc(65 * var(--size)) var(--color-4);
+}
+
+@keyframes vp-motion-loaders-graph11-tape {
+  0% {
+    transform: rotate(0deg) scale(0.4);
+  }
+  100% {
+    transform: rotate(-360deg) scale(0.4);
+  }
+}
+
+@media(prefers-reduced-motion:reduce){.vp-motion-loaders-graph11:not([data-motion-opt-in=true]),.vp-motion-loaders-graph11:not([data-motion-opt-in=true])::before,.vp-motion-loaders-graph11:not([data-motion-opt-in=true])::after{animation:none!important}}

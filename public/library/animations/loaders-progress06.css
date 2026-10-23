@@ -1,0 +1,72 @@
+/*
+MIT License
+
+Copyright (c) 2021 CSS Loaders
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Source: https://github.com/vineethtrv/css-loader/blob/e9078959e48c39b97613f333c14aac1c3d765c1f/src/loaders/progress/progress06.module.css
+VibePolaris: namespaced selectors/keyframes, playback scale, reduced-motion support.
+*/
+.vp-motion-loaders-progress06 {
+  --color-1: rgba(255, 255, 255, 0.15);
+  --color-2: #fff;
+  --color-3: rgba(0, 0, 0, 0.25);
+  --size: 1px;
+
+  width: 100%;
+  height: calc(4.8 * var(--size));
+  display: inline-block;
+  background: var(--color-1);
+  position: relative;
+  overflow: hidden;
+}
+.vp-motion-loaders-progress06::after {
+  content: '';
+  width: 0%;
+  height: calc(4.8 * var(--size));
+  background-color: var(--color-2);
+  background-image: linear-gradient(
+    45deg,
+    var(--color-3) 25%,
+    transparent 25%,
+    transparent 50%,
+    var(--color-3) 50%,
+    var(--color-3) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: calc(15 * var(--size)) calc(15 * var(--size));
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  animation: vp-motion-loaders-progress06-animFw calc(6s * var(--motion-scale, 1)) ease-in infinite;
+}
+
+@keyframes vp-motion-loaders-progress06-animFw {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){.vp-motion-loaders-progress06:not([data-motion-opt-in=true]),.vp-motion-loaders-progress06:not([data-motion-opt-in=true])::before,.vp-motion-loaders-progress06:not([data-motion-opt-in=true])::after{animation:none!important}}

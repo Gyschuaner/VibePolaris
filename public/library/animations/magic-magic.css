@@ -1,0 +1,66 @@
+/*
+The MIT License (MIT)
+
+Copyright (c) 2022 Christian Pucci
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+Source: https://github.com/miniMAC/magic/blob/f26d3c3beaf3017c90fb27ac6f67168fac26de06/assets/scss/magic_effects/_magic.scss
+VibePolaris: namespaced selectors/keyframes, playback scale, reduced-motion support.
+*/
+.vp-motion-magic-magic{--animate-duration:calc(1s * var(--motion-scale, 1));animation-duration:var(--animate-duration);animation-fill-mode:both;}
+.vp-motion-magic-magic {
+  -webkit-animation-name: vp-motion-magic-magic-magic;
+  animation-name: vp-motion-magic-magic-magic;
+}
+@-webkit-keyframes vp-motion-magic-magic-magic {
+  0% {
+    opacity: 1;
+    -webkit-transform-origin: 100% 200%;
+    transform-origin: 100% 200%;
+    -webkit-transform: scale(1, 1) rotate(0deg);
+    transform: scale(1, 1) rotate(0deg);
+  }
+
+  100% {
+    opacity: 0;
+    -webkit-transform-origin: 200% 500%;
+    transform-origin: 200% 500%;
+    -webkit-transform: scale(0, 0) rotate(270deg);
+    transform: scale(0, 0) rotate(270deg);
+  }
+}
+@keyframes vp-motion-magic-magic-magic {
+  0% {
+    opacity: 1;
+    -webkit-transform-origin: 100% 200%;
+    transform-origin: 100% 200%;
+    -webkit-transform: scale(1, 1) rotate(0deg);
+    transform: scale(1, 1) rotate(0deg);
+  }
+
+  100% {
+    opacity: 0;
+    -webkit-transform-origin: 200% 500%;
+    transform-origin: 200% 500%;
+    -webkit-transform: scale(0, 0) rotate(270deg);
+    transform: scale(0, 0) rotate(270deg);
+  }
+}
+
+@media(prefers-reduced-motion:reduce){.vp-motion-magic-magic:not([data-motion-opt-in=true]),.vp-motion-magic-magic:not([data-motion-opt-in=true])::before,.vp-motion-magic-magic:not([data-motion-opt-in=true])::after{animation:none!important}}

@@ -1,0 +1,69 @@
+/*
+MIT License
+
+Copyright (c) 2021 CSS Loaders
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Source: https://github.com/vineethtrv/css-loader/blob/e9078959e48c39b97613f333c14aac1c3d765c1f/src/loaders/line/line09.module.css
+VibePolaris: namespaced selectors/keyframes, playback scale, reduced-motion support.
+*/
+.vp-motion-loaders-line09 {
+  --color-1: #fff;
+  --size: 1px;
+
+  color: var(--color-1);
+  position: relative;
+  font-size: calc(11 * var(--size));
+  background: var(--color-1);
+  animation: vp-motion-loaders-line09-escaleY calc(1s * var(--motion-scale, 1)) infinite ease-in-out;
+  width: 1em;
+  height: 4em;
+  animation-delay: calc(-0.16s * var(--motion-scale, 1));
+}
+.vp-motion-loaders-line09:before,
+.vp-motion-loaders-line09:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 2em;
+  background: var(--color-1);
+  width: 1em;
+  height: 4em;
+  animation: vp-motion-loaders-line09-escaleY calc(1s * var(--motion-scale, 1)) infinite ease-in-out;
+}
+.vp-motion-loaders-line09:before {
+  left: -2em;
+  animation-delay: calc(-0.32s * var(--motion-scale, 1));
+}
+
+@keyframes vp-motion-loaders-line09-escaleY {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 0;
+    height: 4em;
+  }
+  40% {
+    box-shadow: 0 -2em;
+    height: 5em;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){.vp-motion-loaders-line09:not([data-motion-opt-in=true]),.vp-motion-loaders-line09:not([data-motion-opt-in=true])::before,.vp-motion-loaders-line09:not([data-motion-opt-in=true])::after{animation:none!important}}
