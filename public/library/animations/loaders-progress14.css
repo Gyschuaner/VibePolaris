@@ -1,0 +1,128 @@
+/*
+MIT License
+
+Copyright (c) 2021 CSS Loaders
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Source: https://github.com/vineethtrv/css-loader/blob/e9078959e48c39b97613f333c14aac1c3d765c1f/src/loaders/progress/progress14.module.css
+VibePolaris: namespaced selectors/keyframes, playback scale, reduced-motion support.
+*/
+.vp-motion-loaders-progress14 {
+  --color-1: #fff;
+  --color-2: rgb(0, 255, 255);
+  --size: 1px;
+
+  display: block;
+  position: relative;
+  height: calc(32 * var(--size));
+  width: calc(200 * var(--size));
+  background: var(--color-1);
+  border: calc(2 * var(--size)) solid var(--color-1);
+  color: red;
+  overflow: hidden;
+}
+.vp-motion-loaders-progress14::before {
+  content: '';
+  background: red;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 100%;
+  animation: vp-motion-loaders-progress14-loading calc(10s * var(--motion-scale, 1)) linear infinite;
+}
+.vp-motion-loaders-progress14:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font-size: calc(24 * var(--size));
+  line-height: calc(32 * var(--size));
+  color: var(--color-2);
+  mix-blend-mode: difference;
+  animation: vp-motion-loaders-progress14-percentage calc(10s * var(--motion-scale, 1)) linear infinite;
+}
+
+@keyframes vp-motion-loaders-progress14-loading {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}
+@keyframes vp-motion-loaders-progress14-percentage {
+  0% {
+    content: '0%';
+  }
+  5% {
+    content: '5%';
+  }
+  10% {
+    content: '10%';
+  }
+  20% {
+    content: '20%';
+  }
+  30% {
+    content: '30%';
+  }
+  40% {
+    content: '40%';
+  }
+  50% {
+    content: '50%';
+  }
+  60% {
+    content: '60%';
+  }
+  70% {
+    content: '70%';
+  }
+  80% {
+    content: '80%';
+  }
+  90% {
+    content: '90%';
+  }
+  95% {
+    content: '95%';
+  }
+  96% {
+    content: '96%';
+  }
+  97% {
+    content: '97%';
+  }
+  98% {
+    content: '98%';
+  }
+  99% {
+    content: '99%';
+  }
+  100% {
+    content: '100%';
+  }
+}
+
+@media(prefers-reduced-motion:reduce){.vp-motion-loaders-progress14:not([data-motion-opt-in=true]),.vp-motion-loaders-progress14:not([data-motion-opt-in=true])::before,.vp-motion-loaders-progress14:not([data-motion-opt-in=true])::after{animation:none!important}}

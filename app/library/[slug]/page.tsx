@@ -5,6 +5,8 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { LibraryDetail } from "@/components/library/LibraryDetail";
 import { libraryItems } from "@/lib/library";
 import { siteHome, siteModules } from "@/lib/site-modules";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 
 export function generateStaticParams() { return libraryItems.map(({ slug }) => ({ slug })); }
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -17,5 +19,6 @@ export default async function LibraryItemPage({ params }: { params: Promise<{ sl
   const { slug } = await params;
   const item = libraryItems.find(item => item.slug === slug);
   if (!item) notFound();
-  return <><SiteHeader wide /><Suspense fallback={<p style={{ padding: 40 }}>正在打开详情…</p>}><LibraryDetail item={item} /></Suspense></>;
+  const animationCss = item.category === "animation" ? await readFile(path.join(process.cwd(), "public/library/animations", `${item.slug}.css`), "utf8") : undefined;
+  return <><SiteHeader wide /><Suspense fallback={<p style={{ padding: 40 }}>正在打开详情…</p>}><LibraryDetail key={item.slug} item={item} animationCss={animationCss} /></Suspense></>;
 }

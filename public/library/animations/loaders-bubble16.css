@@ -1,0 +1,71 @@
+/*
+MIT License
+
+Copyright (c) 2021 CSS Loaders
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Source: https://github.com/vineethtrv/css-loader/blob/e9078959e48c39b97613f333c14aac1c3d765c1f/src/loaders/bubble/bubble16.module.css
+VibePolaris: namespaced selectors/keyframes, playback scale, reduced-motion support.
+*/
+.vp-motion-loaders-bubble16 {
+  --color-1: #fff;
+  --color-2: #ff3d00;
+  --size: 1px;
+
+  width: calc(64 * var(--size));
+  height: calc(12 * var(--size));
+  background:
+    radial-gradient(circle calc(6 * var(--size)), var(--color-1) 100%, transparent 0),
+    radial-gradient(circle calc(6 * var(--size)), var(--color-1) 100%, transparent 0);
+  background-size: calc(12 * var(--size)) calc(12 * var(--size));
+  background-position:
+    left center,
+    right center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+.vp-motion-loaders-bubble16:before {
+  content: '';
+  position: absolute;
+  width: calc(12 * var(--size));
+  height: calc(12 * var(--size));
+  border-radius: 50%;
+  background: var(--color-2);
+  inset: 0;
+  margin: auto;
+  animation:
+    vp-motion-loaders-bubble16-mvX calc(0.6s * var(--motion-scale, 1)),
+    vp-motion-loaders-bubble16-mvY calc(0.3s * var(--motion-scale, 1));
+  animation-timing-function: cubic-bezier(0.5, -300, 0.5, 300);
+  animation-iteration-count: infinite;
+}
+
+@keyframes vp-motion-loaders-bubble16-mvX {
+  100% {
+    left: calc(0.85 * var(--size));
+  }
+}
+@keyframes vp-motion-loaders-bubble16-mvY {
+  100% {
+    top: calc(0.5 * var(--size));
+  }
+}
+
+@media(prefers-reduced-motion:reduce){.vp-motion-loaders-bubble16:not([data-motion-opt-in=true]),.vp-motion-loaders-bubble16:not([data-motion-opt-in=true])::before,.vp-motion-loaders-bubble16:not([data-motion-opt-in=true])::after{animation:none!important}}

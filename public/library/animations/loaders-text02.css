@@ -1,0 +1,70 @@
+/*
+MIT License
+
+Copyright (c) 2021 CSS Loaders
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Source: https://github.com/vineethtrv/css-loader/blob/e9078959e48c39b97613f333c14aac1c3d765c1f/src/loaders/text/text02.module.css
+VibePolaris: namespaced selectors/keyframes, playback scale, reduced-motion support.
+*/
+.vp-motion-loaders-text02 {
+  --color-1: #fff;
+  --color-2: #263238;
+  --size: 1px;
+
+  font-size: calc(48 * var(--size));
+  display: inline-block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  color: var(--color-1);
+  letter-spacing: calc(2 * var(--size));
+  position: relative;
+  box-sizing: border-box;
+}
+.vp-motion-loaders-text02::before,
+.vp-motion-loaders-text02::after {
+  content: 'Loading';
+}
+.vp-motion-loaders-text02::after {
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--color-2);
+  text-shadow:
+    0 0 calc(2 * var(--size)) var(--color-1),
+    0 0 calc(1 * var(--size)) var(--color-1),
+    0 0 calc(1 * var(--size)) var(--color-1);
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  animation: vp-motion-loaders-text02-animloader calc(6s * var(--motion-scale, 1)) linear infinite;
+}
+
+@keyframes vp-motion-loaders-text02-animloader {
+  0% {
+    height: 100%;
+  }
+  100% {
+    height: 0%;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){.vp-motion-loaders-text02:not([data-motion-opt-in=true]),.vp-motion-loaders-text02:not([data-motion-opt-in=true])::before,.vp-motion-loaders-text02:not([data-motion-opt-in=true])::after{animation:none!important}}
