@@ -1,26 +1,46 @@
-# VBP-102 visual QA
+# VBP-120 组件库设计验收
 
 final result: passed
 
-Source visual truth: `docs/design/VBP-102-avatar-settings/selected-reference.png` (1254×1254), the third displayed Image Gen result selected by the user. Implementation: `http://127.0.0.1:3101/canvas` and `/settings`.
+范围：用户选定的页面 1 陈列首页与精简后的单条目详情。没有其它组件列表、推荐流或详情侧栏目录。
 
-Combined comparison input: `docs/design/VBP-102-avatar-settings/evidence/icon-comparison.png`. Left is a crop of the selected character; right is the actual rendered navigation icon enlarged for inspection; bottom preserves the full navigation context. This is an icon reference rather than a full page mockup. The source character is normalized into a 34px CSS slot; the enlarged actual screenshot necessarily exposes small-pixel antialiasing. The production icon uses the generated transparent asset, not a code approximation. Its96px optimized response is2000bytes in the local check.
+## 对照证据
 
-Implementation screenshots: `docs/design/VBP-102-avatar-settings/evidence/guest-header.png`, `account-menu.png`, `settings-page.png`, and `settings-mobile.png`. Desktop viewport1093×737 (the initial guest capture was1280×720); mobile390×844; captures are at1× CSS density. State: guest icon, signed-in default avatar/menu, and settings with automatic sync enabled.
+- source visual truth：`docs/design/VBP-120-library/reference-gallery.png`、`reference-detail.png`，均为 1487×1058 px。
+- implementation：`docs/design/VBP-120-library/gallery-matched.png`、`detail-matched.png`，1487×1058 px；CSS 视口 1487×1058，devicePixelRatio 1，无设备外框、无图片缩放。
+- 运行地址：`http://127.0.0.1:3119/library` 与 `/library/sliding-tabs`，Next 生产构建，本地独立数据库，light / clay 主题。
+- 状态：首页全部分类、精选排序、六项内容；详情预览、桌面宽度、React、文档选中、圆角 12 / 速度 240 ms。首页参考图第一项为悬停且选中概览，最终截图为普通卡片且缩略图选中文档，属于状态差异。
+- 以上四张图片在同一次工具输入中成对打开比较；不是仅凭路径或代码判断。标题、工具栏、图标与正文在原尺寸中清晰可读，不需要另裁局部区域。
+- 补充证据：`gallery-desktop.png`、`detail-desktop.png` 为 1440×1024；`gallery-mobile.png`、`detail-mobile.png` 为 390×844。移动详情另覆盖 dark / moss。
 
-## Findings and fixes
+## 发现与修正
 
-- Fixed `BUG-B351BA51`: first-click focus and click updates cancelled one another. Explicit opening and Escape focus restoration passed real browser navigation into settings.
-- Fixed `BUG-F5A8B755`: the mobile brand text displaced the account control beyond the viewport. Mobile now uses the existing brand mark; all five controls remain visible. Revised390×844 capture passed.
-- Corrected the account surface separators to use the existing `--hairline` token; the final desktop capture shows restrained dividers.
-- No remaining actionable P0/P1/P2 visual mismatch. Hair, smile, face tilt, raised hand and wave marks retain the selected character. Raster detail at34px is intentionally less textured than the large sketch.
+早期详情截图 `detail-desktop-initial.png` 的工作区横向比例偏大，取用面板偏窄，滑轨与按钮的视觉处理也不一致（P2）。已将详情外边距调至 80 px、取用面板 330 px、两栏间距 40 px，预览导航宽度 540 px，并统一范围输入轨道与滑块。修正证据为 `detail-desktop.png`，随后与原图在同尺寸下重比 `detail-matched.png`。无剩余 P0/P1/P2 设计问题。
 
-## Required surfaces
+## 五项保真检查
 
-- Typography: existing site font and weights retained; no font is present in the icon reference. Settings uses32px desktop/28px mobile heading,16px switch label,13px supporting text. Username wraps rather than clipping.
-- Spacing/layout: centered640px settings column, lightweight rows and dividers; no enclosing app card. The avatar menu is directly below the44px target. Mobile screenshot has no clipped persistent control.
-- Color/tokens: original paper/surface/accent/ink variables retained; the transparent mask uses currentColor so the icon follows the active theme. No cream rectangle is embedded in the icon.
-- Image fidelity: generated transparent PNG is loaded through the existing Next optimization pipeline; real upload, refresh persistence and restore-default succeeded. The combined focused comparison documents the selected character at actual navigation scale.
-- Copy/content: settings contains avatar, cloud sync and sign-out only, with concise preservation/guest-upload explanations. Xiaobei activation and account binding remain available in their existing flows.
+| 项目 | 结果 |
+| --- | --- |
+| 字体与排版 | 继续使用应用的系统中文无衬线字体栈与字重；标题、英文副题、说明及操作层级清晰。参考图是生成图，无可识别的字体文件；最终控件字级略小，属于与现有站点一致的实现选择，没有截断或拥挤换行。 |
+| 间距与布局 | 首页三列六项、搜索靠右、分类下划线和卡片间隔一致；详情为大预览及右侧取用区。沿用当前 64 px 站点页头和内容最大宽度。390 px 时首页单列、详情取用区下移，无横向溢出；详情不显示其它条目。 |
+| 颜色与视觉变量 | 采用既有浅纸色、陶土强调色和语义变量，背景略偏米色是现有 clay 主题；深色跟随全站主题。选中态、边界、主操作有区分。 |
+| 图像与图标 | 庭院照片、纸张纹理是真实生成的 PNG，分别为 1536×1024 和 1024×1024，裁切清晰。全站品牌图形继续复用；图标为项目已有 Phosphor 实体资产，SVG 下载保留 MIT 许可。渐变与纸面阴影本身就是可复用 CSS 样式，预览与导出共用样式；不是用 CSS 代替照片或插图。 |
+| 文案与内容 | 标题、副标题、六项名称、返回入口和取用结构符合方案。卡片占位线替换为简短真实内容；AI 描述补充键盘与减少动态效果，素材增加格式、尺寸、来源。所有新增文案面向实际使用者。 |
 
-Primary real-browser checks: login/registration, first-click menu, keyboard activation, settings navigation, image upload and persistence, default restoration, sync off/on reflected by cloud canvas status, and sign-out returning to the guest canvas. Captured console errors: none. Viewport override is reset after verification. Remaining test gap: every theme palette and every supported input image codec were not separately exercised; masks use existing tokens and successful PNG upload plus boundary checks cover this change.
+VBP-119 已隐藏新闻/关于，并把笔记移入个人主页，因此当前页头入口数量与旧设计图不同。这是已有产品状态，不恢复旧导航。
+
+## 已执行交互
+
+真实浏览器完成分类、搜索、无结果与清除、打开详情、返回保留筛选；滑动导航切换、卡片折叠展开、预览宽度切换、参数调整与重置；React / HTML+CSS 源码切换、复制代码成功反馈、描述复制并粘贴核对；渐变角度写入 CSS；PNG 与 SVG 实际下载且字节与源文件一致。导出的导航 HTML 在独立静态服务中打开并成功切换选中项。
+
+390 px 下入口与详情可操作，滚动宽度等于视口宽度。代码中提供焦点样式、语义按钮及 reduced-motion 处理；未扩大到全站键盘或辅助技术审计。生产构建预览控制台 warn/error 列表为空。
+
+## 交付检查
+
+- [x] 首页陈列与聚焦详情符合选定方案。
+- [x] 首批六项有真实预览、代码或可下载文件。
+- [x] `npm run build` 通过；既有导航及开关聚焦测试 2 项通过。
+- [x] 源图与最终浏览器截图已共同对照，修正后无阻塞视觉差异。
+- [x] 移动及深色状态有实际浏览器证据。
+
+残余范围：剪贴板被浏览器拒绝的失败分支有可手动复制提示，未人为更改权限触发；没有全站回归、远端 dev 或生产发布。暂无必须追加的视觉微调。
