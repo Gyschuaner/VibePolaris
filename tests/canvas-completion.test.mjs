@@ -14,6 +14,10 @@ test("补全只取光标前文并限制上下文，保留完整输出和Unicode"
   const context = completionContext(markdown, before.length, "笔记标题");
   assert.equal(context.title, "笔记标题"); assert.equal(context.prefix.length, 6000);
   assert.equal(context.outline, "# 标题\n## 当前小节"); assert.ok(!context.prefix.includes("不能发送"));
+  const imageNote = "# 图片笔记\n\n已有的正文\n\n![截图](<data:image/png;base64," + "a".repeat(7000) + ">)\n\n接着写";
+  const imageContext = completionContext(imageNote, imageNote.length, "图片笔记");
+  assert.ok(imageContext.prefix.includes("已有的正文")); assert.ok(imageContext.prefix.includes("[内嵌图片]")); assert.ok(!imageContext.prefix.includes("aaaa"));
+  assert.ok(!completionContext(imageNote, imageNote.indexOf("aaaa") + 200, "图片笔记").prefix.includes("aaaa"));
   assert.equal(completionFence("```mermaid\nflowchart LR\n A-->B"), "```mermaid");
   assert.equal(completionFence("````md\n```js\n片段\n```\n````\n正文"), "");
   assert.equal(completionFence("~~~python\npass\n~~~"), "");

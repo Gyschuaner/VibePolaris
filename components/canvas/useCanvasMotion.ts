@@ -66,7 +66,7 @@ export function useCanvasMotion(documentId: string | null, title: string | undef
       motion.current = null;
       setOpeningId(null);
       delete root.dataset.canvasTransition;
-      if (pending.current || page.current?.querySelector("textarea")) return;
+      if (pending.current || page.current?.querySelector("textarea, [contenteditable=true]")) return;
       const destination = target ? page.current?.querySelector<HTMLElement>("button") : preview.current?.querySelector<HTMLElement>("[data-open-document]");
       destination?.focus({ preventScroll: true });
     });
