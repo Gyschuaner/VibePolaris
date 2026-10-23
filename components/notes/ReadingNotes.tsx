@@ -7,6 +7,7 @@ import type { NoteAnchor, NoteSource, ReadingNote } from "@/lib/reading-notes";
 import { captureNoteSelection, prepareBlocks, rangeForAnchor } from "@/lib/reading-note-anchors";
 import { NoteEditor, NoteTime, useNotes } from "./NotesProvider";
 import styles from "./ReadingNotes.module.css";
+import { siteModules } from "@/lib/site-modules";
 
 type ReaderContextValue = {
   canvas: boolean;
@@ -21,7 +22,13 @@ const desktop = "(min-width: 1101px)";
 const collapsedPreference = "vp-reading-sidebar-collapsed";
 const modePreference = "vp-reading-mode";
 
-export function ReadingNotes({ path, title, layout = "concept", scrollRoot, children }: { path: string; title: string; layout?: "concept" | "course" | "standalone" | "canvas"; scrollRoot?: RefObject<HTMLElement | null>; children: ReactNode }) {
+type ReadingNotesProps = { path: string; title: string; layout?: "concept" | "course" | "standalone" | "canvas"; scrollRoot?: RefObject<HTMLElement | null>; children: ReactNode };
+export function ReadingNotes(props: ReadingNotesProps) {
+  if (!siteModules.notes && props.layout !== "canvas") return props.children;
+  return <ReadingNotesContent {...props} />;
+}
+
+function ReadingNotesContent({ path, title, layout = "concept", scrollRoot, children }: ReadingNotesProps) {
   const store = useNotes(), root = useRef<HTMLDivElement>(null);
   const source: NoteSource = useMemo(() => ({ path, title }), [path, title]);
   const notes = useMemo(() => store.notes.filter(note => note.source?.path === path && note.anchor), [store.notes, path]);
