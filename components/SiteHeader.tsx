@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
-import { Graph, List, Newspaper, UserCircle, GearSix, Info } from "@phosphor-icons/react/dist/ssr";
+import { Graph, List, Newspaper, UserCircle, GearSix, Info, SquaresFour } from "@phosphor-icons/react/dist/ssr";
 
 import { BrandMark } from "@/components/BrandMark";
 import { ThemeStudio } from "@/components/ThemeStudio";
@@ -17,8 +17,8 @@ export function SiteHeader({ wide = false, termSlug }: { wide?: boolean; termSlu
   const active = section;
   const current = (item: string) => section === item ? "page" as const : undefined;
   const graphUrl = termSlug ? `/?term=${termSlug}` : "/";
-  const reading = /^\/(terms|guides|news)\/[^/]+/.test(pathname);
-  const mobileTabs = !reading && (siteModules.graph || siteModules.canvas || siteModules.news || siteModules.about);
+  const reading = /^\/(terms|guides|news|library)\/[^/]+/.test(pathname);
+  const mobileTabs = !reading && (siteModules.graph || siteModules.canvas || siteModules.library || siteModules.news || siteModules.about);
   const menu = useRef<HTMLDetailsElement>(null);
   const closeMenu = () => { if (menu.current) menu.current.open = false; };
   useEffect(() => {
@@ -38,6 +38,7 @@ export function SiteHeader({ wide = false, termSlug }: { wide?: boolean; termSlu
           <NavIndicator active={active} slot="desktop" />
           {siteModules.graph && <Link href={graphUrl} aria-current={current("graph")} data-nav-active={active === "graph"}>星图</Link>}
           {siteModules.canvas && <Link href="/canvas" aria-current={current("canvas")} data-nav-active={active === "canvas"}>知识画布</Link>}
+          {siteModules.library && <Link href="/library" aria-current={current("library")} data-nav-active={active === "library"}>组件库</Link>}
           {siteModules.news && <Link href="/news" aria-current={current("news")} data-nav-active={active === "news"}>新闻</Link>}
           {siteModules.about && <Link className="nav-about" href="/about" aria-current={current("about")} data-nav-active={active === "about"}>关于</Link>}
         </div>
@@ -49,6 +50,7 @@ export function SiteHeader({ wide = false, termSlug }: { wide?: boolean; termSlu
               <div className="nav-menu-primary">
                 {siteModules.graph && <Link href={graphUrl} onClick={closeMenu}><span className="brand-star-only" aria-hidden="true" />星图</Link>}
                 {siteModules.canvas && <Link href="/canvas" onClick={closeMenu}><Graph size={20} />知识画布</Link>}
+                {siteModules.library && <Link href="/library" onClick={closeMenu}><SquaresFour size={20} />组件库</Link>}
                 {siteModules.news && <Link href="/news" onClick={closeMenu}><Newspaper size={20} />新闻</Link>}
               </div>
               <Link href="/me" onClick={closeMenu}><UserCircle size={20} />我的主页</Link>
@@ -63,6 +65,7 @@ export function SiteHeader({ wide = false, termSlug }: { wide?: boolean; termSlu
     {mobileTabs && <nav className="mobile-tabs" aria-label="移动端主导航">
       {siteModules.graph && <Link href={graphUrl} aria-current={current("graph")} data-nav-active={active === "graph"}><span className="brand-star-only" aria-hidden="true" /><span>星图</span></Link>}
       {siteModules.canvas && <Link href="/canvas" aria-current={current("canvas")} data-nav-active={active === "canvas"}><Graph size={22} /><span>画布</span></Link>}
+      {siteModules.library && <Link href="/library" aria-current={current("library")} data-nav-active={active === "library"}><SquaresFour size={22} /><span>组件库</span></Link>}
       {siteModules.news && <Link href="/news" aria-current={current("news")} data-nav-active={active === "news"}><Newspaper size={22} /><span>新闻</span></Link>}
       {siteModules.about && <Link href="/about" aria-current={current("about")} data-nav-active={active === "about"}><Info size={22} /><span>关于</span></Link>}
       <Link href="/me" aria-current={current("me")} data-nav-active={active === "me"}><UserCircle size={22} /><span>我的</span></Link>
