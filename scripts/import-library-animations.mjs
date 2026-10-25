@@ -22,6 +22,7 @@ for (const [key, source] of Object.entries(sources)) {
   if (!source.license.includes("Permission is hereby granted")) throw new Error(`Review license: ${key}`);
   fs.writeFileSync(`${out}/${key}-LICENSE.txt`, source.license);
 }
+fs.writeFileSync("public/library/posters-LICENSE.txt", "Static preview frames derived from the following CSS animation sources.\n\n"+Object.values(sources).map(source => `${source.name}\n${source.repo}/tree/${source.revision}\n\n${source.license}`).join("\n\n"));
 
 const words = { bounce: "弹跳", flash: "闪烁", pulse: "脉冲", rubberBand: "橡皮筋", shake: "摇晃", shakeX: "水平抖动", shakeY: "垂直抖动", headShake: "摇头", swing: "摇摆", tada: "欢呼", wobble: "晃动", jello: "果冻", heartBeat: "心跳", hinge: "铰链脱落", jackInTheBox: "弹出盒子", magic: "魔法消散", swap: "旋转换位", flip: "立体翻转" };
 const families = { back: "回弹", bounce: "弹跳", fade: "淡变", flip: "翻转", lightSpeed: "光速滑动", rotate: "旋转", roll: "卷动", zoom: "缩放", slide: "滑动", puff: "模糊缩放", vanish: "虚化", boing: "弹性扭动", bomb: "爆破", twister: "旋风", foolish: "折叠旋转", hole: "旋涡", swash: "弹性缩放", space: "空间缩放", perspective: "透视翻折", open: "开合翻折", tin: "金属弹跳" };
@@ -36,6 +37,9 @@ function displayName(name) {
 const catalogue = [], hashes = new Set();
 function add(source, relative, name, group, kind, title) {
   const raw = fs.readFileSync(path.join(sourceRoot, source, relative), "utf8");
+  const content = raw.match(/\/\*\s*@content:\s*("(?:\\.|[^"\\])*")\s*\*\//)?.[1];
+  const label = kind === "element" ? "Motion" : content ? JSON.parse(content) : "";
+  if (typeof label !== "string" || label.length > 80 || /[<>&{}]/.test(label)) throw new Error(`Invalid text content: ${relative}`);
   const ast = postcss.parse(raw.replace(/\/\* @Hide \*\/[\s\S]*?\/\* @HideEnds \*\//g, ""));
   const slug = `${source}-${name.replace(/[A-Z]/g, m => `-${m.toLowerCase()}`)}`;
   const className = `vp-motion-${slug}`;
@@ -70,7 +74,8 @@ function add(source, relative, name, group, kind, title) {
   const sourceUrl = `${upstream.repo}/blob/${upstream.revision}/${relative}`;
   const header = `/*\n${upstream.license}\nSource: ${sourceUrl}\nVibePolaris: namespaced selectors/keyframes, playback scale, reduced-motion support.\n*/\n`;
   fs.writeFileSync(`${out}/${slug}.css`, header+css);
-  catalogue.push({ slug, name: title || displayName(name), english: name, group, kind, source, sourceUrl });
+  const previewVersion = createHash("sha256").update(header+css+"poster-v1"+label).digest("hex").slice(0, 12);
+  catalogue.push({ slug, name: title || displayName(name), english: name, group, kind, source, sourceUrl, label, previewVersion });
   return true;
 }
 
