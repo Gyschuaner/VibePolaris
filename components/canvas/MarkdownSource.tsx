@@ -51,7 +51,7 @@ export function MarkdownSource(props: Props) {
       eq(other: ImageWidget) { return this.raw === other.raw; }
       toDOM(view: EditorView) {
         const span = document.createElement("span"); span.className = styles.sourceImage; span.contentEditable = "false";
-        const img = span.appendChild(document.createElement("img")); img.src = this.source; img.alt = this.alt; img.draggable = false;
+        const img = span.appendChild(document.createElement("img")); img.loading = "lazy"; img.decoding = "async"; img.src = this.source; img.alt = this.alt; img.draggable = false;
         img.onload = () => view.requestMeasure();
         const range = () => { const from = view.posAtDOM(span); return { from, to: from + this.raw.length }; };
         span.onclick = () => { const {from, to} = range(); view.dispatch({ selection: { anchor: from, head: to } }); view.focus(); };
