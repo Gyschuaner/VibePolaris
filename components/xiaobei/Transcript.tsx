@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import Markdown from "react-markdown";
+import remarkCjkFriendly from "remark-cjk-friendly/parseOnly";
 import remarkGfm from "remark-gfm";
 import { BookOpen, Brain, CaretRight, MagnifyingGlass, Newspaper } from "@phosphor-icons/react";
 import { TermIcon } from "@/components/terms/TermIcon";
@@ -10,7 +11,7 @@ import { CONTEXT_WARNING, CONTEXT_WINDOW, partitionTranscript, type ActivityBloc
 import { remarkTermLinks } from "@/lib/xiaobei/citations";
 
 export function Answer({ text, termNames, newsNames, close }: { text: string; termNames: Record<string, string>; newsNames: Record<string, string>; close: () => void }) {
-  return <div className="xb-answer"><Markdown remarkPlugins={[remarkGfm, [remarkTermLinks, termNames, newsNames]]} skipHtml components={{
+  return <div className="xb-answer"><Markdown remarkPlugins={[remarkGfm, remarkCjkFriendly, [remarkTermLinks, termNames, newsNames]]} skipHtml components={{
     a: ({ href, children }) => {
       if (href?.startsWith("/terms/") && termNames[href]) return <Link className="xb-citation" href={href} onClick={close}><TermIcon slug={href.slice("/terms/".length)} size={16} /><span>{termNames[href]}</span></Link>;
       if (href?.startsWith("/news/") && newsNames[href]) return <Link className="xb-citation xb-news-citation" href={href} onClick={close}><Newspaper size={13} aria-hidden="true" /><span>{newsNames[href]}</span></Link>;
