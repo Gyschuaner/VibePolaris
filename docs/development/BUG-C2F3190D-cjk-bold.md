@@ -23,3 +23,11 @@
 分支 `fix/BUG-C2F3190D-cjk-bold` 从 dev 的 `b46cda79f0be6bf903d212cbed54d1de1ade8ab7` 建立。PR、dev 最终提交与部署批次以 DP 为准；仅集成 dev，本次新 Bug 尚未发布生产。回退该 PR 并重建可恢复旧解析，无数据迁移。前一轮三项生产发布见 main 的 `docs/development/VBP-123-text-and-images.md`（PR #591 / #592），运行提交仍是 `3fb15282cf50144f93ee271b2dde9e9c95c2662a`。
 
 没有调用真实模型重新生成此问题，没有执行全站或跨设备回归。当前 Mac 不存在指定 Obsidian `D:/Obsidian/gysnote`，跳过该库写入；没有新增正式飞书文档或索引。
+
+## 2026-10-26 生产发布准备
+
+用户随后明确要求“上线一下吧”，授权本修复发布生产。实现已通过 [PR #594](https://github.com/Gyschuaner/VibePolaris/pull/594) 合入 dev `1551776d1c7f3f34c5a55cd403a12b8eef149541`，最终 dev 构建及浏览器集成已通过（BUILD_ID `JMhv84HfpnoF451MGbckd`，5 处 strong 均为 700）。
+
+当前生产已独立发布 VBP-122，运行 `21a7d7b1d0c8ae8a8974eb9a799bfad58e510df2`。发布分支 `release/BUG-C2F3190D-cjk-bold-production` 从当前 main 创建，选入 dev 的修复 `4828320b571772c541038d5f971064c2af747d22`，保留现有生产更新，未整批发布 dev 的其他改动。
+
+按实际合并 main 的完整提交号制作镜像。沿用当前 Linux 生产基础镜像及已有依赖，只添加锁文件新增的五个纯 JavaScript 包和本次构建；现有依赖版本、public 与运行支持文件逐项核对。切换前进行 SQLite 在线备份并 quick_check，保留旧镜像、Compose 与回滚脚本；回滚保留新数据库持久卷。切换后执行 HTTPS 健康与未授权拒绝检查，并用合成草稿验收预览、阅读、工具栏、撤销、复制及刷新。实际版本与结果将在发布后补充。
