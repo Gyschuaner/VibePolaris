@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { Suspense, useEffect, useRef, useState, type CSSProperties } from "react";
 import { ArrowLeft, Copy, Check, DownloadSimple, Desktop, DeviceMobile, ArrowCounterClockwise, ArrowUpRight, Play, Pause } from "@phosphor-icons/react/dist/ssr";
 import { libraryCategory, libraryCategories, libraryHref, libraryPage, libraryGroup, type LibraryItem } from "@/lib/library";
 import { defaultSampleOptions, librarySource, type SampleOptions } from "@/lib/library-source";
@@ -23,9 +23,13 @@ function CopyAction({ text, label, primary = false }: { text: string; label: str
   return <div><button type="button" className={primary ? styles.primary : styles.textButton} onClick={copy}>{status === "copied" ? <Check size={20} /> : <Copy size={20} />}{status === "copied" ? "已复制" : label}</button><span role="status" className={status === "error" ? styles.copyError : styles.srOnly}>{status === "error" ? "复制未成功，请选中内容手动复制。" : status === "copied" ? "已复制到剪贴板" : ""}</span></div>;
 }
 
-export function LibraryDetail({ item, animationCss }: { item: LibraryItem; animationCss?: string }) {
+function LibraryBackLink() {
   const params = useSearchParams();
   const back = libraryHref(libraryCategory(params.get("category")), params.get("q") || "", params.get("sort") || "featured", undefined, libraryPage(params.get("page")), libraryGroup(params.get("group")));
+  return <Link href={back} className={styles.back}><ArrowLeft size={21} />返回组件库</Link>;
+}
+
+export function LibraryDetail({ item, animationCss }: { item: LibraryItem; animationCss?: string }) {
   const [view, setView] = useState<"preview" | "code">("preview");
   const [device, setDevice] = useState("desktop"), [format, setFormat] = useState("react");
   const [options, setOptions] = useState(defaultSampleOptions);
@@ -37,7 +41,7 @@ export function LibraryDetail({ item, animationCss }: { item: LibraryItem; anima
   const asset = item.category === "asset";
   const controls: { key: keyof SampleOptions; label: string; min: number; max: number; step: number; suffix?: string }[] = item.slug === "soft-gradient" ? [{ key: "angle", label: "角度", min: 0, max: 360, step: 5, suffix: "°" }] : item.slug === "paper-shadow" ? [{ key: "radius", label: "圆角", min: 0, max: 32, step: 1 }, { key: "depth", label: "阴影", min: 4, max: 48, step: 1 }] : [{ key: "radius", label: "圆角", min: 0, max: 32, step: 1 }, { key: "speed", label: "速度", min: 0, max: 600, step: 20, suffix: " ms" }];
   return <main className={styles.detail} id="main-content">
-    <Link href={back} className={styles.back}><ArrowLeft size={21} />返回组件库</Link>
+    <Suspense fallback={<Link href="/library" className={styles.back}><ArrowLeft size={21} />返回组件库</Link>}><LibraryBackLink /></Suspense>
     <div className={styles.detailGrid}>
       <section className={styles.content} aria-labelledby="library-title">
         <header className={styles.detailHeading}><p className={styles.breadcrumb}>{libraryCategories[item.category]} · {item.group}</p><div className={styles.titleLine}><h1 id="library-title">{item.name}</h1><span>{item.english}</span></div><p className={styles.subtitle}>{item.description}</p></header>

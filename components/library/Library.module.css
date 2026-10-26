@@ -1,7 +1,7 @@
 .gallery,.detail{max-width:1440px;margin:auto;padding:48px 64px 76px}
 .gallery button,.detail button,.gallery select,.detail input{font:inherit}
 .gallery :is(button,a,input,select):focus-visible,.detail :is(button,a,input,pre):focus-visible{outline:2px solid var(--accent);outline-offset:5px}
-.galleryHeading{display:flex;align-items:center;justify-content:space-between;gap:40px;margin-bottom:44px}
+.galleryHeading{display:flex;align-items:center;justify-content:space-between;gap:40px;margin-bottom:28px}
 .eyebrow{font-size:12px;font-weight:600;letter-spacing:.28em;color:var(--accent-text);margin-bottom:8px}
 .gallery h1,.detail h1{font-size:40px;line-height:1.3;letter-spacing:-.035em;font-weight:650}
 .subtitle{font-size:18px;color:var(--muted);line-height:1.7;margin-top:10px}
@@ -18,6 +18,22 @@
 .categories button[aria-pressed=true]:after,.viewTabs button[aria-pressed=true]:after{content:"";position:absolute;bottom:-1px;left:10px;right:10px;height:2px;background:var(--accent)}
 .sort select{padding:10px 6px;border:0;background:transparent;color:var(--muted);cursor:pointer}
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 26px}
+.resultsBar h2{font-size:22px;font-weight:600;color:var(--ink)}
+.animationSection{margin-bottom:42px}
+.animationGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 26px}
+.animationGroup{min-width:0;container-type:inline-size}
+.animationGroup>h2{font-size:17px;font-weight:600;line-height:1.5;margin-bottom:12px}
+.groupStage{--card-height:clamp(294px,60cqw,500px);--thumb-height:calc((var(--card-height) - 56px)/4);--preview-scale:1;display:grid;grid-template-columns:minmax(0,1fr) clamp(86px,22cqw,184px);grid-auto-rows:var(--thumb-height);align-content:start;gap:10px 12px;height:var(--card-height);padding:12px;border:1px solid color-mix(in srgb,var(--hairline) 45%,transparent);border-radius:12px;background:#FCFAF3;overflow:auto;overflow-anchor:none;scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--muted) 35%,transparent) transparent;overscroll-behavior-y:contain}
+.animationSlot{--preview-scale:.36;position:relative;grid-column:2;min-width:0}
+.animationSlot[data-featured=true]{--preview-scale:1;position:sticky;top:0;grid-column:1;height:calc(var(--card-height) - 26px);align-self:start;z-index:1}
+.swapCanvas{position:absolute;left:50%;top:50%;width:280px;height:180px;margin:-90px 0 0 -140px;transform:scale(var(--preview-scale));pointer-events:none;z-index:2}
+.featuredControl,.miniControl{position:absolute;inset:0;border-radius:8px;z-index:3}
+.featuredControl{color:var(--accent-text)}
+.featuredControl svg{position:absolute;right:8px;bottom:8px;opacity:0;transition:opacity .18s}
+.featuredControl:hover svg,.featuredControl:focus-visible svg{opacity:1}
+.miniControl{border:1px solid color-mix(in srgb,var(--hairline) 40%,transparent);background:transparent;cursor:pointer;transition:border-color .18s}
+.miniControl:hover{border-color:var(--accent)}
+.results{min-width:0}
 .item{display:block;min-width:0;border-radius:12px}
 .thumbnail{position:relative;aspect-ratio:1.67;border:1px solid color-mix(in srgb,var(--hairline) 45%,transparent);border-radius:12px;overflow:hidden;transition:border-color .2s;background:var(--surface)}
 .item:hover .thumbnail,.item:focus-visible .thumbnail{border-color:var(--accent)}
@@ -100,23 +116,25 @@
 .copyError{display:block;color:var(--accent-text);font-size:13px;margin-top:8px}
 .srOnly{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .resultsBar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:-4px 0 22px;color:var(--muted);font-size:14px;scroll-margin-top:90px}
+.resultsBar p{margin-top:6px}
 .resultsBar label{display:flex;align-items:center;gap:12px;white-space:nowrap}
 .resultsBar select,.motionControls select{padding:8px 10px;border:1px solid var(--hairline);border-radius:7px;background:var(--surface);color:var(--ink);font:inherit}
-.pagination{display:flex;align-items:center;justify-content:center;gap:28px;margin-top:36px;color:var(--muted);font-size:14px}
-.pagination button,.motionControls button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:8px 14px;border:1px solid var(--hairline);border-radius:8px;background:var(--surface);color:var(--accent-text);cursor:pointer;font:inherit}
-.pagination button:disabled{opacity:.4;cursor:default}
+.motionControls button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:8px 14px;border:1px solid var(--hairline);border-radius:8px;background:var(--surface);color:var(--accent-text);cursor:pointer;font:inherit}
 .motionSample{position:relative;isolation:isolate}
-.motionFrame{width:min(260px,80%);height:180px;display:grid;place-items:center}
-.motionObject[data-active=false],.motionObject[data-active=false]::before,.motionObject[data-active=false]::after{animation-name:none!important}
+/* Card playback matches the poster palette; detail playback follows the theme. */
+.motionSample[data-decorative=true]{--ink:#171A15;--accent:#9A6248;--accent-ink:#FCFAF3;--surface:#FCFAF3;background:#FCFAF3}
+.motionPoster{display:block;width:min(280px,100%);height:180px;object-fit:contain;background:#FCFAF3}
+.motionFrame{width:min(280px,100%);height:180px;display:grid;place-items:center}
 .motionObject[data-running=false],.motionObject[data-running=false]::before,.motionObject[data-running=false]::after{animation-play-state:paused!important}
 .elementMotion{display:grid;place-items:center;width:112px;height:84px;border-radius:16px;background:var(--accent);color:var(--accent-ink);font-size:17px;font-weight:600;animation-fill-mode:backwards!important}
-.motionStatus{position:absolute;inset:auto 12px 14px;text-align:center;font-size:12px;color:var(--muted)}
 .motionHint{position:absolute;bottom:15px;left:18px;font-size:12px;color:var(--muted);opacity:.65}
 .motionControls{display:flex;align-items:center;gap:12px;padding:20px 0;font-size:14px;flex-wrap:wrap}
 .motionControls label{margin-left:auto;display:flex;align-items:center;gap:10px}
 .motionControls button[aria-pressed=true]{background:var(--tint)}
-@media(max-width:600px){.filters{flex-wrap:wrap}.categories{width:100%;justify-content:space-between;gap:0}.sort{margin-left:auto}.resultsBar{font-size:12px;gap:10px}.resultsBar label{gap:6px}.resultsBar select{max-width:130px}.motionControls{gap:8px;font-size:13px}.motionControls button{padding:8px 10px}.pagination{gap:20px}}
-@media(hover:none){.motionHint{display:none}}
+@media(max-width:600px){.filters{flex-wrap:wrap}.categories{width:100%;justify-content:space-between;gap:0}.sort{margin-left:auto}.resultsBar{font-size:12px;gap:10px}.resultsBar label{gap:6px}.resultsBar select{max-width:130px}.motionControls{gap:8px;font-size:13px}.motionControls button{padding:8px 10px}}
+@media(hover:none){.motionHint{display:none}.featuredControl svg{opacity:1}}
+@media(max-width:900px){.animationGrid{grid-template-columns:1fr}}
+@media(max-width:600px){.resultsBar h2{font-size:20px}.animationGrid{gap:26px}.groupStage{--card-height:294px;grid-template-columns:minmax(0,1fr) 86px;gap:10px 8px}.animationSlot{--preview-scale:.28}.animationSlot[data-featured=true]{--preview-scale:.76}.animationGroup>h2{font-size:16px;margin-bottom:10px}}
 @media(min-width:1600px){.gallery,.detail{padding-inline:48px}}
 @media(max-width:1150px){.gallery,.detail{padding-inline:32px}.search{width:350px}.detailGrid{grid-template-columns:minmax(0,1fr) 264px;gap:28px}.usePanel{padding-left:26px}.grid{gap:24px}.sample[data-sample=expandable-card]{padding:18px}.sample[data-sample=sliding-tabs]{padding:20px}.iconGrid{gap:18px 20px}.iconGrid svg{width:28px;height:28px}.controls{gap:16px}.controls label{gap:10px}.controls label+label{padding-left:16px}}
 @media(max-width:900px){.galleryHeading{gap:24px}.gallery h1,.detail h1{font-size:34px}.subtitle{font-size:16px}.search{width:300px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.detailGrid{grid-template-columns:minmax(0,1fr)}.usePanel{border-left:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:32px}.promptSection{border:0;padding:0;margin:0}.assetSource{margin:0;padding-top:24px;grid-column:1/-1}.usePanel h2{margin-bottom:18px}.stagePreview,.code{height:380px}.detailHeading{margin-bottom:24px}.back{margin-bottom:28px}}
