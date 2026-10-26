@@ -185,7 +185,7 @@ export function CompletingTextarea({ markdown, title, editorRef, onChange, onSav
       onPasteCapture={event => { const files = Array.from(event.clipboardData.files); if (files.length) { event.preventDefault(); event.stopPropagation(); void insertImages(files); } }}>
     <MarkdownSource ref={field} markdown={markdown} readOnly={imageBusy} helpId={helpId} ghost={ghost}
       onChange={value => { onChange(value); clear(); arm(); }} onSelect={() => select()} onFocus={() => { select(); arm(); }} onBlur={onSave}
-      onScroll={() => { clear(); requestAnimationFrame(position); arm(); }} onComposition={active => { composing.current = active; if (active) clear(); else arm(); }} onReplaceImage={() => imageInput.current?.click()} />
+      onScroll={() => { requestAnimationFrame(position); arm(); }} onComposition={active => { composing.current = active; if (active) clear(); else arm(); }} onReplaceImage={() => imageInput.current?.click()} />
     {draggingImage && <div className={styles.imageDrop} aria-hidden="true">松开插入图片</div>}
     {popup && <div ref={floating} className={styles.floating} onPointerDown={event => event.preventDefault()}>{popup}</div>}
     <span id={helpId} className={styles.srOnly}>Command 或 Control 加 B 加粗，I 斜体，K 链接，Shift H 高亮，Shift X 删除线，反引号行内代码，Shift 加反引号代码块。Tab 缩进，Shift Tab 取消缩进；Escape 后按 Tab 可离开编辑区。停顿后可按 Command 或 Control 加 Enter 请求小北补全，有建议时 Tab 接受，Escape 放弃。</span>

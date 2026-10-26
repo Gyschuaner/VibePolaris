@@ -87,7 +87,7 @@ export function useCanvas(options: { storageKey?: string; owner?: string; remote
       if (!next) {
         await flush();
         const copy = latest.current;
-        const hash = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(JSON.stringify(copy))))).map(value => value.toString(16).padStart(2, "0")).join("");
+        const hash = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(JSON.stringify({ nodes: copy.nodes, edges: copy.edges }))))).map(value => value.toString(16).padStart(2, "0")).join("");
         const source = `conflict:${remoteId}:${hash}`, name = `冲突副本 ${new Date().toLocaleString("zh-CN", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}`;
         let fork = (await cloudRequest(owner, { method: "POST", body: { source, name, data: copy } }))!;
         if (disposed.current) return;

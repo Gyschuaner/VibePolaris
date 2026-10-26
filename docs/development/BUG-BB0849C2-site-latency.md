@@ -31,4 +31,16 @@
 
 生产只读取样时容器健康，宿主 CPU 未饱和；内部页面响应约 10–140 ms。本机默认访问链路约 1.5–3.5 s，直连取样约 0.8–1.1 s，说明网络同样影响等待。没有更改用户代理、服务器其他服务或资源配置，不能用脚本减重承诺所有等待消失。
 
-本轮 dev 来源本地运行在 `http://vbp-latency.localhost:3133`，仅监听本机回环地址。生产发布需另行记录实际提交、备份和健康检查；本记录不表示已上线。原工作区的 VBP-049 修改未触碰。指定的 `D:/Obsidian/gysnote` 在本机不存在，跳过 Obsidian 更新；未修改正式飞书文档。
+本轮 dev 来源本地运行在 `http://vbp-latency.localhost:3133`，仅监听本机回环地址。原工作区的 VBP-049 修改未触碰。指定的 `D:/Obsidian/gysnote` 在本机不存在，跳过 Obsidian 更新；未修改正式飞书文档。
+
+## 生产发布（2026-10-26）
+
+用户明确授权“一起上线，完成备份与健康检查”后，经 [PR604](https://github.com/Gyschuaner/VibePolaris/pull/604) 合入 main。生产提交 `a39add7964a7807ac9524de5ce793b0928595c84`，Build ID `GtZki-s09d6qyPv_VsveO`，北京时间 17:14:45 部署。镜像 `vibepolaris:a39add7964a7807ac9524de5ce793b0928595c84`，发布目录 `/opt/vibepolaris/releases/20261026T091149Z-a39add79`。
+
+SQLite 在线备份 `/opt/vibepolaris/backups/20261026T091149Z-from-2f082e26`，quick_check 为 ok，SHA256 `d6f7db002de41559457cfdab97c589edac311e4dcbf5aa5412d2de84c23bb11b`。原持久卷保留，补全计费开关仍为 false，服务 healthy，10 项公开/未授权私有接口符合 200/401。回退执行 `sudo /opt/vibepolaris/releases/20261026T091149Z-a39add79/rollback.sh`，恢复 `2f082e26` 镜像并保留最新数据卷；本次未执行回退。
+
+正式 HTTPS 初始脚本：设置页 1,135,205 B（gzip 320,701 B），HTML 词条 1,353,585 B（gzip 364,518 B）。实际浏览器完成 HTML、Token 代表性交互；原 QA 账号授权失效，改用独立 15 分钟游客授权，真实发送一条 HTML p 问题，分类和回答完成，加粗及词条引用正常。临时授权已禁用并重新查询确认，私有邀请码文件已删除。
+
+既定生产冒烟计划 `ff1cfd8e-7fd4-4b0b-a8b4-53552e19bf2f` 已记录实际结果。后续用户报告的补全与云同步故障另记 `BUG-8EFD0222`；初始冒烟通过不代表该用户画布已恢复，详见对应技术记录。按用户要求清理服务器全局可回收 Docker 构建缓存，工具报告回收 3.955 GB；当前镜像、回滚镜像、用户数据卷与备份保留。
+
+服务器清理完成：全局可回收构建缓存由 Docker 报告回收 3.955 GB；另清理 8 个无任何容器引用、无其他别名的旧 VibePolaris 镜像，磁盘实际再释放 13,352,165,376 B。整体可用空间由约 1.05 GB 增至 17,657,847,808 B（总盘 62,736,269,312 B）。所有容器 ID、镜像与运行状态核对未变，VibePolaris healthy；其他项目显式回滚镜像、停止容器引用的镜像、持久卷、数据库与备份保留。另两个项目服务在清理前已存在 unhealthy/restarting 状态，本次未将它们记为健康或修改其配置。
