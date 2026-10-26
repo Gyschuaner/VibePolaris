@@ -4,7 +4,7 @@ import test from "node:test";
 import { createHash } from "node:crypto";
 import postcss from "postcss";
 import ts from "typescript";
-import { libraryAnimations, animationCode, animationSource, animationPoster, animationCollections, animationGroups } from "../lib/library-animations.ts";
+import { libraryAnimations, animationCode, animationSource, animationPoster, animationsByGroup, animationGroups, swapFeatured } from "../lib/library-animations.ts";
 import { libraryItems, libraryHref, libraryPage, libraryGroup, filterLibrary } from "../lib/library.ts";
 
 test("the 300 curated effects are scoped, attributable, exportable and reachable through the catalogue", () => {
@@ -12,8 +12,8 @@ test("the 300 curated effects are scoped, attributable, exportable and reachable
   assert.equal(libraryItems.length, 306);
   assert.equal(new Set(libraryItems.map(item => item.slug)).size, 306);
   assert.equal(readdirSync("public/library/animations").filter(file => file.endsWith(".css")).length, 300);
-  const grouped = animationCollections.flatMap(collection => collection.groups);
-  assert.deepEqual([...grouped].sort(), [...animationGroups].sort(), "each type must appear exactly once in the collection navigation");
+  assert.deepEqual([...animationsByGroup.keys()], animationGroups);
+  assert.equal([...animationsByGroup.values()].flat().length, 300);
   assert.equal(readdirSync("public/library/posters").filter(file => file.endsWith(".jpg")).length, 300);
   for (const item of libraryAnimations) {
     const css = readFileSync(`public/library/animations/${item.slug}.css`, "utf8");
@@ -56,4 +56,18 @@ test("the 300 curated effects are scoped, attributable, exportable and reachable
   assert.equal(back.searchParams.get("page"), "3");
   assert.equal(back.searchParams.get("group"), "入场");
   assert.equal(filterLibrary("all", "no-such-motion-item", "featured").length, 0);
+});
+
+test("choosing a thumbnail exchanges its exact slot with the featured effect without losing animations", () => {
+  for (const effects of animationsByGroup.values()) {
+    for (let index = 1; index < effects.length; index++) {
+      const swapped = swapFeatured(effects, index);
+      assert.equal(swapped[0], effects[index]);
+      assert.equal(swapped[index], effects[0]);
+      assert.equal(new Set(swapped).size, effects.length);
+      assert.deepEqual(swapFeatured(swapped, index), effects);
+    }
+    for (const index of [-1, 0, 1.5, effects.length, NaN]) assert.equal(swapFeatured(effects, index), effects);
+  }
+  assert.deepEqual(swapFeatured([], 1), []);
 });
