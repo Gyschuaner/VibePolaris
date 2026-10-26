@@ -4,6 +4,7 @@ import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import remarkGfm from "remark-gfm";
+import remarkCjkFriendly from "remark-cjk-friendly/parseOnly";
 import { remarkMark } from "remark-mark-highlight";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
@@ -78,6 +79,13 @@ test("format commands preserve selection, toggle wrappers, and insert safe block
   assert.deepEqual(apply("**想法**", 2, 4, "bold"), { value: "想法", start: 0, end: 2 });
   assert.deepEqual(apply("**想法**", 0, 6, "bold"), { value: "想法", start: 0, end: 2 });
   assert.deepEqual(apply("前后", 1, 1, "bold"), { value: "前****后", start: 3, end: 3 });
+  const spacedSource = "因为 p 是 paragraph（段落） 的缩写。";
+  const spaced = apply(spacedSource, 2, spacedSource.indexOf("的缩写"), "bold");
+  assert.equal(spaced.value, "因为 **p 是 paragraph（段落）** 的缩写。");
+  assert.equal(spaced.value.slice(spaced.start, spaced.end), "p 是 paragraph（段落）");
+  assert.equal(apply(spaced.value, spaced.start, spaced.end, "bold").value, "因为 p 是 paragraph（段落） 的缩写。");
+  assert.equal(apply(" \t ", 0, 3, "bold").value, " \t ");
+  assert.equal(apply(" 想法 ", 0, 4, "italic").value, " *想法* ");
   assert.equal(apply("想法", 0, 2, "highlight").value, "==想法==");
   assert.equal(apply("想法", 0, 2, "strike").value, "~~想法~~");
   assert.equal(apply("a`b", 0, 3, "code").value, "``a`b``");
@@ -99,9 +107,21 @@ test("format commands preserve selection, toggle wrappers, and insert safe block
   assert.equal(markdownShortcut("Enter", false), null);
 });
 
+test("CJK punctuation emphasis renders while code and escapes stay literal", async () => {
+  const processor = unified().use(remarkParse).use(remarkGfm).use(remarkCjkFriendly).use(remarkRehype).use(rehypeSanitize, markdownSchema);
+  for (const source of ["因为**p 是 paragraph（段落）**的缩写。", "使用**（段落）**标签", "这是**一句话。**接着写", "这是**`p`（段落）**的缩写", "阅读**[段落](https://example.com)**文档"]) {
+    const tree = await processor.run(processor.parse(source));
+    assert.ok(tree.children[0].children.some(node => node.tagName === "strong"), source);
+  }
+  const source = "`**（代码）**` \\*\\*（转义）\\*\\*\n\n```md\n**（原样）**\n```";
+  const tree = await processor.run(processor.parse(source));
+  assert.ok(!JSON.stringify(tree).includes('"tagName":"strong"'));
+  assert.ok(JSON.stringify(tree).includes("**（代码）**"));
+});
+
 test("rendering supports Obsidian highlights, safe color, GFM and code without executing note HTML", async () => {
   const source = '==高亮 **加粗**== ~~删除~~ `==原样==` \\==转义==\n\n<span style="color: #8053a3">紫色</span> <span style="color:red;position:fixed">无样式</span><script>alert(1)</script><img src="javascript:alert(1)" onerror="alert(1)">\n\n```js\nconst answer = 42;\n```\n\n```mermaid\nflowchart LR\n A --> B\n```\n\n| 功能 | 状态 | 说明 |\n| :--- | :---: | ---: |\n| **表格** | 已支持 | 一\\|二 |';
-  const processor = unified().use(remarkParse).use(remarkGfm).use(remarkMark).use(remarkRehype, { allowDangerousHtml: true }).use(rehypeRaw).use(rehypeTextColors).use(rehypeSanitize, markdownSchema).use(rehypeHighlight, { detect: false, ignoreMissing: true, plainText: ["mermaid"] });
+  const processor = unified().use(remarkParse).use(remarkGfm).use(remarkCjkFriendly).use(remarkMark).use(remarkRehype, { allowDangerousHtml: true }).use(rehypeRaw).use(rehypeTextColors).use(rehypeSanitize, markdownSchema).use(rehypeHighlight, { detect: false, ignoreMissing: true, plainText: ["mermaid"] });
   const tree = await processor.run(processor.parse(source));
   const nodes = [];
   function collect(node) { nodes.push(node); node.children?.forEach(collect); }

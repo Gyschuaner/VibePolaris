@@ -2,6 +2,13 @@ export type MarkdownFormat = "bold" | "italic" | "strike" | "highlight" | "code"
 export type MarkdownEdit = { from: number; to: number; text: string; start: number; end: number };
 
 export function formatMarkdown(value: string, start: number, end: number, format: MarkdownFormat, color = "#a33a32"): MarkdownEdit {
+  if (format === "bold" || format === "italic") {
+    const selection = value.slice(start, end);
+    if (selection && !selection.trim()) return { from: start, to: end, text: selection, start, end };
+    // Emphasis delimiters must touch text; keep selected edge whitespace outside.
+    start += selection.length - selection.trimStart().length;
+    end -= selection.length - selection.trimEnd().length;
+  }
   const selected = value.slice(start, end);
   function replace(from: number, to: number, text: string, selectionStart: number, selectionEnd = selectionStart) {
     return { from, to, text, start: selectionStart, end: selectionEnd };
