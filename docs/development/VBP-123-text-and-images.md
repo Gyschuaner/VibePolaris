@@ -1,6 +1,6 @@
 # VBP-123 文字留白与画布图片修复
 
-2026-10-26。本轮包含 VBP-123、VBP-118 下的 BUG-452CB170（整理遗漏图片）及 BUG-51EA0B5F（含图 Markdown 切换卡顿）。总负责人及开发、测试负责人均为顾毅盛。仅交付 dev，本轮没有生产授权。
+2026-10-26。本轮包含 VBP-123、VBP-118 下的 BUG-452CB170（整理遗漏图片）及 BUG-51EA0B5F（含图 Markdown 切换卡顿）。总负责人及开发、测试负责人均为顾毅盛。开发阶段先交付 dev，随后用户明确授权三项一起上线。
 
 ## 实现
 
@@ -31,6 +31,14 @@
 
 DP 定向计划：VBP-123 `978801f5-e846-460a-ab9c-11e5688bf252`；VBP-118 `a5dd73db-3aaa-4566-a9f3-521dd495970b`。结果仅记录实际运行的构建、聚焦自检和上述浏览器流程。
 
-回退本轮 PR 的合并提交并重建即可恢复旧行为；新增 WebP 是标准 Markdown 图片，回退后仍可读取。dev-local 数据仅为独立临时合成数据，不覆盖个人或生产数据。生产保持原版本，待明确授权后按生产发布流程处理。
+回退本轮 PR 的合并提交并重建即可恢复旧行为；新增 WebP 是标准 Markdown 图片，回退后仍可读取。dev-local 数据仅为独立临时合成数据，不覆盖个人或生产数据。
+
+## 生产发布
+
+用户随后明确授权三项一起上线。生产基线为 `ee74c1bccf2f687ce286bb95ddcfa6bcad90661d`，从 dev 选择 `17434089fa105e28e2b2b14864f69c2a353a6340` 建立 `release/VBP-123-text-images-production`，只包含上述三项及验证记录。生产候选重新执行 `npm run build` 成功，BUILD_ID 为 `RvOA6hYKCl1Syq9RYaCcC`；构建日志见 [production-build.txt](VBP-123-text-and-images/production-build.txt)。
+
+沿用现有 Linux 运行镜像的依赖，仅更新 `.next`；锁文件、公开资源、Compose 和账本运行脚本与基线相同。发布前清理了两条属于既有 VibePolaris 构建的临时源缓存，共 891.9 MB；没有删除镜像、数据卷或备份，服务器可用空间恢复到 6.1 GiB。
+
+生产切换前保留当前镜像和 Compose，使用 SQLite 在线备份并验证 `quick_check`。先在无网络、无生产数据卷的临时容器验证启动，再切换同名服务；健康检查失败时运行发布目录的 `rollback.sh` 恢复旧服务，保留发布后新增的数据。最终 main 提交、生产批次、备份路径及正式站冒烟结果以 DP 和本目录后续发布记录为准。
 
 DP Agent 委派运行因上游 Codex 凭证失效中止，已按 CLI Skill 回退到官方 CLI 维护记录；网络通过临时本机 SSH TCP 转发连接相同 DP 来源，保留 TLS 证书校验，不修改持久配置。此 Mac 不存在指定的 `D:/Obsidian/gysnote`，跳过 Obsidian 写入。没有新增正式飞书文档，故无新增飞书索引。
