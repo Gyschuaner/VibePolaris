@@ -26,3 +26,11 @@ DP 用例 `722aa8ee-03b2-495c-a565-2f28660a523f`，计划 `06d8fac0-f246-402d-8d
 分支 `fix/BUG-D8985782-document-switch` 基于 dev `8c9c0949822c620eb7fb9b07a59651c8f22f8535`。集成、发布提交及实际部署结果随后补入本记录。回退该 PR 并重建即可恢复旧导航，无数据迁移。
 
 只执行本次受影响流程的浏览器验收，未追加全站、移动端或真实模型回归。当前 Mac 不存在指定 Obsidian `D:/Obsidian/gysnote`，跳过该库写入；没有新增正式飞书文档或索引。
+
+## dev 集成与生产准备
+
+[PR #599](https://github.com/Gyschuaner/VibePolaris/pull/599) 合入 dev，提交 `068b941b501e52a99ae57d1a9e04250227275610`。该提交与已验收构建的所有非 docs 路径一致；最终 dev 真实浏览器重新打开含图文章，4 张图片正常。DP dev-local 批次 `bug-d8985782-dev-20261026`，任务完成，计划 1/1 通过。
+
+当前 dev 与 main 有其他待发布内容及历史差异，直接合并的 #600 已关闭。本次发布分支 `release/BUG-D8985782-document-switch-production` 从 main `befd2513bf136b984e2b004b2932ebc938ac417e` 建立，挑入已合 dev 的 `70a6ab745d6046712fe6cda1d55cb651baa058d0`；相较 main 唯一运行代码差异为本次 CanvasWorkspace 修复。生产源提交 `e5f81718c45cd409ce70eccd0c384b80f176091f` 重新构建通过，BUILD_ID `k0ybWLTayQ4kfeE_fMSCv`，见 [生产构建](BUG-D8985782-document-switch/production-build.txt)。
+
+发布授权沿用用户前述图片与切换性能修复上线要求。生产实际部署、健康检查、浏览器结果、备份和回滚将在完成后记录。
