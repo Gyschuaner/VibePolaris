@@ -3,7 +3,9 @@ import type { CanvasData, CanvasNode } from "./canvas.ts";
 export function sameValue(a: unknown, b: unknown): boolean {
   if (a === b) return true;
   if (!a || !b || typeof a !== "object" || typeof b !== "object") return false;
-  const left = Object.keys(a), right = Object.keys(b);
+  // JSON omits cleared optional fields; the cloud copy must still equal the local draft.
+  const left = Object.keys(a).filter(key => (a as Record<string, unknown>)[key] !== undefined);
+  const right = Object.keys(b).filter(key => (b as Record<string, unknown>)[key] !== undefined);
   return left.length === right.length && left.every(key => Object.hasOwn(b, key) && sameValue((a as Record<string, unknown>)[key], (b as Record<string, unknown>)[key]));
 }
 export function sameCanvas(a: CanvasData, b: CanvasData) {

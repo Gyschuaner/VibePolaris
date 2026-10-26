@@ -5,7 +5,7 @@ import { AccountStore } from "../lib/account/store.ts";
 import { CloudCanvasStore } from "../lib/account/canvas-store.ts";
 import { XiaobeiStore, digest } from "../lib/xiaobei/store.ts";
 import { emptyCanvas } from "../lib/canvas.ts";
-import { mergeCanvas, sameCanvas } from "../lib/canvas-sync.ts";
+import { mergeCanvas, sameCanvas, sameValue } from "../lib/canvas-sync.ts";
 
 const password = "test-6";
 const node = (id = randomUUID(), markdown = "测试正文") => ({ id, markdown, fileName: "", kind: "note", title: "测试节点", summary: "摘要", x: 10, y: 20, createdAt: "2026-10-20T00:00:00Z", updatedAt: "2026-10-20T00:00:00Z" });
@@ -112,6 +112,15 @@ test("三方合并保留独立编辑、节点删除与连线；同处修改保�
   assert.equal(sameCanvas(base, { ...base, revision: 100, view: { x: 200, y: 0, scale: 2 } }), true);
   const move = { ...base, nodes: [{ ...a, x: 90, y: 60 }, b] }, text = { ...base, nodes: [{ ...a, markdown: "文字" }, b] };
   const both = mergeCanvas(base, move, text); assert.equal(both.nodes[0].x, 90); assert.equal(both.nodes[0].markdown, "文字");
+});
+
+test("清空文章候选后的本地字段与JSON云端一致，不误判冲突副本", () => {
+  const local = { ...emptyCanvas(), nodes: [{ ...node(), articleProposal: undefined, annotations: { draft: undefined } }] };
+  const remote = JSON.parse(JSON.stringify(local));
+  assert.equal(sameValue(local.nodes, remote.nodes), true);
+  assert.equal(sameCanvas(local, remote), true);
+  assert.ok(mergeCanvas(emptyCanvas(), local, remote));
+  assert.equal(sameValue({ articleProposal: undefined }, { articleProposal: { markdown: "新版" } }), false);
 });
 
 
