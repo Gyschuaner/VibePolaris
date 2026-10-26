@@ -23,7 +23,7 @@
 
 ![整理文章保留图片](VBP-123-text-and-images/article-with-images.png)
 
-本轮没有调用付费真实模型验证语义排图，没有执行跨设备性能基准；上述体积减少来自合成 PNG 样本，不代表所有图片都有相同比例。旧文档的大图仍保持原数据，正文复用和异步加载会减少重复开销；需要缩小既有图片时可重新插入。
+dev 阶段使用合成模型，生产阶段已执行一次真实小北整理（见下文）。没有执行跨设备性能基准；上述体积减少来自合成 PNG 样本，不代表所有图片都有相同比例。旧文档的大图仍保持原数据，正文复用和异步加载会减少重复开销；需要缩小既有图片时可重新插入。
 
 ## 交付与记录
 
@@ -42,3 +42,16 @@ DP 定向计划：VBP-123 `978801f5-e846-460a-ab9c-11e5688bf252`；VBP-118 `a5dd
 生产切换前保留当前镜像和 Compose，使用 SQLite 在线备份并验证 `quick_check`。先在无网络、无生产数据卷的临时容器验证启动，再切换同名服务；健康检查失败时运行发布目录的 `rollback.sh` 恢复旧服务，保留发布后新增的数据。最终 main 提交、生产批次、备份路径及正式站冒烟结果以 DP 和本目录后续发布记录为准。
 
 DP Agent 委派运行因上游 Codex 凭证失效中止，已按 CLI Skill 回退到官方 CLI 维护记录；网络通过临时本机 SSH TCP 转发连接相同 DP 来源，保留 TLS 证书校验，不修改持久配置。此 Mac 不存在指定的 `D:/Obsidian/gysnote`，跳过 Obsidian 写入。没有新增正式飞书文档，故无新增飞书索引。
+
+
+### 生产实绩（2026-10-26）
+
+[PR #591](https://github.com/Gyschuaner/VibePolaris/pull/591) 已合入 main，应用运行提交 `3fb15282cf50144f93ee271b2dde9e9c95c2662a`，北京时间 11:16 完成切换。生产目录 `/opt/vibepolaris/releases/20261026T031343Z-3fb15282`；镜像 ID、构建校验与 HTTP 结果见 [production-release.json](VBP-123-text-and-images/production-release.json)。容器 healthy；首页、画布、设置、激活和会话接口 200；未登录画布与笔记接口 401。数据卷 `vibepolaris_xiaobei_data` 保留，无数据迁移。
+
+正式站在既有专用 QA 账号下新建空白账号画布，仅导入合成草稿；游客画布未导入或修改。真实浏览器验证输入、撤销、复制、插入大图、编辑/预览/阅读、真实小北整理、刷新和切回草稿。新增 PNG 转 WebP 的 data URL 从 410262 缩为 121515 字符，显示尺寸保持 320×320；原有 3 张 PNG 与新图均正常。真实模型输出文章 4/4 图片，源、alt、title 逐项一致且无内部标记；刷新后仍有 4 图，切回草稿的 540723 字节与整理前完全一致。证据：[浏览器](VBP-123-text-and-images/production-browser.json)、[图片完整性](VBP-123-text-and-images/production-integrity.json)。限时测试邀请码已禁用，测试账号已退出。
+
+![生产真实整理保留图片](VBP-123-text-and-images/production-article.png)
+
+备份 `/opt/vibepolaris/backups/20261026T031343Z-from-ee74c1bc`，SQLite 在线备份 quick_check=ok。回滚脚本 `/opt/vibepolaris/releases/20261026T031343Z-3fb15282/rollback.sh` 恢复上一版 `ee74c1bccf2f687ce286bb95ddcfa6bcad90661d` 的镜像、Compose 和 current，保留发布后新增数据；仅记录方法，未执行回滚。
+
+DP 生产批次 `vbp123-images-production-20261026`，环境 production；VBP-123 已发布，BUG-452CB170 / BUG-51EA0B5F 已关闭。生产计划 `b7db489f-3129-471e-b2d2-8d56a19e0cbe` 与 `244e0652-530f-43ea-87bc-6dd044f87171` 各 1/1 通过，生产任务已完成。未执行跨设备性能基准，不将单张合成样本体积变化泛化为所有图片；旧文档不自动批量压缩。
