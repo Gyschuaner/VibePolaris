@@ -40,7 +40,10 @@ export function MarkdownSource(props: Props) {
     get selectionEnd() { return editor.current!.state.selection.main.to; },
     get element() { return editor.current!.contentDOM; },
     get scrollDOM() { return editor.current!.scrollDOM; },
-    focus() { editor.current?.focus(); },
+    focus() {
+      const view = editor.current;
+      if (view) { view.focus(); view.dispatch({ effects: EditorView.scrollIntoView(view.state.selection.main.head, { y: "nearest" }) }); }
+    },
     setSelectionRange(start, end) { editor.current?.dispatch({ selection: { anchor: start, head: end } }); },
     replace(edit) { editor.current?.dispatch({ changes: { from: edit.from, to: edit.to, insert: edit.text }, selection: { anchor: edit.start, head: edit.end }, annotations: [Transaction.userEvent.of("input.paste"), isolateHistory.of("full")] }); },
     caretRect() { const view = editor.current; return view?.coordsAtPos(view.state.selection.main.head) ?? null; },
@@ -94,6 +97,7 @@ export function MarkdownSource(props: Props) {
     const view = editor.current; if (!view) return;
     if (view.state.doc.toString() !== props.markdown) view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: props.markdown }, annotations: Transaction.addToHistory.of(false) });
     view.dispatch({ effects: [disabled.current.reconfigure(EditorState.readOnly.of(props.readOnly)), ghost.current.reconfigure(props.ghost ? EditorView.decorations.of(Decoration.set([Decoration.widget({ widget: new GhostWidget(props.ghost), side: 1 }).range(view.state.selection.main.head)])) : [])] });
+    if (props.ghost?.text) view.dispatch({ effects: EditorView.scrollIntoView(view.state.selection.main.head, { y: "nearest" }) });
   }, [props.markdown, props.readOnly, props.ghost]);
   return <div ref={host} className={styles.source} />;
 }
