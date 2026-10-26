@@ -1,4 +1,5 @@
 import Markdown, { defaultUrlTransform, type Components } from "react-markdown";
+import { memo } from "react";
 import remarkGfm from "remark-gfm";
 import { remarkMark } from "remark-mark-highlight";
 import rehypeRaw from "rehype-raw";
@@ -11,6 +12,9 @@ import styles from "./CanvasWorkspace.module.css";
 
 // Stable component types keep a diagram mounted while surrounding prose changes.
 const components: Components = {
+    // User images include embedded data URLs and must stay directly exportable.
+    // eslint-disable-next-line @next/next/no-img-element
+    img: ({ src, alt, title }) => <img src={src} alt={alt ?? ""} title={title} loading="lazy" decoding="async" />,
     a: ({ href, children }) => <a href={href} target={href?.startsWith("#") ? undefined : "_blank"} rel="noopener noreferrer">{children}</a>,
     table: ({ children }) => <div className={styles.table}><table>{children}</table></div>,
     span: ({ style, children, className }) => <span className={className} style={style?.color ? { color: safeTextColor(`color: ${style.color}`) } : undefined}>{children}</span>,
@@ -23,6 +27,6 @@ const components: Components = {
     },
 };
 
-export function MarkdownDocument({ markdown, fallbackTitle }: { markdown: string; fallbackTitle?: string }) {
+export const MarkdownDocument = memo(function MarkdownDocument({ markdown, fallbackTitle }: { markdown: string; fallbackTitle?: string }) {
   return <Markdown remarkPlugins={[remarkGfm, remarkMark]} rehypePlugins={[rehypeRaw, rehypeTextColors, [rehypeSanitize, markdownSchema], [rehypeFallbackTitle, fallbackTitle], [rehypeHighlight, { detect: false, ignoreMissing: true, plainText: ["mermaid"] }]]} urlTransform={(url, key) => key === "src" && url.startsWith("data:") ? safeNodeUrl(url, true) : defaultUrlTransform(url)} components={components}>{markdown}</Markdown>;
-}
+});
