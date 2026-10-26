@@ -44,7 +44,7 @@ export async function runAgent(options: {
   const recent = conversation.messages.filter(m => m.role === "user" || (m.role === "assistant" && !m.tool_calls)).slice(-8).map(m => ({ role: m.role, content: m.content }));
   conversation.messages.push(question);
   options.checkpoint();
-  const intent = await callModel({ store, identity, run, signal, json: true, messages: [
+  const intent = await callModel({ store, identity, run, signal, json: true, intent: true, messages: [
     { role: "system", content: `你只做意图分类，不回答用户问题。输出JSON，且仅包含intent字段，值为related、unclear或unrelated。
 related：VibePolaris使用问题，已发布新闻/星历/某条站内进展，新闻与词条的关系，或与其目录明确相关的技术知识（包括必要延伸）。承接相关对话的追问也相关。混合问题含有实质相关内容可判related，后续只回答相关部分。
 当前页面kind不是unknown时，“这页/这里怎么用、能做什么”等页面用法问题属于related；“当前词条/这个概念”可参考subject或selectedTerm。涉及当前页的指代使用本轮currentPage，明确承接旧话题的追问仍结合近期对话。明确提到其他相关主题也属于related。

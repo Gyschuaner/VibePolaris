@@ -1,14 +1,16 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { ArrowLeft, ArrowUp, ChatCircle, ClockCounterClockwise, Plus, Square, X } from "@phosphor-icons/react";
 import { applyEvent, finishActivities, CONTEXT_WARNING, type AgentEvent } from "@/lib/xiaobei/events";
 import type { ChatMessage, ContextUsage, ConversationDetail, ConversationSummary } from "@/lib/xiaobei/history";
-import { Transcript, ContextMeter } from "./Transcript";
+import { ContextMeter } from "./ContextMeter";
 import { XiaobeiStar } from "./XiaobeiStar";
 import { ownerHeaders, useAccount } from "@/components/account/AccountProvider";
 
+const loadTranscript = () => import("./Transcript");
+const Transcript = lazy(() => loadTranscript().then(module => ({ default: module.Transcript })));
 const HISTORY_REQUEST_TIMEOUT = 12_000;
 async function readHistory<T>(query = "", owner?: string): Promise<T> {
   const controller = new AbortController();
@@ -40,6 +42,7 @@ function XiaobeiSession({ termNames, newsNames }: { termNames: Record<string, st
   const [active, setActive] = useState(false);
   const [credits, setCredits] = useState(100);
   const [open, setOpen] = useState(false);
+  const close = useCallback(() => setOpen(false), []);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
@@ -155,7 +158,7 @@ function XiaobeiSession({ termNames, newsNames }: { termNames: Record<string, st
     return () => { window.removeEventListener("xiaobei-activated", refresh); window.removeEventListener("focus", refresh); request.current?.abort(); };
   }, []);
   useEffect(() => {
-    if (open) { dialog.current?.showModal(); input.current?.focus(); void refreshSession(); }
+    if (open) { void loadTranscript().catch(() => {}); dialog.current?.showModal(); input.current?.focus(); void refreshSession(); }
     else dialog.current?.close();
   }, [open]);
   useEffect(() => { if (open && active && scope) void restoreHistory(); }, [open, active, scope]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -269,7 +272,7 @@ function XiaobeiSession({ termNames, newsNames }: { termNames: Record<string, st
         </section> : <>
         <div className="xb-log" ref={log} aria-label="对话记录" onScroll={() => { const el = log.current; if (el) shouldScroll.current = el.scrollHeight - el.scrollTop - el.clientHeight < 80; }}>
           {!messages.length && !loading && <div className="xb-welcome"><XiaobeiStar /><h3>现在想了解什么？</h3><p>可以问当前页面怎么用，也可以聊聊概念和它们的联系。</p><div className="xb-suggestions">{[pathname.startsWith("/terms/") ? "用一个例子解释当前词条" : "这个页面可以做什么？", "Agent 和 Harness 有什么区别？"].map(text => <button key={text} onClick={() => { setDraft(text); input.current?.focus(); }}>{text}<ArrowUp size={15} /></button>)}</div></div>}
-          {messages.map(message => <article className={`xb-message xb-${message.role}`} key={message.id}>{message.role === "user" ? <><span className="xb-message-page">{message.page}</span><p>{message.text}</p></> : <>{(message.blocks.length > 0 || message.error) && <span className="xb-speaker">小北</span>}<Transcript blocks={message.blocks} termNames={termNames} newsNames={newsNames} close={() => setOpen(false)} />{message.error && <p className="xb-error">{message.error}</p>}</>}</article>)}
+          {messages.map(message => <article className={`xb-message xb-${message.role}`} key={message.id}>{message.role === "user" ? <><span className="xb-message-page">{message.page}</span><p>{message.text}</p></> : <>{(message.blocks.length > 0 || message.error) && <span className="xb-speaker">小北</span>}<Suspense fallback={<p role="status">正在载入对话…</p>}><Transcript blocks={message.blocks} termNames={termNames} newsNames={newsNames} close={close} /></Suspense>{message.error && <p className="xb-error">{message.error}</p>}</>}</article>)}
           <div role="status" aria-live="polite" className="xb-status">{loading ? "正在恢复对话…" : remoteRunning && !busy ? "这段对话仍在回答，正在同步已保存内容…" : busy && status ? <><i />{status}</> : null}</div>
           {error && <p className="xb-error" role="alert">{error}</p>}
           {!active && open && <p className="xb-error">授权已失效，请联系邀请人重新激活。</p>}

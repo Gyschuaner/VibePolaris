@@ -48,8 +48,17 @@ test("百炼思考协议、SSE 用量、失败预留和取消", async () => {
     let mode = "success", calls = 0;
     globalThis.fetch = async (_url, options) => {
       calls++; const body = JSON.parse(options.body);
-      assert.equal(body.model, "deepseek-v4.1-flash"); assert.equal(body.enable_thinking, true);
+      assert.equal(body.model, "deepseek-v4.1-flash");
       assert.equal(body.stream_options.include_usage, true);
+      if (mode === "intent") {
+        assert.equal(body.enable_thinking, false);
+        assert.equal(body.reasoning_effort, undefined);
+        assert.equal(body.max_tokens, 256);
+        assert.deepEqual(body.response_format, { type: "json_object" });
+        return sse([{ choices: [{ delta: { content: '{"intent":"related"}' }, finish_reason: "stop" }] }, { choices: [], usage: { prompt_tokens: 100, completion_tokens: 8 } }, "[DONE]"]);
+      }
+      assert.equal(body.enable_thinking, true);
+      assert.equal(body.reasoning_effort, "high");
       if (mode === "reject") return new Response("do not expose provider secrets", { status: 401 });
       if (mode === "missing") return sse([{ choices: [{ delta: { content: "partial" } }] }]);
       if (mode === "abort") return new Response(new ReadableStream({ start(controller) { controller.enqueue(encoder.encode('data: {"choices":[{"delta":{"content":"partial"}}]}\n\n')); options.signal.addEventListener("abort", () => controller.error(new DOMException("aborted", "AbortError"))); } }));
@@ -65,6 +74,9 @@ test("百炼思考协议、SSE 用量、失败预留和取消", async () => {
     mode = "abort"; const abort = new AbortController(); const request = callModel({ ...options, signal: abort.signal, onDelta: () => abort.abort() });
     await assert.rejects(request, /已停止/); assert.ok(store.balance(invite.id) < afterMissing);
     const count = calls; await assert.rejects(callModel({ ...options, projectedTokens: 256_000 }), /256K/); assert.equal(calls, count);
+    mode = "intent";
+    const classified = await callModel({ ...options, json: true, intent: true });
+    assert.equal(classified.message.content, '{"intent":"related"}');
   } finally {
     globalThis.fetch = fetchOriginal;
     if (keyOriginal === undefined) delete process.env.DASHSCOPE_API_KEY; else process.env.DASHSCOPE_API_KEY = keyOriginal;
