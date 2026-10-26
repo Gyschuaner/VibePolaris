@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { ownerHeaders, useAccount } from "@/components/account/AccountProvider";
 import { addSuggestions, expansionContext, sourceHash, type CanvasAiFeature, type DocumentVariant, type NodeSuggestion } from "@/lib/canvas-ai";
 import { nodePreview, type CanvasData, type CanvasNode } from "@/lib/canvas";
+import { prepareOrganizeImages } from "@/lib/markdown-images";
 
 export type AiProgress = { nodeId: string; running: boolean; characters: number; message: string; error?: boolean };
 type Running = { controller: AbortController; save: () => void };
@@ -25,13 +26,14 @@ export function useCanvasAi(data: CanvasData, update: (change: (value: CanvasDat
     if (running.current[feature] || !aiPreferences[feature]) return;
     const markdown = feature === "organize" || variant === "draft" ? node.markdown : node.article?.markdown ?? "";
     if (!markdown.trim() || (feature === "organize" && node.articleProposal)) return;
+    const images = feature === "organize" ? prepareOrganizeImages(markdown) : undefined;
     const controller = new AbortController();
     let text = "", hash = "", lastSaved = 0, completed = false;
     const generatedAt = new Date().toISOString();
     const report = (value: Partial<AiProgress>) => { if (mounted.current) setProgress(previous => ({ ...previous, [feature]: { nodeId: node.id, running: true, characters: text.length, message: "正在连接小北…", ...previous[feature], ...value } })); };
     const save = () => {
       if (!text || feature !== "organize") return;
-      update(value => ({ ...value, nodes: value.nodes.map(item => item.id === node.id ? { ...item, articleProposal: { markdown: text, sourceHash: hash, generatedAt, complete: false }, updatedAt: new Date().toISOString() } : item) }), true);
+      update(value => ({ ...value, nodes: value.nodes.map(item => item.id === node.id ? { ...item, articleProposal: { markdown: images!.restore(text), sourceHash: hash, generatedAt, complete: false }, updatedAt: new Date().toISOString() } : item) }), true);
     };
     running.current[feature] = { controller, save };
     report({ nodeId: node.id, running: true, characters: 0, message: "正在连接小北…", error: false });
@@ -39,7 +41,7 @@ export function useCanvasAi(data: CanvasData, update: (change: (value: CanvasDat
       hash = await sourceHash(markdown); controller.signal.throwIfAborted();
       const response = await fetch(`/api/xiaobei/canvas/${feature}`, { method: "POST", signal: controller.signal,
         headers: { "Content-Type": "application/json", ...ownerHeaders(account?.id) },
-        body: JSON.stringify({ requestId: crypto.randomUUID(), title: nodePreview(node).title, markdown,
+        body: JSON.stringify({ requestId: crypto.randomUUID(), title: nodePreview(node).title, markdown: images?.markdown ?? markdown,
           ...(feature === "expand" ? { existing: data.nodes.map(item => nodePreview(item).title), context: expansionContext(data, node.id, variant) } : {}) }),
       });
       if (!response.ok) { const body = await response.json(); throw new Error(body.error || "小北暂时不可用。"); }
@@ -70,7 +72,7 @@ export function useCanvasAi(data: CanvasData, update: (change: (value: CanvasDat
       if (!completed) throw new Error("连接中断，已生成的文章片段已保留。");
       if (feature === "organize") {
         if (!text.trim()) throw new Error("没有收到文章，请重试。");
-        const article = { markdown: text, sourceHash: hash, generatedAt, complete: true };
+        const article = { markdown: images!.restore(text, true), sourceHash: hash, generatedAt, complete: true };
         update(value => ({ ...value, nodes: value.nodes.map(item => item.id !== node.id ? item : { ...item, ...(item.article ? { articleProposal: article } : { article, articleProposal: undefined }), updatedAt: new Date().toISOString() }) }), true);
         report({ running: false, characters: text.length, message: node.article ? "新版已整理，采用后替换当前文章。" : "文章已整理，草稿已保留。" });
       } else {

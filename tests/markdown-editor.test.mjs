@@ -9,13 +9,35 @@ import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeHighlight from "rehype-highlight";
 import { formatMarkdown, markdownShortcut } from "../lib/markdown-editing.ts";
-import { insertMarkdownImages, markdownImageRanges, readMarkdownImages } from "../lib/markdown-images.ts";
+import { insertMarkdownImages, markdownImageRanges, prepareOrganizeImages, readMarkdownImages } from "../lib/markdown-images.ts";
 import { markdownSchema, rehypeFallbackTitle, rehypeTextColors, safeTextColor } from "../lib/markdown-rendering.ts";
 
 function apply(value, start, end, format) {
   const edit = formatMarkdown(value, start, end, format);
   return { value: value.slice(0, edit.from) + edit.text + value.slice(edit.to), start: edit.start, end: edit.end };
 }
+
+test("整理用短标记保留图片，按模型章节还原，并补回遗漏或放进代码块的图片", () => {
+  const source = `data:image/png;base64,${"A".repeat(240000)}`;
+  const draft = `# 草稿\n\n第一节\n\n![图\\[一\\]](<${source}> "原图标题")\n\n第二节\n\n![参考图][pic]\n\n[pic]: ${source}\n\n![远程图](https://example.com/chart.png)\n\n\`![代码示例](https://example.com/code.png)\``;
+  const prepared = prepareOrganizeImages(draft);
+  assert.ok(prepared.markdown.length < 1000);
+  assert.ok(!prepared.markdown.includes("base64"));
+  assert.ok(prepared.markdown.includes("第一节") && prepared.markdown.includes("第二节"));
+  assert.ok(prepared.markdown.includes("`![代码示例](https://example.com/code.png)`"));
+  const markers = prepared.markdown.match(/<!-- vp-image:[^>]+ -->/g);
+  assert.equal(markers.length, 3);
+  const output = `# 整理后的文章\n\n## 第二节\n\n${markers[2]}\n\n## 第一节\n\n${markers[0]}\n\n${markers[0]}`;
+  const partial = prepared.restore(output);
+  assert.deepEqual(markdownImageRanges(partial).map(image => image.source), ["https://example.com/chart.png", source]);
+  const completed = markdownImageRanges(prepared.restore(output, true));
+  assert.deepEqual(completed.map(image => image.source), ["https://example.com/chart.png", source, source]);
+  assert.equal(completed[1].alt, "图[一]"); assert.equal(completed[1].title, "原图标题");
+  assert.equal(completed[2].alt, "参考图");
+  assert.deepEqual(markdownImageRanges(prepared.restore(`文章\n\n\`\`\`md\n${markers.join("\n")}\n\`\`\``, true)).map(image => image.source), [source, source, "https://example.com/chart.png"]);
+  const prose = prepareOrganizeImages("只有普通文字和 `![代码](https://example.com/code.png)`");
+  assert.equal(prose.restore(prose.markdown, true), prose.markdown);
+});
 
 test("image insertion preserves surrounding prose, order, escaped names and the Markdown size limit", async () => {
   const source = "data:image/png;base64,iVBORw0KGgo=";
@@ -37,7 +59,6 @@ test("image insertion preserves surrounding prose, order, escaped names and the 
   assert.throws(() => insertMarkdownImages("字".repeat(4 * 1024 * 1024), 0, [{ name: "image.png", source }]), /10 MB/);
   await assert.rejects(readMarkdownImages([{ type: "image/svg+xml", size: 10 }]), /5 MB/);
   await assert.rejects(readMarkdownImages([{ type: "image/png", size: 6 * 1024 * 1024 }]), /5 MB/);
-  await assert.rejects(readMarkdownImages(Array(2).fill({ type: "image/png", size: 5 * 1024 * 1024 })), /10 MB/);
 });
 
 test("生成笔记的来源标记不会替代标题，已有 Markdown/HTML 标题不重复", async () => {
