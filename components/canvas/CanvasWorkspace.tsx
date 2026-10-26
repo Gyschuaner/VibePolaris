@@ -184,7 +184,8 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
   }
   function openNote(node: CanvasNode, edit = false, version: DocumentVariant = "draft") {
     void flush(); setSelected(node.id); setConnecting(null);
-    if (documentId === node.id) router.replace(noteUrl(node.id, edit, version), { scroll: false });
+    // Same-document modes use local data; avoid waiting for a server navigation.
+    if (documentId === node.id) window.history.replaceState(null, "", noteUrl(node.id, edit, version));
     else navigate(node.id, () => router.push(noteUrl(node.id, edit, version), { scroll: false }));
   }
   function returnToCanvas(animate = true) {
@@ -194,10 +195,10 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
   }
   function toggleEditing() {
     if (!active) return;
-    void flush(); router.replace(noteUrl(active.id, !editing, variant), { scroll: false });
+    void flush(); window.history.replaceState(null, "", noteUrl(active.id, !editing, variant));
   }
   function showVariant(version: DocumentVariant) {
-    if (active) { void flush(); router.replace(noteUrl(active.id, editing, version), { scroll: false }); }
+    if (active) { void flush(); window.history.replaceState(null, "", noteUrl(active.id, editing, version)); }
   }
   function changeDocument(markdown: string) {
     if (!active) return;
