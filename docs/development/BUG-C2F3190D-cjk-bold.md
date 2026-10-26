@@ -23,3 +23,10 @@
 分支 `fix/BUG-C2F3190D-cjk-bold` 从 dev 的 `b46cda79f0be6bf903d212cbed54d1de1ade8ab7` 建立。PR、dev 最终提交与部署批次以 DP 为准；仅集成 dev，本次新 Bug 尚未发布生产。回退该 PR 并重建可恢复旧解析，无数据迁移。前一轮三项生产发布见 main 的 `docs/development/VBP-123-text-and-images.md`（PR #591 / #592），运行提交仍是 `3fb15282cf50144f93ee271b2dde9e9c95c2662a`。
 
 没有调用真实模型重新生成此问题，没有执行全站或跨设备回归。当前 Mac 不存在指定 Obsidian `D:/Obsidian/gysnote`，跳过该库写入；没有新增正式飞书文档或索引。
+
+
+## dev 集成实绩
+
+[PR #594](https://github.com/Gyschuaner/VibePolaris/pull/594) 已合入 dev，提交 `1551776d1c7f3f34c5a55cd403a12b8eef149541`。dev 同期合入了独立的 VBP-122 组件库改动，因此对最终合并提交再次构建并启动；BUILD_ID `JMhv84HfpnoF451MGbckd`，真实浏览器重新加载后仍有 5 处 strong，字重均为 700，代码块保持原样。见 [集成构建](BUG-C2F3190D-cjk-bold/dev-integration-build.txt) 与 [集成浏览器结果](BUG-C2F3190D-cjk-bold/dev-integration.json)。
+
+DP 批次 `bug-c2f3190d-dev-20261026`，环境 dev-local；任务完成，定向计划 1/1 通过，BUG-C2F3190D 保持待复测。验收后关闭本次临时本地服务；生产继续运行 `3fb15282`，本修复尚未发布生产。
