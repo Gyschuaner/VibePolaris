@@ -6,7 +6,7 @@ import styles from "./Library.module.css";
 
 const loadedStyles = new Map<string, string>();
 
-export function AnimationPreview({ item, decorative, active, css: initialCss, replay = 0, paused = false, speed = 1, manual = false }: { item: LibraryAnimation; decorative: boolean; active: boolean; css?: string; replay?: number; paused?: boolean; speed?: number; manual?: boolean }) {
+export function AnimationPreview({ item, decorative, active, loop = false, css: initialCss, replay = 0, paused = false, speed = 1, manual = false }: { item: LibraryAnimation; decorative: boolean; active: boolean; loop?: boolean; css?: string; replay?: number; paused?: boolean; speed?: number; manual?: boolean }) {
   const frame = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [hidden, setHidden] = useState(false), [reduced, setReduced] = useState(true);
@@ -36,7 +36,7 @@ export function AnimationPreview({ item, decorative, active, css: initialCss, re
   const live = enabled && !!css;
   return <div ref={frame} className={`${styles.sample} ${styles.motionSample}`} aria-hidden={decorative || undefined} data-animation={item.slug} data-decorative={decorative} data-preview={live ? "live" : "poster"}>
     {live ? <><style>{css}</style><div className={styles.motionFrame}>
-      <div key={replay} className={`vp-motion-${item.slug} ${styles.motionObject} ${item.kind === "element" ? styles.elementMotion : ""}`} data-running={!paused} data-motion-opt-in={manual} style={{ "--motion-scale": 1 / speed, "--color-1": item.group === "骨架屏" ? "var(--surface)" : "var(--ink)", "--color-2": "var(--accent)" } as CSSProperties}>{item.label || null}</div>
+      <div key={replay} className={`vp-motion-${item.slug} ${styles.motionObject} ${item.kind === "element" ? styles.elementMotion : ""}`} data-running={!paused} data-motion-opt-in={manual} style={{ "--motion-scale": 1 / speed, "--color-1": item.group === "骨架屏" ? "var(--surface)" : "var(--ink)", "--color-2": "var(--accent)", animationIterationCount: loop && item.kind === "element" ? "infinite" : undefined } as CSSProperties}>{item.label || null}</div>
     </div></> : <img className={styles.motionPoster} src={animationPoster(item)} alt="" width={280} height={180} loading="lazy" decoding="async" />}
     {decorative && active && error && <span className={styles.motionHint}>暂时无法播放，点击查看详情</span>}
   </div>;

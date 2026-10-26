@@ -1,27 +1,31 @@
-# VBP-121 动画库界面检查
+# VBP-122 同类动画卡片检查
 
 final result: passed
 
-本次扩充沿用已经确认并上线的页面 1 陈列首页及精简详情，不重做视觉方案。原始设计保真报告保留在 [VBP-120 报告](docs/design/VBP-120-library/design-qa.md)，源图与同尺寸对照仍在该目录。
+## 对照目标与证据
 
-## 本轮证据
+视觉目标是用户 2026-10-26 提供的两张带标注截图及后续“放慢、悬停才播放”的说明。红框是交互草图标注，不是产品边框。保留既有动画和应用视觉，核对卡片结构、移除文字和换位行为，不将不同动画内容或站点主题当作偏差。
 
-本机优化构建 `http://127.0.0.1:3119/library?category=animation`；浅色 clay 主题，Build ID `XUDZsmMhSOGLISHTni-06`。
+- 来源：[文字移除标注](docs/development/VBP-122-category-motion-cards/reference-removals.png)，1908×832；[卡片草图](docs/development/VBP-122-category-motion-cards/reference-card.png)，916×554。原截图 DPR 未知，第二图卡片区域约 840×500，以相对比例判断。
+- 完整页面：[桌面首屏](docs/development/VBP-122-category-motion-cards/overview.jpg)、[加载类卡片](docs/development/VBP-122-category-motion-cards/desktop.jpg)，1074×747 CSS px / 图片 px，DPR 1，默认静帧。
+- 聚焦区域：[900px 下的卡片](docs/development/VBP-122-category-motion-cards/card-900.jpg)，页面 viewport 900×1000，卡片 836×500 CSS px / 图片 px，DPR 1。与第二张源图同轮打开比较，剔除源图外围空白与红色标注后核对结构。
+- 窄屏：[手机首屏](docs/development/VBP-122-category-motion-cards/mobile.jpg)，390×844 CSS px / 图片 px，DPR 1。无手机端源图，按同一结构做响应式验证，不声称逐像素复刻。
+- 最终 Build ID：`lN033H0Vx7Fs_VukeZoGO`；[浏览器交互](docs/development/VBP-122-category-motion-cards/browser.json)、[请求观察](docs/development/VBP-122-category-motion-cards/network.json)。
 
-- [目录桌面](docs/design/VBP-121-animations/gallery-desktop.png)、[详情桌面](docs/design/VBP-121-animations/detail-desktop.png)：1440×1024。
-- [目录手机](docs/design/VBP-121-animations/gallery-mobile.png)、[详情手机](docs/design/VBP-121-animations/detail-mobile.png)：390×844，实际滚动宽度 390。
-- [抽样动画计算样式](docs/design/VBP-121-animations/sample-styles.json)、[构建](docs/design/VBP-121-animations/build-output.txt)、[全量目录检查](docs/design/VBP-121-animations/catalogue-check.txt)。
+完整视图将第一张源图与最终桌面渲染一起检查；聚焦视图将第二张源图与 836×500 卡片一起检查。手机最初截到键盘选择后的滚动状态，重新导航抓取真实首屏，确认标题没有布局裁切；只修正了取证状态，没有为截图更改布局。
 
-检查时直接打开最终浏览器截图，确认桌面三列、手机单列、分类筛选和播放操作可用，标题与控制区没有截断。详情沿用大预览和取用区，手机取用区下移，不加入推荐流或其他效果列表。新操作沿用现有字体、主题色、边框、按钮和焦点样式。
+## 五项视觉核对
 
-## 发现与修正
+- 字体：沿用应用字体与字重，分类标题 17px、窄屏 16px。动画卡片下方名称、分类和播放提示已移除；组标题放在上方，控件保留可访问名称，原 6 个非动画资源仍有名称。
+- 间距和布局：左侧完整主画布，右侧约 22% 宽的四个预览槽位；整体保持原卡片比例。900px 单列时为 836×500，390px 使用紧凑右侧列表。卡片内部可滚动，左侧 sticky；最终窄屏滚动前后主预览相对卡片偏移都是 13px。
+- 色彩：沿用应用当前纸感主题、原边框、焦点色和现有静帧色。用户草图的冷灰主题与此次浏览器默认浅色主题不同；没有另造配色或复制红色标注。
+- 素材：主预览和缩略预览复用同一个真实 CSS 效果及原静帧，没有用占位盒替代动画。用户示例中的方形不是要求固定展示的图像；本次截图选择圆环及其他加载类。保持来源许可，未新增生成图像。
+- 内容：只保留分类名及必要筛选信息。大预览进入现有精简详情，小预览点击交换，详情没有增加其他组件推荐。鼠标当前项以 0.6 倍速播放，换位为 700ms；减少动态时不做平移。
 
-将拼接名称的“进入下”等改成“入场（下）”；手机增加动画分类后，筛选行可换行避免挤压；骨架屏预览的主体背景使用 surface 色，避免深色大片遮住骨架。搜索提示改为覆盖所有资源的“搜索名称、效果或用途”。最终截图无阻塞布局问题。
+## 交互与范围
 
-## 交互范围
+鼠标和键盘交换、连续两次选择、滚动到末项后换位、搜索排序、无结果恢复、详情返回和原资源入口已实际操作。最终目录初始活动动画为 0；聚焦圆环第 15 项只请求这一项 CSS。应用控制台 warn/error 为空。390px 页面和内部卡片均无横向溢出。
 
-300 项目录，全量验证来源、许可证、隔离样式及 JSX 导出；实际浏览器抽查三个来源与多类加载效果，完成搜索、类型筛选、无结果恢复、24 条分页及返回保留页码、暂停/重播/倍速、代码格式切换与复制，独立 HTML 可播放。离屏卡片实际暂停，浏览器控制台 warn/error 为空。
+实现阶段将固定高度改为随卡片宽度保持比例，并统一活动状态，使跨分类也只播放当前项；正式最终对照未发现需继续修复的 P0/P1/P2。没有保留额外 P3 修改项。
 
-减少动态与后台暂停分支有实现检查；IAB 保持原标签 visible，无法模拟真实后台状态，未改操作系统动态偏好。因此这两项不声称已做运行时验证。没有逐项目视检查全部 300 个动画，也未扩展全站回归。无新增图像生成任务；动画是来自明确许可源的可运行 CSS。
-
-2026-10-23 用户授权生产发布后，同一实现已上线提交 `ee74c1bc`。线上数量、分页返回、搜索、播放控制、复制与 390px 布局通过；生产截图和回执见 [发布记录](docs/development/VBP-121-animation-library.md#生产发布2026-10-23)。
+没有逐一目视审查 300 项、模拟真实手机触摸、切换系统减少动态或后台状态，也没有全站回归。相关共享分支沿用已有实现，不将未执行部分记为通过。
