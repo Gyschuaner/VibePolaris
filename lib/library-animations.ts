@@ -5,13 +5,13 @@ export const libraryAnimations = catalogue;
 export type LibraryAnimation = typeof catalogue[number];
 export const animationSources = sources;
 export const animationGroups = [...new Set(catalogue.map(item => item.group))];
-export const animationCollections = [
-  { name: "入场与退场", description: "让内容自然出现、离开。", groups: ["入场", "退场"] },
-  { name: "强调与空间", description: "吸引注意，表达层次变化。", groups: ["强调", "空间变换"] },
-  { name: "加载等待", description: "为正在进行的操作提供反馈。", groups: ["圆环加载", "圆点加载", "条形加载", "线条加载", "文字加载", "趣味加载", "图形加载"] },
-  { name: "进度与骨架", description: "呈现完成进度，预留内容位置。", groups: ["进度加载", "骨架屏"] },
-];
 export const animationsByGroup = new Map(animationGroups.map(group => [group, catalogue.filter(item => item.group === group)]));
+export function swapFeatured<T>(items: readonly T[], index: number): readonly T[] {
+  if (!Number.isInteger(index) || index < 1 || index >= items.length) return items;
+  const next = [...items];
+  [next[0], next[index]] = [next[index], next[0]];
+  return next;
+}
 const bySlug = new Map(catalogue.map(item => [item.slug, item]));
 export function libraryAnimation(slug: string) { return bySlug.get(slug); }
 export function animationSource(item: LibraryAnimation) { return sources[item.source as keyof typeof sources]; }
