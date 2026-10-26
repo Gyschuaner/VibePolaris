@@ -33,6 +33,7 @@ export async function callModel(options: {
   store: XiaobeiStore; identity: Identity; run: string; messages: Message[]; signal: AbortSignal;
   tools?: unknown[]; json?: boolean; projectedTokens?: number; onDelta?: (text: string) => void;
   onReasoning?: (text: string) => void; onToolCall?: () => void;
+  intent?: true;
   completion?: { charge: boolean };
   canvas?: { feature: "canvas_organize" | "canvas_expand"; charge: boolean };
 }) {
@@ -41,7 +42,7 @@ export async function callModel(options: {
   signal.throwIfAborted();
   const input = options.projectedTokens ?? estimateTokens({ messages, tools: options.tools });
   // Leave room for a short completion to finish its sentence or Markdown syntax.
-  const wantedOutput = Math.min(CONTEXT_WINDOW - input, options.completion ? 1024 : options.canvas ? 16384 : CONTEXT_WINDOW);
+  const wantedOutput = Math.min(CONTEXT_WINDOW - input, options.intent ? 256 : options.completion ? 1024 : options.canvas ? 16384 : CONTEXT_WINDOW);
   if (wantedOutput < 256) throw new XiaobeiError("本次上下文已接近 256K，无法容纳回答。会话已保留，可减少内容或新建对话。", 413);
   // Reserve in token units. Treating UTF-8 bytes as tokens made pending
   // balances look roughly three times smaller for Chinese input; the final
@@ -59,12 +60,13 @@ export async function callModel(options: {
   const timeout = new AbortController();
   let timer = setTimeout(() => timeout.abort(), 90_000);
   const combined = AbortSignal.any([signal, timeout.signal]);
+  const thinking = !options.intent && !options.completion && !options.canvas;
   try {
     combined.throwIfAborted();
     dispatched = true;
     const response = await fetch(config.url, {
       method: "POST", signal: combined, headers: { "Content-Type": "application/json", Authorization: `Bearer ${config.key}` },
-      body: JSON.stringify({ model: config.model, messages, stream: true, stream_options: { include_usage: true }, enable_thinking: !options.completion && !options.canvas, ...(!options.completion && !options.canvas ? { reasoning_effort: "high" } : {}), max_tokens: reservation.maxOutput,
+      body: JSON.stringify({ model: config.model, messages, stream: true, stream_options: { include_usage: true }, enable_thinking: thinking, ...(thinking ? { reasoning_effort: "high" } : {}), max_tokens: reservation.maxOutput,
         ...(options.tools ? { tools: options.tools } : {}), ...(options.json ? { response_format: { type: "json_object" } } : {}) }),
     });
     if (!response.ok || !response.body) {
