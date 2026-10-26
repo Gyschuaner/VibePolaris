@@ -19,3 +19,9 @@
 截图为 `BUG-8EFD0222-evidence/completion.png`、`sync.png`，只含合成内容。未运行全套测试或整站回归。此记录暂不代表生产修复完成；已存在的 20 张画布均保留，若真实内容冲突仍需安全恢复其待同步版本，不能用新代码覆盖双方内容或宣称已恢复。
 
 关联 VBP-101、Bug BUG-8EFD0222、研发任务 `bcbfa043-849d-47ee-894e-7e7486910155`。本机无 `D:/Obsidian/gysnote`，跳过该库更新；未修改正式飞书文档。
+
+## dev 集成与生产候选
+
+[PR605](https://github.com/Gyschuaner/VibePolaris/pull/605) 已合入 dev，提交 `85055f51e64a687b1b8a83c8c053bd13ca33cafe`，全部运行代码与上述验收构建一致。合并后浏览器重新加载，云端标题与两张画布列表仍保留；DP 定向计划 `e44987b4-a6db-4ef1-82a4-c353876025b2` 已完成，dev-local 部署 `vbp-8efd0222-dev-20261026` 已记录。
+
+生产候选从 main 只选择本次修复，未整体合入 dev 中其他页面。重新构建通过，Build ID `2V0TVKWzpKg1_KbD_7Bzy`；生产发布尚未执行，需按 AGENTS.md 的明确授权要求继续。
