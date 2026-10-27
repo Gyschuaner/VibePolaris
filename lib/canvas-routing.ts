@@ -1,4 +1,4 @@
-import { canvasPorts, type CanvasEdge, type CanvasPort } from "./canvas.ts";
+import { canvasPorts, type CanvasPort } from "./canvas.ts";
 
 type Point = { x: number; y: number };
 export type CanvasAnchor = Point & { side?: CanvasPort };
@@ -17,9 +17,9 @@ export function portAnchor(bounds: CanvasLabelBounds, side: CanvasPort): CanvasA
   return { ...offset(center, normals[side], amount), side };
 }
 
-export function edgeAnchors(from: CanvasLabelBounds, to: CanvasLabelBounds, edge: Pick<CanvasEdge, "fromPort" | "toPort"> = {}) {
+export function edgeAnchors(from: CanvasLabelBounds, to: CanvasLabelBounds) {
   let best: { from: CanvasAnchor; to: CanvasAnchor; fromPort: CanvasPort; toPort: CanvasPort } | undefined, score = Infinity;
-  for (const fromPort of edge.fromPort ? [edge.fromPort] : canvasPorts) for (const toPort of edge.toPort ? [edge.toPort] : canvasPorts) {
+  for (const fromPort of canvasPorts) for (const toPort of canvasPorts) {
     const a = portAnchor(from, fromPort), b = portAnchor(to, toPort), length = distance(a, b);
     const direction = { x: (b.x - a.x) / (length || 1), y: (b.y - a.y) / (length || 1) };
     const facing = direction.x * normals[fromPort].x + direction.y * normals[fromPort].y - direction.x * normals[toPort].x - direction.y * normals[toPort].y;
