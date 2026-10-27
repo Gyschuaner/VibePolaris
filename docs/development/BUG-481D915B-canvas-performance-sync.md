@@ -30,7 +30,15 @@ Chrome 对优化构建进行真实操作：
 
 生产候选分支 `fix/BUG-481D915B-production` 从 main 选择性应用修复，不包含 dev 的其他改动。候选产品提交 `ee6cd8ce101582b0d7f3c6be10a7e8c5e42558f1` 再次 `npm run build` 通过，BUILD_ID `LDVtCDnBnKIG7oKSDqz5W`；受影响产品源码与 dev 实测版本一致。候选构建启动后浏览器同步显示“已同步”，独立修改仍保留，控制台无错误或警告。
 
-本轮未改用户生产画布，也未合并 main 或部署生产，待本轮明确授权。生产发布前备份 SQLite，保留数据卷并复查用户当前画布同步，不能用旧快照覆盖新的本地或云端编辑。
+用户随后明确授权“上线，备份并复查当前画布同步”。[PR612](https://github.com/Gyschuaner/VibePolaris/pull/612) 合入 main `2e9bb6244576d242ee1cc58e320e5a6a04448021`，2026-10-27 10:39:53（Asia/Shanghai）发布生产；构建源与 main 的全部非 docs 路径一致。
+
+SQLite 在线备份 `/opt/vibepolaris/backups/20261027T023741Z-from-669cf1b3`，quick_check `ok`，SHA-256 `f7f4f860d6556dacdfe46e91897a871a5023ae479a4fc6b4322542e3fda0810f`。新容器 healthy，公开页及 session 为 200，匿名私有画布/笔记接口为 401；保留原持久卷与扣费关闭状态。回滚执行 `/opt/vibepolaris/releases/20261027T023741Z-2e9bb624/rollback.sh`，只切换旧镜像并保留上线后的数据。
+
+真实用户当前画布加载新版后显示“已同步”，再点立即同步也成功。云端原先只有 13 节点、6 边，修订 377；本地 14 节点、7 边同步后成为修订 378，原 13 个节点的所有字符串字段哈希及 6 条边均保留，新事件节点和其连线成功上传。事件右侧连接到 DOM 左侧。刷新后用户已打开事件编辑页，仍显示“已同步”，没有再切换其页面。用户随后明确表示“我现在测过了，没问题咯”，因此两个 Bug 在生产验收后关闭；严重低帧率的接受依据包含用户现场实测，不以本机短采样宣称性能增益。
+
+生产任务 `5628857a-d910-4f7d-b677-ad70eaa61177` done；计划 `6930677a-ccb1-48a7-bb6e-6f064888096e` completed，1/1 passed；部署批次 `vbp-481d915b-e42a3743-production-20261027` 已关联 VBP-104、VBP-101 及两项 Bug。
+
+[发布与备份事实](BUG-481D915B-evidence/production-release.json) · [匿名结果汇总](BUG-481D915B-evidence/production-results.json)。个人画布截图、字段哈希和数据库仅保存在服务器备份及本机私有临时目录，不提交 Git。
 
 应用回滚只切换镜像并保留数据；存储格式不变。若回滚至不支持内容引用的服务，缓存新版页面须保存本地修改后刷新，重新使用完整传输。
 
