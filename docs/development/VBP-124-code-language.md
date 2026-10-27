@@ -12,4 +12,8 @@
 
 验收用例 `0cc59bc2-ecad-479f-b14a-abb0ade62e85`，dev-local 计划 `8d3ab069-7c94-4a81-a6fb-3d4ce7aafa45`。仅操作隔离合成笔记，未修改个人生产画布。生产发布需本项明确授权。
 
+[PR614](https://github.com/Gyschuaner/VibePolaris/pull/614) 已合入 dev `ee3ff10a3df4876c5ca628683ef22cd6f4bebd0e`，与实测构建全部非 docs 路径一致。dev-local 部署 `vbp-124-code-language-dev-20261027` 已记录；合并后真实浏览器刷新确认 9 个代码块、8 个标签与 Mermaid 图表，控制台无警告和错误。上述计划 completed，1/1 passed；任务 done，VBP-124 ready_for_release。
+
+生产候选 `feat/VBP-124-production` 从当前 main 选择性应用本项变更，不包含 dev 的其他内容。候选源码 `0b3f3508c33809a8bc63eccadc33f11c985b5626` 再次构建通过，BUILD_ID `USqoCOBdt5nrcMS2X44Jp`，本机启动后预览标签一致，控制台无警告错误。尚未合并 main 或部署生产。
+
 当前机器不存在规则指定的 D:/Obsidian/gysnote，跳过该库写入；没有新建正式飞书文档。
