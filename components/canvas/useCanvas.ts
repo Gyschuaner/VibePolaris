@@ -77,7 +77,7 @@ export function useCanvas(options: { storageKey?: string; owner?: string; remote
       const merged = mergeCanvas(before, snapshot, remote);
       let accepted: CanvasData;
       if (merged) {
-        accepted = sameCanvas(merged, remote) ? remote : (await cloudRequest(owner, { method: "PUT", body: { id: remoteId, expected: remote.revision, data: merged } }))!.data;
+        accepted = sameCanvas(merged, remote) ? remote : (await cloudRequest(owner, { method: "PUT", body: { id: remoteId, expected: remote.revision, data: merged }, base: remote }))!.data;
       } else accepted = remote;
       if (disposed.current) return;
       if (merged && accepted.revision === before.revision && sameCanvas(snapshot, accepted) && sameCanvas(latest.current, snapshot)) {

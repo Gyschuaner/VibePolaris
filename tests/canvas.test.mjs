@@ -118,9 +118,12 @@ test("四边连接点随边界定位，平滑连线保持端点并避开文字",
   assert.deepEqual(portAnchor(a, "bottom"), { x: 80, y: 84, side: "bottom" });
   const auto = edgeAnchors(a, { ...b, y: 0 });
   assert.equal(auto.fromPort, "right"); assert.equal(auto.toPort, "left");
+  for (const [position, sides] of [[{ x: -420, y: 0 }, ["left", "right"]], [{ x: 0, y: 250 }, ["bottom", "top"]], [{ x: 0, y: -250 }, ["top", "bottom"]]]) {
+    const moved = edgeAnchors(a, { ...a, ...position });
+    assert.deepEqual([moved.fromPort, moved.toPort], sides);
+  }
   for (const side of ["top", "right", "bottom", "left"]) {
-    const ends = edgeAnchors(a, b, { fromPort: side, toPort: side });
-    assert.equal(ends.fromPort, side); assert.equal(ends.toPort, side);
+    const ends = { from: portAnchor(a, side), to: portAnchor(b, side) };
     const path = connectionPath(ends.from, ends.to, [a, b]);
     const points = samplePath(path);
     assert.deepEqual(points[0], { x: ends.from.x, y: ends.from.y });

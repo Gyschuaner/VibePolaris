@@ -54,6 +54,7 @@ function plain(text: string) {
 }
 
 export function nodePreview(node: Pick<CanvasNode, "markdown" | "fileName" | "kind" | "title" | "summary">) {
+  if (node.title?.trim() && node.summary !== undefined) return { title: Array.from(node.title.trim()).slice(0, 70).join(""), summary: node.summary };
   const text = node.markdown.replace(/^\uFEFF/, "").replace(/^---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)/, "")
     .replace(/^[ \t]*(```|~~~)[\s\S]*?(?:\1|$)/gm, "");
   const heading = text.match(/^[ \t]{0,3}#{1,6}[ \t]+(.+?)[ \t]*#*[ \t]*$/m);
