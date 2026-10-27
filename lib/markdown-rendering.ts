@@ -35,5 +35,5 @@ export const markdownSchema = {
   ...defaultSchema,
   tagNames: [...(defaultSchema.tagNames ?? []), "mark"],
   protocols: { ...defaultSchema.protocols, src: [...(defaultSchema.protocols?.src ?? []), "data"] },
-  attributes: { ...defaultSchema.attributes, span: ["style"], code: [["className", /^language-[\w-]+$/]] },
+  attributes: { ...defaultSchema.attributes, span: ["style"], code: [["className", /^language-[\w#+.-]+$/]] },
 };
