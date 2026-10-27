@@ -14,6 +14,18 @@
 
 [PR614](https://github.com/Gyschuaner/VibePolaris/pull/614) 已合入 dev `ee3ff10a3df4876c5ca628683ef22cd6f4bebd0e`，与实测构建全部非 docs 路径一致。dev-local 部署 `vbp-124-code-language-dev-20261027` 已记录；合并后真实浏览器刷新确认 9 个代码块、8 个标签与 Mermaid 图表，控制台无警告和错误。上述计划 completed，1/1 passed；任务 done，VBP-124 ready_for_release。
 
-生产候选 `feat/VBP-124-production` 从当前 main 选择性应用本项变更，不包含 dev 的其他内容。候选源码 `0b3f3508c33809a8bc63eccadc33f11c985b5626` 再次构建通过，BUILD_ID `USqoCOBdt5nrcMS2X44Jp`，本机启动后预览标签一致，控制台无警告错误。尚未合并 main 或部署生产。
+生产候选 `feat/VBP-124-production` 从当前 main 选择性应用本项变更，不包含 dev 的其他内容。候选源码 `0b3f3508c33809a8bc63eccadc33f11c985b5626` 再次构建通过，BUILD_ID `USqoCOBdt5nrcMS2X44Jp`，本机启动后预览标签一致，控制台无警告错误。随后获用户明确授权发布，实绩如下。
+
+## 生产发布
+
+用户明确授权“上线，备份并完成健康检查”。[PR615](https://github.com/Gyschuaner/VibePolaris/pull/615) 合入 main `9466849a5ba415a6a56fa15a19c8d291ea88fd08`，2026-10-27 11:12:08（Asia/Shanghai）发布生产。构建源与该提交全部非 docs 路径一致，镜像和实际 BUILD_ID 核对通过。容器 healthy，公开页及 session 为 200，匿名画布/笔记接口为 401；原持久卷与扣费关闭状态保留。
+
+SQLite 在线备份 `/opt/vibepolaris/backups/20261027T030927Z-from-2e9bb624`，quick_check `ok`，SHA-256 `1891d7f56dbed5ba65b334cc872e2e37e6156edceacf0ab85bb9c6c5ae1b7791`。回滚执行 `/opt/vibepolaris/releases/20261027T030927Z-9466849a/rollback.sh`，恢复旧镜像并保留上线后的数据库；本次未执行回滚。
+
+Chrome 新标签页只读复查生产既有笔记：CSS 阅读与编辑预览均有 2 个 CSS 标签，Python 阅读有 2 个 Python 标签，标签均位于代码首行之上，控制台无警告或错误。没有输入或改写个人正文，也没有切换原有用户编辑标签页。生产截图仅在本机私有临时目录保存，Git 仅保留匿名结果。
+
+生产任务 `d352267b-5d18-48a6-9377-e5cde640b3d3` done，生产计划 `e8bc2b47-cad9-404a-872f-856bc606ee0a` completed，1/1 passed；部署批次 `vbp-124-code-language-production-20261027` 已记录。DP 录入测试时要求需求为 testing，因此按允许流转临时返回 testing 录入实际检查，再完成发布状态；没有重复执行检查或绕过条件。
+
+[发布与备份事实](VBP-124-code-language/production-release.json) · [匿名浏览器结果](VBP-124-code-language/production-browser.json)。没有扩大为全站回归。
 
 当前机器不存在规则指定的 D:/Obsidian/gysnote，跳过该库写入；没有新建正式飞书文档。
