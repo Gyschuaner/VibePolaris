@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useEffectEvent, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
+import { useCallback, useEffect, useEffectEvent, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, CaretDown, CheckSquare, Circle, Copy, DotsThree, DownloadSimple, ImageSquare, Info, LinkSimple, Minus, NotePencil, Plus, Trash, UploadSimple, X } from "@phosphor-icons/react";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -65,6 +65,11 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
   const documentRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null), menuAnchor = useRef<HTMLElement | null>(null);
   const gesture = useRef<Gesture | null>(null), skipClick = useRef(false);
+  const moveFrame = useRef(0), pendingMove = useRef<(() => void) | null>(null);
+  const commitMove = useCallback(() => {
+    cancelAnimationFrame(moveFrame.current); moveFrame.current = 0;
+    const move = pendingMove.current; pendingMove.current = null; move?.();
+  }, []);
   const pinch = useRef(new CanvasPinch()), suppressTouchClick = useRef(false);
   const active = data.nodes.find(node => node.id === documentId), picked = data.nodes.find(node => node.id === selected);
   const current = documentId ? active : picked;
@@ -82,7 +87,7 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
   const paths = useMemo(() => new Map(data.edges.flatMap(item => {
     const from = bounds.get(item.from), to = bounds.get(item.to);
     if (!from || !to) return [];
-    const ends = edgeAnchors(from, to, item);
+    const ends = edgeAnchors(from, to);
     return [[item.id, { ...ends, path: connectionPath(ends.from, ends.to, labels) }]];
   })), [data.edges, bounds, labels]);
   const connectedPorts = useMemo(() => {
@@ -125,13 +130,14 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
   }, [documentId]);
   useEffect(() => {
     const cancel = () => {
+      commitMove();
       if (!gesture.current && !pinch.current.points.size) return;
       gesture.current = null; pinch.current.reset(); suppressTouchClick.current = true;
       setConnecting(null); void flush();
     };
     window.addEventListener("blur", cancel);
     return () => { window.removeEventListener("blur", cancel); cancel(); };
-  }, [documentId, flush]);
+  }, [documentId, flush, commitMove]);
   useEffect(() => {
     if (!toast || toast.undo) return;
     const timer = setTimeout(() => setToast(null), 4000);
@@ -240,16 +246,13 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
     if (id) { setSelected(id); setContextMenu({ kind: "node", id, x, y }); }
     else { setSelected(null); setContextMenu({ kind: "create", at: worldPoint(localPoint(x, y)), x, y }); }
   }
-  function linkNodes(from: string, to: string, fromPort: CanvasPort, toPort?: CanvasPort) {
-    const a = bounds.get(from), b = bounds.get(to);
-    if (!a || !b) return;
-    const ports = edgeAnchors(a, b, { fromPort, toPort });
-    update(value => connectNodes(value, from, to, { fromPort: ports.fromPort, toPort: ports.toPort }), true);
+  function linkNodes(from: string, to: string) {
+    update(value => connectNodes(value, from, to), true);
     setConnecting(null); setSelectedEdge(null);
   }
   function selectNode(node: CanvasNode) {
     if (skipClick.current) { skipClick.current = false; return; }
-    if (connecting) { if (connecting.from !== node.id) linkNodes(connecting.from, node.id, connecting.fromPort); return; }
+    if (connecting) { if (connecting.from !== node.id) linkNodes(connecting.from, node.id); return; }
     if (size.width < 768) update(value => ({ ...value, view: { ...value.view, x: size.width / 2 - (node.x + 24 + (bounds.get(node.id)?.width ?? 275) / 2) * value.view.scale, y: size.height * .2 - node.y * value.view.scale } }));
     setSelected(node.id); setSelectedEdge(null);
   }
@@ -263,7 +266,7 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
   function beginLink(event: ReactPointerEvent, node: CanvasNode, side: CanvasPort) {
     if (event.button !== 0) return;
     event.stopPropagation(); event.preventDefault();
-    if (connecting && connecting.from !== node.id) { linkNodes(connecting.from, node.id, connecting.fromPort, side); return; }
+    if (connecting && connecting.from !== node.id) { linkNodes(connecting.from, node.id); return; }
     if (event.pointerType !== "touch") event.currentTarget.setPointerCapture(event.pointerId);
     gesture.current = { kind: "link", from: node.id, fromPort: side, pointerId: event.pointerId, start: { x: event.clientX, y: event.clientY }, moved: false };
     setSelected(null); setSelectedEdge(null); setConnecting({ from: node.id, fromPort: side, point: portAnchor(bounds.get(node.id)!, side) });
@@ -296,7 +299,7 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
     }
   }
   function movePointer(event: ReactPointerEvent) {
-    const view = pinch.current.move(event.pointerId, localPoint(event.clientX, event.clientY));
+    const view = pinch.current.points.has(event.pointerId) ? pinch.current.move(event.pointerId, localPoint(event.clientX, event.clientY)) : null;
     if (pinch.current.active) {
       if (view) update(value => ({ ...value, view }));
       return;
@@ -313,9 +316,14 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
     if (Math.hypot(dx, dy) > 4) moving.moved = true;
     if (!moving.moved) return;
     if (moving.kind === "pan") update(value => ({ ...value, view: { ...moving.view, x: moving.view.x + dx, y: moving.view.y + dy } }));
-    if (moving.kind === "node") update(value => ({ ...value, nodes: value.nodes.map(node => node.id === moving.node.id ? { ...node, x: moving.node.x + dx / moving.scale, y: moving.node.y + dy / moving.scale } : node) }));
+    if (moving.kind === "node") {
+      pendingMove.current = () => update(value => ({ ...value, nodes: value.nodes.map(node => node.id === moving.node.id ? { ...node, x: moving.node.x + dx / moving.scale, y: moving.node.y + dy / moving.scale } : node) }));
+      if (!moveFrame.current) moveFrame.current = requestAnimationFrame(commitMove);
+    }
   }
   function finishPointer(event: ReactPointerEvent) {
+    if (event.type === "pointerup" && gesture.current?.kind === "node" && gesture.current.moved) movePointer(event);
+    commitMove();
     if (pinch.current.up(event.pointerId, data.view)) {
       gesture.current = null;
       if (!pinch.current.active) void flush();
@@ -331,8 +339,7 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
     if (moving.kind === "link" && moving.moved) {
       const element = document.elementFromPoint(event.clientX, event.clientY);
       const target = element?.closest<HTMLElement>("[data-canvas-node]")?.dataset.canvasNode;
-      const side = element?.closest<HTMLElement>("[data-canvas-port]")?.dataset.canvasPort as CanvasPort | undefined;
-      if (target && target !== moving.from) linkNodes(moving.from, target, moving.fromPort, side); else setConnecting(null);
+      if (target && target !== moving.from) linkNodes(moving.from, target); else setConnecting(null);
     }
     if (moving.kind === "node") skipClick.current = moving.moved;
     if (moving.kind === "pan" && !moving.moved) { setSelected(null); setSelectedEdge(null); setConnecting(null); }
@@ -512,12 +519,12 @@ function CanvasBoard({ session }: { session: CanvasSession }) {
             const kind = node.kind ?? "note", KindIcon = kindIcons[kind];
             const image = kind === "image" ? safeNodeUrl(nodeResource(node), true) : undefined;
             const tasks = kind === "todo" ? nodeTasks(node.markdown) : [];
-            return <div key={node.id} className={`${styles.node} ${node.ai?.status === "pending" ? styles.pendingNode : ""} ${selected === node.id ? styles.activeNode : ""}`} style={{ left: node.x + 24, top: node.y }} data-canvas-node={node.id}>
+            return <div key={node.id} className={`${styles.node} ${node.ai?.status === "pending" ? styles.pendingNode : ""} ${selected === node.id ? styles.activeNode : ""}`} style={{ left: 0, top: 0, transform: `translate(${node.x + 24}px, ${node.y}px)` }} data-canvas-node={node.id}>
               {canvasPorts.map(side => {
                 const point = portAnchor(bounds.get(node.id)!, side), connected = connectedPorts.has(`${node.id}:${side}`);
                 return <button key={side} data-canvas-port={side} className={`${styles.port} ${connected ? styles.connectedPort : ""}`} style={{ left: point.x - node.x - 24, top: point.y - node.y }} aria-label={`从${preview.title}的${portNames[side]}侧连接`} title="拖动连线，或点按后选择另一节点的连接点" onPointerDown={event => beginLink(event, node, side)} onClick={event => {
                   if (event.detail !== 0) return;
-                  if (connecting && connecting.from !== node.id) linkNodes(connecting.from, node.id, connecting.fromPort, side);
+                  if (connecting && connecting.from !== node.id) linkNodes(connecting.from, node.id);
                   else { setSelected(null); setSelectedEdge(null); setConnecting({ from: node.id, fromPort: side, point }); }
                 }}><Circle size={8} weight={connected ? "fill" : "regular"} /></button>;
               })}

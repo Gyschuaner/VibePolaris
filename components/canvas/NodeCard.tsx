@@ -14,8 +14,8 @@ export function NodeCard({ node, actions, onChange, onSave, onOpen, onClose, onM
   const fileInput = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false), [task, setTask] = useState("");
   const preview = nodePreview(node), kind = node.kind ?? "note";
-  const resource = nodeResource(node), url = safeNodeUrl(resource, kind === "image");
-  const tasks = nodeTasks(node.markdown);
+  const resource = kind === "link" || kind === "image" ? nodeResource(node) : "", url = safeNodeUrl(resource, kind === "image");
+  const tasks = kind === "todo" ? nodeTasks(node.markdown) : [];
 
   async function upload(file?: File) {
     if (!file) return;
