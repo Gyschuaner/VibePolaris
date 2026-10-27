@@ -11,6 +11,17 @@ import { markdownSchema, rehypeFallbackTitle, rehypeTextColors, safeTextColor } 
 import { MermaidDiagram } from "./MermaidDiagram";
 import styles from "./CanvasWorkspace.module.css";
 
+const languageNames = new Map(Object.entries({
+  css: "CSS", html: "HTML", xml: "XML", svg: "SVG",
+  js: "JavaScript", javascript: "JavaScript", ts: "TypeScript", typescript: "TypeScript",
+  jsx: "JSX", tsx: "TSX", py: "Python", python: "Python",
+  json: "JSON", yaml: "YAML", yml: "YAML", toml: "TOML", sql: "SQL",
+  sh: "Shell", shell: "Shell", bash: "Bash", zsh: "Zsh", powershell: "PowerShell",
+  c: "C", cpp: "C++", "c++": "C++", cs: "C#", csharp: "C#", "c#": "C#",
+  java: "Java", go: "Go", rust: "Rust", ruby: "Ruby", php: "PHP", swift: "Swift", kotlin: "Kotlin",
+  md: "Markdown", markdown: "Markdown", text: "Text", txt: "Text", plaintext: "Text",
+}));
+
 // Stable component types keep a diagram mounted while surrounding prose changes.
 const components: Components = {
     // User images include embedded data URLs and must stay directly exportable.
@@ -21,10 +32,15 @@ const components: Components = {
     span: ({ style, children, className }) => <span className={className} style={style?.color ? { color: safeTextColor(`color: ${style.color}`) } : undefined}>{children}</span>,
     pre: ({ node, children }) => {
       const code = node?.children[0];
-      if (code?.type === "element" && code.tagName === "code" && (code.properties.className as string[] | undefined)?.includes("language-mermaid")) {
+      const language = code?.type === "element" && code.tagName === "code"
+        ? (code.properties.className as string[] | undefined)?.find(name => name.startsWith("language-"))?.slice("language-".length) : undefined;
+      if (language === "mermaid" && code?.type === "element") {
         return <MermaidDiagram source={code.children.map(child => child.type === "text" ? child.value : "").join("").replace(/\n$/, "")} />;
       }
-      return <pre>{children}</pre>;
+      return language ? <div className={styles.codeBlock}>
+        <span className={styles.codeLanguage}>{languageNames.get(language.toLowerCase()) ?? language}</span>
+        <pre>{children}</pre>
+      </div> : <pre>{children}</pre>;
     },
 };
 
